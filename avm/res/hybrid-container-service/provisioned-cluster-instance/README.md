@@ -212,7 +212,7 @@ param location = '<location>'
 | [`controlPlaneVmSize`](#parameter-controlplanevmsize) | string | The VM size for control plane nodes. |
 | [`enableAzureRBAC`](#parameter-enableazurerbac) | bool | Enable Azure RBAC. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`identityType`](#parameter-identitytype) | string | The identity type for the cluster. Allowed values: "SystemAssigned", "None" |
+| [`identityType`](#parameter-identitytype) | string | The identity type for the cluster. Allowed values: "SystemAssigned", "None". |
 | [`kubernetesVersion`](#parameter-kubernetesversion) | string | The Kubernetes version for the cluster. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`nfsCsiDriverEnabled`](#parameter-nfscsidriverenabled) | bool | Enable or disable NFS CSI driver. |
@@ -374,7 +374,7 @@ Enable/Disable usage telemetry for module.
 
 ### Parameter: `identityType`
 
-The identity type for the cluster. Allowed values: "SystemAssigned", "None"
+The identity type for the cluster. Allowed values: "SystemAssigned", "None".
 
 - Required: No
 - Type: string

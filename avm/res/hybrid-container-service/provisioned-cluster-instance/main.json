@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "14763965822101271975"
+      "templateHash": "5766367538277513127"
     },
     "name": "Hybrid Container Service Provisioned Cluster Instance",
     "description": "Deploy a provisioned cluster instance."
@@ -156,7 +156,7 @@
         "None"
       ],
       "metadata": {
-        "description": "Optional. The identity type for the cluster. Allowed values: \"SystemAssigned\", \"None\""
+        "description": "Optional. The identity type for the cluster. Allowed values: \"SystemAssigned\", \"None\"."
       }
     },
     "connectClustersTags": {

@@ -161,7 +161,7 @@ param nfsCsiDriverEnabled bool = true
 @description('Optional. Enable or disable SMB CSI driver.')
 param smbCsiDriverEnabled bool = true
 
-@description('Optional. The identity type for the cluster. Allowed values: "SystemAssigned", "None"')
+@description('Optional. The identity type for the cluster. Allowed values: "SystemAssigned", "None".')
 @allowed([
   'SystemAssigned'
   'None'
