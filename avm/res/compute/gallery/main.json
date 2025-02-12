@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "13224678661119042476"
+      "templateHash": "2873286844914975103"
     },
     "name": "Azure Compute Galleries",
     "description": "This module deploys an Azure Compute Gallery (formerly known as Shared Image Gallery)."
@@ -1227,7 +1227,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "17936066559310819755"
+              "templateHash": "5191633407919649272"
             },
             "name": "Compute Galleries Image Definitions",
             "description": "This module deploys an Azure Compute Gallery Image Definition."
@@ -1338,7 +1338,7 @@
                     "type": "string"
                   },
                   "metadata": {
-                    "example": "  [\r\n    'Standard_LRS'\r\n  ]",
+                    "example": "  [\n    'Standard_LRS'\n  ]",
                     "description": "Required. A list of disk types."
                   }
                 }
@@ -1597,7 +1597,7 @@
               "type": "object",
               "nullable": true,
               "metadata": {
-                "example": "{\r\n    key1: 'value1'\r\n    key2: 'value2'\r\n}\r\n",
+                "example": "{\n    key1: 'value1'\n    key2: 'value2'\n}\n",
                 "description": "Optional. Tags for all the image."
               }
             }
