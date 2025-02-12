@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "12583903411447171294"
+      "version": "0.32.4.45862",
+      "templateHash": "4194630585059896468"
     },
     "name": "Storage Account Table Services",
     "description": "This module deploys a Storage Account Table Service."
@@ -321,8 +321,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "1369356397929898951"
+              "version": "0.32.4.45862",
+              "templateHash": "4457939127962832961"
             },
             "name": "Storage Account Table",
             "description": "This module deploys a Storage Account Table."
