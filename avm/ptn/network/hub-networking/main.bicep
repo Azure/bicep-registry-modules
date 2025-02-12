@@ -207,7 +207,7 @@ module hubAzureFirewallSubnet 'modules/getSubnet.bicep' = [
     name: '${uniqueString(deployment().name, location)}-${hub.key}-nafs'
     params: {
       subnetName: 'AzureFirewallSubnet'
-      virtualNetworkName: hub.key
+      virtualNetworkName: hub.value.?virtualNetworkName
     }
     dependsOn: [hubVirtualNetwork]
   }
@@ -219,7 +219,7 @@ module hubAzureFirewallSubnetAssociation 'modules/subnets.bicep' = [
     name: '${uniqueString(deployment().name, location)}-${hub.key}-nafsa'
     params: {
       name: 'AzureFirewallSubnet'
-      virtualNetworkName: hub.key
+      virtualNetworkName: hub.value.?virtualNetworkName
       addressPrefix: hubAzureFirewallSubnet[index].outputs.addressPrefix
       routeTableResourceId: hubRouteTable[index].outputs.resourceId
     }
