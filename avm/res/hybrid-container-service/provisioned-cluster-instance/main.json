@@ -4,12 +4,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "14630782422058390514"
+      "version": "0.32.4.45862",
+      "templateHash": "12684300563285697809"
     },
     "name": "Hybrid Container Service Provisioned Cluster Instance",
-    "description": "Deploy a provisioned cluster instance.",
-    "owner": "Azure/module-maintainers"
+    "description": "Deploy a provisioned cluster instance."
   },
   "parameters": {
     "name": {
@@ -46,18 +45,18 @@
         "description": "Optional. The name of the secret in the key vault that contains the SSH public key."
       }
     },
-    "keyVaultName": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Conditional. The key vault name."
-      }
-    },
     "sshPublicKey": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Conditional. The SSH public key that will be used to access the kubernetes cluster nodes. If not specified, a new SSH key pair will be generated."
+        "description": "Conditional. The SSH public key that will be used to access the kubernetes cluster nodes. If not specified, a new SSH key pair will be generated. Required if no existing SSH keys."
+      }
+    },
+    "keyVaultName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Conditional. The name of the key vault. The key vault name. Required if no existing SSH keys."
       }
     },
     "customLocationId": {
@@ -139,14 +138,14 @@
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Enable or disable NFS CSI driver"
+        "description": "Optional. Enable or disable NFS CSI driver."
       }
     },
     "smbCsiDriverEnabled": {
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Enable or disable SMB CSI driver"
+        "description": "Optional. Enable or disable SMB CSI driver."
       }
     },
     "identityType": {
@@ -164,28 +163,28 @@
       "type": "object",
       "defaultValue": {},
       "metadata": {
-        "description": "Optional. Tags for the cluster resource"
+        "description": "Optional. Tags for the cluster resource."
       }
     },
     "aadTenantId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. The Azure AD tenant ID"
+        "description": "Optional. The Azure AD tenant ID."
       }
     },
     "aadAdminGroupObjectIds": {
       "type": "array",
       "defaultValue": [],
       "metadata": {
-        "description": "Optional. The Azure AD admin group object IDs"
+        "description": "Optional. The Azure AD admin group object IDs."
       }
     },
     "enableAzureRBAC": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. Enable Azure RBAC"
+        "description": "Optional. Enable Azure RBAC."
       }
     },
     "agentAutoUpgrade": {
@@ -196,21 +195,21 @@
         "Disabled"
       ],
       "metadata": {
-        "description": "Optional. Enable automatic agent upgrades"
+        "description": "Optional. Enable automatic agent upgrades."
       }
     },
     "oidcIssuerEnabled": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. Enable OIDC issuer"
+        "description": "Optional. Enable OIDC issuer."
       }
     },
     "workloadIdentityEnabled": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. Enable workload identity"
+        "description": "Optional. Enable workload identity."
       }
     }
   },
@@ -398,8 +397,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "10361216419107748803"
+              "version": "0.32.4.45862",
+              "templateHash": "13039775081403624300"
             },
             "name": "Kubernetes Connected Clusters",
             "description": "Deploy an Azure Arc connected cluster.",
@@ -545,5 +544,14 @@
         }
       }
     }
-  ]
+  ],
+  "outputs": {
+    "provisionedClusterId": {
+      "type": "string",
+      "metadata": {
+        "description": "The id of the Aks Arc."
+      },
+      "value": "[extensionResourceId(resourceId('Microsoft.Kubernetes/connectedClusters', parameters('name')), 'Microsoft.HybridContainerService/provisionedClusterInstances', 'default')]"
+    }
+  }
 }

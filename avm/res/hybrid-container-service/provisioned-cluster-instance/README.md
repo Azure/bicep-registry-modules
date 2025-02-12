@@ -48,7 +48,7 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
     // Required parameters
     customLocationId: '<customLocationId>'
     logicalNetworkId: '<logicalNetworkId>'
-    name: 'hcspcidef001'
+    name: 'hcspcimin001'
     // Non-required parameters
     location: '<location>'
   }
@@ -75,7 +75,7 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
       "value": "<logicalNetworkId>"
     },
     "name": {
-      "value": "hcspcidef001"
+      "value": "hcspcimin001"
     },
     // Non-required parameters
     "location": {
@@ -98,7 +98,7 @@ using 'br/public:avm/res/hybrid-container-service/provisioned-cluster-instance:<
 // Required parameters
 param customLocationId = '<customLocationId>'
 param logicalNetworkId = '<logicalNetworkId>'
-param name = 'hcspcidef001'
+param name = 'hcspcimin001'
 // Non-required parameters
 param location = '<location>'
 ```
@@ -194,34 +194,34 @@ param location = '<location>'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`keyVaultName`](#parameter-keyvaultname) | string | The key vault name. |
-| [`sshPublicKey`](#parameter-sshpublickey) | string | The SSH public key that will be used to access the kubernetes cluster nodes. If not specified, a new SSH key pair will be generated. |
+| [`keyVaultName`](#parameter-keyvaultname) | string | The name of the key vault. The key vault name. Required if no existing SSH keys. |
+| [`sshPublicKey`](#parameter-sshpublickey) | string | The SSH public key that will be used to access the kubernetes cluster nodes. If not specified, a new SSH key pair will be generated. Required if no existing SSH keys. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`aadAdminGroupObjectIds`](#parameter-aadadmingroupobjectids) | array | The Azure AD admin group object IDs |
-| [`aadTenantId`](#parameter-aadtenantid) | string | The Azure AD tenant ID |
-| [`agentAutoUpgrade`](#parameter-agentautoupgrade) | string | Enable automatic agent upgrades |
+| [`aadAdminGroupObjectIds`](#parameter-aadadmingroupobjectids) | array | The Azure AD admin group object IDs. |
+| [`aadTenantId`](#parameter-aadtenantid) | string | The Azure AD tenant ID. |
+| [`agentAutoUpgrade`](#parameter-agentautoupgrade) | string | Enable automatic agent upgrades. |
 | [`agentPoolProfiles`](#parameter-agentpoolprofiles) | array | Agent pool configuration. |
 | [`azureHybridBenefit`](#parameter-azurehybridbenefit) | string | Azure Hybrid Benefit configuration. |
-| [`connectClustersTags`](#parameter-connectclusterstags) | object | Tags for the cluster resource |
+| [`connectClustersTags`](#parameter-connectclusterstags) | object | Tags for the cluster resource. |
 | [`controlPlaneCount`](#parameter-controlplanecount) | int | The number of control plane nodes. |
 | [`controlPlaneIP`](#parameter-controlplaneip) | string | The host IP for control plane endpoint. |
 | [`controlPlaneVmSize`](#parameter-controlplanevmsize) | string | The VM size for control plane nodes. |
-| [`enableAzureRBAC`](#parameter-enableazurerbac) | bool | Enable Azure RBAC |
+| [`enableAzureRBAC`](#parameter-enableazurerbac) | bool | Enable Azure RBAC. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`identityType`](#parameter-identitytype) | string | The identity type for the cluster. Allowed values: "SystemAssigned", "None" |
 | [`kubernetesVersion`](#parameter-kubernetesversion) | string | The Kubernetes version for the cluster. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
-| [`nfsCsiDriverEnabled`](#parameter-nfscsidriverenabled) | bool | Enable or disable NFS CSI driver |
-| [`oidcIssuerEnabled`](#parameter-oidcissuerenabled) | bool | Enable OIDC issuer |
+| [`nfsCsiDriverEnabled`](#parameter-nfscsidriverenabled) | bool | Enable or disable NFS CSI driver. |
+| [`oidcIssuerEnabled`](#parameter-oidcissuerenabled) | bool | Enable OIDC issuer. |
 | [`podCidr`](#parameter-podcidr) | string | The CIDR range for the pods in the kubernetes cluster. |
-| [`smbCsiDriverEnabled`](#parameter-smbcsidriverenabled) | bool | Enable or disable SMB CSI driver |
+| [`smbCsiDriverEnabled`](#parameter-smbcsidriverenabled) | bool | Enable or disable SMB CSI driver. |
 | [`sshPrivateKeyPemSecretName`](#parameter-sshprivatekeypemsecretname) | string | The name of the secret in the key vault that contains the SSH private key PEM. |
 | [`sshPublicKeySecretName`](#parameter-sshpublickeysecretname) | string | The name of the secret in the key vault that contains the SSH public key. |
-| [`workloadIdentityEnabled`](#parameter-workloadidentityenabled) | bool | Enable workload identity |
+| [`workloadIdentityEnabled`](#parameter-workloadidentityenabled) | bool | Enable workload identity. |
 
 ### Parameter: `customLocationId`
 
@@ -246,7 +246,7 @@ The name of the provisioned cluster instance.
 
 ### Parameter: `keyVaultName`
 
-The key vault name.
+The name of the key vault. The key vault name. Required if no existing SSH keys.
 
 - Required: No
 - Type: string
@@ -254,7 +254,7 @@ The key vault name.
 
 ### Parameter: `sshPublicKey`
 
-The SSH public key that will be used to access the kubernetes cluster nodes. If not specified, a new SSH key pair will be generated.
+The SSH public key that will be used to access the kubernetes cluster nodes. If not specified, a new SSH key pair will be generated. Required if no existing SSH keys.
 
 - Required: No
 - Type: string
@@ -262,7 +262,7 @@ The SSH public key that will be used to access the kubernetes cluster nodes. If 
 
 ### Parameter: `aadAdminGroupObjectIds`
 
-The Azure AD admin group object IDs
+The Azure AD admin group object IDs.
 
 - Required: No
 - Type: array
@@ -270,7 +270,7 @@ The Azure AD admin group object IDs
 
 ### Parameter: `aadTenantId`
 
-The Azure AD tenant ID
+The Azure AD tenant ID.
 
 - Required: No
 - Type: string
@@ -278,7 +278,7 @@ The Azure AD tenant ID
 
 ### Parameter: `agentAutoUpgrade`
 
-Enable automatic agent upgrades
+Enable automatic agent upgrades.
 
 - Required: No
 - Type: string
@@ -326,7 +326,7 @@ Azure Hybrid Benefit configuration.
 
 ### Parameter: `connectClustersTags`
 
-Tags for the cluster resource
+Tags for the cluster resource.
 
 - Required: No
 - Type: object
@@ -358,7 +358,7 @@ The VM size for control plane nodes.
 
 ### Parameter: `enableAzureRBAC`
 
-Enable Azure RBAC
+Enable Azure RBAC.
 
 - Required: No
 - Type: bool
@@ -405,7 +405,7 @@ Location for all Resources.
 
 ### Parameter: `nfsCsiDriverEnabled`
 
-Enable or disable NFS CSI driver
+Enable or disable NFS CSI driver.
 
 - Required: No
 - Type: bool
@@ -413,7 +413,7 @@ Enable or disable NFS CSI driver
 
 ### Parameter: `oidcIssuerEnabled`
 
-Enable OIDC issuer
+Enable OIDC issuer.
 
 - Required: No
 - Type: bool
@@ -429,7 +429,7 @@ The CIDR range for the pods in the kubernetes cluster.
 
 ### Parameter: `smbCsiDriverEnabled`
 
-Enable or disable SMB CSI driver
+Enable or disable SMB CSI driver.
 
 - Required: No
 - Type: bool
@@ -453,7 +453,7 @@ The name of the secret in the key vault that contains the SSH public key.
 
 ### Parameter: `workloadIdentityEnabled`
 
-Enable workload identity
+Enable workload identity.
 
 - Required: No
 - Type: bool
@@ -461,7 +461,9 @@ Enable workload identity
 
 ## Outputs
 
-_None_
+| Output | Type | Description |
+| :-- | :-- | :-- |
+| `provisionedClusterId` | string | The id of the Aks Arc. |
 
 ## Cross-referenced modules
 
