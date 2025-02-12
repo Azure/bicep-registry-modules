@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "5441610907274204609"
+      "version": "0.33.93.31351",
+      "templateHash": "16135611596956127909"
     },
     "name": "App ManagedEnvironments",
     "description": "This module deploys an App Managed Environment (also known as a Container App Environment)."
@@ -409,7 +409,7 @@
   "resources": {
     "managedEnvironment::storage": {
       "copy": {
-        "name": "storage",
+        "name": "managedEnvironment::storage",
         "count": "[length(coalesce(parameters('storages'), createArray()))]"
       },
       "type": "Microsoft.App/managedEnvironments/storages",
