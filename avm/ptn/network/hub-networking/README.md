@@ -120,6 +120,7 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
           threatIntelMode: 'Alert'
         }
         bastionHost: {
+          bastionHostName: 'bastion-hub1'
           disableCopyPaste: true
           enableFileCopy: false
           enableIpConnect: false
@@ -192,6 +193,7 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
           'hidden-title': 'This is visible in the resource name'
           Role: 'DeploymentValidation'
         }
+        virtualNetworkName: 'vnet-hub1'
         vnetEncryption: false
         vnetEncryptionEnforcement: 'AllowUnencrypted'
       }
@@ -301,6 +303,7 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
             "threatIntelMode": "Alert"
           },
           "bastionHost": {
+            "bastionHostName": "bastion-hub1",
             "disableCopyPaste": true,
             "enableFileCopy": false,
             "enableIpConnect": false,
@@ -373,6 +376,7 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
             "hidden-title": "This is visible in the resource name",
             "Role": "DeploymentValidation"
           },
+          "virtualNetworkName": "vnet-hub1",
           "vnetEncryption": false,
           "vnetEncryptionEnforcement": "AllowUnencrypted"
         },
@@ -482,6 +486,7 @@ param hubVirtualNetworks = {
       threatIntelMode: 'Alert'
     }
     bastionHost: {
+      bastionHostName: 'bastion-hub1'
       disableCopyPaste: true
       enableFileCopy: false
       enableIpConnect: false
@@ -554,6 +559,7 @@ param hubVirtualNetworks = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
+    virtualNetworkName: 'vnet-hub1'
     vnetEncryption: false
     vnetEncryptionEnforcement: 'AllowUnencrypted'
   }

@@ -62,6 +62,7 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       hubVirtualNetworks: {
         hub1: {
+          virtualNetworkName: 'vnet-hub1'
           addressPrefixes: array(addressPrefix)
           azureFirewallSettings: {
             azureSkuTier: 'Standard'
@@ -73,6 +74,7 @@ module testDeployment '../../../main.bicep' = [
             threatIntelMode: 'Alert'
           }
           bastionHost: {
+            bastionHostName: 'bastion-hub1'
             disableCopyPaste: true
             enableFileCopy: false
             enableIpConnect: false
