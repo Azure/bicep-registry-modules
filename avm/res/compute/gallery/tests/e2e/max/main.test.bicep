@@ -180,6 +180,7 @@ module testDeployment '../../../main.bicep' = [
             max: 4
           }
           isAcceleratedNetworkSupported: false
+          diskControllerType: 'SCSI'
         }
         {
           name: '${namePrefix}-az-imgd-us-005'
@@ -200,6 +201,7 @@ module testDeployment '../../../main.bicep' = [
             max: 4
           }
           isAcceleratedNetworkSupported: true
+          diskControllerType: 'SCSI, NVMe'
         }
         {
           name: '${namePrefix}-az-imgd-us-006'
@@ -234,6 +236,7 @@ module testDeployment '../../../main.bicep' = [
           }
           releaseNoteUri: 'https://testReleaseNoteUri.com'
           isAcceleratedNetworkSupported: false
+          // diskControllerType: 'NVMe, SCSI' // --> needs to be uncommented, as there is a bug setting it again, which prevents the idem test to pass
         }
       ]
       roleAssignments: [

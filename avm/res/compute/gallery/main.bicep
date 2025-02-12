@@ -101,7 +101,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource gallery 'Microsoft.Compute/galleries@2023-07-03' = {
+resource gallery 'Microsoft.Compute/galleries@2024-03-03' = {
   name: name
   location: location
   tags: tags
@@ -178,6 +178,7 @@ module galleries_images 'image/main.bicep' = [
       securityType: image.?securityType
       isAcceleratedNetworkSupported: image.?isAcceleratedNetworkSupported
       isHibernateSupported: image.?isHibernateSupported
+      diskControllerType: image.?diskControllerType
       architecture: image.?architecture
       eula: image.?eula
       privacyStatementUri: image.?privacyStatementUri
@@ -262,6 +263,9 @@ type imageType = {
 
   @sys.description('Optional. Specify if the image supports hibernation.')
   isHibernateSupported: bool?
+
+  @sys.description('Optional. The disk controllers that an OS disk supports.')
+  diskControllerType: ('SCSI' | 'SCSI, NVMe' | 'NVMe, SCSI')?
 
   @sys.description('Optional. The architecture of the image. Applicable to OS disks only.')
   architecture: ('x64' | 'Arm64')?

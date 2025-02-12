@@ -40,6 +40,7 @@ This module deploys an Azure Compute Gallery Image Definition.
 | [`architecture`](#parameter-architecture) | string | The architecture of the image. Applicable to OS disks only. |
 | [`description`](#parameter-description) | string | The description of this gallery image definition resource. This property is updatable. |
 | [`disallowed`](#parameter-disallowed) | object | Describes the disallowed disk types. |
+| [`diskControllerType`](#parameter-diskcontrollertype) | string | The disk controllers that an OS disk supports. |
 | [`endOfLifeDate`](#parameter-endoflifedate) | string | The end of life date of the gallery image definition. This property can be used for decommissioning purposes. This property is updatable. |
 | [`eula`](#parameter-eula) | string | The Eula agreement for the gallery image definition. |
 | [`hyperVGeneration`](#parameter-hypervgeneration) | string | The hypervisor generation of the Virtual Machine. If this value is not specified, then it is determined by the securityType parameter. If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1. |
@@ -184,6 +185,21 @@ A list of disk types.
   ```Bicep
   [
     'Standard_LRS'
+  ]
+  ```
+
+### Parameter: `diskControllerType`
+
+The disk controllers that an OS disk supports.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'NVMe, SCSI'
+    'SCSI'
+    'SCSI, NVMe'
   ]
   ```
 
