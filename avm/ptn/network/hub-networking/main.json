@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "13136672128961850379"
+      "templateHash": "10213449664992313640"
     },
     "name": "Hub Networking",
     "description": "This module is designed to simplify the creation of multi-region hub networks in Azure. It will create a number of virtual networks and subnets, and optionally peer them together in a mesh topology with routing."
@@ -6513,7 +6513,7 @@
             "value": "AzureFirewallSubnet"
           },
           "virtualNetworkName": {
-            "value": "[tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'virtualNetworkName')]"
+            "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'virtualNetworkName'), items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key)]"
           }
         },
         "template": {
@@ -6588,7 +6588,7 @@
             "value": "AzureFirewallSubnet"
           },
           "virtualNetworkName": {
-            "value": "[tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'virtualNetworkName')]"
+            "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'virtualNetworkName'), items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key)]"
           },
           "addressPrefix": {
             "value": "[reference(format('hubAzureFirewallSubnet[{0}]', copyIndex())).outputs.addressPrefix.value]"
