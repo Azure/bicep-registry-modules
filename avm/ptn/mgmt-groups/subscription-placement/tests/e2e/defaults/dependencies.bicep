@@ -1,6 +1,6 @@
 targetScope = 'tenant'
 
-@description('Required. The root management group resource ID where the child management group will be placed.')
+@description('Required. The root management group resource ID where the subscriptions will be placed.')
 @secure()
 param rootManagementGroupResourceId string = ''
 
