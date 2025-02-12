@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "10213449664992313640"
+      "templateHash": "7215123939021069638"
     },
     "name": "Hub Networking",
     "description": "This module is designed to simplify the creation of multi-region hub networks in Azure. It will create a number of virtual networks and subnets, and optionally peer them together in a mesh topology with routing."
@@ -727,7 +727,7 @@
       "existing": true,
       "type": "Microsoft.Network/virtualNetworks",
       "apiVersion": "2024-01-01",
-      "name": "[items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key]"
+      "name": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'virtualNetworkName'), items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key)]"
     },
     "hubVirtualNetworkPeering": {
       "copy": {
@@ -736,7 +736,7 @@
       },
       "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
       "apiVersion": "2024-01-01",
-      "name": "[format('{0}/{1}-to-{2}-peering', items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key, items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key, coalesce(flatten(variables('hubVirtualNetworkPeerings')), createArray())[copyIndex()].remoteVirtualNetworkName)]",
+      "name": "[format('{0}/{1}-to-{2}-peering', coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'virtualNetworkName'), items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key), coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'virtualNetworkName'), items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key), coalesce(flatten(variables('hubVirtualNetworkPeerings')), createArray())[copyIndex()].remoteVirtualNetworkName)]",
       "properties": {
         "allowForwardedTraffic": "[coalesce(coalesce(flatten(variables('hubVirtualNetworkPeerings')), createArray())[copyIndex()].allowForwardedTraffic, false())]",
         "allowGatewayTransit": "[coalesce(coalesce(flatten(variables('hubVirtualNetworkPeerings')), createArray())[copyIndex()].allowGatewayTransit, false())]",
@@ -758,7 +758,7 @@
       },
       "type": "Microsoft.Network/routeTables/routes",
       "apiVersion": "2024-01-01",
-      "name": "[format('{0}/{1}-to-{2}-route', items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key, items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key, coalesce(flatten(variables('hubVirtualNetworkPeerings')), createArray())[copyIndex()].remoteVirtualNetworkName)]",
+      "name": "[format('{0}/{1}-to-{2}-route', coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'virtualNetworkName'), items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key), coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'virtualNetworkName'), items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key), coalesce(flatten(variables('hubVirtualNetworkPeerings')), createArray())[copyIndex()].remoteVirtualNetworkName)]",
       "properties": {
         "addressPrefix": "[reference(format('hubVirtualNetworkPeer_remote[{0}]', copyIndex())).outputs.addressPrefix.value]",
         "nextHopType": "VirtualAppliance",

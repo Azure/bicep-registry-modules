@@ -86,7 +86,7 @@ module hubVirtualNetworkPeer_remote 'modules/vnets.bicep' = [
 
 resource hubVirtualNetworkPeer_local 'Microsoft.Network/virtualNetworks@2024-01-01' existing = [
   for (hub, index) in items(hubVirtualNetworks ?? {}): if (hub.value.enablePeering) {
-    name: hub.key
+    name: hub.value.?virtualNetworkName ?? hub.key
   }
 ]
 
