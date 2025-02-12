@@ -75,9 +75,9 @@ function Get-ReferenceObject {
     $involvedFilePaths = Get-LocallyReferencedFileList -FilePath $ModuleTemplateFilePath -TemplateMap $TemplateMap
 
     $resultSet = @{
-        resourceReferences    = @()
-        remoteReferences      = @()
-        localPathReferences   = $involvedFilePaths | Where-Object {
+        resourceReferences  = @()
+        remoteReferences    = @()
+        localPathReferences = $involvedFilePaths | Where-Object {
             $involvedFilePath = $_
             # We only care about module templates
             (Split-Path $involvedFilePath -Leaf) -eq 'main.bicep' -and
@@ -85,13 +85,6 @@ function Get-ReferenceObject {
             (@(@($involvedFilePaths) + @($ModuleTemplateFilePath)) | Where-Object {
                 (Split-Path $involvedFilePath) -match ('{0}[\/|\\].+' -f [Regex]::Escape((Split-Path $_ -Parent))) # i.e., if a path has its parent in the list, kick it out
             }).count -eq 0
-        }
-        childModuleReferences = $involvedFilePaths | Where-Object {
-            $involvedFilePath = $_
-            # We only care about module templates
-            (Split-Path $involvedFilePath -Leaf) -eq 'main.bicep' -and
-            # only return child modules
-            (Test-Path -Path (Join-Path (Split-Path $involvedFilePath) 'version.json') -PathType Leaf)
         }
     }
 
@@ -103,10 +96,9 @@ function Get-ReferenceObject {
     }
 
     return @{
-        resourceReferences    = $resultSet.resourceReferences | Sort-Object -Culture 'en-US' -Unique
-        remoteReferences      = $resultSet.remoteReferences | Sort-Object -Culture 'en-US' -Unique
-        localPathReferences   = $resultSet.localPathReferences | Sort-Object -Culture 'en-US' -Unique
-        childModuleReferences = $resultSet.childModuleReferences | Sort-Object -Culture 'en-US' -Unique
+        resourceReferences  = $resultSet.resourceReferences | Sort-Object -Culture 'en-US' -Unique
+        remoteReferences    = $resultSet.remoteReferences | Sort-Object -Culture 'en-US' -Unique
+        localPathReferences = $resultSet.localPathReferences | Sort-Object -Culture 'en-US' -Unique
     }
 }
 #endregion

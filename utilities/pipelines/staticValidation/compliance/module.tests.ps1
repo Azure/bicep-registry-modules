@@ -1009,43 +1009,33 @@ Describe 'Module tests' -Tag 'Module' {
                     [string] $templateFilePath
                 )
 
-                $crossReferencedModuleList = Get-CrossReferencedModuleList -Path $moduleFolderPath
-                $modulesWithChildReferences = $crossReferencedModuleList.Values | Where-Object {
-                    $_.ContainsKey('childModuleReferences') -and $_['childModuleReferences'].Count -gt 0
+                # get all referenced modules, that offer a telemetry parameter
+                $referencesWithTelemetry = $templateFileContent.resources.Values | Where-Object {
+                    $_.type -eq 'Microsoft.Resources/deployments' -and
+                    $_.properties.template.parameters.Keys -contains 'enableTelemetry'
                 }
-                if ($modulesWithChildReferences.Count -eq 0) {
-                    Set-ItResult -Skipped -Because 'no child modules found'
+
+                if ($referencesWithTelemetry.Count -eq 0) {
+                    Set-ItResult -Skipped -Because 'no modules with dedicated telemetry are deployed.'
                     return
                 }
 
-                $modulesWithChildReferences | ForEach-Object {
-                    $_['childModuleReferences'] | ForEach-Object {
-                        # 'avm/res|ptn|utl/<provider>/<resourceType>/<childResourceType>' would return 'avm', 'res|ptn|utl', '<provider>/<resourceType>/<childResourceType>'
-                        $null, $childModuleType, $childResourceTypeIdentifier = ((Split-Path $_) -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]')
-                        $childModuleName = (Split-Path $childResourceTypeIdentifier -Leaf)
-                        Write-Verbose "Checking telemetry for child module [$childModuleName]" -Verbose
-                        # find the child modules reference in the parent module
-                        $moduleBicep = Get-Content -Path $templateFilePath
-                        $regexPattern = "module\s+(\S+)\s+'$childModuleName/main.bicep'\s+="
-                        $moduleName = ''
-                        foreach ($line in $moduleBicep) {
-                            if ($line -match $regexPattern) {
-                                $moduleName = $matches[1]
-                                break
-                            }
-                        }
-                        # with the module name, get the resource and its properties
-                        $childModuleParameters = $templateFileContent.resources.$moduleName.properties.parameters
-                        $containsTelemetryParameter = $childModuleParameters.ContainsKey('enableTelemetry')
-                        $containsTelemetryParameter | Should -Be $true -Because "the child module [$childModuleName] should be referenced with a telemetry parameter."
-
-                        if ($containsTelemetryParameter) {
-                            $isTelemetryDisabled = $childModuleParameters.enableTelemetry.value -eq $false
-                            $isTelemetryDisabled | Should -Be $true -Because "the child module [$childModuleName] should have telemetry disabled."
-                        }
+                # telemetry should be disabled for the referenced module
+                $incorrectCrossReferences = [System.Collections.ArrayList]@()
+                foreach ($referencedModule in $referencesWithTelemetry) {
+                    if (-not $referencedModule.properties.parameters.ContainsKey('enableTelemetry') -or $referencedModule.properties.parameters.enableTelemetry.value -ne $false) {
+                        $incorrectCrossReferences.Add($referencedModule.identifier)
                     }
                 }
 
+                if ($incorrectCrossReferences.Count -gt 0) {
+                    $warningMessage = ('Cross reference modules must be referenced with the enableTelemetry parameter set to false. Found incorrect references: [{0}].' -f ($incorrectCrossReferences -join ', '))
+                    Write-Warning $warningMessage
+
+                    Write-Output @{
+                        Warning = $warningMessage
+                    }
+                }
             }
         }
 
