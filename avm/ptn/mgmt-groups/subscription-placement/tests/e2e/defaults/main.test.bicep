@@ -17,7 +17,7 @@ param rootManagementGroupResourceId string = ''
 @secure()
 param subscriptionBillingScope string = ''
 
-var rootManagementGroupId = last(split('/', rootManagementGroupResourceId))
+var rootManagementGroupId = empty(rootManagementGroupResourceId) ? '' : last(split('/', rootManagementGroupResourceId))
 
 // =============== //
 //   Dependencies  //
@@ -55,7 +55,7 @@ module testDeployment '../../../main.bicep' = {
 // =============== //
 
 module cleanup '../../../main.bicep' = {
-  name: '${uniqueString(deployment().name, namePrefix)}-test-${serviceShort}'
+  name: '${uniqueString(deployment().name, namePrefix)}-cleanup-${serviceShort}'
   dependsOn: [
     testDeployment
   ]
