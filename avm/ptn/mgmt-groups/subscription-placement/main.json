@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "13288442843261887605"
+      "templateHash": "2325138724313533895"
     },
     "name": "subscription-placement",
     "description": "This module allows for placement of subscriptions to management groups ",
@@ -14,24 +14,21 @@
   },
   "definitions": {
     "subscriptionPlacementType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "managementGroupId": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The ID of the management group."
-            }
+      "type": "object",
+      "properties": {
+        "managementGroupId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The ID of the management group."
+          }
+        },
+        "subscriptionIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
           },
-          "subscriptionIds": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "metadata": {
-              "description": "Required. The list of subscription IDs to be placed underneath the management group."
-            }
+          "metadata": {
+            "description": "Required. The list of subscription IDs to be placed underneath the management group."
           }
         }
       }
@@ -39,7 +36,10 @@
   },
   "parameters": {
     "parSubscriptionPlacement": {
-      "$ref": "#/definitions/subscriptionPlacementType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/subscriptionPlacementType"
+      },
       "metadata": {
         "description": "Required. The management group IDs along with the subscriptions to be placed underneath them."
       }
