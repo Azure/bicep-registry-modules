@@ -187,7 +187,7 @@ module testDeployment '../../../main.bicep' = [
               allowGatewayTransit: false
               allowVirtualNetworkAccess: true
               useRemoteGateways: false
-              remoteVirtualNetworkName: 'hub1'
+              remoteVirtualNetworkName: 'vnet-hub1'
             }
           ]
           routes: [

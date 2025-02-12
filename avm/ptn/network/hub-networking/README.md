@@ -236,7 +236,7 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
             allowForwardedTraffic: true
             allowGatewayTransit: false
             allowVirtualNetworkAccess: true
-            remoteVirtualNetworkName: 'hub1'
+            remoteVirtualNetworkName: 'vnet-hub1'
             useRemoteGateways: false
           }
         ]
@@ -419,7 +419,7 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
               "allowForwardedTraffic": true,
               "allowGatewayTransit": false,
               "allowVirtualNetworkAccess": true,
-              "remoteVirtualNetworkName": "hub1",
+              "remoteVirtualNetworkName": "vnet-hub1",
               "useRemoteGateways": false
             }
           ],
@@ -602,7 +602,7 @@ param hubVirtualNetworks = {
         allowForwardedTraffic: true
         allowGatewayTransit: false
         allowVirtualNetworkAccess: true
-        remoteVirtualNetworkName: 'hub1'
+        remoteVirtualNetworkName: 'vnet-hub1'
         useRemoteGateways: false
       }
     ]
