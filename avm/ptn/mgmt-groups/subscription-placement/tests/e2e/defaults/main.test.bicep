@@ -17,7 +17,7 @@ param rootManagementGroupResourceId string = ''
 @secure()
 param subscriptionBillingScope string = ''
 
-var rootManagementGroupId = split('/', rootManagementGroupResourceId)[4]
+var rootManagementGroupId = last(split('/', rootManagementGroupResourceId))
 
 // =============== //
 //   Dependencies  //
