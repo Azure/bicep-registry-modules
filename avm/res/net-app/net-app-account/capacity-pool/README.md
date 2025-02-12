@@ -15,7 +15,7 @@ This module deploys an Azure NetApp Files Capacity Pool.
 | :-- | :-- |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.NetApp/netAppAccounts/capacityPools` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-03-01/netAppAccounts/capacityPools) |
-| `Microsoft.NetApp/netAppAccounts/capacityPools/volumes` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-03-01/netAppAccounts/capacityPools/volumes) |
+| `Microsoft.NetApp/netAppAccounts/capacityPools/volumes` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-07-01/netAppAccounts/capacityPools/volumes) |
 
 ## Parameters
 
@@ -275,6 +275,7 @@ List of volumes to create in the capacity pool.
 | [`smbContinuouslyAvailable`](#parameter-volumessmbcontinuouslyavailable) | bool | Enables continuously available share property for SMB volume. Only applicable for SMB volume. |
 | [`smbEncryption`](#parameter-volumessmbencryption) | bool | Enables SMB encryption. Only applicable for SMB/DualProtocol volume. |
 | [`smbNonBrowsable`](#parameter-volumessmbnonbrowsable) | string | Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProtocol volume. |
+| [`volumeType`](#parameter-volumesvolumetype) | string | The type of the volume. DataProtection volumes are used for replication. |
 | [`zones`](#parameter-volumeszones) | array | Zone where the volume will be placed. |
 
 ### Parameter: `volumes.name`
@@ -393,6 +394,12 @@ Replication properties.
 | [`remoteVolumeResourceId`](#parameter-volumesdataprotectionreplicationremotevolumeresourceid) | string | The resource ID of the remote volume. |
 | [`replicationSchedule`](#parameter-volumesdataprotectionreplicationreplicationschedule) | string | The replication schedule for the volume. |
 
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`remotePath`](#parameter-volumesdataprotectionreplicationremotepath) | object | The full path to a volume that is to be migrated into ANF. Required for Migration volumes. |
+
 ### Parameter: `volumes.dataProtection.replication.endpointType`
 
 Indicates whether the local volume is the source or destination for the Volume Replication.
@@ -435,6 +442,42 @@ The replication schedule for the volume.
     'hourly'
   ]
   ```
+
+### Parameter: `volumes.dataProtection.replication.remotePath`
+
+The full path to a volume that is to be migrated into ANF. Required for Migration volumes.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`externalHostName`](#parameter-volumesdataprotectionreplicationremotepathexternalhostname) | string | The Path to a ONTAP Host. |
+| [`serverName`](#parameter-volumesdataprotectionreplicationremotepathservername) | string | The name of a server on the ONTAP Host. |
+| [`volumeName`](#parameter-volumesdataprotectionreplicationremotepathvolumename) | string | The name of a volume on the server. |
+
+### Parameter: `volumes.dataProtection.replication.remotePath.externalHostName`
+
+The Path to a ONTAP Host.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `volumes.dataProtection.replication.remotePath.serverName`
+
+The name of a server on the ONTAP Host.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `volumes.dataProtection.replication.remotePath.volumeName`
+
+The name of a volume on the server.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `volumes.dataProtection.snapshot`
 
@@ -810,6 +853,13 @@ Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProto
     'Enabled'
   ]
   ```
+
+### Parameter: `volumes.volumeType`
+
+The type of the volume. DataProtection volumes are used for replication.
+
+- Required: No
+- Type: string
 
 ### Parameter: `volumes.zones`
 

@@ -18,15 +18,15 @@ param skuName string = 'premium'
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingLogsOnlyType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -51,11 +51,11 @@ param customPublicSubnetName string = ''
 @description('Optional. Disable Public IP.')
 param disablePublicIp bool = false
 
-import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The customer managed key definition to use for the managed service.')
 param customerManagedKey customerManagedKeyType?
 
-import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The customer managed key definition to use for the managed disk.')
 param customerManagedKeyManagedDisk customerManagedKeyWithAutoRotateType?
 
@@ -108,7 +108,7 @@ param requiredNsgRules string = 'AllRules'
 ])
 param privateStorageAccount string = ''
 
-import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointMultiServiceType[]?
 
@@ -327,7 +327,7 @@ resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
                     keyVaultUri: cMKKeyVault.properties.vaultUri
                     keyName: customerManagedKey!.keyName
                     keyVersion: !empty(customerManagedKey.?keyVersion ?? '')
-                      ? customerManagedKey!.keyVersion!
+                      ? customerManagedKey!.?keyVersion!
                       : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
                   }
                 }
@@ -339,7 +339,7 @@ resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
                     keyVaultUri: cMKManagedDiskKeyVault.properties.vaultUri
                     keyName: customerManagedKeyManagedDisk!.keyName
                     keyVersion: !empty(customerManagedKeyManagedDisk.?keyVersion ?? '')
-                      ? customerManagedKeyManagedDisk!.keyVersion!
+                      ? customerManagedKeyManagedDisk!.?keyVersion!
                       : last(split(cMKManagedDiskKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
                   }
                   rotationToLatestKeyVersionEnabled: (customerManagedKeyManagedDisk.?autoRotationEnabled ?? true == true) ?? false
@@ -435,10 +435,13 @@ resource workspace_roleAssignments 'Microsoft.Authorization/roleAssignments@2022
 ]
 
 @batchSize(1)
-module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
+module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-workspace-PrivateEndpoint-${index}'
-    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
+    scope: resourceGroup(
+      split(privateEndpoint.?resourceGroupResourceId ?? privateEndpoint.?subnetResourceId, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? privateEndpoint.?subnetResourceId, '/')[4]
+    )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(workspace.id, '/'))}-${privateEndpoint.service}-${index}'
       privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
@@ -496,10 +499,13 @@ var _storageAccountId = resourceId(
 )
 
 @batchSize(1)
-module storageAccount_storageAccountPrivateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
+module storageAccount_storageAccountPrivateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
   for (privateEndpoint, index) in (storageAccountPrivateEndpoints ?? []): if (privateStorageAccount == 'Enabled') {
     name: '${uniqueString(deployment().name, location)}-workspacestorage-PrivateEndpoint-${index}'
-    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
+    scope: resourceGroup(
+      split(privateEndpoint.?resourceGroupResourceId ?? privateEndpoint.?subnetResourceId, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? privateEndpoint.?subnetResourceId, '/')[4]
+    )
     params: {
       name: privateEndpoint.?name ?? 'pep-${_storageAccountName}-${privateEndpoint.service}-${index}'
       privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
@@ -579,26 +585,26 @@ output workspaceUrl string = workspace.properties.workspaceUrl
 output workspaceResourceId string = workspace.properties.workspaceId
 
 @description('The private endpoints of the Databricks Workspace.')
-output privateEndpoints array = [
+output privateEndpoints privateEndpointOutputType[] = [
   for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
     name: workspace_privateEndpoints[i].outputs.name
     resourceId: workspace_privateEndpoints[i].outputs.resourceId
-    groupId: workspace_privateEndpoints[i].outputs.groupId
-    customDnsConfig: workspace_privateEndpoints[i].outputs.customDnsConfig
-    networkInterfaceIds: workspace_privateEndpoints[i].outputs.networkInterfaceIds
+    groupId: workspace_privateEndpoints[i].outputs.?groupId!
+    customDnsConfigs: workspace_privateEndpoints[i].outputs.customDnsConfigs
+    networkInterfaceResourceIds: workspace_privateEndpoints[i].outputs.networkInterfaceResourceIds
   }
 ]
 
 @description('The private endpoints of the Databricks Workspace Storage.')
-output storagePrivateEndpoints array = [
+output storagePrivateEndpoints privateEndpointOutputType[] = [
   for (pe, i) in ((!empty(storageAccountPrivateEndpoints) && privateStorageAccount == 'Enabled')
     ? array(storageAccountPrivateEndpoints)
     : []): {
     name: storageAccount_storageAccountPrivateEndpoints[i].outputs.name
     resourceId: storageAccount_storageAccountPrivateEndpoints[i].outputs.resourceId
-    groupId: storageAccount_storageAccountPrivateEndpoints[i].outputs.groupId
-    customDnsConfig: storageAccount_storageAccountPrivateEndpoints[i].outputs.customDnsConfig
-    networkInterfaceIds: storageAccount_storageAccountPrivateEndpoints[i].outputs.networkInterfaceIds
+    groupId: storageAccount_storageAccountPrivateEndpoints[i].outputs.?groupId!
+    customDnsConfigs: storageAccount_storageAccountPrivateEndpoints[i].outputs.customDnsConfigs
+    networkInterfaceResourceIds: storageAccount_storageAccountPrivateEndpoints[i].outputs.networkInterfaceResourceIds
   }
 ]
 
@@ -607,6 +613,32 @@ output storagePrivateEndpoints array = [
 // =============== //
 
 @export()
+@description('The type for a private endpoint output.')
+type privateEndpointOutputType = {
+  @description('The name of the private endpoint.')
+  name: string
+
+  @description('The resource ID of the private endpoint.')
+  resourceId: string
+
+  @description('The group Id for the private endpoint Group.')
+  groupId: string?
+
+  @description('The custom DNS configurations of the private endpoint.')
+  customDnsConfigs: {
+    @description('FQDN that resolves to private endpoint IP address.')
+    fqdn: string?
+
+    @description('A list of private IP addresses of the private endpoint.')
+    ipAddresses: string[]
+  }[]
+
+  @description('The IDs of the network interfaces associated with the private endpoint.')
+  networkInterfaceResourceIds: string[]
+}
+
+@export()
+@description('The type for a default catalog configuration.')
 type defaultCatalogType = {
   //This value cannot be set to a custom value. Reason --> 'InvalidInitialCatalogName' message: 'Currently custom initial catalog name is not supported. This capability will be added in future.'
   //@description('Optional. Set the name of the Catalog.')

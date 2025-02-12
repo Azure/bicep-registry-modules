@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "8047367069034259642"
+      "version": "0.33.93.31351",
+      "templateHash": "4329017759962267155"
     },
     "name": "Log Analytics Workspace Tables",
     "description": "This module deploys a Log Analytics Workspace Table."
@@ -355,12 +355,12 @@
     "workspace": {
       "existing": true,
       "type": "Microsoft.OperationalInsights/workspaces",
-      "apiVersion": "2022-10-01",
+      "apiVersion": "2023-09-01",
       "name": "[parameters('workspaceName')]"
     },
     "table": {
       "type": "Microsoft.OperationalInsights/workspaces/tables",
-      "apiVersion": "2022-10-01",
+      "apiVersion": "2023-09-01",
       "name": "[format('{0}/{1}', parameters('workspaceName'), parameters('name'))]",
       "properties": {
         "plan": "[parameters('plan')]",
