@@ -13,10 +13,6 @@ param serviceShort string = 'subplmin'
 @secure()
 param rootManagementGroupResourceId string = ''
 
-@description('Required. The root management group ID where the subscriptions will be placed. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-RootManagementGroupId\'.')
-@secure()
-param rootManagementGroupId string = ''
-
 @description('Required. The scope of the subscription billing. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-SubscriptionBillingScope\'.')
 @secure()
 param subscriptionBillingScope string = ''
@@ -64,7 +60,7 @@ module cleanup '../../../main.bicep' = {
   params: {
     parSubscriptionPlacement: [
       {
-        managementGroupId: rootManagementGroupId
+        managementGroupId: 'bicep-lz-vending-automation-child'
         subscriptionIds: [
           dependencies.outputs.subVendingSubscriptionId
         ]
