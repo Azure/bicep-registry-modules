@@ -43,13 +43,13 @@ param sshPrivateKeyPemSecretName string = 'AksArcAgentSshPrivateKeyPem'
 @description('Optional. The name of the secret in the key vault that contains the SSH public key.')
 param sshPublicKeySecretName string = 'AksArcAgentSshPublicKey'
 
-@description('Conditional. The key vault name.')
-param keyVaultName string = ''
-
-@description('Conditional. The SSH public key that will be used to access the kubernetes cluster nodes. If not specified, a new SSH key pair will be generated.')
+@description('Conditional. The SSH public key that will be used to access the kubernetes cluster nodes. If not specified, a new SSH key pair will be generated. Required if no existing SSH keys.')
 param sshPublicKey string = ''
 
-resource kv 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
+@description('Conditional. The name of the key vault. The key vault name. Required if no existing SSH keys.')
+param keyVaultName string = ''
+
+resource kv 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (empty(sshPublicKey)) {
   name: keyVaultName
 }
 
@@ -288,3 +288,6 @@ resource provisionedCluster 'Microsoft.HybridContainerService/provisionedCluster
     }
   }
 }
+
+@description('The id of the Aks Arc.')
+output provisionedClusterId string = provisionedCluster.id

@@ -8,7 +8,7 @@ metadata description = 'This test deploys an Aks Arc.'
 param resourceGroupName string = 'dep-${namePrefix}-hybridcontainerservice.provisionedclusterinstances-${serviceShort}-rg'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'hcspcidef'
+param serviceShort string = 'hcspcimin'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
