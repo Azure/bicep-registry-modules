@@ -482,7 +482,6 @@ Describe 'Module tests' -Tag 'Module' {
                 # Test file setup
                 $moduleFolderTestCases += @{
                     moduleFolderName       = $resourceTypeIdentifier
-                    moduleFolderPath       = Split-Path $templateFilePath
                     templateFileContent    = $templateFileContent
                     templateFilePath       = $templateFilePath
                     templateFileParameters = Resolve-ReadMeParameterList -TemplateFileContent $templateFileContent
