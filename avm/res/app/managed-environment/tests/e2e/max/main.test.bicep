@@ -94,6 +94,7 @@ module testDeployment '../../../main.bicep' = [
           destinations: ['appInsights']
         }
       }
+      publicNetworkAccess: 'Enabled'
       roleAssignments: [
         {
           name: '43fc5250-f111-472b-8722-f1cb4a0e754b'
@@ -141,8 +142,5 @@ module testDeployment '../../../main.bicep' = [
         Env: 'test'
       }
     }
-    dependsOn: [
-      nestedDependencies
-    ]
   }
 ]
