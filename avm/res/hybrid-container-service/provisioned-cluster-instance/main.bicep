@@ -20,7 +20,7 @@ param enableTelemetry bool = true
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
-  name: '46d3xbcp.aksarc.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  name: '46d3xbcp.res.hybcontsvc-provclustinst.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -289,5 +289,11 @@ resource provisionedCluster 'Microsoft.HybridContainerService/provisionedCluster
   }
 }
 
-@description('The id of the Aks Arc.')
-output provisionedClusterId string = provisionedCluster.id
+@description('The name of the Aks Arc.')
+output name string = provisionedCluster.name
+
+@description('The ID of the Aks Arc.')
+output resourceId string = provisionedCluster.id
+
+@description('The resource group of the Aks Arc.')
+output resourceGroupName string = resourceGroup().name

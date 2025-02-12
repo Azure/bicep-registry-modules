@@ -463,7 +463,9 @@ Enable workload identity.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `provisionedClusterId` | string | The id of the Aks Arc. |
+| `name` | string | The name of the Aks Arc. |
+| `resourceGroupName` | string | The resource group of the Aks Arc. |
+| `resourceId` | string | The ID of the Aks Arc. |
 
 ## Cross-referenced modules
 

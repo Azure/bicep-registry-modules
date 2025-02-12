@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "12684300563285697809"
+      "templateHash": "14763965822101271975"
     },
     "name": "Hybrid Container Service Provisioned Cluster Instance",
     "description": "Deploy a provisioned cluster instance."
@@ -218,7 +218,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[format('46d3xbcp.aksarc.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "name": "[format('46d3xbcp.res.hybcontsvc-provclustinst.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -546,12 +546,26 @@
     }
   ],
   "outputs": {
-    "provisionedClusterId": {
+    "name": {
       "type": "string",
       "metadata": {
-        "description": "The id of the Aks Arc."
+        "description": "The name of the Aks Arc."
+      },
+      "value": "default"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The ID of the Aks Arc."
       },
       "value": "[extensionResourceId(resourceId('Microsoft.Kubernetes/connectedClusters', parameters('name')), 'Microsoft.HybridContainerService/provisionedClusterInstances', 'default')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group of the Aks Arc."
+      },
+      "value": "[resourceGroup().name]"
     }
   }
 }
