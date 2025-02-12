@@ -1255,8 +1255,10 @@ The hub virtual networks to create.
 | [`peeringSettings`](#parameter-hubvirtualnetworks>any_other_property<peeringsettings) | array | The peerings of the virtual network. |
 | [`roleAssignments`](#parameter-hubvirtualnetworks>any_other_property<roleassignments) | array | The role assignments to create. |
 | [`routes`](#parameter-hubvirtualnetworks>any_other_property<routes) | array | Routes to add to the virtual network route table. |
+| [`routeTableName`](#parameter-hubvirtualnetworks>any_other_property<routetablename) | string | The name of the route table. |
 | [`subnets`](#parameter-hubvirtualnetworks>any_other_property<subnets) | array | The subnets of the virtual network. |
 | [`tags`](#parameter-hubvirtualnetworks>any_other_property<tags) | object | The tags of the virtual network. |
+| [`virtualNetworkName`](#parameter-hubvirtualnetworks>any_other_property<virtualnetworkname) | string | The name of the hub virtual network. |
 | [`vnetEncryption`](#parameter-hubvirtualnetworks>any_other_property<vnetencryption) | bool | Enable/Disable VNet encryption. |
 | [`vnetEncryptionEnforcement`](#parameter-hubvirtualnetworks>any_other_property<vnetencryptionenforcement) | string | The VNet encryption enforcement settings of the virtual network. |
 
@@ -1280,6 +1282,7 @@ The Azure Firewall config.
 | :-- | :-- | :-- |
 | [`additionalPublicIpConfigurations`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsadditionalpublicipconfigurations) | array | Additional public IP configurations. |
 | [`applicationRuleCollections`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsapplicationrulecollections) | array | Application rule collections. |
+| [`azureFirewallName`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsazurefirewallname) | string | The name of the Azure Firewall. |
 | [`azureSkuTier`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsazureskutier) | string | Azure Firewall SKU. |
 | [`diagnosticSettings`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsdiagnosticsettings) | array | Diagnostic settings. |
 | [`enableTelemetry`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
@@ -1313,12 +1316,27 @@ Application rule collections.
 - Required: No
 - Type: array
 
+### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.azureFirewallName`
+
+The name of the Azure Firewall.
+
+- Required: No
+- Type: string
+
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.azureSkuTier`
 
 Azure Firewall SKU.
 
 - Required: No
 - Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Basic'
+    'Premium'
+    'Standard'
+  ]
+  ```
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.diagnosticSettings`
 
@@ -1708,12 +1726,21 @@ The Azure Bastion config.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`bastionHostName`](#parameter-hubvirtualnetworks>any_other_property<bastionhostbastionhostname) | string | The name of the bastion host. |
 | [`disableCopyPaste`](#parameter-hubvirtualnetworks>any_other_property<bastionhostdisablecopypaste) | bool | Enable/Disable copy/paste functionality. |
 | [`enableFileCopy`](#parameter-hubvirtualnetworks>any_other_property<bastionhostenablefilecopy) | bool | Enable/Disable file copy functionality. |
 | [`enableIpConnect`](#parameter-hubvirtualnetworks>any_other_property<bastionhostenableipconnect) | bool | Enable/Disable IP connect functionality. |
+| [`enableKerberos`](#parameter-hubvirtualnetworks>any_other_property<bastionhostenablekerberos) | bool | Enable/Disable Kerberos authentication. |
 | [`enableShareableLink`](#parameter-hubvirtualnetworks>any_other_property<bastionhostenableshareablelink) | bool | Enable/Disable shareable link functionality. |
 | [`scaleUnits`](#parameter-hubvirtualnetworks>any_other_property<bastionhostscaleunits) | int | The number of scale units for the Bastion host. Defaults to 4. |
 | [`skuName`](#parameter-hubvirtualnetworks>any_other_property<bastionhostskuname) | string | The SKU name of the Bastion host. Defaults to Standard. |
+
+### Parameter: `hubVirtualNetworks.>Any_other_property<.bastionHost.bastionHostName`
+
+The name of the bastion host.
+
+- Required: No
+- Type: string
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.bastionHost.disableCopyPaste`
 
@@ -1732,6 +1759,13 @@ Enable/Disable file copy functionality.
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.bastionHost.enableIpConnect`
 
 Enable/Disable IP connect functionality.
+
+- Required: No
+- Type: bool
+
+### Parameter: `hubVirtualNetworks.>Any_other_property<.bastionHost.enableKerberos`
+
+Enable/Disable Kerberos authentication.
 
 - Required: No
 - Type: bool
@@ -1756,6 +1790,15 @@ The SKU name of the Bastion host. Defaults to Standard.
 
 - Required: No
 - Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Basic'
+    'Developer'
+    'Premium'
+    'Standard'
+  ]
+  ```
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.ddosProtectionPlanResourceId`
 
@@ -2151,6 +2194,13 @@ Routes to add to the virtual network route table.
 - Required: No
 - Type: array
 
+### Parameter: `hubVirtualNetworks.>Any_other_property<.routeTableName`
+
+The name of the route table.
+
+- Required: No
+- Type: string
+
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.subnets`
 
 The subnets of the virtual network.
@@ -2164,6 +2214,13 @@ The tags of the virtual network.
 
 - Required: No
 - Type: object
+
+### Parameter: `hubVirtualNetworks.>Any_other_property<.virtualNetworkName`
+
+The name of the hub virtual network.
+
+- Required: No
+- Type: string
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.vnetEncryption`
 

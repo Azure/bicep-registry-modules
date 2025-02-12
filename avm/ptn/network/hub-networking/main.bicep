@@ -47,7 +47,7 @@ module hubVirtualNetwork 'br/public:avm/res/network/virtual-network:0.5.0' = [
     name: '${uniqueString(deployment().name, location)}-${hub.key}-nvn'
     params: {
       // Required parameters
-      name: hub.key
+      name: hub.value.?virtualNetworkName ?? hub.key
       addressPrefixes: hub.value.addressPrefixes
       // Non-required parameters
       ddosProtectionPlanResourceId: hub.value.?ddosProtectionPlanResourceId ?? ''
@@ -111,13 +111,14 @@ module hubRouteTable 'br/public:avm/res/network/route-table:0.4.0' = [
   for (hub, index) in items(hubVirtualNetworks ?? {}): {
     name: '${uniqueString(deployment().name, location)}-${hub.key}-nrt'
     params: {
-      name: hub.key
+      name: hub.value.?routeTableName ?? hub.key
       location: hub.value.?location ?? location
       disableBgpRoutePropagation: true
       enableTelemetry: hub.value.?enableTelemetry ?? true
       roleAssignments: hub.value.?roleAssignments ?? []
       routes: hub.value.?routes ?? []
       tags: hub.value.?tags ?? {}
+      lock: hub.value.?lock ?? {}
     }
     dependsOn: hubVirtualNetwork
   }
@@ -144,7 +145,7 @@ module hubBastion 'br/public:avm/res/network/bastion-host:0.4.0' = [
     name: '${uniqueString(deployment().name, location)}-${hub.key}-nbh'
     params: {
       // Required parameters
-      name: hub.key
+      name: hub.value.?bastionHost.?bastionHostName ?? hub.key
       virtualNetworkResourceId: hubVirtualNetwork[index].outputs.resourceId
       // Non-required parameters
       diagnosticSettings: hub.value.?diagnosticSettings ?? []
@@ -158,6 +159,8 @@ module hubBastion 'br/public:avm/res/network/bastion-host:0.4.0' = [
       scaleUnits: hub.value.?bastionHost.?scaleUnits ?? 4
       skuName: hub.value.?bastionHost.?skuName ?? 'Standard'
       tags: hub.value.?tags ?? {}
+      lock: hub.value.?lock ?? {}
+      enableKerberos: hub.value.?bastionHost.?enableKerberos ?? false
     }
     dependsOn: hubVirtualNetwork
   }
@@ -170,7 +173,7 @@ module hubAzureFirewall 'br/public:avm/res/network/azure-firewall:0.5.1' = [
     name: '${uniqueString(deployment().name, location)}-${hub.key}-naf'
     params: {
       // Required parameters
-      name: hub.key
+      name: hub.value.?azureFirewallSettings.?azureFirewallName ?? hub.key
       // Conditional parameters
       hubIPAddresses: hub.value.?azureFirewallSettings.?hubIpAddresses ?? {}
       virtualHubId: hub.value.?azureFirewallSettings.?virtualHub ?? ''
@@ -363,6 +366,9 @@ type diagnosticSettingType = {
 type hubVirtualNetworkType = {
   @description('Required. The hub virtual networks to create.')
   *: {
+    @description('Optional. The name of the hub virtual network.')
+    virtualNetworkName: string?
+
     @description('Required. The address prefixes for the virtual network.')
     addressPrefixes: array
 
@@ -383,11 +389,17 @@ type hubVirtualNetworkType = {
       @description('Optional. Enable/Disable shareable link functionality.')
       enableShareableLink: bool?
 
+      @description('Optional. Enable/Disable Kerberos authentication.')
+      enableKerberos: bool?
+
       @description('Optional. The number of scale units for the Bastion host. Defaults to 4.')
       scaleUnits: int?
 
       @description('Optional. The SKU name of the Bastion host. Defaults to Standard.')
-      skuName: string?
+      skuName: 'Basic' | 'Developer' | 'Premium' | 'Standard'?
+
+      @description('Optional. The name of the bastion host.')
+      bastionHostName: string?
     }?
 
     @description('Optional. Enable/Disable usage telemetry for module.')
@@ -429,6 +441,9 @@ type hubVirtualNetworkType = {
     @description('Optional. Routes to add to the virtual network route table.')
     routes: array?
 
+    @description('Optional. The name of the route table.')
+    routeTableName: string?
+
     @description('Optional. The subnets of the virtual network.')
     subnets: array?
 
@@ -461,6 +476,9 @@ type peeringSettingsType = {
 }[]?
 
 type azureFirewallType = {
+  @description('Optional. The name of the Azure Firewall.')
+  azureFirewallName: string?
+
   @description('Optional. Hub IP addresses.')
   hubIpAddresses: object?
 
@@ -474,7 +492,7 @@ type azureFirewallType = {
   applicationRuleCollections: array?
 
   @description('Optional. Azure Firewall SKU.')
-  azureSkuTier: string?
+  azureSkuTier: 'Basic' | 'Standard' | 'Premium'?
 
   @description('Optional. Diagnostic settings.')
   diagnosticSettings: diagnosticSettingType?
