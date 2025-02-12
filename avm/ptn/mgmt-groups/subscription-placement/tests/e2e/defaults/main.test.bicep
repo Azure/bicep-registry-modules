@@ -48,26 +48,5 @@ module testDeployment '../../../main.bicep' = {
   }
 }
 
-// =============== //
-//      Clean Up   //
-// =============== //
-
-module cleanup '../../../main.bicep' = {
-  name: '${uniqueString(deployment().name, namePrefix)}-cleanup-${serviceShort}'
-  dependsOn: [
-    testDeployment
-  ]
-  params: {
-    parSubscriptionPlacement: [
-      {
-        managementGroupId: 'bicep-lz-vending-automation-child'
-        subscriptionIds: [
-          dependencies.outputs.subVendingSubscriptionId
-        ]
-      }
-    ]
-  }
-}
-
 @description('This output retrieves the subscription placement summary from the test deployment outputs.')
 output subscriptionPlacementSummary string = testDeployment.outputs.subscriptionPlacementSummary
