@@ -1,6 +1,5 @@
 metadata name = 'Hybrid Container Service Provisioned Cluster Instance'
 metadata description = 'Deploy a provisioned cluster instance.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the provisioned cluster instance.')
 param name string
@@ -37,32 +36,6 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
     }
   }
 }
-
-//
-// Add your resources here
-//
-
-// ============ //
-// Outputs      //
-// ============ //
-
-// Add your outputs here
-
-// @description('The resource ID of the resource.')
-// output resourceId string = <Resource>.id
-
-// @description('The name of the resource.')
-// output name string = <Resource>.name
-
-// @description('The location the resource was deployed into.')
-// output location string = <Resource>.location
-
-// ================ //
-// Definitions      //
-// ================ //
-//
-// Add your User-defined-types here, if any
-//
 
 @description('Optional. The name of the secret in the key vault that contains the SSH private key PEM.')
 param sshPrivateKeyPemSecretName string = 'AksArcAgentSshPrivateKeyPem'
@@ -182,10 +155,10 @@ param podCidr string = '10.244.0.0/16'
 @description('Optional. Azure Hybrid Benefit configuration.')
 param azureHybridBenefit string = ''
 
-@description('Optional. Enable or disable NFS CSI driver')
+@description('Optional. Enable or disable NFS CSI driver.')
 param nfsCsiDriverEnabled bool = true
 
-@description('Optional. Enable or disable SMB CSI driver')
+@description('Optional. Enable or disable SMB CSI driver.')
 param smbCsiDriverEnabled bool = true
 
 @description('Optional. The identity type for the cluster. Allowed values: "SystemAssigned", "None"')
@@ -195,29 +168,29 @@ param smbCsiDriverEnabled bool = true
 ])
 param identityType string = 'SystemAssigned'
 
-@description('Optional. Tags for the cluster resource')
+@description('Optional. Tags for the cluster resource.')
 param connectClustersTags object = {}
 
-@description('Optional. The Azure AD tenant ID')
+@description('Optional. The Azure AD tenant ID.')
 param aadTenantId string = ''
 
-@description('Optional. The Azure AD admin group object IDs')
+@description('Optional. The Azure AD admin group object IDs.')
 param aadAdminGroupObjectIds array = []
 
-@description('Optional. Enable Azure RBAC')
+@description('Optional. Enable Azure RBAC.')
 param enableAzureRBAC bool = false
 
-@description('Optional. Enable automatic agent upgrades')
+@description('Optional. Enable automatic agent upgrades.')
 @allowed([
   'Enabled'
   'Disabled'
 ])
 param agentAutoUpgrade string = 'Enabled'
 
-@description('Optional. Enable OIDC issuer')
+@description('Optional. Enable OIDC issuer.')
 param oidcIssuerEnabled bool = false
 
-@description('Optional. Enable workload identity')
+@description('Optional. Enable workload identity.')
 param workloadIdentityEnabled bool = false
 
 module connectedCluster '../../kubernetes/connected-clusters/main.bicep' = {
