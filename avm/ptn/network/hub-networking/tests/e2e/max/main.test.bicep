@@ -71,6 +71,11 @@ module testDeployment '../../../main.bicep' = [
               name: 'hub1-waf-pip'
             }
             threatIntelMode: 'Alert'
+            zones: [
+              1
+              2
+              3
+            ]
           }
           bastionHost: {
             bastionHostName: 'bastion-hub1'
