@@ -62,7 +62,6 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       hubVirtualNetworks: {
         hub1: {
-          virtualNetworkName: 'vnet-hub1'
           addressPrefixes: array(addressPrefix)
           azureFirewallSettings: {
             azureSkuTier: 'Standard'
@@ -187,7 +186,7 @@ module testDeployment '../../../main.bicep' = [
               allowGatewayTransit: false
               allowVirtualNetworkAccess: true
               useRemoteGateways: false
-              remoteVirtualNetworkName: 'vnet-hub1'
+              remoteVirtualNetworkName: 'hub1'
             }
           ]
           routes: [

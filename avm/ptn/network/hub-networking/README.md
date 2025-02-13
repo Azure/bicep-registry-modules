@@ -193,7 +193,6 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
           'hidden-title': 'This is visible in the resource name'
           Role: 'DeploymentValidation'
         }
-        virtualNetworkName: 'vnet-hub1'
         vnetEncryption: false
         vnetEncryptionEnforcement: 'AllowUnencrypted'
       }
@@ -236,7 +235,7 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
             allowForwardedTraffic: true
             allowGatewayTransit: false
             allowVirtualNetworkAccess: true
-            remoteVirtualNetworkName: 'vnet-hub1'
+            remoteVirtualNetworkName: 'hub1'
             useRemoteGateways: false
           }
         ]
@@ -376,7 +375,6 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
             "hidden-title": "This is visible in the resource name",
             "Role": "DeploymentValidation"
           },
-          "virtualNetworkName": "vnet-hub1",
           "vnetEncryption": false,
           "vnetEncryptionEnforcement": "AllowUnencrypted"
         },
@@ -419,7 +417,7 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
               "allowForwardedTraffic": true,
               "allowGatewayTransit": false,
               "allowVirtualNetworkAccess": true,
-              "remoteVirtualNetworkName": "vnet-hub1",
+              "remoteVirtualNetworkName": "hub1",
               "useRemoteGateways": false
             }
           ],
@@ -559,7 +557,6 @@ param hubVirtualNetworks = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    virtualNetworkName: 'vnet-hub1'
     vnetEncryption: false
     vnetEncryptionEnforcement: 'AllowUnencrypted'
   }
@@ -602,7 +599,7 @@ param hubVirtualNetworks = {
         allowForwardedTraffic: true
         allowGatewayTransit: false
         allowVirtualNetworkAccess: true
-        remoteVirtualNetworkName: 'vnet-hub1'
+        remoteVirtualNetworkName: 'hub1'
         useRemoteGateways: false
       }
     ]
@@ -1264,7 +1261,6 @@ The hub virtual networks to create.
 | [`routeTableName`](#parameter-hubvirtualnetworks>any_other_property<routetablename) | string | The name of the route table. |
 | [`subnets`](#parameter-hubvirtualnetworks>any_other_property<subnets) | array | The subnets of the virtual network. |
 | [`tags`](#parameter-hubvirtualnetworks>any_other_property<tags) | object | The tags of the virtual network. |
-| [`virtualNetworkName`](#parameter-hubvirtualnetworks>any_other_property<virtualnetworkname) | string | The name of the hub virtual network. |
 | [`vnetEncryption`](#parameter-hubvirtualnetworks>any_other_property<vnetencryption) | bool | Enable/Disable VNet encryption. |
 | [`vnetEncryptionEnforcement`](#parameter-hubvirtualnetworks>any_other_property<vnetencryptionenforcement) | string | The VNet encryption enforcement settings of the virtual network. |
 
@@ -2220,13 +2216,6 @@ The tags of the virtual network.
 
 - Required: No
 - Type: object
-
-### Parameter: `hubVirtualNetworks.>Any_other_property<.virtualNetworkName`
-
-The name of the hub virtual network.
-
-- Required: No
-- Type: string
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.vnetEncryption`
 

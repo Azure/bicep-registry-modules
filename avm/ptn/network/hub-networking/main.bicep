@@ -44,10 +44,10 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
 // Create hub virtual networks
 module hubVirtualNetwork 'br/public:avm/res/network/virtual-network:0.5.0' = [
   for (hub, index) in items(hubVirtualNetworks ?? {}): {
-    name: '${uniqueString(deployment().name, location)}-${hub.value.?virtualNetworkName ?? hub.key}-nvn'
+    name: '${uniqueString(deployment().name, location)}-${hub.key}-nvn'
     params: {
       // Required parameters
-      name: hub.value.?virtualNetworkName ?? hub.key
+      name: hub.key
       addressPrefixes: hub.value.addressPrefixes
       // Non-required parameters
       ddosProtectionPlanResourceId: hub.value.?ddosProtectionPlanResourceId ?? ''
@@ -86,7 +86,7 @@ module hubVirtualNetworkPeer_remote 'modules/vnets.bicep' = [
 
 resource hubVirtualNetworkPeer_local 'Microsoft.Network/virtualNetworks@2024-01-01' existing = [
   for (hub, index) in items(hubVirtualNetworks ?? {}): if (hub.value.enablePeering) {
-    name: hub.value.?virtualNetworkName ?? hub.key
+    name: hub.key
   }
 ]
 
@@ -109,7 +109,7 @@ resource hubVirtualNetworkPeering 'Microsoft.Network/virtualNetworks/virtualNetw
 // Create hub virtual network route tables
 module hubRouteTable 'br/public:avm/res/network/route-table:0.4.0' = [
   for (hub, index) in items(hubVirtualNetworks ?? {}): {
-    name: '${uniqueString(deployment().name, location)}-${hub.value.?virtualNetworkName ?? hub.key}-nrt'
+    name: '${uniqueString(deployment().name, location)}-${hub.key}-nrt'
     params: {
       name: hub.value.?routeTableName ?? hub.key
       location: hub.value.?location ?? location
@@ -142,7 +142,7 @@ resource hubRoute 'Microsoft.Network/routeTables/routes@2024-01-01' = [
 // There is a minimum subnet requirement of /27 prefix.
 module hubBastion 'br/public:avm/res/network/bastion-host:0.4.0' = [
   for (hub, index) in items(hubVirtualNetworks ?? {}): if (hub.value.enableBastion) {
-    name: '${uniqueString(deployment().name, location)}-${hub.value.?virtualNetworkName ?? hub.key}-nbh'
+    name: '${uniqueString(deployment().name, location)}-${hub.key}-nbh'
     params: {
       // Required parameters
       name: hub.value.?bastionHost.?bastionHostName ?? hub.key
@@ -170,7 +170,7 @@ module hubBastion 'br/public:avm/res/network/bastion-host:0.4.0' = [
 // AzureFirewallSubnet is required to deploy Azure Firewall service. This subnet must exist in the subnets array if you enable Azure Firewall.
 module hubAzureFirewall 'br/public:avm/res/network/azure-firewall:0.5.1' = [
   for (hub, index) in items(hubVirtualNetworks ?? {}): if (hub.value.enableAzureFirewall) {
-    name: '${uniqueString(deployment().name, location)}-${hub.value.?virtualNetworkName ?? hub.key}-naf'
+    name: '${uniqueString(deployment().name, location)}-${hub.key}-naf'
     params: {
       // Required parameters
       name: hub.value.?azureFirewallSettings.?azureFirewallName ?? hub.key
@@ -204,10 +204,10 @@ module hubAzureFirewall 'br/public:avm/res/network/azure-firewall:0.5.1' = [
 
 module hubAzureFirewallSubnet 'modules/getSubnet.bicep' = [
   for (hub, index) in items(hubVirtualNetworks ?? {}): if (hub.value.enableAzureFirewall) {
-    name: '${uniqueString(deployment().name, location)}-${hub.value.?virtualNetworkName ?? hub.key}-nafs'
+    name: '${uniqueString(deployment().name, location)}-${hub.key}-nafs'
     params: {
       subnetName: 'AzureFirewallSubnet'
-      virtualNetworkName: hub.value.?virtualNetworkName ?? hub.key
+      virtualNetworkName: hub.key
     }
     dependsOn: [hubVirtualNetwork]
   }
@@ -216,10 +216,10 @@ module hubAzureFirewallSubnet 'modules/getSubnet.bicep' = [
 @batchSize(1)
 module hubAzureFirewallSubnetAssociation 'modules/subnets.bicep' = [
   for (hub, index) in items(hubVirtualNetworks ?? {}): if (hub.value.enableAzureFirewall) {
-    name: '${uniqueString(deployment().name, location)}-${hub.value.?virtualNetworkName ?? hub.key}-nafsa'
+    name: '${uniqueString(deployment().name, location)}-${hub.key}-nafsa'
     params: {
       name: 'AzureFirewallSubnet'
-      virtualNetworkName: hub.value.?virtualNetworkName ?? hub.key
+      virtualNetworkName: hub.key
       addressPrefix: hubAzureFirewallSubnet[index].outputs.addressPrefix
       routeTableResourceId: hubRouteTable[index].outputs.resourceId
     }
@@ -366,9 +366,6 @@ type diagnosticSettingType = {
 type hubVirtualNetworkType = {
   @description('Required. The hub virtual networks to create.')
   *: {
-    @description('Optional. The name of the hub virtual network.')
-    virtualNetworkName: string?
-
     @description('Required. The address prefixes for the virtual network.')
     addressPrefixes: array
 
