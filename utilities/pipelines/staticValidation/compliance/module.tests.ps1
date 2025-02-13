@@ -488,6 +488,7 @@ Describe 'Module tests' -Tag 'Module' {
                     readMeFilePath         = Join-Path (Split-Path $templateFilePath) 'README.md'
                     isTopLevelModule       = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
                     moduleType             = $moduleType
+                    versionFileExists      = Test-Path (Join-Path -Path $moduleFolderPath 'version.json')
                 }
             }
         }
@@ -867,8 +868,10 @@ Describe 'Module tests' -Tag 'Module' {
         }
 
         Context 'Resources' {
-            # If any resources in the module are deployed, a telemetry deployment should be carried out as well
-            It '[<moduleFolderName>] Telemetry deployment should be present in the template.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule -and $_.templateFileContent.resources.count -gt 0 }) {
+            # If any resources in the module are deployed, a telemetry deployment should be carried out as well. Ignore e.g. utility modules
+            It '[<moduleFolderName>] Telemetry deployment should be present in the template.' -TestCases ($moduleFolderTestCases | Where-Object {
+                    $_.versionFileExists -and $_.templateFileContent.resources.count -gt 0
+                }) {
 
                 param(
                     [hashtable] $templateFileContent
@@ -885,7 +888,7 @@ Describe 'Module tests' -Tag 'Module' {
                 $telemetryDeployment | Should -Not -BeNullOrEmpty -Because 'A telemetry resource with name prefix [46d3xbcp] should be present in the template'
             }
 
-            It '[<moduleFolderName>] Telemetry deployment should have correct condition in the template.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule }) {
+            It '[<moduleFolderName>] Telemetry deployment should have correct condition in the template.' -TestCases ($moduleFolderTestCases | Where-Object { $_.versionFileExists }) {
 
                 param(
                     [hashtable] $templateFileContent
@@ -908,7 +911,7 @@ Describe 'Module tests' -Tag 'Module' {
                 $telemetryDeployment.condition | Should -Be "[parameters('enableTelemetry')]"
             }
 
-            It '[<moduleFolderName>] Telemetry deployment should have expected inner output for verbosity.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule }) {
+            It '[<moduleFolderName>] Telemetry deployment should have expected inner output for verbosity.' -TestCases ($moduleFolderTestCases | Where-Object { $_.versionFileExists }) {
 
                 param(
                     [hashtable] $templateFileContent
@@ -932,7 +935,7 @@ Describe 'Module tests' -Tag 'Module' {
                 $telemetryDeployment.properties.template.outputs['telemetry'].value | Should -Be 'For more information, see https://aka.ms/avm/TelemetryInfo'
             }
 
-            It '[<moduleFolderName>] Telemetry deployment should have expected telemetry identifier.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule }) {
+            It '[<moduleFolderName>] Telemetry deployment should have expected telemetry identifier.' -TestCases ($moduleFolderTestCases | Where-Object { $_.versionFileExists }) {
 
                 param(
                     [string] $templateFilePath,
