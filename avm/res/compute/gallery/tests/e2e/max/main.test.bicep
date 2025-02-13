@@ -236,7 +236,7 @@ module testDeployment '../../../main.bicep' = [
           }
           releaseNoteUri: 'https://testReleaseNoteUri.com'
           isAcceleratedNetworkSupported: false
-          // diskControllerType: 'NVMe, SCSI' // --> needs to be uncommented, as there is a bug setting it again, which prevents the idem test to pass
+          // diskControllerType: 'NVMe, SCSI' // --> needs to remain commented, as there is a bug setting the value starting with 'NVMe' again, which prevents the idem test to pass
         }
       ]
       roleAssignments: [
