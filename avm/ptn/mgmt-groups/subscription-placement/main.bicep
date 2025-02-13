@@ -57,6 +57,8 @@ output subscriptionPlacementSummary string = 'Subscription placements have been 
 //   Definitions   //
 // =============== //
 
+@export()
+@description('The type for a subscription placement.')
 type subscriptionPlacementType = {
   @description('Required. The ID of the management group.')
   managementGroupId: string
