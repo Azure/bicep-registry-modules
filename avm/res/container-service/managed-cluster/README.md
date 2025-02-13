@@ -2141,7 +2141,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         enableAutoScaling: true
         maxCount: 3
         maxPods: 50
-        minCount: 1
+        minCount: 3
         mode: 'System'
         name: 'systempool'
         nodeTaints: [
@@ -2317,7 +2317,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "enableAutoScaling": true,
           "maxCount": 3,
           "maxPods": 50,
-          "minCount": 1,
+          "minCount": 3,
           "mode": "System",
           "name": "systempool",
           "nodeTaints": [
@@ -2527,7 +2527,7 @@ param primaryAgentPoolProfiles = [
     enableAutoScaling: true
     maxCount: 3
     maxPods: 50
-    minCount: 1
+    minCount: 3
     mode: 'System'
     name: 'systempool'
     nodeTaints: [
