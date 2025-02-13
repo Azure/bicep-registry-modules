@@ -101,7 +101,7 @@ module testDeployment '../../../main.bicep' = [
           enableAutoScaling: true
           maxCount: 3
           maxPods: 50
-          minCount: 1
+          minCount: 3
           minPods: 2
           mode: 'User'
           name: 'userpool1'
@@ -123,7 +123,7 @@ module testDeployment '../../../main.bicep' = [
           enableAutoScaling: true
           maxCount: 3
           maxPods: 50
-          minCount: 1
+          minCount: 3
           minPods: 2
           mode: 'User'
           name: 'userpool2'

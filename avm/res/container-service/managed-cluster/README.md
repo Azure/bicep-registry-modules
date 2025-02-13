@@ -2168,7 +2168,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         enableAutoScaling: true
         maxCount: 3
         maxPods: 50
-        minCount: 1
+        minCount: 3
         minPods: 2
         mode: 'User'
         name: 'userpool1'
@@ -2190,7 +2190,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         enableAutoScaling: true
         maxCount: 3
         maxPods: 50
-        minCount: 1
+        minCount: 3
         minPods: 2
         mode: 'User'
         name: 'userpool2'
@@ -2348,7 +2348,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "enableAutoScaling": true,
           "maxCount": 3,
           "maxPods": 50,
-          "minCount": 1,
+          "minCount": 3,
           "minPods": 2,
           "mode": "User",
           "name": "userpool1",
@@ -2370,7 +2370,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "enableAutoScaling": true,
           "maxCount": 3,
           "maxPods": 50,
-          "minCount": 1,
+          "minCount": 3,
           "minPods": 2,
           "mode": "User",
           "name": "userpool2",
@@ -2554,7 +2554,7 @@ param agentPools = [
     enableAutoScaling: true
     maxCount: 3
     maxPods: 50
-    minCount: 1
+    minCount: 3
     minPods: 2
     mode: 'User'
     name: 'userpool1'
@@ -2576,7 +2576,7 @@ param agentPools = [
     enableAutoScaling: true
     maxCount: 3
     maxPods: 50
-    minCount: 1
+    minCount: 3
     minPods: 2
     mode: 'User'
     name: 'userpool2'
