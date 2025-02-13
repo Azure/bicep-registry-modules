@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "1853727703130271658"
+      "version": "0.33.13.18514",
+      "templateHash": "5409964564427816888"
     },
     "name": "Static Web Apps",
-    "description": "This module deploys a Static Web App.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Static Web App."
   },
   "definitions": {
     "_1.privateEndpointCustomDnsConfigType": {
@@ -702,12 +701,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "14348367227898397100"
+              "version": "0.33.13.18514",
+              "templateHash": "6117646567314030149"
             },
             "name": "Static Web App Site Linked Backends",
-            "description": "This module deploys a Custom Function App into a Static Web App Site using the Linked Backends property.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Custom Function App into a Static Web App Site using the Linked Backends property."
           },
           "parameters": {
             "backendResourceId": {
@@ -804,12 +802,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "12417882875937943110"
+              "version": "0.33.13.18514",
+              "templateHash": "7998567469554918663"
             },
             "name": "Static Web App Site Config",
-            "description": "This module deploys a Static Web App Site Config.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Static Web App Site Config."
           },
           "parameters": {
             "kind": {
@@ -899,12 +896,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "12417882875937943110"
+              "version": "0.33.13.18514",
+              "templateHash": "7998567469554918663"
             },
             "name": "Static Web App Site Config",
-            "description": "This module deploys a Static Web App Site Config.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Static Web App Site Config."
           },
           "parameters": {
             "kind": {
@@ -995,12 +991,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "17822583666603036855"
+              "version": "0.33.13.18514",
+              "templateHash": "3686358111815300788"
             },
             "name": "Static Web App Site Custom Domains",
-            "description": "This module deploys a Static Web App Site Custom Domain.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Static Web App Site Custom Domain."
           },
           "parameters": {
             "name": {
@@ -1070,6 +1065,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-staticSite-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "subscriptionId": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'subnetResourceId')), '/')[2]]",
+      "resourceGroup": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'subnetResourceId')), '/')[4]]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"

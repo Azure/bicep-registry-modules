@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "14700883695004277595"
+      "version": "0.32.4.45862",
+      "templateHash": "8433672501117405052"
     },
     "name": "Scheduled Query Rules",
-    "description": "This module deploys a Scheduled Query Rule.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Scheduled Query Rule."
   },
   "definitions": {
     "roleAssignmentType": {

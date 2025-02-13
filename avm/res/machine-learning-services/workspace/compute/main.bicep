@@ -2,7 +2,6 @@ metadata name = 'Machine Learning Services Workspaces Computes'
 metadata description = '''This module deploys a Machine Learning Services Workspaces Compute.
 
 Attaching a compute is not idempotent and will fail in case you try to redeploy over an existing compute in AML (see parameter `deployCompute`).'''
-metadata owner = 'Azure/module-maintainers'
 
 // ================ //
 // Parameters       //
@@ -142,7 +141,7 @@ output resourceId string = compute.id
 output resourceGroupName string = resourceGroup().name
 
 @sys.description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = compute.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = compute.?identity.?principalId
 
 @sys.description('The location the resource was deployed into.')
 output location string = compute.location

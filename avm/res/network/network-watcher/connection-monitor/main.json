@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "9690855596549132604"
+      "templateHash": "708993782418157673"
     },
     "name": "Network Watchers Connection Monitors",
-    "description": "This module deploys a Network Watcher Connection Monitor.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Network Watcher Connection Monitor."
   },
   "parameters": {
     "networkWatcherName": {

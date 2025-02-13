@@ -5,11 +5,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "11891154534022239824"
+      "templateHash": "18086170322747937551"
     },
     "name": "DBforMySQL Flexible Server Firewall Rules",
-    "description": "This module deploys a DBforMySQL Flexible Server Firewall Rule.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a DBforMySQL Flexible Server Firewall Rule."
   },
   "parameters": {
     "name": {

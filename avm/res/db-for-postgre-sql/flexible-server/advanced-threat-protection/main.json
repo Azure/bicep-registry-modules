@@ -4,12 +4,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "16472244225874840702"
+      "version": "0.33.13.18514",
+      "templateHash": "17600786812294347393"
     },
     "name": "DBforPostgreSQL Flexible Server Advanced Threat Protection",
-    "description": "This module deploys a DBforPostgreSQL Advanced Threat Protection.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a DBforPostgreSQL Advanced Threat Protection."
   },
   "parameters": {
     "flexibleServerName": {

@@ -1,6 +1,5 @@
 metadata name = 'Azure Container Registries (ACR)'
 metadata description = 'This module deploys an Azure Container Registry (ACR).'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of your Azure Container Registry.')
 @minLength(5)
@@ -13,7 +12,7 @@ param acrAdminUserEnabled bool = false
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -60,7 +59,7 @@ param retentionPolicyDays int = 15
   'disabled'
   'enabled'
 ])
-@description('Optional. The value that indicates whether the policy for using ARM audience token for a container registr is enabled or not. Default is enabled.')
+@description('Optional. The value that indicates whether the policy for using ARM audience token for a container registry is enabled or not. Default is enabled.')
 param azureADAuthenticationAsArmPolicyStatus string = 'enabled'
 
 @allowed([
@@ -100,7 +99,7 @@ param networkRuleSetDefaultAction string = 'Deny'
 @description('Optional. The IP ACL rules. Note, requires the \'acrSku\' to be \'Premium\'.')
 param networkRuleSetIpRules array?
 
-import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Note, requires the \'acrSku\' to be \'Premium\'.')
 param privateEndpoints privateEndpointSingleServiceType[]?
 
@@ -112,16 +111,16 @@ param privateEndpoints privateEndpointSingleServiceType[]?
 param zoneRedundancy string = 'Enabled'
 
 @description('Optional. All replications to create.')
-param replications array?
+param replications replicationType[]?
 
 @description('Optional. All webhooks to create.')
-param webhooks array?
+param webhooks webhookType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
@@ -131,22 +130,22 @@ param tags object?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
 @description('Optional. Enables registry-wide pull from unauthenticated clients. It\'s in preview and available in the Standard and Premium service tiers.')
 param anonymousPullEnabled bool = false
 
-import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyWithAutoRotateType?
 
 @description('Optional. Array of Cache Rules.')
-param cacheRules array?
+param cacheRules cacheRuleType[]?
 
 @description('Optional. Array of Credential Sets.')
-param credentialSets array = []
+param credentialSets credentialSetType[]?
 
 @description('Optional. Scope maps setting.')
 param scopeMaps scopeMapsType[]?
@@ -264,7 +263,7 @@ resource registry 'Microsoft.ContainerRegistry/registries@2023-06-01-preview' = 
               ? cMKUserAssignedIdentity.properties.clientId
               : null
             keyIdentifier: !empty(customerManagedKey.?keyVersion)
-              ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.keyVersion}'
+              ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.?keyVersion}'
               : (customerManagedKey.?autoRotationEnabled ?? true)
                   ? cMKKeyVault::cMKKey.properties.keyUri
                   : cMKKeyVault::cMKKey.properties.keyUriWithVersion
@@ -362,7 +361,7 @@ module registry_cacheRules 'cache-rule/main.bicep' = [
     params: {
       registryName: registry.name
       sourceRepository: cacheRule.sourceRepository
-      name: cacheRule.?name ?? replace(replace(cacheRule.sourceRepository, '/', '-'), '.', '-')
+      name: cacheRule.?name
       targetRepository: cacheRule.?targetRepository ?? cacheRule.sourceRepository
       credentialSetResourceId: cacheRule.?credentialSetResourceId
     }
@@ -379,13 +378,7 @@ module registry_webhooks 'webhook/main.bicep' = [
       name: webhook.name
       registryName: registry.name
       location: webhook.?location ?? location
-      action: webhook.?action ?? [
-        'chart_delete'
-        'chart_push'
-        'delete'
-        'push'
-        'quarantine'
-      ]
+      action: webhook.?action
       customHeaders: webhook.?customHeaders
       scope: webhook.?scope
       status: webhook.?status
@@ -451,10 +444,13 @@ resource registry_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-
   }
 ]
 
-module registry_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
+module registry_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-registry-PrivateEndpoint-${index}'
-    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
+    scope: resourceGroup(
+      split(privateEndpoint.?resourceGroupResourceId ?? privateEndpoint.?subnetResourceId, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? privateEndpoint.?subnetResourceId, '/')[4]
+    )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(registry.id, '/'))}-${privateEndpoint.?service ?? 'registry'}-${index}'
       privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
@@ -500,6 +496,9 @@ module registry_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7
       applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
       customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
     }
+    dependsOn: [
+      registry_replications
+    ]
   }
 ]
 
@@ -516,29 +515,29 @@ output resourceGroupName string = resourceGroup().name
 output resourceId string = registry.id
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = registry.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = registry.?identity.?principalId
 
 @description('The location the resource was deployed into.')
 output location string = registry.location
 
 @description('The Principal IDs of the ACR Credential Sets system-assigned identities.')
 output credentialSetsSystemAssignedMIPrincipalIds array = [
-  for index in range(0, length(credentialSets)): registry_credentialSets[index].outputs.systemAssignedMIPrincipalId
+  for index in range(0, length(credentialSets ?? [])): registry_credentialSets[index].outputs.?systemAssignedMIPrincipalId
 ]
 
 @description('The Resource IDs of the ACR Credential Sets.')
 output credentialSetsResourceIds array = [
-  for index in range(0, length(credentialSets)): registry_credentialSets[index].outputs.resourceId
+  for index in range(0, length(credentialSets ?? [])): registry_credentialSets[index].outputs.resourceId
 ]
 
 @description('The private endpoints of the Azure container registry.')
-output privateEndpoints array = [
+output privateEndpoints privateEndpointOutputType[] = [
   for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
     name: registry_privateEndpoints[i].outputs.name
     resourceId: registry_privateEndpoints[i].outputs.resourceId
-    groupId: registry_privateEndpoints[i].outputs.groupId
-    customDnsConfig: registry_privateEndpoints[i].outputs.customDnsConfig
-    networkInterfaceIds: registry_privateEndpoints[i].outputs.networkInterfaceIds
+    groupId: registry_privateEndpoints[i].outputs.?groupId!
+    customDnsConfigs: registry_privateEndpoints[i].outputs.customDnsConfigs
+    networkInterfaceResourceIds: registry_privateEndpoints[i].outputs.networkInterfaceResourceIds
   }
 ]
 
@@ -547,6 +546,31 @@ output privateEndpoints array = [
 // =============== //
 
 @export()
+type privateEndpointOutputType = {
+  @description('The name of the private endpoint.')
+  name: string
+
+  @description('The resource ID of the private endpoint.')
+  resourceId: string
+
+  @description('The group Id for the private endpoint Group.')
+  groupId: string?
+
+  @description('The custom DNS configurations of the private endpoint.')
+  customDnsConfigs: {
+    @description('FQDN that resolves to private endpoint IP address.')
+    fqdn: string?
+
+    @description('A list of private IP addresses of the private endpoint.')
+    ipAddresses: string[]
+  }[]
+
+  @description('The IDs of the network interfaces associated with the private endpoint.')
+  networkInterfaceResourceIds: string[]
+}
+
+@export()
+@description('The type for a scope map.')
 type scopeMapsType = {
   @description('Optional. The name of the scope map.')
   name: string?
@@ -556,4 +580,87 @@ type scopeMapsType = {
 
   @description('Optional. The user friendly description of the scope map.')
   description: string?
+}
+
+@export()
+@description('The type for a cache rule.')
+type cacheRuleType = {
+  @description('Optional. The name of the cache rule. Will be derived from the source repository name if not defined.')
+  name: string?
+
+  @description('Required. Source repository pulled from upstream.')
+  sourceRepository: string
+
+  @description('Optional. Target repository specified in docker pull command. E.g.: docker pull myregistry.azurecr.io/{targetRepository}:{tag}.')
+  targetRepository: string?
+
+  @description('Optional. The resource ID of the credential store which is associated with the cache rule.')
+  credentialSetResourceId: string?
+}
+
+import { managedIdentityOnlySysAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { authCredentialsType } from 'credential-set/main.bicep'
+@export()
+@description('The type for a credential set.')
+type credentialSetType = {
+  @description('Required. The name of the credential set.')
+  name: string
+
+  @description('Optional. The managed identity definition for this resource.')
+  managedIdentities: managedIdentityOnlySysAssignedType?
+
+  @description('Required. List of authentication credentials stored for an upstream. Usually consists of a primary and an optional secondary credential.')
+  authCredentials: authCredentialsType[]
+
+  @description('Required. The credentials are stored for this upstream or login server.')
+  loginServer: string
+}
+
+@export()
+@description('The type for a replication.')
+type replicationType = {
+  @description('Required. The name of the replication.')
+  name: string
+
+  @description('Optional. Location for all resources.')
+  location: string?
+
+  @description('Optional. Tags of the resource.')
+  tags: object?
+
+  @description('Optional. Specifies whether the replication regional endpoint is enabled. Requests will not be routed to a replication whose regional endpoint is disabled, however its data will continue to be synced with other replications.')
+  regionEndpointEnabled: bool?
+
+  @description('Optional. Whether or not zone redundancy is enabled for this container registry.')
+  zoneRedundancy: ('Disabled' | 'Enabled')?
+}
+
+@export()
+@description('The type for a webhook.')
+type webhookType = {
+  @description('Optional. The name of the registry webhook.')
+  @minLength(5)
+  @maxLength(50)
+  name: string?
+
+  @description('Required. The service URI for the webhook to post notifications.')
+  serviceUri: string
+
+  @description('Optional. The status of the webhook at the time the operation was called.')
+  status: ('enabled' | 'disabled')?
+
+  @description('Optional. The list of actions that trigger the webhook to post notifications.')
+  action: string[]?
+
+  @description('Optional. Location for all resources.')
+  location: string?
+
+  @description('Optional. Tags of the resource.')
+  tags: object?
+
+  @description('Optional. Custom headers that will be added to the webhook notifications.')
+  customHeaders: object?
+
+  @description('Optional. The scope of repositories where the event can be triggered. For example, \'foo:*\' means events for all tags under repository \'foo\'. \'foo:bar\' means events for \'foo:bar\' only. \'foo\' is equivalent to \'foo:latest\'. Empty means all events.')
+  scope: string?
 }

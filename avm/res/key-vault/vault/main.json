@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "5900566328584197217"
+      "version": "0.33.13.18514",
+      "templateHash": "10562288197267069295"
     },
     "name": "Key Vaults",
-    "description": "This module deploys a Key Vault.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Key Vault."
   },
   "definitions": {
     "privateEndpointOutputType": {
@@ -73,8 +72,7 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true,
-        "description": "The type for a private endpoint output."
+        "__bicep_export!": true
       }
     },
     "credentialOutputType": {
@@ -1386,12 +1384,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "6744070574147884656"
+              "version": "0.33.13.18514",
+              "templateHash": "15662374115599475123"
             },
             "name": "Key Vault Access Policies",
-            "description": "This module deploys a Key Vault Access Policy.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Key Vault Access Policy."
           },
           "definitions": {
             "accessPoliciesType": {
@@ -1653,12 +1650,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "6967022677055315423"
+              "version": "0.33.13.18514",
+              "templateHash": "7030946530357291103"
             },
             "name": "Key Vault Secrets",
-            "description": "This module deploys a Key Vault Secret.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Key Vault Secret."
           },
           "definitions": {
             "roleAssignmentType": {
@@ -1968,12 +1964,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "15884853996194439605"
+              "version": "0.33.13.18514",
+              "templateHash": "8627699258587559559"
             },
             "name": "Key Vault Keys",
-            "description": "This module deploys a Key Vault Key.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Key Vault Key."
           },
           "definitions": {
             "roleAssignmentType": {
@@ -2277,6 +2272,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-keyVault-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "subscriptionId": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'subnetResourceId')), '/')[2]]",
+      "resourceGroup": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'subnetResourceId')), '/')[4]]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -2329,12 +2326,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "6724714132049298262"
+              "version": "0.33.13.18514",
+              "templateHash": "15954548978129725136"
             },
             "name": "Private Endpoints",
-            "description": "This module deploys a Private Endpoint.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Private Endpoint."
           },
           "definitions": {
             "privateDnsZoneGroupType": {
@@ -2394,50 +2390,6 @@
                   },
                   "metadata": {
                     "description": "Required. Properties of private endpoint IP configurations."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true
-              }
-            },
-            "manualPrivateLinkServiceConnectionType": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The name of the private link service connection."
-                  }
-                },
-                "properties": {
-                  "type": "object",
-                  "properties": {
-                    "groupIds": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      },
-                      "metadata": {
-                        "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`."
-                      }
-                    },
-                    "privateLinkServiceId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The resource id of private link service."
-                      }
-                    },
-                    "requestMessage": {
-                      "type": "string",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars."
-                      }
-                    }
-                  },
-                  "metadata": {
-                    "description": "Required. Properties of private link service connection."
                   }
                 }
               },
@@ -2539,7 +2491,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a lock.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
                 }
               }
             },
@@ -2637,7 +2589,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a role assignment.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
                 }
               }
             }
@@ -2733,11 +2685,11 @@
             "manualPrivateLinkServiceConnections": {
               "type": "array",
               "items": {
-                "$ref": "#/definitions/manualPrivateLinkServiceConnectionType"
+                "$ref": "#/definitions/privateLinkServiceConnectionType"
               },
               "nullable": true,
               "metadata": {
-                "description": "Optional. A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource."
+                "description": "Conditional. A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource. Required if `privateLinkServiceConnections` is empty."
               }
             },
             "privateLinkServiceConnections": {
@@ -2747,7 +2699,7 @@
               },
               "nullable": true,
               "metadata": {
-                "description": "Optional. A grouping of information about the connection to the remote resource."
+                "description": "Conditional. A grouping of information about the connection to the remote resource. Required if `manualPrivateLinkServiceConnections` is empty."
               }
             },
             "enableTelemetry": {
@@ -2784,7 +2736,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.9.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.10.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -2890,12 +2842,11 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.30.23.60470",
-                      "templateHash": "12329174801198479603"
+                      "version": "0.33.13.18514",
+                      "templateHash": "5440815542537978381"
                     },
                     "name": "Private Endpoint Private DNS Zone Groups",
-                    "description": "This module deploys a Private Endpoint Private DNS Zone Group.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a Private Endpoint Private DNS Zone Group."
                   },
                   "definitions": {
                     "privateDnsZoneGroupConfigType": {
@@ -2973,10 +2924,7 @@
                       "name": "[format('{0}/{1}', parameters('privateEndpointName'), parameters('name'))]",
                       "properties": {
                         "privateDnsZoneConfigs": "[variables('privateDnsZoneConfigsVar')]"
-                      },
-                      "dependsOn": [
-                        "privateEndpoint"
-                      ]
+                      }
                     }
                   },
                   "outputs": {
@@ -3038,7 +2986,7 @@
               },
               "value": "[reference('privateEndpoint', '2023-11-01', 'full').location]"
             },
-            "customDnsConfig": {
+            "customDnsConfigs": {
               "type": "array",
               "items": {
                 "$ref": "#/definitions/customDnsConfigType"
@@ -3123,8 +3071,8 @@
         "input": {
           "name": "[reference(format('keyVault_privateEndpoints[{0}]', copyIndex())).outputs.name.value]",
           "resourceId": "[reference(format('keyVault_privateEndpoints[{0}]', copyIndex())).outputs.resourceId.value]",
-          "groupId": "[reference(format('keyVault_privateEndpoints[{0}]', copyIndex())).outputs.groupId.value]",
-          "customDnsConfigs": "[reference(format('keyVault_privateEndpoints[{0}]', copyIndex())).outputs.customDnsConfig.value]",
+          "groupId": "[tryGet(tryGet(reference(format('keyVault_privateEndpoints[{0}]', copyIndex())).outputs, 'groupId'), 'value')]",
+          "customDnsConfigs": "[reference(format('keyVault_privateEndpoints[{0}]', copyIndex())).outputs.customDnsConfigs.value]",
           "networkInterfaceResourceIds": "[reference(format('keyVault_privateEndpoints[{0}]', copyIndex())).outputs.networkInterfaceResourceIds.value]"
         }
       }

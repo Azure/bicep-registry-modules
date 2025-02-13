@@ -1,6 +1,5 @@
 metadata name = 'Event Hub Namespace Event Hubs'
 metadata description = 'This module deploys an Event Hub Namespace Event Hub.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent event hub namespace. Required if the template is used in a standalone deployment.')
 param namespaceName string
@@ -51,11 +50,11 @@ param consumergroups array = [
   }
 ]
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 

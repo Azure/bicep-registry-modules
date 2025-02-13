@@ -1,6 +1,5 @@
 metadata name = 'DocumentDB Database Account SQL Database Containers'
 metadata description = 'This module deploys a SQL Database Container in a CosmosDB Account.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent Database Account. Required if the template is used in a standalone deployment.')
 param databaseAccountName string

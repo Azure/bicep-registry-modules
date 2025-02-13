@@ -5,11 +5,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "14271102698222565475"
+      "templateHash": "1471785569704218082"
     },
     "name": "SQL Managed Instance Security Alert Policies",
-    "description": "This module deploys a SQL Managed Instance Security Alert Policy.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a SQL Managed Instance Security Alert Policy."
   },
   "parameters": {
     "name": {

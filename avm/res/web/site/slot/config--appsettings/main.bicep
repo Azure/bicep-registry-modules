@@ -1,6 +1,5 @@
 metadata name = 'Site Slot App Settings'
 metadata description = 'This module deploys a Site Slot App Setting.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Slot name to be configured.')
 param slotName string

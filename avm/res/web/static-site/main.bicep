@@ -1,6 +1,5 @@
 metadata name = 'Static Web Apps'
 metadata description = 'This module deploys a Static Web App.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the static site.')
 @minLength(1)
@@ -248,15 +247,10 @@ resource staticSite_roleAssignments 'Microsoft.Authorization/roleAssignments@202
 module staticSite_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-staticSite-PrivateEndpoint-${index}'
-    scope: !empty(privateEndpoint.?resourceGroupResourceId)
-      ? resourceGroup(
-          split((privateEndpoint.?resourceGroupResourceId ?? '//'), '/')[2],
-          split((privateEndpoint.?resourceGroupResourceId ?? '////'), '/')[4]
-        )
-      : resourceGroup(
-          split((privateEndpoint.?subnetResourceId ?? '//'), '/')[2],
-          split((privateEndpoint.?subnetResourceId ?? '////'), '/')[4]
-        )
+    scope: resourceGroup(
+      split(privateEndpoint.?resourceGroupResourceId ?? privateEndpoint.?subnetResourceId, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? privateEndpoint.?subnetResourceId, '/')[4]
+    )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(staticSite.id, '/'))}-${privateEndpoint.?service ?? 'staticSites'}-${index}'
       privateLinkServiceConnections: privateEndpoint.?isManualConnection != true

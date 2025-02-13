@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "11438426137887406030"
+      "templateHash": "5470663689877325880"
     },
     "name": "Network Manager Routing Configurations",
-    "description": "This module deploys an Network Manager Routing Configuration.\r\nRouting configurations are the building blocks of UDR management. They're used to describe the desired routing behavior for a network group.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Network Manager Routing Configuration.\nRouting configurations are the building blocks of UDR management. They're used to describe the desired routing behavior for a network group."
   },
   "definitions": {
     "routingConfigurationRuleCollectionType": {
@@ -261,11 +260,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "12392053229903210262"
+              "templateHash": "9240364702512586570"
             },
             "name": "Network Manager Routing Configuration Rule Collections",
-            "description": "This module deploys an Network Manager Routing Configuration Rule Collection.\r\nRouting configurations are the building blocks of UDR management. They're used to describe the desired routing behavior for a network group. Each routing configuration contains one ore more rule collections. Warning: A rule collection without a rule will cause a deployment of routing configuration to fail in network manager.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Network Manager Routing Configuration Rule Collection.\nRouting configurations are the building blocks of UDR management. They're used to describe the desired routing behavior for a network group. Each routing configuration contains one ore more rule collections. Warning: A rule collection without a rule will cause a deployment of routing configuration to fail in network manager."
           },
           "definitions": {
             "appliesToType": {
@@ -494,11 +492,10 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "16150172197183244404"
+                      "templateHash": "10535917161454379553"
                     },
                     "name": "Network Manager Routing configuration Rule Collection Rules",
-                    "description": "This module deploys an Azure Virtual Network Manager (AVNM) Routing Configuration Rule Collection Rule.\r\nA Routing configuration contains a set of rule collections. Each rule collection contains one or more routing rules.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys an Azure Virtual Network Manager (AVNM) Routing Configuration Rule Collection Rule.\nA Routing configuration contains a set of rule collections. Each rule collection contains one or more routing rules."
                   },
                   "definitions": {
                     "destinationType": {

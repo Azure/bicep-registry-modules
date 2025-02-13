@@ -1,6 +1,5 @@
 metadata name = 'DNS Resolver'
 metadata description = 'This module deploys a DNS Resolver.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the DNS Private Resolver.')
 @minLength(1)

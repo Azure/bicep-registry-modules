@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "7878384818831607094"
+      "version": "0.33.13.18514",
+      "templateHash": "15803822027091526791"
     },
     "name": "Web/Function App Deployment Slots",
-    "description": "This module deploys a Web or Function App Deployment Slot.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Web or Function App Deployment Slot."
   },
   "definitions": {
     "_1.privateEndpointCustomDnsConfigType": {
@@ -1042,12 +1041,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "13310040970243329118"
+              "version": "0.33.13.18514",
+              "templateHash": "6379851449588708934"
             },
             "name": "Site Slot App Settings",
-            "description": "This module deploys a Site Slot App Setting.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Site Slot App Setting."
           },
           "parameters": {
             "slotName": {
@@ -1220,12 +1218,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "16310411023062780968"
+              "version": "0.33.13.18514",
+              "templateHash": "4192061847386712633"
             },
             "name": "Site Slot Auth Settings V2 Config",
-            "description": "This module deploys a Site Auth Settings V2 Configuration.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Site Auth Settings V2 Configuration."
           },
           "parameters": {
             "appName": {
@@ -1341,12 +1338,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "11034010803864833383"
+              "version": "0.33.13.18514",
+              "templateHash": "13483227944246460692"
             },
             "name": "Web Site Slot Basic Publishing Credentials Policies",
-            "description": "This module deploys a Web Site Slot Basic Publishing Credentials Policy.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Web Site Slot Basic Publishing Credentials Policy."
           },
           "parameters": {
             "name": {
@@ -1466,12 +1462,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "10845238812485221879"
+              "version": "0.33.13.18514",
+              "templateHash": "17428168852439619558"
             },
             "name": "Web/Function Apps Slot Hybrid Connection Relay",
-            "description": "This module deploys a Site Slot Hybrid Connection Namespace Relay.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Site Slot Hybrid Connection Namespace Relay."
           },
           "parameters": {
             "hybridConnectionResourceId": {
@@ -1571,12 +1566,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "5471435423586068919"
+              "version": "0.33.13.18514",
+              "templateHash": "10653723640225381902"
             },
             "name": "Site Deployment Extension ",
-            "description": "This module deploys a Site extension for MSDeploy.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Site extension for MSDeploy."
           },
           "parameters": {
             "appName": {
@@ -1642,6 +1636,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-slot-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "subscriptionId": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'subnetResourceId')), '/')[2]]",
+      "resourceGroup": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'subnetResourceId')), '/')[4]]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"

@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "8294501714202659478"
+      "version": "0.33.93.31351",
+      "templateHash": "2991444340097371621"
     },
     "name": "Storage Account Blob Containers",
-    "description": "This module deploys a Storage Account Blob Container.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Storage Account Blob Container."
   },
   "definitions": {
     "roleAssignmentType": {
@@ -84,7 +83,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     }
@@ -295,12 +294,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "13544771409253577128"
+              "version": "0.33.93.31351",
+              "templateHash": "8061556339565534458"
             },
             "name": "Storage Account Blob Container Immutability Policies",
-            "description": "This module deploys a Storage Account Blob Container Immutability Policy.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Storage Account Blob Container Immutability Policy."
           },
           "parameters": {
             "storageAccountName": {

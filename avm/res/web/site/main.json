@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "14740822710957266104"
+      "version": "0.33.13.18514",
+      "templateHash": "1510038828157796019"
     },
     "name": "Web/Function Apps",
-    "description": "This module deploys a Web or Function App.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Web or Function App."
   },
   "definitions": {
     "_1.privateEndpointCustomDnsConfigType": {
@@ -1085,12 +1084,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "13609154562470811515"
+              "version": "0.33.13.18514",
+              "templateHash": "3773744005628323179"
             },
             "name": "Site App Settings",
-            "description": "This module deploys a Site App Setting.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Site App Setting."
           },
           "parameters": {
             "appName": {
@@ -1248,12 +1246,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "18304988950075306221"
+              "version": "0.33.13.18514",
+              "templateHash": "12604769145311962317"
             },
             "name": "Site Auth Settings V2 Config",
-            "description": "This module deploys a Site Auth Settings V2 Configuration.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Site Auth Settings V2 Configuration."
           },
           "parameters": {
             "appName": {
@@ -1352,12 +1349,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "13807291093974076353"
+              "version": "0.33.13.18514",
+              "templateHash": "10353279242186955906"
             },
             "name": "Site logs Config",
-            "description": "This module deploys a Site logs Configuration.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Site logs Configuration."
           },
           "parameters": {
             "appName": {
@@ -1444,12 +1440,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "7421483198699979599"
+              "version": "0.33.13.18514",
+              "templateHash": "15063123874711680503"
             },
             "name": "Site Web Config",
-            "description": "This module deploys web settings configuration available under sites/config name: web.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys web settings configuration available under sites/config name: web."
           },
           "parameters": {
             "appName": {
@@ -1535,12 +1530,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "5471435423586068919"
+              "version": "0.33.13.18514",
+              "templateHash": "10653723640225381902"
             },
             "name": "Site Deployment Extension ",
-            "description": "This module deploys a Site extension for MSDeploy.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Site extension for MSDeploy."
           },
           "parameters": {
             "appName": {
@@ -1754,12 +1748,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "7878384818831607094"
+              "version": "0.33.13.18514",
+              "templateHash": "15803822027091526791"
             },
             "name": "Web/Function App Deployment Slots",
-            "description": "This module deploys a Web or Function App Deployment Slot.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Web or Function App Deployment Slot."
           },
           "definitions": {
             "_1.privateEndpointCustomDnsConfigType": {
@@ -2791,12 +2784,11 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "13310040970243329118"
+                      "version": "0.33.13.18514",
+                      "templateHash": "6379851449588708934"
                     },
                     "name": "Site Slot App Settings",
-                    "description": "This module deploys a Site Slot App Setting.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a Site Slot App Setting."
                   },
                   "parameters": {
                     "slotName": {
@@ -2969,12 +2961,11 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "16310411023062780968"
+                      "version": "0.33.13.18514",
+                      "templateHash": "4192061847386712633"
                     },
                     "name": "Site Slot Auth Settings V2 Config",
-                    "description": "This module deploys a Site Auth Settings V2 Configuration.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a Site Auth Settings V2 Configuration."
                   },
                   "parameters": {
                     "appName": {
@@ -3090,12 +3081,11 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "11034010803864833383"
+                      "version": "0.33.13.18514",
+                      "templateHash": "13483227944246460692"
                     },
                     "name": "Web Site Slot Basic Publishing Credentials Policies",
-                    "description": "This module deploys a Web Site Slot Basic Publishing Credentials Policy.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a Web Site Slot Basic Publishing Credentials Policy."
                   },
                   "parameters": {
                     "name": {
@@ -3215,12 +3205,11 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "10845238812485221879"
+                      "version": "0.33.13.18514",
+                      "templateHash": "17428168852439619558"
                     },
                     "name": "Web/Function Apps Slot Hybrid Connection Relay",
-                    "description": "This module deploys a Site Slot Hybrid Connection Namespace Relay.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a Site Slot Hybrid Connection Namespace Relay."
                   },
                   "parameters": {
                     "hybridConnectionResourceId": {
@@ -3320,12 +3309,11 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "5471435423586068919"
+                      "version": "0.33.13.18514",
+                      "templateHash": "10653723640225381902"
                     },
                     "name": "Site Deployment Extension ",
-                    "description": "This module deploys a Site extension for MSDeploy.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a Site extension for MSDeploy."
                   },
                   "parameters": {
                     "appName": {
@@ -3391,6 +3379,8 @@
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('{0}-slot-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+              "subscriptionId": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'subnetResourceId')), '/')[2]]",
+              "resourceGroup": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'subnetResourceId')), '/')[4]]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -4242,12 +4232,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "13023212030167791699"
+              "version": "0.33.13.18514",
+              "templateHash": "1499299399255876013"
             },
             "name": "Web Site Basic Publishing Credentials Policies",
-            "description": "This module deploys a Web Site Basic Publishing Credentials Policy.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Web Site Basic Publishing Credentials Policy."
           },
           "parameters": {
             "name": {
@@ -4358,12 +4347,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "2994190070722643012"
+              "version": "0.33.13.18514",
+              "templateHash": "3864138738153964150"
             },
             "name": "Web/Function Apps Hybrid Connection Relay",
-            "description": "This module deploys a Site Hybrid Connection Namespace Relay.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Site Hybrid Connection Namespace Relay."
           },
           "parameters": {
             "hybridConnectionResourceId": {
@@ -4440,6 +4428,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-app-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "subscriptionId": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'subnetResourceId')), '/')[2]]",
+      "resourceGroup": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'subnetResourceId')), '/')[4]]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"

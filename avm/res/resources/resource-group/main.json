@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "15310777892883158544"
+      "templateHash": "6674073483996730844"
     },
     "name": "Resource Groups",
-    "description": "This module deploys a Resource Group.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Resource Group."
   },
   "definitions": {
     "lockType": {

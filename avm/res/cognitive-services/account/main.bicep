@@ -1,6 +1,5 @@
 metadata name = 'Cognitive Services'
 metadata description = 'This module deploys a Cognitive Service.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of Cognitive Services account.')
 param name string
