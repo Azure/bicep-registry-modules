@@ -1076,13 +1076,11 @@ Logs destination.
 
 - Required: No
 - Type: string
-- Default: `'none'`
 - Allowed:
   ```Bicep
   [
     'azure-monitor'
     'log-analytics'
-    'none'
   ]
   ```
 

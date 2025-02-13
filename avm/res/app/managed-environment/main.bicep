@@ -22,10 +22,9 @@ param roleAssignments roleAssignmentType
 @allowed([
   'log-analytics'
   'azure-monitor'
-  'none'
 ])
 @description('Optional. Logs destination.')
-param logsDestination string = 'none'
+param logsDestination string?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
