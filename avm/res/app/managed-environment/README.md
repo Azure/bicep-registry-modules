@@ -1076,7 +1076,15 @@ Logs destination.
 
 - Required: No
 - Type: string
-- Default: `'log-analytics'`
+- Default: `'none'`
+- Allowed:
+  ```Bicep
+  [
+    'azure-monitor'
+    'log-analytics'
+    'none'
+  ]
+  ```
 
 ### Parameter: `managedIdentities`
 

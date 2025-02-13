@@ -19,8 +19,13 @@ param managedIdentities managedIdentitiesType
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
 
+@allowed([
+  'log-analytics'
+  'azure-monitor'
+  'none'
+])
 @description('Optional. Logs destination.')
-param logsDestination string = 'log-analytics'
+param logsDestination string = 'none'
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
