@@ -7,7 +7,7 @@ param rootManagementGroupResourceId string = ''
 
 @description('Required. The scope of the subscription billing.')
 @secure()
-param subscriptionBillingScope string = ''
+param subscriptionBillingScope string
 
 resource managementGroup 'Microsoft.Management/managementGroups@2023-04-01' = {
   name: 'test-mgmt-group'
