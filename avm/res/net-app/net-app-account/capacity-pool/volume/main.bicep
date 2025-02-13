@@ -288,10 +288,10 @@ type replicationType = {
   @description('Required. Indicates whether the local volume is the source or destination for the Volume Replication.')
   endpointType: ('dst' | 'src')
 
-  @description('Optional. The remote region for the other end of the Volume Replication.Required for Data Protection volumes')
+  @description('Optional. The remote region for the other end of the Volume Replication.Required for Data Protection volumes.')
   remoteVolumeRegion: string?
 
-  @description('Optional. The resource ID of the remote volume. Required for Data Protection volumes')
+  @description('Optional. The resource ID of the remote volume. Required for Data Protection volumes.')
   remoteVolumeResourceId: string?
 
   @description('Required. The replication schedule for the volume.')

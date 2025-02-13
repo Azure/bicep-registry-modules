@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "17383325938419112111"
+      "templateHash": "3612442392718175721"
     },
     "name": "Azure NetApp Files",
     "description": "This module deploys an Azure NetApp File."
@@ -443,14 +443,14 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The remote region for the other end of the Volume Replication.Required for Data Protection volumes"
+            "description": "Optional. The remote region for the other end of the Volume Replication.Required for Data Protection volumes."
           }
         },
         "remoteVolumeResourceId": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The resource ID of the remote volume. Required for Data Protection volumes"
+            "description": "Optional. The resource ID of the remote volume. Required for Data Protection volumes."
           }
         },
         "replicationSchedule": {
@@ -2269,7 +2269,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.13.18514",
-              "templateHash": "7708964856673380412"
+              "templateHash": "9255104616647372037"
             },
             "name": "Azure NetApp Files Capacity Pools",
             "description": "This module deploys an Azure NetApp Files Capacity Pool."
@@ -2506,14 +2506,14 @@
                   "type": "string",
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. The remote region for the other end of the Volume Replication.Required for Data Protection volumes"
+                    "description": "Optional. The remote region for the other end of the Volume Replication.Required for Data Protection volumes."
                   }
                 },
                 "remoteVolumeResourceId": {
                   "type": "string",
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. The resource ID of the remote volume. Required for Data Protection volumes"
+                    "description": "Optional. The resource ID of the remote volume. Required for Data Protection volumes."
                   }
                 },
                 "replicationSchedule": {
@@ -3059,7 +3059,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.33.13.18514",
-                      "templateHash": "14674913665759570295"
+                      "templateHash": "13717060947862126529"
                     },
                     "name": "Azure NetApp Files Capacity Pool Volumes",
                     "description": "This module deploys an Azure NetApp Files Capacity Pool Volume."
@@ -3112,14 +3112,14 @@
                           "type": "string",
                           "nullable": true,
                           "metadata": {
-                            "description": "Optional. The remote region for the other end of the Volume Replication.Required for Data Protection volumes"
+                            "description": "Optional. The remote region for the other end of the Volume Replication.Required for Data Protection volumes."
                           }
                         },
                         "remoteVolumeResourceId": {
                           "type": "string",
                           "nullable": true,
                           "metadata": {
-                            "description": "Optional. The resource ID of the remote volume. Required for Data Protection volumes"
+                            "description": "Optional. The resource ID of the remote volume. Required for Data Protection volumes."
                           }
                         },
                         "replicationSchedule": {

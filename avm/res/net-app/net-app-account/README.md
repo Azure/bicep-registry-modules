@@ -1755,8 +1755,8 @@ Replication properties.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`remotePath`](#parameter-capacitypoolsvolumesdataprotectionreplicationremotepath) | object | The full path to a volume that is to be migrated into ANF. Required for Migration volumes. |
-| [`remoteVolumeRegion`](#parameter-capacitypoolsvolumesdataprotectionreplicationremotevolumeregion) | string | The remote region for the other end of the Volume Replication.Required for Data Protection volumes |
-| [`remoteVolumeResourceId`](#parameter-capacitypoolsvolumesdataprotectionreplicationremotevolumeresourceid) | string | The resource ID of the remote volume. Required for Data Protection volumes |
+| [`remoteVolumeRegion`](#parameter-capacitypoolsvolumesdataprotectionreplicationremotevolumeregion) | string | The remote region for the other end of the Volume Replication.Required for Data Protection volumes. |
+| [`remoteVolumeResourceId`](#parameter-capacitypoolsvolumesdataprotectionreplicationremotevolumeresourceid) | string | The resource ID of the remote volume. Required for Data Protection volumes. |
 
 ### Parameter: `capacityPools.volumes.dataProtection.replication.endpointType`
 
@@ -1825,14 +1825,14 @@ The name of a volume on the server.
 
 ### Parameter: `capacityPools.volumes.dataProtection.replication.remoteVolumeRegion`
 
-The remote region for the other end of the Volume Replication.Required for Data Protection volumes
+The remote region for the other end of the Volume Replication.Required for Data Protection volumes.
 
 - Required: No
 - Type: string
 
 ### Parameter: `capacityPools.volumes.dataProtection.replication.remoteVolumeResourceId`
 
-The resource ID of the remote volume. Required for Data Protection volumes
+The resource ID of the remote volume. Required for Data Protection volumes.
 
 - Required: No
 - Type: string

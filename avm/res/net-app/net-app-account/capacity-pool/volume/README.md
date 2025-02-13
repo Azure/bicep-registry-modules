@@ -198,8 +198,8 @@ Replication properties.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`remotePath`](#parameter-dataprotectionreplicationremotepath) | object | The full path to a volume that is to be migrated into ANF. Required for Migration volumes. |
-| [`remoteVolumeRegion`](#parameter-dataprotectionreplicationremotevolumeregion) | string | The remote region for the other end of the Volume Replication.Required for Data Protection volumes |
-| [`remoteVolumeResourceId`](#parameter-dataprotectionreplicationremotevolumeresourceid) | string | The resource ID of the remote volume. Required for Data Protection volumes |
+| [`remoteVolumeRegion`](#parameter-dataprotectionreplicationremotevolumeregion) | string | The remote region for the other end of the Volume Replication.Required for Data Protection volumes. |
+| [`remoteVolumeResourceId`](#parameter-dataprotectionreplicationremotevolumeresourceid) | string | The resource ID of the remote volume. Required for Data Protection volumes. |
 
 ### Parameter: `dataProtection.replication.endpointType`
 
@@ -268,14 +268,14 @@ The name of a volume on the server.
 
 ### Parameter: `dataProtection.replication.remoteVolumeRegion`
 
-The remote region for the other end of the Volume Replication.Required for Data Protection volumes
+The remote region for the other end of the Volume Replication.Required for Data Protection volumes.
 
 - Required: No
 - Type: string
 
 ### Parameter: `dataProtection.replication.remoteVolumeResourceId`
 
-The resource ID of the remote volume. Required for Data Protection volumes
+The resource ID of the remote volume. Required for Data Protection volumes.
 
 - Required: No
 - Type: string
