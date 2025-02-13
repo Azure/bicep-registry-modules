@@ -2,7 +2,7 @@ targetScope = 'tenant'
 
 @description('Required. The root management group resource ID where the subscriptions will be placed.')
 @secure()
-param rootManagementGroupResourceId string = ''
+param rootManagementGroupResourceId string
 
 
 @description('Required. The scope of the subscription billing.')
