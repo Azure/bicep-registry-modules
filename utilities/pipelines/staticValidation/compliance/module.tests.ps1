@@ -994,6 +994,27 @@ Describe 'Module tests' -Tag 'Module' {
                 $telemetryDeploymentName | Should -Match "$expectedTelemetryIdentifier"
             }
 
+            It '[<moduleFolderName>] Variable "enableReferencedModulesTelemetry" should exist and set to "false" if module references other modules with dedicated telemetry.' -TestCases $moduleFolderTestCases {
+
+                param(
+                    [hashtable] $templateFileContent
+                )
+
+                # get all referenced modules, that offer a telemetry parameter
+                $referencesWithTelemetry = $templateFileContent.resources.Values | Where-Object {
+                    $_.type -eq 'Microsoft.Resources/deployments' -and
+                    $_.properties.template.parameters.Keys -contains 'enableTelemetry'
+                }
+
+                if ($referencesWithTelemetry.Count -eq 0) {
+                    Set-ItResult -Skipped -Because 'no modules with dedicated telemetry are deployed.'
+                    return
+                }
+
+                $templateFileContent.variables.Keys | Should -Contain 'enableReferencedModulesTelemetry'
+                $templateFileContent.variables.enableReferencedModulesTelemetry | Should -Be $false
+            }
+
             It '[<moduleFolderName>] Telemetry should be disabled for referenced modules with dedicated telemetry.' -TestCases $moduleFolderTestCases {
 
                 param(
@@ -1015,13 +1036,14 @@ Describe 'Module tests' -Tag 'Module' {
                 # telemetry should be disabled for the referenced module
                 $incorrectCrossReferences = [System.Collections.ArrayList]@()
                 foreach ($referencedModule in $referencesWithTelemetry) {
-                    if (-not $referencedModule.properties.parameters.ContainsKey('enableTelemetry') -or $referencedModule.properties.parameters.enableTelemetry.value -ne $false) {
+                    if ($referencedModule.properties.parameters.Keys -notcontains 'enableTelemetry' -or
+                        $referencedModule.properties.parameters.enableTelemetry.value -ne "[variables('enableReferencedModulesTelemetry')]") {
                         # remember the names (e.g. 'virtualNetwork_subnets') to provide a better error message
                         $incorrectCrossReferences.Add($referencedModule.identifier)
                     }
                 }
 
-                $incorrectCrossReferences | Should -BeNullOrEmpty -Because ('cross reference modules must be referenced with the enableTelemetry parameter set to false. Found incorrect items: [{0}].' -f ($incorrectCrossReferences -join ', '))
+                $incorrectCrossReferences | Should -BeNullOrEmpty -Because ('cross reference modules must be referenced with the enableTelemetry parameter set to the "enableReferencedModulesTelemetry" variable. Found incorrect items: [{0}].' -f ($incorrectCrossReferences -join ', '))
             }
         }
 
