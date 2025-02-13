@@ -515,7 +515,6 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
     infrastructureSubnetId: '<infrastructureSubnetId>'
     location: '<location>'
-    logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     platformReservedCidr: '172.17.17.0/24'
     platformReservedDnsIP: '172.17.17.17'
     publicNetworkAccess: 'Enabled'
@@ -560,9 +559,6 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     "location": {
       "value": "<location>"
     },
-    "logAnalyticsWorkspaceResourceId": {
-      "value": "<logAnalyticsWorkspaceResourceId>"
-    },
     "platformReservedCidr": {
       "value": "172.17.17.0/24"
     },
@@ -603,7 +599,6 @@ param dockerBridgeCidr = '172.16.0.1/28'
 param infrastructureResourceGroupName = '<infrastructureResourceGroupName>'
 param infrastructureSubnetId = '<infrastructureSubnetId>'
 param location = '<location>'
-param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
 param platformReservedCidr = '172.17.17.0/24'
 param platformReservedDnsIP = '172.17.17.17'
 param publicNetworkAccess = 'Enabled'
