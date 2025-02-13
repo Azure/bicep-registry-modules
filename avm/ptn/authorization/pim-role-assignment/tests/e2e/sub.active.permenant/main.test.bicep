@@ -15,7 +15,7 @@ param namePrefix string = '#_namePrefix_#'
 @description('Optional. Subscription ID of the subscription to assign the RBAC role to. If no Resource Group name is provided, the module deploys at subscription level, therefore assigns the provided RBAC role to the subscription.')
 param subscriptionId string = '#_subscriptionId_#'
 
-@description('Required. Principle ID of the user. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'testUserObjectIdstring\'.')
+@description('Required. Principle ID of the user. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-testUserObjectIdstring\'.')
 @secure()
 param testUserObjectIdstring string = ''
 

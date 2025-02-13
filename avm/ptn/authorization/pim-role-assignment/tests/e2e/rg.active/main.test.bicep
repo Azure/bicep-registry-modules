@@ -28,7 +28,7 @@ param startDateTime string = utcNow()
 @description('Optional. The end date and time for the role assignment. Defaults to one year from the start date and time.')
 param endDateTime string = dateTimeAdd(startDateTime, 'PT4H')
 
-@description('Required. Principle ID of the user. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'testUserObjectIdstring\'.')
+@description('Required. Principle ID of the user. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-testUserObjectIdstring\'.')
 @secure()
 param testUserObjectIdstring string = ''
 

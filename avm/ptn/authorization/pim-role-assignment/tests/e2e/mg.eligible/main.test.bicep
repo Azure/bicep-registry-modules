@@ -15,7 +15,7 @@ param serviceShort string = 'pimgmin'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-@description('Required. Principle ID of the user. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'testUserObjectIdstring\'.')
+@description('Required. Principle ID of the user. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-testUserObjectIdstring\'.')
 @secure()
 param testUserObjectIdstring string = ''
 
