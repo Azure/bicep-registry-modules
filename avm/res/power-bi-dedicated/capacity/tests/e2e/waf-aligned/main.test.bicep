@@ -51,13 +51,8 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      location: resourceLocation
       sku: {
         capacity: 1
-      }
-      lock: {
-        kind: 'CanNotDelete'
-        name: 'myCustomLockName'
       }
       members: [
         nestedDependencies.outputs.managedIdentityPrincipalId
