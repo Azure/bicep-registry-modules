@@ -17,7 +17,7 @@ This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.ContainerService/managedClusters` | [2024-03-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerService/2024-03-02-preview/managedClusters) |
+| `Microsoft.ContainerService/managedClusters` | [2024-09-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerService/2024-09-02-preview/managedClusters) |
 | `Microsoft.ContainerService/managedClusters/agentPools` | [2024-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerService/2024-09-01/managedClusters/agentPools) |
 | `Microsoft.ContainerService/managedClusters/maintenanceConfigurations` | [2023-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerService/2023-10-01/managedClusters/maintenanceConfigurations) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
@@ -2141,7 +2141,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         enableAutoScaling: true
         maxCount: 3
         maxPods: 50
-        minCount: 3
+        minCount: 1
         mode: 'System'
         name: 'systempool'
         nodeTaints: [
@@ -2168,7 +2168,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         enableAutoScaling: true
         maxCount: 3
         maxPods: 50
-        minCount: 3
+        minCount: 1
         minPods: 2
         mode: 'User'
         name: 'userpool1'
@@ -2190,7 +2190,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         enableAutoScaling: true
         maxCount: 3
         maxPods: 50
-        minCount: 3
+        minCount: 1
         minPods: 2
         mode: 'User'
         name: 'userpool2'
@@ -2317,7 +2317,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "enableAutoScaling": true,
           "maxCount": 3,
           "maxPods": 50,
-          "minCount": 3,
+          "minCount": 1,
           "mode": "System",
           "name": "systempool",
           "nodeTaints": [
@@ -2348,7 +2348,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "enableAutoScaling": true,
           "maxCount": 3,
           "maxPods": 50,
-          "minCount": 3,
+          "minCount": 1,
           "minPods": 2,
           "mode": "User",
           "name": "userpool1",
@@ -2370,7 +2370,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
           "enableAutoScaling": true,
           "maxCount": 3,
           "maxPods": 50,
-          "minCount": 3,
+          "minCount": 1,
           "minPods": 2,
           "mode": "User",
           "name": "userpool2",
@@ -2527,7 +2527,7 @@ param primaryAgentPoolProfiles = [
     enableAutoScaling: true
     maxCount: 3
     maxPods: 50
-    minCount: 3
+    minCount: 1
     mode: 'System'
     name: 'systempool'
     nodeTaints: [
@@ -2554,7 +2554,7 @@ param agentPools = [
     enableAutoScaling: true
     maxCount: 3
     maxPods: 50
-    minCount: 3
+    minCount: 1
     minPods: 2
     mode: 'User'
     name: 'userpool1'
@@ -2576,7 +2576,7 @@ param agentPools = [
     enableAutoScaling: true
     maxCount: 3
     maxPods: 50
-    minCount: 3
+    minCount: 1
     minPods: 2
     mode: 'User'
     name: 'userpool2'
