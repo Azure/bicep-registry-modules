@@ -2,7 +2,6 @@ targetScope = 'tenant'
 
 metadata name = 'subscription-placement'
 metadata description = 'This module allows for placement of subscriptions to management groups '
-metadata owner = 'Azure/module-maintainers'
 
 // ------------------
 //    PARAMETERS
