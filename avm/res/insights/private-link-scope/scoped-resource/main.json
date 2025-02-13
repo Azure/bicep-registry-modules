@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "16373447809622934069"
+      "version": "0.33.93.31351",
+      "templateHash": "18319290317274254807"
     },
     "name": "Private Link Scope Scoped Resources",
     "description": "This module deploys a Private Link Scope Scoped Resource."
