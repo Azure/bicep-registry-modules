@@ -79,6 +79,7 @@ body:
         - "avm/res/app/container-app"
         - "avm/res/app/job"
         - "avm/res/app/managed-environment"
+        - "avm/res/app/session-pool"
         - "avm/res/automation/automation-account"
         - "avm/res/azure-stack-hci/cluster"
         - "avm/res/batch/batch-account"
