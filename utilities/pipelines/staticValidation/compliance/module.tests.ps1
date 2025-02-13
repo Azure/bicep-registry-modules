@@ -1016,18 +1016,12 @@ Describe 'Module tests' -Tag 'Module' {
                 $incorrectCrossReferences = [System.Collections.ArrayList]@()
                 foreach ($referencedModule in $referencesWithTelemetry) {
                     if (-not $referencedModule.properties.parameters.ContainsKey('enableTelemetry') -or $referencedModule.properties.parameters.enableTelemetry.value -ne $false) {
+                        # remember the names (e.g. 'virtualNetwork_subnets') to provide a better error message
                         $incorrectCrossReferences.Add($referencedModule.identifier)
                     }
                 }
 
-                if ($incorrectCrossReferences.Count -gt 0) {
-                    $warningMessage = ('Cross reference modules must be referenced with the enableTelemetry parameter set to false. Found incorrect references: [{0}].' -f ($incorrectCrossReferences -join ', '))
-                    Write-Warning $warningMessage
-
-                    Write-Output @{
-                        Warning = $warningMessage
-                    }
-                }
+                $incorrectCrossReferences | Should -BeNullOrEmpty -Because ('cross reference modules must be referenced with the enableTelemetry parameter set to false. Found incorrect items: [{0}].' -f ($incorrectCrossReferences -join ', '))
             }
         }
 
