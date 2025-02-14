@@ -47,6 +47,7 @@
 /avm/res/app-configuration/configuration-store/ @Azure/avm-res-appconfiguration-configurationstore-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/automation/automation-account/ @Azure/avm-res-automation-automationaccount-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/azure-stack-hci/cluster/ @Azure/avm-res-azurestackhci-cluster-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/res/azure-stack-hci/logical-networks/ @Azure/avm-res-azurestackhci-logicalnetworks-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/batch/batch-account/ @Azure/avm-res-batch-batchaccount-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/cache/redis/ @Azure/avm-res-cache-redis-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/cdn/profile/ @Azure/avm-res-cdn-profile-module-owners-bicep @Azure/avm-module-reviewers-bicep
@@ -103,6 +104,7 @@
 /avm/res/insights/scheduled-query-rule/ @Azure/avm-res-insights-scheduledqueryrule-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/insights/webtest/ @Azure/avm-res-insights-webtest-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/key-vault/vault/ @Azure/avm-res-keyvault-vault-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/res/kubernetes/connected-clusters/ @Azure/avm-res-kubernetes-connectedclusters-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/kubernetes-configuration/extension/ @Azure/avm-res-kubernetesconfiguration-extension-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/kubernetes-configuration/flux-configuration/ @Azure/avm-res-kubernetesconfiguration-fluxconfiguration-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/kusto/cluster/ @Azure/avm-res-kusto-cluster-module-owners-bicep @Azure/avm-module-reviewers-bicep
