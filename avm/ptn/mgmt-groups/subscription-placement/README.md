@@ -1,6 +1,6 @@
 # subscription-placement `[MgmtGroups/SubscriptionPlacement]`
 
-This module allows for placement of subscriptions to management groups 
+This module allows for placement of subscriptions to management groups.
 
 ## Navigation
 
