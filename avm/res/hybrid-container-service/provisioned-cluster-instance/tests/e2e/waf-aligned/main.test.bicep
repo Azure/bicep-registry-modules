@@ -171,6 +171,17 @@ module azlocal '../../../../../azure-stack-hci/cluster/main.bicep' = {
         }
       ]
       subnetMask: '255.255.255.0'
+      driftControlEnforced: true
+      smbSigningEnforced: true
+      smbClusterEncryption: true
+      sideChannelMitigationEnforced: true
+      bitlockerBootVolume: true
+      bitlockerDataVolumes: true
+    }
+    tags: {
+      'hidden-title': 'This is visible in the resource name'
+      Environment: 'Non-Prod'
+      Role: 'DeploymentValidation'
     }
   }
 }
