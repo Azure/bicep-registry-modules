@@ -204,7 +204,7 @@ resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (!empt
   }
 }
 
-resource cMKManagedDiskKeyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (!empty(customerManagedKeyManagedDisk.?keyVaultResourceId)) {
+resource cMKManagedDiskKeyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (!empty(customerManagedKeyManagedDisk.?keyVaultResourceId) && customerManagedKeyManagedDisk.?keyVaultResourceId != customerManagedKey.?keyVaultResourceId) {
   name: last(split((customerManagedKeyManagedDisk.?keyVaultResourceId ?? 'dummyVault'), '/'))
   scope: resourceGroup(
     split((customerManagedKeyManagedDisk.?keyVaultResourceId ?? '//'), '/')[2],
@@ -336,11 +336,16 @@ resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
               ? {
                   keySource: 'Microsoft.Keyvault'
                   keyVaultProperties: {
-                    keyVaultUri: cMKManagedDiskKeyVault.properties.vaultUri
+                    keyVaultUri: (!empty(customerManagedKeyManagedDisk) && customerManagedKeyManagedDisk!.?keyVaultName != customerManagedKey!.?keyVaultName)
+                      ? cMKManagedDiskKeyVault.properties.vaultUri
+                      : cMKKeyVault.properties.vaultUri
                     keyName: customerManagedKeyManagedDisk!.keyName
-                    keyVersion: !empty(customerManagedKeyManagedDisk.?keyVersion ?? '')
-                      ? customerManagedKeyManagedDisk!.?keyVersion!
-                      : last(split(cMKManagedDiskKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
+                    keyVersion: last(split(
+                      (!empty(customerManagedKeyManagedDisk) && customerManagedKeyManagedDisk!.?keyVaultName != customerManagedKey!.?keyVaultName)
+                        ? cMKManagedDiskKeyVault::cMKKey.properties.keyUriWithVersion
+                        : cMKKeyVault::cMKKey.properties.keyUriWithVersion,
+                      '/'
+                    ))
                   }
                   rotationToLatestKeyVersionEnabled: (customerManagedKeyManagedDisk.?autoRotationEnabled ?? true == true) ?? false
                 }
