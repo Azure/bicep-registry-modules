@@ -18,7 +18,7 @@ param enableTelemetry bool = true
 param identityType string = 'SystemAssigned'
 
 @description('Optional. Tags for the cluster resource')
-param tags object = {}
+param tags object?
 
 @description('Optional. Optional. The Azure AD tenant ID')
 param aadTenantId string = ''
@@ -44,7 +44,7 @@ param workloadIdentityEnabled bool = false
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
-  name: '46d3xbcp.kubernetes-connectedcluster.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  name: '46d3xbcp.res.kubernetes-connectedcluster.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -95,3 +95,18 @@ resource connectedCluster 'Microsoft.Kubernetes/connectedClusters@2024-07-15-pre
     azureHybridBenefit: null
   }
 }
+
+@description('The name of the connected cluster.')
+output name string = connectedCluster.name
+
+@description('The ID of the connected cluster.')
+output resourceId string = connectedCluster.id
+
+@description('The resource group of the connected cluster.')
+output resourceGroupName string = resourceGroup().name
+
+@description('The location of the connected cluster.')
+output location string = connectedCluster.location
+
+@description('The resource ID of the connected cluster.')
+output connectedClusterId string = connectedCluster.id

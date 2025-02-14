@@ -279,7 +279,6 @@ Tags for the cluster resource
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `workloadIdentityEnabled`
 
@@ -291,7 +290,13 @@ Enable workload identity
 
 ## Outputs
 
-_None_
+| Output | Type | Description |
+| :-- | :-- | :-- |
+| `connectedClusterId` | string | The resource ID of the connected cluster. |
+| `location` | string | The location of the connected cluster. |
+| `name` | string | The name of the connected cluster. |
+| `resourceGroupName` | string | The resource group of the connected cluster. |
+| `resourceId` | string | The ID of the connected cluster. |
 
 ## Data Collection
 

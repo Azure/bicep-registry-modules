@@ -1,11 +1,12 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "7442000280695379463"
+      "templateHash": "3087586242230453679"
     },
     "name": "Kubernetes Connected Clusters",
     "description": "Deploy an Azure Arc connected cluster."
@@ -44,7 +45,7 @@
     },
     "tags": {
       "type": "object",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
         "description": "Optional. Tags for the cluster resource"
       }
@@ -96,12 +97,12 @@
       }
     }
   },
-  "resources": [
-    {
+  "resources": {
+    "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[format('46d3xbcp.kubernetes-connectedclusters.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "name": "[format('46d3xbcp.res.kubernetes-connectedcluster.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -117,7 +118,7 @@
         }
       }
     },
-    {
+    "connectedCluster": {
       "type": "Microsoft.Kubernetes/connectedClusters",
       "apiVersion": "2024-07-15-preview",
       "name": "[parameters('name')]",
@@ -146,5 +147,42 @@
         "azureHybridBenefit": null
       }
     }
-  ]
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the connected cluster."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The ID of the connected cluster."
+      },
+      "value": "[resourceId('Microsoft.Kubernetes/connectedClusters', parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group of the connected cluster."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location of the connected cluster."
+      },
+      "value": "[reference('connectedCluster', '2024-07-15-preview', 'full').location]"
+    },
+    "connectedClusterId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the connected cluster."
+      },
+      "value": "[resourceId('Microsoft.Kubernetes/connectedClusters', parameters('name'))]"
+    }
+  }
 }
