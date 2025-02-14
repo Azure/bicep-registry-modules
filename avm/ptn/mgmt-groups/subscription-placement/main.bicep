@@ -1,7 +1,7 @@
 targetScope = 'tenant'
 
 metadata name = 'subscription-placement'
-metadata description = 'This module allows for placement of subscriptions to management groups '
+metadata description = 'This module allows for placement of subscriptions to management groups.'
 
 // ------------------
 //    PARAMETERS
