@@ -182,7 +182,7 @@ param workloadIdentityEnabled = true
 | [`agentAutoUpgrade`](#parameter-agentautoupgrade) | string | Enable automatic agent upgrades. |
 | [`enableAzureRBAC`](#parameter-enableazurerbac) | bool | Enable Azure RBAC. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`identityType`](#parameter-identitytype) | string | The identity type for the cluster. Allowed values: "SystemAssigned", "None" |
+| [`identityType`](#parameter-identitytype) | string | The identity type for the cluster. Allowed values: "SystemAssigned", "None". |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`oidcIssuerEnabled`](#parameter-oidcissuerenabled) | bool | Enable OIDC issuer. |
 | [`tags`](#parameter-tags) | object | Tags for the cluster resource. |
@@ -244,7 +244,7 @@ Enable/Disable usage telemetry for module.
 
 ### Parameter: `identityType`
 
-The identity type for the cluster. Allowed values: "SystemAssigned", "None"
+The identity type for the cluster. Allowed values: "SystemAssigned", "None".
 
 - Required: No
 - Type: string

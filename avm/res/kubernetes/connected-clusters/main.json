@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "2950911863972139904"
+      "templateHash": "15406540205079791461"
     },
     "name": "Kubernetes Connected Clusters",
     "description": "Deploy an Azure Arc connected cluster."
@@ -40,7 +40,7 @@
         "None"
       ],
       "metadata": {
-        "description": "Optional. The identity type for the cluster. Allowed values: \"SystemAssigned\", \"None\""
+        "description": "Optional. The identity type for the cluster. Allowed values: \"SystemAssigned\", \"None\"."
       }
     },
     "tags": {

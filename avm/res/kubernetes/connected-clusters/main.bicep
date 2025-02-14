@@ -10,7 +10,7 @@ param location string = resourceGroup().location
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-@description('Optional. The identity type for the cluster. Allowed values: "SystemAssigned", "None"')
+@description('Optional. The identity type for the cluster. Allowed values: "SystemAssigned", "None".')
 @allowed([
   'SystemAssigned'
   'None'
