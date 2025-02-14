@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "3087586242230453679"
+      "templateHash": "2950911863972139904"
     },
     "name": "Kubernetes Connected Clusters",
     "description": "Deploy an Azure Arc connected cluster."
@@ -47,28 +47,28 @@
       "type": "object",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Tags for the cluster resource"
+        "description": "Optional. Tags for the cluster resource."
       }
     },
     "aadTenantId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. Optional. The Azure AD tenant ID"
+        "description": "Optional. Optional. The Azure AD tenant ID."
       }
     },
     "aadAdminGroupObjectIds": {
       "type": "array",
       "defaultValue": [],
       "metadata": {
-        "description": "Optional. The Azure AD admin group object IDs"
+        "description": "Optional. The Azure AD admin group object IDs."
       }
     },
     "enableAzureRBAC": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. Enable Azure RBAC"
+        "description": "Optional. Enable Azure RBAC."
       }
     },
     "agentAutoUpgrade": {
@@ -79,21 +79,21 @@
         "Disabled"
       ],
       "metadata": {
-        "description": "Optional. Enable automatic agent upgrades"
+        "description": "Optional. Enable automatic agent upgrades."
       }
     },
     "oidcIssuerEnabled": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. Enable OIDC issuer"
+        "description": "Optional. Enable OIDC issuer."
       }
     },
     "workloadIdentityEnabled": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. Enable workload identity"
+        "description": "Optional. Enable workload identity."
       }
     }
   },

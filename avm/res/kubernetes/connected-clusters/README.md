@@ -177,16 +177,16 @@ param workloadIdentityEnabled = true
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`aadAdminGroupObjectIds`](#parameter-aadadmingroupobjectids) | array | The Azure AD admin group object IDs |
-| [`aadTenantId`](#parameter-aadtenantid) | string | Optional. The Azure AD tenant ID |
-| [`agentAutoUpgrade`](#parameter-agentautoupgrade) | string | Enable automatic agent upgrades |
-| [`enableAzureRBAC`](#parameter-enableazurerbac) | bool | Enable Azure RBAC |
+| [`aadAdminGroupObjectIds`](#parameter-aadadmingroupobjectids) | array | The Azure AD admin group object IDs. |
+| [`aadTenantId`](#parameter-aadtenantid) | string | Optional. The Azure AD tenant ID. |
+| [`agentAutoUpgrade`](#parameter-agentautoupgrade) | string | Enable automatic agent upgrades. |
+| [`enableAzureRBAC`](#parameter-enableazurerbac) | bool | Enable Azure RBAC. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`identityType`](#parameter-identitytype) | string | The identity type for the cluster. Allowed values: "SystemAssigned", "None" |
 | [`location`](#parameter-location) | string | Location for all Resources. |
-| [`oidcIssuerEnabled`](#parameter-oidcissuerenabled) | bool | Enable OIDC issuer |
-| [`tags`](#parameter-tags) | object | Tags for the cluster resource |
-| [`workloadIdentityEnabled`](#parameter-workloadidentityenabled) | bool | Enable workload identity |
+| [`oidcIssuerEnabled`](#parameter-oidcissuerenabled) | bool | Enable OIDC issuer. |
+| [`tags`](#parameter-tags) | object | Tags for the cluster resource. |
+| [`workloadIdentityEnabled`](#parameter-workloadidentityenabled) | bool | Enable workload identity. |
 
 ### Parameter: `name`
 
@@ -197,7 +197,7 @@ The name of the Azure Arc connected cluster.
 
 ### Parameter: `aadAdminGroupObjectIds`
 
-The Azure AD admin group object IDs
+The Azure AD admin group object IDs.
 
 - Required: No
 - Type: array
@@ -205,7 +205,7 @@ The Azure AD admin group object IDs
 
 ### Parameter: `aadTenantId`
 
-Optional. The Azure AD tenant ID
+Optional. The Azure AD tenant ID.
 
 - Required: No
 - Type: string
@@ -213,7 +213,7 @@ Optional. The Azure AD tenant ID
 
 ### Parameter: `agentAutoUpgrade`
 
-Enable automatic agent upgrades
+Enable automatic agent upgrades.
 
 - Required: No
 - Type: string
@@ -228,7 +228,7 @@ Enable automatic agent upgrades
 
 ### Parameter: `enableAzureRBAC`
 
-Enable Azure RBAC
+Enable Azure RBAC.
 
 - Required: No
 - Type: bool
@@ -267,7 +267,7 @@ Location for all Resources.
 
 ### Parameter: `oidcIssuerEnabled`
 
-Enable OIDC issuer
+Enable OIDC issuer.
 
 - Required: No
 - Type: bool
@@ -275,14 +275,14 @@ Enable OIDC issuer
 
 ### Parameter: `tags`
 
-Tags for the cluster resource
+Tags for the cluster resource.
 
 - Required: No
 - Type: object
 
 ### Parameter: `workloadIdentityEnabled`
 
-Enable workload identity
+Enable workload identity.
 
 - Required: No
 - Type: bool

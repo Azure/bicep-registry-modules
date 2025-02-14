@@ -17,29 +17,29 @@ param enableTelemetry bool = true
 ])
 param identityType string = 'SystemAssigned'
 
-@description('Optional. Tags for the cluster resource')
+@description('Optional. Tags for the cluster resource.')
 param tags object?
 
-@description('Optional. Optional. The Azure AD tenant ID')
+@description('Optional. Optional. The Azure AD tenant ID.')
 param aadTenantId string = ''
 
-@description('Optional. The Azure AD admin group object IDs')
+@description('Optional. The Azure AD admin group object IDs.')
 param aadAdminGroupObjectIds array = []
 
-@description('Optional. Enable Azure RBAC')
+@description('Optional. Enable Azure RBAC.')
 param enableAzureRBAC bool = false
 
-@description('Optional. Enable automatic agent upgrades')
+@description('Optional. Enable automatic agent upgrades.')
 @allowed([
   'Enabled'
   'Disabled'
 ])
 param agentAutoUpgrade string = 'Enabled'
 
-@description('Optional. Enable OIDC issuer')
+@description('Optional. Enable OIDC issuer.')
 param oidcIssuerEnabled bool = false
 
-@description('Optional. Enable workload identity')
+@description('Optional. Enable workload identity.')
 param workloadIdentityEnabled bool = false
 
 #disable-next-line no-deployments-resources
