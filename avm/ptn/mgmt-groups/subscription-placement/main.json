@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "2325138724313533895"
+      "templateHash": "1512617397431432841"
     },
     "name": "subscription-placement",
-    "description": "This module allows for placement of subscriptions to management groups ",
-    "owner": "Azure/module-maintainers"
+    "description": "This module allows for placement of subscriptions to management groups "
   },
   "definitions": {
     "subscriptionPlacementType": {
@@ -31,6 +30,10 @@
             "description": "Required. The list of subscription IDs to be placed underneath the management group."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a subscription placement."
       }
     }
   },
@@ -105,12 +108,13 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-08-01/tenantDeploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.33.13.18514",
-              "templateHash": "10679020409212079790"
+              "templateHash": "6413058457168295861"
             }
           },
           "parameters": {
@@ -122,13 +126,16 @@
             },
             "subscriptionIds": {
               "type": "array",
+              "items": {
+                "type": "string"
+              },
               "metadata": {
                 "description": "The list of subscription IDs."
               }
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "customSubscriptionPlacement": {
               "copy": {
                 "name": "customSubscriptionPlacement",
                 "count": "[length(parameters('subscriptionIds'))]"
@@ -137,7 +144,7 @@
               "apiVersion": "2023-04-01",
               "name": "[format('{0}/{1}', parameters('managementGroupId'), parameters('subscriptionIds')[copyIndex()])]"
             }
-          ],
+          },
           "outputs": {
             "subscriptionPlacements": {
               "type": "array",
