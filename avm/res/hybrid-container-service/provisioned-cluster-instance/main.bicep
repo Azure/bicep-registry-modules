@@ -10,14 +10,6 @@ param location string = resourceGroup().location
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-//
-// Add your parameters here
-//
-
-// ============== //
-// Resources      //
-// ============== //
-
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.hybcontsvc-provclustinst.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
@@ -209,21 +201,6 @@ module connectedCluster '../../kubernetes/connected-clusters/main.bicep' = {
     workloadIdentityEnabled: workloadIdentityEnabled
   }
 }
-
-// resource waitAksVhdReady 'Microsoft.Resources/deploymentScripts@2020-10-01' = if (!isExported) {
-//   name: 'waitAksVhdReady'
-//   location: resourceGroup().location
-//   kind: 'AzurePowerShell'
-//   properties: {
-//     azPowerShellVersion: '7.0'
-//     scriptContent: loadTextContent('readiness.ps1')
-//     arguments: '-customLocationResourceId ${customLocationId} -kubernetesVersion ${empty(kubernetesVersion) ? '[PLACEHOLDER]' : kubernetesVersion} -osSku ${agentPoolProfiles[0].osSKU}'
-//     timeout: 'PT1H'
-//     cleanupPreference: 'OnSuccess'
-//     retentionInterval: 'P1D'
-//     forceUpdateTag: resourceGroup().name
-//   }
-// }
 
 resource existingCluster 'Microsoft.Kubernetes/connectedClusters@2024-07-15-preview' existing = {
   name: name
