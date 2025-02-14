@@ -191,7 +191,7 @@ resource customLocation 'Microsoft.ExtendedLocation/customLocations@2021-08-31-p
   name: azlocal.outputs.customLocationName
 }
 
-module logicalNetwork '../../../../../azure-stack-hci/logical-networks/main.bicep' = {
+module logicalNetwork '../../../../../azure-stack-hci/logical-network/main.bicep' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-logicalNetwork-${serviceShort}'
   scope: resourceGroup
   params: {

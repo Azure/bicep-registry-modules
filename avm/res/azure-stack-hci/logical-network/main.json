@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "3584908245156306342"
+      "templateHash": "3694253396925660799"
     },
     "name": "Azure Stack HCI Logical Networks",
     "description": "This module deploys an Azure Stack HCI Logical Network."
@@ -153,7 +153,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[take(format('46d3xbcp.res.azurestackhci-logicalnetworks.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
+      "name": "[take(format('46d3xbcp.res.azurestackhci-logicalnetwork.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
       "properties": {
         "mode": "Incremental",
         "template": {

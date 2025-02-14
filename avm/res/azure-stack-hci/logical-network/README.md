@@ -22,7 +22,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm/res/azure-stack-hci/logical-networks:<version>`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/azure-stack-hci/logical-network:<version>`.
 
 - [Deploy azure stack hci logical network in default configuration](#example-1-deploy-azure-stack-hci-logical-network-in-default-configuration)
 - [Deploy azure stack hci logical network in WAF aligned configuration](#example-2-deploy-azure-stack-hci-logical-network-in-waf-aligned-configuration)
@@ -37,8 +37,8 @@ This test deploys an azure stack hci logical network.
 <summary>via Bicep module</summary>
 
 ```bicep
-module logicalNetworks 'br/public:avm/res/azure-stack-hci/logical-networks:<version>' = {
-  name: 'logicalNetworksDeployment'
+module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:<version>' = {
+  name: 'logicalNetworkDeployment'
   params: {
     // Required parameters
     customLocationId: '<customLocationId>'
@@ -124,7 +124,7 @@ module logicalNetworks 'br/public:avm/res/azure-stack-hci/logical-networks:<vers
 <summary>via Bicep parameters file</summary>
 
 ```bicep-params
-using 'br/public:avm/res/azure-stack-hci/logical-networks:<version>'
+using 'br/public:avm/res/azure-stack-hci/logical-network:<version>'
 
 // Required parameters
 param customLocationId = '<customLocationId>'
@@ -157,8 +157,8 @@ This test deploys an azure stack hci logical network.
 <summary>via Bicep module</summary>
 
 ```bicep
-module logicalNetworks 'br/public:avm/res/azure-stack-hci/logical-networks:<version>' = {
-  name: 'logicalNetworksDeployment'
+module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:<version>' = {
+  name: 'logicalNetworkDeployment'
   params: {
     // Required parameters
     customLocationId: '<customLocationId>'
@@ -244,7 +244,7 @@ module logicalNetworks 'br/public:avm/res/azure-stack-hci/logical-networks:<vers
 <summary>via Bicep parameters file</summary>
 
 ```bicep-params
-using 'br/public:avm/res/azure-stack-hci/logical-networks:<version>'
+using 'br/public:avm/res/azure-stack-hci/logical-network:<version>'
 
 // Required parameters
 param customLocationId = '<customLocationId>'
