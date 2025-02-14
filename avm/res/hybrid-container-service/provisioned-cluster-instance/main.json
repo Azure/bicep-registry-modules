@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "5766367538277513127"
+      "templateHash": "6608423374289101796"
     },
     "name": "Hybrid Container Service Provisioned Cluster Instance",
     "description": "Deploy a provisioned cluster instance."
@@ -393,16 +393,16 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "13039775081403624300"
+              "templateHash": "15406540205079791461"
             },
             "name": "Kubernetes Connected Clusters",
-            "description": "Deploy an Azure Arc connected cluster.",
-            "owner": "Azure/module-maintainers"
+            "description": "Deploy an Azure Arc connected cluster."
           },
           "parameters": {
             "name": {
@@ -433,35 +433,35 @@
                 "None"
               ],
               "metadata": {
-                "description": "Optional. The identity type for the cluster. Allowed values: \"SystemAssigned\", \"None\""
+                "description": "Optional. The identity type for the cluster. Allowed values: \"SystemAssigned\", \"None\"."
               }
             },
             "tags": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
-                "description": "Optional. Tags for the cluster resource"
+                "description": "Optional. Tags for the cluster resource."
               }
             },
             "aadTenantId": {
               "type": "string",
               "defaultValue": "",
               "metadata": {
-                "description": "Optional. Optional. The Azure AD tenant ID"
+                "description": "Optional. Optional. The Azure AD tenant ID."
               }
             },
             "aadAdminGroupObjectIds": {
               "type": "array",
               "defaultValue": [],
               "metadata": {
-                "description": "Optional. The Azure AD admin group object IDs"
+                "description": "Optional. The Azure AD admin group object IDs."
               }
             },
             "enableAzureRBAC": {
               "type": "bool",
               "defaultValue": false,
               "metadata": {
-                "description": "Optional. Enable Azure RBAC"
+                "description": "Optional. Enable Azure RBAC."
               }
             },
             "agentAutoUpgrade": {
@@ -472,30 +472,30 @@
                 "Disabled"
               ],
               "metadata": {
-                "description": "Optional. Enable automatic agent upgrades"
+                "description": "Optional. Enable automatic agent upgrades."
               }
             },
             "oidcIssuerEnabled": {
               "type": "bool",
               "defaultValue": false,
               "metadata": {
-                "description": "Optional. Enable OIDC issuer"
+                "description": "Optional. Enable OIDC issuer."
               }
             },
             "workloadIdentityEnabled": {
               "type": "bool",
               "defaultValue": false,
               "metadata": {
-                "description": "Optional. Enable workload identity"
+                "description": "Optional. Enable workload identity."
               }
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.kubernetes-connectedclusters.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.kubernetes-connectedcluster.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -511,7 +511,7 @@
                 }
               }
             },
-            {
+            "connectedCluster": {
               "type": "Microsoft.Kubernetes/connectedClusters",
               "apiVersion": "2024-07-15-preview",
               "name": "[parameters('name')]",
@@ -540,7 +540,44 @@
                 "azureHybridBenefit": null
               }
             }
-          ]
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the connected cluster."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The ID of the connected cluster."
+              },
+              "value": "[resourceId('Microsoft.Kubernetes/connectedClusters', parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group of the connected cluster."
+              },
+              "value": "[resourceGroup().name]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location of the connected cluster."
+              },
+              "value": "[reference('connectedCluster', '2024-07-15-preview', 'full').location]"
+            },
+            "connectedClusterId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the connected cluster."
+              },
+              "value": "[resourceId('Microsoft.Kubernetes/connectedClusters', parameters('name'))]"
+            }
+          }
         }
       }
     }
