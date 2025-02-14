@@ -5,11 +5,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "1484234915474331001"
+      "templateHash": "7442000280695379463"
     },
     "name": "Kubernetes Connected Clusters",
-    "description": "Deploy an Azure Arc connected cluster.",
-    "owner": "Azure/module-maintainers"
+    "description": "Deploy an Azure Arc connected cluster."
   },
   "parameters": {
     "name": {
@@ -102,7 +101,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[format('46d3xbcp.[[REPLACE WITH TELEMETRY IDENTIFIER]].{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "name": "[format('46d3xbcp.kubernetes-connectedclusters.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -120,8 +119,9 @@
     },
     {
       "type": "Microsoft.Kubernetes/connectedClusters",
-      "apiVersion": "2024-12-01-preview",
+      "apiVersion": "2024-07-15-preview",
       "name": "[parameters('name')]",
+      "kind": "ProvisionedCluster",
       "location": "[parameters('location')]",
       "identity": {
         "type": "[parameters('identityType')]"
