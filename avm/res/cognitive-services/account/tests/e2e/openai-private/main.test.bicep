@@ -57,11 +57,11 @@ module testDeployment '../../../main.bicep' = [
       customSubDomainName: '${namePrefix}x${serviceShort}ai'
       deployments: [
         {
-          name: 'gpt-35-turbo'
+          name: 'gpt-4'
           model: {
             format: 'OpenAI'
-            name: 'gpt-35-turbo'
-            version: '0301'
+            name: 'gpt-4'
+            version: '0613'
           }
           sku: {
             name: 'Standard'
