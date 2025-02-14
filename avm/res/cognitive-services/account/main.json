@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "18199854346329100828"
+      "templateHash": "9552846141286344125"
     },
     "name": "Cognitive Services",
     "description": "This module deploys a Cognitive Service."
@@ -2232,6 +2232,9 @@
     },
     "privateEndpoints": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/privateEndpointOutputType"
+      },
       "metadata": {
         "description": "The private endpoints of the congitive services account."
       },
