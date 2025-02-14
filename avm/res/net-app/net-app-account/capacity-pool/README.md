@@ -14,7 +14,7 @@ This module deploys an Azure NetApp Files Capacity Pool.
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.NetApp/netAppAccounts/capacityPools` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-03-01/netAppAccounts/capacityPools) |
+| `Microsoft.NetApp/netAppAccounts/capacityPools` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-07-01/netAppAccounts/capacityPools) |
 | `Microsoft.NetApp/netAppAccounts/capacityPools/volumes` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-07-01/netAppAccounts/capacityPools/volumes) |
 
 ## Parameters
@@ -390,8 +390,6 @@ Replication properties.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`endpointType`](#parameter-volumesdataprotectionreplicationendpointtype) | string | Indicates whether the local volume is the source or destination for the Volume Replication. |
-| [`remoteVolumeRegion`](#parameter-volumesdataprotectionreplicationremotevolumeregion) | string | The remote region for the other end of the Volume Replication. |
-| [`remoteVolumeResourceId`](#parameter-volumesdataprotectionreplicationremotevolumeresourceid) | string | The resource ID of the remote volume. |
 | [`replicationSchedule`](#parameter-volumesdataprotectionreplicationreplicationschedule) | string | The replication schedule for the volume. |
 
 **Optional parameters**
@@ -399,6 +397,8 @@ Replication properties.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`remotePath`](#parameter-volumesdataprotectionreplicationremotepath) | object | The full path to a volume that is to be migrated into ANF. Required for Migration volumes. |
+| [`remoteVolumeRegion`](#parameter-volumesdataprotectionreplicationremotevolumeregion) | string | The remote region for the other end of the Volume Replication.Required for Data Protection volumes. |
+| [`remoteVolumeResourceId`](#parameter-volumesdataprotectionreplicationremotevolumeresourceid) | string | The resource ID of the remote volume. Required for Data Protection volumes. |
 
 ### Parameter: `volumes.dataProtection.replication.endpointType`
 
@@ -413,20 +413,6 @@ Indicates whether the local volume is the source or destination for the Volume R
     'src'
   ]
   ```
-
-### Parameter: `volumes.dataProtection.replication.remoteVolumeRegion`
-
-The remote region for the other end of the Volume Replication.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `volumes.dataProtection.replication.remoteVolumeResourceId`
-
-The resource ID of the remote volume.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `volumes.dataProtection.replication.replicationSchedule`
 
@@ -477,6 +463,20 @@ The name of a server on the ONTAP Host.
 The name of a volume on the server.
 
 - Required: Yes
+- Type: string
+
+### Parameter: `volumes.dataProtection.replication.remoteVolumeRegion`
+
+The remote region for the other end of the Volume Replication.Required for Data Protection volumes.
+
+- Required: No
+- Type: string
+
+### Parameter: `volumes.dataProtection.replication.remoteVolumeResourceId`
+
+The resource ID of the remote volume. Required for Data Protection volumes.
+
+- Required: No
 - Type: string
 
 ### Parameter: `volumes.dataProtection.snapshot`
