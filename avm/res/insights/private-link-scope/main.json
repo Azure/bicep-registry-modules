@@ -6,12 +6,75 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "7094979881325722537"
+      "templateHash": "8383151023301417742"
     },
     "name": "Azure Monitor Private Link Scopes",
     "description": "This module deploys an Azure Monitor Private Link Scope."
   },
   "definitions": {
+    "privateEndpointOutputType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "The name of the private endpoint."
+          }
+        },
+        "resourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "The resource ID of the private endpoint."
+          }
+        },
+        "groupId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "The group Id for the private endpoint Group."
+          }
+        },
+        "customDnsConfigs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "fqdn": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "FQDN that resolves to private endpoint IP address."
+                }
+              },
+              "ipAddresses": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "metadata": {
+                  "description": "A list of private IP addresses of the private endpoint."
+                }
+              }
+            }
+          },
+          "metadata": {
+            "description": "The custom DNS configurations of the private endpoint."
+          }
+        },
+        "networkInterfaceResourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "The IDs of the network interfaces associated with the private endpoint."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
     "scopedResourceType": {
       "type": "object",
       "properties": {
@@ -43,9 +106,8 @@
             "properties": {
               "privateEndpointConnectionName": {
                 "type": "string",
-                "nullable": true,
                 "metadata": {
-                  "description": "Optional. The private endpoint connection name associated to the private endpoint on which we want to apply the specific access mode settings."
+                  "description": "Required. The private endpoint connection name associated to the private endpoint on which we want to apply the specific access mode settings."
                 }
               },
               "ingestionAccessMode": {
@@ -70,8 +132,9 @@
               }
             }
           },
+          "nullable": true,
           "metadata": {
-            "description": "Required. List of exclusions that override the default access mode settings for specific private endpoint connections. Exclusions for the current created Private endpoints can only be applied post initial provisioning."
+            "description": "Optional. List of exclusions that override the default access mode settings for specific private endpoint connections. Exclusions for the current created Private endpoints can only be applied post initial provisioning."
           }
         },
         "ingestionAccessMode": {
@@ -1508,17 +1571,20 @@
     },
     "privateEndpoints": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/privateEndpointOutputType"
+      },
       "metadata": {
         "description": "The private endpoints of the private link scope."
       },
       "copy": {
-        "count": "[length(if(not(empty(parameters('privateEndpoints'))), array(parameters('privateEndpoints')), createArray()))]",
+        "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]",
         "input": {
           "name": "[reference(format('privateLinkScope_privateEndpoints[{0}]', copyIndex())).outputs.name.value]",
           "resourceId": "[reference(format('privateLinkScope_privateEndpoints[{0}]', copyIndex())).outputs.resourceId.value]",
           "groupId": "[tryGet(tryGet(reference(format('privateLinkScope_privateEndpoints[{0}]', copyIndex())).outputs, 'groupId'), 'value')]",
-          "customDnsConfig": "[reference(format('privateLinkScope_privateEndpoints[{0}]', copyIndex())).outputs.customDnsConfigs.value]",
-          "networkInterfaceIds": "[reference(format('privateLinkScope_privateEndpoints[{0}]', copyIndex())).outputs.networkInterfaceResourceIds.value]"
+          "customDnsConfigs": "[reference(format('privateLinkScope_privateEndpoints[{0}]', copyIndex())).outputs.customDnsConfigs.value]",
+          "networkInterfaceResourceIds": "[reference(format('privateLinkScope_privateEndpoints[{0}]', copyIndex())).outputs.networkInterfaceResourceIds.value]"
         }
       }
     }

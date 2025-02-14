@@ -1126,64 +1126,14 @@ Specifies the access mode of ingestion or queries through associated private end
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`exclusions`](#parameter-accessmodesettingsexclusions) | array | List of exclusions that override the default access mode settings for specific private endpoint connections. Exclusions for the current created Private endpoints can only be applied post initial provisioning. |
 | [`ingestionAccessMode`](#parameter-accessmodesettingsingestionaccessmode) | string | Specifies the default access mode of ingestion through associated private endpoints in scope. Default is "Open" if no private endpoints are configured and will be set to "PrivateOnly" if private endpoints are configured. Override default behaviour by explicitly providing a value. |
 | [`queryAccessMode`](#parameter-accessmodesettingsqueryaccessmode) | string | Specifies the default access mode of queries through associated private endpoints in scope. Default is "Open" if no private endpoints are configured and will be set to "PrivateOnly" if private endpoints are configured. Override default behaviour by explicitly providing a value. |
-
-### Parameter: `accessModeSettings.exclusions`
-
-List of exclusions that override the default access mode settings for specific private endpoint connections. Exclusions for the current created Private endpoints can only be applied post initial provisioning.
-
-- Required: Yes
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`ingestionAccessMode`](#parameter-accessmodesettingsexclusionsingestionaccessmode) | string | Specifies the access mode of ingestion through the specified private endpoint connection in the exclusion. |
-| [`queryAccessMode`](#parameter-accessmodesettingsexclusionsqueryaccessmode) | string | Specifies the access mode of queries through the specified private endpoint connection in the exclusion. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`privateEndpointConnectionName`](#parameter-accessmodesettingsexclusionsprivateendpointconnectionname) | string | The private endpoint connection name associated to the private endpoint on which we want to apply the specific access mode settings. |
-
-### Parameter: `accessModeSettings.exclusions.ingestionAccessMode`
-
-Specifies the access mode of ingestion through the specified private endpoint connection in the exclusion.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Open'
-    'PrivateOnly'
-  ]
-  ```
-
-### Parameter: `accessModeSettings.exclusions.queryAccessMode`
-
-Specifies the access mode of queries through the specified private endpoint connection in the exclusion.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Open'
-    'PrivateOnly'
-  ]
-  ```
-
-### Parameter: `accessModeSettings.exclusions.privateEndpointConnectionName`
-
-The private endpoint connection name associated to the private endpoint on which we want to apply the specific access mode settings.
-
-- Required: No
-- Type: string
+| [`exclusions`](#parameter-accessmodesettingsexclusions) | array | List of exclusions that override the default access mode settings for specific private endpoint connections. Exclusions for the current created Private endpoints can only be applied post initial provisioning. |
 
 ### Parameter: `accessModeSettings.ingestionAccessMode`
 
@@ -1202,6 +1152,56 @@ Specifies the default access mode of ingestion through associated private endpoi
 ### Parameter: `accessModeSettings.queryAccessMode`
 
 Specifies the default access mode of queries through associated private endpoints in scope. Default is "Open" if no private endpoints are configured and will be set to "PrivateOnly" if private endpoints are configured. Override default behaviour by explicitly providing a value.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Open'
+    'PrivateOnly'
+  ]
+  ```
+
+### Parameter: `accessModeSettings.exclusions`
+
+List of exclusions that override the default access mode settings for specific private endpoint connections. Exclusions for the current created Private endpoints can only be applied post initial provisioning.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`ingestionAccessMode`](#parameter-accessmodesettingsexclusionsingestionaccessmode) | string | Specifies the access mode of ingestion through the specified private endpoint connection in the exclusion. |
+| [`privateEndpointConnectionName`](#parameter-accessmodesettingsexclusionsprivateendpointconnectionname) | string | The private endpoint connection name associated to the private endpoint on which we want to apply the specific access mode settings. |
+| [`queryAccessMode`](#parameter-accessmodesettingsexclusionsqueryaccessmode) | string | Specifies the access mode of queries through the specified private endpoint connection in the exclusion. |
+
+### Parameter: `accessModeSettings.exclusions.ingestionAccessMode`
+
+Specifies the access mode of ingestion through the specified private endpoint connection in the exclusion.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Open'
+    'PrivateOnly'
+  ]
+  ```
+
+### Parameter: `accessModeSettings.exclusions.privateEndpointConnectionName`
+
+The private endpoint connection name associated to the private endpoint on which we want to apply the specific access mode settings.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `accessModeSettings.exclusions.queryAccessMode`
+
+Specifies the access mode of queries through the specified private endpoint connection in the exclusion.
 
 - Required: Yes
 - Type: string

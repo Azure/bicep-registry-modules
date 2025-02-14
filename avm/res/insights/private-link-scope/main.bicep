@@ -249,19 +249,43 @@ output resourceGroupName string = resourceGroup().name
 output location string = privateLinkScope.location
 
 @description('The private endpoints of the private link scope.')
-output privateEndpoints array = [
-  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
-    name: privateLinkScope_privateEndpoints[i].outputs.name
-    resourceId: privateLinkScope_privateEndpoints[i].outputs.resourceId
-    groupId: privateLinkScope_privateEndpoints[i].outputs.?groupId
-    customDnsConfig: privateLinkScope_privateEndpoints[i].outputs.customDnsConfigs
-    networkInterfaceIds: privateLinkScope_privateEndpoints[i].outputs.networkInterfaceResourceIds
+output privateEndpoints privateEndpointOutputType[] = [
+  for (item, index) in (privateEndpoints ?? []): {
+    name: privateLinkScope_privateEndpoints[index].outputs.name
+    resourceId: privateLinkScope_privateEndpoints[index].outputs.resourceId
+    groupId: privateLinkScope_privateEndpoints[index].outputs.?groupId!
+    customDnsConfigs: privateLinkScope_privateEndpoints[index].outputs.customDnsConfigs
+    networkInterfaceResourceIds: privateLinkScope_privateEndpoints[index].outputs.networkInterfaceResourceIds
   }
 ]
 
 // =============== //
 //   Definitions   //
 // =============== //
+
+@export()
+type privateEndpointOutputType = {
+  @description('The name of the private endpoint.')
+  name: string
+
+  @description('The resource ID of the private endpoint.')
+  resourceId: string
+
+  @description('The group Id for the private endpoint Group.')
+  groupId: string?
+
+  @description('The custom DNS configurations of the private endpoint.')
+  customDnsConfigs: {
+    @description('FQDN that resolves to private endpoint IP address.')
+    fqdn: string?
+
+    @description('A list of private IP addresses of the private endpoint.')
+    ipAddresses: string[]
+  }[]
+
+  @description('The IDs of the network interfaces associated with the private endpoint.')
+  networkInterfaceResourceIds: string[]
+}
 
 @export()
 @description('The scoped resource type.')
@@ -276,17 +300,17 @@ type scopedResourceType = {
 @export()
 @description('The access mode type.')
 type accessModeType = {
-  @description('Required. List of exclusions that override the default access mode settings for specific private endpoint connections. Exclusions for the current created Private endpoints can only be applied post initial provisioning.')
+  @description('Optional. List of exclusions that override the default access mode settings for specific private endpoint connections. Exclusions for the current created Private endpoints can only be applied post initial provisioning.')
   exclusions: {
-    @description('Optional. The private endpoint connection name associated to the private endpoint on which we want to apply the specific access mode settings.')
-    privateEndpointConnectionName: string?
+    @description('Required. The private endpoint connection name associated to the private endpoint on which we want to apply the specific access mode settings.')
+    privateEndpointConnectionName: string
 
     @description('Required. Specifies the access mode of ingestion through the specified private endpoint connection in the exclusion.')
     ingestionAccessMode: 'Open' | 'PrivateOnly'
 
     @description('Required. Specifies the access mode of queries through the specified private endpoint connection in the exclusion.')
     queryAccessMode: 'Open' | 'PrivateOnly'
-  }[]
+  }[]?
 
   @description('Required. Specifies the default access mode of ingestion through associated private endpoints in scope. Default is "Open" if no private endpoints are configured and will be set to "PrivateOnly" if private endpoints are configured. Override default behaviour by explicitly providing a value.')
   ingestionAccessMode: 'Open' | 'PrivateOnly'
