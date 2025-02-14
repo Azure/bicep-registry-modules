@@ -6,10 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "1512617397431432841"
+      "templateHash": "12502542864893705083"
     },
     "name": "subscription-placement",
-    "description": "This module allows for placement of subscriptions to management groups "
+    "description": "This module allows for placement of subscriptions to management groups."
   },
   "definitions": {
     "subscriptionPlacementType": {
