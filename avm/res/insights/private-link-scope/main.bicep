@@ -120,17 +120,15 @@ resource privateLinkScope 'microsoft.insights/privateLinkScopes@2021-07-01-previ
   location: location
   tags: tags
   properties: {
-    accessModeSettings: !empty(privateEndpoints)
+    accessModeSettings: accessModeSettings ?? (!empty(privateEndpoints)
       ? {
-          ingestionAccessMode: accessModeSettings.?ingestionAccessMode ?? 'PrivateOnly'
-          queryAccessMode: accessModeSettings.?queryAccessMode ?? 'PrivateOnly'
-          exclusions: accessModeSettings.?exclusions ?? []
+          ingestionAccessMode: 'PrivateOnly'
+          queryAccessMode: 'PrivateOnly'
         }
-      : accessModeSettings ?? {
-          ingestionAccessMode: accessModeSettings.?ingestionAccessMode ?? 'Open'
-          queryAccessMode: accessModeSettings.?queryAccessMode ?? 'Open'
-          exclusions: accessModeSettings.?exclusions ?? []
-        }
+      : {
+          ingestionAccessMode: 'Open'
+          queryAccessMode: 'Open'
+        })
   }
 }
 

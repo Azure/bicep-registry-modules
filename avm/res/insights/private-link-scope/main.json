@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "5793647140036777485"
+      "templateHash": "11329844199871738536"
     },
     "name": "Azure Monitor Private Link Scopes",
     "description": "This module deploys an Azure Monitor Private Link Scope."
@@ -649,7 +649,7 @@
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "properties": {
-        "accessModeSettings": "[if(not(empty(parameters('privateEndpoints'))), createObject('ingestionAccessMode', coalesce(tryGet(parameters('accessModeSettings'), 'ingestionAccessMode'), 'PrivateOnly'), 'queryAccessMode', coalesce(tryGet(parameters('accessModeSettings'), 'queryAccessMode'), 'PrivateOnly'), 'exclusions', coalesce(tryGet(parameters('accessModeSettings'), 'exclusions'), createArray())), coalesce(parameters('accessModeSettings'), createObject('ingestionAccessMode', coalesce(tryGet(parameters('accessModeSettings'), 'ingestionAccessMode'), 'Open'), 'queryAccessMode', coalesce(tryGet(parameters('accessModeSettings'), 'queryAccessMode'), 'Open'), 'exclusions', coalesce(tryGet(parameters('accessModeSettings'), 'exclusions'), createArray()))))]"
+        "accessModeSettings": "[coalesce(parameters('accessModeSettings'), if(not(empty(parameters('privateEndpoints'))), createObject('ingestionAccessMode', 'PrivateOnly', 'queryAccessMode', 'PrivateOnly'), createObject('ingestionAccessMode', 'Open', 'queryAccessMode', 'Open')))]"
       }
     },
     "privateLinkScope_lock": {
