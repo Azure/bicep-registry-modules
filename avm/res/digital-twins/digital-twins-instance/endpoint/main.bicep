@@ -22,20 +22,20 @@ var identity = !empty(properties.?authentication.?managedIdentities)
 resource eventGridTopic 'Microsoft.EventGrid/topics@2022-06-15' existing = if (properties.endpointType == 'EventGrid') {
   name: last(split(properties.?eventGridTopicResourceId, '/'))
   scope: resourceGroup(
-    split((properties.?eventGridTopicResourceId ?? '//'), '/')[2],
-    split((properties.?eventGridTopicResourceId ?? '////'), '/')[4]
+    split(properties.?eventGridTopicResourceId, '/')[2],
+    split(properties.?eventGridTopicResourceId, '/')[4]
   )
 }
 
 resource eventHubNamespace 'Microsoft.EventHub/namespaces@2024-01-01' existing = if (properties.endpointType == 'EventHub') {
-  name: split((properties.authentication.eventHubResourceId ?? '////'), '/')[8]
+  name: split(properties.authentication.eventHubResourceId, '/')[8]
   scope: resourceGroup(
-    split((properties.authentication.eventHubResourceId ?? '//'), '/')[2],
-    split((properties.authentication.eventHubResourceId ?? '////'), '/')[4]
+    split(properties.authentication.eventHubResourceId, '/')[2],
+    split(properties.authentication.eventHubResourceId, '/')[4]
   )
 
   resource eventHub 'eventhubs@2024-01-01' existing = if (properties.endpointType == 'EventHub') {
-    name: last(split((properties.authentication.eventHubResourceId ?? '/'), '/'))
+    name: last(split(properties.authentication.eventHubResourceId, '/'))
 
     resource authorizationRule 'authorizationRules@2024-01-01' existing = if (!empty(properties.authentication.?eventHubAuthorizationRuleName)) {
       name: properties.authentication.?eventHubAuthorizationRuleName
@@ -46,12 +46,12 @@ resource eventHubNamespace 'Microsoft.EventHub/namespaces@2024-01-01' existing =
 resource serviceBusNamespace 'Microsoft.ServiceBus/namespaces@2024-01-01' existing = if (properties.endpointType == 'ServiceBus') {
   name: split(properties.authentication.serviceBusNamespaceTopicResourceId, '/')[8]
   scope: resourceGroup(
-    split((properties.authentication.serviceBusNamespaceTopicResourceId ?? '//'), '/')[2],
-    split((properties.authentication.serviceBusNamespaceTopicResourceId ?? '////'), '/')[4]
+    split(properties.authentication.serviceBusNamespaceTopicResourceId, '/')[2],
+    split(properties.authentication.serviceBusNamespaceTopicResourceId, '/')[4]
   )
 
   resource topic 'topics@2024-01-01' existing = if (properties.endpointType == 'ServiceBus') {
-    name: last(split((properties.authentication.serviceBusNamespaceTopicResourceId ?? '/'), '/'))
+    name: last(split(properties.authentication.serviceBusNamespaceTopicResourceId, '/'))
 
     resource authorizationRule 'AuthorizationRules@2024-01-01' existing = if (!empty(properties.authentication.?serviceBusNamespaceTopicAuthorizationRuleName)) {
       name: properties.authentication.?serviceBusNamespaceTopicAuthorizationRuleName
