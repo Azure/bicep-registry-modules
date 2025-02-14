@@ -412,7 +412,6 @@ Tags for the logical network.
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `vlanId`
 
@@ -425,7 +424,11 @@ VLan Id for the logical network.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `location` | string | The location of the logical network. |
 | `logicalNetworkId` | string | The resource ID of the logical network. |
+| `name` | string | The name of the logical network. |
+| `resourceGroupName` | string | The resource group of the logical network. |
+| `resourceId` | string | The ID of the logical network. |
 
 ## Data Collection
 

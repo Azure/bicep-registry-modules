@@ -30,7 +30,7 @@ param ipAllocationMethod string = 'Dynamic'
 param dnsServers array = []
 
 @description('Optional. Tags for the logical network.')
-param tags object = {}
+param tags object?
 
 @description('Optional. Address prefix for the logical network.')
 param addressPrefix string?
@@ -57,7 +57,10 @@ param defaultGateway string?
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.azurestackhci-logicalnetworks.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  name: take(
+    '46d3xbcp.res.azurestackhci-logicalnetworks.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}',
+    64
+  )
   properties: {
     mode: 'Incremental'
     template: {
@@ -124,6 +127,18 @@ resource logicalNetwork 'Microsoft.AzureStackHCI/logicalNetworks@2023-09-01-prev
     vmSwitchName: vmSwitchName
   }
 }
+
+@description('The name of the logical network.')
+output name string = logicalNetwork.name
+
+@description('The ID of the logical network.')
+output resourceId string = logicalNetwork.id
+
+@description('The resource group of the logical network.')
+output resourceGroupName string = resourceGroup().name
+
+@description('The location of the logical network.')
+output location string = logicalNetwork.location
 
 @description('The resource ID of the logical network.')
 output logicalNetworkId string = logicalNetwork.id

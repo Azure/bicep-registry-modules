@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "17024139046733276777"
+      "templateHash": "3584908245156306342"
     },
     "name": "Azure Stack HCI Logical Networks",
     "description": "This module deploys an Azure Stack HCI Logical Network."
@@ -71,7 +71,7 @@
     },
     "tags": {
       "type": "object",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
         "description": "Optional. Tags for the logical network."
       }
@@ -153,7 +153,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[format('46d3xbcp.res.azurestackhci-logicalnetworks.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "name": "[take(format('46d3xbcp.res.azurestackhci-logicalnetworks.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -201,6 +201,34 @@
     }
   },
   "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the logical network."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The ID of the logical network."
+      },
+      "value": "[resourceId('Microsoft.AzureStackHCI/logicalNetworks', parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group of the logical network."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location of the logical network."
+      },
+      "value": "[reference('logicalNetwork', '2023-09-01-preview', 'full').location]"
+    },
     "logicalNetworkId": {
       "type": "string",
       "metadata": {
