@@ -29,13 +29,13 @@ on:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
       - ".github/workflows/avm.res.azure-stack-hci.logical-networks.yml"
-      - "avm/res/hybrid-container-service/provisioned-cluster-instance/**"
+      - "avm/res/azure-stack-hci/logical-networks/**"
       - "avm/utilities/pipelines/**"
       - "!avm/utilities/pipelines/platform/**"
       - "!*/**/README.md"
 
 env:
-  modulePath: "avm/res/hybrid-container-service/provisioned-cluster-instance"
+  modulePath: "avm/res/azure-stack-hci/logical-networks"
   workflowPath: ".github/workflows/avm.res.azure-stack-hci.logical-networks.yml"
 
 concurrency:

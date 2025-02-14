@@ -29,13 +29,13 @@ on:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
       - ".github/workflows/avm.res.kubernetes.connected-clusters.yml"
-      - "avm/res/hybrid-container-service/provisioned-cluster-instance/**"
+      - "avm/res/kubernets/connected-clusters/**"
       - "avm/utilities/pipelines/**"
       - "!avm/utilities/pipelines/platform/**"
       - "!*/**/README.md"
 
 env:
-  modulePath: "avm/res/hybrid-container-service/provisioned-cluster-instance"
+  modulePath: "avm/res/kubernets/connected-clusters"
   workflowPath: ".github/workflows/avm.res.kubernetes.connected-clusters.yml"
 
 concurrency:
