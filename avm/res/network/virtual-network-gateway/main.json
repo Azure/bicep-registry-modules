@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "12485861548949491583"
+      "templateHash": "7114757100204147897"
     },
     "name": "Virtual Network Gateways",
     "description": "This module deploys a Virtual Network Gateway."
@@ -749,18 +749,18 @@
       "existing": true,
       "type": "Microsoft.Network/publicIPAddresses",
       "apiVersion": "2024-05-01",
-      "subscriptionId": "[split(coalesce(parameters('existingPrimaryPublicIPResourceId'), '//'), '/')[2]]",
-      "resourceGroup": "[split(coalesce(parameters('existingPrimaryPublicIPResourceId'), '////'), '/')[4]]",
-      "name": "[last(split(coalesce(parameters('existingPrimaryPublicIPResourceId'), 'dummyPip'), '/'))]"
+      "subscriptionId": "[split(parameters('existingPrimaryPublicIPResourceId'), '/')[2]]",
+      "resourceGroup": "[split(parameters('existingPrimaryPublicIPResourceId'), '/')[4]]",
+      "name": "[last(split(parameters('existingPrimaryPublicIPResourceId'), '/'))]"
     },
     "secondaryPublicIP": {
       "condition": "[not(empty(tryGet(parameters('clusterSettings'), 'existingSecondaryPublicIPResourceId')))]",
       "existing": true,
       "type": "Microsoft.Network/publicIPAddresses",
       "apiVersion": "2024-05-01",
-      "subscriptionId": "[split(coalesce(tryGet(parameters('clusterSettings'), 'existingSecondaryPublicIPResourceId'), '//'), '/')[2]]",
-      "resourceGroup": "[split(coalesce(tryGet(parameters('clusterSettings'), 'existingSecondaryPublicIPResourceId'), '////'), '/')[4]]",
-      "name": "[last(split(coalesce(tryGet(parameters('clusterSettings'), 'existingSecondaryPublicIPResourceId'), 'dummyPip'), '/'))]"
+      "subscriptionId": "[split(tryGet(parameters('clusterSettings'), 'existingSecondaryPublicIPResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('clusterSettings'), 'existingSecondaryPublicIPResourceId'), '/')[4]]",
+      "name": "[last(split(tryGet(parameters('clusterSettings'), 'existingSecondaryPublicIPResourceId'), '/'))]"
     },
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",

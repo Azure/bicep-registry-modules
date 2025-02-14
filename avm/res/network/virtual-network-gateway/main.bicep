@@ -307,18 +307,18 @@ var formattedRoleAssignments = [
 ]
 
 resource primaryPublicIP 'Microsoft.Network/publicIPAddresses@2024-05-01' existing = if (!empty(existingPrimaryPublicIPResourceId)) {
-  name: last(split(existingPrimaryPublicIPResourceId ?? 'dummyPip', '/'))
+  name: last(split(existingPrimaryPublicIPResourceId, '/'))
   scope: resourceGroup(
-    split((existingPrimaryPublicIPResourceId ?? '//'), '/')[2],
-    split((existingPrimaryPublicIPResourceId ?? '////'), '/')[4]
+    split(existingPrimaryPublicIPResourceId, '/')[2],
+    split(existingPrimaryPublicIPResourceId, '/')[4]
   )
 }
 
 resource secondaryPublicIP 'Microsoft.Network/publicIPAddresses@2024-05-01' existing = if (!empty(clusterSettings.?existingSecondaryPublicIPResourceId)) {
-  name: last(split(clusterSettings.?existingSecondaryPublicIPResourceId ?? 'dummyPip', '/'))
+  name: last(split(clusterSettings.?existingSecondaryPublicIPResourceId, '/'))
   scope: resourceGroup(
-    split((clusterSettings.?existingSecondaryPublicIPResourceId ?? '//'), '/')[2],
-    split((clusterSettings.?existingSecondaryPublicIPResourceId ?? '////'), '/')[4]
+    split(clusterSettings.?existingSecondaryPublicIPResourceId, '/')[2],
+    split(clusterSettings.?existingSecondaryPublicIPResourceId, '/')[4]
   )
 }
 
@@ -542,8 +542,7 @@ output secondaryDefaultBgpIpAddress string? = join(
 output secondaryCustomBgpIpAddress string? = join(
   virtualNetworkGateway.properties.?bgpSettings.?bgpPeeringAddresses[?1].?customBgpIpAddresses ?? [],
   ','
-)
-//'Not applicable (Active-Passive mode)'
+) //'Not applicable (Active-Passive mode)'
 
 // =============== //
 //   Definitions   //
