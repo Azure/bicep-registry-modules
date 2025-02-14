@@ -40,25 +40,25 @@ param hvciProtection bool = true
 param drtmProtection bool = true
 
 @description('Optional. When set to true, the security baseline is re-applied regularly.')
-param driftControlEnforced bool = true
+param driftControlEnforced bool = false
 
 @description('Optional. Enables the Credential Guard.')
-param credentialGuardEnforced bool = true
+param credentialGuardEnforced bool = false
 
 @description('Optional. When set to true, the SMB default instance requires sign in for the client and server services.')
-param smbSigningEnforced bool = true
+param smbSigningEnforced bool = false
 
 @description('Optional. When set to true, cluster east-west traffic is encrypted.')
-param smbClusterEncryption bool = true
+param smbClusterEncryption bool = false
 
 @description('Optional. When set to true, all the side channel mitigations are enabled.')
-param sideChannelMitigationEnforced bool = true
+param sideChannelMitigationEnforced bool = false
 
 @description('Optional. When set to true, BitLocker XTS_AES 256-bit encryption is enabled for all data-at-rest on the OS volume of your Azure Stack HCI cluster. This setting is TPM-hardware dependent.')
-param bitlockerBootVolume bool = true
+param bitlockerBootVolume bool = false
 
 @description('Optional. When set to true, BitLocker XTS-AES 256-bit encryption is enabled for all data-at-rest on your Azure Stack HCI cluster shared volumes.')
-param bitlockerDataVolumes bool = true
+param bitlockerDataVolumes bool = false
 
 @description('Optional. Limits the applications and the code that you can run on your Azure Stack HCI cluster.')
 param wdacEnforced bool = true

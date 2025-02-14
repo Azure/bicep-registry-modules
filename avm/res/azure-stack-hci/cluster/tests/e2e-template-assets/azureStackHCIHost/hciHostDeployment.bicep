@@ -1,13 +1,29 @@
-param location string // all resource except HCI Arc Nodes + HCI resources
-param hostVMSize string = 'Standard_E32bds_v5' // Azure VM size for the HCI Host VM - must support nested virtualization and have sufficient capacity for the HCI node VMs!
-param hciNodeCount int = 2 // number of Azure Stack HCI nodes to deploy
-param switchlessStorageConfig bool = false // set to true to configure switchless storage
-// specify either a VHDX or ISO download URL; if both are specified, the VHDX download URL will be used
+@description('Required. The location for all resource except HCI Arc Nodes and HCI resources')
+param location string
+
+@description('Optional. The Azure VM size for the HCI Host VM, which must support nested virtualization and have sufficient capacity for the HCI node VMs!')
+param hostVMSize string = 'Standard_E32bds_v5'
+
+@description('Optional. The number of Azure Stack HCI nodes to deploy.')
+param hciNodeCount int = 2
+
+@description('Optional. Enable configuring switchless storage.')
+param switchlessStorageConfig bool = false
+
+@description('Optional. The download URL for the Azure Stack HCI ISO.')
 param hciISODownloadURL string = 'https://azurestackreleases.download.prss.microsoft.com/dbazure/AzureStackHCI/OS-Composition/10.2408.0.3061/AZURESTACKHci23H2.25398.469.LCM.10.2408.0.3061.x64.en-us.iso'
+
+@description('Optional. The local admin user name.')
 param localAdminUsername string = 'admin-hci'
+
+@description('Required. The local admin password.')
 @secure()
 param localAdminPassword string
+
+@description('Optional. The domain OU path.')
 param domainOUPath string = 'OU=HCI,DC=HCI,DC=local'
+
+@description('Optional. The deployment username.')
 param deploymentUsername string = 'deployUser'
 
 @description('Required. The name of the VM-managed user identity to create, used for HCI Arc onboarding.')

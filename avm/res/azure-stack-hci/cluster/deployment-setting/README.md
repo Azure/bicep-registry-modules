@@ -197,7 +197,7 @@ When set to true, BitLocker XTS_AES 256-bit encryption is enabled for all data-a
 
 - Required: No
 - Type: bool
-- Default: `True`
+- Default: `False`
 
 ### Parameter: `bitlockerDataVolumes`
 
@@ -205,7 +205,7 @@ When set to true, BitLocker XTS-AES 256-bit encryption is enabled for all data-a
 
 - Required: No
 - Type: bool
-- Default: `True`
+- Default: `False`
 
 ### Parameter: `cloudId`
 
@@ -220,7 +220,7 @@ Enables the Credential Guard.
 
 - Required: No
 - Type: bool
-- Default: `True`
+- Default: `False`
 
 ### Parameter: `driftControlEnforced`
 
@@ -228,7 +228,7 @@ When set to true, the security baseline is re-applied regularly.
 
 - Required: No
 - Type: bool
-- Default: `True`
+- Default: `False`
 
 ### Parameter: `drtmProtection`
 
@@ -290,7 +290,7 @@ When set to true, all the side channel mitigations are enabled.
 
 - Required: No
 - Type: bool
-- Default: `True`
+- Default: `False`
 
 ### Parameter: `smbClusterEncryption`
 
@@ -298,7 +298,7 @@ When set to true, cluster east-west traffic is encrypted.
 
 - Required: No
 - Type: bool
-- Default: `True`
+- Default: `False`
 
 ### Parameter: `smbSigningEnforced`
 
@@ -306,7 +306,7 @@ When set to true, the SMB default instance requires sign in for the client and s
 
 - Required: No
 - Type: bool
-- Default: `True`
+- Default: `False`
 
 ### Parameter: `storageConfigurationMode`
 

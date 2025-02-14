@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "17774807916018865720"
+      "version": "0.33.93.31351",
+      "templateHash": "2636464673565813214"
     },
     "name": "Redis Cache",
     "description": "This module deploys a Redis Cache."
@@ -842,7 +842,7 @@
     },
     "shardCount": {
       "type": "int",
-      "defaultValue": 1,
+      "nullable": true,
       "minValue": 1,
       "metadata": {
         "description": "Optional. The number of shards to be created on a Premium Cluster Cache."
@@ -1167,6 +1167,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-redis-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "subscriptionId": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'subnetResourceId')), '/')[2]]",
+      "resourceGroup": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'subnetResourceId')), '/')[4]]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -1945,8 +1947,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "11294861621866290910"
+              "version": "0.33.93.31351",
+              "templateHash": "322534394383651316"
             },
             "name": "Redis Cache Linked Servers",
             "description": "This module connects a primary and secondary Redis Cache together for geo-replication."
@@ -2071,8 +2073,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "14045530027687796477"
+              "version": "0.33.93.31351",
+              "templateHash": "8063348652715653257"
             }
           },
           "definitions": {
