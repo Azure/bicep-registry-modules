@@ -1122,46 +1122,13 @@ Specifies the access mode of ingestion or queries through associated private end
 - Required: No
 - Type: object
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`ingestionAccessMode`](#parameter-accessmodesettingsingestionaccessmode) | string | Specifies the default access mode of ingestion through associated private endpoints in scope. Default is "Open" if no private endpoints are configured and will be set to "PrivateOnly" if private endpoints are configured. Override default behaviour by explicitly providing a value. |
-| [`queryAccessMode`](#parameter-accessmodesettingsqueryaccessmode) | string | Specifies the default access mode of queries through associated private endpoints in scope. Default is "Open" if no private endpoints are configured and will be set to "PrivateOnly" if private endpoints are configured. Override default behaviour by explicitly providing a value. |
-
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`exclusions`](#parameter-accessmodesettingsexclusions) | array | List of exclusions that override the default access mode settings for specific private endpoint connections. Exclusions for the current created Private endpoints can only be applied post initial provisioning. |
-
-### Parameter: `accessModeSettings.ingestionAccessMode`
-
-Specifies the default access mode of ingestion through associated private endpoints in scope. Default is "Open" if no private endpoints are configured and will be set to "PrivateOnly" if private endpoints are configured. Override default behaviour by explicitly providing a value.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Open'
-    'PrivateOnly'
-  ]
-  ```
-
-### Parameter: `accessModeSettings.queryAccessMode`
-
-Specifies the default access mode of queries through associated private endpoints in scope. Default is "Open" if no private endpoints are configured and will be set to "PrivateOnly" if private endpoints are configured. Override default behaviour by explicitly providing a value.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Open'
-    'PrivateOnly'
-  ]
-  ```
+| [`ingestionAccessMode`](#parameter-accessmodesettingsingestionaccessmode) | string | Specifies the default access mode of ingestion through associated private endpoints in scope. Default is "Open" if no private endpoints are configured and will be set to "PrivateOnly" if private endpoints are configured. Override default behaviour by explicitly providing a value. |
+| [`queryAccessMode`](#parameter-accessmodesettingsqueryaccessmode) | string | Specifies the default access mode of queries through associated private endpoints in scope. Default is "Open" if no private endpoints are configured and will be set to "PrivateOnly" if private endpoints are configured. Override default behaviour by explicitly providing a value. |
 
 ### Parameter: `accessModeSettings.exclusions`
 
@@ -1204,6 +1171,34 @@ The private endpoint connection name associated to the private endpoint on which
 Specifies the access mode of queries through the specified private endpoint connection in the exclusion.
 
 - Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Open'
+    'PrivateOnly'
+  ]
+  ```
+
+### Parameter: `accessModeSettings.ingestionAccessMode`
+
+Specifies the default access mode of ingestion through associated private endpoints in scope. Default is "Open" if no private endpoints are configured and will be set to "PrivateOnly" if private endpoints are configured. Override default behaviour by explicitly providing a value.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Open'
+    'PrivateOnly'
+  ]
+  ```
+
+### Parameter: `accessModeSettings.queryAccessMode`
+
+Specifies the default access mode of queries through associated private endpoints in scope. Default is "Open" if no private endpoints are configured and will be set to "PrivateOnly" if private endpoints are configured. Override default behaviour by explicitly providing a value.
+
+- Required: No
 - Type: string
 - Allowed:
   ```Bicep

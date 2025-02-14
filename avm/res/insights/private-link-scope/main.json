@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "13057183810023333109"
+      "templateHash": "5793647140036777485"
     },
     "name": "Azure Monitor Private Link Scopes",
     "description": "This module deploys an Azure Monitor Private Link Scope."
@@ -143,8 +143,9 @@
             "Open",
             "PrivateOnly"
           ],
+          "nullable": true,
           "metadata": {
-            "description": "Required. Specifies the default access mode of ingestion through associated private endpoints in scope. Default is \"Open\" if no private endpoints are configured and will be set to \"PrivateOnly\" if private endpoints are configured. Override default behaviour by explicitly providing a value."
+            "description": "Optional. Specifies the default access mode of ingestion through associated private endpoints in scope. Default is \"Open\" if no private endpoints are configured and will be set to \"PrivateOnly\" if private endpoints are configured. Override default behaviour by explicitly providing a value."
           }
         },
         "queryAccessMode": {
@@ -153,8 +154,9 @@
             "Open",
             "PrivateOnly"
           ],
+          "nullable": true,
           "metadata": {
-            "description": "Required. Specifies the default access mode of queries through associated private endpoints in scope. Default is \"Open\" if no private endpoints are configured and will be set to \"PrivateOnly\" if private endpoints are configured. Override default behaviour by explicitly providing a value."
+            "description": "Optional. Specifies the default access mode of queries through associated private endpoints in scope. Default is \"Open\" if no private endpoints are configured and will be set to \"PrivateOnly\" if private endpoints are configured. Override default behaviour by explicitly providing a value."
           }
         }
       },
