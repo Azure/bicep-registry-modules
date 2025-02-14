@@ -10,47 +10,49 @@ param location string = resourceGroup().location
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-@description('The custom location ID.')
+@description('Required. The custom location ID.')
 param customLocationId string
 
-@description('The VM switch name.')
+@description('Required. The VM switch name.')
 param vmSwitchName string
 
-@description('The subnet name.')
+@description('Optional. The subnet name.')
 param subnet0Name string = 'default'
 
-@description('The IP allocation method.')
+@description('Optional. The IP allocation method.')
 @allowed([
   'Static'
   'Dynamic'
 ])
 param ipAllocationMethod string = 'Dynamic'
 
-@description('The DNS servers list.')
+@description('Optional. The DNS servers list.')
 param dnsServers array = []
 
-@description('Tags for the logical network.')
+@description('Optional. Tags for the logical network.')
 param tags object = {}
 
+@description('Optional. Address prefix for the logical network.')
 param addressPrefix string?
 
+@description('Optional. VLan Id for the logical network.')
 param vlanId int?
 
-@description('A list of IP configuration references.')
+@description('Optional. A list of IP configuration references.')
 param ipConfigurationReferences array = [
   /*array of type {ID: string}*/
 ]
 
-@description('The starting IP address of the IP address range.')
+@description('Optional. The starting IP address of the IP address range.')
 param startingAddress string?
 
-@description('The ending IP address of the IP address range.')
+@description('Optional. The ending IP address of the IP address range.')
 param endingAddress string?
 
-@description('The route name.')
+@description('Optional. The route name.')
 param routeName string?
 
-@description('The default gateway for the network.')
+@description('Optional. The default gateway for the network.')
 param defaultGateway string?
 
 #disable-next-line no-deployments-resources
