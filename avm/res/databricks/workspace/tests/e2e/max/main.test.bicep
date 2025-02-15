@@ -137,8 +137,8 @@ module testDeployment '../../../main.bicep' = [
         keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
       }
       customerManagedKeyManagedDisk: {
-        keyName: nestedDependencies.outputs.keyVaultKeyName
-        keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
+        keyName: nestedDependencies.outputs.keyVaultDiskKeyName
+        keyVaultResourceId: nestedDependencies.outputs.keyVaultDiskResourceId
         autoRotationEnabled: false
       }
       storageAccountName: 'sa${namePrefix}${serviceShort}001'
