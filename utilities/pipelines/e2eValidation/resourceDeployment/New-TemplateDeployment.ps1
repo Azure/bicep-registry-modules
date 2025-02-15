@@ -2,10 +2,10 @@
 
 <#
 .SYNOPSIS
-If a deployment failed, get its error message
+if a deployment failed, get its error message
 
 .DESCRIPTION
-If a deployment failed, get its error message based on the deployment name in the given scope
+if a deployment failed, get its error message based on the deployment name in the given scope
 
 .PARAMETER DeploymentScope
 Mandatory. The scope to fetch the deployment from (e.g. resourcegroup, tenant,...)
@@ -63,6 +63,11 @@ function Get-ErrorMessageForScope {
     }
 }
 
+function test {
+
+
+}
+
 <#
 .SYNOPSIS
 Monitors the state of a deployment through completion.
@@ -107,28 +112,29 @@ function Start-MonitorDeploymentForScope {
     $maxRetryCheckDeployment = 5
     $retryCheckDeploymentCount = 0
     $unhealthyDeploymentStates = ('Canceled', 'Failed', 'Deleted', 'Deleting')
-    $healthyDeploymentStates = ('Creating', 'Created', 'Accepted', 'Running', 'Ready', 'Updating')
+
     switch ($deploymentScope) {
         'resourcegroup' {
             do {
                 try {
                     Write-Verbose ('Retrieving deployment status for [{0}] on resource group [{1}]' -f $deploymentName, $ResourceGroupName)
-                    $deployments = Get-AzResourceGroupDeploymentOperation -DeploymentName $deploymentName -ResourceGroupName $ResourceGroupName -ErrorAction Stop
+                    $deployments = Get-AzResourceGroupDeploymentOperation -DeploymentName $deploymentName -ResourceGroupName $ResourceGroupName -ErrorAction 'Stop'
 
-                    If ($?) { $retryCheckDeploymentCount = 0 }
+                    # Invocation was successful
+                    $retryCheckDeploymentCount = 0
                 } catch {
                     Write-Verbose ('An error occurred while checking the state of the deployment. Error: [{0}]' -f $PSitem.Exception.Message)
-                    If ($PSitem.Exception.Message -eq 'An error occurred while sending the request.' -and $retryCheckDeploymentCount -lt $maxRetryCheckDeployment) {
+                    if ($PSitem.Exception.Message -eq 'An error occurred while sending the request.' -and $retryCheckDeploymentCount -lt $maxRetryCheckDeployment) {
                         Write-Warning "The error 'An error occurred while sending the request' occurred while checking the state of the deployment. Retrying in 15 seconds.."
                         $retryCheckDeploymentCount++
                         Start-Sleep -Seconds 15
                         $retryCheck = $true
-                    } ElseIf ($retryCheckDeploymentCount -lt $maxRetryCheckDeployment) {
+                    } elseIf ($retryCheckDeploymentCount -lt $maxRetryCheckDeployment) {
                         Write-Warning "The error '$($PSitem.Exception.Message)' occurred while checking the state of the deployment. Retrying in 15 seconds.."
                         $retryCheckDeploymentCount++
                         Start-Sleep -Seconds 15
                         $retryCheck = $true
-                    } ElseIf ($retryCheckDeploymentCount -ge $maxRetryCheckDeployment) {
+                    } elseIf ($retryCheckDeploymentCount -ge $maxRetryCheckDeployment) {
                         Write-Error "The error '$($PSitem.Exception.Message)' occurred while checking the state of the deployment. The maximum retry limit of $maxRetryCheckDeployment has been reached. Please review the Azure logs of deployment [$deploymentName] in scope [$deploymentScope] for further details."
                         break
                     }
@@ -141,7 +147,7 @@ function Start-MonitorDeploymentForScope {
                     if ($operation.ProvisioningState -in $unhealthyDeploymentStates) {
                         Write-Warning "Deployment failed with provisioning state [$($operation.ProvisioningState -join ',')]. Error Message: [$($operation.StatusMessage)]. Please review the Azure logs of deployment [$deploymentName] in scope [$deploymentScope] for further details."
                         break
-                    } elseif ($operation.ProvisioningState -eq 'Succeeded' -and $operation.StatusCode -notin 'OK', 'Created') {
+                    } elseIf ($operation.ProvisioningState -eq 'Succeeded' -and $operation.StatusCode -notin 'OK', 'Created') {
                         Write-Debug "Deployment operation [$($operation.operationId)] is still running with provisioning state [$($operation.ProvisioningState)] and status code [$($operation.StatusCode)]"
                         $runningDeployment = $true
                     } else {
@@ -157,22 +163,23 @@ function Start-MonitorDeploymentForScope {
             do {
                 try {
                     Write-Verbose ('Retrieving deployment status for [{0}] on subscription' -f $deploymentName)
-                    $deployments = Get-AzDeploymentOperation -DeploymentName $deploymentName -ErrorAction Stop
+                    $deployments = Get-AzDeploymentOperation -DeploymentName $deploymentName -ErrorAction 'Stop'
 
-                    If ($?) { $retryCheckDeploymentCount = 0 }
+                    # Invocation was successful
+                    $retryCheckDeploymentCount = 0
                 } catch {
                     Write-Verbose ('An error occurred while checking the state of the deployment. Error: [{0}]' -f $PSitem.Exception.Message)
-                    If ($PSitem.Exception.Message -eq 'An error occurred while sending the request.' -and $retryCheckDeploymentCount -lt $maxRetryCheckDeployment) {
+                    if ($PSitem.Exception.Message -eq 'An error occurred while sending the request.' -and $retryCheckDeploymentCount -lt $maxRetryCheckDeployment) {
                         Write-Warning "The error 'An error occurred while sending the request' occurred while checking the state of the deployment. Retrying in 15 seconds.."
                         $retryCheckDeploymentCount++
                         Start-Sleep -Seconds 15
                         $retryCheck = $true
-                    } ElseIf ($retryCheckDeploymentCount -lt $maxRetryCheckDeployment) {
+                    } elseIf ($retryCheckDeploymentCount -lt $maxRetryCheckDeployment) {
                         Write-Warning "The error '$($PSitem.Exception.Message)' occurred while checking the state of the deployment. Retrying in 15 seconds.."
                         $retryCheckDeploymentCount++
                         Start-Sleep -Seconds 15
                         $retryCheck = $true
-                    } ElseIf ($retryCheckDeploymentCount -ge $maxRetryCheckDeployment) {
+                    } elseIf ($retryCheckDeploymentCount -ge $maxRetryCheckDeployment) {
                         Write-Error "The error '$($PSitem.Exception.Message)' occurred while checking the state of the deployment. The maximum retry limit of $maxRetryCheckDeployment has been reached. Please review the Azure logs of deployment [$deploymentName] in scope [$deploymentScope] for further details."
                         break
                     }
@@ -185,7 +192,7 @@ function Start-MonitorDeploymentForScope {
                     if ($operation.ProvisioningState -in $unhealthyDeploymentStates) {
                         Write-Warning "Deployment failed with provisioning state [$($operation.ProvisioningState -join ',')]. Error Message: [$($operation.StatusMessage)]. Please review the Azure logs of deployment [$deploymentName] in scope [$deploymentScope] for further details."
                         break
-                    } elseif ($operation.ProvisioningState -eq 'Succeeded' -and $operation.StatusCode -notin 'OK', 'Created') {
+                    } elseIf ($operation.ProvisioningState -eq 'Succeeded' -and $operation.StatusCode -notin 'OK', 'Created') {
                         Write-Debug "Deployment operation [$($operation.operationId)] is still running with provisioning state [$($operation.ProvisioningState)] and status code [$($operation.StatusCode)]"
                         $runningDeployment = $true
                     } else {
@@ -354,7 +361,7 @@ function New-TemplateDeploymentInner {
             if (-not $parameterFileTags) { $parameterFileTags = @{} }
 
             # Pipeline tags
-            if ($AdditionalTags) { $parameterFileTags += $AdditionalTags } # If additionalTags object is provided, append tag to the resource
+            if ($AdditionalTags) { $parameterFileTags += $AdditionalTags } # if additionalTags object is provided, append tag to the resource
 
             # Overwrites parameter file tags parameter
             Write-Verbose ("additionalTags: $(($AdditionalTags) ? ($AdditionalTags | ConvertTo-Json) : '[]')")
