@@ -204,6 +204,7 @@ resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (!empt
   }
 }
 
+// Added condition if the key vault for the managed disk is the same as for the default encryption. Without the condition, the same key vault would be defined twice in the same template, which is not allowed
 resource cMKManagedDiskKeyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (!empty(customerManagedKeyManagedDisk.?keyVaultResourceId) && customerManagedKeyManagedDisk.?keyVaultResourceId != customerManagedKey.?keyVaultResourceId) {
   name: last(split((customerManagedKeyManagedDisk.?keyVaultResourceId ?? 'dummyVault'), '/'))
   scope: resourceGroup(
