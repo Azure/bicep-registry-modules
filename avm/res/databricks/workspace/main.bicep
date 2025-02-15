@@ -336,7 +336,7 @@ resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
               ? {
                   keySource: 'Microsoft.Keyvault'
                   keyVaultProperties: {
-                    keyVaultUri: (!empty(customerManagedKeyManagedDisk) && customerManagedKeyManagedDisk!.?keyVaultName != customerManagedKey!.?keyVaultName)
+                    keyVaultUri: (customerManagedKeyManagedDisk!.?keyVaultName != customerManagedKey!.?keyVaultName)
                       ? cMKManagedDiskKeyVault.properties.vaultUri
                       : cMKKeyVault.properties.vaultUri
                     keyName: customerManagedKeyManagedDisk!.keyName
