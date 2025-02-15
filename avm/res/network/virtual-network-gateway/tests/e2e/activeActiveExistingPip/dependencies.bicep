@@ -82,7 +82,6 @@ resource existingSecondPip 'Microsoft.Network/publicIPAddresses@2023-04-01' = {
   ]
 }
 
-
 @description('The resource ID of the created Virtual Network.')
 output vnetResourceId string = virtualNetwork.id
 
@@ -90,7 +89,7 @@ output vnetResourceId string = virtualNetwork.id
 output localNetworkGatewayResourceId string = localNetworkGateway.id
 
 @description('The resource ID of the existing Public IP.')
-output existingFirstPipResourceId string = existingFirstPip.id
+output existingPrimaryPublicIPResourceId string = existingFirstPip.id
 
 @description('The resource ID of the existing secondary Public IP.')
-output existingSecondPipResourceId string = existingSecondPip.id
+output existingSecondaryPublicIPResourceId string = existingSecondPip.id
