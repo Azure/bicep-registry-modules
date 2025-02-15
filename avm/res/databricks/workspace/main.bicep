@@ -342,7 +342,7 @@ resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
                       : cMKKeyVault.properties.vaultUri
                     keyName: customerManagedKeyManagedDisk!.keyName
                     keyVersion: last(split(
-                      (!empty(customerManagedKeyManagedDisk) && customerManagedKeyManagedDisk!.?keyVaultName != customerManagedKey!.?keyVaultName)
+                      (customerManagedKeyManagedDisk!.?keyVaultName != customerManagedKey!.?keyVaultName)
                         ? cMKManagedDiskKeyVault::cMKKey.properties.keyUriWithVersion
                         : cMKKeyVault::cMKKey.properties.keyUriWithVersion,
                       '/'
