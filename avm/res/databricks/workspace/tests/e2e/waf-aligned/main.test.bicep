@@ -111,8 +111,8 @@ module testDeployment '../../../main.bicep' = [
         keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
       }
       customerManagedKeyManagedDisk: {
-        keyName: nestedDependencies.outputs.keyVaultKeyName
-        keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
+        keyName: nestedDependencies.outputs.keyVaultDiskName
+        keyVaultResourceId: nestedDependencies.outputs.keyVaultDiskResourceId
       }
       storageAccountName: 'sa${namePrefix}${serviceShort}001'
       storageAccountSkuName: 'Standard_ZRS'
