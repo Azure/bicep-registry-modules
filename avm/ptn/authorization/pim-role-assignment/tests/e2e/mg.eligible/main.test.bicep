@@ -15,9 +15,9 @@ param serviceShort string = 'pimgmin'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-@description('Required. Principle ID of the user. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-testUserObjectIdstring\'.')
+@description('Required. Principle ID of the user. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-testUserObjectId\'.')
 @secure()
-param testUserObjectIdstring string = ''
+param testUserObjectId string = ''
 
 @description('Optional. The start date and time for the role assignment. Defaults to the current date and time.')
 param startDateTime string = utcNow()
@@ -37,7 +37,7 @@ module testDeployment '../../../main.bicep' = {
         startTime: startDateTime
       }
     }
-    principalId: testUserObjectIdstring
+    principalId: testUserObjectId
     requestType: 'AdminAssign'
     roleDefinitionIdOrName: 'Role Based Access Control Administrator'
     location: resourceLocation

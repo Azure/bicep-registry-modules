@@ -15,9 +15,9 @@ param namePrefix string = '#_namePrefix_#'
 @description('Optional. Subscription ID of the subscription to assign the RBAC role to. If no Resource Group name is provided, the module deploys at subscription level, therefore assigns the provided RBAC role to the subscription.')
 param subscriptionId string = '#_subscriptionId_#'
 
-@description('Required. Principle ID of the user. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-testUserObjectIdstring\'.')
+@description('Required. Principle ID of the user. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-testUserObjectId\'.')
 @secure()
-param testUserObjectIdstring string = ''
+param testUserObjectId string = ''
 
 // ============== //
 // Test Execution //
@@ -26,7 +26,7 @@ param testUserObjectIdstring string = ''
 module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name)}-test-${serviceShort}-${namePrefix}'
   params: {
-    principalId: testUserObjectIdstring
+    principalId: testUserObjectId
     roleDefinitionIdOrName: subscriptionResourceId(
       'Microsoft.Authorization/roleDefinitions',
       'f58310d9-a9f6-439a-9e8d-f62e7b41a168'

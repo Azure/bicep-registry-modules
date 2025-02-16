@@ -105,55 +105,6 @@ function Invoke-ResourceRemoval {
             $null = $roleAssignmentsOnScope | Where-Object { $_.RoleAssignmentId -eq $ResourceId } | Remove-AzRoleAssignment
             break
         }
-        'Microsoft.Authorization/roleEligibilityScheduleRequests' {
-            $idElem = $ResourceId.Split('/')
-            $scope = $idElem[0..($idElem.Count - 5)] -join '/'
-            $pimRequestName = $idElem[-1]
-            $pimRoleAssignment = Get-AzRoleEligibilityScheduleRequest -Scope $scope -Name $pimRequestName
-            if ($pimRoleAssignment) {
-                $pimRoleAssignmentPrinicpalId = $pimRoleAssignment.PrincipalId
-                $pimRoleAssignmentRoleDefinitionId = $pimRoleAssignment.RoleDefinitionId
-                $guid = New-Guid
-                # PIM role assignments cannot be removed before 5 minutes from being created. Waiting for 5 minutes
-                Write-Verbose 'Waiting for 5 minutes before removing PIM role assignment' -Verbose
-                Start-Sleep -Seconds 300
-                # The PIM ARM API doesn't support DELETE requests so the only way to delete an assignment is by creating a new assignment with `AdminRemove` type using a new GUID
-                $removalInputObject = @{
-                    Name             = $guid
-                    Scope            = $scope
-                    PrincipalId      = $pimRoleAssignmentPrinicpalId
-                    RequestType      = 'AdminRemove'
-                    RoleDefinitionId = $pimRoleAssignmentRoleDefinitionId
-                }
-                $null = New-AzRoleEligibilityScheduleRequest @removalInputObject
-
-            }
-            break
-        }
-        'Microsoft.Authorization/roleAssignmentScheduleRequests' {
-            $idElem = $ResourceId.Split('/')
-            $scope = $idElem[0..($idElem.Count - 5)] -join '/'
-            $pimRequestName = $idElem[-1]
-            $pimRoleAssignment = Get-AzRoleAssignmentScheduleRequest -Scope $scope -Name $pimRequestName
-            if ($pimRoleAssignment) {
-                $pimRoleAssignmentPrinicpalId = $pimRoleAssignment.PrincipalId
-                $pimRoleAssignmentRoleDefinitionId = $pimRoleAssignment.RoleDefinitionId
-                $guid = New-Guid
-                # PIM role assignments cannot be removed before 5 minutes from being created. Waiting for 5 minutes
-                Write-Verbose 'Waiting for 5 minutes before removing PIM role assignment' -Verbose
-                Start-Sleep -Seconds 300
-                # The PIM ARM API doesn't support DELETE requests so the only way to delete an assignment is by creating a new assignment with `AdminRemove` type using a new GUID
-                $removalInputObject = @{
-                    Name             = $guid
-                    Scope            = $scope
-                    PrincipalId      = $pimRoleAssignmentPrinicpalId
-                    RequestType      = 'AdminRemove'
-                    RoleDefinitionId = $pimRoleAssignmentRoleDefinitionId
-                }
-                $null = New-AzRoleAssignmentScheduleRequest @removalInputObject
-            }
-            break
-        }
         'Microsoft.RecoveryServices/vaults' {
             # Pre-Removal
             # -----------

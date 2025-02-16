@@ -28,9 +28,9 @@ param startDateTime string = utcNow()
 @description('Optional. The end date and time for the role assignment. Defaults to one year from the start date and time.')
 param endDateTime string = dateTimeAdd(startDateTime, 'PT4H')
 
-@description('Required. Principle ID of the user. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-testUserObjectIdstring\'.')
+@description('Required. Principle ID of the user. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-testUserObjectId\'.')
 @secure()
-param testUserObjectIdstring string = ''
+param testUserObjectId string = ''
 
 // General resources
 // =================
@@ -50,7 +50,7 @@ module resourceGroup 'br/public:avm/res/resources/resource-group:0.2.3' = {
 module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name)}-test-${serviceShort}'
   params: {
-    principalId: testUserObjectIdstring
+    principalId: testUserObjectId
     roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168'
     location: resourceLocation
     subscriptionId: subscriptionId
