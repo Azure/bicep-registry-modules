@@ -102,7 +102,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
   name: 'workspaceDeployment'
   params: {
     // Required parameters
-    name: 'dwmax003'
+    name: 'dwmax004'
     // Non-required parameters
     amlWorkspaceResourceId: '<amlWorkspaceResourceId>'
     automaticClusterUpdate: 'Enabled'
@@ -233,7 +233,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dwmax003"
+      "value": "dwmax004"
     },
     // Non-required parameters
     "amlWorkspaceResourceId": {
@@ -424,7 +424,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
 using 'br/public:avm/res/databricks/workspace:<version>'
 
 // Required parameters
-param name = 'dwmax003'
+param name = 'dwmax004'
 // Non-required parameters
 param amlWorkspaceResourceId = '<amlWorkspaceResourceId>'
 param automaticClusterUpdate = 'Enabled'
