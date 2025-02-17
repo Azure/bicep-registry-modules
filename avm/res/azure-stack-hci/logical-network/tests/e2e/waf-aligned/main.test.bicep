@@ -207,5 +207,10 @@ module testDeployment '../../../main.bicep' = {
     dnsServers: ['172.20.0.1']
     routeName: 'default'
     vlanId: null
+    tags: {
+      'hidden-title': 'This is visible in the resource name'
+      Environment: 'Non-Prod'
+      Role: 'DeploymentValidation'
+    }
   }
 }
