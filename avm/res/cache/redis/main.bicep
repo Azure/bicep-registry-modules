@@ -64,7 +64,7 @@ param replicasPerPrimary int = 3
 
 @minValue(1)
 @description('Optional. The number of shards to be created on a Premium Cluster Cache.')
-param shardCount int = 1
+param shardCount int?
 
 @allowed([
   0
