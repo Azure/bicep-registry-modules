@@ -102,7 +102,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
   name: 'workspaceDeployment'
   params: {
     // Required parameters
-    name: 'dwmax003'
+    name: 'dwmax005'
     // Non-required parameters
     amlWorkspaceResourceId: '<amlWorkspaceResourceId>'
     automaticClusterUpdate: 'Enabled'
@@ -233,7 +233,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dwmax003"
+      "value": "dwmax005"
     },
     // Non-required parameters
     "amlWorkspaceResourceId": {
@@ -424,7 +424,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
 using 'br/public:avm/res/databricks/workspace:<version>'
 
 // Required parameters
-param name = 'dwmax003'
+param name = 'dwmax005'
 // Non-required parameters
 param amlWorkspaceResourceId = '<amlWorkspaceResourceId>'
 param automaticClusterUpdate = 'Enabled'
@@ -556,7 +556,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
   name: 'workspaceDeployment'
   params: {
     // Required parameters
-    name: 'dwwaf002'
+    name: 'dwwaf003'
     // Non-required parameters
     accessConnectorResourceId: '<accessConnectorResourceId>'
     amlWorkspaceResourceId: '<amlWorkspaceResourceId>'
@@ -663,7 +663,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "dwwaf002"
+      "value": "dwwaf003"
     },
     // Non-required parameters
     "accessConnectorResourceId": {
@@ -826,7 +826,7 @@ module workspace 'br/public:avm/res/databricks/workspace:<version>' = {
 using 'br/public:avm/res/databricks/workspace:<version>'
 
 // Required parameters
-param name = 'dwwaf002'
+param name = 'dwwaf003'
 // Non-required parameters
 param accessConnectorResourceId = '<accessConnectorResourceId>'
 param amlWorkspaceResourceId = '<amlWorkspaceResourceId>'
