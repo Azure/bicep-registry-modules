@@ -175,6 +175,11 @@ module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:<versio
     location: '<location>'
     routeName: 'default'
     startingAddress: '172.20.0.171'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
     vlanId: '<vlanId>'
   }
 }
@@ -229,6 +234,13 @@ module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:<versio
     "startingAddress": {
       "value": "172.20.0.171"
     },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    },
     "vlanId": {
       "value": "<vlanId>"
     }
@@ -261,6 +273,11 @@ param ipAllocationMethod = 'Static'
 param location = '<location>'
 param routeName = 'default'
 param startingAddress = '172.20.0.171'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
 param vlanId = '<vlanId>'
 ```
 
