@@ -117,7 +117,7 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
-      skuName: 'Enterprise_E5'
+      skuName: 'Balanced_B10'
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'

@@ -11,10 +11,8 @@ resource redisCluster 'Microsoft.Cache/redisEnterprise@2024-09-01-preview' = {
   name: redisClusterName
   location: location
   sku: {
-    capacity: 2
-    name: 'Enterprise_E5'
+    name: 'Balanced_B10'
   }
-  zones: ['1', '2', '3']
 
   resource redisDatabase 'databases@2024-09-01-preview' = {
     name: 'default'

@@ -19,7 +19,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // Not all regions support zone-redundancy, so hardcoding 2 zone-enabled locations here
 #disable-next-line no-hardcoded-location
-var enforcedLocation = 'northeurope'
+var enforcedLocation = 'germanywestcentral'
 #disable-next-line no-hardcoded-location
 var enforcedPairedLocation = 'uksouth'
 
@@ -55,6 +55,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}002'
       location: enforcedPairedLocation
+      skuName: 'Balanced_B10'
       database: {
         geoReplication: {
           groupNickname: nestedDependencies.outputs.geoReplicationGroupName

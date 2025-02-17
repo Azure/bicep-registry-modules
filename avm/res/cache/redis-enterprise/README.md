@@ -72,6 +72,7 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
       }
     }
     location: '<location>'
+    skuName: 'Balanced_B10'
   }
 }
 ```
@@ -110,6 +111,9 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
     },
     "location": {
       "value": "<location>"
+    },
+    "skuName": {
+      "value": "Balanced_B10"
     }
   }
 }
@@ -142,6 +146,7 @@ param database = {
   }
 }
 param location = '<location>'
+param skuName = 'Balanced_B10'
 ```
 
 </details>
@@ -406,6 +411,7 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
       }
     }
     location: '<location>'
+    skuName: 'Balanced_B10'
   }
 }
 ```
@@ -442,6 +448,9 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
     },
     "location": {
       "value": "<location>"
+    },
+    "skuName": {
+      "value": "Balanced_B10"
     }
   }
 }
@@ -472,6 +481,7 @@ param database = {
   }
 }
 param location = '<location>'
+param skuName = 'Balanced_B10'
 ```
 
 </details>
@@ -493,7 +503,6 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
     // Required parameters
     name: 'cremax001'
     // Non-required parameters
-    capacity: 4
     database: {
       clientProtocol: 'Plaintext'
       clusteringPolicy: 'EnterpriseCluster'
@@ -541,6 +550,7 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
       }
     ]
     enableTelemetry: true
+    highAvailability: 'Disabled'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -564,7 +574,7 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
         }
       }
     ]
-    skuName: 'Enterprise_E5'
+    skuName: 'Balanced_B10'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -596,9 +606,6 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
       "value": "cremax001"
     },
     // Non-required parameters
-    "capacity": {
-      "value": 4
-    },
     "database": {
       "value": {
         "clientProtocol": "Plaintext",
@@ -652,6 +659,9 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
     "enableTelemetry": {
       "value": true
     },
+    "highAvailability": {
+      "value": "Disabled"
+    },
     "location": {
       "value": "<location>"
     },
@@ -684,7 +694,7 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
       ]
     },
     "skuName": {
-      "value": "Enterprise_E5"
+      "value": "Balanced_B10"
     },
     "tags": {
       "value": {
@@ -717,7 +727,6 @@ using 'br/public:avm/res/cache/redis-enterprise:<version>'
 // Required parameters
 param name = 'cremax001'
 // Non-required parameters
-param capacity = 4
 param database = {
   clientProtocol: 'Plaintext'
   clusteringPolicy: 'EnterpriseCluster'
@@ -765,6 +774,7 @@ param diagnosticSettings = [
   }
 ]
 param enableTelemetry = true
+param highAvailability = 'Disabled'
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
@@ -788,7 +798,7 @@ param privateEndpoints = [
     }
   }
 ]
-param skuName = 'Enterprise_E5'
+param skuName = 'Balanced_B10'
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
@@ -837,6 +847,7 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
         '<managedIdentityResourceId>'
       ]
     }
+    skuName: 'Balanced_B10'
   }
 }
 ```
@@ -882,6 +893,9 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
           "<managedIdentityResourceId>"
         ]
       }
+    },
+    "skuName": {
+      "value": "Balanced_B10"
     }
   }
 }
@@ -917,6 +931,7 @@ param managedIdentities = {
     '<managedIdentityResourceId>'
   ]
 }
+param skuName = 'Balanced_B10'
 ```
 
 </details>
@@ -990,7 +1005,7 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
         }
       }
     ]
-    skuName: 'Enterprise_E5'
+    skuName: 'Balanced_B10'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -1083,7 +1098,7 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
       ]
     },
     "skuName": {
-      "value": "Enterprise_E5"
+      "value": "Balanced_B10"
     },
     "tags": {
       "value": {
@@ -1168,7 +1183,7 @@ param privateEndpoints = [
     }
   }
 ]
-param skuName = 'Enterprise_E5'
+param skuName = 'Balanced_B10'
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'

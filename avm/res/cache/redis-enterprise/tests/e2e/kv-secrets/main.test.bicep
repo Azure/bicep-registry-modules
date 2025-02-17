@@ -47,6 +47,7 @@ module testDeployment '../../../main.bicep' = {
   params: {
     location: resourceLocation
     name: '${namePrefix}kvref'
+    skuName: 'Balanced_B10'
     database: {
       secretsExportConfiguration: {
         keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
