@@ -185,6 +185,9 @@ output systemAssignedMIPrincipalId string = cluster.identity.principalId
 @description('The location of the cluster.')
 output location string = cluster.location
 
+@description('The name of the custom location.')
+output customLocationName string = deploymentSettings!.customLocationName
+
 // =============== //
 //   Definitions   //
 // =============== //

@@ -1308,6 +1308,7 @@ Specify whether to use the shared key vault for the HCI cluster.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `customLocationName` | string | The name of the custom location. |
 | `location` | string | The location of the cluster. |
 | `name` | string | The name of the cluster. |
 | `resourceGroupName` | string | The resource group of the cluster. |
