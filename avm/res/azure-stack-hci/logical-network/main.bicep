@@ -1,6 +1,10 @@
 metadata name = 'Azure Stack HCI Logical Networks'
 metadata description = 'This module deploys an Azure Stack HCI Logical Network.'
 
+// ============== //
+//   Parameters   //
+// ============== //
+
 @description('Required. Name of the resource to create.')
 param name string
 
@@ -54,6 +58,10 @@ param routeName string?
 
 @description('Optional. The default gateway for the network.')
 param defaultGateway string?
+
+// ============= //
+//   Resources   //
+// ============= //
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
