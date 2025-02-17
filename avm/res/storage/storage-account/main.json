@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "3424685276444889234"
+      "templateHash": "7065290388008718363"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account."
@@ -2572,7 +2572,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.13.18514",
-              "templateHash": "14339432978450199921"
+              "templateHash": "13802891409950802048"
             },
             "name": "Storage Account blob Services",
             "description": "This module deploys a Storage Account Blob Service."
@@ -3039,7 +3039,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.33.13.18514",
-                      "templateHash": "10816586207828434096"
+                      "templateHash": "15727824641798999553"
                     },
                     "name": "Storage Account Blob Containers",
                     "description": "This module deploys a Storage Account Blob Container."
@@ -3151,7 +3151,7 @@
                     },
                     "denyEncryptionScopeOverride": {
                       "type": "bool",
-                      "defaultValue": false,
+                      "nullable": true,
                       "metadata": {
                         "description": "Optional. Block override of encryption scope from the container default."
                       }
@@ -3264,7 +3264,7 @@
                       "name": "[format('{0}/{1}/{2}', parameters('storageAccountName'), parameters('blobServiceName'), parameters('name'))]",
                       "properties": {
                         "defaultEncryptionScope": "[if(not(empty(parameters('defaultEncryptionScope'))), parameters('defaultEncryptionScope'), null())]",
-                        "denyEncryptionScopeOverride": "[if(equals(parameters('denyEncryptionScopeOverride'), true()), parameters('denyEncryptionScopeOverride'), null())]",
+                        "denyEncryptionScopeOverride": "[parameters('denyEncryptionScopeOverride')]",
                         "enableNfsV3AllSquash": "[if(equals(parameters('enableNfsV3AllSquash'), true()), parameters('enableNfsV3AllSquash'), null())]",
                         "enableNfsV3RootSquash": "[if(equals(parameters('enableNfsV3RootSquash'), true()), parameters('enableNfsV3RootSquash'), null())]",
                         "immutableStorageWithVersioning": "[if(equals(parameters('immutableStorageWithVersioningEnabled'), true()), createObject('enabled', parameters('immutableStorageWithVersioningEnabled')), null())]",
