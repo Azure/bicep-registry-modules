@@ -1,0 +1,240 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.32.4.45862",
+      "templateHash": "3694253396925660799"
+    },
+    "name": "Azure Stack HCI Logical Networks",
+    "description": "This module deploys an Azure Stack HCI Logical Network."
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Name of the resource to create."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. Location for all Resources."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    },
+    "customLocationId": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The custom location ID."
+      }
+    },
+    "vmSwitchName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The VM switch name."
+      }
+    },
+    "subnet0Name": {
+      "type": "string",
+      "defaultValue": "default",
+      "metadata": {
+        "description": "Optional. The subnet name."
+      }
+    },
+    "ipAllocationMethod": {
+      "type": "string",
+      "defaultValue": "Dynamic",
+      "allowedValues": [
+        "Static",
+        "Dynamic"
+      ],
+      "metadata": {
+        "description": "Optional. The IP allocation method."
+      }
+    },
+    "dnsServers": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. The DNS servers list."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags for the logical network."
+      }
+    },
+    "addressPrefix": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Address prefix for the logical network."
+      }
+    },
+    "vlanId": {
+      "type": "int",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. VLan Id for the logical network."
+      }
+    },
+    "ipConfigurationReferences": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. A list of IP configuration references."
+      }
+    },
+    "startingAddress": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The starting IP address of the IP address range."
+      }
+    },
+    "endingAddress": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The ending IP address of the IP address range."
+      }
+    },
+    "routeName": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The route name."
+      }
+    },
+    "defaultGateway": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The default gateway for the network."
+      }
+    }
+  },
+  "variables": {
+    "subnet1Pools": [
+      {
+        "start": "[parameters('startingAddress')]",
+        "end": "[parameters('endingAddress')]",
+        "info": {}
+      }
+    ],
+    "routeTable": {
+      "properties": {
+        "routes": [
+          {
+            "name": "[parameters('routeName')]",
+            "properties": {
+              "addressPrefix": "0.0.0.0/0",
+              "nextHopIpAddress": "[parameters('defaultGateway')]"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2024-03-01",
+      "name": "[take(format('46d3xbcp.res.azurestackhci-logicalnetwork.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
+    "logicalNetwork": {
+      "type": "Microsoft.AzureStackHCI/logicalNetworks",
+      "apiVersion": "2023-09-01-preview",
+      "name": "[parameters('name')]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
+      "extendedLocation": {
+        "name": "[parameters('customLocationId')]",
+        "type": "CustomLocation"
+      },
+      "properties": {
+        "dhcpOptions": {
+          "dnsServers": "[if(equals(parameters('ipAllocationMethod'), 'Dynamic'), null(), parameters('dnsServers'))]"
+        },
+        "subnets": [
+          {
+            "name": "[parameters('subnet0Name')]",
+            "properties": {
+              "addressPrefix": "[parameters('addressPrefix')]",
+              "ipAllocationMethod": "[parameters('ipAllocationMethod')]",
+              "ipConfigurationReferences": "[parameters('ipConfigurationReferences')]",
+              "vlan": "[parameters('vlanId')]",
+              "ipPools": "[if(equals(parameters('ipAllocationMethod'), 'Dynamic'), null(), variables('subnet1Pools'))]",
+              "routeTable": "[if(equals(parameters('ipAllocationMethod'), 'Dynamic'), null(), variables('routeTable'))]"
+            }
+          }
+        ],
+        "vmSwitchName": "[parameters('vmSwitchName')]"
+      }
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the logical network."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The ID of the logical network."
+      },
+      "value": "[resourceId('Microsoft.AzureStackHCI/logicalNetworks', parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group of the logical network."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location of the logical network."
+      },
+      "value": "[reference('logicalNetwork', '2023-09-01-preview', 'full').location]"
+    },
+    "logicalNetworkId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the logical network."
+      },
+      "value": "[resourceId('Microsoft.AzureStackHCI/logicalNetworks', parameters('name'))]"
+    }
+  }
+}
