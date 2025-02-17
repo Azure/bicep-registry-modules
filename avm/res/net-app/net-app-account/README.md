@@ -21,9 +21,9 @@ This module deploys an Azure NetApp File.
 | `Microsoft.NetApp/netAppAccounts/backupPolicies` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-07-01/netAppAccounts/backupPolicies) |
 | `Microsoft.NetApp/netAppAccounts/backupVaults` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-07-01/netAppAccounts/backupVaults) |
 | `Microsoft.NetApp/netAppAccounts/backupVaults/backups` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-07-01/netAppAccounts/backupVaults/backups) |
-| `Microsoft.NetApp/netAppAccounts/capacityPools` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-03-01/netAppAccounts/capacityPools) |
+| `Microsoft.NetApp/netAppAccounts/capacityPools` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-07-01/netAppAccounts/capacityPools) |
 | `Microsoft.NetApp/netAppAccounts/capacityPools/volumes` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-07-01/netAppAccounts/capacityPools/volumes) |
-| `Microsoft.NetApp/netAppAccounts/snapshotPolicies` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-03-01/netAppAccounts/snapshotPolicies) |
+| `Microsoft.NetApp/netAppAccounts/snapshotPolicies` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-07-01/netAppAccounts/snapshotPolicies) |
 
 ## Usage examples
 
@@ -1748,8 +1748,6 @@ Replication properties.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`endpointType`](#parameter-capacitypoolsvolumesdataprotectionreplicationendpointtype) | string | Indicates whether the local volume is the source or destination for the Volume Replication. |
-| [`remoteVolumeRegion`](#parameter-capacitypoolsvolumesdataprotectionreplicationremotevolumeregion) | string | The remote region for the other end of the Volume Replication. |
-| [`remoteVolumeResourceId`](#parameter-capacitypoolsvolumesdataprotectionreplicationremotevolumeresourceid) | string | The resource ID of the remote volume. |
 | [`replicationSchedule`](#parameter-capacitypoolsvolumesdataprotectionreplicationreplicationschedule) | string | The replication schedule for the volume. |
 
 **Optional parameters**
@@ -1757,6 +1755,8 @@ Replication properties.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`remotePath`](#parameter-capacitypoolsvolumesdataprotectionreplicationremotepath) | object | The full path to a volume that is to be migrated into ANF. Required for Migration volumes. |
+| [`remoteVolumeRegion`](#parameter-capacitypoolsvolumesdataprotectionreplicationremotevolumeregion) | string | The remote region for the other end of the Volume Replication.Required for Data Protection volumes. |
+| [`remoteVolumeResourceId`](#parameter-capacitypoolsvolumesdataprotectionreplicationremotevolumeresourceid) | string | The resource ID of the remote volume. Required for Data Protection volumes. |
 
 ### Parameter: `capacityPools.volumes.dataProtection.replication.endpointType`
 
@@ -1771,20 +1771,6 @@ Indicates whether the local volume is the source or destination for the Volume R
     'src'
   ]
   ```
-
-### Parameter: `capacityPools.volumes.dataProtection.replication.remoteVolumeRegion`
-
-The remote region for the other end of the Volume Replication.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `capacityPools.volumes.dataProtection.replication.remoteVolumeResourceId`
-
-The resource ID of the remote volume.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `capacityPools.volumes.dataProtection.replication.replicationSchedule`
 
@@ -1835,6 +1821,20 @@ The name of a server on the ONTAP Host.
 The name of a volume on the server.
 
 - Required: Yes
+- Type: string
+
+### Parameter: `capacityPools.volumes.dataProtection.replication.remoteVolumeRegion`
+
+The remote region for the other end of the Volume Replication.Required for Data Protection volumes.
+
+- Required: No
+- Type: string
+
+### Parameter: `capacityPools.volumes.dataProtection.replication.remoteVolumeResourceId`
+
+The resource ID of the remote volume. Required for Data Protection volumes.
+
+- Required: No
 - Type: string
 
 ### Parameter: `capacityPools.volumes.dataProtection.snapshot`
