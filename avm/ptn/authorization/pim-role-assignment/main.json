@@ -6,32 +6,72 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "9808758665222113505"
+      "templateHash": "2931179501063853931"
     },
-    "name": "<Add module name>",
-    "description": "<Add description>"
+    "name": "PIM Role Assignments (All scopes)",
+    "description": "This module deploys a PIM Role Assignment at a Management Group, Subscription or Resource Group scope."
   },
   "definitions": {
-    "_1.permenantRoleAssignmentScheduleType": {
+    "requestTypeType": {
+      "type": "string",
+      "allowedValues": [
+        "AdminAssign",
+        "AdminExtend",
+        "AdminRemove",
+        "AdminRenew",
+        "AdminUpdate",
+        "SelfActivate",
+        "SelfDeactivate",
+        "SelfExtend",
+        "SelfRenew"
+      ],
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Optional. The request type of the role assignment."
+      }
+    },
+    "ticketInfoType": {
       "type": "object",
       "properties": {
-        "durationType": {
+        "ticketNumber": {
           "type": "string",
-          "allowedValues": [
-            "NoExpiration"
-          ],
+          "nullable": true,
           "metadata": {
-            "description": "Required. The type of the duration."
+            "description": "Optional. The ticket number for the role eligibility assignment."
+          }
+        },
+        "ticketSystem": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The ticket system name for the role eligibility assignment."
+          }
+        }
+      },
+      "nullable": true,
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "pimRoleAssignmentTypeType": {
+      "type": "object",
+      "discriminator": {
+        "propertyName": "roleAssignmentType",
+        "mapping": {
+          "Active": {
+            "$ref": "#/definitions/pimActiveRoleAssignmentType"
+          },
+          "Eligible": {
+            "$ref": "#/definitions/pimEligibleRoleAssignmentType"
           }
         }
       },
       "metadata": {
-        "__bicep_imported_from!": {
-          "sourceTemplate": "modules/definitions.bicep"
-        }
+        "__bicep_export!": true,
+        "description": "Optional. The type of the PIM role assignment whether its active or eligible."
       }
     },
-    "_1.pimActiveRoleAssignmentType": {
+    "pimActiveRoleAssignmentType": {
       "type": "object",
       "properties": {
         "roleAssignmentType": {
@@ -65,19 +105,14 @@
           }
         },
         "scheduleInfo": {
-          "$ref": "#/definitions/_1.roleAssignmentScheduleType",
+          "$ref": "#/definitions/roleAssignmentScheduleType",
           "metadata": {
             "description": "Required. The schedule information for the role assignment."
           }
         }
-      },
-      "metadata": {
-        "__bicep_imported_from!": {
-          "sourceTemplate": "modules/definitions.bicep"
-        }
       }
     },
-    "_1.pimEligibleRoleAssignmentType": {
+    "pimEligibleRoleAssignmentType": {
       "type": "object",
       "properties": {
         "roleAssignmentType": {
@@ -104,73 +139,48 @@
           }
         },
         "scheduleInfo": {
-          "$ref": "#/definitions/_1.roleAssignmentScheduleType",
+          "$ref": "#/definitions/roleAssignmentScheduleType",
           "metadata": {
             "description": "Required. The schedule information for the role assignment."
           }
         }
-      },
-      "metadata": {
-        "__bicep_imported_from!": {
-          "sourceTemplate": "modules/definitions.bicep"
-        }
       }
     },
-    "_1.roleAssignmentScheduleType": {
+    "roleAssignmentScheduleType": {
       "type": "object",
       "discriminator": {
         "propertyName": "durationType",
         "mapping": {
           "NoExpiration": {
-            "$ref": "#/definitions/_1.permenantRoleAssignmentScheduleType"
+            "$ref": "#/definitions/permenantRoleAssignmentScheduleType"
           },
           "AfterDuration": {
-            "$ref": "#/definitions/_1.timeBoundDurationRoleAssignmentScheduleType"
+            "$ref": "#/definitions/timeBoundDurationRoleAssignmentScheduleType"
           },
           "AfterDateTime": {
-            "$ref": "#/definitions/_1.timeBoundDateTimeRoleAssignmentScheduleType"
+            "$ref": "#/definitions/timeBoundDateTimeRoleAssignmentScheduleType"
           }
         }
       },
       "metadata": {
-        "description": "Optional. The schedule information for the role assignment.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "modules/definitions.bicep"
-        }
+        "description": "Optional. The schedule information for the role assignment."
       }
     },
-    "_1.timeBoundDateTimeRoleAssignmentScheduleType": {
+    "permenantRoleAssignmentScheduleType": {
       "type": "object",
       "properties": {
         "durationType": {
           "type": "string",
           "allowedValues": [
-            "AfterDateTime"
+            "NoExpiration"
           ],
           "metadata": {
             "description": "Required. The type of the duration."
           }
-        },
-        "endDateTime": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The end date and time for the role assignment."
-          }
-        },
-        "startTime": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The start date and time for the role assignment."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_imported_from!": {
-          "sourceTemplate": "modules/definitions.bicep"
         }
       }
     },
-    "_1.timeBoundDurationRoleAssignmentScheduleType": {
+    "timeBoundDurationRoleAssignmentScheduleType": {
       "type": "object",
       "properties": {
         "durationType": {
@@ -194,75 +204,31 @@
             "description": "Required. The start time for the role assignment."
           }
         }
-      },
-      "metadata": {
-        "__bicep_imported_from!": {
-          "sourceTemplate": "modules/definitions.bicep"
-        }
       }
     },
-    "pimRoleAssignmentTypeType": {
-      "type": "object",
-      "discriminator": {
-        "propertyName": "roleAssignmentType",
-        "mapping": {
-          "Active": {
-            "$ref": "#/definitions/_1.pimActiveRoleAssignmentType"
-          },
-          "Eligible": {
-            "$ref": "#/definitions/_1.pimEligibleRoleAssignmentType"
-          }
-        }
-      },
-      "metadata": {
-        "description": "Optional. The type of the PIM role assignment whether its active or eligible.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "modules/definitions.bicep"
-        }
-      }
-    },
-    "requestTypeType": {
-      "type": "string",
-      "allowedValues": [
-        "AdminAssign",
-        "AdminExtend",
-        "AdminRemove",
-        "AdminRenew",
-        "AdminUpdate",
-        "SelfActivate",
-        "SelfDeactivate",
-        "SelfExtend",
-        "SelfRenew"
-      ],
-      "metadata": {
-        "description": "Optional. The request type of the role assignment.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "modules/definitions.bicep"
-        }
-      }
-    },
-    "ticketInfoType": {
+    "timeBoundDateTimeRoleAssignmentScheduleType": {
       "type": "object",
       "properties": {
-        "ticketNumber": {
+        "durationType": {
           "type": "string",
-          "nullable": true,
+          "allowedValues": [
+            "AfterDateTime"
+          ],
           "metadata": {
-            "description": "Optional. The ticket number for the role eligibility assignment."
+            "description": "Required. The type of the duration."
           }
         },
-        "ticketSystem": {
+        "endDateTime": {
           "type": "string",
-          "nullable": true,
           "metadata": {
-            "description": "Optional. The ticket system name for the role eligibility assignment."
+            "description": "Required. The end date and time for the role assignment."
           }
-        }
-      },
-      "nullable": true,
-      "metadata": {
-        "__bicep_imported_from!": {
-          "sourceTemplate": "modules/definitions.bicep"
+        },
+        "startTime": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The start date and time for the role assignment."
+          }
         }
       }
     }
@@ -470,32 +436,72 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "6796208717843142711"
+              "templateHash": "3274153567221137365"
             },
             "name": " PIM Role Assignments (Management Group scope)",
             "description": "This module deploys a PIM Role Assignment at a Management Group scope."
           },
           "definitions": {
-            "_1.permenantRoleAssignmentScheduleType": {
+            "requestTypeType": {
+              "type": "string",
+              "allowedValues": [
+                "AdminAssign",
+                "AdminExtend",
+                "AdminRemove",
+                "AdminRenew",
+                "AdminUpdate",
+                "SelfActivate",
+                "SelfDeactivate",
+                "SelfExtend",
+                "SelfRenew"
+              ],
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "Optional. The request type of the role assignment."
+              }
+            },
+            "ticketInfoType": {
               "type": "object",
               "properties": {
-                "durationType": {
+                "ticketNumber": {
                   "type": "string",
-                  "allowedValues": [
-                    "NoExpiration"
-                  ],
+                  "nullable": true,
                   "metadata": {
-                    "description": "Required. The type of the duration."
+                    "description": "Optional. The ticket number for the role eligibility assignment."
+                  }
+                },
+                "ticketSystem": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The ticket system name for the role eligibility assignment."
+                  }
+                }
+              },
+              "nullable": true,
+              "metadata": {
+                "__bicep_export!": true
+              }
+            },
+            "pimRoleAssignmentTypeType": {
+              "type": "object",
+              "discriminator": {
+                "propertyName": "roleAssignmentType",
+                "mapping": {
+                  "Active": {
+                    "$ref": "#/definitions/pimActiveRoleAssignmentType"
+                  },
+                  "Eligible": {
+                    "$ref": "#/definitions/pimEligibleRoleAssignmentType"
                   }
                 }
               },
               "metadata": {
-                "__bicep_imported_from!": {
-                  "sourceTemplate": "definitions.bicep"
-                }
+                "__bicep_export!": true,
+                "description": "Optional. The type of the PIM role assignment whether its active or eligible."
               }
             },
-            "_1.pimActiveRoleAssignmentType": {
+            "pimActiveRoleAssignmentType": {
               "type": "object",
               "properties": {
                 "roleAssignmentType": {
@@ -529,19 +535,14 @@
                   }
                 },
                 "scheduleInfo": {
-                  "$ref": "#/definitions/_1.roleAssignmentScheduleType",
+                  "$ref": "#/definitions/roleAssignmentScheduleType",
                   "metadata": {
                     "description": "Required. The schedule information for the role assignment."
                   }
                 }
-              },
-              "metadata": {
-                "__bicep_imported_from!": {
-                  "sourceTemplate": "definitions.bicep"
-                }
               }
             },
-            "_1.pimEligibleRoleAssignmentType": {
+            "pimEligibleRoleAssignmentType": {
               "type": "object",
               "properties": {
                 "roleAssignmentType": {
@@ -568,73 +569,48 @@
                   }
                 },
                 "scheduleInfo": {
-                  "$ref": "#/definitions/_1.roleAssignmentScheduleType",
+                  "$ref": "#/definitions/roleAssignmentScheduleType",
                   "metadata": {
                     "description": "Required. The schedule information for the role assignment."
                   }
                 }
-              },
-              "metadata": {
-                "__bicep_imported_from!": {
-                  "sourceTemplate": "definitions.bicep"
-                }
               }
             },
-            "_1.roleAssignmentScheduleType": {
+            "roleAssignmentScheduleType": {
               "type": "object",
               "discriminator": {
                 "propertyName": "durationType",
                 "mapping": {
                   "NoExpiration": {
-                    "$ref": "#/definitions/_1.permenantRoleAssignmentScheduleType"
+                    "$ref": "#/definitions/permenantRoleAssignmentScheduleType"
                   },
                   "AfterDuration": {
-                    "$ref": "#/definitions/_1.timeBoundDurationRoleAssignmentScheduleType"
+                    "$ref": "#/definitions/timeBoundDurationRoleAssignmentScheduleType"
                   },
                   "AfterDateTime": {
-                    "$ref": "#/definitions/_1.timeBoundDateTimeRoleAssignmentScheduleType"
+                    "$ref": "#/definitions/timeBoundDateTimeRoleAssignmentScheduleType"
                   }
                 }
               },
               "metadata": {
-                "description": "Optional. The schedule information for the role assignment.",
-                "__bicep_imported_from!": {
-                  "sourceTemplate": "definitions.bicep"
-                }
+                "description": "Optional. The schedule information for the role assignment."
               }
             },
-            "_1.timeBoundDateTimeRoleAssignmentScheduleType": {
+            "permenantRoleAssignmentScheduleType": {
               "type": "object",
               "properties": {
                 "durationType": {
                   "type": "string",
                   "allowedValues": [
-                    "AfterDateTime"
+                    "NoExpiration"
                   ],
                   "metadata": {
                     "description": "Required. The type of the duration."
                   }
-                },
-                "endDateTime": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The end date and time for the role assignment."
-                  }
-                },
-                "startTime": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The start date and time for the role assignment."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_imported_from!": {
-                  "sourceTemplate": "definitions.bicep"
                 }
               }
             },
-            "_1.timeBoundDurationRoleAssignmentScheduleType": {
+            "timeBoundDurationRoleAssignmentScheduleType": {
               "type": "object",
               "properties": {
                 "durationType": {
@@ -658,75 +634,31 @@
                     "description": "Required. The start time for the role assignment."
                   }
                 }
-              },
-              "metadata": {
-                "__bicep_imported_from!": {
-                  "sourceTemplate": "definitions.bicep"
-                }
               }
             },
-            "pimRoleAssignmentTypeType": {
-              "type": "object",
-              "discriminator": {
-                "propertyName": "roleAssignmentType",
-                "mapping": {
-                  "Active": {
-                    "$ref": "#/definitions/_1.pimActiveRoleAssignmentType"
-                  },
-                  "Eligible": {
-                    "$ref": "#/definitions/_1.pimEligibleRoleAssignmentType"
-                  }
-                }
-              },
-              "metadata": {
-                "description": "Optional. The type of the PIM role assignment whether its active or eligible.",
-                "__bicep_imported_from!": {
-                  "sourceTemplate": "definitions.bicep"
-                }
-              }
-            },
-            "requestTypeType": {
-              "type": "string",
-              "allowedValues": [
-                "AdminAssign",
-                "AdminExtend",
-                "AdminRemove",
-                "AdminRenew",
-                "AdminUpdate",
-                "SelfActivate",
-                "SelfDeactivate",
-                "SelfExtend",
-                "SelfRenew"
-              ],
-              "metadata": {
-                "description": "Optional. The request type of the role assignment.",
-                "__bicep_imported_from!": {
-                  "sourceTemplate": "definitions.bicep"
-                }
-              }
-            },
-            "ticketInfoType": {
+            "timeBoundDateTimeRoleAssignmentScheduleType": {
               "type": "object",
               "properties": {
-                "ticketNumber": {
+                "durationType": {
                   "type": "string",
-                  "nullable": true,
+                  "allowedValues": [
+                    "AfterDateTime"
+                  ],
                   "metadata": {
-                    "description": "Optional. The ticket number for the role eligibility assignment."
+                    "description": "Required. The type of the duration."
                   }
                 },
-                "ticketSystem": {
+                "endDateTime": {
                   "type": "string",
-                  "nullable": true,
                   "metadata": {
-                    "description": "Optional. The ticket system name for the role eligibility assignment."
+                    "description": "Required. The end date and time for the role assignment."
                   }
-                }
-              },
-              "nullable": true,
-              "metadata": {
-                "__bicep_imported_from!": {
-                  "sourceTemplate": "definitions.bicep"
+                },
+                "startTime": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The start date and time for the role assignment."
+                  }
                 }
               }
             }
@@ -954,32 +886,72 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "12202824882334656506"
+              "templateHash": "15288642990461981614"
             },
             "name": "PIM Role Assignments (Subscription scope)",
             "description": "This module deploys a PIM Role Assignment at a Subscription scope."
           },
           "definitions": {
-            "_1.permenantRoleAssignmentScheduleType": {
+            "requestTypeType": {
+              "type": "string",
+              "allowedValues": [
+                "AdminAssign",
+                "AdminExtend",
+                "AdminRemove",
+                "AdminRenew",
+                "AdminUpdate",
+                "SelfActivate",
+                "SelfDeactivate",
+                "SelfExtend",
+                "SelfRenew"
+              ],
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "Optional. The request type of the role assignment."
+              }
+            },
+            "ticketInfoType": {
               "type": "object",
               "properties": {
-                "durationType": {
+                "ticketNumber": {
                   "type": "string",
-                  "allowedValues": [
-                    "NoExpiration"
-                  ],
+                  "nullable": true,
                   "metadata": {
-                    "description": "Required. The type of the duration."
+                    "description": "Optional. The ticket number for the role eligibility assignment."
+                  }
+                },
+                "ticketSystem": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The ticket system name for the role eligibility assignment."
+                  }
+                }
+              },
+              "nullable": true,
+              "metadata": {
+                "__bicep_export!": true
+              }
+            },
+            "pimRoleAssignmentTypeType": {
+              "type": "object",
+              "discriminator": {
+                "propertyName": "roleAssignmentType",
+                "mapping": {
+                  "Active": {
+                    "$ref": "#/definitions/pimActiveRoleAssignmentType"
+                  },
+                  "Eligible": {
+                    "$ref": "#/definitions/pimEligibleRoleAssignmentType"
                   }
                 }
               },
               "metadata": {
-                "__bicep_imported_from!": {
-                  "sourceTemplate": "definitions.bicep"
-                }
+                "__bicep_export!": true,
+                "description": "Optional. The type of the PIM role assignment whether its active or eligible."
               }
             },
-            "_1.pimActiveRoleAssignmentType": {
+            "pimActiveRoleAssignmentType": {
               "type": "object",
               "properties": {
                 "roleAssignmentType": {
@@ -1013,19 +985,14 @@
                   }
                 },
                 "scheduleInfo": {
-                  "$ref": "#/definitions/_1.roleAssignmentScheduleType",
+                  "$ref": "#/definitions/roleAssignmentScheduleType",
                   "metadata": {
                     "description": "Required. The schedule information for the role assignment."
                   }
                 }
-              },
-              "metadata": {
-                "__bicep_imported_from!": {
-                  "sourceTemplate": "definitions.bicep"
-                }
               }
             },
-            "_1.pimEligibleRoleAssignmentType": {
+            "pimEligibleRoleAssignmentType": {
               "type": "object",
               "properties": {
                 "roleAssignmentType": {
@@ -1052,73 +1019,48 @@
                   }
                 },
                 "scheduleInfo": {
-                  "$ref": "#/definitions/_1.roleAssignmentScheduleType",
+                  "$ref": "#/definitions/roleAssignmentScheduleType",
                   "metadata": {
                     "description": "Required. The schedule information for the role assignment."
                   }
                 }
-              },
-              "metadata": {
-                "__bicep_imported_from!": {
-                  "sourceTemplate": "definitions.bicep"
-                }
               }
             },
-            "_1.roleAssignmentScheduleType": {
+            "roleAssignmentScheduleType": {
               "type": "object",
               "discriminator": {
                 "propertyName": "durationType",
                 "mapping": {
                   "NoExpiration": {
-                    "$ref": "#/definitions/_1.permenantRoleAssignmentScheduleType"
+                    "$ref": "#/definitions/permenantRoleAssignmentScheduleType"
                   },
                   "AfterDuration": {
-                    "$ref": "#/definitions/_1.timeBoundDurationRoleAssignmentScheduleType"
+                    "$ref": "#/definitions/timeBoundDurationRoleAssignmentScheduleType"
                   },
                   "AfterDateTime": {
-                    "$ref": "#/definitions/_1.timeBoundDateTimeRoleAssignmentScheduleType"
+                    "$ref": "#/definitions/timeBoundDateTimeRoleAssignmentScheduleType"
                   }
                 }
               },
               "metadata": {
-                "description": "Optional. The schedule information for the role assignment.",
-                "__bicep_imported_from!": {
-                  "sourceTemplate": "definitions.bicep"
-                }
+                "description": "Optional. The schedule information for the role assignment."
               }
             },
-            "_1.timeBoundDateTimeRoleAssignmentScheduleType": {
+            "permenantRoleAssignmentScheduleType": {
               "type": "object",
               "properties": {
                 "durationType": {
                   "type": "string",
                   "allowedValues": [
-                    "AfterDateTime"
+                    "NoExpiration"
                   ],
                   "metadata": {
                     "description": "Required. The type of the duration."
                   }
-                },
-                "endDateTime": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The end date and time for the role assignment."
-                  }
-                },
-                "startTime": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The start date and time for the role assignment."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_imported_from!": {
-                  "sourceTemplate": "definitions.bicep"
                 }
               }
             },
-            "_1.timeBoundDurationRoleAssignmentScheduleType": {
+            "timeBoundDurationRoleAssignmentScheduleType": {
               "type": "object",
               "properties": {
                 "durationType": {
@@ -1142,75 +1084,31 @@
                     "description": "Required. The start time for the role assignment."
                   }
                 }
-              },
-              "metadata": {
-                "__bicep_imported_from!": {
-                  "sourceTemplate": "definitions.bicep"
-                }
               }
             },
-            "pimRoleAssignmentTypeType": {
-              "type": "object",
-              "discriminator": {
-                "propertyName": "roleAssignmentType",
-                "mapping": {
-                  "Active": {
-                    "$ref": "#/definitions/_1.pimActiveRoleAssignmentType"
-                  },
-                  "Eligible": {
-                    "$ref": "#/definitions/_1.pimEligibleRoleAssignmentType"
-                  }
-                }
-              },
-              "metadata": {
-                "description": "Optional. The type of the PIM role assignment whether its active or eligible.",
-                "__bicep_imported_from!": {
-                  "sourceTemplate": "definitions.bicep"
-                }
-              }
-            },
-            "requestTypeType": {
-              "type": "string",
-              "allowedValues": [
-                "AdminAssign",
-                "AdminExtend",
-                "AdminRemove",
-                "AdminRenew",
-                "AdminUpdate",
-                "SelfActivate",
-                "SelfDeactivate",
-                "SelfExtend",
-                "SelfRenew"
-              ],
-              "metadata": {
-                "description": "Optional. The request type of the role assignment.",
-                "__bicep_imported_from!": {
-                  "sourceTemplate": "definitions.bicep"
-                }
-              }
-            },
-            "ticketInfoType": {
+            "timeBoundDateTimeRoleAssignmentScheduleType": {
               "type": "object",
               "properties": {
-                "ticketNumber": {
+                "durationType": {
                   "type": "string",
-                  "nullable": true,
+                  "allowedValues": [
+                    "AfterDateTime"
+                  ],
                   "metadata": {
-                    "description": "Optional. The ticket number for the role eligibility assignment."
+                    "description": "Required. The type of the duration."
                   }
                 },
-                "ticketSystem": {
+                "endDateTime": {
                   "type": "string",
-                  "nullable": true,
                   "metadata": {
-                    "description": "Optional. The ticket system name for the role eligibility assignment."
+                    "description": "Required. The end date and time for the role assignment."
                   }
-                }
-              },
-              "nullable": true,
-              "metadata": {
-                "__bicep_imported_from!": {
-                  "sourceTemplate": "definitions.bicep"
+                },
+                "startTime": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The start date and time for the role assignment."
+                  }
                 }
               }
             }
@@ -1446,32 +1344,72 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "14454574202421677768"
+              "templateHash": "9698835458053155186"
             },
             "name": "PIM Role Assignments (Resource Group scope)",
             "description": "This module deploys a PIM Role Assignment at a Resource Group scope."
           },
           "definitions": {
-            "_1.permenantRoleAssignmentScheduleType": {
+            "requestTypeType": {
+              "type": "string",
+              "allowedValues": [
+                "AdminAssign",
+                "AdminExtend",
+                "AdminRemove",
+                "AdminRenew",
+                "AdminUpdate",
+                "SelfActivate",
+                "SelfDeactivate",
+                "SelfExtend",
+                "SelfRenew"
+              ],
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "Optional. The request type of the role assignment."
+              }
+            },
+            "ticketInfoType": {
               "type": "object",
               "properties": {
-                "durationType": {
+                "ticketNumber": {
                   "type": "string",
-                  "allowedValues": [
-                    "NoExpiration"
-                  ],
+                  "nullable": true,
                   "metadata": {
-                    "description": "Required. The type of the duration."
+                    "description": "Optional. The ticket number for the role eligibility assignment."
+                  }
+                },
+                "ticketSystem": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The ticket system name for the role eligibility assignment."
+                  }
+                }
+              },
+              "nullable": true,
+              "metadata": {
+                "__bicep_export!": true
+              }
+            },
+            "pimRoleAssignmentTypeType": {
+              "type": "object",
+              "discriminator": {
+                "propertyName": "roleAssignmentType",
+                "mapping": {
+                  "Active": {
+                    "$ref": "#/definitions/pimActiveRoleAssignmentType"
+                  },
+                  "Eligible": {
+                    "$ref": "#/definitions/pimEligibleRoleAssignmentType"
                   }
                 }
               },
               "metadata": {
-                "__bicep_imported_from!": {
-                  "sourceTemplate": "definitions.bicep"
-                }
+                "__bicep_export!": true,
+                "description": "Optional. The type of the PIM role assignment whether its active or eligible."
               }
             },
-            "_1.pimActiveRoleAssignmentType": {
+            "pimActiveRoleAssignmentType": {
               "type": "object",
               "properties": {
                 "roleAssignmentType": {
@@ -1505,19 +1443,14 @@
                   }
                 },
                 "scheduleInfo": {
-                  "$ref": "#/definitions/_1.roleAssignmentScheduleType",
+                  "$ref": "#/definitions/roleAssignmentScheduleType",
                   "metadata": {
                     "description": "Required. The schedule information for the role assignment."
                   }
                 }
-              },
-              "metadata": {
-                "__bicep_imported_from!": {
-                  "sourceTemplate": "definitions.bicep"
-                }
               }
             },
-            "_1.pimEligibleRoleAssignmentType": {
+            "pimEligibleRoleAssignmentType": {
               "type": "object",
               "properties": {
                 "roleAssignmentType": {
@@ -1544,73 +1477,48 @@
                   }
                 },
                 "scheduleInfo": {
-                  "$ref": "#/definitions/_1.roleAssignmentScheduleType",
+                  "$ref": "#/definitions/roleAssignmentScheduleType",
                   "metadata": {
                     "description": "Required. The schedule information for the role assignment."
                   }
                 }
-              },
-              "metadata": {
-                "__bicep_imported_from!": {
-                  "sourceTemplate": "definitions.bicep"
-                }
               }
             },
-            "_1.roleAssignmentScheduleType": {
+            "roleAssignmentScheduleType": {
               "type": "object",
               "discriminator": {
                 "propertyName": "durationType",
                 "mapping": {
                   "NoExpiration": {
-                    "$ref": "#/definitions/_1.permenantRoleAssignmentScheduleType"
+                    "$ref": "#/definitions/permenantRoleAssignmentScheduleType"
                   },
                   "AfterDuration": {
-                    "$ref": "#/definitions/_1.timeBoundDurationRoleAssignmentScheduleType"
+                    "$ref": "#/definitions/timeBoundDurationRoleAssignmentScheduleType"
                   },
                   "AfterDateTime": {
-                    "$ref": "#/definitions/_1.timeBoundDateTimeRoleAssignmentScheduleType"
+                    "$ref": "#/definitions/timeBoundDateTimeRoleAssignmentScheduleType"
                   }
                 }
               },
               "metadata": {
-                "description": "Optional. The schedule information for the role assignment.",
-                "__bicep_imported_from!": {
-                  "sourceTemplate": "definitions.bicep"
-                }
+                "description": "Optional. The schedule information for the role assignment."
               }
             },
-            "_1.timeBoundDateTimeRoleAssignmentScheduleType": {
+            "permenantRoleAssignmentScheduleType": {
               "type": "object",
               "properties": {
                 "durationType": {
                   "type": "string",
                   "allowedValues": [
-                    "AfterDateTime"
+                    "NoExpiration"
                   ],
                   "metadata": {
                     "description": "Required. The type of the duration."
                   }
-                },
-                "endDateTime": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The end date and time for the role assignment."
-                  }
-                },
-                "startTime": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The start date and time for the role assignment."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_imported_from!": {
-                  "sourceTemplate": "definitions.bicep"
                 }
               }
             },
-            "_1.timeBoundDurationRoleAssignmentScheduleType": {
+            "timeBoundDurationRoleAssignmentScheduleType": {
               "type": "object",
               "properties": {
                 "durationType": {
@@ -1634,75 +1542,31 @@
                     "description": "Required. The start time for the role assignment."
                   }
                 }
-              },
-              "metadata": {
-                "__bicep_imported_from!": {
-                  "sourceTemplate": "definitions.bicep"
-                }
               }
             },
-            "pimRoleAssignmentTypeType": {
-              "type": "object",
-              "discriminator": {
-                "propertyName": "roleAssignmentType",
-                "mapping": {
-                  "Active": {
-                    "$ref": "#/definitions/_1.pimActiveRoleAssignmentType"
-                  },
-                  "Eligible": {
-                    "$ref": "#/definitions/_1.pimEligibleRoleAssignmentType"
-                  }
-                }
-              },
-              "metadata": {
-                "description": "Optional. The type of the PIM role assignment whether its active or eligible.",
-                "__bicep_imported_from!": {
-                  "sourceTemplate": "definitions.bicep"
-                }
-              }
-            },
-            "requestTypeType": {
-              "type": "string",
-              "allowedValues": [
-                "AdminAssign",
-                "AdminExtend",
-                "AdminRemove",
-                "AdminRenew",
-                "AdminUpdate",
-                "SelfActivate",
-                "SelfDeactivate",
-                "SelfExtend",
-                "SelfRenew"
-              ],
-              "metadata": {
-                "description": "Optional. The request type of the role assignment.",
-                "__bicep_imported_from!": {
-                  "sourceTemplate": "definitions.bicep"
-                }
-              }
-            },
-            "ticketInfoType": {
+            "timeBoundDateTimeRoleAssignmentScheduleType": {
               "type": "object",
               "properties": {
-                "ticketNumber": {
+                "durationType": {
                   "type": "string",
-                  "nullable": true,
+                  "allowedValues": [
+                    "AfterDateTime"
+                  ],
                   "metadata": {
-                    "description": "Optional. The ticket number for the role eligibility assignment."
+                    "description": "Required. The type of the duration."
                   }
                 },
-                "ticketSystem": {
+                "endDateTime": {
                   "type": "string",
-                  "nullable": true,
                   "metadata": {
-                    "description": "Optional. The ticket system name for the role eligibility assignment."
+                    "description": "Required. The end date and time for the role assignment."
                   }
-                }
-              },
-              "nullable": true,
-              "metadata": {
-                "__bicep_imported_from!": {
-                  "sourceTemplate": "definitions.bicep"
+                },
+                "startTime": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The start date and time for the role assignment."
+                  }
                 }
               }
             }

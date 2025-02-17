@@ -1,6 +1,6 @@
-# <Add module name> `[Authorization/PimRoleAssignment]`
+# PIM Role Assignments (All scopes) `[Authorization/PimRoleAssignment]`
 
-<Add description>
+This module deploys a PIM Role Assignment at a Management Group, Subscription or Resource Group scope.
 
 ## Navigation
 
