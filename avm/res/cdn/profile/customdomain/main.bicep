@@ -40,7 +40,7 @@ param secretName string = ''
 resource profile 'Microsoft.Cdn/profiles@2023-05-01' existing = {
   name: profileName
 
-  resource secrect 'secrets@2023-05-01' existing = if (!empty(secretName)) {
+  resource secret 'secrets@2023-05-01' existing = if (!empty(secretName)) {
     name: secretName
   }
 }
@@ -66,7 +66,7 @@ resource customDomain 'Microsoft.Cdn/profiles/customDomains@2023-05-01' = {
       minimumTlsVersion: minimumTlsVersion
       secret: !(empty(secretName))
         ? {
-            id: profile::secrect.id
+            id: profile::secret.id
           }
         : null
     }
