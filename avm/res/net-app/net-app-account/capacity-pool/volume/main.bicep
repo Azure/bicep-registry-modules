@@ -63,7 +63,7 @@ param creationToken string = name
 @description('Required. Maximum storage quota allowed for a file system in bytes.')
 param usageThreshold int
 
-@description('Optional. Set of protocol types. Default value is `[\'NFSv3\']`. If you are creating a dual-stack volume, set either `[\'NFSv3\',\'CIFS\']` or `[\'NFSv4.1\',\'CIFS\']`')
+@description('Optional. Set of protocol types. Default value is `[\'NFSv3\']`. If you are creating a dual-stack volume, set either `[\'NFSv3\',\'CIFS\']` or `[\'NFSv4.1\',\'CIFS\']`.')
 @allowed([
   'NFSv3'
   'NFSv4.1'
