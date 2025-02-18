@@ -115,16 +115,6 @@ module testDeployment '../../../main.bicep' = {
             subnetResourceId: nestedDependencies.outputs.subnetResourceId
             usageThreshold: 107374182400
           }
-          {
-            name: '${namePrefix}-${serviceShort}-vol-002'
-            networkFeatures: 'Standard'
-            encryptionKeySource: encryptionKeySource
-            protocolTypes: [
-              'NFSv3'
-            ]
-            subnetResourceId: nestedDependencies.outputs.subnetResourceId
-            usageThreshold: 107374182400
-          }
         ]
       }
       {
