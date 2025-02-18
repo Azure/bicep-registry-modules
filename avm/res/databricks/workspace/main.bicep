@@ -445,8 +445,8 @@ module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-workspace-PrivateEndpoint-${index}'
     scope: resourceGroup(
-      split(privateEndpoint.?resourceGroupResourceId ?? privateEndpoint.?subnetResourceId, '/')[2],
-      split(privateEndpoint.?resourceGroupResourceId ?? privateEndpoint.?subnetResourceId, '/')[4]
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
     )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(workspace.id, '/'))}-${privateEndpoint.service}-${index}'
@@ -509,8 +509,8 @@ module storageAccount_storageAccountPrivateEndpoints 'br/public:avm/res/network/
   for (privateEndpoint, index) in (storageAccountPrivateEndpoints ?? []): if (privateStorageAccount == 'Enabled') {
     name: '${uniqueString(deployment().name, location)}-workspacestorage-PrivateEndpoint-${index}'
     scope: resourceGroup(
-      split(privateEndpoint.?resourceGroupResourceId ?? privateEndpoint.?subnetResourceId, '/')[2],
-      split(privateEndpoint.?resourceGroupResourceId ?? privateEndpoint.?subnetResourceId, '/')[4]
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
     )
     params: {
       name: privateEndpoint.?name ?? 'pep-${_storageAccountName}-${privateEndpoint.service}-${index}'
@@ -592,25 +592,23 @@ output workspaceResourceId string = workspace.properties.workspaceId
 
 @description('The private endpoints of the Databricks Workspace.')
 output privateEndpoints privateEndpointOutputType[] = [
-  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
-    name: workspace_privateEndpoints[i].outputs.name
-    resourceId: workspace_privateEndpoints[i].outputs.resourceId
-    groupId: workspace_privateEndpoints[i].outputs.?groupId!
-    customDnsConfigs: workspace_privateEndpoints[i].outputs.customDnsConfigs
-    networkInterfaceResourceIds: workspace_privateEndpoints[i].outputs.networkInterfaceResourceIds
+  for (item, index) in (privateEndpoints ?? []): {
+    name: workspace_privateEndpoints[index].outputs.name
+    resourceId: workspace_privateEndpoints[index].outputs.resourceId
+    groupId: workspace_privateEndpoints[index].outputs.?groupId!
+    customDnsConfigs: workspace_privateEndpoints[index].outputs.customDnsConfigs
+    networkInterfaceResourceIds: workspace_privateEndpoints[index].outputs.networkInterfaceResourceIds
   }
 ]
 
 @description('The private endpoints of the Databricks Workspace Storage.')
 output storagePrivateEndpoints privateEndpointOutputType[] = [
-  for (pe, i) in ((!empty(storageAccountPrivateEndpoints) && privateStorageAccount == 'Enabled')
-    ? array(storageAccountPrivateEndpoints)
-    : []): {
-    name: storageAccount_storageAccountPrivateEndpoints[i].outputs.name
-    resourceId: storageAccount_storageAccountPrivateEndpoints[i].outputs.resourceId
-    groupId: storageAccount_storageAccountPrivateEndpoints[i].outputs.?groupId!
-    customDnsConfigs: storageAccount_storageAccountPrivateEndpoints[i].outputs.customDnsConfigs
-    networkInterfaceResourceIds: storageAccount_storageAccountPrivateEndpoints[i].outputs.networkInterfaceResourceIds
+  for (item, index) in (privateStorageAccount == 'Enabled' ? storageAccountPrivateEndpoints ?? [] : []): {
+    name: storageAccount_storageAccountPrivateEndpoints[index].outputs.name
+    resourceId: storageAccount_storageAccountPrivateEndpoints[index].outputs.resourceId
+    groupId: storageAccount_storageAccountPrivateEndpoints[index].outputs.?groupId!
+    customDnsConfigs: storageAccount_storageAccountPrivateEndpoints[index].outputs.customDnsConfigs
+    networkInterfaceResourceIds: storageAccount_storageAccountPrivateEndpoints[index].outputs.networkInterfaceResourceIds
   }
 ]
 
