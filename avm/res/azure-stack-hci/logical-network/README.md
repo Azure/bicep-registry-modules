@@ -14,7 +14,7 @@ This module deploys an Azure Stack HCI Logical Network.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.AzureStackHCI/logicalNetworks` | [2023-09-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AzureStackHCI/2023-09-01-preview/logicalNetworks) |
+| `Microsoft.AzureStackHCI/logicalNetworks` | [2025-02-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AzureStackHCI/2025-02-01-preview/logicalNetworks) |
 
 ## Usage examples
 

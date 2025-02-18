@@ -107,7 +107,7 @@ var routeTable = {
   }
 }
 
-resource logicalNetwork 'Microsoft.AzureStackHCI/logicalNetworks@2023-09-01-preview' = {
+resource logicalNetwork 'Microsoft.AzureStackHCI/logicalNetworks@2025-02-01-preview' = {
   name: name
   location: location
   tags: tags
