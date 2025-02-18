@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Deploy azure stack hci logical network in default configuration'
-metadata description = 'This test deploys an azure stack hci logical network.'
+metadata name = 'Using only defaults'
+metadata description = 'This instance deploys the module with the minimum set of required parameters.'
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)

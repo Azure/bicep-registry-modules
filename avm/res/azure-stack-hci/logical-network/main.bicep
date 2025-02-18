@@ -1,4 +1,4 @@
-metadata name = 'Azure Stack HCI Logical Networks'
+metadata name = 'Azure Stack HCI Logical Network'
 metadata description = 'This module deploys an Azure Stack HCI Logical Network.'
 
 // ============== //
@@ -147,6 +147,3 @@ output resourceGroupName string = resourceGroup().name
 
 @description('The location of the logical network.')
 output location string = logicalNetwork.location
-
-@description('The resource ID of the logical network.')
-output logicalNetworkId string = logicalNetwork.id

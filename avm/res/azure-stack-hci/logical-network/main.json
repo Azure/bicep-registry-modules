@@ -6,9 +6,9 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "18239571425455761346"
+      "templateHash": "5146441383734381944"
     },
-    "name": "Azure Stack HCI Logical Networks",
+    "name": "Azure Stack HCI Logical Network",
     "description": "This module deploys an Azure Stack HCI Logical Network."
   },
   "parameters": {
@@ -228,13 +228,6 @@
         "description": "The location of the logical network."
       },
       "value": "[reference('logicalNetwork', '2025-02-01-preview', 'full').location]"
-    },
-    "logicalNetworkId": {
-      "type": "string",
-      "metadata": {
-        "description": "The resource ID of the logical network."
-      },
-      "value": "[resourceId('Microsoft.AzureStackHCI/logicalNetworks', parameters('name'))]"
     }
   }
 }

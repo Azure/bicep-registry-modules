@@ -1,4 +1,4 @@
-# Azure Stack HCI Logical Networks `[Microsoft.AzureStackHCI/logicalNetworks]`
+# Azure Stack HCI Logical Network `[Microsoft.AzureStackHCI/logicalNetworks]`
 
 This module deploys an Azure Stack HCI Logical Network.
 
@@ -24,12 +24,12 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/azure-stack-hci/logical-network:<version>`.
 
-- [Deploy azure stack hci logical network in default configuration](#example-1-deploy-azure-stack-hci-logical-network-in-default-configuration)
-- [Deploy azure stack hci logical network in WAF aligned configuration](#example-2-deploy-azure-stack-hci-logical-network-in-waf-aligned-configuration)
+- [Using only defaults](#example-1-using-only-defaults)
+- [WAF-aligned](#example-2-waf-aligned)
 
-### Example 1: _Deploy azure stack hci logical network in default configuration_
+### Example 1: _Using only defaults_
 
-This test deploys an azure stack hci logical network.
+This instance deploys the module with the minimum set of required parameters.
 
 
 <details>
@@ -147,9 +147,9 @@ param vlanId = '<vlanId>'
 </details>
 <p>
 
-### Example 2: _Deploy azure stack hci logical network in WAF aligned configuration_
+### Example 2: _WAF-aligned_
 
-This test deploys an azure stack hci logical network.
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
 
 <details>
@@ -442,7 +442,6 @@ VLan Id for the logical network.
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `location` | string | The location of the logical network. |
-| `logicalNetworkId` | string | The resource ID of the logical network. |
 | `name` | string | The name of the logical network. |
 | `resourceGroupName` | string | The resource group of the logical network. |
 | `resourceId` | string | The ID of the logical network. |
