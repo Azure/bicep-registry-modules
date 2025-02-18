@@ -88,7 +88,7 @@ module testDeployment '../../../main.bicep' = {
               ]
             }
             name: '${namePrefix}-${serviceShort}-vol-001'
-            zones: [1]
+            availabilityZone: '1'
             networkFeatures: 'Standard'
             encryptionKeySource: encryptionKeySource
             protocolTypes: [

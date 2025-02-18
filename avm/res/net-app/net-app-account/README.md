@@ -711,6 +711,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
         size: 4398046511104
         volumes: [
           {
+            availabilityZone: '1'
             encryptionKeySource: '<encryptionKeySource>'
             exportPolicy: {
               rules: [
@@ -744,9 +745,6 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
             ]
             subnetResourceId: '<subnetResourceId>'
             usageThreshold: 107374182400
-            zones: [
-              1
-            ]
           }
           {
             availabilityZone: '1'
@@ -842,6 +840,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
           "size": 4398046511104,
           "volumes": [
             {
+              "availabilityZone": "1",
               "encryptionKeySource": "<encryptionKeySource>",
               "exportPolicy": {
                 "rules": [
@@ -874,10 +873,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
                 }
               ],
               "subnetResourceId": "<subnetResourceId>",
-              "usageThreshold": 107374182400,
-              "zones": [
-                1
-              ]
+              "usageThreshold": 107374182400
             },
             {
               "availabilityZone": "1",
@@ -977,6 +973,7 @@ param capacityPools = [
     size: 4398046511104
     volumes: [
       {
+        availabilityZone: '1'
         encryptionKeySource: '<encryptionKeySource>'
         exportPolicy: {
           rules: [
@@ -1010,9 +1007,6 @@ param capacityPools = [
         ]
         subnetResourceId: '<subnetResourceId>'
         usageThreshold: 107374182400
-        zones: [
-          1
-        ]
       }
       {
         availabilityZone: '1'
