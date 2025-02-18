@@ -1,0 +1,435 @@
+# Azure Stack HCI Logical Networks `[Microsoft.AzureStackHCI/logicalNetworks]`
+
+This module deploys an Azure Stack HCI Logical Network.
+
+## Navigation
+
+- [Resource Types](#Resource-Types)
+- [Usage examples](#Usage-examples)
+- [Parameters](#Parameters)
+- [Outputs](#Outputs)
+- [Data Collection](#Data-Collection)
+
+## Resource Types
+
+| Resource Type | API Version |
+| :-- | :-- |
+| `Microsoft.AzureStackHCI/logicalNetworks` | [2023-09-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AzureStackHCI/2023-09-01-preview/logicalNetworks) |
+
+## Usage examples
+
+The following section provides usage examples for the module, which were used to validate and deploy the module successfully. For a full reference, please review the module's test folder in its repository.
+
+>**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
+
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/azure-stack-hci/logical-network:<version>`.
+
+- [Deploy azure stack hci logical network in default configuration](#example-1-deploy-azure-stack-hci-logical-network-in-default-configuration)
+- [Deploy azure stack hci logical network in WAF aligned configuration](#example-2-deploy-azure-stack-hci-logical-network-in-waf-aligned-configuration)
+
+### Example 1: _Deploy azure stack hci logical network in default configuration_
+
+This test deploys an azure stack hci logical network.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:<version>' = {
+  name: 'logicalNetworkDeployment'
+  params: {
+    // Required parameters
+    customLocationId: '<customLocationId>'
+    name: 'ashlnminlogicalnetwork'
+    vmSwitchName: 'ConvergedSwitch(managementcompute)'
+    // Non-required parameters
+    addressPrefix: '172.20.0.1/24'
+    defaultGateway: '172.20.0.1'
+    dnsServers: [
+      '172.20.0.1'
+    ]
+    endingAddress: '172.20.0.190'
+    ipAllocationMethod: 'Static'
+    location: '<location>'
+    routeName: 'default'
+    startingAddress: '172.20.0.171'
+    vlanId: '<vlanId>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "customLocationId": {
+      "value": "<customLocationId>"
+    },
+    "name": {
+      "value": "ashlnminlogicalnetwork"
+    },
+    "vmSwitchName": {
+      "value": "ConvergedSwitch(managementcompute)"
+    },
+    // Non-required parameters
+    "addressPrefix": {
+      "value": "172.20.0.1/24"
+    },
+    "defaultGateway": {
+      "value": "172.20.0.1"
+    },
+    "dnsServers": {
+      "value": [
+        "172.20.0.1"
+      ]
+    },
+    "endingAddress": {
+      "value": "172.20.0.190"
+    },
+    "ipAllocationMethod": {
+      "value": "Static"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "routeName": {
+      "value": "default"
+    },
+    "startingAddress": {
+      "value": "172.20.0.171"
+    },
+    "vlanId": {
+      "value": "<vlanId>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/azure-stack-hci/logical-network:<version>'
+
+// Required parameters
+param customLocationId = '<customLocationId>'
+param name = 'ashlnminlogicalnetwork'
+param vmSwitchName = 'ConvergedSwitch(managementcompute)'
+// Non-required parameters
+param addressPrefix = '172.20.0.1/24'
+param defaultGateway = '172.20.0.1'
+param dnsServers = [
+  '172.20.0.1'
+]
+param endingAddress = '172.20.0.190'
+param ipAllocationMethod = 'Static'
+param location = '<location>'
+param routeName = 'default'
+param startingAddress = '172.20.0.171'
+param vlanId = '<vlanId>'
+```
+
+</details>
+<p>
+
+### Example 2: _Deploy azure stack hci logical network in WAF aligned configuration_
+
+This test deploys an azure stack hci logical network.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:<version>' = {
+  name: 'logicalNetworkDeployment'
+  params: {
+    // Required parameters
+    customLocationId: '<customLocationId>'
+    name: 'ashlnwaflogicalnetwork'
+    vmSwitchName: 'ConvergedSwitch(managementcompute)'
+    // Non-required parameters
+    addressPrefix: '172.20.0.1/24'
+    defaultGateway: '172.20.0.1'
+    dnsServers: [
+      '172.20.0.1'
+    ]
+    endingAddress: '172.20.0.190'
+    ipAllocationMethod: 'Static'
+    location: '<location>'
+    routeName: 'default'
+    startingAddress: '172.20.0.171'
+    vlanId: '<vlanId>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "customLocationId": {
+      "value": "<customLocationId>"
+    },
+    "name": {
+      "value": "ashlnwaflogicalnetwork"
+    },
+    "vmSwitchName": {
+      "value": "ConvergedSwitch(managementcompute)"
+    },
+    // Non-required parameters
+    "addressPrefix": {
+      "value": "172.20.0.1/24"
+    },
+    "defaultGateway": {
+      "value": "172.20.0.1"
+    },
+    "dnsServers": {
+      "value": [
+        "172.20.0.1"
+      ]
+    },
+    "endingAddress": {
+      "value": "172.20.0.190"
+    },
+    "ipAllocationMethod": {
+      "value": "Static"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "routeName": {
+      "value": "default"
+    },
+    "startingAddress": {
+      "value": "172.20.0.171"
+    },
+    "vlanId": {
+      "value": "<vlanId>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/azure-stack-hci/logical-network:<version>'
+
+// Required parameters
+param customLocationId = '<customLocationId>'
+param name = 'ashlnwaflogicalnetwork'
+param vmSwitchName = 'ConvergedSwitch(managementcompute)'
+// Non-required parameters
+param addressPrefix = '172.20.0.1/24'
+param defaultGateway = '172.20.0.1'
+param dnsServers = [
+  '172.20.0.1'
+]
+param endingAddress = '172.20.0.190'
+param ipAllocationMethod = 'Static'
+param location = '<location>'
+param routeName = 'default'
+param startingAddress = '172.20.0.171'
+param vlanId = '<vlanId>'
+```
+
+</details>
+<p>
+
+## Parameters
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`customLocationId`](#parameter-customlocationid) | string | The custom location ID. |
+| [`name`](#parameter-name) | string | Name of the resource to create. |
+| [`vmSwitchName`](#parameter-vmswitchname) | string | The VM switch name. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`addressPrefix`](#parameter-addressprefix) | string | Address prefix for the logical network. |
+| [`defaultGateway`](#parameter-defaultgateway) | string | The default gateway for the network. |
+| [`dnsServers`](#parameter-dnsservers) | array | The DNS servers list. |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`endingAddress`](#parameter-endingaddress) | string | The ending IP address of the IP address range. |
+| [`ipAllocationMethod`](#parameter-ipallocationmethod) | string | The IP allocation method. |
+| [`ipConfigurationReferences`](#parameter-ipconfigurationreferences) | array | A list of IP configuration references. |
+| [`location`](#parameter-location) | string | Location for all Resources. |
+| [`routeName`](#parameter-routename) | string | The route name. |
+| [`startingAddress`](#parameter-startingaddress) | string | The starting IP address of the IP address range. |
+| [`subnet0Name`](#parameter-subnet0name) | string | The subnet name. |
+| [`tags`](#parameter-tags) | object | Tags for the logical network. |
+| [`vlanId`](#parameter-vlanid) | int | VLan Id for the logical network. |
+
+### Parameter: `customLocationId`
+
+The custom location ID.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `name`
+
+Name of the resource to create.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `vmSwitchName`
+
+The VM switch name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `addressPrefix`
+
+Address prefix for the logical network.
+
+- Required: No
+- Type: string
+
+### Parameter: `defaultGateway`
+
+The default gateway for the network.
+
+- Required: No
+- Type: string
+
+### Parameter: `dnsServers`
+
+The DNS servers list.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
+### Parameter: `enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
+- Default: `True`
+
+### Parameter: `endingAddress`
+
+The ending IP address of the IP address range.
+
+- Required: No
+- Type: string
+
+### Parameter: `ipAllocationMethod`
+
+The IP allocation method.
+
+- Required: No
+- Type: string
+- Default: `'Dynamic'`
+- Allowed:
+  ```Bicep
+  [
+    'Dynamic'
+    'Static'
+  ]
+  ```
+
+### Parameter: `ipConfigurationReferences`
+
+A list of IP configuration references.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
+### Parameter: `location`
+
+Location for all Resources.
+
+- Required: No
+- Type: string
+- Default: `[resourceGroup().location]`
+
+### Parameter: `routeName`
+
+The route name.
+
+- Required: No
+- Type: string
+
+### Parameter: `startingAddress`
+
+The starting IP address of the IP address range.
+
+- Required: No
+- Type: string
+
+### Parameter: `subnet0Name`
+
+The subnet name.
+
+- Required: No
+- Type: string
+- Default: `'default'`
+
+### Parameter: `tags`
+
+Tags for the logical network.
+
+- Required: No
+- Type: object
+
+### Parameter: `vlanId`
+
+VLan Id for the logical network.
+
+- Required: No
+- Type: int
+
+## Outputs
+
+| Output | Type | Description |
+| :-- | :-- | :-- |
+| `location` | string | The location of the logical network. |
+| `logicalNetworkId` | string | The resource ID of the logical network. |
+| `name` | string | The name of the logical network. |
+| `resourceGroupName` | string | The resource group of the logical network. |
+| `resourceId` | string | The ID of the logical network. |
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.

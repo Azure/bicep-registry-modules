@@ -48,6 +48,7 @@
 /avm/res/app-configuration/configuration-store/ @Azure/avm-res-appconfiguration-configurationstore-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/automation/automation-account/ @Azure/avm-res-automation-automationaccount-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/azure-stack-hci/cluster/ @Azure/avm-res-azurestackhci-cluster-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/res/azure-stack-hci/logical-network/ @Azure/avm-res-azurestackhci-logicalnetwork-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/batch/batch-account/ @Azure/avm-res-batch-batchaccount-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/cache/redis/ @Azure/avm-res-cache-redis-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/cdn/profile/ @Azure/avm-res-cdn-profile-module-owners-bicep @Azure/avm-module-reviewers-bicep
@@ -92,6 +93,7 @@
 /avm/res/health-bot/health-bot/ @Azure/avm-res-healthbot-healthbot-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/healthcare-apis/workspace/ @Azure/avm-res-healthcareapis-workspace-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/hybrid-compute/machine/ @Azure/avm-res-hybridcompute-machine-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/res/hybrid-container-service/provisioned-cluster-instance/ @Azure/avm-res-hybridcontainerservice-provisionedclusterinstance-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/insights/action-group/ @Azure/avm-res-insights-actiongroup-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/insights/activity-log-alert/ @Azure/avm-res-insights-activitylogalert-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/insights/component/ @Azure/avm-res-insights-component-module-owners-bicep @Azure/avm-module-reviewers-bicep
@@ -105,6 +107,7 @@
 /avm/res/key-vault/vault/ @Azure/avm-res-keyvault-vault-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/kubernetes-configuration/extension/ @Azure/avm-res-kubernetesconfiguration-extension-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/kubernetes-configuration/flux-configuration/ @Azure/avm-res-kubernetesconfiguration-fluxconfiguration-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/res/kubernetes/connected-clusters/ @Azure/avm-res-kubernetes-connectedclusters-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/kusto/cluster/ @Azure/avm-res-kusto-cluster-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/load-test-service/load-test/ @Azure/avm-res-loadtestservice-loadtest-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/logic/workflow/ @Azure/avm-res-logic-workflow-module-owners-bicep @Azure/avm-module-reviewers-bicep
