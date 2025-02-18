@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "2038960427044767471"
+      "templateHash": "1046029270487723622"
     },
     "name": "Kubernetes Connected Cluster",
     "description": "This module deploys an Azure Arc connected cluster."
@@ -159,7 +159,7 @@
     "resourceId": {
       "type": "string",
       "metadata": {
-        "description": "The ID of the connected cluster."
+        "description": "The resource ID of the connected cluster."
       },
       "value": "[resourceId('Microsoft.Kubernetes/connectedClusters', parameters('name'))]"
     },

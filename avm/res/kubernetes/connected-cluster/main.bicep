@@ -107,7 +107,7 @@ resource connectedCluster 'Microsoft.Kubernetes/connectedClusters@2024-07-15-pre
 @description('The name of the connected cluster.')
 output name string = connectedCluster.name
 
-@description('The ID of the connected cluster.')
+@description('The resource ID of the connected cluster.')
 output resourceId string = connectedCluster.id
 
 @description('The resource group of the connected cluster.')

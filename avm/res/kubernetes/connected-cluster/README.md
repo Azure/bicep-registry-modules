@@ -24,12 +24,12 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/kubernetes/connected-cluster:<version>`.
 
-- [WAF-aligned](#example-1-waf-aligned)
-- [Deploy connected clusters in WAF aligned configuration](#example-2-deploy-connected-clusters-in-waf-aligned-configuration)
+- [Using only defaults](#example-1-using-only-defaults)
+- [WAF-aligned](#example-2-waf-aligned)
 
-### Example 1: _WAF-aligned_
+### Example 1: _Using only defaults_
 
-This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+This instance deploys the module with the minimum set of required parameters.
 
 
 <details>
@@ -91,9 +91,9 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 2: _Deploy connected clusters in WAF aligned configuration_
+### Example 2: _WAF-aligned_
 
-This test deploys a connected cluster.
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
 
 <details>
@@ -295,7 +295,7 @@ Enable workload identity.
 | `location` | string | The location of the connected cluster. |
 | `name` | string | The name of the connected cluster. |
 | `resourceGroupName` | string | The resource group of the connected cluster. |
-| `resourceId` | string | The ID of the connected cluster. |
+| `resourceId` | string | The resource ID of the connected cluster. |
 
 ## Data Collection
 
