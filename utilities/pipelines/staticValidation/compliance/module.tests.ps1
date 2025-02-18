@@ -228,7 +228,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
             $changelogContent.Length | Should -BeGreaterThan 0 -Because 'the changelog should not be empty'
             $changelogContent[0] + $changelogContent[1] | Should -Be '# Changelog' -Because 'the changelog should start with `# Changelog`, followed by an empty line'
 
-            # check for the presence of the `## unreleased` section
+            # check for the presence of the `## $moduleVersion` section
             $changelogSection | Should -BeIn $sections -Because "the `## $moduleVersion` section should be in the changelog"
 
             # only one version section should be present
@@ -242,22 +242,45 @@ Describe 'File/folder tests' -Tag 'Modules' {
             # check for the order of the versions
             ($changelogContent | Where-Object { $_ -match '^##\s+' } | Sort-Object -Descending) | Should -BeExactly $sections 'the versions in the changelog should appear in descending order'
 
-            # the version section must contain certain content
+            # check each section for the presence of the `### Changes` and `### Breaking Changes` sections and non-empty content
+            $sectionContents = @{}
             if ($sections -is [array]) {
-                $startIndex = $changelogContent.IndexOf($sections[0]) + 1 # skip the heading
-                $endIndex = $changelogContent.IndexOf($sections[1])
-                $changelogSectionContent = $changelogContent[$startIndex..($endIndex - 1)]
+                for ($i = 0; $i -lt $sections.Count; $i++) {
+                    $startIndex = $changelogContent.IndexOf($sections[$i]) + 1 # skip the heading
+                    $endIndex = $i + 1 -ne $sections.Count ? $changelogContent.IndexOf($sections[$i + 1]) : $changelogContent.Count # if it's the last section, take everything until the end
+                    $sectionContents[$sections[$i]] = $changelogContent[$startIndex..($endIndex - 1)]
+                }
             } else {
                 # special treatment, if there is only one section
-                $changelogSectionContent = $changelogContent
+                $sectionContents['## ${moduleVersion}'] += $changelogContent
             }
-            $changelogSectionContent -join "`n" | Should -MatchExactly '\n### Changes\n\n' -Because "the `## $moduleVersion` section should contain '### Changes' surrounded by empty lines"
-            $changelogSectionContent -join "`n" | Should -MatchExactly '\n### Breaking Changes' -Because "the `## $moduleVersion` section should '### Breaking Changes' surrounded by empty lines"
-            $changelogSectionContent.IndexOf('### Changes') -lt $changelogSectionContent.IndexOf('### Breaking Changes') | Should -Be $true -Because "The `### Changes` section should appear before the `### Breaking Changes` section"
 
-            # the unreleased section must contain content and not only the headings and empty lines. The check for changelog and 0.1.0 is necessary for only one section in the file
-            $nonEmptyContent = $changelogSectionContent | Where-Object { $_ -notmatch '^\s*$' -and $_ -notmatch '^(### Changes|### Breaking Changes|# Changelog|## 0.1.0)$' }
-            $nonEmptyContent.Count | Should -BeGreaterThan 0 -Because "The `## $moduleVersion` section should contain actual content and not just headers or empty lines"
+            $invalidChanges = [System.Collections.ArrayList]@()
+            $invalidBreakingChanges = [System.Collections.ArrayList]@()
+            $emptySections = [System.Collections.ArrayList]@()
+            $wrongOrder = [System.Collections.ArrayList]@()
+            foreach ($key in $sectionContents.Keys) {
+                $versionContent = Join-String -InputObject $sectionContents[$key] -Separator "`n"
+
+                if ((Select-String -InputObject $versionContent -Pattern '\n### Changes\n' -AllMatches).Matches.Count -ne 1) {
+                    $invalidChanges += $key
+                }
+                if ((Select-String -InputObject $versionContent -Pattern '\n### Breaking Changes\n' -AllMatches).Matches.Count -ne 1) {
+                    $invalidBreakingChanges += $key
+                }
+                # the $moduleVersion section must contain content and not only the headings and empty lines. The check for changelog and 0.1.0 is necessary for only one section in the file
+                if (($sectionContents[$key] | Where-Object { $_ -notmatch '^\s*$' -and $_ -notmatch '^(### Changes|### Breaking Changes|# Changelog|## 0.1.0)$' }).Count -eq 0) {
+                    $emptySections += $key
+                }
+                if (-not ($versionContent.IndexOf('### Changes') -lt $versionContent.IndexOf('### Breaking Changes'))) {
+                    $wrongOrder += $key
+                }
+            }
+
+            $invalidChanges | Should -BeNullOrEmpty -Because ('all versions should contain exactly one `### Changes` section. Found invalid versions: [{0}].' -f ($invalidChanges -join ', '))
+            $invalidBreakingChanges | Should -BeNullOrEmpty -Because ('all versions should contain exactly one `### Breaking Changes` section. Found invalid versions: [{0}].' -f ($invalidBreakingChanges -join ', '))
+            $emptySections | Should -BeNullOrEmpty -Because ('all versions should contain actual content and not just headers or empty lines. Found invalid versions: [{0}].' -f ($emptySections -join ', '))
+            $wrongOrder | Should -BeNullOrEmpty -Because ('all versions should contain the `### Changes` section before the `### Breaking Changes` section. Found invalid versions: [{0}].' -f ($wrongOrder -join ', '))
         }
 
         It '[<moduleFolderName>] `CHANGELOG.md` must contain only versions, that are published.' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleVersionExists }) {
@@ -295,14 +318,13 @@ Describe 'File/folder tests' -Tag 'Modules' {
             }
             $publishedTags = $tagListResponse.tags | Sort-Object -Culture 'en-US'
 
-
             $incorrectVersions = [System.Collections.ArrayList]@()
             $regex = '##\s(\d+\.\d+\.\d+)\s\('
             foreach ($section in $sections) {
                 if ($section -match $regex) {
                     $version = $matches[1]
                     if ($publishedTags -notcontains $version) {
-                        $incorrectVersions.Add($version)
+                        $incorrectVersions += $version
                     }
                 }
             }
