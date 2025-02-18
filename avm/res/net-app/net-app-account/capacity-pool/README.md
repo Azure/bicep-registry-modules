@@ -251,6 +251,7 @@ List of volumes to create in the capacity pool.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-volumesname) | string | The name of the pool volume. |
+| [`protocolTypes`](#parameter-volumesprotocoltypes) | array | Set of protocol types. Default value is `['NFSv3']`. If you are creating a dual-stack volume, set either `['NFSv3','CIFS']` or `['NFSv4.1','CIFS']` |
 | [`subnetResourceId`](#parameter-volumessubnetresourceid) | string | The Azure Resource URI for a delegated subnet. Must have the delegation Microsoft.NetApp/volumes. |
 | [`usageThreshold`](#parameter-volumesusagethreshold) | int | Maximum storage quota allowed for a file system in bytes. |
 
@@ -258,6 +259,7 @@ List of volumes to create in the capacity pool.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`availabilityZone`](#parameter-volumesavailabilityzone) | string | Zone where the volume will be placed. |
 | [`coolAccess`](#parameter-volumescoolaccess) | bool | If enabled (true) the pool can contain cool Access enabled volumes. |
 | [`coolAccessRetrievalPolicy`](#parameter-volumescoolaccessretrievalpolicy) | string | Determines the data retrieval behavior from the cool tier to standard storage based on the read pattern for cool access enabled volumes (Default/Never/Read). |
 | [`coolnessPeriod`](#parameter-volumescoolnessperiod) | int | Specifies the number of days after which data that is not accessed by clients will be tiered. |
@@ -269,14 +271,12 @@ List of volumes to create in the capacity pool.
 | [`keyVaultPrivateEndpointResourceId`](#parameter-volumeskeyvaultprivateendpointresourceid) | string | The resource ID of the key vault private endpoint. |
 | [`location`](#parameter-volumeslocation) | string | Location of the pool volume. |
 | [`networkFeatures`](#parameter-volumesnetworkfeatures) | string | Network feature for the volume. |
-| [`protocolTypes`](#parameter-volumesprotocoltypes) | array | Set of protocol types. |
 | [`roleAssignments`](#parameter-volumesroleassignments) | array | Array of role assignments to create. |
 | [`serviceLevel`](#parameter-volumesservicelevel) | string | The pool service level. Must match the one of the parent capacity pool. |
 | [`smbContinuouslyAvailable`](#parameter-volumessmbcontinuouslyavailable) | bool | Enables continuously available share property for SMB volume. Only applicable for SMB volume. |
 | [`smbEncryption`](#parameter-volumessmbencryption) | bool | Enables SMB encryption. Only applicable for SMB/DualProtocol volume. |
 | [`smbNonBrowsable`](#parameter-volumessmbnonbrowsable) | string | Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProtocol volume. |
 | [`volumeType`](#parameter-volumesvolumetype) | string | The type of the volume. DataProtection volumes are used for replication. |
-| [`zones`](#parameter-volumeszones) | array | Zone where the volume will be placed. |
 
 ### Parameter: `volumes.name`
 
@@ -284,6 +284,21 @@ The name of the pool volume.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `volumes.protocolTypes`
+
+Set of protocol types. Default value is `['NFSv3']`. If you are creating a dual-stack volume, set either `['NFSv3','CIFS']` or `['NFSv4.1','CIFS']`
+
+- Required: Yes
+- Type: array
+- Allowed:
+  ```Bicep
+  [
+    'CIFS'
+    'NFSv3'
+    'NFSv4.1'
+  ]
+  ```
 
 ### Parameter: `volumes.subnetResourceId`
 
@@ -298,6 +313,21 @@ Maximum storage quota allowed for a file system in bytes.
 
 - Required: Yes
 - Type: int
+
+### Parameter: `volumes.availabilityZone`
+
+Zone where the volume will be placed.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '1'
+    '2'
+    '3'
+  ]
+  ```
 
 ### Parameter: `volumes.coolAccess`
 
@@ -700,13 +730,6 @@ Network feature for the volume.
   ]
   ```
 
-### Parameter: `volumes.protocolTypes`
-
-Set of protocol types.
-
-- Required: No
-- Type: array
-
 ### Parameter: `volumes.roleAssignments`
 
 Array of role assignments to create.
@@ -860,13 +883,6 @@ The type of the volume. DataProtection volumes are used for replication.
 
 - Required: No
 - Type: string
-
-### Parameter: `volumes.zones`
-
-Zone where the volume will be placed.
-
-- Required: No
-- Type: array
 
 ## Outputs
 
