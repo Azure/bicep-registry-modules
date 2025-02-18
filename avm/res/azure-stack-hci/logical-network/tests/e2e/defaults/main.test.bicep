@@ -45,7 +45,7 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   location: enforcedLocation
 }
 
-module nestedDependencies '../../../../cluster/tests/e2e/waf-aligned/dependencies.bicep' = {
+module nestedDependencies '../../../../cluster/tests/e2e/defaults/dependencies.bicep' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-nestedDependencies-${serviceShort}'
   scope: resourceGroup
   params: {
