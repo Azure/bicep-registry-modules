@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "4277145266997648582"
+      "templateHash": "10108769802479446069"
     },
     "name": "Azure NetApp Files",
     "description": "This module deploys an Azure NetApp File."
@@ -961,8 +961,9 @@
             "NFSv3",
             "NFSv4.1"
           ],
+          "nullable": true,
           "metadata": {
-            "description": "Required. Set of protocol types. Default value is `['NFSv3']`. If you are creating a dual-stack volume, set either `['NFSv3','CIFS']` or `['NFSv4.1','CIFS']`."
+            "description": "Optional. Set of protocol types. Default value is `['NFSv3']`. If you are creating a dual-stack volume, set either `['NFSv3','CIFS']` or `['NFSv4.1','CIFS']`."
           }
         },
         "subnetResourceId": {
@@ -2270,7 +2271,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "4945428304943597123"
+              "templateHash": "5556488311735932716"
             },
             "name": "Azure NetApp Files Capacity Pools",
             "description": "This module deploys an Azure NetApp Files Capacity Pool."
@@ -2392,8 +2393,9 @@
                     "NFSv3",
                     "NFSv4.1"
                   ],
+                  "nullable": true,
                   "metadata": {
-                    "description": "Required. Set of protocol types. Default value is `['NFSv3']`. If you are creating a dual-stack volume, set either `['NFSv3','CIFS']` or `['NFSv4.1','CIFS']`."
+                    "description": "Optional. Set of protocol types. Default value is `['NFSv3']`. If you are creating a dual-stack volume, set either `['NFSv3','CIFS']` or `['NFSv4.1','CIFS']`."
                   }
                 },
                 "subnetResourceId": {
@@ -3002,7 +3004,7 @@
                     "value": "[coalesce(parameters('volumes'), createArray())[copyIndex()].usageThreshold]"
                   },
                   "protocolTypes": {
-                    "value": "[tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'protocolTypes')]"
+                    "value": "[coalesce(parameters('volumes'), createArray())[copyIndex()].protocolTypes]"
                   },
                   "subnetResourceId": {
                     "value": "[coalesce(parameters('volumes'), createArray())[copyIndex()].subnetResourceId]"
@@ -3061,7 +3063,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.33.93.31351",
-                      "templateHash": "4356508059610520411"
+                      "templateHash": "10596779270536520264"
                     },
                     "name": "Azure NetApp Files Capacity Pool Volumes",
                     "description": "This module deploys an Azure NetApp Files Capacity Pool Volume."
@@ -3529,7 +3531,7 @@
                         "CIFS"
                       ],
                       "metadata": {
-                        "description": "Required. Set of protocol types. Default value is `['NFSv3']`. If you are creating a dual-stack volume, set either `['NFSv3','CIFS']` or `['NFSv4.1','CIFS']`"
+                        "description": "Optional. Set of protocol types. Default value is `['NFSv3']`. If you are creating a dual-stack volume, set either `['NFSv3','CIFS']` or `['NFSv4.1','CIFS']`"
                       }
                     },
                     "subnetResourceId": {

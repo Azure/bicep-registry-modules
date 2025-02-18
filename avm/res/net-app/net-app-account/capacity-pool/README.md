@@ -251,7 +251,6 @@ List of volumes to create in the capacity pool.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-volumesname) | string | The name of the pool volume. |
-| [`protocolTypes`](#parameter-volumesprotocoltypes) | array | Set of protocol types. Default value is `['NFSv3']`. If you are creating a dual-stack volume, set either `['NFSv3','CIFS']` or `['NFSv4.1','CIFS']`. |
 | [`subnetResourceId`](#parameter-volumessubnetresourceid) | string | The Azure Resource URI for a delegated subnet. Must have the delegation Microsoft.NetApp/volumes. |
 | [`usageThreshold`](#parameter-volumesusagethreshold) | int | Maximum storage quota allowed for a file system in bytes. |
 
@@ -271,6 +270,7 @@ List of volumes to create in the capacity pool.
 | [`keyVaultPrivateEndpointResourceId`](#parameter-volumeskeyvaultprivateendpointresourceid) | string | The resource ID of the key vault private endpoint. |
 | [`location`](#parameter-volumeslocation) | string | Location of the pool volume. |
 | [`networkFeatures`](#parameter-volumesnetworkfeatures) | string | Network feature for the volume. |
+| [`protocolTypes`](#parameter-volumesprotocoltypes) | array | Set of protocol types. Default value is `['NFSv3']`. If you are creating a dual-stack volume, set either `['NFSv3','CIFS']` or `['NFSv4.1','CIFS']`. |
 | [`roleAssignments`](#parameter-volumesroleassignments) | array | Array of role assignments to create. |
 | [`serviceLevel`](#parameter-volumesservicelevel) | string | The pool service level. Must match the one of the parent capacity pool. |
 | [`smbContinuouslyAvailable`](#parameter-volumessmbcontinuouslyavailable) | bool | Enables continuously available share property for SMB volume. Only applicable for SMB volume. |
@@ -284,21 +284,6 @@ The name of the pool volume.
 
 - Required: Yes
 - Type: string
-
-### Parameter: `volumes.protocolTypes`
-
-Set of protocol types. Default value is `['NFSv3']`. If you are creating a dual-stack volume, set either `['NFSv3','CIFS']` or `['NFSv4.1','CIFS']`.
-
-- Required: Yes
-- Type: array
-- Allowed:
-  ```Bicep
-  [
-    'CIFS'
-    'NFSv3'
-    'NFSv4.1'
-  ]
-  ```
 
 ### Parameter: `volumes.subnetResourceId`
 
@@ -727,6 +712,21 @@ Network feature for the volume.
     'Basic_Standard'
     'Standard'
     'Standard_Basic'
+  ]
+  ```
+
+### Parameter: `volumes.protocolTypes`
+
+Set of protocol types. Default value is `['NFSv3']`. If you are creating a dual-stack volume, set either `['NFSv3','CIFS']` or `['NFSv4.1','CIFS']`.
+
+- Required: No
+- Type: array
+- Allowed:
+  ```Bicep
+  [
+    'CIFS'
+    'NFSv3'
+    'NFSv4.1'
   ]
   ```
 

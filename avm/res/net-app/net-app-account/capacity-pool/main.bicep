@@ -104,7 +104,7 @@ module capacityPool_volumes 'volume/main.bicep' = [
       serviceLevel: serviceLevel
       creationToken: volume.?creationToken ?? volume.name
       usageThreshold: volume.usageThreshold
-      protocolTypes: volume.?protocolTypes
+      protocolTypes: volume.protocolTypes
       subnetResourceId: volume.subnetResourceId
       exportPolicy: volume.?exportPolicy
       roleAssignments: volume.?roleAssignments
@@ -205,8 +205,8 @@ type volumeType = {
   @description('Required. Maximum storage quota allowed for a file system in bytes.')
   usageThreshold: int
 
-  @description('Required. Set of protocol types. Default value is `[\'NFSv3\']`. If you are creating a dual-stack volume, set either `[\'NFSv3\',\'CIFS\']` or `[\'NFSv4.1\',\'CIFS\']`.')
-  protocolTypes: ('NFSv3' | 'NFSv4.1' | 'CIFS')[]
+  @description('Optional. Set of protocol types. Default value is `[\'NFSv3\']`. If you are creating a dual-stack volume, set either `[\'NFSv3\',\'CIFS\']` or `[\'NFSv4.1\',\'CIFS\']`.')
+  protocolTypes: ('NFSv3' | 'NFSv4.1' | 'CIFS')[]?
 
   @description('Required. The Azure Resource URI for a delegated subnet. Must have the delegation Microsoft.NetApp/volumes.')
   subnetResourceId: string
