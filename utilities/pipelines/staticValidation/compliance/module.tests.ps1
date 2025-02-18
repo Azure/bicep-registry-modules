@@ -255,8 +255,8 @@ Describe 'File/folder tests' -Tag 'Modules' {
             $changelogSectionContent -join "`n" | Should -MatchExactly '\n### Breaking Changes' -Because "the `## $moduleVersion` section should '### Breaking Changes' surrounded by empty lines"
             $changelogSectionContent.IndexOf('### Changes') -lt $changelogSectionContent.IndexOf('### Breaking Changes') | Should -Be $true -Because "The `### Changes` section should appear before the `### Breaking Changes` section"
 
-            # the unreleased section must contain content and not only the headings and empty lines
-            $nonEmptyContent = $changelogSectionContent | Where-Object { $_ -notmatch '^\s*$' -and $_ -notmatch '^(### Changes|### Breaking Changes)$' }
+            # the unreleased section must contain content and not only the headings and empty lines. The check for changelog and 0.1.0 is necessary for only one section in the file
+            $nonEmptyContent = $changelogSectionContent | Where-Object { $_ -notmatch '^\s*$' -and $_ -notmatch '^(### Changes|### Breaking Changes|# Changelog|## 0.1.0)$' }
             $nonEmptyContent.Count | Should -BeGreaterThan 0 -Because "The `## $moduleVersion` section should contain actual content and not just headers or empty lines"
         }
 
@@ -274,10 +274,16 @@ Describe 'File/folder tests' -Tag 'Modules' {
             }
 
             $changelogContent = Get-Content $changelogFilePath
-
+            # all versions, that are mentioned in the changelog
+            $sections = $changelogContent | Where-Object { $_ -match '^##\s+' }
+            # the initial version is not published yet
+            if ($sections.Count -eq 1 -and $sections -match '##\s0.1.0') {
+                Set-ItResult -Skipped -Because 'the initial version is not published yet.'
+                return
+            }
 
             # get all tags for a module
-            $tagListUrl = "https://mcr.microsoft.com/v2/bicep/avm/$module/tags/list"
+            $tagListUrl = "https://mcr.microsoft.com/v2/bicep/avm/$moduleType/$moduleFolderName/tags/list"
             Write-Verbose "  Getting available tags at '$tagListUrl'..." -Verbose
             try {
                 $tagListResponse = Invoke-RestMethod -Uri $tagListUrl
@@ -289,8 +295,6 @@ Describe 'File/folder tests' -Tag 'Modules' {
             }
             $publishedTags = $tagListResponse.tags | Sort-Object -Culture 'en-US'
 
-            # all versions, that are mentioned in the changelog
-            $sections = $changelogContent | Where-Object { $_ -match '^##\s+' }
 
             $incorrectVersions = [System.Collections.ArrayList]@()
             $regex = '##\s(\d+\.\d+\.\d+)\s\('
