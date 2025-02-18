@@ -139,7 +139,7 @@ resource logicalNetwork 'Microsoft.AzureStackHCI/logicalNetworks@2025-02-01-prev
 @description('The name of the logical network.')
 output name string = logicalNetwork.name
 
-@description('The ID of the logical network.')
+@description('The resource ID of the logical network.')
 output resourceId string = logicalNetwork.id
 
 @description('The resource group of the logical network.')

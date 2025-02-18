@@ -444,7 +444,7 @@ VLan Id for the logical network.
 | `location` | string | The location of the logical network. |
 | `name` | string | The name of the logical network. |
 | `resourceGroupName` | string | The resource group of the logical network. |
-| `resourceId` | string | The ID of the logical network. |
+| `resourceId` | string | The resource ID of the logical network. |
 
 ## Data Collection
 
