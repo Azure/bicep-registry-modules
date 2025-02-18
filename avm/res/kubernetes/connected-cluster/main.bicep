@@ -1,5 +1,5 @@
-metadata name = 'Kubernetes Connected Clusters'
-metadata description = 'Deploy an Azure Arc connected cluster.'
+metadata name = 'Kubernetes Connected Cluster'
+metadata description = 'This module deploys an Azure Arc connected cluster.'
 
 // ============== //
 //   Parameters   //
@@ -115,6 +115,3 @@ output resourceGroupName string = resourceGroup().name
 
 @description('The location of the connected cluster.')
 output location string = connectedCluster.location
-
-@description('The resource ID of the connected cluster.')
-output connectedClusterId string = connectedCluster.id

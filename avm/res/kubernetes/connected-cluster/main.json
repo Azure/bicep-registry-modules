@@ -5,11 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "15406540205079791461"
+      "version": "0.33.93.31351",
+      "templateHash": "2038960427044767471"
     },
-    "name": "Kubernetes Connected Clusters",
-    "description": "Deploy an Azure Arc connected cluster."
+    "name": "Kubernetes Connected Cluster",
+    "description": "This module deploys an Azure Arc connected cluster."
   },
   "parameters": {
     "name": {
@@ -176,13 +176,6 @@
         "description": "The location of the connected cluster."
       },
       "value": "[reference('connectedCluster', '2024-07-15-preview', 'full').location]"
-    },
-    "connectedClusterId": {
-      "type": "string",
-      "metadata": {
-        "description": "The resource ID of the connected cluster."
-      },
-      "value": "[resourceId('Microsoft.Kubernetes/connectedClusters', parameters('name'))]"
     }
   }
 }

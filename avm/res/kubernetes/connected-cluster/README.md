@@ -1,6 +1,6 @@
-# Kubernetes Connected Clusters `[Microsoft.Kubernetes/connectedClusters]`
+# Kubernetes Connected Cluster `[Microsoft.Kubernetes/connectedClusters]`
 
-Deploy an Azure Arc connected cluster.
+This module deploys an Azure Arc connected cluster.
 
 ## Navigation
 
@@ -22,14 +22,14 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm/res/kubernetes/connected-clusters:<version>`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/kubernetes/connected-cluster:<version>`.
 
-- [Deploy connected clusters in default configuration](#example-1-deploy-connected-clusters-in-default-configuration)
+- [WAF-aligned](#example-1-waf-aligned)
 - [Deploy connected clusters in WAF aligned configuration](#example-2-deploy-connected-clusters-in-waf-aligned-configuration)
 
-### Example 1: _Deploy connected clusters in default configuration_
+### Example 1: _WAF-aligned_
 
-This test deploys a connected clusters.
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
 
 <details>
@@ -37,8 +37,8 @@ This test deploys a connected clusters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module connectedClusters 'br/public:avm/res/kubernetes/connected-clusters:<version>' = {
-  name: 'connectedClustersDeployment'
+module connectedCluster 'br/public:avm/res/kubernetes/connected-cluster:<version>' = {
+  name: 'connectedClusterDeployment'
   params: {
     // Required parameters
     name: 'kccmin001'
@@ -80,7 +80,7 @@ module connectedClusters 'br/public:avm/res/kubernetes/connected-clusters:<versi
 <summary>via Bicep parameters file</summary>
 
 ```bicep-params
-using 'br/public:avm/res/kubernetes/connected-clusters:<version>'
+using 'br/public:avm/res/kubernetes/connected-cluster:<version>'
 
 // Required parameters
 param name = 'kccmin001'
@@ -93,7 +93,7 @@ param location = '<location>'
 
 ### Example 2: _Deploy connected clusters in WAF aligned configuration_
 
-This test deploys a connected clusters.
+This test deploys a connected cluster.
 
 
 <details>
@@ -101,8 +101,8 @@ This test deploys a connected clusters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module connectedClusters 'br/public:avm/res/kubernetes/connected-clusters:<version>' = {
-  name: 'connectedClustersDeployment'
+module connectedCluster 'br/public:avm/res/kubernetes/connected-cluster:<version>' = {
+  name: 'connectedClusterDeployment'
   params: {
     // Required parameters
     name: 'kccwaf001'
@@ -152,7 +152,7 @@ module connectedClusters 'br/public:avm/res/kubernetes/connected-clusters:<versi
 <summary>via Bicep parameters file</summary>
 
 ```bicep-params
-using 'br/public:avm/res/kubernetes/connected-clusters:<version>'
+using 'br/public:avm/res/kubernetes/connected-cluster:<version>'
 
 // Required parameters
 param name = 'kccwaf001'
@@ -292,7 +292,6 @@ Enable workload identity.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `connectedClusterId` | string | The resource ID of the connected cluster. |
 | `location` | string | The location of the connected cluster. |
 | `name` | string | The name of the connected cluster. |
 | `resourceGroupName` | string | The resource group of the connected cluster. |

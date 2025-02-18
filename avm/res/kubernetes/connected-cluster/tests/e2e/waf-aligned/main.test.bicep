@@ -1,14 +1,14 @@
 targetScope = 'subscription'
 
-metadata name = 'Deploy connected clusters in default configuration'
-metadata description = 'This test deploys a connected clusters.'
+metadata name = 'Deploy connected clusters in WAF aligned configuration'
+metadata description = 'This test deploys a connected cluster.'
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-kubernets-connectedcluster-${serviceShort}-rg'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'kccmin'
+param serviceShort string = 'kccwaf'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
@@ -27,5 +27,7 @@ module testDeployment '../../../main.bicep' = {
   params: {
     name: '${namePrefix}${serviceShort}001'
     location: enforcedLocation
+    oidcIssuerEnabled: true
+    workloadIdentityEnabled: true
   }
 }

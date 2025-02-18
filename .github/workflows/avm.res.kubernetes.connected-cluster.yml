@@ -1,4 +1,4 @@
-name: "avm.res.kubernetes.connected-clusters"
+name: "avm.res.kubernetes.connected-cluster"
 
 on:
   workflow_dispatch:
@@ -28,15 +28,15 @@ on:
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
-      - ".github/workflows/avm.res.kubernetes.connected-clusters.yml"
-      - "avm/res/kubernetes/connected-clusters/**"
+      - ".github/workflows/avm.res.kubernetes.connected-cluster.yml"
+      - "avm/res/kubernetes/connected-cluster/**"
       - "avm/utilities/pipelines/**"
       - "!avm/utilities/pipelines/platform/**"
       - "!*/**/README.md"
 
 env:
-  modulePath: "avm/res/kubernetes/connected-clusters"
-  workflowPath: ".github/workflows/avm.res.kubernetes.connected-clusters.yml"
+  modulePath: "avm/res/kubernetes/connected-cluster"
+  workflowPath: ".github/workflows/avm.res.kubernetes.connected-cluster.yml"
 
 concurrency:
   group: ${{ github.workflow }}

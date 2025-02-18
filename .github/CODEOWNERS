@@ -105,7 +105,7 @@
 /avm/res/key-vault/vault/ @Azure/avm-res-keyvault-vault-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/kubernetes-configuration/extension/ @Azure/avm-res-kubernetesconfiguration-extension-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/kubernetes-configuration/flux-configuration/ @Azure/avm-res-kubernetesconfiguration-fluxconfiguration-module-owners-bicep @Azure/avm-module-reviewers-bicep
-/avm/res/kubernetes/connected-clusters/ @Azure/avm-res-kubernetes-connectedclusters-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/res/kubernetes/connected-cluster/ @Azure/avm-res-kubernetes-connectedcluster-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/kusto/cluster/ @Azure/avm-res-kusto-cluster-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/load-test-service/load-test/ @Azure/avm-res-loadtestservice-loadtest-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/logic/workflow/ @Azure/avm-res-logic-workflow-module-owners-bicep @Azure/avm-module-reviewers-bicep
