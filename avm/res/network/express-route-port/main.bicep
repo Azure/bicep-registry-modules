@@ -155,7 +155,7 @@ type linkType = {
 
   @description('Optional. Properties of the Link.')
   properties: {
-    @description('''Required. Administrative state of the physical port. Must be set to 'Disabled' for initial deployment.''')
+    @description('Required. Administrative state of the physical port. Must be set to \'Disabled\' for initial deployment.')
     adminState: string
 
     @description('Optional. MacSec Configuration of the link.')
