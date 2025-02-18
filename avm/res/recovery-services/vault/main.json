@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "16908039055526294885"
+      "templateHash": "15610768134592067919"
     },
     "name": "Recovery Services Vaults",
     "description": "This module deploys a Recovery Services Vault."
@@ -2953,8 +2953,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-rsv-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
-      "subscriptionId": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'subnetResourceId')), '/')[2]]",
-      "resourceGroup": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'subnetResourceId')), '/')[4]]",
+      "subscriptionId": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[2]]",
+      "resourceGroup": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[4]]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -3749,7 +3749,7 @@
         "description": "The private endpoints of the recovery services vault."
       },
       "copy": {
-        "count": "[length(if(not(empty(parameters('privateEndpoints'))), array(parameters('privateEndpoints')), createArray()))]",
+        "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]",
         "input": {
           "name": "[reference(format('rsv_privateEndpoints[{0}]', copyIndex())).outputs.name.value]",
           "resourceId": "[reference(format('rsv_privateEndpoints[{0}]', copyIndex())).outputs.resourceId.value]",
