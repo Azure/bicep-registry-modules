@@ -466,7 +466,7 @@ Resource Id of the existing Link.
 
 Properties of the Link.
 
-- Required: Yes
+- Required: No
 - Type: object
 
 **Required parameters**

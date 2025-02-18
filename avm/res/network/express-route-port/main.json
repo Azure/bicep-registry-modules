@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "10864203495378058944"
+      "templateHash": "12646697926659678830"
     },
     "name": "ExpressRoute Ports",
     "description": "This module deploys an Express Route Port resource used by Express Route Direct."
@@ -81,6 +81,7 @@
               }
             }
           },
+          "nullable": true,
           "metadata": {
             "description": "Optional. Properties of the Link."
           }

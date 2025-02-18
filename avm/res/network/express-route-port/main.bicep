@@ -176,5 +176,5 @@ type linkType = {
       @description('Required. Sci mode.')
       sciState: ('Enabled' | 'Disabled')
     }?
-  }
+  }?
 }
