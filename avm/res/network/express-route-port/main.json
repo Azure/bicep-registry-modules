@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "6784152479134259873"
+      "templateHash": "10864203495378058944"
     },
     "name": "ExpressRoute Ports",
     "description": "This module deploys an Express Route Port resource used by Express Route Direct."
@@ -278,6 +278,13 @@
       "metadata": {
         "description": "Optional. Location for all resources."
       }
+    },
+    "tags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags of the resource."
+      }
     }
   },
   "variables": {
@@ -337,6 +344,7 @@
       "apiVersion": "2024-05-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
       "properties": {
         "bandwidthInGbps": "[parameters('bandwidthInGbps')]",
         "billingType": "[parameters('billingType')]",

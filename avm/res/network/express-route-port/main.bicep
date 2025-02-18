@@ -41,6 +41,9 @@ param roleAssignments roleAssignmentType[]?
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
+@description('Optional. Tags of the resource.')
+param tags object?
+
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   'Network Contributor': subscriptionResourceId(
@@ -103,6 +106,7 @@ resource expressRoutePort_lock 'Microsoft.Authorization/locks@2020-05-01' = if (
 resource expressRoutePort 'Microsoft.Network/ExpressRoutePorts@2024-05-01' = {
   name: name
   location: location
+  tags: tags
   properties: {
     bandwidthInGbps: bandwidthInGbps
     billingType: billingType

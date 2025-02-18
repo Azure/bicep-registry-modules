@@ -367,6 +367,7 @@ param peeringLocation = 'Airtel-Chennai2-CLS'
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`tags`](#parameter-tags) | object | Tags of the resource. |
 
 ### Parameter: `bandwidthInGbps`
 
@@ -694,6 +695,13 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
+
+### Parameter: `tags`
+
+Tags of the resource.
+
+- Required: No
+- Type: object
 
 ## Outputs
 
