@@ -45,7 +45,7 @@ module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:<versio
     // Required parameters
     customLocationId: '<customLocationId>'
     name: 'ashlnminlogicalnetwork'
-    vmSwitchName: 'ConvergedSwitch(managementcompute)'
+    vmSwitchName: 'ConvergedSwitch(management)'
     // Non-required parameters
     addressPrefix: '172.20.0.1/24'
     defaultGateway: '172.20.0.1'
@@ -82,7 +82,7 @@ module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:<versio
       "value": "ashlnminlogicalnetwork"
     },
     "vmSwitchName": {
-      "value": "ConvergedSwitch(managementcompute)"
+      "value": "ConvergedSwitch(management)"
     },
     // Non-required parameters
     "addressPrefix": {
@@ -131,7 +131,7 @@ using 'br/public:avm/res/azure-stack-hci/logical-network:<version>'
 // Required parameters
 param customLocationId = '<customLocationId>'
 param name = 'ashlnminlogicalnetwork'
-param vmSwitchName = 'ConvergedSwitch(managementcompute)'
+param vmSwitchName = 'ConvergedSwitch(management)'
 // Non-required parameters
 param addressPrefix = '172.20.0.1/24'
 param defaultGateway = '172.20.0.1'
@@ -165,7 +165,7 @@ module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:<versio
     // Required parameters
     customLocationId: '<customLocationId>'
     name: 'ashlnwaflogicalnetwork'
-    vmSwitchName: 'ConvergedSwitch(managementcompute)'
+    vmSwitchName: 'ConvergedSwitch(management)'
     // Non-required parameters
     addressPrefix: '172.20.0.1/24'
     defaultGateway: '172.20.0.1'
@@ -207,7 +207,7 @@ module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:<versio
       "value": "ashlnwaflogicalnetwork"
     },
     "vmSwitchName": {
-      "value": "ConvergedSwitch(managementcompute)"
+      "value": "ConvergedSwitch(management)"
     },
     // Non-required parameters
     "addressPrefix": {
@@ -263,7 +263,7 @@ using 'br/public:avm/res/azure-stack-hci/logical-network:<version>'
 // Required parameters
 param customLocationId = '<customLocationId>'
 param name = 'ashlnwaflogicalnetwork'
-param vmSwitchName = 'ConvergedSwitch(managementcompute)'
+param vmSwitchName = 'ConvergedSwitch(management)'
 // Non-required parameters
 param addressPrefix = '172.20.0.1/24'
 param defaultGateway = '172.20.0.1'

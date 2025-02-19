@@ -198,7 +198,7 @@ module testDeployment '../../../main.bicep' = {
     name: '${namePrefix}${serviceShort}logicalnetwork'
     location: enforcedLocation
     customLocationId: customLocation.id
-    vmSwitchName: 'ConvergedSwitch(managementcompute)'
+    vmSwitchName: 'ConvergedSwitch(management)'
     ipAllocationMethod: 'Static'
     addressPrefix: '172.20.0.1/24'
     startingAddress: '172.20.0.171'
