@@ -266,7 +266,6 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
     // Required parameters
     name: 'creamr001'
     // Non-required parameters
-    location: '<location>'
     skuName: 'Balanced_B10'
   }
 }
@@ -289,9 +288,6 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
       "value": "creamr001"
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
     "skuName": {
       "value": "Balanced_B10"
     }
@@ -312,7 +308,6 @@ using 'br/public:avm/res/cache/redis-enterprise:<version>'
 // Required parameters
 param name = 'creamr001'
 // Non-required parameters
-param location = '<location>'
 param skuName = 'Balanced_B10'
 ```
 
@@ -335,7 +330,7 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
     // Required parameters
     name: 'cremin001'
     // Non-required parameters
-    location: '<location>'
+    skuName: 'Balanced_B10'
   }
 }
 ```
@@ -357,8 +352,8 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
       "value": "cremin001"
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
+    "skuName": {
+      "value": "Balanced_B10"
     }
   }
 }
@@ -377,7 +372,7 @@ using 'br/public:avm/res/cache/redis-enterprise:<version>'
 // Required parameters
 param name = 'cremin001'
 // Non-required parameters
-param location = '<location>'
+param skuName = 'Balanced_B10'
 ```
 
 </details>
@@ -410,7 +405,6 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
         secondaryStackExchangeRedisConnectionStringName: 'custom-secondaryStackExchangeRedisConnectionString-name'
       }
     }
-    location: '<location>'
     skuName: 'Balanced_B10'
   }
 }
@@ -446,9 +440,6 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
         }
       }
     },
-    "location": {
-      "value": "<location>"
-    },
     "skuName": {
       "value": "Balanced_B10"
     }
@@ -480,7 +471,6 @@ param database = {
     secondaryStackExchangeRedisConnectionStringName: 'custom-secondaryStackExchangeRedisConnectionString-name'
   }
 }
-param location = '<location>'
 param skuName = 'Balanced_B10'
 ```
 
@@ -572,6 +562,25 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
           'hidden-title': 'This is visible in the resource name'
           Role: 'DeploymentValidation'
         }
+      }
+    ]
+    roleAssignments: [
+      {
+        name: '759769d2-fc52-4a92-a943-724e48927e0b'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        name: '<name>'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
     skuName: 'Balanced_B10'
@@ -693,6 +702,27 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
         }
       ]
     },
+    "roleAssignments": {
+      "value": [
+        {
+          "name": "759769d2-fc52-4a92-a943-724e48927e0b",
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "name": "<name>",
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+        }
+      ]
+    },
     "skuName": {
       "value": "Balanced_B10"
     },
@@ -798,6 +828,25 @@ param privateEndpoints = [
     }
   }
 ]
+param roleAssignments = [
+  {
+    name: '759769d2-fc52-4a92-a943-724e48927e0b'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
 param skuName = 'Balanced_B10'
 param tags = {
   Environment: 'Non-Prod'
@@ -841,7 +890,6 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
         type: 'rdb'
       }
     }
-    location: '<location>'
     managedIdentities: {
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
@@ -884,9 +932,6 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
         }
       }
     },
-    "location": {
-      "value": "<location>"
-    },
     "managedIdentities": {
       "value": {
         "userAssignedResourceIds": [
@@ -925,7 +970,6 @@ param database = {
     type: 'rdb'
   }
 }
-param location = '<location>'
 param managedIdentities = {
   userAssignedResourceIds: [
     '<managedIdentityResourceId>'
@@ -987,7 +1031,6 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    location: '<location>'
     privateEndpoints: [
       {
         privateDnsZoneGroup: {
@@ -1074,9 +1117,6 @@ module redisEnterprise 'br/public:avm/res/cache/redis-enterprise:<version>' = {
           "workspaceResourceId": "<workspaceResourceId>"
         }
       ]
-    },
-    "location": {
-      "value": "<location>"
     },
     "privateEndpoints": {
       "value": [
@@ -1165,7 +1205,6 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
-param location = '<location>'
 param privateEndpoints = [
   {
     privateDnsZoneGroup: {

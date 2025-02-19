@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "716203646143628467"
+      "templateHash": "6473026260124919331"
     },
     "name": "Azure Managed Redis (Preview) Database Access Policy Assignment",
-    "description": "This module deploys an access policy assignment for an Azure Managed Redis (Preview) database.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an access policy assignment for an Azure Managed Redis (Preview) database."
   },
   "parameters": {
     "name": {

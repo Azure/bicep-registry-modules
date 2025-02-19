@@ -1,6 +1,5 @@
 metadata name = 'Azure Managed Redis (Preview) Database Access Policy Assignment'
 metadata description = 'This module deploys an access policy assignment for an Azure Managed Redis (Preview) database.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Optional. Name of the access policy assignment.')
 param name string?

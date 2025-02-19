@@ -1,6 +1,5 @@
 metadata name = 'Redis database'
 metadata description = 'This module deploys a Redis database in a Redis Enterprise or Azure Managed Redis (Preview) cluster.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent Redis Enterprise or Azure Managed Redis (Preview) resource. Required if the template is used in a standalone deployment.')
 param redisClusterName string
@@ -153,11 +152,11 @@ resource database_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021
 module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfiguration != null) {
   name: '${uniqueString(deployment().name)}-secrets-kv'
   scope: resourceGroup(
-    split((secretsExportConfiguration.?keyVaultResourceId ?? '//'), '/')[2],
-    split((secretsExportConfiguration.?keyVaultResourceId ?? '////'), '/')[4]
+    split(secretsExportConfiguration.?keyVaultResourceId!, '/')[2],
+    split(secretsExportConfiguration.?keyVaultResourceId!, '/')[4]
   )
   params: {
-    keyVaultName: last(split(secretsExportConfiguration.?keyVaultResourceId ?? '//', '/'))
+    keyVaultName: last(split(secretsExportConfiguration.?keyVaultResourceId!, '/'))
     secretsToSet: union(
       [],
       contains(secretsExportConfiguration!, 'primaryAccessKeyName')
