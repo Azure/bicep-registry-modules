@@ -225,7 +225,7 @@ resource serviceBusNamespace 'Microsoft.ServiceBus/namespaces@2022-10-01-preview
               keyName: customerManagedKey!.keyName
               keyVaultUri: cMKKeyVault.properties.vaultUri
               keyVersion: !empty(customerManagedKey.?keyVersion ?? '')
-                ? customerManagedKey!.keyVersion
+                ? customerManagedKey!.?keyVersion
                 : (customerManagedKey.?autoRotationEnabled ?? true)
                     ? null
                     : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
@@ -379,8 +379,8 @@ module serviceBusNamespace_privateEndpoints 'br/public:avm/res/network/private-e
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-serviceBusNamespace-PrivateEndpoint-${index}'
     scope: resourceGroup(
-      split(privateEndpoint.?resourceGroupResourceId ?? privateEndpoint.?subnetResourceId, '/')[2],
-      split(privateEndpoint.?resourceGroupResourceId ?? privateEndpoint.?subnetResourceId, '/')[4]
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
     )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(serviceBusNamespace.id, '/'))}-${privateEndpoint.?service ?? 'namespace'}-${index}'
@@ -467,12 +467,12 @@ output location string = serviceBusNamespace.location
 
 @description('The private endpoints of the service bus namespace.')
 output privateEndpoints privateEndpointOutputType[] = [
-  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
-    name: serviceBusNamespace_privateEndpoints[i].outputs.name
-    resourceId: serviceBusNamespace_privateEndpoints[i].outputs.resourceId
-    groupId: serviceBusNamespace_privateEndpoints[i].outputs.?groupId!
-    customDnsConfigs: serviceBusNamespace_privateEndpoints[i].outputs.customDnsConfigs
-    networkInterfaceResourceIds: serviceBusNamespace_privateEndpoints[i].outputs.networkInterfaceResourceIds
+  for (pe, index) in (privateEndpoints ?? []): {
+    name: serviceBusNamespace_privateEndpoints[index].outputs.name
+    resourceId: serviceBusNamespace_privateEndpoints[index].outputs.resourceId
+    groupId: serviceBusNamespace_privateEndpoints[index].outputs.?groupId!
+    customDnsConfigs: serviceBusNamespace_privateEndpoints[index].outputs.customDnsConfigs
+    networkInterfaceResourceIds: serviceBusNamespace_privateEndpoints[index].outputs.networkInterfaceResourceIds
   }
 ]
 

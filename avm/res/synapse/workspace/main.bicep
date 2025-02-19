@@ -349,12 +349,12 @@ module workspace_firewallRules 'firewall-rules/main.bicep' = [
 ]
 
 // Endpoints
-module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.9.1' = [
+module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-workspace-PrivateEndpoint-${index}'
     scope: resourceGroup(
-      split(privateEndpoint.?resourceGroupResourceId ?? privateEndpoint.?subnetResourceId, '/')[2],
-      split(privateEndpoint.?resourceGroupResourceId ?? privateEndpoint.?subnetResourceId, '/')[4]
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
     )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(workspace.id, '/'))}-${privateEndpoint.service}-${index}'
@@ -446,12 +446,12 @@ output location string = workspace.location
 
 @description('The private endpoints of the Synapse Workspace.')
 output privateEndpoints privateEndpointOutputType[] = [
-  for (pe, i) in (privateEndpoints ?? []): {
-    name: workspace_privateEndpoints[i].outputs.name
-    resourceId: workspace_privateEndpoints[i].outputs.resourceId
-    groupId: workspace_privateEndpoints[i].outputs.groupId
-    customDnsConfigs: workspace_privateEndpoints[i].outputs.customDnsConfig
-    networkInterfaceResourceIds: workspace_privateEndpoints[i].outputs.networkInterfaceResourceIds
+  for (item, index) in (privateEndpoints ?? []): {
+    name: workspace_privateEndpoints[index].outputs.name
+    resourceId: workspace_privateEndpoints[index].outputs.resourceId
+    groupId: workspace_privateEndpoints[index].outputs.?groupId!
+    customDnsConfigs: workspace_privateEndpoints[index].outputs.customDnsConfigs
+    networkInterfaceResourceIds: workspace_privateEndpoints[index].outputs.networkInterfaceResourceIds
   }
 ]
 

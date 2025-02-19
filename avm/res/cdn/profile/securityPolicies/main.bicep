@@ -43,10 +43,10 @@ type associationsType = {
   patternsToMatch: string[]
 }[]
 
-@description('The name of the secrect.')
+@description('The name of the secret.')
 output name string = securityPolicies.name
 
-@description('The resource ID of the secrect.')
+@description('The resource ID of the secret.')
 output resourceId string = securityPolicies.id
 
 @description('The name of the resource group the secret was created in.')
