@@ -270,6 +270,44 @@ Describe 'File/folder tests' -Tag 'Modules' {
                 $pathExisting | Should -Be $true -Because "path [$filePath] is expected to exist."
             }
         }
+
+        It '[<moduleFolderName>] Resource Modules must not skip the "defaults" or "waf-aligned" tests with a [` .e2eignore `] file.' -TestCases $topLevelModuleTestCases {
+
+            param(
+                [string] $moduleFolderName,
+                [string] $moduleFolderPath
+            )
+
+            if ($moduleFolderName -notmatch 'res/.*') {
+                Set-ItResult -Skipped -Because 'this test only applies to resource modules.'
+                return
+            }
+
+            $e2eTestFolderPathList = Get-ChildItem -Directory (Join-Path -Path $moduleFolderPath 'tests' 'e2e') | Where-Object { $_.Name -in 'defaults', 'waf-aligned' }
+            foreach ($e2eTestFolderPath in $e2eTestFolderPathList) {
+                $filePath = Join-Path -Path $e2eTestFolderPath '.e2eignore'
+                $pathExisting = Test-Path $filePath
+                $pathExisting | Should -Be $false -Because 'skipping this test is not allowed.'
+            }
+        }
+
+        It '[<moduleFolderName>] a [` .e2eignore `] file must contain text, which states the exception reason for not executing the deployment test.' -TestCases $topLevelModuleTestCases {
+
+            param(
+                [string] $moduleFolderName,
+                [string] $moduleFolderPath
+            )
+
+            $e2eTestFolderPathList = Get-ChildItem -Directory (Join-Path -Path $moduleFolderPath 'tests' 'e2e')
+            foreach ($e2eTestFolderPath in $e2eTestFolderPathList) {
+                $filePath = Join-Path -Path $e2eTestFolderPath '.e2eignore'
+                $pathExisting = Test-Path $filePath
+                if ($pathExisting) {
+                    $fileContent = Get-Content -Path $filePath
+                    $fileContent | Should -Not -BeNullOrEmpty -Because 'the file should contain a reason for skipping the test.'
+                }
+            }
+        }
     }
 }
 
