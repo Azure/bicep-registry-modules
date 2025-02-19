@@ -192,7 +192,7 @@ resource imageTemplate 'Microsoft.VirtualMachineImages/imageTemplates@2024-02-01
       ...(distribution.type == 'SharedImage'
         ? {
             runOutputName: distribution.?runOutputName ?? (!empty(distribution.?sharedImageGalleryImageDefinitionResourceId)
-              ? '${last(split((distribution.sharedImageGalleryImageDefinitionResourceId ?? '/'), '/'))}-SharedImage'
+              ? '${last(split(distribution.sharedImageGalleryImageDefinitionResourceId, '/'))}-SharedImage'
               : 'SharedImage')
             galleryImageId: !empty(distribution.?sharedImageGalleryImageDefinitionTargetVersion)
               ? '${distribution.sharedImageGalleryImageDefinitionResourceId}/versions/${distribution.sharedImageGalleryImageDefinitionTargetVersion}'
