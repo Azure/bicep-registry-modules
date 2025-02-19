@@ -280,7 +280,7 @@ resource cMKGeoKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!e
   )
 
   resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKeyGeo.?keyVaultResourceId) && !empty(customerManagedKeyGeo.?keyName)) {
-    name: customerManagedKeyGeo.?keyName ?? 'dummyKey'
+    name: customerManagedKeyGeo.?keyName!
   }
 }
 
