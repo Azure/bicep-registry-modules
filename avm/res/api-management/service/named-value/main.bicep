@@ -29,7 +29,7 @@ resource service 'Microsoft.ApiManagement/service@2024-05-01' existing = {
   name: apiManagementServiceName
 }
 
-resource namedValue 'Microsoft.ApiManagement/service/namedValues@2024-05-01' = {
+resource namedValue 'Microsoft.ApiManagement/service/namedValues@2024-06-01-preview' = {
   name: name
   parent: service
   properties: {

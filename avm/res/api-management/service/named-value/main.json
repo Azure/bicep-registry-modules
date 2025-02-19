@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "15157456642333789754"
+      "templateHash": "9108978778132831812"
     },
     "name": "API Management Service Named Values",
     "description": "This module deploys an API Management Service Named Value."
@@ -71,7 +71,7 @@
     },
     "namedValue": {
       "type": "Microsoft.ApiManagement/service/namedValues",
-      "apiVersion": "2024-05-01",
+      "apiVersion": "2024-06-01-preview",
       "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
       "properties": {
         "tags": "[parameters('tags')]",

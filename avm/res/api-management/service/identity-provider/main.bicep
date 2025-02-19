@@ -60,7 +60,7 @@ resource service 'Microsoft.ApiManagement/service@2024-05-01' existing = {
   name: apiManagementServiceName
 }
 
-resource identityProvider 'Microsoft.ApiManagement/service/identityProviders@2024-05-01' = {
+resource identityProvider 'Microsoft.ApiManagement/service/identityProviders@2024-06-01-preview' = {
   name: name
   parent: service
   properties: {

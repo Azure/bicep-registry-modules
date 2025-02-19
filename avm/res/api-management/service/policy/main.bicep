@@ -23,7 +23,7 @@ resource service 'Microsoft.ApiManagement/service@2024-05-01' existing = {
   name: apiManagementServiceName
 }
 
-resource policy 'Microsoft.ApiManagement/service/policies@2024-05-01' = {
+resource policy 'Microsoft.ApiManagement/service/policies@2024-06-01-preview' = {
   name: name
   parent: service
   properties: {

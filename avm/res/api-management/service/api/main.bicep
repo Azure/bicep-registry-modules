@@ -108,7 +108,7 @@ resource service 'Microsoft.ApiManagement/service@2024-05-01' existing = {
   name: apiManagementServiceName
 }
 
-resource api 'Microsoft.ApiManagement/service/apis@2024-05-01' = {
+resource api 'Microsoft.ApiManagement/service/apis@2024-06-01-preview' = {
   name: name
   parent: service
   properties: {

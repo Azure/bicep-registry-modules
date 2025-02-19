@@ -12,7 +12,7 @@ This module deploys an API Management Service API.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.ApiManagement/service/apis` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/apis) |
+| `Microsoft.ApiManagement/service/apis` | [2024-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-06-01-preview/service/apis) |
 | `Microsoft.ApiManagement/service/apis/diagnostics` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/apis/diagnostics) |
 | `Microsoft.ApiManagement/service/apis/policies` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/apis/policies) |
 

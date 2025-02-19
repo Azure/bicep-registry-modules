@@ -33,7 +33,7 @@ resource service 'Microsoft.ApiManagement/service@2024-05-01' existing = {
   name: apiManagementServiceName
 }
 
-resource subscription 'Microsoft.ApiManagement/service/subscriptions@2024-05-01' = {
+resource subscription 'Microsoft.ApiManagement/service/subscriptions@2024-06-01-preview' = {
   name: name
   parent: service
   properties: {

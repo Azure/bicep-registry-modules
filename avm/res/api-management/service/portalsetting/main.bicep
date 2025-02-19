@@ -19,7 +19,7 @@ resource service 'Microsoft.ApiManagement/service@2024-05-01' existing = {
   name: apiManagementServiceName
 }
 
-resource portalSetting 'Microsoft.ApiManagement/service/portalsettings@2024-05-01' = {
+resource portalSetting 'Microsoft.ApiManagement/service/portalsettings@2024-06-01-preview' = {
   name: any(name)
   parent: service
   properties: properties
