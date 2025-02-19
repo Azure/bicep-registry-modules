@@ -59,11 +59,6 @@ module testDeployment '../../../main.bicep' = [
         Env: 'test'
       }
       environmentResourceId: nestedDependencies.outputs.managedEnvironmentResourceId
-      location: resourceLocation
-      lock: {
-        kind: 'CanNotDelete'
-        name: 'myCustomLockName'
-      }
       managedIdentities: {
         userAssignedResourceIds: [
           nestedDependencies.outputs.managedIdentityResourceId
@@ -98,8 +93,5 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
     }
-    dependsOn: [
-      nestedDependencies
-    ]
   }
 ]
