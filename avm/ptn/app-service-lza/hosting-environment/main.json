@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "9349907093840762200"
+      "templateHash": "15685126378452031435"
     },
     "name": "App Service Landing Zone Accelerator",
     "description": "This Azure App Service pattern module represents an Azure App Service deployment aligned with the cloud adoption framework",
@@ -2749,7 +2749,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "4800657585256918690"
+              "templateHash": "12219217923053600916"
             }
           },
           "definitions": {
@@ -30090,7 +30090,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "1879794770686846702"
+                      "templateHash": "5244615369210695338"
                     }
                   },
                   "parameters": {
@@ -31635,11 +31635,12 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.13.18514",
-                              "templateHash": "8751398583202984748"
+                              "version": "0.32.4.45862",
+                              "templateHash": "13337545341058810747"
                             },
                             "name": "Virtual Machines",
-                            "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs."
+                            "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
+                            "owner": "Azure/module-maintainers"
                           },
                           "definitions": {
                             "managedIdentitiesType": {
@@ -32612,7 +32613,7 @@
                               "condition": "[parameters('enableTelemetry')]",
                               "type": "Microsoft.Resources/deployments",
                               "apiVersion": "2024-03-01",
-                              "name": "[format('46d3xbcp.res.compute-virtualmachine.{0}.{1}', replace('0.12.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                              "name": "[format('46d3xbcp.res.compute-virtualmachine.{0}.{1}', replace('0.11.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                               "properties": {
                                 "mode": "Incremental",
                                 "template": {
@@ -32931,8 +32932,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.33.13.18514",
-                                      "templateHash": "9361328819285350634"
+                                      "version": "0.32.4.45862",
+                                      "templateHash": "4332293246640728460"
                                     }
                                   },
                                   "definitions": {
@@ -34535,11 +34536,12 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.33.13.18514",
-                                      "templateHash": "10459557628823249787"
+                                      "version": "0.32.4.45862",
+                                      "templateHash": "12912200857967286939"
                                     },
                                     "name": "Virtual Machine Extensions",
-                                    "description": "This module deploys a Virtual Machine Extension."
+                                    "description": "This module deploys a Virtual Machine Extension.",
+                                    "owner": "Azure/module-maintainers"
                                   },
                                   "parameters": {
                                     "virtualMachineName": {
@@ -34746,11 +34748,12 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.33.13.18514",
-                                      "templateHash": "10459557628823249787"
+                                      "version": "0.32.4.45862",
+                                      "templateHash": "12912200857967286939"
                                     },
                                     "name": "Virtual Machine Extensions",
-                                    "description": "This module deploys a Virtual Machine Extension."
+                                    "description": "This module deploys a Virtual Machine Extension.",
+                                    "owner": "Azure/module-maintainers"
                                   },
                                   "parameters": {
                                     "virtualMachineName": {
@@ -34953,11 +34956,12 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.33.13.18514",
-                                      "templateHash": "10459557628823249787"
+                                      "version": "0.32.4.45862",
+                                      "templateHash": "12912200857967286939"
                                     },
                                     "name": "Virtual Machine Extensions",
-                                    "description": "This module deploys a Virtual Machine Extension."
+                                    "description": "This module deploys a Virtual Machine Extension.",
+                                    "owner": "Azure/module-maintainers"
                                   },
                                   "parameters": {
                                     "virtualMachineName": {
@@ -35155,11 +35159,12 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.33.13.18514",
-                                      "templateHash": "10459557628823249787"
+                                      "version": "0.32.4.45862",
+                                      "templateHash": "12912200857967286939"
                                     },
                                     "name": "Virtual Machine Extensions",
-                                    "description": "This module deploys a Virtual Machine Extension."
+                                    "description": "This module deploys a Virtual Machine Extension.",
+                                    "owner": "Azure/module-maintainers"
                                   },
                                   "parameters": {
                                     "virtualMachineName": {
@@ -35362,11 +35367,12 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.33.13.18514",
-                                      "templateHash": "10459557628823249787"
+                                      "version": "0.32.4.45862",
+                                      "templateHash": "12912200857967286939"
                                     },
                                     "name": "Virtual Machine Extensions",
-                                    "description": "This module deploys a Virtual Machine Extension."
+                                    "description": "This module deploys a Virtual Machine Extension.",
+                                    "owner": "Azure/module-maintainers"
                                   },
                                   "parameters": {
                                     "virtualMachineName": {
@@ -35564,11 +35570,12 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.33.13.18514",
-                                      "templateHash": "10459557628823249787"
+                                      "version": "0.32.4.45862",
+                                      "templateHash": "12912200857967286939"
                                     },
                                     "name": "Virtual Machine Extensions",
-                                    "description": "This module deploys a Virtual Machine Extension."
+                                    "description": "This module deploys a Virtual Machine Extension.",
+                                    "owner": "Azure/module-maintainers"
                                   },
                                   "parameters": {
                                     "virtualMachineName": {
@@ -35774,11 +35781,12 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.33.13.18514",
-                                      "templateHash": "10459557628823249787"
+                                      "version": "0.32.4.45862",
+                                      "templateHash": "12912200857967286939"
                                     },
                                     "name": "Virtual Machine Extensions",
-                                    "description": "This module deploys a Virtual Machine Extension."
+                                    "description": "This module deploys a Virtual Machine Extension.",
+                                    "owner": "Azure/module-maintainers"
                                   },
                                   "parameters": {
                                     "virtualMachineName": {
@@ -35988,11 +35996,12 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.33.13.18514",
-                                      "templateHash": "10459557628823249787"
+                                      "version": "0.32.4.45862",
+                                      "templateHash": "12912200857967286939"
                                     },
                                     "name": "Virtual Machine Extensions",
-                                    "description": "This module deploys a Virtual Machine Extension."
+                                    "description": "This module deploys a Virtual Machine Extension.",
+                                    "owner": "Azure/module-maintainers"
                                   },
                                   "parameters": {
                                     "virtualMachineName": {
@@ -36196,11 +36205,12 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.33.13.18514",
-                                      "templateHash": "10459557628823249787"
+                                      "version": "0.32.4.45862",
+                                      "templateHash": "12912200857967286939"
                                     },
                                     "name": "Virtual Machine Extensions",
-                                    "description": "This module deploys a Virtual Machine Extension."
+                                    "description": "This module deploys a Virtual Machine Extension.",
+                                    "owner": "Azure/module-maintainers"
                                   },
                                   "parameters": {
                                     "virtualMachineName": {
@@ -36400,11 +36410,12 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.33.13.18514",
-                                      "templateHash": "10459557628823249787"
+                                      "version": "0.32.4.45862",
+                                      "templateHash": "12912200857967286939"
                                     },
                                     "name": "Virtual Machine Extensions",
-                                    "description": "This module deploys a Virtual Machine Extension."
+                                    "description": "This module deploys a Virtual Machine Extension.",
+                                    "owner": "Azure/module-maintainers"
                                   },
                                   "parameters": {
                                     "virtualMachineName": {
@@ -36613,11 +36624,12 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.33.13.18514",
-                                      "templateHash": "10459557628823249787"
+                                      "version": "0.32.4.45862",
+                                      "templateHash": "12912200857967286939"
                                     },
                                     "name": "Virtual Machine Extensions",
-                                    "description": "This module deploys a Virtual Machine Extension."
+                                    "description": "This module deploys a Virtual Machine Extension.",
+                                    "owner": "Azure/module-maintainers"
                                   },
                                   "parameters": {
                                     "virtualMachineName": {
@@ -36822,11 +36834,12 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.33.13.18514",
-                                      "templateHash": "10459557628823249787"
+                                      "version": "0.32.4.45862",
+                                      "templateHash": "12912200857967286939"
                                     },
                                     "name": "Virtual Machine Extensions",
-                                    "description": "This module deploys a Virtual Machine Extension."
+                                    "description": "This module deploys a Virtual Machine Extension.",
+                                    "owner": "Azure/module-maintainers"
                                   },
                                   "parameters": {
                                     "virtualMachineName": {
@@ -37017,11 +37030,12 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.33.13.18514",
-                                      "templateHash": "16309659094506585930"
+                                      "version": "0.32.4.45862",
+                                      "templateHash": "8409556960090427141"
                                     },
                                     "name": "Recovery Service Vaults Protection Container Protected Item",
-                                    "description": "This module deploys a Recovery Services Vault Protection Container Protected Item."
+                                    "description": "This module deploys a Recovery Services Vault Protection Container Protected Item.",
+                                    "owner": "Azure/module-maintainers"
                                   },
                                   "parameters": {
                                     "name": {
@@ -37148,11 +37162,10 @@
                             },
                             "systemAssignedMIPrincipalId": {
                               "type": "string",
-                              "nullable": true,
                               "metadata": {
                                 "description": "The principal ID of the system assigned identity."
                               },
-                              "value": "[tryGet(tryGet(reference('vm', '2024-07-01', 'full'), 'identity'), 'principalId')]"
+                              "value": "[coalesce(tryGet(tryGet(reference('vm', '2024-07-01', 'full'), 'identity'), 'principalId'), '')]"
                             },
                             "location": {
                               "type": "string",
@@ -37247,7 +37260,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "11137324790599955882"
+                      "templateHash": "12105621756119008381"
                     }
                   },
                   "parameters": {
@@ -38250,11 +38263,12 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.13.18514",
-                              "templateHash": "8751398583202984748"
+                              "version": "0.32.4.45862",
+                              "templateHash": "13337545341058810747"
                             },
                             "name": "Virtual Machines",
-                            "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs."
+                            "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
+                            "owner": "Azure/module-maintainers"
                           },
                           "definitions": {
                             "managedIdentitiesType": {
@@ -39227,7 +39241,7 @@
                               "condition": "[parameters('enableTelemetry')]",
                               "type": "Microsoft.Resources/deployments",
                               "apiVersion": "2024-03-01",
-                              "name": "[format('46d3xbcp.res.compute-virtualmachine.{0}.{1}', replace('0.12.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                              "name": "[format('46d3xbcp.res.compute-virtualmachine.{0}.{1}', replace('0.11.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                               "properties": {
                                 "mode": "Incremental",
                                 "template": {
@@ -39546,8 +39560,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.33.13.18514",
-                                      "templateHash": "9361328819285350634"
+                                      "version": "0.32.4.45862",
+                                      "templateHash": "4332293246640728460"
                                     }
                                   },
                                   "definitions": {
@@ -41150,11 +41164,12 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.33.13.18514",
-                                      "templateHash": "10459557628823249787"
+                                      "version": "0.32.4.45862",
+                                      "templateHash": "12912200857967286939"
                                     },
                                     "name": "Virtual Machine Extensions",
-                                    "description": "This module deploys a Virtual Machine Extension."
+                                    "description": "This module deploys a Virtual Machine Extension.",
+                                    "owner": "Azure/module-maintainers"
                                   },
                                   "parameters": {
                                     "virtualMachineName": {
@@ -41361,11 +41376,12 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.33.13.18514",
-                                      "templateHash": "10459557628823249787"
+                                      "version": "0.32.4.45862",
+                                      "templateHash": "12912200857967286939"
                                     },
                                     "name": "Virtual Machine Extensions",
-                                    "description": "This module deploys a Virtual Machine Extension."
+                                    "description": "This module deploys a Virtual Machine Extension.",
+                                    "owner": "Azure/module-maintainers"
                                   },
                                   "parameters": {
                                     "virtualMachineName": {
@@ -41568,11 +41584,12 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.33.13.18514",
-                                      "templateHash": "10459557628823249787"
+                                      "version": "0.32.4.45862",
+                                      "templateHash": "12912200857967286939"
                                     },
                                     "name": "Virtual Machine Extensions",
-                                    "description": "This module deploys a Virtual Machine Extension."
+                                    "description": "This module deploys a Virtual Machine Extension.",
+                                    "owner": "Azure/module-maintainers"
                                   },
                                   "parameters": {
                                     "virtualMachineName": {
@@ -41770,11 +41787,12 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.33.13.18514",
-                                      "templateHash": "10459557628823249787"
+                                      "version": "0.32.4.45862",
+                                      "templateHash": "12912200857967286939"
                                     },
                                     "name": "Virtual Machine Extensions",
-                                    "description": "This module deploys a Virtual Machine Extension."
+                                    "description": "This module deploys a Virtual Machine Extension.",
+                                    "owner": "Azure/module-maintainers"
                                   },
                                   "parameters": {
                                     "virtualMachineName": {
@@ -41977,11 +41995,12 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.33.13.18514",
-                                      "templateHash": "10459557628823249787"
+                                      "version": "0.32.4.45862",
+                                      "templateHash": "12912200857967286939"
                                     },
                                     "name": "Virtual Machine Extensions",
-                                    "description": "This module deploys a Virtual Machine Extension."
+                                    "description": "This module deploys a Virtual Machine Extension.",
+                                    "owner": "Azure/module-maintainers"
                                   },
                                   "parameters": {
                                     "virtualMachineName": {
@@ -42179,11 +42198,12 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.33.13.18514",
-                                      "templateHash": "10459557628823249787"
+                                      "version": "0.32.4.45862",
+                                      "templateHash": "12912200857967286939"
                                     },
                                     "name": "Virtual Machine Extensions",
-                                    "description": "This module deploys a Virtual Machine Extension."
+                                    "description": "This module deploys a Virtual Machine Extension.",
+                                    "owner": "Azure/module-maintainers"
                                   },
                                   "parameters": {
                                     "virtualMachineName": {
@@ -42389,11 +42409,12 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.33.13.18514",
-                                      "templateHash": "10459557628823249787"
+                                      "version": "0.32.4.45862",
+                                      "templateHash": "12912200857967286939"
                                     },
                                     "name": "Virtual Machine Extensions",
-                                    "description": "This module deploys a Virtual Machine Extension."
+                                    "description": "This module deploys a Virtual Machine Extension.",
+                                    "owner": "Azure/module-maintainers"
                                   },
                                   "parameters": {
                                     "virtualMachineName": {
@@ -42603,11 +42624,12 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.33.13.18514",
-                                      "templateHash": "10459557628823249787"
+                                      "version": "0.32.4.45862",
+                                      "templateHash": "12912200857967286939"
                                     },
                                     "name": "Virtual Machine Extensions",
-                                    "description": "This module deploys a Virtual Machine Extension."
+                                    "description": "This module deploys a Virtual Machine Extension.",
+                                    "owner": "Azure/module-maintainers"
                                   },
                                   "parameters": {
                                     "virtualMachineName": {
@@ -42811,11 +42833,12 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.33.13.18514",
-                                      "templateHash": "10459557628823249787"
+                                      "version": "0.32.4.45862",
+                                      "templateHash": "12912200857967286939"
                                     },
                                     "name": "Virtual Machine Extensions",
-                                    "description": "This module deploys a Virtual Machine Extension."
+                                    "description": "This module deploys a Virtual Machine Extension.",
+                                    "owner": "Azure/module-maintainers"
                                   },
                                   "parameters": {
                                     "virtualMachineName": {
@@ -43015,11 +43038,12 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.33.13.18514",
-                                      "templateHash": "10459557628823249787"
+                                      "version": "0.32.4.45862",
+                                      "templateHash": "12912200857967286939"
                                     },
                                     "name": "Virtual Machine Extensions",
-                                    "description": "This module deploys a Virtual Machine Extension."
+                                    "description": "This module deploys a Virtual Machine Extension.",
+                                    "owner": "Azure/module-maintainers"
                                   },
                                   "parameters": {
                                     "virtualMachineName": {
@@ -43228,11 +43252,12 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.33.13.18514",
-                                      "templateHash": "10459557628823249787"
+                                      "version": "0.32.4.45862",
+                                      "templateHash": "12912200857967286939"
                                     },
                                     "name": "Virtual Machine Extensions",
-                                    "description": "This module deploys a Virtual Machine Extension."
+                                    "description": "This module deploys a Virtual Machine Extension.",
+                                    "owner": "Azure/module-maintainers"
                                   },
                                   "parameters": {
                                     "virtualMachineName": {
@@ -43437,11 +43462,12 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.33.13.18514",
-                                      "templateHash": "10459557628823249787"
+                                      "version": "0.32.4.45862",
+                                      "templateHash": "12912200857967286939"
                                     },
                                     "name": "Virtual Machine Extensions",
-                                    "description": "This module deploys a Virtual Machine Extension."
+                                    "description": "This module deploys a Virtual Machine Extension.",
+                                    "owner": "Azure/module-maintainers"
                                   },
                                   "parameters": {
                                     "virtualMachineName": {
@@ -43632,11 +43658,12 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.33.13.18514",
-                                      "templateHash": "16309659094506585930"
+                                      "version": "0.32.4.45862",
+                                      "templateHash": "8409556960090427141"
                                     },
                                     "name": "Recovery Service Vaults Protection Container Protected Item",
-                                    "description": "This module deploys a Recovery Services Vault Protection Container Protected Item."
+                                    "description": "This module deploys a Recovery Services Vault Protection Container Protected Item.",
+                                    "owner": "Azure/module-maintainers"
                                   },
                                   "parameters": {
                                     "name": {
@@ -43763,11 +43790,10 @@
                             },
                             "systemAssignedMIPrincipalId": {
                               "type": "string",
-                              "nullable": true,
                               "metadata": {
                                 "description": "The principal ID of the system assigned identity."
                               },
-                              "value": "[tryGet(tryGet(reference('vm', '2024-07-01', 'full'), 'identity'), 'principalId')]"
+                              "value": "[coalesce(tryGet(tryGet(reference('vm', '2024-07-01', 'full'), 'identity'), 'principalId'), '')]"
                             },
                             "location": {
                               "type": "string",

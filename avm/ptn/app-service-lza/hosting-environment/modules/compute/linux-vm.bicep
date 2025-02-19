@@ -200,7 +200,7 @@ resource sshKey 'Microsoft.Compute/sshPublicKeys@2022-03-01' = {
   }
 }
 
-module vm 'br/public:avm/res/compute/virtual-machine:0.12.0' = {
+module vm 'br/public:avm/res/compute/virtual-machine:0.11.0' = {
   name: 'vmDeployment'
   params: {
     name: vmName

@@ -133,7 +133,7 @@ resource maintenanceConfiguration 'Microsoft.Maintenance/maintenanceConfiguratio
   }
 }
 
-module vm 'br/public:avm/res/compute/virtual-machine:0.12.0' = {
+module vm 'br/public:avm/res/compute/virtual-machine:0.11.0' = {
   name: 'vmDeployment'
   params: {
     name: vmName
