@@ -85,6 +85,7 @@ body:
         - "avm/res/azure-stack-hci/cluster"
         - "avm/res/batch/batch-account"
         - "avm/res/cache/redis"
+        - "avm/res/cache/redis-enterprise"
         - "avm/res/cdn/profile"
         - "avm/res/cognitive-services/account"
         - "avm/res/communication/communication-service"
