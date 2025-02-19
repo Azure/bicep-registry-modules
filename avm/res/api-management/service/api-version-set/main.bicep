@@ -10,11 +10,11 @@ param name string = 'default'
 @description('Optional. API Version set properties.')
 param properties object = {}
 
-resource service 'Microsoft.ApiManagement/service@2023-05-01-preview' existing = {
+resource service 'Microsoft.ApiManagement/service@2024-05-01' existing = {
   name: apiManagementServiceName
 }
 
-resource apiVersionSet 'Microsoft.ApiManagement/service/apiVersionSets@2022-08-01' = {
+resource apiVersionSet 'Microsoft.ApiManagement/service/apiVersionSets@2024-05-01' = {
   name: name
   parent: service
   properties: properties

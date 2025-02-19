@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "9602469673358610075"
+      "templateHash": "5249221621672717242"
     },
     "name": "API Management Service Products",
     "description": "This module deploys an API Management Service Product."
@@ -90,7 +90,7 @@
   "resources": [
     {
       "type": "Microsoft.ApiManagement/service/products",
-      "apiVersion": "2022-08-01",
+      "apiVersion": "2024-05-01",
       "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
       "properties": {
         "description": "[parameters('description')]",
@@ -133,7 +133,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "7187924573150749189"
+              "templateHash": "1000652169837580008"
             },
             "name": "API Management Service Products APIs",
             "description": "This module deploys an API Management Service Product API."
@@ -161,7 +161,7 @@
           "resources": [
             {
               "type": "Microsoft.ApiManagement/service/products/apis",
-              "apiVersion": "2022-08-01",
+              "apiVersion": "2024-05-01",
               "name": "[format('{0}/{1}/{2}', parameters('apiManagementServiceName'), parameters('productName'), parameters('name'))]"
             }
           ],
@@ -222,7 +222,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "12351031153434834126"
+              "templateHash": "14020298343870408952"
             },
             "name": "API Management Service Products Groups",
             "description": "This module deploys an API Management Service Product Group."
@@ -250,7 +250,7 @@
           "resources": [
             {
               "type": "Microsoft.ApiManagement/service/products/groups",
-              "apiVersion": "2022-08-01",
+              "apiVersion": "2024-05-01",
               "name": "[format('{0}/{1}/{2}', parameters('apiManagementServiceName'), parameters('productName'), parameters('name'))]"
             }
           ],

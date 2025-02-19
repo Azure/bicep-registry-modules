@@ -21,12 +21,12 @@ param networkSecurityGroupName string
 
 var addressPrefix = '10.0.0.0/16'
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
   name: managedIdentityName
   location: locationRegion1
 }
 
-resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09-01' = {
   name: 'logAnalyticsWorkspace'
   location: locationRegion1
   tags: {
@@ -161,7 +161,7 @@ resource routeTableRegion2 'Microsoft.Network/routeTables@2023-11-01' = {
   }
 }
 
-resource nsgRegion1 'Microsoft.Network/networkSecurityGroups@2020-06-01' = {
+resource nsgRegion1 'Microsoft.Network/networkSecurityGroups@2024-05-01' = {
   name: '${networkSecurityGroupName}-${locationRegion1}'
   location: locationRegion1
   properties: {
@@ -280,7 +280,7 @@ resource nsgRegion1 'Microsoft.Network/networkSecurityGroups@2020-06-01' = {
   }
 }
 
-resource nsgRegion2 'Microsoft.Network/networkSecurityGroups@2020-06-01' = {
+resource nsgRegion2 'Microsoft.Network/networkSecurityGroups@2024-05-01' = {
   name: '${networkSecurityGroupName}-${locationRegion2}'
   location: locationRegion2
   properties: {

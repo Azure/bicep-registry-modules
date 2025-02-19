@@ -282,7 +282,7 @@ module service_apis 'api/main.bicep' = [
       apiVersionDescription: api.?apiVersionDescription
       apiVersionSetId: api.?apiVersionSetId
       authenticationSettings: api.?authenticationSettings
-      format: api.?format ?? 'openapi'
+      format: api.?format
       isCurrent: api.?isCurrent
       protocols: api.?protocols
       policies: api.?policies

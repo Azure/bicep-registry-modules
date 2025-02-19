@@ -70,11 +70,11 @@ var defaultAuthorizationMethods = [
 ]
 var setAuthorizationMethods = union(authorizationMethods, defaultAuthorizationMethods)
 
-resource service 'Microsoft.ApiManagement/service@2023-05-01-preview' existing = {
+resource service 'Microsoft.ApiManagement/service@2024-05-01' existing = {
   name: apiManagementServiceName
 }
 
-resource authorizationServer 'Microsoft.ApiManagement/service/authorizationServers@2022-08-01' = {
+resource authorizationServer 'Microsoft.ApiManagement/service/authorizationServers@2024-05-01' = {
   name: name
   parent: service
   properties: {
