@@ -281,7 +281,7 @@ module service_apis 'api/main.bicep' = [
       authenticationSettings: api.?authenticationSettings
       format: api.?format ?? 'openapi'
       isCurrent: api.?isCurrent
-      protocols: api.?protocols ?? ['https']
+      protocols: api.?protocols
       policies: api.?policies
       serviceUrl: api.?serviceUrl
       sourceApiId: api.?sourceApiId
