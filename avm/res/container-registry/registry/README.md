@@ -305,7 +305,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
     ]
     roleAssignments: [
       {
-        name: '60395919-cfd3-47bf-8349-775ddebb255e'
+        name: '8f8b1c39-827f-43e6-a457-98bb15b5dbdf'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -453,7 +453,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "60395919-cfd3-47bf-8349-775ddebb255e",
+          "name": "8f8b1c39-827f-43e6-a457-98bb15b5dbdf",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -583,7 +583,7 @@ param replications = [
 ]
 param roleAssignments = [
   {
-    name: '60395919-cfd3-47bf-8349-775ddebb255e'
+    name: '8f8b1c39-827f-43e6-a457-98bb15b5dbdf'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'
