@@ -219,8 +219,8 @@ module namespace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-namespace-PrivateEndpoint-${index}'
     scope: resourceGroup(
-      split(privateEndpoint.?resourceGroupResourceId ?? privateEndpoint.?subnetResourceId, '/')[2],
-      split(privateEndpoint.?resourceGroupResourceId ?? privateEndpoint.?subnetResourceId, '/')[4]
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
     )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(namespace.id, '/'))}-${privateEndpoint.?service ?? 'namespace'}-${index}'
@@ -300,12 +300,12 @@ output location string = namespace.location
 
 @description('The private endpoints of the relay namespace.')
 output privateEndpoints privateEndpointOutputType[] = [
-  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
-    name: namespace_privateEndpoints[i].outputs.name
-    resourceId: namespace_privateEndpoints[i].outputs.resourceId
-    groupId: namespace_privateEndpoints[i].outputs.?groupId!
-    customDnsConfigs: namespace_privateEndpoints[i].outputs.customDnsConfigs
-    networkInterfaceResourceIds: namespace_privateEndpoints[i].outputs.networkInterfaceResourceIds
+  for (pe, index) in (privateEndpoints ?? []): {
+    name: namespace_privateEndpoints[index].outputs.name
+    resourceId: namespace_privateEndpoints[index].outputs.resourceId
+    groupId: namespace_privateEndpoints[index].outputs.?groupId!
+    customDnsConfigs: namespace_privateEndpoints[index].outputs.customDnsConfigs
+    networkInterfaceResourceIds: namespace_privateEndpoints[index].outputs.networkInterfaceResourceIds
   }
 ]
 
