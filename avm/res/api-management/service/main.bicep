@@ -1,6 +1,5 @@
 metadata name = 'API Management Services'
 metadata description = 'This module deploys an API Management Service. The default deployment is set to use a Premium SKU to align with Microsoft WAF-aligned best practices. In most cases, non-prod deployments should use a lower-tier SKU.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Optional. Additional datacenter locations of the API Management service. Not supported with V2 SKUs.')
 param additionalLocations array = []
@@ -36,14 +35,14 @@ param enableClientCertificate bool = false
 @description('Optional. Custom hostname configuration of the API Management service.')
 param hostnameConfigurations array = []
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -62,7 +61,7 @@ param publisherName string
 @description('Optional. Undelete API Management Service if it was previously soft-deleted. If this flag is specified and set to True all other properties will be ignored.')
 param restore bool = false
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -95,7 +94,7 @@ param tags object?
 ])
 param virtualNetworkType string = 'None'
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
@@ -147,6 +146,9 @@ param subscriptions array = []
 
 @description('Optional. Public Standard SKU IP V4 based IP address to be associated with Virtual Network deployed service in the region. Supported only for Developer and Premium SKU being deployed in Virtual Network.')
 param publicIpAddressResourceId string?
+
+@description('Optional. Enable the Developer Portal. The developer portal is not supported on the Consumption SKU.')
+param enableDeveloperPortal bool = false
 
 var authorizationServerList = !empty(authorizationServers) ? authorizationServers.secureList : []
 
@@ -225,7 +227,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource service 'Microsoft.ApiManagement/service@2023-05-01-preview' = {
+resource service 'Microsoft.ApiManagement/service@2024-05-01' = {
   name: name
   location: location
   tags: tags
@@ -260,6 +262,7 @@ resource service 'Microsoft.ApiManagement/service@2023-05-01-preview' = {
           minApiVersion: '2021-08-01'
         }
     restore: restore
+    developerPortalStatus: sku != 'Consumption' ? (enableDeveloperPortal ? 'Enabled' : 'Disabled') : null
   }
 }
 
@@ -573,11 +576,7 @@ output resourceId string = service.id
 output resourceGroupName string = resourceGroup().name
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = service.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = service.?identity.?principalId
 
 @description('The location the resource was deployed into.')
 output location string = service.location
-
-// =============== //
-//   Definitions   //
-// =============== //

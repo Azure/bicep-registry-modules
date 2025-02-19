@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "17625741196665765886"
+      "version": "0.32.4.45862",
+      "templateHash": "1123742374784430273"
     },
     "name": "DBforMySQL Flexible Servers",
-    "description": "This module deploys a DBforMySQL Flexible Server.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a DBforMySQL Flexible Server."
   },
   "definitions": {
     "customerManagedKeyType": {
@@ -329,14 +328,14 @@
     },
     "administratorLogin": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The administrator login name of a server. Can only be specified when the MySQL server is being created."
       }
     },
     "administratorLoginPassword": {
       "type": "securestring",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The administrator login password."
       }
@@ -460,16 +459,27 @@
     },
     "delegatedSubnetResourceId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Delegated subnet arm resource ID. Used when the desired connectivity mode is \"Private Access\" - virtual network integration. Delegation must be enabled on the subnet for MySQL Flexible Servers and subnet CIDR size is /29."
       }
     },
     "privateDnsZoneResourceId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Conditional. Private dns zone arm resource ID. Used when the desired connectivity mode is \"Private Access\". Required if \"delegatedSubnetResourceId\" is used and the Private DNS Zone name must end with mysql.database.azure.com in order to be linked to the MySQL Flexible Server."
+      }
+    },
+    "publicNetworkAccess": {
+      "type": "string",
+      "defaultValue": "Disabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
+      "metadata": {
+        "description": "Optional. Specifies whether public network access is allowed for this server. Set to \"Enabled\" to allow public access, or \"Disabled\" (default) when the server has VNet integration."
       }
     },
     "restorePointInTime": {
@@ -493,7 +503,7 @@
     },
     "sourceServerResourceId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Conditional. The source MySQL server ID. Required if \"createMode\" is set to \"PointInTimeRestore\"."
       }
@@ -574,6 +584,17 @@
         "description": "Optional. The firewall rules to create in the MySQL flexible server."
       }
     },
+    "advancedThreatProtection": {
+      "type": "string",
+      "defaultValue": "Enabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
+      "metadata": {
+        "description": "Optional. Enable/Disable Advanced Threat Protection (Microsoft Defender) for the server."
+      }
+    },
     "roleAssignments": {
       "type": "array",
       "items": {
@@ -635,10 +656,7 @@
       "apiVersion": "2023-02-01",
       "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '//'), '/')[2]]",
       "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '////'), '/')[4]]",
-      "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]",
-      "dependsOn": [
-        "cMKKeyVault"
-      ]
+      "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]"
     },
     "cMKGeoKeyVault::cMKKey": {
       "condition": "[and(not(empty(tryGet(parameters('customerManagedKeyGeo'), 'keyVaultResourceId'))), and(not(empty(tryGet(parameters('customerManagedKeyGeo'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKeyGeo'), 'keyName')))))]",
@@ -647,10 +665,7 @@
       "apiVersion": "2023-02-01",
       "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKeyGeo'), 'keyVaultResourceId'), '//'), '/')[2]]",
       "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKeyGeo'), 'keyVaultResourceId'), '////'), '/')[4]]",
-      "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKeyGeo'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKeyGeo'), 'keyName'), 'dummyKey'))]",
-      "dependsOn": [
-        "cMKGeoKeyVault"
-      ]
+      "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKeyGeo'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKeyGeo'), 'keyName'), 'dummyKey'))]"
     },
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
@@ -720,8 +735,8 @@
       },
       "identity": "[variables('identity')]",
       "properties": {
-        "administratorLogin": "[if(not(empty(parameters('administratorLogin'))), parameters('administratorLogin'), null())]",
-        "administratorLoginPassword": "[if(not(empty(parameters('administratorLoginPassword'))), parameters('administratorLoginPassword'), null())]",
+        "administratorLogin": "[parameters('administratorLogin')]",
+        "administratorLoginPassword": "[parameters('administratorLoginPassword')]",
         "availabilityZone": "[parameters('availabilityZone')]",
         "backup": {
           "backupRetentionDays": "[parameters('backupRetentionDays')]",
@@ -734,10 +749,14 @@
           "standbyAvailabilityZone": "[variables('standByAvailabilityZone')]"
         },
         "maintenanceWindow": "[if(not(empty(parameters('maintenanceWindow'))), createObject('customWindow', parameters('maintenanceWindow').customWindow, 'dayOfWeek', if(equals(parameters('maintenanceWindow').customWindow, 'Enabled'), parameters('maintenanceWindow').dayOfWeek, 0), 'startHour', if(equals(parameters('maintenanceWindow').customWindow, 'Enabled'), parameters('maintenanceWindow').startHour, 0), 'startMinute', if(equals(parameters('maintenanceWindow').customWindow, 'Enabled'), parameters('maintenanceWindow').startMinute, 0)), null())]",
-        "network": "[if(and(not(empty(parameters('delegatedSubnetResourceId'))), empty(parameters('firewallRules'))), createObject('delegatedSubnetResourceId', parameters('delegatedSubnetResourceId'), 'privateDnsZoneResourceId', parameters('privateDnsZoneResourceId')), null())]",
+        "network": {
+          "delegatedSubnetResourceId": "[parameters('delegatedSubnetResourceId')]",
+          "privateDnsZoneResourceId": "[parameters('privateDnsZoneResourceId')]",
+          "publicNetworkAccess": "[parameters('publicNetworkAccess')]"
+        },
         "replicationRole": "[parameters('replicationRole')]",
         "restorePointInTime": "[parameters('restorePointInTime')]",
-        "sourceServerResourceId": "[if(not(empty(parameters('sourceServerResourceId'))), parameters('sourceServerResourceId'), null())]",
+        "sourceServerResourceId": "[parameters('sourceServerResourceId')]",
         "storage": {
           "autoGrow": "[parameters('storageAutoGrow')]",
           "autoIoScaling": "[parameters('storageAutoIoScaling')]",
@@ -747,10 +766,8 @@
         "version": "[parameters('version')]"
       },
       "dependsOn": [
-        "cMKGeoKeyVault",
-        "cMKGeoUserAssignedIdentity",
-        "cMKKeyVault",
-        "cMKUserAssignedIdentity"
+        "cMKKeyVault::cMKKey",
+        "cMKGeoKeyVault::cMKKey"
       ]
     },
     "flexibleServer_lock": {
@@ -863,12 +880,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "8816099454149448745"
+              "version": "0.32.4.45862",
+              "templateHash": "13496627960628082971"
             },
             "name": "DBforMySQL Flexible Server Databases",
-            "description": "This module deploys a DBforMySQL Flexible Server Database.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a DBforMySQL Flexible Server Database."
           },
           "parameters": {
             "name": {
@@ -971,12 +987,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "10309431502079210011"
+              "version": "0.32.4.45862",
+              "templateHash": "18086170322747937551"
             },
             "name": "DBforMySQL Flexible Server Firewall Rules",
-            "description": "This module deploys a DBforMySQL Flexible Server Firewall Rule.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a DBforMySQL Flexible Server Firewall Rule."
           },
           "parameters": {
             "name": {
@@ -1080,12 +1095,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "15901602668303039143"
+              "version": "0.32.4.45862",
+              "templateHash": "14550363826535160600"
             },
             "name": "DBforMySQL Flexible Server Administrators",
-            "description": "This module deploys a DBforMySQL Flexible Server Administrator.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a DBforMySQL Flexible Server Administrator."
           },
           "parameters": {
             "flexibleServerName": {
@@ -1153,6 +1167,93 @@
               "type": "string",
               "metadata": {
                 "description": "The resource group of the deployed administrator."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "flexibleServer"
+      ]
+    },
+    "flexibleServer_advancedThreatProtection": {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-MySQL-AdvancedThreatProtection', uniqueString(deployment().name, parameters('location')))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "flexibleServerName": {
+            "value": "[parameters('name')]"
+          },
+          "advancedThreatProtection": {
+            "value": "[parameters('advancedThreatProtection')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.32.4.45862",
+              "templateHash": "4291338019800376753"
+            },
+            "name": "DBforMySQL Flexible Server Advanced Threat Protection",
+            "description": "This module enables Advanced Threat Protection for DBforMySQL Flexible Server."
+          },
+          "parameters": {
+            "flexibleServerName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent DBforMySQL flexible server. Required if the template is used in a standalone deployment."
+              }
+            },
+            "advancedThreatProtection": {
+              "type": "string",
+              "defaultValue": "Enabled",
+              "allowedValues": [
+                "Enabled",
+                "Disabled"
+              ],
+              "metadata": {
+                "description": "Optional. The state of the advanced threat protection."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.DBforMySQL/flexibleServers/advancedThreatProtectionSettings",
+              "apiVersion": "2023-12-30",
+              "name": "[format('{0}/{1}', parameters('flexibleServerName'), 'Default')]",
+              "properties": {
+                "state": "[parameters('advancedThreatProtection')]"
+              }
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the deployed threat protection."
+              },
+              "value": "Default"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the deployed threat protection."
+              },
+              "value": "[resourceId('Microsoft.DBforMySQL/flexibleServers/advancedThreatProtectionSettings', parameters('flexibleServerName'), 'Default')]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group of the deployed threat protection."
               },
               "value": "[resourceGroup().name]"
             }

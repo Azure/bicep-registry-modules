@@ -1,6 +1,5 @@
 metadata name = 'Cognitive Services'
 metadata description = 'This module deploys a Cognitive Service.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of Cognitive Services account.')
 param name string
@@ -362,9 +361,14 @@ resource cognitiveService_deployments 'Microsoft.CognitiveServices/accounts/depl
     properties: {
       model: deployment.model
       raiPolicyName: deployment.?raiPolicyName
+      versionUpgradeOption: deployment.?versionUpgradeOption
     }
     sku: deployment.?sku ?? {
       name: sku
+      capacity: sku.?capacity
+      tier: sku.?tier
+      size: sku.?size
+      family: sku.?family
     }
   }
 ]
@@ -573,10 +577,22 @@ type deploymentsType = {
 
     @description('Optional. The capacity of the resource model definition representing SKU.')
     capacity: int?
+
+    @description('Optional. The tier of the resource model definition representing SKU.')
+    tier: string?
+
+    @description('Optional. The size of the resource model definition representing SKU.')
+    size: string?
+
+    @description('Optional. The family of the resource model definition representing SKU.')
+    family: string?
   }?
 
   @description('Optional. The name of RAI policy.')
   raiPolicyName: string?
+
+  @description('Optional. The version upgrade option.')
+  versionUpgradeOption: string?
 }[]?
 
 @export()

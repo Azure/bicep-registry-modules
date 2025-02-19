@@ -848,6 +848,8 @@ The priority of the rule. The value can be between 100 and 4096. The priority nu
 
 - Required: Yes
 - Type: int
+- MinValue: 100
+- MaxValue: 4096
 
 ### Parameter: `customNetworkSecurityGroups.properties.protocol`
 
@@ -866,6 +868,8 @@ Network protocol this rule applies to.
     'Udp'
   ]
   ```
+- MinValue: 100
+- MaxValue: 4096
 
 ### Parameter: `customNetworkSecurityGroups.properties.description`
 
@@ -873,6 +877,8 @@ The description of the security rule.
 
 - Required: No
 - Type: string
+- MinValue: 100
+- MaxValue: 4096
 
 ### Parameter: `customNetworkSecurityGroups.properties.destinationAddressPrefix`
 
@@ -880,6 +886,8 @@ The destination address prefix. CIDR or destination IP range. Asterisk "*" can a
 
 - Required: No
 - Type: string
+- MinValue: 100
+- MaxValue: 4096
 
 ### Parameter: `customNetworkSecurityGroups.properties.destinationAddressPrefixes`
 
@@ -887,6 +895,8 @@ The destination address prefixes. CIDR or destination IP ranges.
 
 - Required: No
 - Type: array
+- MinValue: 100
+- MaxValue: 4096
 
 ### Parameter: `customNetworkSecurityGroups.properties.destinationApplicationSecurityGroupResourceIds`
 
@@ -894,6 +904,8 @@ The resource IDs of the application security groups specified as destination.
 
 - Required: No
 - Type: array
+- MinValue: 100
+- MaxValue: 4096
 
 ### Parameter: `customNetworkSecurityGroups.properties.destinationPortRange`
 
@@ -901,6 +913,8 @@ The destination port or range. Integer or range between 0 and 65535. Asterisk "*
 
 - Required: No
 - Type: string
+- MinValue: 100
+- MaxValue: 4096
 
 ### Parameter: `customNetworkSecurityGroups.properties.destinationPortRanges`
 
@@ -908,6 +922,8 @@ The destination port ranges.
 
 - Required: No
 - Type: array
+- MinValue: 100
+- MaxValue: 4096
 
 ### Parameter: `customNetworkSecurityGroups.properties.sourceAddressPrefix`
 
@@ -915,6 +931,8 @@ The CIDR or source IP range. Asterisk "*" can also be used to match all source I
 
 - Required: No
 - Type: string
+- MinValue: 100
+- MaxValue: 4096
 
 ### Parameter: `customNetworkSecurityGroups.properties.sourceAddressPrefixes`
 
@@ -922,6 +940,8 @@ The CIDR or source IP ranges.
 
 - Required: No
 - Type: array
+- MinValue: 100
+- MaxValue: 4096
 
 ### Parameter: `customNetworkSecurityGroups.properties.sourceApplicationSecurityGroupResourceIds`
 
@@ -929,6 +949,8 @@ The resource IDs of the application security groups specified as source.
 
 - Required: No
 - Type: array
+- MinValue: 100
+- MaxValue: 4096
 
 ### Parameter: `customNetworkSecurityGroups.properties.sourcePortRange`
 
@@ -936,6 +958,8 @@ The source port or range. Integer or range between 0 and 65535. Asterisk "*" can
 
 - Required: No
 - Type: string
+- MinValue: 100
+- MaxValue: 4096
 
 ### Parameter: `customNetworkSecurityGroups.properties.sourcePortRanges`
 
@@ -943,6 +967,8 @@ The source port ranges.
 
 - Required: No
 - Type: array
+- MinValue: 100
+- MaxValue: 4096
 
 ### Parameter: `deployInVnet`
 

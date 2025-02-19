@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "16666145367206540372"
+      "version": "0.32.4.45862",
+      "templateHash": "30090795733018099"
     },
     "name": "Cognitive Services",
-    "description": "This module deploys a Cognitive Service.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Cognitive Service."
   },
   "definitions": {
     "deploymentsType": {
@@ -66,6 +65,27 @@
                 "metadata": {
                   "description": "Optional. The capacity of the resource model definition representing SKU."
                 }
+              },
+              "tier": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The tier of the resource model definition representing SKU."
+                }
+              },
+              "size": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The size of the resource model definition representing SKU."
+                }
+              },
+              "family": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The family of the resource model definition representing SKU."
+                }
               }
             },
             "nullable": true,
@@ -78,6 +98,13 @@
             "nullable": true,
             "metadata": {
               "description": "Optional. The name of RAI policy."
+            }
+          },
+          "versionUpgradeOption": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The version upgrade option."
             }
           }
         }
@@ -1009,10 +1036,7 @@
       "apiVersion": "2023-02-01",
       "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '//'), '/')[2]]",
       "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '////'), '/')[4]]",
-      "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]",
-      "dependsOn": [
-        "cMKKeyVault"
-      ]
+      "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]"
     },
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
@@ -1078,6 +1102,7 @@
         "dynamicThrottlingEnabled": "[parameters('dynamicThrottlingEnabled')]"
       },
       "dependsOn": [
+        "cMKKeyVault::cMKKey",
         "cMKKeyVault",
         "cMKUserAssignedIdentity"
       ]
@@ -1094,9 +1119,10 @@
       "name": "[format('{0}/{1}', parameters('name'), coalesce(tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'name'), format('{0}-deployments', parameters('name'))))]",
       "properties": {
         "model": "[coalesce(parameters('deployments'), createArray())[copyIndex()].model]",
-        "raiPolicyName": "[tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'raiPolicyName')]"
+        "raiPolicyName": "[tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'raiPolicyName')]",
+        "versionUpgradeOption": "[tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'versionUpgradeOption')]"
       },
-      "sku": "[coalesce(tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'sku'), createObject('name', parameters('sku')))]",
+      "sku": "[coalesce(tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'sku'), createObject('name', parameters('sku'), 'capacity', tryGet(parameters('sku'), 'capacity'), 'tier', tryGet(parameters('sku'), 'tier'), 'size', tryGet(parameters('sku'), 'size'), 'family', tryGet(parameters('sku'), 'family')))]",
       "dependsOn": [
         "cognitiveService"
       ]
@@ -1971,8 +1997,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "11634725007167901429"
+              "version": "0.32.4.45862",
+              "templateHash": "6846536646656162824"
             }
           },
           "definitions": {
@@ -2063,10 +2089,7 @@
               "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('secretsToSet')[copyIndex()].name)]",
               "properties": {
                 "value": "[parameters('secretsToSet')[copyIndex()].value]"
-              },
-              "dependsOn": [
-                "keyVault"
-              ]
+              }
             }
           },
           "outputs": {

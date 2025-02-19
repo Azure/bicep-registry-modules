@@ -1,7 +1,6 @@
 metadata name = 'Virtual Hubs'
 metadata description = '''This module deploys a Virtual Hub.
 If you are planning to deploy a Secure Virtual Hub (with an Azure Firewall integrated), please refer to the Azure Firewall module.'''
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The virtual hub name.')
 param name string

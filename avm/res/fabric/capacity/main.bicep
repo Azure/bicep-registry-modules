@@ -1,6 +1,5 @@
 metadata name = 'Fabric Capacities'
 metadata description = 'This module deploys Fabric capacities, which provide the compute resources for all the experiences in Fabric.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the resource to create.')
 param name string

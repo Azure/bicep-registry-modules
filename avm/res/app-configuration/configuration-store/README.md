@@ -1903,6 +1903,8 @@ The amount of time in days that the configuration store will be retained when it
 - Required: No
 - Type: int
 - Default: `1`
+- MinValue: 1
+- MaxValue: 7
 
 ### Parameter: `tags`
 
@@ -1910,6 +1912,8 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+- MinValue: 1
+- MaxValue: 7
 
 ## Outputs
 

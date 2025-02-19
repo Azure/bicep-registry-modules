@@ -9,6 +9,7 @@ This module deploys an Azure Compute Gallery (formerly known as Shared Image Gal
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
+- [Notes](#Notes)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -17,9 +18,9 @@ This module deploys an Azure Compute Gallery (formerly known as Shared Image Gal
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Compute/galleries` | [2023-07-03](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2023-07-03/galleries) |
-| `Microsoft.Compute/galleries/applications` | [2022-03-03](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2022-03-03/galleries/applications) |
-| `Microsoft.Compute/galleries/images` | [2023-07-03](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2023-07-03/galleries/images) |
+| `Microsoft.Compute/galleries` | [2024-03-03](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-03-03/galleries) |
+| `Microsoft.Compute/galleries/applications` | [2024-03-03](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-03-03/galleries/applications) |
+| `Microsoft.Compute/galleries/images` | [2024-03-03](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-03-03/galleries/images) |
 
 ## Usage examples
 
@@ -144,6 +145,7 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
     description: 'This is a test deployment.'
     images: [
       {
+        allowUpdateImage: true
         architecture: 'x64'
         description: 'testDescription'
         endOfLife: '2033-01-01'
@@ -169,6 +171,7 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
         releaseNoteUri: 'https://testReleaseNoteUri.com'
       }
       {
+        allowUpdateImage: false
         hyperVGeneration: 'V2'
         identifier: {
           offer: 'WindowsServer'
@@ -215,6 +218,7 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
         }
       }
       {
+        diskControllerType: 'SCSI'
         hyperVGeneration: 'V2'
         identifier: {
           offer: '0001-com-ubuntu-minimal-focal'
@@ -235,6 +239,7 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
         }
       }
       {
+        diskControllerType: 'SCSI, NVMe'
         hyperVGeneration: 'V2'
         identifier: {
           offer: '0001-com-ubuntu-minimal-focal'
@@ -377,6 +382,7 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
     "images": {
       "value": [
         {
+          "allowUpdateImage": true,
           "architecture": "x64",
           "description": "testDescription",
           "endOfLife": "2033-01-01",
@@ -402,6 +408,7 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
           "releaseNoteUri": "https://testReleaseNoteUri.com"
         },
         {
+          "allowUpdateImage": false,
           "hyperVGeneration": "V2",
           "identifier": {
             "offer": "WindowsServer",
@@ -448,6 +455,7 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
           }
         },
         {
+          "diskControllerType": "SCSI",
           "hyperVGeneration": "V2",
           "identifier": {
             "offer": "0001-com-ubuntu-minimal-focal",
@@ -468,6 +476,7 @@ module gallery 'br/public:avm/res/compute/gallery:<version>' = {
           }
         },
         {
+          "diskControllerType": "SCSI, NVMe",
           "hyperVGeneration": "V2",
           "identifier": {
             "offer": "0001-com-ubuntu-minimal-focal",
@@ -610,6 +619,7 @@ param applications = [
 param description = 'This is a test deployment.'
 param images = [
   {
+    allowUpdateImage: true
     architecture: 'x64'
     description: 'testDescription'
     endOfLife: '2033-01-01'
@@ -635,6 +645,7 @@ param images = [
     releaseNoteUri: 'https://testReleaseNoteUri.com'
   }
   {
+    allowUpdateImage: false
     hyperVGeneration: 'V2'
     identifier: {
       offer: 'WindowsServer'
@@ -681,6 +692,7 @@ param images = [
     }
   }
   {
+    diskControllerType: 'SCSI'
     hyperVGeneration: 'V2'
     identifier: {
       offer: '0001-com-ubuntu-minimal-focal'
@@ -701,6 +713,7 @@ param images = [
     }
   }
   {
+    diskControllerType: 'SCSI, NVMe'
     hyperVGeneration: 'V2'
     identifier: {
       offer: '0001-com-ubuntu-minimal-focal'
@@ -1296,8 +1309,10 @@ Images to create.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`allowUpdateImage`](#parameter-imagesallowupdateimage) | bool | Must be set to true if the gallery image features are being updated. |
 | [`architecture`](#parameter-imagesarchitecture) | string | The architecture of the image. Applicable to OS disks only. |
 | [`description`](#parameter-imagesdescription) | string | The description of this gallery image definition resource. This property is updatable. |
+| [`diskControllerType`](#parameter-imagesdiskcontrollertype) | string | The disk controllers that an OS disk supports. |
 | [`endOfLife`](#parameter-imagesendoflife) | string | The end of life date of the gallery image definition. This property can be used for decommissioning purposes. This property is updatable. |
 | [`eula`](#parameter-imageseula) | string | The Eula agreement for the gallery image definition. |
 | [`excludedDiskTypes`](#parameter-imagesexcludeddisktypes) | array | Describes the disallowed disk types. |
@@ -1382,6 +1397,13 @@ This property allows you to specify the type of the OS that is included in the d
   ]
   ```
 
+### Parameter: `images.allowUpdateImage`
+
+Must be set to true if the gallery image features are being updated.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `images.architecture`
 
 The architecture of the image. Applicable to OS disks only.
@@ -1402,6 +1424,21 @@ The description of this gallery image definition resource. This property is upda
 
 - Required: No
 - Type: string
+
+### Parameter: `images.diskControllerType`
+
+The disk controllers that an OS disk supports.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'NVMe, SCSI'
+    'SCSI'
+    'SCSI, NVMe'
+  ]
+  ```
 
 ### Parameter: `images.endOfLife`
 
@@ -1479,6 +1516,7 @@ The minimum number of the resource.
 
 - Required: No
 - Type: int
+- MinValue: 1
 
 ### Parameter: `images.privacyStatementUri`
 
@@ -1575,6 +1613,7 @@ The minimum number of the resource.
 
 - Required: No
 - Type: int
+- MinValue: 1
 
 ### Parameter: `location`
 
@@ -1769,6 +1808,22 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/utl/types/avm-common-types:0.3.0` | Remote reference |
+
+## Notes
+
+Currently it is not possible to redeploy the `image.diskControllerType` property with a value of `NVMe, SCSI`. The initial deployment is working, but other deployments will result in an error.
+
+```json
+"details": [
+    {
+      "code": "PropertyChangeNotAllowed",
+      "target": "DiskControllerTypes",
+      "message": "Changing property 'DiskControllerTypes' is not allowed."
+    }
+  ]
+```
+
+Once this bug has been resolved, the max test will be updated to deploy an image with the property value.
 
 ## Data Collection
 

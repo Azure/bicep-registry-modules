@@ -1861,6 +1861,7 @@ Array of deployments about cognitive service accounts to create.
 | [`name`](#parameter-deploymentsname) | string | Specify the name of cognitive service account deployment. |
 | [`raiPolicyName`](#parameter-deploymentsraipolicyname) | string | The name of RAI policy. |
 | [`sku`](#parameter-deploymentssku) | object | The resource model definition representing SKU. |
+| [`versionUpgradeOption`](#parameter-deploymentsversionupgradeoption) | string | The version upgrade option. |
 
 ### Parameter: `deployments.model`
 
@@ -1930,6 +1931,9 @@ The resource model definition representing SKU.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`capacity`](#parameter-deploymentsskucapacity) | int | The capacity of the resource model definition representing SKU. |
+| [`family`](#parameter-deploymentsskufamily) | string | The family of the resource model definition representing SKU. |
+| [`size`](#parameter-deploymentsskusize) | string | The size of the resource model definition representing SKU. |
+| [`tier`](#parameter-deploymentsskutier) | string | The tier of the resource model definition representing SKU. |
 
 ### Parameter: `deployments.sku.name`
 
@@ -1944,6 +1948,34 @@ The capacity of the resource model definition representing SKU.
 
 - Required: No
 - Type: int
+
+### Parameter: `deployments.sku.family`
+
+The family of the resource model definition representing SKU.
+
+- Required: No
+- Type: string
+
+### Parameter: `deployments.sku.size`
+
+The size of the resource model definition representing SKU.
+
+- Required: No
+- Type: string
+
+### Parameter: `deployments.sku.tier`
+
+The tier of the resource model definition representing SKU.
+
+- Required: No
+- Type: string
+
+### Parameter: `deployments.versionUpgradeOption`
+
+The version upgrade option.
+
+- Required: No
+- Type: string
 
 ### Parameter: `diagnosticSettings`
 

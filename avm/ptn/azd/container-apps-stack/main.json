@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "2135275469617068705"
+      "version": "0.32.4.45862",
+      "templateHash": "10475800855108657809"
     },
     "name": "avm/ptn/azd/container-apps-stack",
-    "description": "Creates an Azure Container Registry and an Azure Container Apps environment.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case",
-    "owner": "Azure/module-maintainers"
+    "description": "Creates an Azure Container Registry and an Azure Container Apps environment.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case"
   },
   "parameters": {
     "location": {
@@ -221,6 +220,9 @@
           },
           "platformReservedDnsIP": {
             "value": "[parameters('platformReservedDnsIP')]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           }
         },
         "template": {
@@ -804,6 +806,9 @@
           },
           "acrSku": {
             "value": "[parameters('acrSku')]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           }
         },
         "template": {

@@ -82,7 +82,7 @@ module testDeployment '../../../main.bicep' = [
       publisherName: '${namePrefix}-az-amorg-x-001'
       additionalLocations: [
         {
-          location: '${locationRegion2}'
+          location: locationRegion2
           sku: {
             name: 'Premium'
             capacity: 1

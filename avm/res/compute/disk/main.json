@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "10808203507123302105"
+      "version": "0.32.4.45862",
+      "templateHash": "3923614332201542801"
     },
     "name": "Compute Disks",
-    "description": "This module deploys a Compute Disk",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Compute Disk"
   },
   "definitions": {
     "lockType": {

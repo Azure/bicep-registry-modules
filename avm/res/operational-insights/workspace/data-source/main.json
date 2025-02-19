@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "3019400626196043317"
+      "version": "0.33.93.31351",
+      "templateHash": "3186325409788999053"
     },
     "name": "Log Analytics Workspace Datasources",
-    "description": "This module deploys a Log Analytics Workspace Data Source.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Log Analytics Workspace Data Source."
   },
   "parameters": {
     "logAnalyticsWorkspaceName": {
@@ -131,12 +130,12 @@
     "workspace": {
       "existing": true,
       "type": "Microsoft.OperationalInsights/workspaces",
-      "apiVersion": "2022-10-01",
+      "apiVersion": "2023-09-01",
       "name": "[parameters('logAnalyticsWorkspaceName')]"
     },
     "dataSource": {
       "type": "Microsoft.OperationalInsights/workspaces/dataSources",
-      "apiVersion": "2020-08-01",
+      "apiVersion": "2023-09-01",
       "name": "[format('{0}/{1}', parameters('logAnalyticsWorkspaceName'), parameters('name'))]",
       "kind": "[parameters('kind')]",
       "tags": "[parameters('tags')]",
@@ -152,10 +151,7 @@
         "syslogName": "[if(and(not(empty(parameters('kind'))), equals(parameters('kind'), 'LinuxSyslog')), parameters('syslogName'), null())]",
         "syslogSeverities": "[if(and(not(empty(parameters('kind'))), or(equals(parameters('kind'), 'LinuxSyslog'), equals(parameters('kind'), 'LinuxPerformanceObject'))), parameters('syslogSeverities'), null())]",
         "performanceCounters": "[if(and(not(empty(parameters('kind'))), equals(parameters('kind'), 'LinuxPerformanceObject')), parameters('performanceCounters'), null())]"
-      },
-      "dependsOn": [
-        "workspace"
-      ]
+      }
     }
   },
   "outputs": {

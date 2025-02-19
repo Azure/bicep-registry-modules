@@ -19,6 +19,7 @@ This module deploys a DBforMySQL Flexible Server.
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.DBforMySQL/flexibleServers` | [2023-12-30](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2023-12-30/flexibleServers) |
 | `Microsoft.DBforMySQL/flexibleServers/administrators` | [2023-06-30](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2023-06-30/flexibleServers/administrators) |
+| `Microsoft.DBforMySQL/flexibleServers/advancedThreatProtectionSettings` | [2023-12-30](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2023-12-30/flexibleServers/advancedThreatProtectionSettings) |
 | `Microsoft.DBforMySQL/flexibleServers/databases` | [2023-06-30](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2023-06-30/flexibleServers/databases) |
 | `Microsoft.DBforMySQL/flexibleServers/firewallRules` | [2023-06-30](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2023-06-30/flexibleServers/firewallRules) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
@@ -145,6 +146,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
     // Non-required parameters
     administratorLogin: 'adminUserName'
     administratorLoginPassword: '<administratorLoginPassword>'
+    advancedThreatProtection: 'Enabled'
     availabilityZone: '1'
     backupRetentionDays: 20
     customerManagedKey: {
@@ -211,6 +213,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
         '<managedIdentityResourceId>'
       ]
     }
+    publicNetworkAccess: 'Enabled'
     roleAssignments: [
       {
         name: '2478b63b-0cae-457f-9bd3-9feb00e1925b'
@@ -272,6 +275,9 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
     },
     "administratorLoginPassword": {
       "value": "<administratorLoginPassword>"
+    },
+    "advancedThreatProtection": {
+      "value": "Enabled"
     },
     "availabilityZone": {
       "value": "1"
@@ -363,6 +369,9 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
         ]
       }
     },
+    "publicNetworkAccess": {
+      "value": "Enabled"
+    },
     "roleAssignments": {
       "value": [
         {
@@ -427,6 +436,7 @@ param tier = 'GeneralPurpose'
 // Non-required parameters
 param administratorLogin = 'adminUserName'
 param administratorLoginPassword = '<administratorLoginPassword>'
+param advancedThreatProtection = 'Enabled'
 param availabilityZone = '1'
 param backupRetentionDays = 20
 param customerManagedKey = {
@@ -493,6 +503,7 @@ param managedIdentities = {
     '<managedIdentityResourceId>'
   ]
 }
+param publicNetworkAccess = 'Enabled'
 param roleAssignments = [
   {
     name: '2478b63b-0cae-457f-9bd3-9feb00e1925b'
@@ -561,6 +572,23 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
       }
     ]
     delegatedSubnetResourceId: '<delegatedSubnetResourceId>'
+    firewallRules: [
+      {
+        endIpAddress: '0.0.0.0'
+        name: 'AllowAllWindowsAzureIps'
+        startIpAddress: '0.0.0.0'
+      }
+      {
+        endIpAddress: '10.10.10.10'
+        name: 'test-rule1'
+        startIpAddress: '10.10.10.1'
+      }
+      {
+        endIpAddress: '100.100.100.10'
+        name: 'test-rule2'
+        startIpAddress: '100.100.100.1'
+      }
+    ]
     highAvailability: 'SameZone'
     location: '<location>'
     managedIdentities: {
@@ -628,6 +656,25 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
     "delegatedSubnetResourceId": {
       "value": "<delegatedSubnetResourceId>"
     },
+    "firewallRules": {
+      "value": [
+        {
+          "endIpAddress": "0.0.0.0",
+          "name": "AllowAllWindowsAzureIps",
+          "startIpAddress": "0.0.0.0"
+        },
+        {
+          "endIpAddress": "10.10.10.10",
+          "name": "test-rule1",
+          "startIpAddress": "10.10.10.1"
+        },
+        {
+          "endIpAddress": "100.100.100.10",
+          "name": "test-rule2",
+          "startIpAddress": "100.100.100.1"
+        }
+      ]
+    },
     "highAvailability": {
       "value": "SameZone"
     },
@@ -691,6 +738,23 @@ param databases = [
   }
 ]
 param delegatedSubnetResourceId = '<delegatedSubnetResourceId>'
+param firewallRules = [
+  {
+    endIpAddress: '0.0.0.0'
+    name: 'AllowAllWindowsAzureIps'
+    startIpAddress: '0.0.0.0'
+  }
+  {
+    endIpAddress: '10.10.10.10'
+    name: 'test-rule1'
+    startIpAddress: '10.10.10.1'
+  }
+  {
+    endIpAddress: '100.100.100.10'
+    name: 'test-rule2'
+    startIpAddress: '100.100.100.1'
+  }
+]
 param highAvailability = 'SameZone'
 param location = '<location>'
 param managedIdentities = {
@@ -870,6 +934,7 @@ param tags = {
 | [`administratorLogin`](#parameter-administratorlogin) | string | The administrator login name of a server. Can only be specified when the MySQL server is being created. |
 | [`administratorLoginPassword`](#parameter-administratorloginpassword) | securestring | The administrator login password. |
 | [`administrators`](#parameter-administrators) | array | The Azure AD administrators when AAD authentication enabled. |
+| [`advancedThreatProtection`](#parameter-advancedthreatprotection) | string | Enable/Disable Advanced Threat Protection (Microsoft Defender) for the server. |
 | [`availabilityZone`](#parameter-availabilityzone) | string | Availability zone information of the server. Default will have no preference set. |
 | [`backupRetentionDays`](#parameter-backupretentiondays) | int | Backup retention days for the server. |
 | [`createMode`](#parameter-createmode) | string | The mode to create a new MySQL server. |
@@ -886,6 +951,7 @@ param tags = {
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`maintenanceWindow`](#parameter-maintenancewindow) | object | Properties for the maintenence window. If provided, "customWindow" property must exist and set to "Enabled". |
+| [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Specifies whether public network access is allowed for this server. Set to "Enabled" to allow public access, or "Disabled" (default) when the server has VNet integration. |
 | [`replicationRole`](#parameter-replicationrole) | string | The replication role. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`storageAutoIoScaling`](#parameter-storageautoioscaling) | string | Enable IO Auto Scaling or not. The server scales IOPs up or down automatically depending on your workload needs. |
@@ -949,7 +1015,6 @@ Private dns zone arm resource ID. Used when the desired connectivity mode is "Pr
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `restorePointInTime`
 
@@ -965,7 +1030,6 @@ The source MySQL server ID. Required if "createMode" is set to "PointInTimeResto
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `storageAutoGrow`
 
@@ -988,7 +1052,6 @@ The administrator login name of a server. Can only be specified when the MySQL s
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `administratorLoginPassword`
 
@@ -996,7 +1059,6 @@ The administrator login password.
 
 - Required: No
 - Type: securestring
-- Default: `''`
 
 ### Parameter: `administrators`
 
@@ -1005,6 +1067,21 @@ The Azure AD administrators when AAD authentication enabled.
 - Required: No
 - Type: array
 - Default: `[]`
+
+### Parameter: `advancedThreatProtection`
+
+Enable/Disable Advanced Threat Protection (Microsoft Defender) for the server.
+
+- Required: No
+- Type: string
+- Default: `'Enabled'`
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
 
 ### Parameter: `availabilityZone`
 
@@ -1030,6 +1107,8 @@ Backup retention days for the server.
 - Required: No
 - Type: int
 - Default: `7`
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `createMode`
 
@@ -1047,6 +1126,8 @@ The mode to create a new MySQL server.
     'Replica'
   ]
   ```
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `customerManagedKey`
 
@@ -1054,6 +1135,8 @@ The customer managed key definition to use for the managed service.
 
 - Required: No
 - Type: object
+- MinValue: 1
+- MaxValue: 35
 
 **Required parameters**
 
@@ -1075,6 +1158,8 @@ The name of the customer managed key to use for encryption.
 
 - Required: Yes
 - Type: string
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `customerManagedKey.keyVaultResourceId`
 
@@ -1082,6 +1167,8 @@ The resource ID of a key vault to reference a customer managed key for encryptio
 
 - Required: Yes
 - Type: string
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `customerManagedKey.keyVersion`
 
@@ -1089,6 +1176,8 @@ The version of the customer managed key to reference for encryption. If not prov
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `customerManagedKey.userAssignedIdentityResourceId`
 
@@ -1096,6 +1185,8 @@ User assigned identity to use when fetching the customer managed key. Required i
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `customerManagedKeyGeo`
 
@@ -1103,6 +1194,8 @@ The customer managed key definition to use when geoRedundantBackup is "Enabled".
 
 - Required: No
 - Type: object
+- MinValue: 1
+- MaxValue: 35
 
 **Required parameters**
 
@@ -1124,6 +1217,8 @@ The name of the customer managed key to use for encryption.
 
 - Required: Yes
 - Type: string
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `customerManagedKeyGeo.keyVaultResourceId`
 
@@ -1131,6 +1226,8 @@ The resource ID of a key vault to reference a customer managed key for encryptio
 
 - Required: Yes
 - Type: string
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `customerManagedKeyGeo.keyVersion`
 
@@ -1138,6 +1235,8 @@ The version of the customer managed key to reference for encryption. If not prov
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `customerManagedKeyGeo.userAssignedIdentityResourceId`
 
@@ -1145,6 +1244,8 @@ User assigned identity to use when fetching the customer managed key. Required i
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `databases`
 
@@ -1153,6 +1254,8 @@ The databases to create in the server.
 - Required: No
 - Type: array
 - Default: `[]`
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `delegatedSubnetResourceId`
 
@@ -1160,7 +1263,8 @@ Delegated subnet arm resource ID. Used when the desired connectivity mode is "Pr
 
 - Required: No
 - Type: string
-- Default: `''`
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `diagnosticSettings`
 
@@ -1168,6 +1272,8 @@ The diagnostic settings of the service.
 
 - Required: No
 - Type: array
+- MinValue: 1
+- MaxValue: 35
 
 **Optional parameters**
 
@@ -1189,6 +1295,8 @@ Resource ID of the diagnostic event hub authorization rule for the Event Hubs na
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `diagnosticSettings.eventHubName`
 
@@ -1196,6 +1304,8 @@ Name of the diagnostic event hub within the namespace to which logs are streamed
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `diagnosticSettings.logAnalyticsDestinationType`
 
@@ -1210,6 +1320,8 @@ A string indicating whether the export to Log Analytics should use the default d
     'Dedicated'
   ]
   ```
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups`
 
@@ -1217,6 +1329,8 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 
 - Required: No
 - Type: array
+- MinValue: 1
+- MaxValue: 35
 
 **Optional parameters**
 
@@ -1232,6 +1346,8 @@ Name of a Diagnostic Log category for a resource type this setting is applied to
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.categoryGroup`
 
@@ -1239,6 +1355,8 @@ Name of a Diagnostic Log category group for a resource type this setting is appl
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.enabled`
 
@@ -1246,6 +1364,8 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `diagnosticSettings.marketplacePartnerResourceId`
 
@@ -1253,6 +1373,8 @@ The full ARM resource ID of the Marketplace resource to which you would like to 
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `diagnosticSettings.metricCategories`
 
@@ -1260,6 +1382,8 @@ The name of metrics that will be streamed. "allMetrics" includes all possible me
 
 - Required: No
 - Type: array
+- MinValue: 1
+- MaxValue: 35
 
 **Required parameters**
 
@@ -1279,6 +1403,8 @@ Name of a Diagnostic Metric category for a resource type this setting is applied
 
 - Required: Yes
 - Type: string
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `diagnosticSettings.metricCategories.enabled`
 
@@ -1286,6 +1412,8 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `diagnosticSettings.name`
 
@@ -1293,6 +1421,8 @@ The name of the diagnostic setting.
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `diagnosticSettings.storageAccountResourceId`
 
@@ -1300,6 +1430,8 @@ Resource ID of the diagnostic storage account. For security reasons, it is recom
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `diagnosticSettings.workspaceResourceId`
 
@@ -1307,6 +1439,8 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `enableTelemetry`
 
@@ -1315,6 +1449,8 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `firewallRules`
 
@@ -1323,6 +1459,8 @@ The firewall rules to create in the MySQL flexible server.
 - Required: No
 - Type: array
 - Default: `[]`
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `geoRedundantBackup`
 
@@ -1338,6 +1476,8 @@ A value indicating whether Geo-Redundant backup is enabled on the server. If "En
     'Enabled'
   ]
   ```
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `highAvailability`
 
@@ -1354,6 +1494,8 @@ The mode for High Availability (HA). It is not supported for the Burstable prici
     'ZoneRedundant'
   ]
   ```
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `highAvailabilityZone`
 
@@ -1362,6 +1504,8 @@ Standby availability zone information of the server. Default will have no prefer
 - Required: No
 - Type: string
 - Default: `''`
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `location`
 
@@ -1370,6 +1514,8 @@ Location for all resources.
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `lock`
 
@@ -1377,6 +1523,8 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
+- MinValue: 1
+- MaxValue: 35
 
 **Optional parameters**
 
@@ -1399,6 +1547,8 @@ Specify the type of lock.
     'ReadOnly'
   ]
   ```
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `lock.name`
 
@@ -1406,6 +1556,8 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `maintenanceWindow`
 
@@ -1414,6 +1566,25 @@ Properties for the maintenence window. If provided, "customWindow" property must
 - Required: No
 - Type: object
 - Default: `{}`
+- MinValue: 1
+- MaxValue: 35
+
+### Parameter: `publicNetworkAccess`
+
+Specifies whether public network access is allowed for this server. Set to "Enabled" to allow public access, or "Disabled" (default) when the server has VNet integration.
+
+- Required: No
+- Type: string
+- Default: `'Disabled'`
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `replicationRole`
 
@@ -1430,6 +1601,8 @@ The replication role.
     'Source'
   ]
   ```
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `roleAssignments`
 
@@ -1437,6 +1610,8 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- MinValue: 1
+- MaxValue: 35
 - Roles configurable by name:
   - `'Contributor'`
   - `'MySQL Backup And Export Operator'`
@@ -1469,6 +1644,8 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -1476,6 +1653,8 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `roleAssignments.condition`
 
@@ -1483,6 +1662,8 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -1496,6 +1677,8 @@ Version of the condition.
     '2.0'
   ]
   ```
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `roleAssignments.delegatedManagedIdentityResourceId`
 
@@ -1503,6 +1686,8 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `roleAssignments.description`
 
@@ -1510,6 +1695,8 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `roleAssignments.name`
 
@@ -1517,6 +1704,8 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -1534,6 +1723,8 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `storageAutoIoScaling`
 
@@ -1549,6 +1740,8 @@ Enable IO Auto Scaling or not. The server scales IOPs up or down automatically d
     'Enabled'
   ]
   ```
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `storageIOPS`
 
@@ -1557,6 +1750,8 @@ Storage IOPS for a server. Max IOPS are determined by compute size.
 - Required: No
 - Type: int
 - Default: `1000`
+- MinValue: 360
+- MaxValue: 48000
 
 ### Parameter: `storageSizeGB`
 
@@ -1581,6 +1776,8 @@ Max storage allowed for a server. In all compute tiers, the minimum storage supp
     16384
   ]
   ```
+- MinValue: 360
+- MaxValue: 48000
 
 ### Parameter: `tags`
 
@@ -1588,6 +1785,8 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+- MinValue: 360
+- MaxValue: 48000
 
 ### Parameter: `version`
 
@@ -1603,6 +1802,8 @@ MySQL Server version.
     '8.0.21'
   ]
   ```
+- MinValue: 360
+- MaxValue: 48000
 
 ## Outputs
 

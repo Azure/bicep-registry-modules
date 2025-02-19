@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "1257304987024829675"
+      "templateHash": "13095124618196842295"
     },
     "name": "App Configuration Stores Key Values",
-    "description": "This module deploys an App Configuration Store Key Value.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an App Configuration Store Key Value."
   },
   "parameters": {
     "name": {

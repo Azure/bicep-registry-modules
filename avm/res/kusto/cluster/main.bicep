@@ -1,6 +1,5 @@
 metadata name = 'Kusto Cluster'
 metadata description = 'This module deploys a Kusto Cluster.'
-metadata owner = 'Azure/module-maintainers'
 
 @minLength(4)
 @maxLength(22)
@@ -130,6 +129,9 @@ param diagnosticSettings diagnosticSettingFullType[]?
 @description('Optional. The Principal Assignments for the Kusto Cluster.')
 param principalAssignments principalAssignmentType[]?
 
+@description('Optional. The Kusto Cluster databases.')
+param databases databaseType[]?
+
 // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -198,7 +200,7 @@ resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (!empt
   }
 }
 
-resource kustoCluster 'Microsoft.Kusto/clusters@2023-08-15' = {
+resource kustoCluster 'Microsoft.Kusto/clusters@2024-04-13' = {
   name: name
   location: location
   tags: tags
@@ -386,6 +388,18 @@ module kustoCluster_privateEndpoints 'br/public:avm/res/network/private-endpoint
   }
 ]
 
+module kustoCluster_databases 'database/main.bicep' = [
+  for (database, index) in (databases ?? []): {
+    name: '${uniqueString(deployment().name, location)}-kustoCluster-database-${index}'
+    params: {
+      name: database.name
+      kustoClusterName: kustoCluster.name
+      databaseKind: database.kind
+      databaseReadWriteProperties: database.kind == 'ReadWrite' ? database.readWriteProperties : null
+    }
+  }
+]
+
 // ============ //
 // Outputs      //
 // ============ //
@@ -413,6 +427,14 @@ output privateEndpoints array = [
     groupId: kustoCluster_privateEndpoints[i].outputs.groupId
     customDnsConfig: kustoCluster_privateEndpoints[i].outputs.customDnsConfig
     networkInterfaceIds: kustoCluster_privateEndpoints[i].outputs.networkInterfaceIds
+  }
+]
+
+@description('The databases of the kusto cluster.')
+output databases array = [
+  for (database, index) in (!empty(databases) ? array(databases) : []): {
+    name: kustoCluster_databases[index].outputs.name
+    resourceId: kustoCluster_databases[index].outputs.resourceId
   }
 ]
 
@@ -469,4 +491,16 @@ type principalAssignmentType = {
 
   @description('Optional. The tenant id of the principal.')
   tenantId: string?
+}
+
+import { databaseReadWriteType } from './database/main.bicep'
+
+@export()
+type databaseType = {
+  @description('Required. The name of the Kusto Cluster database.')
+  name: string
+  @description('Required. The object type of the databse.')
+  kind: 'ReadWrite' | 'ReadOnlyFollowing'
+  @description('Conditional. Required if the database kind is ReadWrite. Contains the properties of the database.')
+  readWriteProperties: databaseReadWriteType?
 }

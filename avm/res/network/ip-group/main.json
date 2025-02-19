@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "17963791752166007149"
+      "version": "0.32.4.45862",
+      "templateHash": "8393527758650223467"
     },
     "name": "IP Groups",
-    "description": "This module deploys an IP Group.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an IP Group."
   },
   "definitions": {
     "lockType": {

@@ -5,11 +5,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "2513291802697135803"
+      "templateHash": "7157026557302056743"
     },
     "name": "Event Hub Namespace Disaster Recovery Configs",
-    "description": "This module deploys an Event Hub Namespace Disaster Recovery Config.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Event Hub Namespace Disaster Recovery Config."
   },
   "parameters": {
     "namespaceName": {

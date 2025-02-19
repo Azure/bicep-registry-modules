@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "11043846710506937492"
+      "templateHash": "3828537230935003385"
     },
     "name": "Automation Account Modules",
-    "description": "This module deploys an Azure Automation Account Module.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Azure Automation Account Module."
   },
   "parameters": {
     "name": {

@@ -4,12 +4,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "12193073774274736616"
+      "version": "0.33.13.18514",
+      "templateHash": "14694277488209426813"
     },
     "name": "Recovery Service Vaults Protection Container Protected Item",
-    "description": "This module deploys a Recovery Services Vault Protection Container Protected Item.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Recovery Services Vault Protection Container Protected Item."
   },
   "parameters": {
     "name": {
@@ -55,10 +54,10 @@
         "description": "Required. The backup item type."
       }
     },
-    "policyId": {
+    "policyName": {
       "type": "string",
       "metadata": {
-        "description": "Required. ID of the backup policy with which this item is backed up."
+        "description": "Required. The backup policy with which this item is backed up."
       }
     },
     "sourceResourceId": {
@@ -71,12 +70,12 @@
   "resources": [
     {
       "type": "Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems",
-      "apiVersion": "2023-01-01",
+      "apiVersion": "2024-10-01",
       "name": "[format('{0}/Azure/{1}/{2}', parameters('recoveryVaultName'), parameters('protectionContainerName'), parameters('name'))]",
       "location": "[parameters('location')]",
       "properties": {
         "protectedItemType": "[parameters('protectedItemType')]",
-        "policyId": "[parameters('policyId')]",
+        "policyId": "[resourceId('Microsoft.RecoveryServices/vaults/backupPolicies', parameters('recoveryVaultName'), parameters('policyName'))]",
         "sourceResourceId": "[parameters('sourceResourceId')]"
       }
     }

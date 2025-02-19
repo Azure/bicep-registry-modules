@@ -1,6 +1,5 @@
 metadata name = 'API Management Service APIs'
 metadata description = 'This module deploys an API Management Service API.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. API revision identifier. Must be unique in the current API Management service instance. Non-current revision has ;rev=n as a suffix where n is the revision number.')
 param name string

@@ -18,8 +18,8 @@ This module deploys a Bastion Host.
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Network/bastionHosts` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/bastionHosts) |
-| `Microsoft.Network/publicIPAddresses` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-09-01/publicIPAddresses) |
+| `Microsoft.Network/bastionHosts` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/bastionHosts) |
+| `Microsoft.Network/publicIPAddresses` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/publicIPAddresses) |
 
 ## Usage examples
 
@@ -31,9 +31,10 @@ The following section provides usage examples for the module, which were used to
 
 - [With a custom public IP address deployed by the module](#example-1-with-a-custom-public-ip-address-deployed-by-the-module)
 - [Using only defaults](#example-2-using-only-defaults)
-- [Using large parameter set](#example-3-using-large-parameter-set)
-- [Private-only deployment](#example-4-private-only-deployment)
-- [WAF-aligned](#example-5-waf-aligned)
+- [Using Developer SKU](#example-3-using-developer-sku)
+- [Using large parameter set](#example-4-using-large-parameter-set)
+- [Private-only deployment](#example-5-private-only-deployment)
+- [WAF-aligned](#example-6-waf-aligned)
 
 ### Example 1: _With a custom public IP address deployed by the module_
 
@@ -289,7 +290,81 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 3: _Using large parameter set_
+### Example 3: _Using Developer SKU_
+
+This instance deploys the module with the Developer SKU.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module bastionHost 'br/public:avm/res/network/bastion-host:<version>' = {
+  name: 'bastionHostDeployment'
+  params: {
+    // Required parameters
+    name: 'nbhdev001'
+    virtualNetworkResourceId: '<virtualNetworkResourceId>'
+    // Non-required parameters
+    location: '<location>'
+    skuName: 'Developer'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "nbhdev001"
+    },
+    "virtualNetworkResourceId": {
+      "value": "<virtualNetworkResourceId>"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "skuName": {
+      "value": "Developer"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/bastion-host:<version>'
+
+// Required parameters
+param name = 'nbhdev001'
+param virtualNetworkResourceId = '<virtualNetworkResourceId>'
+// Non-required parameters
+param location = '<location>'
+param skuName = 'Developer'
+```
+
+</details>
+<p>
+
+### Example 4: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -529,7 +604,7 @@ param zones = [
 </details>
 <p>
 
-### Example 4: _Private-only deployment_
+### Example 5: _Private-only deployment_
 
 This instance deploys the module as private-only Bastion deployment.
 
@@ -613,7 +688,7 @@ param skuName = 'Premium'
 </details>
 <p>
 
-### Example 5: _WAF-aligned_
+### Example 6: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -778,22 +853,22 @@ param tags = {
 | :-- | :-- | :-- |
 | [`bastionSubnetPublicIpResourceId`](#parameter-bastionsubnetpublicipresourceid) | string | The Public IP resource ID to associate to the azureBastionSubnet. If empty, then the Public IP that is created as part of this module will be applied to the azureBastionSubnet. This parameter is ignored when enablePrivateOnlyBastion is true. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
-| [`disableCopyPaste`](#parameter-disablecopypaste) | bool | Choose to disable or enable Copy Paste. For Basic SKU Copy/Paste is always enabled. |
-| [`enableFileCopy`](#parameter-enablefilecopy) | bool | Choose to disable or enable File Copy. Not supported for Basic SKU. |
-| [`enableIpConnect`](#parameter-enableipconnect) | bool | Choose to disable or enable IP Connect. Not supported for Basic SKU. |
-| [`enableKerberos`](#parameter-enablekerberos) | bool | Choose to disable or enable Kerberos authentication. |
+| [`disableCopyPaste`](#parameter-disablecopypaste) | bool | Choose to disable or enable Copy Paste. For Basic and Developer SKU Copy/Paste is always enabled. |
+| [`enableFileCopy`](#parameter-enablefilecopy) | bool | Choose to disable or enable File Copy. Not supported for Basic and Developer SKU. |
+| [`enableIpConnect`](#parameter-enableipconnect) | bool | Choose to disable or enable IP Connect. Not supported for Basic and Developer SKU. |
+| [`enableKerberos`](#parameter-enablekerberos) | bool | Choose to disable or enable Kerberos authentication. Not supported for Developer SKU. |
 | [`enablePrivateOnlyBastion`](#parameter-enableprivateonlybastion) | bool | Choose to disable or enable Private-only Bastion deployment. The Premium SKU is required for this feature. |
 | [`enableSessionRecording`](#parameter-enablesessionrecording) | bool | Choose to disable or enable Session Recording feature. The Premium SKU is required for this feature. If Session Recording is enabled, the Native client support will be disabled. |
-| [`enableShareableLink`](#parameter-enableshareablelink) | bool | Choose to disable or enable Shareable Link. Not supported for Basic SKU. |
+| [`enableShareableLink`](#parameter-enableshareablelink) | bool | Choose to disable or enable Shareable Link. Not supported for Basic and Developer SKU. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`publicIPAddressObject`](#parameter-publicipaddressobject) | object | Specifies the properties of the Public IP to create and be used by Azure Bastion, if no existing public IP was provided. This parameter is ignored when enablePrivateOnlyBastion is true. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`scaleUnits`](#parameter-scaleunits) | int | The scale units for the Bastion Host resource. The Basic SKU only supports 2 scale units. |
+| [`scaleUnits`](#parameter-scaleunits) | int | The scale units for the Bastion Host resource. The Basic and Developer SKU only support 2 scale units. |
 | [`skuName`](#parameter-skuname) | string | The SKU of this Bastion Host. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
-| [`zones`](#parameter-zones) | array | A list of availability zones denoting where the Bastion Host resource needs to come from. |
+| [`zones`](#parameter-zones) | array | A list of availability zones denoting where the Bastion Host resource needs to come from. This is not supported for the Developer SKU. |
 
 ### Parameter: `name`
 
@@ -931,7 +1006,7 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 ### Parameter: `disableCopyPaste`
 
-Choose to disable or enable Copy Paste. For Basic SKU Copy/Paste is always enabled.
+Choose to disable or enable Copy Paste. For Basic and Developer SKU Copy/Paste is always enabled.
 
 - Required: No
 - Type: bool
@@ -939,7 +1014,7 @@ Choose to disable or enable Copy Paste. For Basic SKU Copy/Paste is always enabl
 
 ### Parameter: `enableFileCopy`
 
-Choose to disable or enable File Copy. Not supported for Basic SKU.
+Choose to disable or enable File Copy. Not supported for Basic and Developer SKU.
 
 - Required: No
 - Type: bool
@@ -947,7 +1022,7 @@ Choose to disable or enable File Copy. Not supported for Basic SKU.
 
 ### Parameter: `enableIpConnect`
 
-Choose to disable or enable IP Connect. Not supported for Basic SKU.
+Choose to disable or enable IP Connect. Not supported for Basic and Developer SKU.
 
 - Required: No
 - Type: bool
@@ -955,7 +1030,7 @@ Choose to disable or enable IP Connect. Not supported for Basic SKU.
 
 ### Parameter: `enableKerberos`
 
-Choose to disable or enable Kerberos authentication.
+Choose to disable or enable Kerberos authentication. Not supported for Developer SKU.
 
 - Required: No
 - Type: bool
@@ -979,7 +1054,7 @@ Choose to disable or enable Session Recording feature. The Premium SKU is requir
 
 ### Parameter: `enableShareableLink`
 
-Choose to disable or enable Shareable Link. Not supported for Basic SKU.
+Choose to disable or enable Shareable Link. Not supported for Basic and Developer SKU.
 
 - Required: No
 - Type: bool
@@ -1155,7 +1230,7 @@ The principal type of the assigned principal ID.
 
 ### Parameter: `scaleUnits`
 
-The scale units for the Bastion Host resource. The Basic SKU only supports 2 scale units.
+The scale units for the Bastion Host resource. The Basic and Developer SKU only support 2 scale units.
 
 - Required: No
 - Type: int
@@ -1172,6 +1247,7 @@ The SKU of this Bastion Host.
   ```Bicep
   [
     'Basic'
+    'Developer'
     'Premium'
     'Standard'
   ]
@@ -1186,7 +1262,7 @@ Tags of the resource.
 
 ### Parameter: `zones`
 
-A list of availability zones denoting where the Bastion Host resource needs to come from.
+A list of availability zones denoting where the Bastion Host resource needs to come from. This is not supported for the Developer SKU.
 
 - Required: No
 - Type: array
@@ -1216,7 +1292,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/public-ip-address:0.6.0` | Remote reference |
+| `br/public:avm/res/network/public-ip-address:0.8.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

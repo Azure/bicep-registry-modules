@@ -423,6 +423,14 @@ function Set-DefinitionSection {
                 $formattedAllowedValues = $null # Reset value for future iterations
             }
 
+            # add MinValue and maxValue to the description
+            if ($parameter.ContainsKey('minValue')) {
+                $formattedMinValue = "- MinValue: $($parameter['minValue'])"
+            }
+            if ($parameter.ContainsKey('maxValue')) {
+                $formattedMaxValue = "- MaxValue: $($parameter['maxValue'])"
+            }
+
             # Special case for 'roleAssignments' parameter
             if (($parameter.name -eq 'roleAssignments') -and ($TemplateFileContent.variables.keys -contains 'builtInRoleNames')) {
                 if ([String]::IsNullOrEmpty($ParentName)) {
@@ -481,6 +489,8 @@ function Set-DefinitionSection {
             ('- Type: {0}' -f $type),
             ((-not [String]::IsNullOrEmpty($formattedDefaultValue)) ? $formattedDefaultValue : $null),
             ((-not [String]::IsNullOrEmpty($formattedAllowedValues)) ? $formattedAllowedValues : $null),
+            ((-not [String]::IsNullOrEmpty($formattedMinValue)) ? $formattedMinValue : $null),
+            ((-not [String]::IsNullOrEmpty($formattedMaxValue)) ? $formattedMaxValue : $null),
             ((-not [String]::IsNullOrEmpty($formattedRoleNames)) ? $formattedRoleNames : $null),
             ((-not [String]::IsNullOrEmpty($formattedExample)) ? $formattedExample : $null),
                 ''
@@ -1155,7 +1165,7 @@ function ConvertTo-FormattedJSONParameterObject {
             $isLineWithStringValue = $lineValue -match '^".+"$' # e.g. "value"
             $isLineWithFunction = $lineValue -match '^[a-zA-Z0-9]+\(.+' # e.g., split(something) or loadFileAsBase64("./test.pfx")
             $isLineWithPlainValue = $lineValue -match '^\w+$' # e.g. adminPassword: password
-            $isLineWithPrimitiveValue = $lineValue -match '^\s*true|false|[0-9]+$' # e.g., isSecure: true
+            $isLineWithPrimitiveValue = $lineValue -match '^\s*(true|false|[0-9])+$' # e.g., isSecure: true
             $isLineContainingCondition = $lineValue -match '^\w+ [=!?|&]{2} .+\?.+\:.+$' # e.g., iteration == "init" ? "A" : "B"
 
             # Special case: Multi-line function
