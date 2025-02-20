@@ -523,6 +523,7 @@ param tags = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`allowClassicOperations`](#parameter-allowclassicoperations) | bool | Allow classic operations. You can connect to virtual networks in the classic deployment model by setting allowClassicOperations to true. |
+| [`authorizationNames`](#parameter-authorizationnames) | array | List of names for ExpressRoute circuit authorizations to create. To fetch the `authorizationKey` for the authorization, use the `existing` resource reference for `Microsoft.Network/expressRouteCircuits/authorizations`. |
 | [`bandwidthInGbps`](#parameter-bandwidthingbps) | int | The bandwidth of the circuit when the circuit is provisioned on an ExpressRoutePort resource. Available when configuring Express Route Direct. Default value of 0 will set the property to null. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
@@ -577,6 +578,14 @@ Allow classic operations. You can connect to virtual networks in the classic dep
 - Required: No
 - Type: bool
 - Default: `False`
+
+### Parameter: `authorizationNames`
+
+List of names for ExpressRoute circuit authorizations to create. To fetch the `authorizationKey` for the authorization, use the `existing` resource reference for `Microsoft.Network/expressRouteCircuits/authorizations`.
+
+- Required: No
+- Type: array
+- Default: `[]`
 
 ### Parameter: `bandwidthInGbps`
 
@@ -1014,6 +1023,7 @@ Specifies the identifier that is used to identify the customer.
 | `resourceGroupName` | string | The resource group the express route curcuit was deployed into. |
 | `resourceId` | string | The resource ID of express route curcuit. |
 | `serviceKey` | string | The service key of the express route circuit. |
+| `serviceProviderProvisioningState` | string | The service provider provisioning state of the express route circuit. |
 
 ## Data Collection
 

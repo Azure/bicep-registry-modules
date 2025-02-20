@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "17774807916018865720"
+      "templateHash": "9499818712606838127"
     },
     "name": "Redis Cache",
     "description": "This module deploys a Redis Cache."
@@ -842,7 +842,7 @@
     },
     "shardCount": {
       "type": "int",
-      "defaultValue": 1,
+      "nullable": true,
       "minValue": 1,
       "metadata": {
         "description": "Optional. The number of shards to be created on a Premium Cluster Cache."
@@ -1167,6 +1167,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-redis-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "subscriptionId": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[2]]",
+      "resourceGroup": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[4]]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -2259,7 +2261,7 @@
         "description": "The private endpoints of the Redis Cache."
       },
       "copy": {
-        "count": "[length(if(not(empty(parameters('privateEndpoints'))), array(parameters('privateEndpoints')), createArray()))]",
+        "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]",
         "input": {
           "name": "[reference(format('redis_privateEndpoints[{0}]', copyIndex())).outputs.name.value]",
           "resourceId": "[reference(format('redis_privateEndpoints[{0}]', copyIndex())).outputs.resourceId.value]",

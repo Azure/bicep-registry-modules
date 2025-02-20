@@ -41,6 +41,9 @@ param roleAssignments roleAssignmentType[]?
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
+@description('Optional. Tags of the resource.')
+param tags object?
+
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   'Network Contributor': subscriptionResourceId(
@@ -103,6 +106,7 @@ resource expressRoutePort_lock 'Microsoft.Authorization/locks@2020-05-01' = if (
 resource expressRoutePort 'Microsoft.Network/ExpressRoutePorts@2024-05-01' = {
   name: name
   location: location
+  tags: tags
   properties: {
     bandwidthInGbps: bandwidthInGbps
     billingType: billingType
@@ -121,7 +125,7 @@ resource expressRoutePort_roleAssignments 'Microsoft.Authorization/roleAssignmen
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
       condition: roleAssignment.?condition
-      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
+      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condition is set
       delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
     }
     scope: expressRoutePort
@@ -148,26 +152,26 @@ output location string = expressRoutePort.location
 @description('The type for a link.')
 type linkType = {
   @description('Optional. Resource Id of the existing Link.')
-  id: 'string'?
+  id: string?
 
   @description('Required. The name of the link to be created.')
-  name: 'string'
+  name: string
 
   @description('Optional. Properties of the Link.')
   properties: {
-    @description('Required. Administrative state of the physical port.')
-    adminState: 'string'
+    @description('Required. Administrative state of the physical port. Must be set to \'Disabled\' for initial deployment.')
+    adminState: string
 
     @description('Optional. MacSec Configuration of the link.')
     macSecConfig: {
       @description('Required. Keyvault Secret Identifier URL containing Mac security CAK key.')
-      cakSecretIdentifier: 'string'
+      cakSecretIdentifier: string
 
       @description('Required. Mac security cipher.')
       cipher: ('GcmAes128' | 'GcmAes256' | 'GcmAesXpn128' | 'GcmAesXpn256')
 
       @description('Required. Keyvault Secret Identifier URL containing Mac security CKN key.')
-      cknSecretIdentifier: 'string'
+      cknSecretIdentifier: string
 
       @description('Required. Sci mode.')
       sciState: ('Enabled' | 'Disabled')

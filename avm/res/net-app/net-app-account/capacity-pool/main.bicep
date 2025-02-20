@@ -74,11 +74,11 @@ var formattedRoleAssignments = [
   })
 ]
 
-resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2024-03-01' existing = {
+resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2024-07-01' existing = {
   name: netAppAccountName
 }
 
-resource capacityPool 'Microsoft.NetApp/netAppAccounts/capacityPools@2024-03-01' = {
+resource capacityPool 'Microsoft.NetApp/netAppAccounts/capacityPools@2024-07-01' = {
   name: name
   parent: netAppAccount
   location: location
@@ -112,7 +112,7 @@ module capacityPool_volumes 'volume/main.bicep' = [
       zones: volume.?zones
       coolAccess: volume.?coolAccess ?? false
       coolAccessRetrievalPolicy: volume.?coolAccessRetrievalPolicy
-      coolnessPeriod: volume.?coolnessPeriod ?? 0
+      coolnessPeriod: volume.?coolnessPeriod
       encryptionKeySource: volume.?encryptionKeySource ?? 'Microsoft.NetApp'
       keyVaultPrivateEndpointResourceId: volume.?keyVaultPrivateEndpointResourceId
       dataProtection: volume.?dataProtection

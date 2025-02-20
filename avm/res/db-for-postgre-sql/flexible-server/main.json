@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "8102121291373013517"
+      "templateHash": "8506855526660659778"
     },
     "name": "DBforPostgreSQL Flexible Servers",
     "description": "This module deploys a DBforPostgreSQL Flexible Server."
@@ -1731,6 +1731,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-PostgreSQL-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "subscriptionId": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[2]]",
+      "resourceGroup": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[4]]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -2524,7 +2526,7 @@
         "description": "The private endpoints of the PostgreSQL Flexible server."
       },
       "copy": {
-        "count": "[length(if(not(empty(parameters('privateEndpoints'))), array(parameters('privateEndpoints')), createArray()))]",
+        "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]",
         "input": {
           "name": "[reference(format('server_privateEndpoints[{0}]', copyIndex())).outputs.name.value]",
           "resourceId": "[reference(format('server_privateEndpoints[{0}]', copyIndex())).outputs.resourceId.value]",
