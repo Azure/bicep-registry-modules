@@ -46,6 +46,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
   name: 'managedEnvironmentDeployment'
   params: {
     // Required parameters
+    logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     name: 'amemin001'
     // Non-required parameters
     dockerBridgeCidr: '172.16.0.1/28'
@@ -80,6 +81,9 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "logAnalyticsWorkspaceResourceId": {
+      "value": "<logAnalyticsWorkspaceResourceId>"
+    },
     "name": {
       "value": "amemin001"
     },
@@ -130,6 +134,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
 using 'br/public:avm/res/app/managed-environment:<version>'
 
 // Required parameters
+param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
 param name = 'amemin001'
 // Non-required parameters
 param dockerBridgeCidr = '172.16.0.1/28'
@@ -166,6 +171,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
   name: 'managedEnvironmentDeployment'
   params: {
     // Required parameters
+    logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     name: 'amemax001'
     // Non-required parameters
     appInsightsConnectionString: '<appInsightsConnectionString>'
@@ -183,7 +189,6 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     logsDestination: 'log-analytics'
     managedIdentities: {
       systemAssigned: true
@@ -268,6 +273,9 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "logAnalyticsWorkspaceResourceId": {
+      "value": "<logAnalyticsWorkspaceResourceId>"
+    },
     "name": {
       "value": "amemax001"
     },
@@ -304,9 +312,6 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
       }
-    },
-    "logAnalyticsWorkspaceResourceId": {
-      "value": "<logAnalyticsWorkspaceResourceId>"
     },
     "logsDestination": {
       "value": "log-analytics"
@@ -410,6 +415,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
 using 'br/public:avm/res/app/managed-environment:<version>'
 
 // Required parameters
+param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
 param name = 'amemax001'
 // Non-required parameters
 param appInsightsConnectionString = '<appInsightsConnectionString>'
@@ -427,7 +433,6 @@ param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
 }
-param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
 param logsDestination = 'log-analytics'
 param managedIdentities = {
   systemAssigned: true
@@ -514,6 +519,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
   name: 'managedEnvironmentDeployment'
   params: {
     // Required parameters
+    logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     name: 'amepa001'
     // Non-required parameters
     dockerBridgeCidr: '172.16.0.1/28'
@@ -548,6 +554,9 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "logAnalyticsWorkspaceResourceId": {
+      "value": "<logAnalyticsWorkspaceResourceId>"
+    },
     "name": {
       "value": "amepa001"
     },
@@ -598,6 +607,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
 using 'br/public:avm/res/app/managed-environment:<version>'
 
 // Required parameters
+param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
 param name = 'amepa001'
 // Non-required parameters
 param dockerBridgeCidr = '172.16.0.1/28'
@@ -634,6 +644,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
   name: 'managedEnvironmentDeployment'
   params: {
     // Required parameters
+    logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     name: 'amewaf001'
     // Non-required parameters
     dockerBridgeCidr: '172.16.0.1/28'
@@ -645,7 +656,6 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     logsDestination: 'log-analytics'
     platformReservedCidr: '172.17.17.0/24'
     platformReservedDnsIP: '172.17.17.17'
@@ -695,6 +705,9 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "logAnalyticsWorkspaceResourceId": {
+      "value": "<logAnalyticsWorkspaceResourceId>"
+    },
     "name": {
       "value": "amewaf001"
     },
@@ -719,9 +732,6 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
       }
-    },
-    "logAnalyticsWorkspaceResourceId": {
-      "value": "<logAnalyticsWorkspaceResourceId>"
     },
     "logsDestination": {
       "value": "log-analytics"
@@ -782,6 +792,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
 using 'br/public:avm/res/app/managed-environment:<version>'
 
 // Required parameters
+param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
 param name = 'amewaf001'
 // Non-required parameters
 param dockerBridgeCidr = '172.16.0.1/28'
@@ -793,7 +804,6 @@ param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
 }
-param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
 param logsDestination = 'log-analytics'
 param platformReservedCidr = '172.17.17.0/24'
 param platformReservedDnsIP = '172.17.17.17'
@@ -837,6 +847,7 @@ param workloadProfiles = [
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`logAnalyticsWorkspaceResourceId`](#parameter-loganalyticsworkspaceresourceid) | string | Existing Log Analytics Workspace resource ID. Note: This value is not required as per the resource type. However, not providing it currently causes an issue that is tracked [here](https://github.com/Azure/bicep/issues/9990). |
 | [`name`](#parameter-name) | string | Name of the Container Apps Managed Environment. |
 
 **Conditional parameters**
@@ -865,7 +876,6 @@ param workloadProfiles = [
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
-| [`logAnalyticsWorkspaceResourceId`](#parameter-loganalyticsworkspaceresourceid) | string | Existing Log Analytics Workspace resource ID. Note: This value is not required as per the resource type. However, not providing it currently causes an issue that is tracked [here](https://github.com/Azure/bicep/issues/9990). |
 | [`logsDestination`](#parameter-logsdestination) | string | Logs destination. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`openTelemetryConfiguration`](#parameter-opentelemetryconfiguration) | object | Open Telemetry configuration. |
@@ -875,6 +885,13 @@ param workloadProfiles = [
 | [`storages`](#parameter-storages) | array | The list of storages to mount on the environment. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`zoneRedundant`](#parameter-zoneredundant) | bool | Whether or not this Managed Environment is zone-redundant. |
+
+### Parameter: `logAnalyticsWorkspaceResourceId`
+
+Existing Log Analytics Workspace resource ID. Note: This value is not required as per the resource type. However, not providing it currently causes an issue that is tracked [here](https://github.com/Azure/bicep/issues/9990).
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `name`
 
@@ -1067,27 +1084,13 @@ Specify the name of lock.
 - Required: No
 - Type: string
 
-### Parameter: `logAnalyticsWorkspaceResourceId`
-
-Existing Log Analytics Workspace resource ID. Note: This value is not required as per the resource type. However, not providing it currently causes an issue that is tracked [here](https://github.com/Azure/bicep/issues/9990).
-
-- Required: No
-- Type: string
-- Default: `''`
-
 ### Parameter: `logsDestination`
 
 Logs destination.
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'azure-monitor'
-    'log-analytics'
-  ]
-  ```
+- Default: `'log-analytics'`
 
 ### Parameter: `managedIdentities`
 

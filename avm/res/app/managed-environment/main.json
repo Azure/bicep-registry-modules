@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "1021751394754520437"
+      "templateHash": "2010587042531943124"
     },
     "name": "App ManagedEnvironments",
     "description": "This module deploys an App Managed Environment (also known as a Container App Environment)."
@@ -202,9 +202,8 @@
     },
     "logAnalyticsWorkspaceResourceId": {
       "type": "string",
-      "defaultValue": "",
       "metadata": {
-        "description": "Optional. Existing Log Analytics Workspace resource ID. Note: This value is not required as per the resource type. However, not providing it currently causes an issue that is tracked [here](https://github.com/Azure/bicep/issues/9990)."
+        "description": "Required. Existing Log Analytics Workspace resource ID. Note: This value is not required as per the resource type. However, not providing it currently causes an issue that is tracked [here](https://github.com/Azure/bicep/issues/9990)."
       }
     },
     "location": {
@@ -235,11 +234,7 @@
     },
     "logsDestination": {
       "type": "string",
-      "nullable": true,
-      "allowedValues": [
-        "log-analytics",
-        "azure-monitor"
-      ],
+      "defaultValue": "log-analytics",
       "metadata": {
         "description": "Optional. Logs destination."
       }

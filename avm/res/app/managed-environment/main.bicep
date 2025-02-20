@@ -4,8 +4,8 @@ metadata description = 'This module deploys an App Managed Environment (also kno
 @description('Required. Name of the Container Apps Managed Environment.')
 param name string
 
-@description('Optional. Existing Log Analytics Workspace resource ID. Note: This value is not required as per the resource type. However, not providing it currently causes an issue that is tracked [here](https://github.com/Azure/bicep/issues/9990).')
-param logAnalyticsWorkspaceResourceId string = ''
+@description('Required. Existing Log Analytics Workspace resource ID. Note: This value is not required as per the resource type. However, not providing it currently causes an issue that is tracked [here](https://github.com/Azure/bicep/issues/9990).')
+param logAnalyticsWorkspaceResourceId string
 
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
@@ -19,12 +19,8 @@ param managedIdentities managedIdentitiesType
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
 
-@allowed([
-  'log-analytics'
-  'azure-monitor'
-])
 @description('Optional. Logs destination.')
-param logsDestination string?
+param logsDestination string = 'log-analytics'
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
