@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "13147305000786724307"
+      "version": "0.33.13.18514",
+      "templateHash": "12646697926659678830"
     },
     "name": "ExpressRoute Ports",
     "description": "This module deploys an Express Route Port resource used by Express Route Direct."
@@ -17,9 +17,6 @@
       "properties": {
         "id": {
           "type": "string",
-          "allowedValues": [
-            "string"
-          ],
           "nullable": true,
           "metadata": {
             "description": "Optional. Resource Id of the existing Link."
@@ -27,9 +24,6 @@
         },
         "name": {
           "type": "string",
-          "allowedValues": [
-            "string"
-          ],
           "metadata": {
             "description": "Required. The name of the link to be created."
           }
@@ -39,11 +33,8 @@
           "properties": {
             "adminState": {
               "type": "string",
-              "allowedValues": [
-                "string"
-              ],
               "metadata": {
-                "description": "Required. Administrative state of the physical port."
+                "description": "Required. Administrative state of the physical port. Must be set to 'Disabled' for initial deployment."
               }
             },
             "macSecConfig": {
@@ -51,9 +42,6 @@
               "properties": {
                 "cakSecretIdentifier": {
                   "type": "string",
-                  "allowedValues": [
-                    "string"
-                  ],
                   "metadata": {
                     "description": "Required. Keyvault Secret Identifier URL containing Mac security CAK key."
                   }
@@ -72,9 +60,6 @@
                 },
                 "cknSecretIdentifier": {
                   "type": "string",
-                  "allowedValues": [
-                    "string"
-                  ],
                   "metadata": {
                     "description": "Required. Keyvault Secret Identifier URL containing Mac security CKN key."
                   }
@@ -294,6 +279,13 @@
       "metadata": {
         "description": "Optional. Location for all resources."
       }
+    },
+    "tags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags of the resource."
+      }
     }
   },
   "variables": {
@@ -353,6 +345,7 @@
       "apiVersion": "2024-05-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
       "properties": {
         "bandwidthInGbps": "[parameters('bandwidthInGbps')]",
         "billingType": "[parameters('billingType')]",
