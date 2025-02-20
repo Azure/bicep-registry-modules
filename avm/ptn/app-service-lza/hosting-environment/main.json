@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "6122742263560398431"
+      "templateHash": "7153296486429443893"
     },
     "name": "App Service Landing Zone Accelerator",
     "description": "This Azure App Service pattern module represents an Azure App Service deployment aligned with the cloud adoption framework",
@@ -2749,7 +2749,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "10459197821025596977"
+              "templateHash": "5359328845659590597"
             }
           },
           "definitions": {
@@ -30090,7 +30090,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "18007930672725336140"
+                      "templateHash": "11361347211232561483"
                     }
                   },
                   "parameters": {
@@ -31602,7 +31602,17 @@
                             }
                           },
                           "dataDisks": {
-                            "value": []
+                            "value": [
+                              {
+                                "caching": "ReadWrite",
+                                "createOption": "Empty",
+                                "diskSizeGB": 128,
+                                "lun": 0,
+                                "managedDisk": {
+                                  "storageAccountType": "Premium_LRS"
+                                }
+                              }
+                            ]
                           },
                           "zone": {
                             "value": "[parameters('vmZone')]"
@@ -37263,7 +37273,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "12020052047767482764"
+                      "templateHash": "11417566239890818570"
                     }
                   },
                   "parameters": {
@@ -38233,7 +38243,17 @@
                             }
                           },
                           "dataDisks": {
-                            "value": []
+                            "value": [
+                              {
+                                "caching": "ReadWrite",
+                                "createOption": "Empty",
+                                "diskSizeGB": 128,
+                                "lun": 0,
+                                "managedDisk": {
+                                  "storageAccountType": "Premium_LRS"
+                                }
+                              }
+                            ]
                           },
                           "zone": {
                             "value": "[parameters('vmZone')]"
