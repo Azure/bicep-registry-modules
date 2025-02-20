@@ -247,6 +247,7 @@ module vm 'br/public:avm/res/compute/virtual-machine:0.11.0' = {
         storageAccountType: 'Premium_LRS'
       }
     }
+    dataDisks: []
     zone: vmZone
     vmSize: vmSize
     imageReference: {

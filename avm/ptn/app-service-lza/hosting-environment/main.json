@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "15685126378452031435"
+      "templateHash": "6122742263560398431"
     },
     "name": "App Service Landing Zone Accelerator",
     "description": "This Azure App Service pattern module represents an Azure App Service deployment aligned with the cloud adoption framework",
@@ -2749,7 +2749,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "12219217923053600916"
+              "templateHash": "10459197821025596977"
             }
           },
           "definitions": {
@@ -30090,7 +30090,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "5244615369210695338"
+                      "templateHash": "18007930672725336140"
                     }
                   },
                   "parameters": {
@@ -31600,6 +31600,9 @@
                                 "storageAccountType": "Premium_LRS"
                               }
                             }
+                          },
+                          "dataDisks": {
+                            "value": []
                           },
                           "zone": {
                             "value": "[parameters('vmZone')]"
@@ -37260,7 +37263,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "12105621756119008381"
+                      "templateHash": "12020052047767482764"
                     }
                   },
                   "parameters": {
@@ -38228,6 +38231,9 @@
                                 "storageAccountType": "Premium_LRS"
                               }
                             }
+                          },
+                          "dataDisks": {
+                            "value": []
                           },
                           "zone": {
                             "value": "[parameters('vmZone')]"
