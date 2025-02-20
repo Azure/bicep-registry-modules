@@ -10,7 +10,7 @@ param name string = 'default'
 @description('Optional. API Version set properties.')
 param properties object = {}
 
-resource service 'Microsoft.ApiManagement/service@2024-05-01' existing = {
+resource service 'Microsoft.ApiManagement/service@2023-05-01-preview' existing = {
   name: apiManagementServiceName
 }
 
