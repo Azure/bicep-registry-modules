@@ -169,12 +169,10 @@ resource managedEnvironment 'Microsoft.App/managedEnvironments@2024-10-02-previe
     }
     appLogsConfiguration: {
       destination: logsDestination
-      logAnalyticsConfiguration: !empty(logAnalyticsWorkspaceResourceId)
-        ? {
-            customerId: logAnalyticsWorkspace.properties.customerId
-            sharedKey: logAnalyticsWorkspace.listKeys().primarySharedKey
-          }
-        : null
+      logAnalyticsConfiguration: {
+        customerId: logAnalyticsWorkspace.properties.customerId
+        sharedKey: logAnalyticsWorkspace.listKeys().primarySharedKey
+      }
     }
     daprAIConnectionString: daprAIConnectionString
     daprAIInstrumentationKey: daprAIInstrumentationKey
