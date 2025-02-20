@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "3612442392718175721"
+      "version": "0.33.93.31351",
+      "templateHash": "13919651704255707314"
     },
     "name": "Azure NetApp Files",
     "description": "This module deploys an Azure NetApp File."
@@ -905,11 +905,13 @@
             "description": "Optional. Location of the pool volume."
           }
         },
-        "zones": {
-          "type": "array",
-          "items": {
-            "type": "int"
-          },
+        "availabilityZone": {
+          "type": "string",
+          "allowedValues": [
+            "1",
+            "2",
+            "3"
+          ],
           "nullable": true,
           "metadata": {
             "description": "Optional. Zone where the volume will be placed."
@@ -956,12 +958,14 @@
         },
         "protocolTypes": {
           "type": "array",
-          "items": {
-            "type": "string"
-          },
+          "allowedValues": [
+            "CIFS",
+            "NFSv3",
+            "NFSv4.1"
+          ],
           "nullable": true,
           "metadata": {
-            "description": "Optional. Set of protocol types."
+            "description": "Optional. Set of protocol types. Default value is `['NFSv3']`. If you are creating a dual-stack volume, set either `['NFSv3','CIFS']` or `['NFSv4.1','CIFS']`."
           }
         },
         "subnetResourceId": {
@@ -1456,8 +1460,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "7141176618644423280"
+              "version": "0.33.93.31351",
+              "templateHash": "2748634922557584170"
             },
             "name": "Azure NetApp Files Backup Policy",
             "description": "This module deploys a Backup Policy for Azure NetApp File."
@@ -1603,8 +1607,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "7486219490853787459"
+              "version": "0.33.93.31351",
+              "templateHash": "7661114070380487495"
             },
             "name": "Azure NetApp Files Snapshot Policy",
             "description": "This module deploys a Snapshot Policy for an Azure NetApp File."
@@ -1919,8 +1923,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "9738469557677047438"
+              "version": "0.33.93.31351",
+              "templateHash": "6704781490326075849"
             },
             "name": "Azure NetApp Files Volume Backup Vault",
             "description": "This module deploys a NetApp Files Backup Vault."
@@ -2058,8 +2062,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "3948084235912412629"
+                      "version": "0.33.93.31351",
+                      "templateHash": "17452697444375969559"
                     },
                     "name": "Azure NetApp Files Volume Backup",
                     "description": "This module deploys a backup of a NetApp Files Volume."
@@ -2268,8 +2272,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "9255104616647372037"
+              "version": "0.33.93.31351",
+              "templateHash": "18342003406915513993"
             },
             "name": "Azure NetApp Files Capacity Pools",
             "description": "This module deploys an Azure NetApp Files Capacity Pool."
@@ -2333,11 +2337,13 @@
                     "description": "Optional. Location of the pool volume."
                   }
                 },
-                "zones": {
-                  "type": "array",
-                  "items": {
-                    "type": "int"
-                  },
+                "availabilityZone": {
+                  "type": "string",
+                  "allowedValues": [
+                    "1",
+                    "2",
+                    "3"
+                  ],
                   "nullable": true,
                   "metadata": {
                     "description": "Optional. Zone where the volume will be placed."
@@ -2384,12 +2390,14 @@
                 },
                 "protocolTypes": {
                   "type": "array",
-                  "items": {
-                    "type": "string"
-                  },
+                  "allowedValues": [
+                    "CIFS",
+                    "NFSv3",
+                    "NFSv4.1"
+                  ],
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. Set of protocol types."
+                    "description": "Optional. Set of protocol types. Default value is `['NFSv3']`. If you are creating a dual-stack volume, set either `['NFSv3','CIFS']` or `['NFSv4.1','CIFS']`."
                   }
                 },
                 "subnetResourceId": {
@@ -3000,7 +3008,7 @@
                     "value": "[coalesce(parameters('volumes'), createArray())[copyIndex()].usageThreshold]"
                   },
                   "protocolTypes": {
-                    "value": "[tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'protocolTypes')]"
+                    "value": "[coalesce(parameters('volumes'), createArray())[copyIndex()].protocolTypes]"
                   },
                   "subnetResourceId": {
                     "value": "[coalesce(parameters('volumes'), createArray())[copyIndex()].subnetResourceId]"
@@ -3014,8 +3022,8 @@
                   "networkFeatures": {
                     "value": "[tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'networkFeatures')]"
                   },
-                  "zones": {
-                    "value": "[tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'zones')]"
+                  "availabilityZone": {
+                    "value": "[coalesce(tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'availabilityZone'), null())]"
                   },
                   "coolAccess": {
                     "value": "[coalesce(tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'coolAccess'), false())]"
@@ -3058,8 +3066,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "13717060947862126529"
+                      "version": "0.33.93.31351",
+                      "templateHash": "11520140794458188190"
                     },
                     "name": "Azure NetApp Files Capacity Pool Volumes",
                     "description": "This module deploys an Azure NetApp Files Capacity Pool Volume."
@@ -3465,15 +3473,13 @@
                         "description": "Optional. The type of the volume. DataProtection volumes are used for replication."
                       }
                     },
-                    "zones": {
-                      "type": "array",
-                      "items": {
-                        "type": "int"
-                      },
-                      "defaultValue": [
-                        1,
-                        2,
-                        3
+                    "availabilityZone": {
+                      "type": "string",
+                      "nullable": true,
+                      "allowedValues": [
+                        "1",
+                        "2",
+                        "3"
                       ],
                       "metadata": {
                         "description": "Optional. Zone where the volume will be placed."
@@ -3520,9 +3526,19 @@
                     },
                     "protocolTypes": {
                       "type": "array",
-                      "defaultValue": [],
+                      "items": {
+                        "type": "string"
+                      },
+                      "defaultValue": [
+                        "NFSv3"
+                      ],
+                      "allowedValues": [
+                        "NFSv3",
+                        "NFSv4.1",
+                        "CIFS"
+                      ],
                       "metadata": {
-                        "description": "Optional. Set of protocol types."
+                        "description": "Optional. Set of protocol types. Default value is `['NFSv3']`. If you are creating a dual-stack volume, set either `['NFSv3','CIFS']` or `['NFSv4.1','CIFS']`."
                       }
                     },
                     "subnetResourceId": {
@@ -3698,7 +3714,7 @@
                       "name": "[format('{0}/{1}/{2}', parameters('netAppAccountName'), parameters('capacityPoolName'), parameters('name'))]",
                       "location": "[parameters('location')]",
                       "properties": "[shallowMerge(createArray(createObject('coolAccess', parameters('coolAccess'), 'coolAccessRetrievalPolicy', parameters('coolAccessRetrievalPolicy'), 'coolnessPeriod', parameters('coolnessPeriod'), 'encryptionKeySource', parameters('encryptionKeySource')), if(not(equals(parameters('encryptionKeySource'), 'Microsoft.NetApp')), createObject('keyVaultPrivateEndpointResourceId', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(parameters('keyVaultPrivateEndpointResourceId'), '//'), '/')[2], split(coalesce(parameters('keyVaultPrivateEndpointResourceId'), '////'), '/')[4]), 'Microsoft.Network/privateEndpoints', last(split(coalesce(parameters('keyVaultPrivateEndpointResourceId'), 'dummyVault'), '/')))), createObject()), if(not(empty(parameters('volumeType'))), createObject('volumeType', parameters('volumeType')), createObject()), createObject('dataProtection', if(not(empty(parameters('dataProtection'))), createObject('replication', if(not(empty(tryGet(parameters('dataProtection'), 'replication'))), createObject('endpointType', tryGet(parameters('dataProtection'), 'replication', 'endpointType'), 'remoteVolumeRegion', if(not(empty(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'))), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '//'), '/')[2], split(coalesce(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '////'), '/')[4]), 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes', split(coalesce(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '//'), '/')[8], split(coalesce(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '//'), '/')[10], last(split(coalesce(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), 'dummyvolume'), '/'))), null()), 'remoteVolumeResourceId', tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), 'replicationSchedule', tryGet(parameters('dataProtection'), 'replication', 'replicationSchedule'), 'remotePath', tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remotePath')), createObject()), 'backup', if(not(empty(tryGet(parameters('dataProtection'), 'backup'))), createObject('backupPolicyId', resourceId('Microsoft.NetApp/netAppAccounts/backupPolicies', parameters('netAppAccountName'), tryGet(parameters('dataProtection'), 'backup', 'backupPolicyName')), 'policyEnforced', coalesce(tryGet(parameters('dataProtection'), 'backup', 'policyEnforced'), false()), 'backupVaultId', resourceId('Microsoft.NetApp/netAppAccounts/backupVaults', parameters('netAppAccountName'), tryGet(parameters('dataProtection'), 'backup', 'backupVaultName'))), createObject()), 'snapshot', if(not(empty(tryGet(parameters('dataProtection'), 'snapshot'))), createObject('snapshotPolicyId', resourceId('Microsoft.NetApp/netAppAccounts/snapshotPolicies', parameters('netAppAccountName'), tryGet(parameters('dataProtection'), 'snapshot', 'snapshotPolicyName'))), createObject())), null()), 'networkFeatures', parameters('networkFeatures'), 'serviceLevel', parameters('serviceLevel'), 'creationToken', parameters('creationToken'), 'usageThreshold', parameters('usageThreshold'), 'protocolTypes', parameters('protocolTypes'), 'subnetId', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('subnetResourceId'), '/')[2], split(parameters('subnetResourceId'), '/')[4]), 'Microsoft.Network/virtualNetworks/subnets', split(parameters('subnetResourceId'), '/')[8], last(split(parameters('subnetResourceId'), '/'))), 'exportPolicy', parameters('exportPolicy'), 'smbContinuouslyAvailable', parameters('smbContinuouslyAvailable'), 'smbEncryption', parameters('smbEncryption'), 'smbNonBrowsable', parameters('smbNonBrowsable'), 'kerberosEnabled', parameters('kerberosEnabled'))))]",
-                      "zones": "[map(parameters('zones'), lambda('zone', format('{0}', lambdaVariables('zone'))))]"
+                      "zones": "[if(not(empty(parameters('availabilityZone'))), createArray(parameters('availabilityZone')), null())]"
                     },
                     "volume_roleAssignments": {
                       "copy": {
@@ -3843,8 +3859,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "9738469557677047438"
+              "version": "0.33.93.31351",
+              "templateHash": "6704781490326075849"
             },
             "name": "Azure NetApp Files Volume Backup Vault",
             "description": "This module deploys a NetApp Files Backup Vault."
@@ -3982,8 +3998,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "3948084235912412629"
+                      "version": "0.33.93.31351",
+                      "templateHash": "17452697444375969559"
                     },
                     "name": "Azure NetApp Files Volume Backup",
                     "description": "This module deploys a backup of a NetApp Files Volume."
