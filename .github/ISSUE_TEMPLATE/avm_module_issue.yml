@@ -83,6 +83,7 @@ body:
         - "avm/res/app/session-pool"
         - "avm/res/automation/automation-account"
         - "avm/res/azure-stack-hci/cluster"
+        - "avm/res/azure-stack-hci/virtual-hard-disk"
         - "avm/res/batch/batch-account"
         - "avm/res/cache/redis"
         - "avm/res/cdn/profile"
