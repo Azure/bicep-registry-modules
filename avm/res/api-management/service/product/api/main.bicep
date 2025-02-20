@@ -10,15 +10,15 @@ param productName string
 @description('Required. Name of the product API.')
 param name string
 
-resource service 'Microsoft.ApiManagement/service@2024-05-01' existing = {
+resource service 'Microsoft.ApiManagement/service@2023-05-01-preview' existing = {
   name: apiManagementServiceName
 
-  resource product 'products@2024-05-01' existing = {
+  resource product 'products@2021-04-01-preview' existing = {
     name: productName
   }
 }
 
-resource api 'Microsoft.ApiManagement/service/products/apis@2024-05-01' = {
+resource api 'Microsoft.ApiManagement/service/products/apis@2022-08-01' = {
   name: name
   parent: service::product
 }

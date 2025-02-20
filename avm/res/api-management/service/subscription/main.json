@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "14282547990733960005"
+      "templateHash": "16999168968925536172"
     },
     "name": "API Management Service Subscriptions",
     "description": "This module deploys an API Management Service Subscription."
@@ -78,12 +78,12 @@
     "service": {
       "existing": true,
       "type": "Microsoft.ApiManagement/service",
-      "apiVersion": "2024-05-01",
+      "apiVersion": "2023-05-01-preview",
       "name": "[parameters('apiManagementServiceName')]"
     },
     "subscription": {
       "type": "Microsoft.ApiManagement/service/subscriptions",
-      "apiVersion": "2024-06-01-preview",
+      "apiVersion": "2022-08-01",
       "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
       "properties": {
         "scope": "[parameters('scope')]",

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "400582543602265099"
+      "templateHash": "273590710214674608"
     },
     "name": "API Management Service APIs",
     "description": "This module deploys an API Management Service API."
@@ -216,12 +216,12 @@
     "service": {
       "existing": true,
       "type": "Microsoft.ApiManagement/service",
-      "apiVersion": "2024-05-01",
+      "apiVersion": "2023-05-01-preview",
       "name": "[parameters('apiManagementServiceName')]"
     },
     "api": {
       "type": "Microsoft.ApiManagement/service/apis",
-      "apiVersion": "2024-06-01-preview",
+      "apiVersion": "2022-08-01",
       "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
       "properties": {
         "apiRevision": "[parameters('apiRevision')]",
@@ -280,7 +280,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "7084456329583756531"
+              "templateHash": "1494563992508164069"
             },
             "name": "API Management Service APIs Policies",
             "description": "This module deploys an API Management Service API Policy."
@@ -328,7 +328,7 @@
           "resources": [
             {
               "type": "Microsoft.ApiManagement/service/apis/policies",
-              "apiVersion": "2024-05-01",
+              "apiVersion": "2022-08-01",
               "name": "[format('{0}/{1}/{2}', parameters('apiManagementServiceName'), parameters('apiName'), parameters('name'))]",
               "properties": {
                 "format": "[parameters('format')]",
@@ -426,7 +426,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "10688747410345866685"
+              "templateHash": "13183080858238494781"
             },
             "name": "API Management Service APIs Diagnostics.",
             "description": "This module deploys an API Management Service API Diagnostics."
@@ -543,7 +543,7 @@
           "resources": [
             {
               "type": "Microsoft.ApiManagement/service/apis/diagnostics",
-              "apiVersion": "2024-05-01",
+              "apiVersion": "2022-08-01",
               "name": "[format('{0}/{1}/{2}', parameters('apiManagementServiceName'), parameters('apiName'), parameters('name'))]",
               "properties": {
                 "alwaysLog": "[parameters('alwaysLog')]",

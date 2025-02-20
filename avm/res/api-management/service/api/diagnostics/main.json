@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "10688747410345866685"
+      "templateHash": "13183080858238494781"
     },
     "name": "API Management Service APIs Diagnostics.",
     "description": "This module deploys an API Management Service API Diagnostics."
@@ -122,7 +122,7 @@
   "resources": [
     {
       "type": "Microsoft.ApiManagement/service/apis/diagnostics",
-      "apiVersion": "2024-05-01",
+      "apiVersion": "2022-08-01",
       "name": "[format('{0}/{1}/{2}', parameters('apiManagementServiceName'), parameters('apiName'), parameters('name'))]",
       "properties": {
         "alwaysLog": "[parameters('alwaysLog')]",

@@ -15,11 +15,11 @@ param name string
 @description('Required. Portal setting properties.')
 param properties object
 
-resource service 'Microsoft.ApiManagement/service@2024-05-01' existing = {
+resource service 'Microsoft.ApiManagement/service@2023-05-01-preview' existing = {
   name: apiManagementServiceName
 }
 
-resource portalSetting 'Microsoft.ApiManagement/service/portalsettings@2024-06-01-preview' = {
+resource portalSetting 'Microsoft.ApiManagement/service/portalsettings@2022-08-01' = {
   name: any(name)
   parent: service
   properties: properties

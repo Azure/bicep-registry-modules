@@ -12,7 +12,7 @@ This module deploys an API Management Service Policy.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.ApiManagement/service/policies` | [2024-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-06-01-preview/service/policies) |
+| `Microsoft.ApiManagement/service/policies` | [2022-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/policies) |
 
 ## Parameters
 

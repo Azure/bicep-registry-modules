@@ -14,7 +14,7 @@ resource service 'Microsoft.ApiManagement/service@2024-05-01' existing = {
   name: apiManagementServiceName
 }
 
-resource apiVersionSet 'Microsoft.ApiManagement/service/apiVersionSets@2024-05-01' = {
+resource apiVersionSet 'Microsoft.ApiManagement/service/apiVersionSets@2022-08-01' = {
   name: name
   parent: service
   properties: properties

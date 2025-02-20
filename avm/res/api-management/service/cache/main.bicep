@@ -19,11 +19,11 @@ param resourceId string?
 @sys.description('Required. Location identifier to use cache from (should be either \'default\' or valid Azure region identifier).')
 param useFromLocation string
 
-resource service 'Microsoft.ApiManagement/service@2024-05-01' existing = {
+resource service 'Microsoft.ApiManagement/service@2023-05-01-preview' existing = {
   name: apiManagementServiceName
 }
 
-resource cache 'Microsoft.ApiManagement/service/caches@2024-06-01-preview' = {
+resource cache 'Microsoft.ApiManagement/service/caches@2022-08-01' = {
   name: name
   parent: service
   properties: {

@@ -104,11 +104,11 @@ param value string?
 @description('Optional. Criteria to limit import of WSDL to a subset of the document.')
 param wsdlSelector object?
 
-resource service 'Microsoft.ApiManagement/service@2024-05-01' existing = {
+resource service 'Microsoft.ApiManagement/service@2023-05-01-preview' existing = {
   name: apiManagementServiceName
 }
 
-resource api 'Microsoft.ApiManagement/service/apis@2024-06-01-preview' = {
+resource api 'Microsoft.ApiManagement/service/apis@2022-08-01' = {
   name: name
   parent: service
   properties: {
