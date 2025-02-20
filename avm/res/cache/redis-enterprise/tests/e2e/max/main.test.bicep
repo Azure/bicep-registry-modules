@@ -9,15 +9,15 @@ metadata description = 'This instance deploys the module with most of its featur
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-containerregistry.registries-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-cache-redisenterprise-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'crrmax'
+param serviceShort string = 'cremax'
 
-@description('Optional. A token to inject into the name of each resource.')
+@description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
 // ============ //
@@ -35,11 +35,9 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
-    // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
     location: resourceLocation
-    managedIdentityName: 'dep-${namePrefix}-msi-ds-${serviceShort}'
+    managedIdentityName: 'dep-${namePrefix}-mi-${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
-    pairedRegionScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
   }
 }
 
@@ -49,10 +47,10 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
   params: {
-    storageAccountName: 'dep${namePrefix}diasa${serviceShort}01'
+    storageAccountName: 'dep${namePrefix}diasa${serviceShort}03'
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
-    eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
-    eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
+    eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}01'
+    eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}01'
     location: resourceLocation
   }
 }
@@ -69,11 +67,43 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
-      acrAdminUserEnabled: false
-      acrSku: 'Premium'
+      skuName: 'Balanced_B10'
+      database: {
+        clientProtocol: 'Plaintext'
+        clusteringPolicy: 'EnterpriseCluster'
+        deferUpgrade: 'Deferred'
+        evictionPolicy: 'NoEviction'
+        modules: [
+          {
+            name: 'RedisBloom'
+          }
+          {
+            name: 'RediSearch'
+          }
+        ]
+        persistence: {
+          type: 'aof'
+          frequency: '1s'
+        }
+        diagnosticSettings: [
+          {
+            name: 'customSettingDatabase'
+            logCategoriesAndGroups: [
+              {
+                categoryGroup: 'allLogs'
+              }
+            ]
+            eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+            eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+            storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+            workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+          }
+        ]
+      }
+      enableTelemetry: true
       diagnosticSettings: [
         {
-          name: 'customSetting'
+          name: 'customSettingCluster'
           metricCategories: [
             {
               category: 'AllMetrics'
@@ -85,17 +115,14 @@ module testDeployment '../../../main.bicep' = [
           workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
         }
       ]
-      exportPolicyStatus: 'enabled'
-      azureADAuthenticationAsArmPolicyStatus: 'enabled'
-      softDeletePolicyStatus: 'disabled'
-      softDeletePolicyDays: 7
+      highAvailability: 'Disabled'
       lock: {
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
       }
+      minimumTlsVersion: '1.2'
       privateEndpoints: [
         {
-          subnetResourceId: nestedDependencies.outputs.subnetResourceId
           privateDnsZoneGroup: {
             privateDnsZoneGroupConfigs: [
               {
@@ -103,39 +130,17 @@ module testDeployment '../../../main.bicep' = [
               }
             ]
           }
+          subnetResourceId: nestedDependencies.outputs.subnetResourceId
           tags: {
             'hidden-title': 'This is visible in the resource name'
             Environment: 'Non-Prod'
             Role: 'DeploymentValidation'
           }
         }
-        {
-          subnetResourceId: nestedDependencies.outputs.subnetResourceId
-          privateDnsZoneGroup: {
-            privateDnsZoneGroupConfigs: [
-              {
-                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
-              }
-            ]
-          }
-        }
-      ]
-      networkRuleSetIpRules: [
-        {
-          action: 'Allow'
-          value: '40.74.28.0/23'
-        }
-      ]
-      quarantinePolicyStatus: 'enabled'
-      replications: [
-        {
-          location: nestedDependencies.outputs.pairedRegionName
-          name: nestedDependencies.outputs.pairedRegionName
-        }
       ]
       roleAssignments: [
         {
-          name: '8f8b1c39-827f-43e6-a457-98bb15b5dbdf'
+          name: '759769d2-fc52-4a92-a943-724e48927e0b'
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
@@ -155,24 +160,16 @@ module testDeployment '../../../main.bicep' = [
           principalType: 'ServicePrincipal'
         }
       ]
-      managedIdentities: {
-        systemAssigned: true
-        userAssignedResourceIds: [
-          nestedDependencies.outputs.managedIdentityResourceId
-        ]
-      }
-      trustPolicyStatus: 'enabled'
-      webhooks: [
-        {
-          name: '${namePrefix}acrx001webhook'
-          serviceUri: 'https://www.contoso.com/webhook'
-        }
-      ]
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'
         Role: 'DeploymentValidation'
       }
+      zones: [
+        1
+        2
+        3
+      ]
     }
   }
 ]
