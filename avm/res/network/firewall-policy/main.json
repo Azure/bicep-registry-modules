@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "16873263229394120692"
+      "templateHash": "10793418680596552047"
     },
     "name": "Firewall Policies",
     "description": "This module deploys a Firewall Policy."
@@ -22,7 +22,7 @@
             "Enabled"
           ],
           "metadata": {
-            "description": "Optional. The operation mode for automatically learning private ranges to not be SNAT."
+            "description": "Required. The operation mode for automatically learning private ranges to not be SNAT."
           }
         },
         "privateRanges": {
@@ -443,7 +443,7 @@
     },
     "threatIntelMode": {
       "type": "string",
-      "defaultValue": "Off",
+      "defaultValue": "Deny",
       "allowedValues": [
         "Alert",
         "Deny",

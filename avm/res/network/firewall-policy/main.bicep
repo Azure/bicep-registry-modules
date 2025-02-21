@@ -55,7 +55,7 @@ param tier string = 'Standard'
   'Deny'
   'Off'
 ])
-param threatIntelMode string = 'Off'
+param threatIntelMode string = 'Deny'
 
 @description('Optional. A flag to indicate if SQL Redirect traffic filtering is enabled. Turning on the flag requires no rule using port 11000-11999.')
 param allowSqlRedirect bool = false
@@ -260,7 +260,7 @@ output location string = firewallPolicy.location
 @export()
 @description('The type for SNAT settings.')
 type snatType = {
-  @description('Optional. The operation mode for automatically learning private ranges to not be SNAT.')
+  @description('Required. The operation mode for automatically learning private ranges to not be SNAT.')
   autoLearnPrivateRanges: 'Disabled' | 'Enabled'
 
   @description('Optional. List of private IP addresses/IP address ranges to not be SNAT.')

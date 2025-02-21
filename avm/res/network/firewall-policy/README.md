@@ -1124,11 +1124,16 @@ The private IP addresses/IP ranges to which traffic will not be SNAT.
 - Required: No
 - Type: object
 
-**Optional parameters**
+**Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`autoLearnPrivateRanges`](#parameter-snatautolearnprivateranges) | string | The operation mode for automatically learning private ranges to not be SNAT. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
 | [`privateRanges`](#parameter-snatprivateranges) | array | List of private IP addresses/IP address ranges to not be SNAT. |
 
 ### Parameter: `snat.autoLearnPrivateRanges`
@@ -1165,7 +1170,7 @@ The operation mode for Threat Intel.
 
 - Required: No
 - Type: string
-- Default: `'Off'`
+- Default: `'Deny'`
 - Allowed:
   ```Bicep
   [
