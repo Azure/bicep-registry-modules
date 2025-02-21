@@ -4758,7 +4758,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       sku: '2022-datacenter-azure-edition'
       version: 'latest'
     }
-    name: 'cvmwinssdv2'
+    name: 'cvmwinzrs'
     nicConfigurations: [
       {
         ipConfigurations: [
@@ -4821,7 +4821,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     },
     "name": {
-      "value": "cvmwinssdv2"
+      "value": "cvmwinzrs"
     },
     "nicConfigurations": {
       "value": [
@@ -4894,7 +4894,7 @@ param imageReference = {
   sku: '2022-datacenter-azure-edition'
   version: 'latest'
 }
-param name = 'cvmwinssdv2'
+param name = 'cvmwinzrs'
 param nicConfigurations = [
   {
     ipConfigurations: [
