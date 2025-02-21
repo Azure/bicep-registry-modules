@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Deploying a Developer SKU'
-metadata description = 'This instance deploys the module using a Developer SKU.'
+metadata name = 'Azure Arc Gateway according to WAF'
+metadata description = 'This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.'
 
 // ========== //
 // Parameters //
@@ -9,15 +9,15 @@ metadata description = 'This instance deploys the module using a Developer SKU.'
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-apimanagement.service-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-hybridCompute.gateway-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'apisdev'
+param serviceShort string = 'hcgwaf'
 
-@description('Optional. A token to inject into the name of each resource.')
+@description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
 // ============ //
@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-11-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -42,11 +42,6 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      location: resourceLocation
-      publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
-      publisherName: '${namePrefix}-az-amorg-x-001'
-      sku: 'Developer'
-      enableDeveloperPortal: true
     }
   }
 ]
