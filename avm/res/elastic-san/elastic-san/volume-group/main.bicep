@@ -47,6 +47,8 @@ param lock lockType?
 // Variables      //
 // ============== //
 
+var enableReferencedModulesTelemetry = false
+
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
@@ -180,7 +182,7 @@ module volumeGroup_privateEndpoints 'br/public:avm/res/network/private-endpoint:
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
-      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',

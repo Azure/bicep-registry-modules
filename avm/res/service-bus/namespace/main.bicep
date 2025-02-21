@@ -103,6 +103,8 @@ param customerManagedKey customerManagedKeyWithAutoRotateType?
 @description('Optional. Enable infrastructure encryption (double encryption). Note, this setting requires the configuration of Customer-Managed-Keys (CMK) via the corresponding module parameters.')
 param requireInfrastructureEncryption bool = true
 
+var enableReferencedModulesTelemetry = false
+
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
@@ -412,7 +414,7 @@ module serviceBusNamespace_privateEndpoints 'br/public:avm/res/network/private-e
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
-      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',

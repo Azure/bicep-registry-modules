@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "5676574800935579140"
+      "version": "0.33.93.31351",
+      "templateHash": "13465677330436779249"
     },
     "name": "Web/Function App Deployment Slots",
     "description": "This module deploys a Web or Function App Deployment Slot."
@@ -1104,8 +1104,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "6379851449588708934"
+              "version": "0.33.93.31351",
+              "templateHash": "9869757473830929279"
             },
             "name": "Site Slot App Settings",
             "description": "This module deploys a Site Slot App Setting."
@@ -1281,8 +1281,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "4192061847386712633"
+              "version": "0.33.93.31351",
+              "templateHash": "4602741618711602070"
             },
             "name": "Site Slot Auth Settings V2 Config",
             "description": "This module deploys a Site Auth Settings V2 Configuration."
@@ -1401,8 +1401,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "13483227944246460692"
+              "version": "0.33.93.31351",
+              "templateHash": "8803130402255189673"
             },
             "name": "Web Site Slot Basic Publishing Credentials Policies",
             "description": "This module deploys a Web Site Slot Basic Publishing Credentials Policy."
@@ -1525,8 +1525,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "17428168852439619558"
+              "version": "0.33.93.31351",
+              "templateHash": "16445776675656358479"
             },
             "name": "Web/Function Apps Slot Hybrid Connection Relay",
             "description": "This module deploys a Site Slot Hybrid Connection Namespace Relay."
@@ -1629,8 +1629,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "10653723640225381902"
+              "version": "0.33.93.31351",
+              "templateHash": "14895622660217616811"
             },
             "name": "Site Deployment Extension ",
             "description": "This module deploys a Site extension for MSDeploy."

@@ -865,7 +865,7 @@ Describe 'Module tests' -Tag 'Module' {
                 $incorrectVariables | Should -BeNullOrEmpty
             }
 
-            It '[<moduleFolderName>] Variable "enableReferencedModulesTelemetry" should exist and set to "false" if module references other modules with dedicated telemetry.' -TestCases $moduleFolderTestCases {
+            It '[<moduleFolderName>] Variable "enableReferencedModulesTelemetry" should exist and set to "false" if module references other modules with dedicated telemetry.' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleType -eq 'res' }) {
 
                 param(
                     [hashtable] $templateFileContent
@@ -1015,7 +1015,7 @@ Describe 'Module tests' -Tag 'Module' {
                 $telemetryDeploymentName | Should -Match "$expectedTelemetryIdentifier"
             }
 
-            It '[<moduleFolderName>] Telemetry should be disabled for referenced modules with dedicated telemetry.' -TestCases $moduleFolderTestCases {
+            It '[<moduleFolderName>] Telemetry should be disabled for referenced modules with dedicated telemetry.' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleType -eq 'res' }) {
 
                 param(
                     [hashtable] $templateFileContent,

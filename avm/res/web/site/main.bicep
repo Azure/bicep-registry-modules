@@ -186,6 +186,8 @@ param publicNetworkAccess string?
 @description('Optional. End to End Encryption Setting.')
 param e2eEncryptionEnabled bool?
 
+var enableReferencedModulesTelemetry = false
+
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
@@ -518,7 +520,7 @@ module app_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' 
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
-      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',
