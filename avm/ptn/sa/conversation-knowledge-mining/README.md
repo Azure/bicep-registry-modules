@@ -4,6 +4,7 @@
 ## Navigation
 
 - [Resource Types](#Resource-Types)
+- [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
@@ -104,6 +105,77 @@
 | `Microsoft.Web/sites/slots/basicPublishingCredentialsPolicies` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/slots/basicPublishingCredentialsPolicies) |
 | `Microsoft.Web/sites/slots/config` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/slots/config) |
 | `Microsoft.Web/sites/slots/hybridConnectionNamespaces/relays` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/slots/hybridConnectionNamespaces/relays) |
+
+## Usage examples
+
+The following section provides usage examples for the module, which were used to validate and deploy the module successfully. For a full reference, please review the module's test folder in its repository.
+
+>**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
+
+>**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/sa/conversation-knowledge-mining:<version>`.
+
+- [Using default parameter set](#example-1-using-default-parameter-set)
+
+### Example 1: _Using default parameter set_
+
+This instance deploys the module with default parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module conversationKnowledgeMining 'br/public:avm/ptn/sa/conversation-knowledge-mining:<version>' = {
+  name: 'conversationKnowledgeMiningDeployment'
+  params: {
+    // Required parameters
+    contentUnderstandingLocation: 'West US'
+    environmentName: 'avm-ckm'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "contentUnderstandingLocation": {
+      "value": "West US"
+    },
+    "environmentName": {
+      "value": "avm-ckm"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/sa/conversation-knowledge-mining:<version>'
+
+// Required parameters
+param contentUnderstandingLocation = 'West US'
+param environmentName = 'avm-ckm'
+```
+
+</details>
+<p>
 
 ## Parameters
 
