@@ -269,6 +269,9 @@ output defaultDomain string = managedEnvironment.properties.defaultDomain
 @description('The IP address of the Managed Environment.')
 output staticIp string = managedEnvironment.properties.staticIp
 
+@description('The domain verification id for custom domains')
+output domainValidationId string = managedEnvironment.properties.customDomainConfiguration.customDomainVerificationId
+
 // =============== //
 //   Definitions   //
 // =============== //
