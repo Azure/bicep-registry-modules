@@ -351,7 +351,7 @@ module avmLogAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspac
 
 // ========== AI Foundry ========== //
 
-module moduleAIFoundry './avm-ai-foundry.bicep' = {
+module moduleAIFoundry './modules/ai-foundry.bicep' = {
   name: format(deploymentNameFormat, varAIFoundryDeploymentName)
   params: {
     location: solutionLocation
