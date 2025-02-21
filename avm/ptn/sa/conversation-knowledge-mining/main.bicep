@@ -3,16 +3,16 @@ targetScope = 'resourceGroup'
 
 // ========== Parameters ========== //
 // PARAMETERS: names
-@description('The prefix for all deployed components log analytics workspace')
+@description('Required. The prefix for all deployed components log analytics workspace')
 @maxLength(7)
 param environmentName string
 
 // PARAMETERS: locations
 //NOTE: allow for individual locations for each resource
 //NOTE: determine allowed locations for resources with limited region availability
-@description('Location for the solution deployment. Defaulted to resourceGroup().location')
+@description('Optional. Location for the solution deployment. Defaulted to resourceGroup().location')
 param solutionLocation string = resourceGroup().location
-@description('Location for the Content Understanding service deployment:')
+@description('Mandatory. Location for the Content Understanding service deployment:')
 @allowed(['West US', 'Sweden Central', 'Australia East'])
 @metadata({
   azd: {
@@ -20,23 +20,23 @@ param solutionLocation string = resourceGroup().location
   }
 })
 param contentUnderstandingLocation string
-@description('Secondary location for databases creation(example:eastus2):')
+@description('Optional. Secondary location for databases creation(example:eastus2):')
 param secondaryLocation string = 'East US 2'
-@description('The location for the web app. If empty, contentUnderstandingLocation will be used.')
+@description('Optional. The location for the web app. If empty, contentUnderstandingLocation will be used.')
 param ckmWebAppServerFarmLocation string = ''
 
 // PARAMETERS: Web app configuration
-@description('The SKU for the web app. If empty, contentUnderstandingLocation will be used.')
+@description('Optional. The SKU for the web app. If empty, contentUnderstandingLocation will be used.')
 param webApServerFarmSku string = 'P0v3'
 
 // PARAMETERS: models configuration
-@description('GPT model deployment type:')
+@description('Optional. GPT model deployment type.')
 @allowed([
   'Standard'
   'GlobalStandard'
 ])
 param deploymentType string = 'GlobalStandard'
-@description('Name of the GPT model to deploy:')
+@description('Optional. Name of the GPT model to deploy.')
 @allowed([
   'gpt-4o-mini'
   'gpt-4o'
@@ -44,23 +44,24 @@ param deploymentType string = 'GlobalStandard'
 ])
 param gptModelName string = 'gpt-4o-mini'
 @minValue(10)
-@description('Capacity of the GPT deployment. You can increase this, but capacity is limited per model/region, so you will get errors if you go over. [Link](https://learn.microsoft.com/en-us/azure/ai-services/openai/quotas-limits) ')
+@description('Optional. Capacity of the GPT deployment. You can increase this, but capacity is limited per model/region, so you will get errors if you go over. [Link](https://learn.microsoft.com/en-us/azure/ai-services/openai/quotas-limits) ')
 // https://learn.microsoft.com/en-us/azure/ai-services/openai/quotas-')
 // You can increase this, but capacity is limited per model/region, so you will get errors if you go over. // https://learn.microsoft.com/en-us/azure/ai-services/openai/quotas-limits
 param gptDeploymentCapacity int = 100
-@description('Name of the Text Embedding model to deploy:')
+@description('Optional. Name of the Text Embedding model to deploy:')
 @allowed([
   'text-embedding-ada-002'
 ])
 param embeddingModel string = 'text-embedding-ada-002'
 @minValue(10)
-@description('Capacity of the Embedding Model deployment')
+@description('Optional. Capacity of the Embedding Model deployment')
 param embeddingDeploymentCapacity int = 80
 
 // PARAMETERS: Docker image configuration
+@description('Optional. Docker image version to use for all deployed containers (functions and web app)')
 param imageTag string = 'latest'
 
-@description('The version string to add to Resource Group deployments. Defaulted to current UTC time stamp, this default can lead to reach the RG deployment limit.')
+@description('Optional. The version string to add to Resource Group deployments. Defaulted to current UTC time stamp, this default can lead to reach the RG deployment limit.')
 param armDeploymentSuffix string = utcNow()
 
 // VARIABLES: defaults
@@ -101,9 +102,7 @@ var varChartsStorageAccountName = replace(format(format(workloadNameFormat, 'fch
 var varRAGManagedEnviornmentName = format(workloadNameFormat, 'frag-ftme')
 var varRAGFunctionName = format(workloadNameFormat, 'frag-azfct')
 var varRAGStorageAccountName = replace(format(format(workloadNameFormat, 'frag-strg')), '-', '')
-var varWebAppServerFarmLocation = ckmWebAppServerFarmLocation == ''
-  ? solutionLocation
-  : ckmWebAppServerFarmLocation
+var varWebAppServerFarmLocation = ckmWebAppServerFarmLocation == '' ? solutionLocation : ckmWebAppServerFarmLocation
 var varWebAppServerFarmName = format(workloadNameFormat, 'waoo-srvf')
 var varWebAppName = format(workloadNameFormat, 'wapp-wapp')
 var varCopyDataScriptName = format(workloadNameFormat, 'scrp-cpdt')
@@ -733,7 +732,7 @@ module avmManagedEnvironmentCharts 'br/public:avm/res/app/managed-environment:0.
 //     }
 //     managedEnvironmentId: avmManagedEnvironmentCharts.outputs.resourceId
 //     serverFarmResourceId: avmManagedEnvironmentCharts.outputs.resourceId
-//     // Missing configuration in AVM:    
+//     // Missing configuration in AVM:
 //     // workloadProfileName: 'Consumption'
 //     // resourceConfig: {
 //     //   cpu: 1
