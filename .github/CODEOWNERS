@@ -139,6 +139,7 @@
 /avm/res/network/network-interface/ @Azure/avm-res-network-networkinterface-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/network/network-manager/ @Azure/avm-res-network-networkmanager-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/network/network-security-group/ @Azure/avm-res-network-networksecuritygroup-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/res/network/network-security-perimeter/ @Azure/avm-res-network-networksecurityperimeter-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/network/network-watcher/ @Azure/avm-res-network-networkwatcher-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/network/p2s-vpn-gateway/ @Azure/avm-res-network-p2svpngateway-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/network/private-dns-zone/ @Azure/avm-res-network-privatednszone-module-owners-bicep @Azure/avm-module-reviewers-bicep
