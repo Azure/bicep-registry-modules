@@ -187,6 +187,7 @@ var azureRegionGeoCodeShortNameAsKey = {
   usgovarizona: 'uga'
   usdodeast: 'ude'
   usdodcentral: 'udc'
+  indonesiacentral: 'idc'
 }
 
 var azureRegionShortNameDisplayNameAsKey = {
@@ -252,6 +253,7 @@ var azureRegionShortNameDisplayNameAsKey = {
   'usgov arizona': 'usgovarizona'
   'usdod east': 'usdodeast'
   'usdod central': 'usdodcentral'
+  'indonesia central': 'indonesiacentral'
 }
 
 var locationLowered = toLower(location)

@@ -102,14 +102,14 @@
     "name": {
       "type": "string",
       "metadata": {
-        "description": "The name of the secrect."
+        "description": "The name of the secret."
       },
       "value": "[parameters('name')]"
     },
     "resourceId": {
       "type": "string",
       "metadata": {
-        "description": "The resource ID of the secrect."
+        "description": "The resource ID of the secret."
       },
       "value": "[resourceId('Microsoft.Cdn/profiles/securityPolicies', parameters('profileName'), parameters('name'))]"
     },
