@@ -191,10 +191,11 @@ resource workspace_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@202
       workspaceId: diagnosticSetting.?workspaceResourceId
       eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
       eventHubName: diagnosticSetting.?eventHubName
-      logs: diagnosticSetting.?logCategoriesAndGroups ?? [
-        {
-          categoryGroup: 'allLogs'
-          enabled: true
+      logs: [
+        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
+          categoryGroup: group.?categoryGroup
+          category: group.?category
+          enabled: group.?enabled ?? true
         }
       ]
       marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
