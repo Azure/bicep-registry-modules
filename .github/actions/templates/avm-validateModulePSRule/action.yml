@@ -108,6 +108,7 @@ runs:
       if: ${{ inputs.psruleBaseline == 'Azure.Default' }}
       continue-on-error: true
       with:
+        version: '1.41.0'
         modules: "PSRule.Rules.Azure"
         baseline: "${{ inputs.psruleBaseline }}"
         inputPath: "${{ inputs.templateFilePath}}"
@@ -121,6 +122,7 @@ runs:
       uses: microsoft/ps-rule@v2.9.0
       if: ${{ inputs.psruleBaseline == 'Azure.Pillar.Reliability' }}
       with:
+        version: '1.41.0'
         modules: "PSRule.Rules.Azure"
         prerelease: true
         baseline: "${{ inputs.psruleBaseline }}"
