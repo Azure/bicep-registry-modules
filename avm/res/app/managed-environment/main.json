@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "6905193182875441770"
+      "version": "0.33.93.31351",
+      "templateHash": "10729265077947604368"
     },
     "name": "App ManagedEnvironments",
     "description": "This module deploys an App Managed Environment (also known as a Container App Environment).",
@@ -375,7 +375,7 @@
   "resources": {
     "managedEnvironment::storage": {
       "copy": {
-        "name": "storage",
+        "name": "managedEnvironment::storage",
         "count": "[length(coalesce(parameters('storages'), createArray()))]"
       },
       "type": "Microsoft.App/managedEnvironments/storages",
@@ -554,7 +554,7 @@
     "domainValidationId": {
       "type": "string",
       "metadata": {
-        "description": "The domain verification id for custom domains"
+        "description": "The domain verification id for custom domains."
       },
       "value": "[reference('managedEnvironment').customDomainConfiguration.customDomainVerificationId]"
     }
