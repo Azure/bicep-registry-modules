@@ -1,6 +1,9 @@
 // // ========== main.bicep ========== //
 targetScope = 'resourceGroup'
 
+metadata name = 'Conversation Knowledge Mining Solution Accelerator'
+metadata description = 'This module deploys the [Conversation Knowledge Mining Solution Accelerator](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator).'
+
 // ========== Parameters ========== //
 // PARAMETERS: names
 @description('Required. The prefix for all deployed components log analytics workspace')
@@ -12,7 +15,7 @@ param environmentName string
 //NOTE: determine allowed locations for resources with limited region availability
 @description('Optional. Location for the solution deployment. Defaulted to resourceGroup().location')
 param solutionLocation string = resourceGroup().location
-@description('Mandatory. Location for the Content Understanding service deployment:')
+@description('Required. Location for the Content Understanding service deployment:')
 @allowed(['West US', 'Sweden Central', 'Australia East'])
 @metadata({
   azd: {
@@ -64,6 +67,11 @@ param imageTag string = 'latest'
 @description('Optional. The version string to add to Resource Group deployments. Defaulted to current UTC time stamp, this default can lead to reach the RG deployment limit.')
 param armDeploymentSuffix string = utcNow()
 
+// PARAMETERS: Telemetry
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
+// ========== Variables ========== //
 // VARIABLES: defaults
 var workloadNameFormat = '${environmentName}-{0}' //${uniqueString(resourceGroup().id, environmentName)}
 var tags = {
@@ -238,6 +246,30 @@ var varWebAppAppConfigReact = '''{
     }
   ]
 }'''
+
+// ========== Telemetry ========== //
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: take(
+    '46d3xbcp.ptn.sa-ckm.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, solutionLocation), 0, 4)}',
+    64
+  )
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
 
 // ========== Managed Identity ========== //
 

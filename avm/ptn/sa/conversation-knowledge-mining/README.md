@@ -1,5 +1,6 @@
-#  `[Sa/ConversationKnowledgeMining]`
+# Conversation Knowledge Mining Solution Accelerator `[Sa/ConversationKnowledgeMining]`
 
+This module deploys the [Conversation Knowledge Mining Solution Accelerator](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator).
 
 ## Navigation
 
@@ -8,6 +9,7 @@
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -183,6 +185,7 @@ param environmentName = 'avm-ckm'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`contentUnderstandingLocation`](#parameter-contentunderstandinglocation) | string | Location for the Content Understanding service deployment: |
 | [`environmentName`](#parameter-environmentname) | string | The prefix for all deployed components log analytics workspace |
 
 **Optional parameters**
@@ -194,6 +197,7 @@ param environmentName = 'avm-ckm'
 | [`deploymentType`](#parameter-deploymenttype) | string | GPT model deployment type. |
 | [`embeddingDeploymentCapacity`](#parameter-embeddingdeploymentcapacity) | int | Capacity of the Embedding Model deployment |
 | [`embeddingModel`](#parameter-embeddingmodel) | string | Name of the Text Embedding model to deploy: |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`gptDeploymentCapacity`](#parameter-gptdeploymentcapacity) | int | Capacity of the GPT deployment. You can increase this, but capacity is limited per model/region, so you will get errors if you go over. [Link](https://learn.microsoft.com/en-us/azure/ai-services/openai/quotas-limits)  |
 | [`gptModelName`](#parameter-gptmodelname) | string | Name of the GPT model to deploy. |
 | [`imageTag`](#parameter-imagetag) | string | Docker image version to use for all deployed containers (functions and web app) |
@@ -201,11 +205,20 @@ param environmentName = 'avm-ckm'
 | [`solutionLocation`](#parameter-solutionlocation) | string | Location for the solution deployment. Defaulted to resourceGroup().location |
 | [`webApServerFarmSku`](#parameter-webapserverfarmsku) | string | The SKU for the web app. If empty, contentUnderstandingLocation will be used. |
 
-**Mandatory parameters**
+### Parameter: `contentUnderstandingLocation`
 
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`contentUnderstandingLocation`](#parameter-contentunderstandinglocation) | string | Location for the Content Understanding service deployment: |
+Location for the Content Understanding service deployment:
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Australia East'
+    'Sweden Central'
+    'West US'
+  ]
+  ```
 
 ### Parameter: `environmentName`
 
@@ -267,6 +280,15 @@ Name of the Text Embedding model to deploy:
     'text-embedding-ada-002'
   ]
   ```
+- MinValue: 10
+
+### Parameter: `enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
+- Default: `True`
 - MinValue: 10
 
 ### Parameter: `gptDeploymentCapacity`
@@ -331,22 +353,6 @@ The SKU for the web app. If empty, contentUnderstandingLocation will be used.
 - Default: `'P0v3'`
 - MinValue: 10
 
-### Parameter: `contentUnderstandingLocation`
-
-Location for the Content Understanding service deployment:
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Australia East'
-    'Sweden Central'
-    'West US'
-  ]
-  ```
-- MinValue: 10
-
 ## Outputs
 
 _None_
@@ -374,3 +380,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/storage/storage-account:0.9.0` | Remote reference |
 | `br/public:avm/res/web/serverfarm:0.4.1` | Remote reference |
 | `br/public:avm/res/web/site:0.13.3` | Remote reference |
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
