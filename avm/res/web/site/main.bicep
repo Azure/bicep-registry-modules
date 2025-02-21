@@ -389,7 +389,6 @@ module app_slots 'slot/main.bicep' = [
       customDomainVerificationId: slot.?customDomainVerificationId
       dailyMemoryTimeQuota: slot.?dailyMemoryTimeQuota
       enabled: slot.?enabled
-      enableTelemetry: slot.?enableTelemetry ?? enableTelemetry
       hostNameSslStates: slot.?hostNameSslStates
       hyperV: slot.?hyperV
       publicNetworkAccess: slot.?publicNetworkAccess ?? ((!empty(slot.?privateEndpoints) || !empty(privateEndpoints))
