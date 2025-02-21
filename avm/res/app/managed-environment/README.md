@@ -29,7 +29,7 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
-- [Using only defaults](#example-3-using-only-defaults)
+- [Enable public access](#example-3-enable-public-access)
 - [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using only defaults_
@@ -505,7 +505,7 @@ param workloadProfiles = [
 </details>
 <p>
 
-### Example 3: _Using only defaults_
+### Example 3: _Enable public access_
 
 This instance deploys the module with public access enabled.
 
