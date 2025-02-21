@@ -1132,6 +1132,7 @@ Whether or not this Managed Environment is zone-redundant.
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `defaultDomain` | string | The Default domain of the Managed Environment. |
+| `domainValidationId` | string | The domain verification id for custom domains |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the Managed Environment. |
 | `resourceGroupName` | string | The name of the resource group the Managed Environment was deployed into. |

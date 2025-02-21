@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "5062482221653261403"
+      "version": "0.30.23.60470",
+      "templateHash": "6905193182875441770"
     },
     "name": "App ManagedEnvironments",
     "description": "This module deploys an App Managed Environment (also known as a Container App Environment).",
@@ -550,6 +550,13 @@
         "description": "The IP address of the Managed Environment."
       },
       "value": "[reference('managedEnvironment').staticIp]"
+    },
+    "domainValidationId": {
+      "type": "string",
+      "metadata": {
+        "description": "The domain verification id for custom domains"
+      },
+      "value": "[reference('managedEnvironment').customDomainConfiguration.customDomainVerificationId]"
     }
   }
 }
