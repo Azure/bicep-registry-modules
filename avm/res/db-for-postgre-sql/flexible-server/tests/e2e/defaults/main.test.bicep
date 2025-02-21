@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-dbforpostgresql.flexibleserv
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'dfpsfsmin'
+param serviceShort string = 'dfpsmin'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -50,7 +50,6 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      location: resourceLocation
       administrators: [
         {
           objectId: nestedDependencies.outputs.managedIdentityClientId
@@ -60,8 +59,6 @@ module testDeployment '../../../main.bicep' = [
       ]
       skuName: 'Standard_D2s_v3'
       tier: 'GeneralPurpose'
-      geoRedundantBackup: 'Enabled'
-      highAvailability: 'ZoneRedundant'
     }
   }
 ]

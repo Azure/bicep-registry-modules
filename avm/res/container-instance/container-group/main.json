@@ -5,36 +5,414 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "4541932168440754260"
+      "version": "0.32.4.45862",
+      "templateHash": "6168692312234137213"
     },
     "name": "Container Instances Container Groups",
-    "description": "This module deploys a Container Instance Container Group.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Container Instance Container Group."
   },
   "definitions": {
-    "managedIdentitiesType": {
+    "containerType": {
       "type": "object",
       "properties": {
-        "systemAssigned": {
-          "type": "bool",
-          "nullable": true,
+        "name": {
+          "type": "string",
           "metadata": {
-            "description": "Optional. Enables system assigned managed identity on the resource."
+            "description": "Required. The name of the container instance."
           }
         },
-        "userAssignedResourceIds": {
-          "type": "array",
-          "items": {
-            "type": "string"
+        "properties": {
+          "type": "object",
+          "properties": {
+            "image": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the container source image."
+              }
+            },
+            "livenessProbe": {
+              "type": "object",
+              "properties": {},
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The liveness probe."
+              }
+            },
+            "ports": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "port": {
+                    "type": "int",
+                    "metadata": {
+                      "description": "Required. The port number exposed on the container instance."
+                    }
+                  },
+                  "protocol": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The protocol associated with the port number."
+                    }
+                  }
+                }
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The exposed ports on the container instance."
+              }
+            },
+            "resources": {
+              "type": "object",
+              "properties": {
+                "requests": {
+                  "type": "object",
+                  "properties": {
+                    "cpu": {
+                      "type": "int",
+                      "metadata": {
+                        "description": "Required. The CPU request of this container instance."
+                      }
+                    },
+                    "gpu": {
+                      "$ref": "#/definitions/containerGpuType",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The GPU request of this container instance."
+                      }
+                    },
+                    "memoryInGB": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The memory request in GB of this container instance."
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "description": "Required. The resource requests of this container instance."
+                  }
+                },
+                "limits": {
+                  "type": "object",
+                  "properties": {
+                    "cpu": {
+                      "type": "int",
+                      "metadata": {
+                        "description": "Required. The CPU limit of this container instance."
+                      }
+                    },
+                    "gpu": {
+                      "$ref": "#/definitions/containerGpuType",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The GPU limit of this container instance."
+                      }
+                    },
+                    "memoryInGB": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The memory limit in GB of this container instance."
+                      }
+                    }
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The resource limits of this container instance."
+                  }
+                },
+                "securityContext": {
+                  "type": "object",
+                  "properties": {
+                    "allowPrivilegeEscalation": {
+                      "type": "bool",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Whether privilege escalation is allowed for the container."
+                      }
+                    },
+                    "capabilities": {
+                      "type": "object",
+                      "properties": {
+                        "add": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The list of capabilities to add."
+                          }
+                        },
+                        "drop": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          },
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The list of capabilities to drop."
+                          }
+                        }
+                      },
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The capabilities to add or drop for the container."
+                      }
+                    },
+                    "privileged": {
+                      "type": "bool",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Whether the container is run in privileged mode."
+                      }
+                    },
+                    "runAsGroup": {
+                      "type": "int",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The GID to run the container as."
+                      }
+                    },
+                    "runAsUser": {
+                      "type": "int",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The UID to run the container as."
+                      }
+                    },
+                    "seccompProfile": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The seccomp profile to use for the container."
+                      }
+                    }
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The security context of the container instance."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "Required. The resource requirements of the container instance."
+              }
+            },
+            "volumeMounts": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The name of the volume mount."
+                    }
+                  },
+                  "mountPath": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The path within the container where the volume should be mounted. Must not contain colon (:)."
+                    }
+                  },
+                  "readOnly": {
+                    "type": "bool",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The flag indicating whether the volume mount is read-only."
+                    }
+                  }
+                }
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The volume mounts within the container instance."
+              }
+            },
+            "command": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The command to execute within the container instance."
+              }
+            },
+            "environmentVariables": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The name of the environment variable."
+                    }
+                  },
+                  "secureValue": {
+                    "type": "securestring",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The value of the secure environment variable."
+                    }
+                  },
+                  "value": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The value of the environment variable."
+                    }
+                  }
+                }
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The environment variables to set in the container instance."
+              }
+            }
           },
-          "nullable": true,
           "metadata": {
-            "description": "Optional. The resource ID(s) to assign to the resource."
+            "description": "Required. The properties of the container instance."
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "imageRegistryCredentialType": {
+      "type": "object",
+      "properties": {
+        "server": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The Docker image registry server without a protocol such as \"http\" and \"https\"."
+          }
+        },
+        "identity": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The identity for the private registry."
+          }
+        },
+        "identityUrl": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The identity URL for the private registry."
+          }
+        },
+        "username": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The username for the private registry."
+          }
+        },
+        "password": {
+          "type": "securestring",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The password for the private registry."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "ipAddressPortsType": {
+      "type": "object",
+      "properties": {
+        "port": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. The port number exposed on the container instance."
+          }
+        },
+        "protocol": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The protocol associated with the port number."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "containerGpuType": {
+      "type": "object",
+      "properties": {
+        "count": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. The count of the GPU resource."
+          }
+        },
+        "sku": {
+          "type": "string",
+          "allowedValues": [
+            "K80",
+            "P100",
+            "V100"
+          ],
+          "metadata": {
+            "description": "Required. The SKU of the GPU resource."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "customerManagedKeyWithAutoRotateType": {
+      "type": "object",
+      "properties": {
+        "keyVaultResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of a key vault to reference a customer managed key for encryption from."
+          }
+        },
+        "keyName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the customer managed key to use for encryption."
+          }
+        },
+        "keyVersion": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationEnabled' setting."
+          }
+        },
+        "autoRotationEnabled": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enable or disable auto-rotating to the latest key version. Default is `true`. If set to `false`, the latest key version at the time of the deployment is used."
+          }
+        },
+        "userAssignedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a customer-managed key. To be used if the resource type supports auto-rotation of the customer-managed key.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+        }
+      }
     },
     "lockType": {
       "type": "object",
@@ -59,396 +437,40 @@
           }
         }
       },
-      "nullable": true
-    },
-    "customerManagedKeyType": {
-      "type": "object",
-      "properties": {
-        "keyVaultResourceId": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The resource ID of a key vault to reference a customer managed key for encryption from."
-          }
-        },
-        "keyName": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The name of the customer managed key to use for encryption."
-          }
-        },
-        "keyVersion": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The version of the customer managed key to reference for encryption. If not provided, using 'latest'."
-          }
-        },
-        "userAssignedIdentityResourceId": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use."
-          }
-        }
-      },
-      "nullable": true
-    },
-    "containerType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The name of the container instance."
-            }
-          },
-          "properties": {
-            "type": "object",
-            "properties": {
-              "image": {
-                "type": "string",
-                "metadata": {
-                  "description": "Required. The name of the container source image."
-                }
-              },
-              "livenessProbe": {
-                "type": "object",
-                "properties": {},
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. The liveness probe."
-                }
-              },
-              "ports": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "port": {
-                      "type": "int",
-                      "metadata": {
-                        "description": "Required. The port number exposed on the container instance."
-                      }
-                    },
-                    "protocol": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The protocol associated with the port number."
-                      }
-                    }
-                  }
-                },
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. The exposed ports on the container instance."
-                }
-              },
-              "resources": {
-                "type": "object",
-                "properties": {
-                  "requests": {
-                    "type": "object",
-                    "properties": {
-                      "cpu": {
-                        "type": "int",
-                        "metadata": {
-                          "description": "Required. The CPU request of this container instance."
-                        }
-                      },
-                      "gpu": {
-                        "$ref": "#/definitions/containerGpuType",
-                        "nullable": true,
-                        "metadata": {
-                          "description": "Optional. The GPU request of this container instance."
-                        }
-                      },
-                      "memoryInGB": {
-                        "type": "int",
-                        "nullable": true,
-                        "metadata": {
-                          "description": "Optional. The memory request in GB of this container instance. To specify a decimal value, use the json() function."
-                        }
-                      }
-                    },
-                    "metadata": {
-                      "description": "Required. The resource requests of this container instance."
-                    }
-                  },
-                  "limits": {
-                    "type": "object",
-                    "properties": {
-                      "cpu": {
-                        "type": "int",
-                        "metadata": {
-                          "description": "Required. The CPU limit of this container instance."
-                        }
-                      },
-                      "gpu": {
-                        "$ref": "#/definitions/containerGpuType",
-                        "nullable": true,
-                        "metadata": {
-                          "description": "Optional. The GPU limit of this container instance."
-                        }
-                      },
-                      "memoryInGB": {
-                        "type": "int",
-                        "nullable": true,
-                        "metadata": {
-                          "description": "Optional. The memory limit in GB of this container instance. To specify a decimal value, use the json() function."
-                        }
-                      }
-                    },
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The resource limits of this container instance."
-                    }
-                  },
-                  "securityContext": {
-                    "type": "object",
-                    "properties": {
-                      "allowPrivilegeEscalation": {
-                        "type": "bool",
-                        "nullable": true,
-                        "metadata": {
-                          "description": "Optional. Whether privilege escalation is allowed for the container."
-                        }
-                      },
-                      "capabilities": {
-                        "type": "object",
-                        "properties": {
-                          "add": {
-                            "type": "array",
-                            "items": {
-                              "type": "string"
-                            },
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The list of capabilities to add."
-                            }
-                          },
-                          "drop": {
-                            "type": "array",
-                            "items": {
-                              "type": "string"
-                            },
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The list of capabilities to drop."
-                            }
-                          }
-                        },
-                        "nullable": true,
-                        "metadata": {
-                          "description": "Optional. The capabilities to add or drop for the container."
-                        }
-                      },
-                      "privileged": {
-                        "type": "bool",
-                        "nullable": true,
-                        "metadata": {
-                          "description": "Optional. Whether the container is run in privileged mode."
-                        }
-                      },
-                      "runAsGroup": {
-                        "type": "int",
-                        "nullable": true,
-                        "metadata": {
-                          "description": "Optional. The GID to run the container as."
-                        }
-                      },
-                      "runAsUser": {
-                        "type": "int",
-                        "nullable": true,
-                        "metadata": {
-                          "description": "Optional. The UID to run the container as."
-                        }
-                      },
-                      "seccompProfile": {
-                        "type": "string",
-                        "nullable": true,
-                        "metadata": {
-                          "description": "Optional. The seccomp profile to use for the container."
-                        }
-                      }
-                    },
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The security context of the container instance."
-                    }
-                  }
-                },
-                "metadata": {
-                  "description": "Required. The resource requirements of the container instance."
-                }
-              },
-              "volumeMounts": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "name": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The name of the volume mount."
-                      }
-                    },
-                    "mountPath": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The path within the container where the volume should be mounted. Must not contain colon (:)."
-                      }
-                    },
-                    "readOnly": {
-                      "type": "bool",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. The flag indicating whether the volume mount is read-only."
-                      }
-                    }
-                  }
-                },
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. The volume mounts within the container instance."
-                }
-              },
-              "command": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                },
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. The command to execute within the container instance."
-                }
-              },
-              "environmentVariables": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "name": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The name of the environment variable."
-                      }
-                    },
-                    "secureValue": {
-                      "type": "securestring",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. The value of the secure environment variable."
-                      }
-                    },
-                    "value": {
-                      "type": "string",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. The value of the environment variable."
-                      }
-                    }
-                  }
-                },
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. The environment variables to set in the container instance."
-                }
-              }
-            },
-            "metadata": {
-              "description": "Required. The properties of the container instance."
-            }
-          }
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
         }
       }
     },
-    "imageRegistryCredentialType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "server": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The Docker image registry server without a protocol such as \"http\" and \"https\"."
-            }
-          },
-          "identity": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The identity for the private registry."
-            }
-          },
-          "identityUrl": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The identity URL for the private registry."
-            }
-          },
-          "username": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The username for the private registry."
-            }
-          },
-          "password": {
-            "type": "securestring",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The password for the private registry."
-            }
-          }
-        }
-      },
-      "nullable": true
-    },
-    "ipAddressPortsType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "port": {
-            "type": "int",
-            "metadata": {
-              "description": "Required. The port number exposed on the container instance."
-            }
-          },
-          "protocol": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The protocol associated with the port number."
-            }
-          }
-        }
-      }
-    },
-    "containerGpuType": {
+    "managedIdentityAllType": {
       "type": "object",
       "properties": {
-        "count": {
-          "type": "int",
+        "systemAssigned": {
+          "type": "bool",
+          "nullable": true,
           "metadata": {
-            "description": "Required. The count of the GPU resource."
+            "description": "Optional. Enables system assigned managed identity on the resource."
           }
         },
-        "sku": {
-          "type": "string",
-          "allowedValues": [
-            "K80",
-            "P100",
-            "V100"
-          ],
+        "userAssignedResourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
           "metadata": {
-            "description": "Required. The SKU of the GPU resource."
+            "description": "Optional. The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption."
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+        }
+      }
     }
   },
   "parameters": {
@@ -459,13 +481,20 @@
       }
     },
     "containers": {
-      "$ref": "#/definitions/containerType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/containerType"
+      },
       "metadata": {
         "description": "Required. The containers and their respective config within the container group."
       }
     },
     "ipAddressPorts": {
-      "$ref": "#/definitions/ipAddressPortsType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ipAddressPortsType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Conditional. Ports to open on the public IP address. Must include all ports assigned on container level. Required if `ipAddressType` is set to `public`."
       }
@@ -501,7 +530,11 @@
       }
     },
     "imageRegistryCredentials": {
-      "$ref": "#/definitions/imageRegistryCredentialType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/imageRegistryCredentialType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. The image registry credentials by which the container group is created from."
       }
@@ -536,6 +569,9 @@
     },
     "dnsNameServers": {
       "type": "array",
+      "items": {
+        "type": "string"
+      },
       "nullable": true,
       "metadata": {
         "description": "Optional. List of dns servers used by the containers for lookups."
@@ -555,7 +591,7 @@
         "description": "Optional. A list of container definitions which will be executed before the application container starts."
       }
     },
-    "subnetId": {
+    "subnetResourceId": {
       "type": "string",
       "nullable": true,
       "metadata": {
@@ -571,12 +607,14 @@
     },
     "lock": {
       "$ref": "#/definitions/lockType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The lock settings of the service."
       }
     },
     "managedIdentities": {
-      "$ref": "#/definitions/managedIdentitiesType",
+      "$ref": "#/definitions/managedIdentityAllType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The managed identity definition for this resource."
       }
@@ -607,7 +645,8 @@
       }
     },
     "customerManagedKey": {
-      "$ref": "#/definitions/customerManagedKeyType",
+      "$ref": "#/definitions/customerManagedKeyWithAutoRotateType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The customer managed key definition."
       }
@@ -625,10 +664,7 @@
       "apiVersion": "2023-02-01",
       "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '//'), '/')[2]]",
       "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '////'), '/')[4]]",
-      "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]",
-      "dependsOn": [
-        "cMKKeyVault"
-      ]
+      "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]"
     },
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
@@ -675,10 +711,10 @@
       "location": "[parameters('location')]",
       "identity": "[variables('identity')]",
       "tags": "[parameters('tags')]",
-      "properties": "[union(createObject('containers', parameters('containers'), 'encryptionProperties', if(not(empty(parameters('customerManagedKey'))), createObject('identity', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), ''))), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '//'), '/')[2], split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '////'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), 'dummyMsi'), '/'))), null()), 'keyName', parameters('customerManagedKey').keyName, 'keyVersion', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'keyVersion'), ''))), parameters('customerManagedKey').keyVersion, last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/'))), 'vaultBaseUrl', reference('cMKKeyVault').vaultUri), null()), 'imageRegistryCredentials', parameters('imageRegistryCredentials'), 'initContainers', parameters('initContainers'), 'restartPolicy', parameters('restartPolicy'), 'osType', parameters('osType'), 'ipAddress', createObject('type', parameters('ipAddressType'), 'autoGeneratedDomainNameLabelScope', if(not(empty(parameters('dnsNameServers'))), parameters('autoGeneratedDomainNameLabelScope'), null()), 'dnsNameLabel', parameters('dnsNameLabel'), 'ports', parameters('ipAddressPorts')), 'sku', parameters('sku'), 'subnetIds', if(not(empty(parameters('subnetId'))), createArray(createObject('id', parameters('subnetId'))), null()), 'volumes', parameters('volumes')), if(not(empty(parameters('dnsNameServers'))), createObject('dnsConfig', createObject('nameServers', parameters('dnsNameServers'), 'searchDomains', parameters('dnsSearchDomains'))), createObject()))]",
+      "properties": "[union(createObject('containers', parameters('containers'), 'encryptionProperties', if(not(empty(parameters('customerManagedKey'))), createObject('identity', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), ''))), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '//'), '/')[2], split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '////'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), 'dummyMsi'), '/'))), null()), 'keyName', parameters('customerManagedKey').keyName, 'keyVersion', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'keyVersion'), ''))), parameters('customerManagedKey').keyVersion, if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), null(), last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/')))), 'vaultBaseUrl', reference('cMKKeyVault').vaultUri), null()), 'imageRegistryCredentials', parameters('imageRegistryCredentials'), 'initContainers', parameters('initContainers'), 'restartPolicy', parameters('restartPolicy'), 'osType', parameters('osType'), 'ipAddress', createObject('type', parameters('ipAddressType'), 'autoGeneratedDomainNameLabelScope', if(not(empty(parameters('dnsNameServers'))), parameters('autoGeneratedDomainNameLabelScope'), null()), 'dnsNameLabel', parameters('dnsNameLabel'), 'ports', parameters('ipAddressPorts')), 'sku', parameters('sku'), 'subnetIds', if(not(empty(parameters('subnetResourceId'))), createArray(createObject('id', parameters('subnetResourceId'))), null()), 'volumes', parameters('volumes')), if(not(empty(parameters('dnsNameServers'))), createObject('dnsConfig', createObject('nameServers', parameters('dnsNameServers'), 'searchDomains', parameters('dnsSearchDomains'))), createObject()))]",
       "dependsOn": [
-        "cMKKeyVault",
-        "cMKUserAssignedIdentity"
+        "cMKKeyVault::cMKKey",
+        "cMKKeyVault"
       ]
     },
     "containergroup_lock": {
@@ -727,10 +763,11 @@
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",
+      "nullable": true,
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[coalesce(tryGet(tryGet(reference('containergroup', '2023-05-01', 'full'), 'identity'), 'principalId'), '')]"
+      "value": "[tryGet(tryGet(reference('containergroup', '2023-05-01', 'full'), 'identity'), 'principalId')]"
     },
     "location": {
       "type": "string",

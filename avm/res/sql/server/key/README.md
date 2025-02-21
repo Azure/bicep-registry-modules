@@ -12,7 +12,7 @@ This module deploys an Azure SQL Server Key.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Sql/servers/keys` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/servers/keys) |
+| `Microsoft.Sql/servers/keys` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01-preview/servers/keys) |
 
 ## Parameters
 
@@ -27,8 +27,8 @@ This module deploys an Azure SQL Server Key.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | The name of the key. Must follow the [<keyVaultName>_<keyName>_<keyVersion>] pattern. |
-| [`serverKeyType`](#parameter-serverkeytype) | string | The encryption protector type like "ServiceManaged", "AzureKeyVault". |
-| [`uri`](#parameter-uri) | string | The URI of the key. If the ServerKeyType is AzureKeyVault, then either the URI or the keyVaultName/keyName combination is required. |
+| [`serverKeyType`](#parameter-serverkeytype) | string | The server key type. |
+| [`uri`](#parameter-uri) | string | The URI of the server key. If the ServerKeyType is AzureKeyVault, then the URI is required. The AKV URI is required to be in this format: 'https://YourVaultName.azure.net/keys/YourKeyName/YourKeyVersion'. |
 
 ### Parameter: `serverName`
 
@@ -46,7 +46,7 @@ The name of the key. Must follow the [<keyVaultName>_<keyName>_<keyVersion>] pat
 
 ### Parameter: `serverKeyType`
 
-The encryption protector type like "ServiceManaged", "AzureKeyVault".
+The server key type.
 
 - Required: No
 - Type: string
@@ -61,7 +61,7 @@ The encryption protector type like "ServiceManaged", "AzureKeyVault".
 
 ### Parameter: `uri`
 
-The URI of the key. If the ServerKeyType is AzureKeyVault, then either the URI or the keyVaultName/keyName combination is required.
+The URI of the server key. If the ServerKeyType is AzureKeyVault, then the URI is required. The AKV URI is required to be in this format: 'https://YourVaultName.azure.net/keys/YourKeyName/YourKeyVersion'.
 
 - Required: No
 - Type: string

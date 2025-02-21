@@ -1,6 +1,5 @@
 metadata name = 'Digital Twins Instance EventHub Endpoint'
 metadata description = 'This module deploys a Digital Twins Instance EventHub Endpoint.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Optional. The name of the Digital Twin Endpoint.')
 param name string = 'EventHubEndpoint'
@@ -79,7 +78,7 @@ output name string = endpoint.name
 
 @description('The principal ID of the system assigned identity. Note: As of 2024-03 is not exported by API.')
 #disable-next-line BCP187
-output systemAssignedMIPrincipalId string = endpoint.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = endpoint.?identity.?principalId
 
 // =============== //
 //   Definitions   //

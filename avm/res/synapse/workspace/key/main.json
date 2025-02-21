@@ -4,12 +4,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "6170014210030770909"
+      "version": "0.32.4.45862",
+      "templateHash": "9285184380796627148"
     },
     "name": "Synapse Workspaces Keys",
-    "description": "This module deploys a Synapse Workspaces Key.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Synapse Workspaces Key."
   },
   "parameters": {
     "name": {

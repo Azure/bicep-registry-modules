@@ -1,34 +1,18 @@
 metadata name = 'DBforPostgreSQL Flexible Servers'
 metadata description = 'This module deploys a DBforPostgreSQL Flexible Server.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the PostgreSQL flexible server.')
 param name string
 
-@description('Optional. The administrator login name of a server. Can only be specified when the PostgreSQL server is being created.')
-param administratorLogin string = ''
+@description('Optional. The administrator login name of the server. Can only be specified when the PostgreSQL server is being created.')
+param administratorLogin string?
 
 @description('Optional. The administrator login password.')
 @secure()
-param administratorLoginPassword string = ''
-
-@allowed([
-  'Disabled'
-  'Enabled'
-])
-@description('Optional. If Enabled, Azure Active Directory authentication is enabled.')
-param activeDirectoryAuth string = 'Enabled'
-
-@allowed([
-  'Disabled'
-  'Enabled'
-])
-@description('Optional. If Enabled, password authentication is enabled.')
-#disable-next-line secure-secrets-in-params
-param passwordAuth string = 'Disabled'
+param administratorLoginPassword string?
 
 @description('Optional. Tenant id of the server.')
-param tenantId string = ''
+param tenantId string?
 
 @description('Optional. The Azure AD administrators when AAD authentication enabled.')
 param administrators array = []
@@ -65,8 +49,8 @@ param backupRetentionDays int = 7
   'Disabled'
   'Enabled'
 ])
-@description('Optional. A value indicating whether Geo-Redundant backup is enabled on the server. Should be left disabled if \'cMKKeyName\' is not empty.')
-param geoRedundantBackup string = 'Disabled'
+@description('Optional. A value indicating whether Geo-Redundant backup is enabled on the server. Should be disabled if \'cMKKeyName\' is not empty.')
+param geoRedundantBackup string = 'Enabled' // Enabled by default for WAF-alignment (ref: https://azure.github.io/PSRule.Rules.Azure/en/rules/Azure.PostgreSQL.GeoRedundantBackup/)
 
 @allowed([
   32
@@ -82,6 +66,13 @@ param geoRedundantBackup string = 'Disabled'
 ])
 @description('Optional. Max storage allowed for a server.')
 param storageSizeGB int = 32
+
+@allowed([
+  'Disabled'
+  'Enabled'
+])
+@description('Optional. Flag to enable / disable Storage Auto grow for flexible server.')
+param autoGrow string?
 
 @allowed([
   '11'
@@ -105,17 +96,28 @@ param highAvailability string = 'ZoneRedundant'
 @allowed([
   'Create'
   'Default'
+  'GeoRestore'
   'PointInTimeRestore'
+  'Replica'
   'Update'
 ])
 @description('Optional. The mode to create a new PostgreSQL server.')
 param createMode string = 'Default'
 
+import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Conditional. The managed identity definition for this resource. Required if \'cMKKeyName\' is not empty.')
-param managedIdentities managedIdentitiesType
+param managedIdentities managedIdentityOnlyUserAssignedType?
 
+@allowed([
+  'Disabled'
+  'Enabled'
+])
+@description('Optional. Specifies the state of the Threat Protection, whether it is enabled or disabled or a state has not been applied yet on the specific server.')
+param serverThreatProtection string = 'Enabled'
+
+import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The customer managed key definition.')
-param customerManagedKey customerManagedKeyType
+param customerManagedKey customerManagedKeyType?
 
 @description('Optional. Properties for the maintenence window. If provided, \'customWindow\' property must exist and set to \'Enabled\'.')
 param maintenanceWindow object = {
@@ -134,11 +136,18 @@ param sourceServerResourceId string = ''
 @description('Optional. Delegated subnet arm resource ID. Used when the desired connectivity mode is \'Private Access\' - virtual network integration.')
 param delegatedSubnetResourceId string = ''
 
-@description('Optional. Private dns zone arm resource ID. Used when the desired connectivity mode is \'Private Access\' and required when \'delegatedSubnetResourceId\' is used. The Private DNS Zone must be lined to the Virtual Network referenced in \'delegatedSubnetResourceId\'.')
+@description('Optional. Private dns zone arm resource ID. Used when the desired connectivity mode is \'Private Access\' and required when \'delegatedSubnetResourceId\' is used. The Private DNS Zone must be linked to the Virtual Network referenced in \'delegatedSubnetResourceId\'.')
 param privateDnsZoneArmResourceId string = ''
 
 @description('Optional. The firewall rules to create in the PostgreSQL flexible server.')
 param firewallRules array = []
+
+@description('Optional. Determines whether or not public network access is enabled or not.')
+@allowed([
+  'Disabled'
+  'Enabled'
+])
+param publicNetworkAccess string = 'Disabled'
 
 @description('Optional. The databases to create in the server.')
 param databases array = []
@@ -146,11 +155,19 @@ param databases array = []
 @description('Optional. The configurations to create in the server.')
 param configurations array = []
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
-param lock lockType
+param lock lockType?
 
+@description('Optional. The replication settings for the server. Can only be set on existing flexible servers.')
+param replica replicaType?
+
+@description('Optional. Enable/Disable advanced threat protection.')
+param enableAdvancedThreatProtection bool = true
+
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
 param tags object?
@@ -158,8 +175,13 @@ param tags object?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The diagnostic settings of the service.')
-param diagnosticSettings diagnosticSettingType
+param diagnosticSettings diagnosticSettingFullType[]?
+
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+@description('Optional. Configuration details for private endpoints. Used when the desired connectivity mode is \'Public Access\' and \'delegatedSubnetResourceId\' is NOT used.')
+param privateEndpoints privateEndpointSingleServiceType[]?
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -238,7 +260,7 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
   )
 }
 
-resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2022-12-01' = {
+resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2024-08-01' = {
   name: name
   location: location
   tags: tags
@@ -248,12 +270,12 @@ resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2022-12-01' =
   }
   identity: identity
   properties: {
-    administratorLogin: !empty(administratorLogin) ? administratorLogin : null
-    administratorLoginPassword: !empty(administratorLoginPassword) ? administratorLoginPassword : null
+    administratorLogin: administratorLogin
+    administratorLoginPassword: administratorLoginPassword
     authConfig: {
-      activeDirectoryAuth: activeDirectoryAuth
-      passwordAuth: passwordAuth
-      tenantId: !empty(tenantId) ? tenantId : null
+      activeDirectoryAuth: !empty(administrators) ? 'enabled' : 'disabled'
+      passwordAuth: !empty(administratorLogin) && !empty(administratorLoginPassword) ? 'enabled' : 'disabled'
+      tenantId: tenantId
     }
     availabilityZone: availabilityZone
     backup: {
@@ -264,7 +286,7 @@ resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2022-12-01' =
     dataEncryption: !empty(customerManagedKey)
       ? {
           primaryKeyURI: !empty(customerManagedKey.?keyVersion ?? '')
-            ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.keyVersion}'
+            ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.?keyVersion}'
             : cMKKeyVault::cMKKey.properties.keyUriWithVersion
           primaryUserAssignedIdentityId: cMKUserAssignedIdentity.id
           type: 'AzureKeyVault'
@@ -286,12 +308,17 @@ resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2022-12-01' =
       ? {
           delegatedSubnetResourceId: delegatedSubnetResourceId
           privateDnsZoneArmResourceId: privateDnsZoneArmResourceId
+          publicNetworkAccess: publicNetworkAccess
         }
       : null
     pointInTimeUTC: createMode == 'PointInTimeRestore' ? pointInTimeUTC : null
-    sourceServerResourceId: createMode == 'PointInTimeRestore' ? sourceServerResourceId : null
+    replica: !empty(replica) ? replica : null
+    sourceServerResourceId: (createMode == 'PointInTimeRestore' || createMode == 'Replica')
+      ? sourceServerResourceId
+      : null
     storage: {
       storageSizeGB: storageSizeGB
+      autoGrow: autoGrow
     }
     version: version
   }
@@ -330,8 +357,8 @@ module flexibleServer_databases 'database/main.bicep' = [
     params: {
       name: database.name
       flexibleServerName: flexibleServer.name
-      collation: database.?collation ?? ''
-      charset: database.?charset ?? ''
+      collation: database.?collation
+      charset: database.?charset
     }
   }
 ]
@@ -358,8 +385,8 @@ module flexibleServer_configurations 'configuration/main.bicep' = [
     params: {
       name: configuration.name
       flexibleServerName: flexibleServer.name
-      source: configuration.?source ?? ''
-      value: configuration.?value ?? ''
+      source: configuration.?source
+      value: configuration.?value
     }
     dependsOn: [
       flexibleServer_firewallRules
@@ -375,13 +402,24 @@ module flexibleServer_administrators 'administrator/main.bicep' = [
       objectId: administrator.objectId
       principalName: administrator.principalName
       principalType: administrator.principalType
-      tenantId: administrator.?tenantId ?? tenant().tenantId
+      tenantId: administrator.?tenantId
     }
     dependsOn: [
       flexibleServer_configurations
     ]
   }
 ]
+
+module flexibleServer_advancedThreatProtection 'advanced-threat-protection/main.bicep' = if (enableAdvancedThreatProtection) {
+  name: '${uniqueString(deployment().name, location)}-PostgreSQL-Threat'
+  params: {
+    serverThreatProtection: serverThreatProtection
+    flexibleServerName: flexibleServer.name
+  }
+  dependsOn: [
+    flexibleServer_administrators
+  ]
+}
 
 resource flexibleServer_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
@@ -412,6 +450,61 @@ resource flexibleServer_diagnosticSettings 'Microsoft.Insights/diagnosticSetting
   }
 ]
 
+module server_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
+  for (privateEndpoint, index) in (privateEndpoints ?? []): if (empty(delegatedSubnetResourceId)) {
+    name: '${uniqueString(deployment().name, location)}-PostgreSQL-PrivateEndpoint-${index}'
+    scope: resourceGroup(
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
+    )
+    params: {
+      name: privateEndpoint.?name ?? 'pep-${last(split(flexibleServer.id, '/'))}-${privateEndpoint.?service ?? 'postgresqlServer'}-${index}'
+      privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
+        ? [
+            {
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(flexibleServer.id, '/'))}-${privateEndpoint.?service ?? 'postgresqlServer'}-${index}'
+              properties: {
+                privateLinkServiceId: flexibleServer.id
+                groupIds: [
+                  privateEndpoint.?service ?? 'postgresqlServer'
+                ]
+              }
+            }
+          ]
+        : null
+      manualPrivateLinkServiceConnections: privateEndpoint.?isManualConnection == true
+        ? [
+            {
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(flexibleServer.id, '/'))}-${privateEndpoint.?service ?? 'postgresqlServer'}-${index}'
+              properties: {
+                privateLinkServiceId: flexibleServer.id
+                groupIds: [
+                  privateEndpoint.?service ?? 'postgresqlServer'
+                ]
+                requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
+              }
+            }
+          ]
+        : null
+      subnetResourceId: privateEndpoint.subnetResourceId
+      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      location: privateEndpoint.?location ?? reference(
+        split(privateEndpoint.subnetResourceId, '/subnets/')[0],
+        '2020-06-01',
+        'Full'
+      ).location
+      lock: privateEndpoint.?lock ?? lock
+      privateDnsZoneGroup: privateEndpoint.?privateDnsZoneGroup
+      roleAssignments: privateEndpoint.?roleAssignments
+      tags: privateEndpoint.?tags ?? tags
+      customDnsConfigs: privateEndpoint.?customDnsConfigs
+      ipConfigurations: privateEndpoint.?ipConfigurations
+      applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
+      customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
+    }
+  }
+]
+
 @description('The name of the deployed PostgreSQL Flexible server.')
 output name string = flexibleServer.name
 
@@ -427,103 +520,55 @@ output location string = flexibleServer.location
 @description('The FQDN of the PostgreSQL Flexible server.')
 output fqdn string = flexibleServer.properties.fullyQualifiedDomainName
 
+@description('The private endpoints of the PostgreSQL Flexible server.')
+output privateEndpoints privateEndpointOutputType[] = [
+  for (item, index) in (privateEndpoints ?? []): {
+    name: server_privateEndpoints[index].outputs.name
+    resourceId: server_privateEndpoints[index].outputs.resourceId
+    groupId: server_privateEndpoints[index].outputs.?groupId!
+    customDnsConfigs: server_privateEndpoints[index].outputs.customDnsConfigs
+    networkInterfaceResourceIds: server_privateEndpoints[index].outputs.networkInterfaceResourceIds
+  }
+]
+
 // =============== //
 //   Definitions   //
 // =============== //
 
-type managedIdentitiesType = {
-  @description('Optional. The resource ID(s) to assign to the resource.')
-  userAssignedResourceIds: string[]
-}?
+@export()
+type privateEndpointOutputType = {
+  @description('The name of the private endpoint.')
+  name: string
 
-type lockType = {
-  @description('Optional. Specify the name of lock.')
-  name: string?
+  @description('The resource ID of the private endpoint.')
+  resourceId: string
 
-  @description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?
+  @description('The group Id for the private endpoint Group.')
+  groupId: string?
 
-type roleAssignmentType = {
-  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
-  name: string?
+  @description('The custom DNS configurations of the private endpoint.')
+  customDnsConfigs: {
+    @description('FQDN that resolves to private endpoint IP address.')
+    fqdn: string?
 
-  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
+    @description('A list of private IP addresses of the private endpoint.')
+    ipAddresses: string[]
+  }[]
 
-  @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
+  @description('The IDs of the network interfaces associated with the private endpoint.')
+  networkInterfaceResourceIds: string[]
+}
 
-  @description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
+@export()
+type replicaType = {
+  @description('''Conditional. Sets the promote mode for a replica server. This is a write only property. 'standalone'
+'switchover'. Required if enabling replication.''')
+  promoteMode: ('standalone' | 'switchover')
 
-  @description('Optional. The description of the role assignment.')
-  description: string?
+  @description('''Conditional. Sets the promote options for a replica server. This is a write only property.	'forced'
+'planned'. Required if enabling replication.''')
+  promoteOption: ('forced' | 'planned')
 
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
-
-  @description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
-
-  @description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?
-
-type diagnosticSettingType = {
-  @description('Optional. The name of diagnostic setting.')
-  name: string?
-
-  @description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.')
-  logCategoriesAndGroups: {
-    @description('Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.')
-    category: string?
-
-    @description('Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.')
-    categoryGroup: string?
-
-    @description('Optional. Enable or disable the category explicitly. Default is `true`.')
-    enabled: bool?
-  }[]?
-
-  @description('Optional. The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.')
-  metricCategories: {
-    @description('Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.')
-    category: string
-
-    @description('Optional. Enable or disable the category explicitly. Default is `true`.')
-    enabled: bool?
-  }[]?
-
-  @description('Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.')
-  logAnalyticsDestinationType: ('Dedicated' | 'AzureDiagnostics')?
-
-  @description('Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  workspaceResourceId: string?
-
-  @description('Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  storageAccountResourceId: string?
-
-  @description('Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.')
-  eventHubAuthorizationRuleResourceId: string?
-
-  @description('Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  eventHubName: string?
-
-  @description('Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.')
-  marketplacePartnerResourceId: string?
-}[]?
-
-type customerManagedKeyType = {
-  @description('Required. The resource ID of a key vault to reference a customer managed key for encryption from.')
-  keyVaultResourceId: string
-
-  @description('Required. The name of the customer managed key to use for encryption.')
-  keyName: string
-
-  @description('Optional. The version of the customer managed key to reference for encryption. If not provided, using \'latest\'.')
-  keyVersion: string?
-
-  @description('Required. User assigned identity to use when fetching the customer managed key.')
-  userAssignedIdentityResourceId: string
-}?
+  @description('''Conditional. Used to indicate role of the server in replication set.	'AsyncReplica', 'GeoAsyncReplica', 'None', 'Primary'. Required if enabling replication.''')
+  role: ('AsyncReplica' | 'GeoAsyncReplica' | 'None' | 'Primary')
+}

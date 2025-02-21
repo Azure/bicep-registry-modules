@@ -79,7 +79,7 @@ runs:
         # Otherwise retrieve default values
         else {
           # Load used functions
-          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Get-GitHubWorkflowDefaultInput.ps1')
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Get-GitHubWorkflowDefaultInput.ps1')
 
           $functionInput = @{
             workflowPath = '${{ inputs.workflowPath }}'

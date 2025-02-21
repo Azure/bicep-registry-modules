@@ -1,6 +1,5 @@
 metadata name = 'App Configuration Stores Key Values'
 metadata description = 'This module deploys an App Configuration Store Key Value.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the key.')
 param name string
@@ -17,11 +16,11 @@ param contentType string?
 @description('Optional. Tags of the resource.')
 param tags object?
 
-resource appConfiguration 'Microsoft.AppConfiguration/configurationStores@2023-03-01' existing = {
+resource appConfiguration 'Microsoft.AppConfiguration/configurationStores@2024-05-01' existing = {
   name: appConfigurationName
 }
 
-resource keyValues 'Microsoft.AppConfiguration/configurationStores/keyValues@2023-03-01' = {
+resource keyValues 'Microsoft.AppConfiguration/configurationStores/keyValues@2024-05-01' = {
   name: name
   parent: appConfiguration
   properties: {

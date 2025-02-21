@@ -13,7 +13,7 @@ This module deploys a Healthcare API Workspace IoT Connector FHIR Destination.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.HealthcareApis/workspaces/iotconnectors/fhirdestinations` | [2022-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.HealthcareApis/workspaces) |
+| `Microsoft.HealthcareApis/workspaces/iotconnectors/fhirdestinations` | [2022-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.HealthcareApis/2022-06-01/workspaces/iotconnectors/fhirdestinations) |
 
 ## Parameters
 
@@ -21,7 +21,6 @@ This module deploys a Healthcare API Workspace IoT Connector FHIR Destination.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`destinationMapping`](#parameter-destinationmapping) | object | The mapping JSON that determines how normalized data is converted to FHIR Observations. |
 | [`fhirServiceResourceId`](#parameter-fhirserviceresourceid) | string | The resource identifier of the FHIR Service to connect to. |
 | [`name`](#parameter-name) | string | The name of the FHIR destination. |
 
@@ -36,22 +35,9 @@ This module deploys a Healthcare API Workspace IoT Connector FHIR Destination.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`destinationMapping`](#parameter-destinationmapping) | object | The mapping JSON that determines how normalized data is converted to FHIR Observations. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`resourceIdentityResolutionType`](#parameter-resourceidentityresolutiontype) | string | Determines how resource identity is resolved on the destination. |
-
-### Parameter: `destinationMapping`
-
-The mapping JSON that determines how normalized data is converted to FHIR Observations.
-
-- Required: No
-- Type: object
-- Default:
-  ```Bicep
-  {
-      template: []
-      templateType: 'CollectionFhir'
-  }
-  ```
 
 ### Parameter: `fhirServiceResourceId`
 
@@ -80,6 +66,20 @@ The name of the parent health data services workspace. Required if the template 
 
 - Required: Yes
 - Type: string
+
+### Parameter: `destinationMapping`
+
+The mapping JSON that determines how normalized data is converted to FHIR Observations.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      template: []
+      templateType: 'CollectionFhir'
+  }
+  ```
 
 ### Parameter: `location`
 

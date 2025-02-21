@@ -33,7 +33,7 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2023-07-01' = {
 
 // Diagnostics
 // ===========
-module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
   params: {
@@ -71,8 +71,14 @@ module testDeployment '../../../main.bicep' = [
               name: 'hub1-waf-pip'
             }
             threatIntelMode: 'Alert'
+            zones: [
+              1
+              2
+              3
+            ]
           }
           bastionHost: {
+            bastionHostName: 'bastion-hub1'
             disableCopyPaste: true
             enableFileCopy: false
             enableIpConnect: false

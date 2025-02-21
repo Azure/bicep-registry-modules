@@ -1,6 +1,5 @@
 metadata name = 'Azure Kubernetes Service (AKS) Managed Cluster Agent Pools'
 metadata description = 'This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent managed cluster. Required if the template is used in a standalone deployment.')
 param managedClusterName string
@@ -9,7 +8,7 @@ param managedClusterName string
 param name string
 
 @description('Optional. The list of Availability zones to use for nodes. This can only be specified if the AgentPoolType property is "VirtualMachineScaleSets".')
-param availabilityZones array?
+param availabilityZones int[] = [1, 2, 3]
 
 @description('Optional. Desired Number of agents (VMs) specified to host docker containers. Allowed values must be in the range of 0 to 1000 (inclusive) for user pools and in the range of 1 to 1000 (inclusive) for system pools. The default value is 1.')
 @minValue(0)
@@ -63,7 +62,7 @@ param mode string?
 param nodeLabels object?
 
 @description('Optional. ResourceId of the node PublicIPPrefix.')
-param nodePublicIpPrefixId string?
+param nodePublicIpPrefixResourceId string?
 
 @description('Optional. The taints added to new nodes during node pool create and scale. For example, key=value:NoSchedule.')
 param nodeTaints array?
@@ -89,7 +88,7 @@ param osDiskType string?
   'Windows2019'
   'Windows2022'
 ])
-param osSku string?
+param osSKU string?
 
 @description('Optional. The operating system type. The default is Linux.')
 @allowed([
@@ -98,8 +97,8 @@ param osSku string?
 ])
 param osType string = 'Linux'
 
-@description('Optional. Subnet ID for the pod IPs. If omitted, pod IPs are statically assigned on the node subnet (see vnetSubnetID for more details). This is of the form: /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{virtualNetworkName}/subnets/{subnetName}.')
-param podSubnetId string?
+@description('Optional. Subnet resource ID for the pod IPs. If omitted, pod IPs are statically assigned on the node subnet (see vnetSubnetID for more details). This is of the form: /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{virtualNetworkName}/subnets/{subnetName}.')
+param podSubnetResourceId string?
 
 @description('Optional. The ID for the Proximity Placement Group.')
 param proximityPlacementGroupResourceId string?
@@ -141,7 +140,7 @@ param maxSurge string?
 param vmSize string = 'Standard_D2s_v3'
 
 @description('Optional. Node Subnet ID. If this is not specified, a VNET and subnet will be generated and used. If no podSubnetID is specified, this applies to nodes and pods, otherwise it applies to just nodes. This is of the form: /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{virtualNetworkName}/subnets/{subnetName}.')
-param vnetSubnetId string?
+param vnetSubnetResourceId string?
 
 @description('Optional. Determines the type of workload a node can run.')
 param workloadRuntime string?
@@ -150,11 +149,11 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-p
   name: managedClusterName
 }
 
-resource agentPool 'Microsoft.ContainerService/managedClusters/agentPools@2023-07-02-preview' = {
+resource agentPool 'Microsoft.ContainerService/managedClusters/agentPools@2024-08-01' = {
   name: name
   parent: managedCluster
   properties: {
-    availabilityZones: availabilityZones
+    availabilityZones: map(availabilityZones ?? [], zone => '${zone}')
     count: count
     creationData: !empty(sourceResourceId)
       ? {
@@ -173,14 +172,14 @@ resource agentPool 'Microsoft.ContainerService/managedClusters/agentPools@2023-0
     minCount: minCount
     mode: mode
     nodeLabels: nodeLabels
-    nodePublicIPPrefixID: nodePublicIpPrefixId
+    nodePublicIPPrefixID: nodePublicIpPrefixResourceId
     nodeTaints: nodeTaints
     orchestratorVersion: orchestratorVersion
     osDiskSizeGB: osDiskSizeGB
     osDiskType: osDiskType
-    osSKU: osSku
+    osSKU: osSKU
     osType: osType
-    podSubnetID: podSubnetId
+    podSubnetID: podSubnetResourceId
     proximityPlacementGroupID: proximityPlacementGroupResourceId
     scaleDownMode: scaleDownMode
     scaleSetEvictionPolicy: scaleSetEvictionPolicy
@@ -192,7 +191,7 @@ resource agentPool 'Microsoft.ContainerService/managedClusters/agentPools@2023-0
       maxSurge: maxSurge
     }
     vmSize: vmSize
-    vnetSubnetID: vnetSubnetId
+    vnetSubnetID: vnetSubnetResourceId
     workloadRuntime: workloadRuntime
   }
 }

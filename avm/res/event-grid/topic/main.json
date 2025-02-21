@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "12405995366615613618"
+      "version": "0.33.13.18514",
+      "templateHash": "17090087854048089391"
     },
     "name": "Event Grid Topics",
-    "description": "This module deploys an Event Grid Topic.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Event Grid Topic."
   },
   "definitions": {
     "managedIdentitiesType": {
@@ -237,7 +236,7 @@
                   "type": "string",
                   "nullable": true,
                   "metadata": {
-                    "description": "Required. Fqdn that resolves to private endpoint IP address."
+                    "description": "Optional. FQDN that resolves to private endpoint IP address."
                   }
                 },
                 "ipAddresses": {
@@ -738,12 +737,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "2521126347714866146"
+              "version": "0.33.13.18514",
+              "templateHash": "16170611451956085210"
             },
             "name": "EventGrid Topic Event Subscriptions",
-            "description": "This module deploys an Event Grid Topic Event Subscription.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Event Grid Topic Event Subscription."
           },
           "parameters": {
             "name": {
@@ -1679,10 +1677,11 @@
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",
+      "nullable": true,
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[coalesce(tryGet(tryGet(reference('topic', '2021-06-01-preview', 'full'), 'identity'), 'principalId'), '')]"
+      "value": "[tryGet(tryGet(reference('topic', '2021-06-01-preview', 'full'), 'identity'), 'principalId')]"
     },
     "privateEndpoints": {
       "type": "array",

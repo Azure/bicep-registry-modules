@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.27.1.19265",
-      "templateHash": "289094531739005234"
+      "version": "0.32.4.45862",
+      "templateHash": "16775573492614816510"
     },
     "name": "Azure Cosmos DB MongoDB vCore cluster",
-    "description": "This module deploys a Azure Cosmos DB MongoDB vCore cluster.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Azure Cosmos DB MongoDB vCore cluster.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case."
   },
   "definitions": {
     "diagnosticSettingType": {
@@ -329,7 +328,7 @@
                   "type": "string",
                   "nullable": true,
                   "metadata": {
-                    "description": "Required. Fqdn that resolves to private endpoint ip address."
+                    "description": "Optional. FQDN that resolves to private endpoint IP address."
                   }
                 },
                 "ipAddresses": {
@@ -845,12 +844,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.27.1.19265",
-              "templateHash": "11076682219298980277"
+              "version": "0.32.4.45862",
+              "templateHash": "1544899685990336416"
             },
             "name": "Azure Cosmos DB MongoDB vCore Cluster Config FireWall Rules",
-            "description": "This module config firewall rules for the Azure Cosmos DB MongoDB vCore cluster.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module config firewall rules for the Azure Cosmos DB MongoDB vCore cluster."
           },
           "parameters": {
             "mongoClusterName": {
@@ -945,8 +943,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.27.1.19265",
-              "templateHash": "4835482779180953345"
+              "version": "0.32.4.45862",
+              "templateHash": "7635336304585068699"
             }
           },
           "definitions": {
@@ -1022,10 +1020,7 @@
               "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('secretsToSet')[copyIndex()].name)]",
               "properties": {
                 "value": "[parameters('secretsToSet')[copyIndex()].value]"
-              },
-              "dependsOn": [
-                "keyVault"
-              ]
+              }
             }
           },
           "outputs": {

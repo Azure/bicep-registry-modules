@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
 metadata name = 'Public access'
-metadata description = 'This instance deploys the module with public access.'
+metadata description = 'This instance deploys the module with public access and most of its features enabled.'
 
 // ========== //
 // Parameters //
@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-dbforpostgresql.flexibleserv
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'dfpsfsp'
+param serviceShort string = 'dfpspub'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -42,7 +42,7 @@ module nestedDependencies 'dependencies.bicep' = {
 
 // Diagnostics
 // ===========
-module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
   params: {
@@ -143,6 +143,7 @@ module testDeployment '../../../main.bicep' = [
           startIpAddress: '100.100.100.1'
         }
       ]
+      publicNetworkAccess: 'Enabled'
       geoRedundantBackup: 'Disabled'
       highAvailability: 'SameZone'
       location: resourceLocation

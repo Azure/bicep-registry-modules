@@ -43,7 +43,7 @@ module nestedDependencies 'dependencies.bicep' = {
 
 // Diagnostics
 // ===========
-module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
   params: {
@@ -110,7 +110,6 @@ module testDeployment '../../../main.bicep' = [
       }
       localUsers: [
         {
-          storageAccountName: '${namePrefix}${serviceShort}001'
           name: 'testuser'
           hasSharedKey: false
           hasSshKey: true
@@ -154,8 +153,6 @@ module testDeployment '../../../main.bicep' = [
             metadata: {
               testKey: 'testValue'
             }
-            enableWORM: true
-            WORMRetention: 666
             allowProtectedAppendWrites: false
           }
         ]

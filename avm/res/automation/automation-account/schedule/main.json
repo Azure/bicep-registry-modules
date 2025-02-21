@@ -4,12 +4,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "6299933839999486418"
+      "version": "0.32.4.45862",
+      "templateHash": "6875246782544956895"
     },
     "name": "Automation Account Schedules",
-    "description": "This module deploys an Azure Automation Account Schedule.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Azure Automation Account Schedule."
   },
   "parameters": {
     "name": {

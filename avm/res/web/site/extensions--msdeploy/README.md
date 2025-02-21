@@ -12,7 +12,7 @@ This module deploys a Site extension for MSDeploy.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Web/sites/extensions` | [2023-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/sites/extensions) |
+| `Microsoft.Web/sites/extensions` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/extensions) |
 
 ## Parameters
 
@@ -21,6 +21,11 @@ This module deploys a Site extension for MSDeploy.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`appName`](#parameter-appname) | string | The name of the parent site resource. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
 | [`msDeployConfiguration`](#parameter-msdeployconfiguration) | object | Sets the MSDeployment Properties. |
 
 ### Parameter: `appName`

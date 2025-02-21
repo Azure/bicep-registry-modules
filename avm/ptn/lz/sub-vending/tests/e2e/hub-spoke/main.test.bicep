@@ -6,9 +6,9 @@ targetScope = 'managementGroup'
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
 
-// This parameter needs to be updated with the billing account and the enrollment account of your enviornment.
-@description('Optional. The subscription billing scope.')
-param subscriptionBillingScope string = 'providers/Microsoft.Billing/billingAccounts/7690848/enrollmentAccounts/350580'
+@description('Required. The scope of the subscription billing. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-SubscriptionBillingScope\'.')
+@secure()
+param subscriptionBillingScope string = ''
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -17,7 +17,7 @@ param namePrefix string = '#_namePrefix_#'
 param serviceShort string = 'ssahs'
 
 @description('Optional. A short guid for the subscription name.')
-param subscriptionGuid string = toLower(substring(newGuid(), 0, 3))
+param subscriptionGuid string = toLower(substring(newGuid(), 0, 4))
 
 @description('Optional. The subscription id of the existing hub virtual network.')
 param vnetHubSubId string = '9948cae8-8c7c-4f5f-81c1-c53317cab23d'

@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "17036957862982683599"
+      "version": "0.33.93.31351",
+      "templateHash": "273590710214674608"
     },
     "name": "API Management Service APIs",
-    "description": "This module deploys an API Management Service API.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an API Management Service API."
   },
   "parameters": {
     "name": {
@@ -245,10 +244,7 @@
         "type": "[parameters('type')]",
         "value": "[parameters('value')]",
         "wsdlSelector": "[coalesce(parameters('wsdlSelector'), createObject())]"
-      },
-      "dependsOn": [
-        "service"
-      ]
+      }
     },
     "policy": {
       "copy": {
@@ -283,12 +279,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "5643177447182050438"
+              "version": "0.33.93.31351",
+              "templateHash": "1494563992508164069"
             },
             "name": "API Management Service APIs Policies",
-            "description": "This module deploys an API Management Service API Policy.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an API Management Service API Policy."
           },
           "parameters": {
             "apiManagementServiceName": {
@@ -430,12 +425,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "2531959928497745895"
+              "version": "0.33.93.31351",
+              "templateHash": "13183080858238494781"
             },
             "name": "API Management Service APIs Diagnostics.",
-            "description": "This module deploys an API Management Service API Diagnostics.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an API Management Service API Diagnostics."
           },
           "parameters": {
             "apiManagementServiceName": {

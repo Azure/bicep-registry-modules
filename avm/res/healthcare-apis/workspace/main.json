@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "17512289027426655191"
+      "version": "0.32.4.45862",
+      "templateHash": "8497599531477204854"
     },
     "name": "Healthcare API Workspaces",
-    "description": "This module deploys a Healthcare API Workspace.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Healthcare API Workspace."
   },
   "definitions": {
     "lockType": {
@@ -36,80 +35,87 @@
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+        }
+      }
     },
     "roleAssignmentType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
-            }
-          },
-          "roleDefinitionIdOrName": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-            }
-          },
-          "principalId": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-            }
-          },
-          "principalType": {
-            "type": "string",
-            "allowedValues": [
-              "Device",
-              "ForeignGroup",
-              "Group",
-              "ServicePrincipal",
-              "User"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The principal type of the assigned principal ID."
-            }
-          },
-          "description": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The description of the role assignment."
-            }
-          },
-          "condition": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-            }
-          },
-          "conditionVersion": {
-            "type": "string",
-            "allowedValues": [
-              "2.0"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Version of the condition."
-            }
-          },
-          "delegatedManagedIdentityResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The Resource Id of the delegated managed identity resource."
-            }
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+          }
+        },
+        "roleDefinitionIdOrName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+          }
+        },
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+          }
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "Device",
+            "ForeignGroup",
+            "Group",
+            "ServicePrincipal",
+            "User"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The principal type of the assigned principal ID."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The description of the role assignment."
+          }
+        },
+        "condition": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+          }
+        },
+        "conditionVersion": {
+          "type": "string",
+          "allowedValues": [
+            "2.0"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Version of the condition."
+          }
+        },
+        "delegatedManagedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Resource Id of the delegated managed identity resource."
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "description": "An AVM-aligned type for a role assignment.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+        }
+      }
     }
   },
   "parameters": {
@@ -130,12 +136,17 @@
     },
     "lock": {
       "$ref": "#/definitions/lockType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The lock settings of the service."
       }
     },
     "roleAssignments": {
-      "$ref": "#/definitions/roleAssignmentType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/roleAssignmentType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Array of role assignments to create."
       }
@@ -382,12 +393,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "17664239331720913904"
+              "version": "0.32.4.45862",
+              "templateHash": "720257412430408145"
             },
             "name": "Healthcare API Workspace FHIR Services",
-            "description": "This module deploys a Healthcare API Workspace FHIR Service.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Healthcare API Workspace FHIR Service."
           },
           "definitions": {
             "managedIdentitiesType": {
@@ -922,10 +932,7 @@
                   "loginServers": "[parameters('acrLoginServers')]",
                   "ociArtifacts": "[parameters('acrOciArtifacts')]"
                 }
-              },
-              "dependsOn": [
-                "workspace"
-              ]
+              }
             },
             "fhir_lock": {
               "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
@@ -1116,12 +1123,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "1751217677948929755"
+              "version": "0.32.4.45862",
+              "templateHash": "15725443146645806343"
             },
             "name": "Healthcare API Workspace DICOM Services",
-            "description": "This module deploys a Healthcare API Workspace DICOM Service.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Healthcare API Workspace DICOM Service."
           },
           "definitions": {
             "managedIdentitiesType": {
@@ -1318,7 +1324,7 @@
             "corsHeaders": {
               "type": "array",
               "metadata": {
-                "description": "Optional. Specify HTTP headers which can be used during the request. Use \"*\" for any header."
+                "description": "Required. Specify HTTP headers which can be used during the request. Use \"*\" for any header."
               }
             },
             "corsMethods": {
@@ -1421,10 +1427,7 @@
                   "origins": "[parameters('corsOrigins')]"
                 },
                 "publicNetworkAccess": "[parameters('publicNetworkAccess')]"
-              },
-              "dependsOn": [
-                "workspace"
-              ]
+              }
             },
             "dicom_lock": {
               "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
@@ -1583,12 +1586,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "13346867265471851551"
+              "version": "0.32.4.45862",
+              "templateHash": "15307253086923849247"
             },
             "name": "Healthcare API Workspace IoT Connectors",
-            "description": "This module deploys a Healthcare API Workspace IoT Connector.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Healthcare API Workspace IoT Connector."
           },
           "definitions": {
             "managedIdentitiesType": {
@@ -1801,7 +1803,7 @@
                 "template": []
               },
               "metadata": {
-                "description": "Required. The mapping JSON that determines how incoming device data is normalized."
+                "description": "Optional. The mapping JSON that determines how incoming device data is normalized."
               }
             },
             "fhirdestination": {
@@ -1871,10 +1873,7 @@
                 "deviceMapping": {
                   "content": "[parameters('deviceMapping')]"
                 }
-              },
-              "dependsOn": [
-                "workspace"
-              ]
+              }
             },
             "iotConnector_lock": {
               "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
@@ -1970,12 +1969,11 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.29.47.4906",
-                      "templateHash": "12659357611219228021"
+                      "version": "0.32.4.45862",
+                      "templateHash": "4307853570131837135"
                     },
                     "name": "Healthcare API Workspace IoT Connector FHIR Destinations",
-                    "description": "This module deploys a Healthcare API Workspace IoT Connector FHIR Destination.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a Healthcare API Workspace IoT Connector FHIR Destination."
                   },
                   "parameters": {
                     "name": {
@@ -1992,7 +1990,7 @@
                         "template": []
                       },
                       "metadata": {
-                        "description": "Required. The mapping JSON that determines how normalized data is converted to FHIR Observations."
+                        "description": "Optional. The mapping JSON that determines how normalized data is converted to FHIR Observations."
                       }
                     },
                     "iotConnectorName": {

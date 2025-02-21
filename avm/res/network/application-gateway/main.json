@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "17187265964548508241"
+      "version": "0.32.4.45862",
+      "templateHash": "5192277678912295849"
     },
     "name": "Network Application Gateways",
-    "description": "This module deploys a Network Application Gateway.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Network Application Gateway."
   },
   "definitions": {
     "managedIdentitiesType": {
@@ -21,6 +20,7 @@
           "items": {
             "type": "string"
           },
+          "nullable": true,
           "metadata": {
             "description": "Optional. The resource ID(s) to assign to the resource."
           }
@@ -228,7 +228,7 @@
                   "type": "string",
                   "nullable": true,
                   "metadata": {
-                    "description": "Required. Fqdn that resolves to private endpoint IP address."
+                    "description": "Optional. FQDN that resolves to private endpoint IP address."
                   }
                 },
                 "ipAddresses": {

@@ -17,23 +17,11 @@ param serviceShort string = 'dddaumr'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-// Pipeline is selecting random regions which dont support all cosmos features and have constraints when creating new cosmos
+// The default pipeline is selecting random regions which don't have capacity for Azure Cosmos DB or support all Azure Cosmos DB features when creating new accounts.
 #disable-next-line no-hardcoded-location
-var enforcedLocation = 'eastasia'
-
-// ============ //
-// Dependencies //
-// ============ //
-
-module nestedDependencies 'dependencies.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
-  params: {
-    location: enforcedLocation
-    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    pairedRegionScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
-  }
-}
+var enforcedLocation = 'australiaeast'
+#disable-next-line no-hardcoded-location
+var enforcedPairedLocation = 'uksouth'
 
 // ============== //
 // General resources
@@ -51,14 +39,17 @@ module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}'
   params: {
-    automaticFailover: false
     location: enforcedLocation
+    name: '${namePrefix}-multi-region'
+
+    automaticFailover: true
+    enableMultipleWriteLocations: true
+
     backupPolicyType: 'Periodic'
     backupIntervalInMinutes: 300
     backupStorageRedundancy: 'Zone'
     backupRetentionIntervalInHours: 16
-    enableMultipleWriteLocations: true
-    name: '${namePrefix}-multi-region'
+
     locations: [
       {
         failoverPriority: 0
@@ -68,7 +59,7 @@ module testDeployment '../../../main.bicep' = {
       {
         failoverPriority: 1
         isZoneRedundant: true
-        locationName: nestedDependencies.outputs.pairedRegionName
+        locationName: enforcedPairedLocation
       }
     ]
     sqlDatabases: [

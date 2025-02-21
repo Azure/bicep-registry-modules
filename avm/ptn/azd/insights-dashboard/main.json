@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "16185324363882257699"
+      "version": "0.32.4.45862",
+      "templateHash": "10438437813296683405"
     },
     "name": "Application Insights Components",
-    "description": "Creates an Application Insights instance based on an existing Log Analytics workspace.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case.",
-    "owner": "Azure/module-maintainers"
+    "description": "Creates an Application Insights instance based on an existing Log Analytics workspace.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case."
   },
   "parameters": {
     "name": {
@@ -121,6 +120,9 @@
           },
           "workspaceResourceId": {
             "value": "[parameters('logAnalyticsWorkspaceResourceId')]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           }
         },
         "template": {
@@ -758,6 +760,9 @@
           },
           "applicationInsightsResourceId": {
             "value": "[reference('applicationInsights').outputs.resourceId.value]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           }
         },
         "template": {
@@ -767,12 +772,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "12382758204242351890"
+              "version": "0.32.4.45862",
+              "templateHash": "947470645489012293"
             },
             "name": "Azure Portal Dashboard",
-            "description": "Creates a dashboard for an Application Insights instance.",
-            "owner": "Azure/module-maintainers"
+            "description": "Creates a dashboard for an Application Insights instance."
           },
           "parameters": {
             "name": {
@@ -798,6 +802,13 @@
               "defaultValue": "[resourceGroup().location]",
               "metadata": {
                 "description": "Optional. Location for all Resources."
+              }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
               }
             },
             "tags": {
@@ -828,6 +839,9 @@
                   },
                   "tags": {
                     "value": "[parameters('tags')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
                   },
                   "lenses": {
                     "value": [

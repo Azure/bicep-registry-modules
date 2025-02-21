@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "17272299626990757362"
+      "version": "0.32.4.45862",
+      "templateHash": "11582444553750572233"
     },
     "name": "Kusto Cluster",
-    "description": "This module deploys a Kusto Cluster.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Kusto Cluster."
   },
   "definitions": {
     "acceptedAudienceType": {
@@ -19,131 +18,272 @@
         "value": {
           "type": "string",
           "metadata": {
-            "description": "Optional. GUID or valid URL representing an accepted audience."
+            "description": "Required. GUID or valid URL representing an accepted audience."
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "__bicep_export!": true
+      }
     },
-    "diagnosticSettingType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of diagnostic setting."
-            }
-          },
-          "logCategoriesAndGroups": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "category": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
-                  }
-                },
-                "categoryGroup": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
-                  }
-                },
-                "enabled": {
-                  "type": "bool",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
-                  }
-                }
-              }
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
-            }
-          },
-          "metricCategories": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "category": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
-                  }
-                },
-                "enabled": {
-                  "type": "bool",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
-                  }
-                }
-              }
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
-            }
-          },
-          "logAnalyticsDestinationType": {
-            "type": "string",
-            "allowedValues": [
-              "AzureDiagnostics",
-              "Dedicated"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
-            }
-          },
-          "workspaceResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-            }
-          },
-          "storageAccountResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-            }
-          },
-          "eventHubAuthorizationRuleResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
-            }
-          },
-          "eventHubName": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-            }
-          },
-          "marketplacePartnerResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
-            }
+    "languageExtensionType": {
+      "type": "object",
+      "properties": {
+        "languageExtensionCustomImageName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the language extension custom image."
+          }
+        },
+        "languageExtensionImageName": {
+          "type": "string",
+          "allowedValues": [
+            "Python3_10_8",
+            "Python3_10_8_DL",
+            "Python3_6_5",
+            "PythonCustomImage",
+            "R"
+          ],
+          "metadata": {
+            "description": "Required. The name of the language extension image."
+          }
+        },
+        "languageExtensionName": {
+          "type": "string",
+          "allowedValues": [
+            "PYTHON",
+            "R"
+          ],
+          "metadata": {
+            "description": "Required. The name of the language extension."
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "trustedExternalTenantType": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. GUID representing an external tenant."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "virtualNetworkConfigurationType": {
+      "type": "object",
+      "properties": {
+        "dataManagementPublicIpResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The public IP address resource id of the data management service.."
+          }
+        },
+        "enginePublicIpResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The public IP address resource id of the engine service."
+          }
+        },
+        "subnetResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of the subnet to which to deploy the Kusto Cluster."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "principalAssignmentType": {
+      "type": "object",
+      "properties": {
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The principal id assigned to the Kusto Cluster principal. It can be a user email, application id, or security group name."
+          }
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "App",
+            "Group",
+            "User"
+          ],
+          "metadata": {
+            "description": "Required. The principal type of the principal id."
+          }
+        },
+        "role": {
+          "type": "string",
+          "allowedValues": [
+            "AllDatabasesAdmin",
+            "AllDatabasesViewer"
+          ],
+          "metadata": {
+            "description": "Required. The Kusto Cluster role to be assigned to the principal id."
+          }
+        },
+        "tenantId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The tenant id of the principal."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "databaseType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the Kusto Cluster database."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "ReadOnlyFollowing",
+            "ReadWrite"
+          ],
+          "metadata": {
+            "description": "Required. The object type of the databse."
+          }
+        },
+        "readWriteProperties": {
+          "$ref": "#/definitions/databaseReadWriteType",
+          "nullable": true,
+          "metadata": {
+            "description": "Conditional. Required if the database kind is ReadWrite. Contains the properties of the database."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "_1.privateEndpointCustomDnsConfigType": {
+      "type": "object",
+      "properties": {
+        "fqdn": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. FQDN that resolves to private endpoint IP address."
+          }
+        },
+        "ipAddresses": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "Required. A list of private IP addresses of the private endpoint."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+        }
+      }
+    },
+    "_1.privateEndpointIpConfigurationType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the resource that is unique within a resource group."
+          }
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "groupId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to."
+              }
+            },
+            "memberName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The member name of a group obtained from the remote resource that this private endpoint should connect to."
+              }
+            },
+            "privateIPAddress": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. A private IP address obtained from the private endpoint's subnet."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. Properties of private endpoint IP configurations."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+        }
+      }
+    },
+    "_1.privateEndpointPrivateDnsZoneGroupType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the Private DNS Zone Group."
+          }
+        },
+        "privateDnsZoneGroupConfigs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The name of the private DNS Zone Group config."
+                }
+              },
+              "privateDnsZoneResourceId": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. The resource id of the private DNS zone."
+                }
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. The private DNS Zone Groups to associate the Private Endpoint. A DNS Zone Group can support up to 5 DNS zones."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+        }
+      }
     },
     "customerManagedKeyType": {
       "type": "object",
@@ -164,65 +304,208 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The version of the customer managed key to reference for encryption. If not provided, using 'latest'."
+            "description": "Optional. The version of the customer managed key to reference for encryption. If not provided, the deployment will use the latest version available at deployment time."
           }
         },
         "userAssignedIdentityResourceId": {
           "type": "string",
+          "nullable": true,
           "metadata": {
-            "description": "Required. User assigned identity to use when fetching the customer managed key."
+            "description": "Optional. User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use."
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "description": "An AVM-aligned type for a customer-managed key. To be used if the resource type does not support auto-rotation of the customer-managed key.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+        }
+      }
     },
-    "kustoTierType": {
-      "type": "string",
-      "allowedValues": [
-        "Basic",
-        "Standard"
-      ]
-    },
-    "languageExtensionCustomImageNameType": {
-      "type": "string",
-      "allowedValues": [
-        "Python3_10_8",
-        "Python3_10_8_DL",
-        "Python3_6_5",
-        "PythonCustomImage",
-        "R"
-      ]
-    },
-    "languageExtensionNameType": {
-      "type": "string",
-      "allowedValues": [
-        "PYTHON",
-        "R"
-      ]
-    },
-    "languageExtensionType": {
+    "databaseReadWriteType": {
       "type": "object",
       "properties": {
-        "languageExtensionCustomImageName": {
+        "hotCachePeriod": {
           "type": "string",
+          "nullable": true,
           "metadata": {
-            "description": "Required. The name of the language extension custom image."
+            "description": "Optional. Te time the data should be kept in cache for fast queries in TimeSpan."
           }
         },
-        "languageExtensionImageName": {
-          "$ref": "#/definitions/languageExtensionCustomImageNameType",
+        "keyVaultProperties": {
+          "type": "object",
+          "properties": {
+            "keyName": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The name of the key."
+              }
+            },
+            "keyVaultUri": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The Uri of the key vault."
+              }
+            },
+            "keyVersion": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The version of the key."
+              }
+            },
+            "userIdentity": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The user identity."
+              }
+            }
+          },
+          "nullable": true,
           "metadata": {
-            "description": "Required. The name of the language extension image."
+            "description": "Optional. The properties of the key vault."
           }
         },
-        "languageExtensionName": {
-          "$ref": "#/definitions/languageExtensionNameType",
+        "softDeletePeriod": {
+          "type": "string",
+          "nullable": true,
           "metadata": {
-            "description": "Required. The name of the language extension."
+            "description": "Optional. The time the data should be kept before it stops being accessible to queries in TimeSpan."
           }
         }
       },
-      "nullable": true
+      "nullable": true,
+      "metadata": {
+        "description": "Conditional. The properties of the database if using read-write.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "database/main.bicep"
+        }
+      }
+    },
+    "diagnosticSettingFullType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the diagnostic setting."
+          }
+        },
+        "logCategoriesAndGroups": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "category": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
+                }
+              },
+              "categoryGroup": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
+                }
+              },
+              "enabled": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
+          }
+        },
+        "metricCategories": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "category": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
+                }
+              },
+              "enabled": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
+          }
+        },
+        "logAnalyticsDestinationType": {
+          "type": "string",
+          "allowedValues": [
+            "AzureDiagnostics",
+            "Dedicated"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
+          }
+        },
+        "workspaceResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "storageAccountResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "eventHubAuthorizationRuleResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
+          }
+        },
+        "eventHubName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "marketplacePartnerResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+        }
+      }
     },
     "lockType": {
       "type": "object",
@@ -247,9 +530,14 @@
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+        }
+      }
     },
-    "managedIdentitiesType": {
+    "managedIdentityAllType": {
       "type": "object",
       "properties": {
         "systemAssigned": {
@@ -264,346 +552,234 @@
           "items": {
             "type": "string"
           },
+          "nullable": true,
           "metadata": {
-            "description": "Optional. The resource id(s) to assign to the resource."
+            "description": "Optional. The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption."
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+        }
+      }
     },
-    "privateEndpointType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of the private endpoint."
-            }
+    "privateEndpointMultiServiceType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the private endpoint."
+          }
+        },
+        "location": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The location to deploy the private endpoint to."
+          }
+        },
+        "privateLinkServiceConnectionName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the private link connection to create."
+          }
+        },
+        "service": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The subresource to deploy the private endpoint for. For example \"blob\", \"table\", \"queue\" or \"file\" for a Storage Account's Private Endpoints."
+          }
+        },
+        "subnetResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Resource ID of the subnet where the endpoint needs to be created."
+          }
+        },
+        "privateDnsZoneGroup": {
+          "$ref": "#/definitions/_1.privateEndpointPrivateDnsZoneGroupType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The private DNS zone group to configure for the private endpoint."
+          }
+        },
+        "isManualConnection": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. If Manual Private Link Connection is required."
+          }
+        },
+        "manualConnectionRequestMessage": {
+          "type": "string",
+          "nullable": true,
+          "maxLength": 140,
+          "metadata": {
+            "description": "Optional. A message passed to the owner of the remote resource with the manual connection request."
+          }
+        },
+        "customDnsConfigs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/_1.privateEndpointCustomDnsConfigType"
           },
-          "location": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The location to deploy the private endpoint to."
-            }
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Custom DNS configurations."
+          }
+        },
+        "ipConfigurations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/_1.privateEndpointIpConfigurationType"
           },
-          "privateLinkServiceConnectionName": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of the private link connection to create."
-            }
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints."
+          }
+        },
+        "applicationSecurityGroupResourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
           },
-          "service": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The subresource to deploy the private endpoint for. For example \"blob\", \"table\", \"queue\" or \"file\"."
-            }
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Application security groups in which the private endpoint IP configuration is included."
+          }
+        },
+        "customNetworkInterfaceName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The custom name of the network interface attached to the private endpoint."
+          }
+        },
+        "lock": {
+          "$ref": "#/definitions/lockType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        },
+        "roleAssignments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/roleAssignmentType"
           },
-          "subnetResourceId": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. Resource ID of the subnet where the endpoint needs to be created."
-            }
-          },
-          "privateDnsZoneGroup": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "type": "string",
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. The name of the Private DNS Zone Group."
-                }
-              },
-              "privateDnsZoneGroupConfigs": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "name": {
-                      "type": "string",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. The name of the private DNS zone group config."
-                      }
-                    },
-                    "privateDnsZoneResourceId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The resource id of the private DNS zone."
-                      }
-                    }
-                  }
-                },
-                "metadata": {
-                  "description": "Required. The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones."
-                }
-              }
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The private DNS zone group to configure for the private endpoint."
-            }
-          },
-          "isManualConnection": {
-            "type": "bool",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. If Manual Private Link Connection is required."
-            }
-          },
-          "manualConnectionRequestMessage": {
-            "type": "string",
-            "nullable": true,
-            "maxLength": 140,
-            "metadata": {
-              "description": "Optional. A message passed to the owner of the remote resource with the manual connection request."
-            }
-          },
-          "customDnsConfigs": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "fqdn": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Required. Fqdn that resolves to private endpoint IP address."
-                  }
-                },
-                "ipAddresses": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  },
-                  "metadata": {
-                    "description": "Required. A list of private IP addresses of the private endpoint."
-                  }
-                }
-              }
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Custom DNS configurations."
-            }
-          },
-          "ipConfigurations": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The name of the resource that is unique within a resource group."
-                  }
-                },
-                "properties": {
-                  "type": "object",
-                  "properties": {
-                    "groupId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to."
-                      }
-                    },
-                    "memberName": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The member name of a group obtained from the remote resource that this private endpoint should connect to."
-                      }
-                    },
-                    "privateIPAddress": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. A private IP address obtained from the private endpoint's subnet."
-                      }
-                    }
-                  },
-                  "metadata": {
-                    "description": "Required. Properties of private endpoint IP configurations."
-                  }
-                }
-              }
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints."
-            }
-          },
-          "applicationSecurityGroupResourceIds": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Application security groups in which the private endpoint IP configuration is included."
-            }
-          },
-          "customNetworkInterfaceName": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The custom name of the network interface attached to the private endpoint."
-            }
-          },
-          "lock": {
-            "$ref": "#/definitions/lockType",
-            "metadata": {
-              "description": "Optional. Specify the type of lock."
-            }
-          },
-          "roleAssignments": {
-            "$ref": "#/definitions/roleAssignmentType",
-            "metadata": {
-              "description": "Optional. Array of role assignments to create."
-            }
-          },
-          "tags": {
-            "type": "object",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Tags to be applied on all resources/resource groups in this deployment."
-            }
-          },
-          "enableTelemetry": {
-            "type": "bool",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Enable/Disable usage telemetry for module."
-            }
-          },
-          "resourceGroupName": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Specify if you want to deploy the Private Endpoint into a different resource group than the main resource."
-            }
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Array of role assignments to create."
+          }
+        },
+        "tags": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Tags to be applied on all resources/resource groups in this deployment."
+          }
+        },
+        "enableTelemetry": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enable/Disable usage telemetry for module."
+          }
+        },
+        "resourceGroupName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify if you want to deploy the Private Endpoint into a different resource group than the main resource."
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "description": "An AVM-aligned type for a private endpoint. To be used if the private endpoint's default service / groupId can NOT be assumed (i.e., for services that have more than one subresource, like Storage Account with Blob (blob, table, queue, file, ...).",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+        }
+      }
     },
     "roleAssignmentType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
-            }
-          },
-          "roleDefinitionIdOrName": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-            }
-          },
-          "principalId": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-            }
-          },
-          "principalType": {
-            "type": "string",
-            "allowedValues": [
-              "Device",
-              "ForeignGroup",
-              "Group",
-              "ServicePrincipal",
-              "User"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The principal type of the assigned principal ID."
-            }
-          },
-          "description": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The description of the role assignment."
-            }
-          },
-          "condition": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-            }
-          },
-          "conditionVersion": {
-            "type": "string",
-            "allowedValues": [
-              "2.0"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Version of the condition."
-            }
-          },
-          "delegatedManagedIdentityResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The Resource Id of the delegated managed identity resource."
-            }
-          }
-        }
-      },
-      "nullable": true
-    },
-    "trustedExternalTenantType": {
       "type": "object",
       "properties": {
-        "value": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+          }
+        },
+        "roleDefinitionIdOrName": {
           "type": "string",
           "metadata": {
-            "description": "Required. GUID representing an external tenant."
+            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+          }
+        },
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+          }
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "Device",
+            "ForeignGroup",
+            "Group",
+            "ServicePrincipal",
+            "User"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The principal type of the assigned principal ID."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The description of the role assignment."
+          }
+        },
+        "condition": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+          }
+        },
+        "conditionVersion": {
+          "type": "string",
+          "allowedValues": [
+            "2.0"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Version of the condition."
+          }
+        },
+        "delegatedManagedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Resource Id of the delegated managed identity resource."
           }
         }
       },
-      "nullable": true
-    },
-    "virtualNetworkConfigurationType": {
-      "type": "object",
-      "properties": {
-        "dataManagementPublicIpId": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The public IP address resource id of the data management service.."
-          }
-        },
-        "enableVirtualNetworkInjection": {
-          "type": "bool",
-          "metadata": {
-            "description": "Required. Enable/disable virtual network injection. When enabled, the Kusto Cluster will be deployed into the specified subnet. When disabled, the Kusto Cluster will be removed from the specified subnet."
-          }
-        },
-        "enginePublicIpId": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The public IP address resource id of the engine service."
-          }
-        },
-        "subnetId": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The resource ID of the subnet to which to deploy the Kusto Cluster."
-          }
+      "metadata": {
+        "description": "An AVM-aligned type for a role assignment.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
         }
-      },
-      "nullable": true
+      }
     }
   },
   "parameters": {
@@ -636,14 +812,19 @@
       }
     },
     "tier": {
-      "$ref": "#/definitions/kustoTierType",
+      "type": "string",
       "defaultValue": "Standard",
+      "allowedValues": [
+        "Basic",
+        "Standard"
+      ],
       "metadata": {
         "description": "Optional. The tier of the Kusto Cluster."
       }
     },
     "managedIdentities": {
-      "$ref": "#/definitions/managedIdentitiesType",
+      "$ref": "#/definitions/managedIdentityAllType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The managed identity definition for this resource."
       }
@@ -726,6 +907,7 @@
     },
     "customerManagedKey": {
       "$ref": "#/definitions/customerManagedKeyType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The customer managed key definition."
       }
@@ -810,18 +992,24 @@
     },
     "virtualNetworkConfiguration": {
       "$ref": "#/definitions/virtualNetworkConfigurationType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The virtual network configuration of the Kusto Cluster."
       }
     },
     "lock": {
       "$ref": "#/definitions/lockType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The lock settings of the service."
       }
     },
     "roleAssignments": {
-      "$ref": "#/definitions/roleAssignmentType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/roleAssignmentType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Array of role assignments to create."
       }
@@ -841,7 +1029,11 @@
       }
     },
     "privateEndpoints": {
-      "$ref": "#/definitions/privateEndpointType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/privateEndpointMultiServiceType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible."
       }
@@ -854,16 +1046,33 @@
       }
     },
     "diagnosticSettings": {
-      "$ref": "#/definitions/diagnosticSettingType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/diagnosticSettingFullType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. The diagnostic settings of the service."
       }
     },
     "principalAssignments": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "$ref": "#/definitions/principalAssignmentType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. The Principal Assignments for the Kusto Cluster."
+      }
+    },
+    "databases": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/databaseType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The Kusto Cluster databases."
       }
     }
   },
@@ -891,10 +1100,7 @@
       "apiVersion": "2023-07-01",
       "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '//'), '/')[2]]",
       "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '////'), '/')[4]]",
-      "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]",
-      "dependsOn": [
-        "cMKKeyVault"
-      ]
+      "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]"
     },
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
@@ -927,7 +1133,7 @@
     },
     "kustoCluster": {
       "type": "Microsoft.Kusto/clusters",
-      "apiVersion": "2023-08-15",
+      "apiVersion": "2024-04-13",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -947,7 +1153,7 @@
         "enablePurge": "[parameters('enablePurge')]",
         "enableStreamingIngest": "[parameters('enableStreamingIngest')]",
         "engineType": "[parameters('engineType')]",
-        "keyVaultProperties": "[parameters('customerManagedKey')]",
+        "keyVaultProperties": "[if(not(empty(parameters('customerManagedKey'))), createObject('keyName', parameters('customerManagedKey').keyName, 'keyVaultUri', reference('cMKKeyVault').vaultUri, 'keyVersion', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'keyVersion'), ''))), parameters('customerManagedKey').keyVersion, last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/'))), 'userIdentity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), parameters('customerManagedKey').userAssignedIdentityResourceId, null())), null())]",
         "languageExtensions": {
           "value": "[parameters('languageExtensions')]"
         },
@@ -962,9 +1168,13 @@
         "restrictOutboundNetworkAccess": "[if(parameters('enableRestrictOutboundNetworkAccess'), 'Enabled', 'Disabled')]",
         "trustedExternalTenants": "[parameters('trustedExternalTenants')]",
         "virtualClusterGraduationProperties": "[parameters('virtualClusterGraduationProperties')]",
-        "virtualNetworkConfiguration": "[parameters('virtualNetworkConfiguration')]"
+        "virtualNetworkConfiguration": "[if(not(empty(parameters('virtualNetworkConfiguration'))), createObject('dataManagementPublicIpId', parameters('virtualNetworkConfiguration').dataManagementPublicIpResourceId, 'enginePublicIpId', parameters('virtualNetworkConfiguration').enginePublicIpResourceId, 'subnetId', parameters('virtualNetworkConfiguration').subnetResourceId), null())]"
       },
-      "zones": "[if(parameters('enableZoneRedundant'), createArray('1', '2', '3'), null())]"
+      "zones": "[if(parameters('enableZoneRedundant'), createArray('1', '2', '3'), null())]",
+      "dependsOn": [
+        "cMKKeyVault::cMKKey",
+        "cMKKeyVault"
+      ]
     },
     "kustoCluster_diagnosticSettings": {
       "copy": {
@@ -1046,7 +1256,7 @@
     "kustoCluster_principalAssignments": {
       "copy": {
         "name": "kustoCluster_principalAssignments",
-        "count": "[length(parameters('principalAssignments'))]"
+        "count": "[length(coalesce(parameters('principalAssignments'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -1061,16 +1271,16 @@
             "value": "[parameters('name')]"
           },
           "principalId": {
-            "value": "[parameters('principalAssignments')[copyIndex()].principalId]"
+            "value": "[coalesce(parameters('principalAssignments'), createArray())[copyIndex()].principalId]"
           },
           "principalType": {
-            "value": "[parameters('principalAssignments')[copyIndex()].principalType]"
+            "value": "[coalesce(parameters('principalAssignments'), createArray())[copyIndex()].principalType]"
           },
           "role": {
-            "value": "[parameters('principalAssignments')[copyIndex()].role]"
+            "value": "[coalesce(parameters('principalAssignments'), createArray())[copyIndex()].role]"
           },
           "tenantId": {
-            "value": "[coalesce(tryGet(parameters('principalAssignments')[copyIndex()], 'tenantId'), tenant().tenantId)]"
+            "value": "[tryGet(coalesce(parameters('principalAssignments'), createArray())[copyIndex()], 'tenantId')]"
           }
         },
         "template": {
@@ -1079,12 +1289,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "15388375145433684348"
+              "version": "0.32.4.45862",
+              "templateHash": "12417822146116787074"
             },
             "name": "Kusto Cluster Principal Assignments",
-            "description": "This module deploys a Kusto Cluster Principal Assignment.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Kusto Cluster Principal Assignment."
           },
           "parameters": {
             "kustoClusterName": {
@@ -1939,6 +2148,199 @@
       "dependsOn": [
         "kustoCluster"
       ]
+    },
+    "kustoCluster_databases": {
+      "copy": {
+        "name": "kustoCluster_databases",
+        "count": "[length(coalesce(parameters('databases'), createArray()))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-kustoCluster-database-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[coalesce(parameters('databases'), createArray())[copyIndex()].name]"
+          },
+          "kustoClusterName": {
+            "value": "[parameters('name')]"
+          },
+          "databaseKind": {
+            "value": "[coalesce(parameters('databases'), createArray())[copyIndex()].kind]"
+          },
+          "databaseReadWriteProperties": "[if(equals(coalesce(parameters('databases'), createArray())[copyIndex()].kind, 'ReadWrite'), createObject('value', coalesce(parameters('databases'), createArray())[copyIndex()].readWriteProperties), createObject('value', null()))]"
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.32.4.45862",
+              "templateHash": "2230838564092408507"
+            },
+            "name": "Kusto Cluster Databases",
+            "description": "This module deploys a Kusto Cluster Database."
+          },
+          "definitions": {
+            "databaseReadWriteType": {
+              "type": "object",
+              "properties": {
+                "hotCachePeriod": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Te time the data should be kept in cache for fast queries in TimeSpan."
+                  }
+                },
+                "keyVaultProperties": {
+                  "type": "object",
+                  "properties": {
+                    "keyName": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The name of the key."
+                      }
+                    },
+                    "keyVaultUri": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The Uri of the key vault."
+                      }
+                    },
+                    "keyVersion": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The version of the key."
+                      }
+                    },
+                    "userIdentity": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The user identity."
+                      }
+                    }
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The properties of the key vault."
+                  }
+                },
+                "softDeletePeriod": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The time the data should be kept before it stops being accessible to queries in TimeSpan."
+                  }
+                }
+              },
+              "nullable": true,
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "Conditional. The properties of the database if using read-write."
+              }
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the Kusto Cluster database."
+              }
+            },
+            "kustoClusterName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent Kusto Cluster. Required if the template is used in a standalone deployment."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Optional. Location for the databases."
+              }
+            },
+            "databaseKind": {
+              "type": "string",
+              "defaultValue": "ReadWrite",
+              "allowedValues": [
+                "ReadWrite",
+                "ReadOnlyFollowing"
+              ],
+              "metadata": {
+                "description": "Optional. The object type of the databse."
+              }
+            },
+            "databaseReadWriteProperties": {
+              "$ref": "#/definitions/databaseReadWriteType",
+              "metadata": {
+                "description": "Optional. The properties of the database if using read-write. Only used if databaseKind is ReadWrite."
+              }
+            }
+          },
+          "resources": {
+            "kustoCluster": {
+              "existing": true,
+              "type": "Microsoft.Kusto/clusters",
+              "apiVersion": "2024-04-13",
+              "name": "[parameters('kustoClusterName')]"
+            },
+            "database_readOnly": {
+              "condition": "[equals(parameters('databaseKind'), 'ReadOnlyFollowing')]",
+              "type": "Microsoft.Kusto/clusters/databases",
+              "apiVersion": "2024-04-13",
+              "name": "[format('{0}/{1}', parameters('kustoClusterName'), parameters('name'))]",
+              "location": "[parameters('location')]",
+              "kind": "ReadOnlyFollowing"
+            },
+            "database_readWrite": {
+              "condition": "[equals(parameters('databaseKind'), 'ReadWrite')]",
+              "type": "Microsoft.Kusto/clusters/databases",
+              "apiVersion": "2024-04-13",
+              "name": "[format('{0}/{1}', parameters('kustoClusterName'), parameters('name'))]",
+              "location": "[parameters('location')]",
+              "kind": "ReadWrite",
+              "properties": "[coalesce(parameters('databaseReadWriteProperties'), null())]"
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the Kusto Cluster database."
+              },
+              "value": "[if(equals(parameters('databaseKind'), 'ReadOnlyFollowing'), parameters('name'), parameters('name'))]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the Kusto Cluster database."
+              },
+              "value": "[if(equals(parameters('databaseKind'), 'ReadOnlyFollowing'), resourceId('Microsoft.Kusto/clusters/databases', parameters('kustoClusterName'), parameters('name')), resourceId('Microsoft.Kusto/clusters/databases', parameters('kustoClusterName'), parameters('name')))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group containing the Kusto Cluster database."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "kustoCluster"
+      ]
     }
   },
   "outputs": {
@@ -1958,10 +2360,11 @@
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",
+      "nullable": true,
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[coalesce(tryGet(tryGet(reference('kustoCluster', '2023-08-15', 'full'), 'identity'), 'principalId'), '')]"
+      "value": "[tryGet(tryGet(reference('kustoCluster', '2024-04-13', 'full'), 'identity'), 'principalId')]"
     },
     "name": {
       "type": "string",
@@ -1975,7 +2378,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('kustoCluster', '2023-08-15', 'full').location]"
+      "value": "[reference('kustoCluster', '2024-04-13', 'full').location]"
     },
     "privateEndpoints": {
       "type": "array",
@@ -1990,6 +2393,19 @@
           "groupId": "[reference(format('kustoCluster_privateEndpoints[{0}]', copyIndex())).outputs.groupId.value]",
           "customDnsConfig": "[reference(format('kustoCluster_privateEndpoints[{0}]', copyIndex())).outputs.customDnsConfig.value]",
           "networkInterfaceIds": "[reference(format('kustoCluster_privateEndpoints[{0}]', copyIndex())).outputs.networkInterfaceIds.value]"
+        }
+      }
+    },
+    "databases": {
+      "type": "array",
+      "metadata": {
+        "description": "The databases of the kusto cluster."
+      },
+      "copy": {
+        "count": "[length(if(not(empty(parameters('databases'))), array(parameters('databases')), createArray()))]",
+        "input": {
+          "name": "[reference(format('kustoCluster_databases[{0}]', copyIndex())).outputs.name.value]",
+          "resourceId": "[reference(format('kustoCluster_databases[{0}]', copyIndex())).outputs.resourceId.value]"
         }
       }
     }

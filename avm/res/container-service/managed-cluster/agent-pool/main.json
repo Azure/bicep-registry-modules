@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "2004205618690542488"
+      "version": "0.33.93.31351",
+      "templateHash": "3323013309772683046"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Cluster Agent Pools",
-    "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool."
   },
   "parameters": {
     "managedClusterName": {
@@ -27,7 +26,14 @@
     },
     "availabilityZones": {
       "type": "array",
-      "nullable": true,
+      "items": {
+        "type": "int"
+      },
+      "defaultValue": [
+        1,
+        2,
+        3
+      ],
       "metadata": {
         "description": "Optional. The list of Availability zones to use for nodes. This can only be specified if the AgentPoolType property is \"VirtualMachineScaleSets\"."
       }
@@ -139,7 +145,7 @@
         "description": "Optional. The node labels to be persisted across all nodes in agent pool."
       }
     },
-    "nodePublicIpPrefixId": {
+    "nodePublicIpPrefixResourceId": {
       "type": "string",
       "nullable": true,
       "metadata": {
@@ -178,7 +184,7 @@
         "description": "Optional. The default is \"Ephemeral\" if the VM supports it and has a cache disk larger than the requested OSDiskSizeGB. Otherwise, defaults to \"Managed\". May not be changed after creation. For more information see Ephemeral OS (https://learn.microsoft.com/en-us/azure/aks/cluster-configuration#ephemeral-os)."
       }
     },
-    "osSku": {
+    "osSKU": {
       "type": "string",
       "nullable": true,
       "allowedValues": [
@@ -203,11 +209,11 @@
         "description": "Optional. The operating system type. The default is Linux."
       }
     },
-    "podSubnetId": {
+    "podSubnetResourceId": {
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Subnet ID for the pod IPs. If omitted, pod IPs are statically assigned on the node subnet (see vnetSubnetID for more details). This is of the form: /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{virtualNetworkName}/subnets/{subnetName}."
+        "description": "Optional. Subnet resource ID for the pod IPs. If omitted, pod IPs are statically assigned on the node subnet (see vnetSubnetID for more details). This is of the form: /subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{virtualNetworkName}/subnets/{subnetName}."
       }
     },
     "proximityPlacementGroupResourceId": {
@@ -285,7 +291,7 @@
         "description": "Optional. VM size. VM size availability varies by region. If a node contains insufficient compute resources (memory, cpu, etc) pods might fail to run correctly. For more details on restricted VM sizes, see: /azure/aks/quotas-skus-regions."
       }
     },
-    "vnetSubnetId": {
+    "vnetSubnetResourceId": {
       "type": "string",
       "nullable": true,
       "metadata": {
@@ -309,10 +315,10 @@
     },
     "agentPool": {
       "type": "Microsoft.ContainerService/managedClusters/agentPools",
-      "apiVersion": "2023-07-02-preview",
+      "apiVersion": "2024-08-01",
       "name": "[format('{0}/{1}', parameters('managedClusterName'), parameters('name'))]",
       "properties": {
-        "availabilityZones": "[parameters('availabilityZones')]",
+        "availabilityZones": "[map(coalesce(parameters('availabilityZones'), createArray()), lambda('zone', format('{0}', lambdaVariables('zone'))))]",
         "count": "[parameters('count')]",
         "creationData": "[if(not(empty(parameters('sourceResourceId'))), createObject('sourceResourceId', parameters('sourceResourceId')), null())]",
         "enableAutoScaling": "[parameters('enableAutoScaling')]",
@@ -327,14 +333,14 @@
         "minCount": "[parameters('minCount')]",
         "mode": "[parameters('mode')]",
         "nodeLabels": "[parameters('nodeLabels')]",
-        "nodePublicIPPrefixID": "[parameters('nodePublicIpPrefixId')]",
+        "nodePublicIPPrefixID": "[parameters('nodePublicIpPrefixResourceId')]",
         "nodeTaints": "[parameters('nodeTaints')]",
         "orchestratorVersion": "[parameters('orchestratorVersion')]",
         "osDiskSizeGB": "[parameters('osDiskSizeGB')]",
         "osDiskType": "[parameters('osDiskType')]",
-        "osSKU": "[parameters('osSku')]",
+        "osSKU": "[parameters('osSKU')]",
         "osType": "[parameters('osType')]",
-        "podSubnetID": "[parameters('podSubnetId')]",
+        "podSubnetID": "[parameters('podSubnetResourceId')]",
         "proximityPlacementGroupID": "[parameters('proximityPlacementGroupResourceId')]",
         "scaleDownMode": "[parameters('scaleDownMode')]",
         "scaleSetEvictionPolicy": "[parameters('scaleSetEvictionPolicy')]",
@@ -346,12 +352,9 @@
           "maxSurge": "[parameters('maxSurge')]"
         },
         "vmSize": "[parameters('vmSize')]",
-        "vnetSubnetID": "[parameters('vnetSubnetId')]",
+        "vnetSubnetID": "[parameters('vnetSubnetResourceId')]",
         "workloadRuntime": "[parameters('workloadRuntime')]"
-      },
-      "dependsOn": [
-        "managedCluster"
-      ]
+      }
     }
   },
   "outputs": {

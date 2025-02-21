@@ -1,18 +1,17 @@
 metadata name = 'Site logs Config'
 metadata description = 'This module deploys a Site logs Configuration.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the parent site resource.')
 param appName string
 
-@description('Required. The logs settings configuration.')
+@description('Optional. The logs settings configuration.')
 param logsConfiguration object?
 
-resource app 'Microsoft.Web/sites@2022-09-01' existing = {
+resource app 'Microsoft.Web/sites@2024-04-01' existing = {
   name: appName
 }
 
-resource webSettings 'Microsoft.Web/sites/config@2022-09-01' = {
+resource webSettings 'Microsoft.Web/sites/config@2024-04-01' = {
   name: 'logs'
   kind: 'string'
   parent: app

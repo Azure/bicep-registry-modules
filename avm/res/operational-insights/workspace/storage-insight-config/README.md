@@ -12,7 +12,7 @@ This module deploys a Log Analytics Workspace Storage Insight Config.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.OperationalInsights/workspaces/storageInsightConfigs` | [2020-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2020-08-01/workspaces/storageInsightConfigs) |
+| `Microsoft.OperationalInsights/workspaces/storageInsightConfigs` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces/storageInsightConfigs) |
 
 ## Parameters
 
@@ -57,7 +57,6 @@ The names of the blob containers that the workspace should read.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `name`
 
@@ -73,7 +72,6 @@ The names of the Azure tables that the workspace should read.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `tags`
 

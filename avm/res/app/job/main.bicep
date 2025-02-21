@@ -1,6 +1,5 @@
 metadata name = 'Container App Jobs'
 metadata description = 'This module deploys a Container App Job.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the Container App.')
 param name string
@@ -11,6 +10,7 @@ param location string = resourceGroup().location
 @description('Required. Resource ID of Container Apps Environment.')
 param environmentResourceId string
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -46,6 +46,7 @@ param tags object?
 })
 param registries registryType[]?
 
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
 @description('Optional. The managed identity definition for this resource.')
 @metadata({
   example: '''
@@ -60,10 +61,11 @@ param registries registryType[]?
   }
   '''
 })
-param managedIdentities managedIdentitiesType?
+param managedIdentities managedIdentityAllType?
 
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
 @description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType?
+param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -280,54 +282,14 @@ output location string = job.location
 @metadata({
   example: '00000000-0000-0000-0000-000000000000'
 })
-output systemAssignedMIPrincipalId string = job.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = job.?identity.?principalId
 
 // =============== //
 //   Definitions   //
 // =============== //
 
-type managedIdentitiesType = {
-  @description('Optional. Enables system assigned managed identity on the resource.')
-  systemAssigned: bool?
-
-  @description('Optional. The resource ID(s) to assign to the resource.')
-  userAssignedResourceIds: string[]?
-}
-
-type lockType = {
-  @description('Optional. Specify the name of lock.')
-  name: string?
-
-  @description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}
-
-type roleAssignmentType = {
-  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
-  name: string?
-
-  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
-
-  @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
-
-  @description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
-
-  @description('Optional. The description of the role assignment.')
-  description: string?
-
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
-
-  @description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
-
-  @description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]
-
+@export()
+@description('The type for a registry.')
 type registryType = {
   @description('Required. The FQDN name of the container registry.')
   @metadata({ example: 'myregistry.azurecr.io' })
@@ -349,6 +311,8 @@ type registryType = {
   passwordSecretRef: string?
 }
 
+@export()
+@description('The type for a secret.')
 type secretType = {
   @description('Optional. Resource ID of a managed identity to authenticate with Azure Key Vault, or System to use a system-assigned identity.')
   identity: string?
@@ -367,6 +331,8 @@ type secretType = {
   value: string?
 }
 
+@export()
+@description('The type for a volumne.')
 type volumeType = {
   @description('Required. The name of the volume.')
   name: string
@@ -390,6 +356,7 @@ type volumeType = {
   storageType: ('AzureFile' | 'EmptyDir' | 'NfsAzureFile' | 'Secret')
 }
 
+@description('The type for a container environment variable.')
 type containerEnvironmentVariablesType = {
   @description('Required. The environment variable name.')
   name: string
@@ -401,6 +368,7 @@ type containerEnvironmentVariablesType = {
   value: string?
 }
 
+@description('The type for a container probe.')
 type containerProbeType = {
   @description('Optional. Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3.')
   @minValue(1)
@@ -429,7 +397,7 @@ type containerProbeType = {
     @maxValue(65535)
     port: int
 
-    @description('Required. Scheme to use for connecting to the host. Defaults to HTTP.')
+    @description('Optional. Scheme to use for connecting to the host. Defaults to HTTP.')
     scheme: ('HTTP' | 'HTTPS')?
   }?
 
@@ -450,7 +418,7 @@ type containerProbeType = {
 
   @description('Optional. TCPSocket specifies an action involving a TCP port.')
   tcpSocket: {
-    @description('Optional. Host name to connect to, defaults to the pod IP.')
+    @description('Required. Host name to connect to, defaults to the pod IP.')
     host: string
 
     @description('Required. Name of the port to access on the container. If not specified, the containerPort is used.')
@@ -473,6 +441,7 @@ type containerProbeType = {
   type: ('Liveness' | 'Readiness' | 'Startup')
 }
 
+@description('The type for a container resource.')
 type containerResourceType = {
   @description('Required. The CPU limit of the container in cores.')
   @metadata({
@@ -483,7 +452,7 @@ type containerResourceType = {
   })
   cpu: string
 
-  @description('Optional. The required memory.')
+  @description('Required. The required memory.')
   @metadata({
     example: '''
     '250Mb'
@@ -494,6 +463,7 @@ type containerResourceType = {
   memory: string
 }
 
+@description('The type for a container volume mount.')
 type containerVolumeMountType = {
   @description('Required. The path within the container at which the volume should be mounted. Must not contain \':\'.')
   mountPath: string
@@ -505,6 +475,8 @@ type containerVolumeMountType = {
   volumeName: string
 }
 
+@export()
+@description('The type for a manually triggered job configuration.')
 type manualTriggerConfigType = {
   @description('Optional. Number of parallel replicas of a job that can run at a given time. Defaults to 1.')
   parallelism: int?
@@ -513,6 +485,8 @@ type manualTriggerConfigType = {
   replicaCompletionCount: int?
 }
 
+@export()
+@description('The type for a schedule based job configuration.')
 type scheduleTriggerconfigType = {
   @description('Required. Cron formatted repeating schedule ("* * * * *") of a Cron Job. It supports the standard [cron](https://en.wikipedia.org/wiki/Cron) expression syntax.')
   @metadata({
@@ -530,6 +504,8 @@ type scheduleTriggerconfigType = {
   replicaCompletionCount: int?
 }
 
+@export()
+@description('The type for an event-driven job configuration.')
 type eventTriggerConfigType = {
   @description('Optional. Number of parallel replicas of a job that can run at a given time. Defaults to 1.')
   parallelism: int?
@@ -541,6 +517,7 @@ type eventTriggerConfigType = {
   scale: jobScaleType
 }
 
+@description('The type for a job scale configuration.')
 type jobScaleType = {
   @description('Optional. Maximum number of job executions that are created for a trigger, default 100.')
   maxExecutions: int?
@@ -551,7 +528,7 @@ type jobScaleType = {
   @description('Optional. Interval to check each event source in seconds. Defaults to 30s.')
   pollingInterval: int?
 
-  @description('Optional. Scaling rules for the job.')
+  @description('Required. Scaling rules for the job.')
   @metadata({
     example: '''
     [
@@ -572,7 +549,7 @@ type jobScaleType = {
     '''
   })
   rules: {
-    @description('Required. Authentication secrets for the scale rule.')
+    @description('Optional. Authentication secrets for the scale rule.')
     auth: {
       @description('Required. Name of the secret from which to pull the auth params.')
       secretRef: string
@@ -581,7 +558,7 @@ type jobScaleType = {
       triggerParameter: string
     }[]?
 
-    @description('Optional. Metadata properties to describe the scale rule.')
+    @description('Required. Metadata properties to describe the scale rule.')
     @metadata({
       example: '''
     {
@@ -598,7 +575,7 @@ type jobScaleType = {
     @description('Required. The name of the scale rule.')
     name: string
 
-    @description('Optional. The type of the rule.')
+    @description('Required. The type of the rule.')
     @metadata({
       example: '''
       "azure-servicebus"
@@ -611,10 +588,10 @@ type jobScaleType = {
 }
 
 type initContainerType = {
-  @description('Optional. Container start command arguments.')
+  @description('Required. Container start command arguments.')
   args: string[]
 
-  @description('Optional. Container start command.')
+  @description('Required. Container start command.')
   command: string[]
 
   @description('Optional. The environment variables to set in the container.')
@@ -640,7 +617,7 @@ type initContainerType = {
   @description('Required. The name of the container.')
   name: string
 
-  @description('Required. Container resource requirements.')
+  @description('Optional. Container resource requirements.')
   resources: containerResourceType?
 
   @description('Optional. The volume mounts to attach to the container.')

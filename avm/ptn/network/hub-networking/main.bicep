@@ -1,6 +1,5 @@
 metadata name = 'Hub Networking'
 metadata description = 'This module is designed to simplify the creation of multi-region hub networks in Azure. It will create a number of virtual networks and subnets, and optionally peer them together in a mesh topology with routing.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
@@ -43,7 +42,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
 }
 
 // Create hub virtual networks
-module hubVirtualNetwork 'br/public:avm/res/network/virtual-network:0.4.0' = [
+module hubVirtualNetwork 'br/public:avm/res/network/virtual-network:0.5.0' = [
   for (hub, index) in items(hubVirtualNetworks ?? {}): {
     name: '${uniqueString(deployment().name, location)}-${hub.key}-nvn'
     params: {
@@ -112,13 +111,14 @@ module hubRouteTable 'br/public:avm/res/network/route-table:0.4.0' = [
   for (hub, index) in items(hubVirtualNetworks ?? {}): {
     name: '${uniqueString(deployment().name, location)}-${hub.key}-nrt'
     params: {
-      name: hub.key
+      name: hub.value.?routeTableName ?? hub.key
       location: hub.value.?location ?? location
       disableBgpRoutePropagation: true
       enableTelemetry: hub.value.?enableTelemetry ?? true
       roleAssignments: hub.value.?roleAssignments ?? []
       routes: hub.value.?routes ?? []
       tags: hub.value.?tags ?? {}
+      lock: hub.value.?lock ?? {}
     }
     dependsOn: hubVirtualNetwork
   }
@@ -145,7 +145,7 @@ module hubBastion 'br/public:avm/res/network/bastion-host:0.4.0' = [
     name: '${uniqueString(deployment().name, location)}-${hub.key}-nbh'
     params: {
       // Required parameters
-      name: hub.key
+      name: hub.value.?bastionHost.?bastionHostName ?? hub.key
       virtualNetworkResourceId: hubVirtualNetwork[index].outputs.resourceId
       // Non-required parameters
       diagnosticSettings: hub.value.?diagnosticSettings ?? []
@@ -159,6 +159,8 @@ module hubBastion 'br/public:avm/res/network/bastion-host:0.4.0' = [
       scaleUnits: hub.value.?bastionHost.?scaleUnits ?? 4
       skuName: hub.value.?bastionHost.?skuName ?? 'Standard'
       tags: hub.value.?tags ?? {}
+      lock: hub.value.?lock ?? {}
+      enableKerberos: hub.value.?bastionHost.?enableKerberos ?? false
     }
     dependsOn: hubVirtualNetwork
   }
@@ -166,12 +168,12 @@ module hubBastion 'br/public:avm/res/network/bastion-host:0.4.0' = [
 
 // Create Azure Firewall if enabled
 // AzureFirewallSubnet is required to deploy Azure Firewall service. This subnet must exist in the subnets array if you enable Azure Firewall.
-module hubAzureFirewall 'br/public:avm/res/network/azure-firewall:0.5.0' = [
+module hubAzureFirewall 'br/public:avm/res/network/azure-firewall:0.5.1' = [
   for (hub, index) in items(hubVirtualNetworks ?? {}): if (hub.value.enableAzureFirewall) {
     name: '${uniqueString(deployment().name, location)}-${hub.key}-naf'
     params: {
       // Required parameters
-      name: hub.key
+      name: hub.value.?azureFirewallSettings.?azureFirewallName ?? hub.key
       // Conditional parameters
       hubIPAddresses: hub.value.?azureFirewallSettings.?hubIpAddresses ?? {}
       virtualHubId: hub.value.?azureFirewallSettings.?virtualHub ?? ''
@@ -263,6 +265,7 @@ output hubAzureFirewalls object[] = [
         location: hubAzureFirewall[index].outputs.location
         name: hubAzureFirewall[index].outputs.name
         resourceId: hubAzureFirewall[index].outputs.resourceId
+        privateIp: hubAzureFirewall[index].outputs.privateIp
       }
     : {}
 ]
@@ -383,11 +386,17 @@ type hubVirtualNetworkType = {
       @description('Optional. Enable/Disable shareable link functionality.')
       enableShareableLink: bool?
 
+      @description('Optional. Enable/Disable Kerberos authentication.')
+      enableKerberos: bool?
+
       @description('Optional. The number of scale units for the Bastion host. Defaults to 4.')
       scaleUnits: int?
 
       @description('Optional. The SKU name of the Bastion host. Defaults to Standard.')
-      skuName: string?
+      skuName: 'Basic' | 'Developer' | 'Premium' | 'Standard'?
+
+      @description('Optional. The name of the bastion host.')
+      bastionHostName: string?
     }?
 
     @description('Optional. Enable/Disable usage telemetry for module.')
@@ -429,6 +438,9 @@ type hubVirtualNetworkType = {
     @description('Optional. Routes to add to the virtual network route table.')
     routes: array?
 
+    @description('Optional. The name of the route table.')
+    routeTableName: string?
+
     @description('Optional. The subnets of the virtual network.')
     subnets: array?
 
@@ -461,6 +473,9 @@ type peeringSettingsType = {
 }[]?
 
 type azureFirewallType = {
+  @description('Optional. The name of the Azure Firewall.')
+  azureFirewallName: string?
+
   @description('Optional. Hub IP addresses.')
   hubIpAddresses: object?
 
@@ -474,7 +489,7 @@ type azureFirewallType = {
   applicationRuleCollections: array?
 
   @description('Optional. Azure Firewall SKU.')
-  azureSkuTier: string?
+  azureSkuTier: 'Basic' | 'Standard' | 'Premium'?
 
   @description('Optional. Diagnostic settings.')
   diagnosticSettings: diagnosticSettingType?

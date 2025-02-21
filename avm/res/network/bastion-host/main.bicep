@@ -1,6 +1,5 @@
 metadata name = 'Bastion Hosts'
 metadata description = 'This module deploys a Bastion Host.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the Azure Bastion resource.')
 param name string
@@ -11,47 +10,58 @@ param location string = resourceGroup().location
 @description('Required. Shared services Virtual Network resource Id.')
 param virtualNetworkResourceId string
 
-@description('Optional. The Public IP resource ID to associate to the azureBastionSubnet. If empty, then the Public IP that is created as part of this module will be applied to the azureBastionSubnet.')
+@description('Optional. The Public IP resource ID to associate to the azureBastionSubnet. If empty, then the Public IP that is created as part of this module will be applied to the azureBastionSubnet. This parameter is ignored when enablePrivateOnlyBastion is true.')
 param bastionSubnetPublicIpResourceId string = ''
 
-@description('Optional. Specifies the properties of the Public IP to create and be used by Azure Bastion, if no existing public IP was provided.')
+@description('Optional. Specifies the properties of the Public IP to create and be used by Azure Bastion, if no existing public IP was provided. This parameter is ignored when enablePrivateOnlyBastion is true.')
 param publicIPAddressObject object = {
   name: '${name}-pip'
 }
 
+import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The diagnostic settings of the service.')
-param diagnosticSettings diagnosticSettingType
+param diagnosticSettings diagnosticSettingLogsOnlyType[]?
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
-param lock lockType
+param lock lockType?
 
 @allowed([
   'Basic'
+  'Developer'
+  'Premium'
   'Standard'
 ])
 @description('Optional. The SKU of this Bastion Host.')
 param skuName string = 'Basic'
 
-@description('Optional. Choose to disable or enable Copy Paste.')
+@description('Optional. Choose to disable or enable Copy Paste. For Basic and Developer SKU Copy/Paste is always enabled.')
 param disableCopyPaste bool = false
 
-@description('Optional. Choose to disable or enable File Copy.')
+@description('Optional. Choose to disable or enable File Copy. Not supported for Basic and Developer SKU.')
 param enableFileCopy bool = true
 
-@description('Optional. Choose to disable or enable IP Connect.')
+@description('Optional. Choose to disable or enable IP Connect. Not supported for Basic and Developer SKU.')
 param enableIpConnect bool = false
 
-@description('Optional. Choose to disable or enable Kerberos authentication.')
+@description('Optional. Choose to disable or enable Kerberos authentication. Not supported for Developer SKU.')
 param enableKerberos bool = false
 
-@description('Optional. Choose to disable or enable Shareable Link.')
+@description('Optional. Choose to disable or enable Shareable Link. Not supported for Basic and Developer SKU.')
 param enableShareableLink bool = false
 
-@description('Optional. The scale units for the Bastion Host resource.')
+@description('Optional. Choose to disable or enable Session Recording feature. The Premium SKU is required for this feature. If Session Recording is enabled, the Native client support will be disabled.')
+param enableSessionRecording bool = false
+
+@description('Optional. Choose to disable or enable Private-only Bastion deployment. The Premium SKU is required for this feature.')
+param enablePrivateOnlyBastion bool = false
+
+@description('Optional. The scale units for the Bastion Host resource. The Basic and Developer SKU only support 2 scale units.')
 param scaleUnits int = 2
 
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
 param tags object?
@@ -59,30 +69,43 @@ param tags object?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+@description('Optional. A list of availability zones denoting where the Bastion Host resource needs to come from. This is not supported for the Developer SKU.')
+@allowed([
+  1
+  2
+  3
+])
+param zones int[] = [] // Availability Zones are currently in preview and only available in certain regions, therefore the default is an empty array.
+
 // ----------------------------------------------------------------------------
 // Prep ipConfigurations object AzureBastionSubnet for different uses cases:
 // 1. Use existing Public IP
 // 2. Use new Public IP created in this module
-var ipConfigurations = [
-  {
-    name: 'IpConfAzureBastionSubnet'
-    properties: union(
+// (skuName == 'Developer' is a special case where ipConfigurations is empty)
+var ipConfigurations = skuName == 'Developer'
+  ? []
+  : [
       {
-        subnet: {
-          id: '${virtualNetworkResourceId}/subnets/AzureBastionSubnet' // The subnet name must be AzureBastionSubnet
-        }
-      },
-      {
-        //Use existing Public IP, new Public IP created in this module
-        publicIPAddress: {
-          id: !empty(bastionSubnetPublicIpResourceId)
-            ? bastionSubnetPublicIpResourceId
-            : publicIPAddress.outputs.resourceId
-        }
+        name: 'IpConfAzureBastionSubnet'
+        properties: union(
+          {
+            subnet: {
+              id: '${virtualNetworkResourceId}/subnets/AzureBastionSubnet' // The subnet name must be AzureBastionSubnet
+            }
+          },
+          (!enablePrivateOnlyBastion
+            ? {
+                //Use existing Public IP, new Public IP created in this module
+                publicIPAddress: {
+                  id: !empty(bastionSubnetPublicIpResourceId)
+                    ? bastionSubnetPublicIpResourceId
+                    : publicIPAddress.outputs.resourceId
+                }
+              }
+            : {})
+        )
       }
-    )
-  }
-]
+    ]
 
 // ----------------------------------------------------------------------------
 
@@ -130,7 +153,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.5.1' = if (empty(bastionSubnetPublicIpResourceId)) {
+module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.8.0' = if (empty(bastionSubnetPublicIpResourceId) && (skuName != 'Developer') && (!enablePrivateOnlyBastion)) {
   name: '${uniqueString(deployment().name, location)}-Bastion-PIP'
   params: {
     name: publicIPAddressObject.name
@@ -145,34 +168,52 @@ module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.5.1' = if 
     skuName: publicIPAddressObject.?skuName
     skuTier: publicIPAddressObject.?skuTier
     tags: publicIPAddressObject.?tags ?? tags
-    zones: publicIPAddressObject.?zones
+    zones: publicIPAddressObject.?zones ?? (length(zones) > 0 ? zones : null) // if zones of the Public IP is empty, use the zones from the bastion host only if not empty (if empty, the default of the public IP will be used)
   }
 }
 
 var bastionpropertiesVar = union(
   {
-    scaleUnits: skuName == 'Basic' ? 2 : scaleUnits
+    scaleUnits: (skuName == 'Basic' || skuName == 'Developer') ? 2 : scaleUnits
     ipConfigurations: ipConfigurations
-    enableKerberos: enableKerberos
   },
-  (skuName == 'Standard'
+  (skuName == 'Developer'
     ? {
-        enableTunneling: skuName == 'Standard'
+        virtualNetwork: {
+          id: virtualNetworkResourceId
+        }
+      }
+    : {}),
+  ((skuName == 'Basic' || skuName == 'Standard' || skuName == 'Premium')
+    ? {
+        enableKerberos: enableKerberos
+      }
+    : {}),
+  ((skuName == 'Standard' || skuName == 'Premium')
+    ? {
+        enableTunneling: skuName == 'Standard' ? true : (enableSessionRecording ? false : true) // Tunneling is enabled by default for Standard SKU. For Premium SKU it is disabled by default if Session Recording is enabled.
         disableCopyPaste: disableCopyPaste
         enableFileCopy: enableFileCopy
         enableIpConnect: enableIpConnect
         enableShareableLink: enableShareableLink
       }
+    : {}),
+  (skuName == 'Premium'
+    ? {
+        enableSessionRecording: enableSessionRecording
+        enablePrivateOnlyBastion: enablePrivateOnlyBastion
+      }
     : {})
 )
 
-resource azureBastion 'Microsoft.Network/bastionHosts@2022-11-01' = {
+resource azureBastion 'Microsoft.Network/bastionHosts@2024-05-01' = {
   name: name
   location: location
-  tags: tags
+  tags: tags ?? {} // The empty object is a workaround for error when deploying with the Developer SKU. The error seems unrelated to the tags, but it is resolved by adding the empty object.
   sku: {
     name: skuName
   }
+  zones: skuName == 'Developer' ? [] : map(zones, zone => string(zone))
   properties: bastionpropertiesVar
 }
 
@@ -238,77 +279,4 @@ output resourceId string = azureBastion.id
 output location string = azureBastion.location
 
 @description('The Public IPconfiguration object for the AzureBastionSubnet.')
-output ipConfAzureBastionSubnet object = azureBastion.properties.ipConfigurations[0]
-
-// =============== //
-//   Definitions   //
-// =============== //
-
-type lockType = {
-  @description('Optional. Specify the name of lock.')
-  name: string?
-
-  @description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?
-
-type roleAssignmentType = {
-  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
-  name: string?
-
-  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
-
-  @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
-
-  @description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
-
-  @description('Optional. The description of the role assignment.')
-  description: string?
-
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
-
-  @description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
-
-  @description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?
-
-type diagnosticSettingType = {
-  @description('Optional. The name of diagnostic setting.')
-  name: string?
-
-  @description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.')
-  logCategoriesAndGroups: {
-    @description('Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.')
-    category: string?
-
-    @description('Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.')
-    categoryGroup: string?
-
-    @description('Optional. Enable or disable the category explicitly. Default is `true`.')
-    enabled: bool?
-  }[]?
-
-  @description('Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.')
-  logAnalyticsDestinationType: ('Dedicated' | 'AzureDiagnostics')?
-
-  @description('Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  workspaceResourceId: string?
-
-  @description('Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  storageAccountResourceId: string?
-
-  @description('Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.')
-  eventHubAuthorizationRuleResourceId: string?
-
-  @description('Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  eventHubName: string?
-
-  @description('Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.')
-  marketplacePartnerResourceId: string?
-}[]?
+output ipConfAzureBastionSubnet object = skuName == 'Developer' ? {} : azureBastion.properties.ipConfigurations[0]

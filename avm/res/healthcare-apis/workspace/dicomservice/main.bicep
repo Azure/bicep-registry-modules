@@ -1,6 +1,5 @@
 metadata name = 'Healthcare API Workspace DICOM Services'
 metadata description = 'This module deploys a Healthcare API Workspace DICOM Service.'
-metadata owner = 'Azure/module-maintainers'
 
 @minLength(3)
 @maxLength(24)
@@ -13,7 +12,7 @@ param workspaceName string
 @description('Optional. Specify URLs of origin sites that can access this API, or use "*" to allow access from any site.')
 param corsOrigins array?
 
-@description('Optional. Specify HTTP headers which can be used during the request. Use "*" for any header.')
+@description('Required. Specify HTTP headers which can be used during the request. Use "*" for any header.')
 param corsHeaders array
 
 @allowed([
@@ -145,7 +144,7 @@ output resourceId string = dicom.id
 output resourceGroupName string = resourceGroup().name
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = dicom.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = dicom.?identity.?principalId
 
 @description('The location the resource was deployed into.')
 output location string = dicom.location

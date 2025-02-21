@@ -1,6 +1,5 @@
 metadata name = 'Digital Twins Instances'
 metadata description = 'This module deploys an Azure Digital Twins Instance.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the Digital Twin Instance.')
 @minLength(3)
@@ -309,7 +308,7 @@ output hostname string = digitalTwinsInstance.properties.hostName
 output location string = digitalTwinsInstance.location
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = digitalTwinsInstance.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = digitalTwinsInstance.?identity.?principalId
 
 // =============== //
 //   Definitions   //
@@ -385,7 +384,7 @@ type privateEndpointType = {
 
   @description('Optional. Custom DNS configurations.')
   customDnsConfigs: {
-    @description('Required. Fqdn that resolves to private endpoint IP address.')
+    @description('Optional. FQDN that resolves to private endpoint IP address.')
     fqdn: string?
 
     @description('Required. A list of private IP addresses of the private endpoint.')

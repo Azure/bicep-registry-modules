@@ -13,7 +13,7 @@ This module deploys an Azure SQL Server Audit Settings.
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Sql/servers/auditingSettings` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/servers/auditingSettings) |
+| `Microsoft.Sql/servers/auditingSettings` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01-preview/servers/auditingSettings) |
 
 ## Parameters
 
@@ -22,7 +22,6 @@ This module deploys an Azure SQL Server Audit Settings.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | The name of the audit settings. |
-| [`state`](#parameter-state) | string | The resource group of the SQL Server. Required if the template is used in a standalone deployment. |
 
 **Conditional parameters**
 
@@ -41,6 +40,7 @@ This module deploys an Azure SQL Server Audit Settings.
 | [`isStorageSecondaryKeyInUse`](#parameter-isstoragesecondarykeyinuse) | bool | Specifies whether storageAccountAccessKey value is the storage's secondary key. |
 | [`queueDelayMs`](#parameter-queuedelayms) | int | Specifies the amount of time in milliseconds that can elapse before audit actions are forced to be processed. |
 | [`retentionDays`](#parameter-retentiondays) | int | Specifies the number of days to keep in the audit logs in the storage account. |
+| [`state`](#parameter-state) | string | Specifies the state of the audit. If state is Enabled, storageEndpoint or isAzureMonitorTargetEnabled are required. |
 | [`storageAccountResourceId`](#parameter-storageaccountresourceid) | string | A blob storage to hold the auditing storage account. |
 
 ### Parameter: `name`
@@ -49,20 +49,6 @@ The name of the audit settings.
 
 - Required: Yes
 - Type: string
-
-### Parameter: `state`
-
-The resource group of the SQL Server. Required if the template is used in a standalone deployment.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Disabled'
-    'Enabled'
-  ]
-  ```
 
 ### Parameter: `serverName`
 
@@ -77,6 +63,14 @@ Specifies the Actions-Groups and Actions to audit.
 
 - Required: No
 - Type: array
+- Default:
+  ```Bicep
+  [
+    'BATCH_COMPLETED_GROUP'
+    'FAILED_DATABASE_AUTHENTICATION_GROUP'
+    'SUCCESSFUL_DATABASE_AUTHENTICATION_GROUP'
+  ]
+  ```
 
 ### Parameter: `isAzureMonitorTargetEnabled`
 
@@ -84,7 +78,7 @@ Specifies whether audit events are sent to Azure Monitor.
 
 - Required: No
 - Type: bool
-- Default: `False`
+- Default: `True`
 
 ### Parameter: `isDevopsAuditEnabled`
 
@@ -92,6 +86,7 @@ Specifies the state of devops audit. If state is Enabled, devops logs will be se
 
 - Required: No
 - Type: bool
+- Default: `False`
 
 ### Parameter: `isManagedIdentityInUse`
 
@@ -107,6 +102,7 @@ Specifies whether storageAccountAccessKey value is the storage's secondary key.
 
 - Required: No
 - Type: bool
+- Default: `False`
 
 ### Parameter: `queueDelayMs`
 
@@ -114,6 +110,7 @@ Specifies the amount of time in milliseconds that can elapse before audit action
 
 - Required: No
 - Type: int
+- Default: `1000`
 
 ### Parameter: `retentionDays`
 
@@ -121,6 +118,22 @@ Specifies the number of days to keep in the audit logs in the storage account.
 
 - Required: No
 - Type: int
+- Default: `90`
+
+### Parameter: `state`
+
+Specifies the state of the audit. If state is Enabled, storageEndpoint or isAzureMonitorTargetEnabled are required.
+
+- Required: No
+- Type: string
+- Default: `'Enabled'`
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
 
 ### Parameter: `storageAccountResourceId`
 

@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-kusto.clusters-${serviceShor
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'akcmax'
+param serviceShort string = 'kcmax'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -37,7 +37,7 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     location: resourceLocation
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    entraIdGroupName: 'dep-${namePrefix}-group-${serviceShort}'
+    // entraIdGroupName: 'dep-${namePrefix}-group-${serviceShort}'
   }
 }
 
@@ -64,8 +64,8 @@ module testDeployment '../../../main.bicep' = [
       enableAutoScale: true
       principalAssignments: [
         {
-          principalId: nestedDependencies.outputs.entraIdGroupDisplayName
-          principalType: 'Group'
+          principalId: nestedDependencies.outputs.managedIdentityClientId
+          principalType: 'App'
           role: 'AllDatabasesViewer'
         }
       ]
@@ -115,6 +115,16 @@ module testDeployment '../../../main.bicep' = [
           )
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
+        }
+      ]
+      databases: [
+        {
+          name: 'myReadWriteDatabase'
+          kind: 'ReadWrite'
+          readWriteProperties: {
+            softDeletePeriod: 'P7D'
+            hotCachePeriod: 'P1D'
+          }
         }
       ]
     }

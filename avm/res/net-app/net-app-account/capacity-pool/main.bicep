@@ -1,6 +1,5 @@
 metadata name = 'Azure NetApp Files Capacity Pools'
 metadata description = 'This module deploys an Azure NetApp Files Capacity Pool.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent NetApp account. Required if the template is used in a standalone deployment.')
 param netAppAccountName string
@@ -23,9 +22,6 @@ param tags object?
 ])
 param serviceLevel string = 'Standard'
 
-@description('Required. Network features available to the volume, or current state of update (Basic/Standard).')
-param networkFeatures string = 'Standard'
-
 @description('Required. Provisioned size of the pool (in bytes). Allowed values are in 4TiB chunks (value must be multiply of 4398046511104).')
 param size int
 
@@ -36,14 +32,15 @@ param size int
 ])
 param qosType string = 'Auto'
 
-@description('Optional. List of volumnes to create in the capacity pool.')
-param volumes array = []
+@description('Optional. List of volumes to create in the capacity pool.')
+param volumes volumeType[]?
 
 @description('Optional. If enabled (true) the pool can contain cool Access enabled volumes.')
 param coolAccess bool = false
 
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Encryption type of the capacity pool, set encryption type for data at rest for this pool and all volumes in it. This value can only be set when creating new pool.')
 @allowed([
@@ -77,11 +74,11 @@ var formattedRoleAssignments = [
   })
 ]
 
-resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2024-03-01' existing = {
+resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2024-07-01' existing = {
   name: netAppAccountName
 }
 
-resource capacityPool 'Microsoft.NetApp/netAppAccounts/capacityPools@2024-03-01' = {
+resource capacityPool 'Microsoft.NetApp/netAppAccounts/capacityPools@2024-07-01' = {
   name: name
   parent: netAppAccount
   location: location
@@ -97,7 +94,7 @@ resource capacityPool 'Microsoft.NetApp/netAppAccounts/capacityPools@2024-03-01'
 
 @batchSize(1)
 module capacityPool_volumes 'volume/main.bicep' = [
-  for (volume, index) in volumes: {
+  for (volume, index) in (volumes ?? []): {
     name: '${deployment().name}-Vol-${index}'
     params: {
       netAppAccountName: netAppAccount.name
@@ -107,56 +104,23 @@ module capacityPool_volumes 'volume/main.bicep' = [
       serviceLevel: serviceLevel
       creationToken: volume.?creationToken ?? volume.name
       usageThreshold: volume.usageThreshold
-      protocolTypes: volume.?protocolTypes ?? []
+      protocolTypes: volume.?protocolTypes
       subnetResourceId: volume.subnetResourceId
-      exportPolicyRules: volume.?exportPolicyRules ?? []
-      roleAssignments: volume.?roleAssignments ?? []
+      exportPolicy: volume.?exportPolicy
+      roleAssignments: volume.?roleAssignments
       networkFeatures: volume.?networkFeatures
       zones: volume.?zones
       coolAccess: volume.?coolAccess ?? false
-      coolAccessRetrievalPolicy: volume.?coolAccessRetrievalPolicy ?? 'Default'
-      coolnessPeriod: volume.?coolnessPeriod ?? 0
+      coolAccessRetrievalPolicy: volume.?coolAccessRetrievalPolicy
+      coolnessPeriod: volume.?coolnessPeriod
       encryptionKeySource: volume.?encryptionKeySource ?? 'Microsoft.NetApp'
-      keyVaultPrivateEndpointResourceId: volume.?keyVaultPrivateEndpointResourceId ?? ''
-      endpointType: volume.?endpointType ?? ''
-      remoteVolumeRegion: volume.?remoteVolumeRegion ?? ''
-      remoteVolumeResourceId: volume.?remoteVolumeResourceId ?? ''
-      replicationSchedule: volume.?replicationSchedule ?? ''
-      snapshotPolicyId: volume.?snapshotPolicyId ?? ''
-      snapshotPolicyName: volume.?snapshotPolicyName ?? 'snapshotPolicy'
-      snapshotPolicyLocation: volume.?snapshotPolicyLocation ?? ''
-      snapEnabled: volume.?snapEnabled ?? false
-      dailyHour: volume.?dailyHour ?? 0
-      dailyMinute: volume.?dailyMinute ?? 0
-      dailySnapshotsToKeep: volume.?dailySnapshotsToKeep ?? 0
-      dailyUsedBytes: volume.?dailyUsedBytes ?? 0
-      hourlyMinute: volume.?hourlyMinute ?? 0
-      hourlySnapshotsToKeep: volume.?hourlySnapshotsToKeep ?? 0
-      hourlyUsedBytes: volume.?hourlyUsedBytes ?? 0
-      daysOfMonth: volume.?daysOfMonth ?? ''
-      monthlyHour: volume.?monthlyHour ?? 0
-      monthlyMinute: volume.?monthlyMinute ?? 0
-      monthlySnapshotsToKeep: volume.?monthlySnapshotsToKeep ?? 0
-      monthlyUsedBytes: volume.?monthlyUsedBytes ?? 0
-      weeklyDay: volume.?weeklyDay ?? ''
-      weeklyHour: volume.?weeklyHour ?? 0
-      weeklyMinute: volume.?weeklyMinute ?? 0
-      weeklySnapshotsToKeep: volume.?weeklySnapshotsToKeep ?? 0
-      weeklyUsedBytes: volume.?weeklyUsedBytes ?? 0
-      backupPolicyName: volume.?backupPolicyName ?? 'backupPolicy'
-      backupPolicyLocation: volume.?backupPolicyLocation ?? ''
-      dailyBackupsToKeep: volume.?dailyBackupsToKeep ?? 0
-      backupEnabled: volume.?backupEnabled ?? false
-      monthlyBackupsToKeep: volume.?monthlyBackupsToKeep ?? 0
-      weeklyBackupsToKeep: volume.?weeklyBackupsToKeep ?? 0
-      backupVaultName: volume.?backupVaultName ?? 'vault'
-      backupVaultLocation: volume.?backupVaultLocation ?? ''
-      backupName: volume.?backupName ?? 'backup'
-      backupLabel: volume.?backupLabel ?? ''
-      snapshotName: volume.?snapshotName ?? 'snapshot'
-      useExistingSnapshot: volume.?useExistingSnapshot ?? false
-      volumeResourceId: volume.?volumeResourceId ?? ''
-      volumeType: volume.?volumeType ?? ''
+      keyVaultPrivateEndpointResourceId: volume.?keyVaultPrivateEndpointResourceId
+      dataProtection: volume.?dataProtection
+      kerberosEnabled: volume.?kerberosEnabled
+      smbContinuouslyAvailable: volume.?smbContinuouslyAvailable
+      smbEncryption: volume.?smbEncryption
+      smbNonBrowsable: volume.?smbNonBrowsable
+      volumeType: volume.?volumeType
     }
   }
 ]
@@ -190,34 +154,81 @@ output resourceGroupName string = resourceGroup().name
 output location string = capacityPool.location
 
 @description('The resource IDs of the volume created in the capacity pool.')
-output volumeResourceId string = (volumes != []) ? capacityPool_volumes[0].outputs.resourceId : ''
+output volumeResourceIds string[] = [
+  for (volume, index) in (volumes ?? []): capacityPool_volumes[index].outputs.resourceId
+]
 
-// =============== //
-//   Definitions   //
-// =============== //
+// ================ //
+// Definitions      //
+// ================ //
 
-type roleAssignmentType = {
-  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
-  name: string?
+import { dataProtectionType, exportPolicyType } from 'volume/main.bicep'
+@export()
+@description('The type for a volume in the capacity pool.')
+type volumeType = {
+  @description('Required. The name of the pool volume.')
+  name: string
 
-  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
+  @description('Optional. If enabled (true) the pool can contain cool Access enabled volumes.')
+  coolAccess: bool?
 
-  @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
+  @description('Optional. Specifies the number of days after which data that is not accessed by clients will be tiered.')
+  coolnessPeriod: int?
 
-  @description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
+  @description('Optional. Determines the data retrieval behavior from the cool tier to standard storage based on the read pattern for cool access enabled volumes (Default/Never/Read).')
+  coolAccessRetrievalPolicy: string?
 
-  @description('Optional. The description of the role assignment.')
-  description: string?
+  @description('Optional. The source of the encryption key.')
+  encryptionKeySource: string?
 
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
+  @description('Optional. The resource ID of the key vault private endpoint.')
+  keyVaultPrivateEndpointResourceId: string?
 
-  @description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
+  @description('Optional. DataProtection type volumes include an object containing details of the replication.')
+  dataProtection: dataProtectionType?
 
-  @description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?
+  @description('Optional. Location of the pool volume.')
+  location: string?
+
+  @description('Optional. Zone where the volume will be placed.')
+  zones: int[]?
+
+  @description('Optional. The pool service level. Must match the one of the parent capacity pool.')
+  serviceLevel: ('Premium' | 'Standard' | 'StandardZRS' | 'Ultra')?
+
+  @description('Optional. Network feature for the volume.')
+  networkFeatures: ('Basic' | 'Basic_Standard' | 'Standard' | 'Standard_Basic')?
+
+  @description('Optional. A unique file path for the volume. This is the name of the volume export. A volume is mounted using the export path. File path must start with an alphabetical character and be unique within the subscription.')
+  creationToken: string?
+
+  @description('Required. Maximum storage quota allowed for a file system in bytes.')
+  usageThreshold: int
+
+  @description('Optional. Set of protocol types.')
+  protocolTypes: string[]?
+
+  @description('Required. The Azure Resource URI for a delegated subnet. Must have the delegation Microsoft.NetApp/volumes.')
+  subnetResourceId: string
+
+  @description('Optional. Export policy rules.')
+  exportPolicy: exportPolicyType?
+
+  @description('Optional. Array of role assignments to create.')
+  roleAssignments: roleAssignmentType[]?
+
+  @description('Optional. Enables SMB encryption. Only applicable for SMB/DualProtocol volume.')
+  smbEncryption: bool?
+
+  @description('Optional. Enables continuously available share property for SMB volume. Only applicable for SMB volume.')
+  smbContinuouslyAvailable: bool?
+
+  @description('Optional. Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProtocol volume.')
+  smbNonBrowsable: ('Enabled' | 'Disabled')?
+
+  @description('Optional. Define if a volume is KerberosEnabled.')
+  kerberosEnabled: bool?
+
+  @description('Optional. The type of the volume. DataProtection volumes are used for replication.')
+  volumeType: string?
+}

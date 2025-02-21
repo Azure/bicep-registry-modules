@@ -2,7 +2,6 @@ metadata name = 'Application Insights Components'
 metadata description = '''Creates an Application Insights instance based on an existing Log Analytics workspace.
 
 **Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case.'''
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The resource insights components name.')
 param name string
@@ -72,6 +71,7 @@ module applicationInsights 'br/public:avm/res/insights/component:0.4.1' = {
     kind: kind
     applicationType: applicationType
     workspaceResourceId: logAnalyticsWorkspaceResourceId
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -82,6 +82,7 @@ module applicationInsightsDashboard 'modules/applicationinsights-dashboard.bicep
     location: location
     applicationInsightsName: applicationInsights.outputs.name
     applicationInsightsResourceId: applicationInsights.outputs.resourceId
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -102,7 +103,9 @@ output dashboardName string = !empty(dashboardName) ? applicationInsightsDashboa
 output applicationInsightsResourceId string = applicationInsights.outputs.resourceId
 
 @description('The resource ID of the dashboard.')
-output dashboardResourceId string = !empty(dashboardName) ? applicationInsightsDashboard.outputs.dashboardResourceId : ''
+output dashboardResourceId string = !empty(dashboardName)
+  ? applicationInsightsDashboard.outputs.dashboardResourceId
+  : ''
 
 @description('The connection string of the application insights.')
 output applicationInsightsConnectionString string = applicationInsights.outputs.connectionString

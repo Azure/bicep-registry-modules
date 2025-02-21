@@ -12,7 +12,7 @@ This module deploys an Azure SQL Server Database Long-Term Backup Retention Poli
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Sql/servers/databases/backupLongTermRetentionPolicies` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/servers/databases/backupLongTermRetentionPolicies) |
+| `Microsoft.Sql/servers/databases/backupLongTermRetentionPolicies` | [2023-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-05-01-preview/servers/databases/backupLongTermRetentionPolicies) |
 
 ## Parameters
 
@@ -27,8 +27,10 @@ This module deploys an Azure SQL Server Database Long-Term Backup Retention Poli
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`monthlyRetention`](#parameter-monthlyretention) | string | Weekly retention in ISO 8601 duration format. |
-| [`weeklyRetention`](#parameter-weeklyretention) | string | Monthly retention in ISO 8601 duration format. |
+| [`backupStorageAccessTier`](#parameter-backupstorageaccesstier) | string | The BackupStorageAccessTier for the LTR backups. |
+| [`makeBackupsImmutable`](#parameter-makebackupsimmutable) | bool | The setting whether to make LTR backups immutable. |
+| [`monthlyRetention`](#parameter-monthlyretention) | string | Monthly retention in ISO 8601 duration format. |
+| [`weeklyRetention`](#parameter-weeklyretention) | string | Weekly retention in ISO 8601 duration format. |
 | [`weekOfYear`](#parameter-weekofyear) | int | Week of year backup to keep for yearly retention. |
 | [`yearlyRetention`](#parameter-yearlyretention) | string | Yearly retention in ISO 8601 duration format. |
 
@@ -46,21 +48,40 @@ The name of the parent SQL Server.
 - Required: Yes
 - Type: string
 
-### Parameter: `monthlyRetention`
+### Parameter: `backupStorageAccessTier`
 
-Weekly retention in ISO 8601 duration format.
+The BackupStorageAccessTier for the LTR backups.
 
 - Required: No
 - Type: string
-- Default: `''`
+- Allowed:
+  ```Bicep
+  [
+    'Archive'
+    'Hot'
+  ]
+  ```
 
-### Parameter: `weeklyRetention`
+### Parameter: `makeBackupsImmutable`
+
+The setting whether to make LTR backups immutable.
+
+- Required: No
+- Type: bool
+
+### Parameter: `monthlyRetention`
 
 Monthly retention in ISO 8601 duration format.
 
 - Required: No
 - Type: string
-- Default: `''`
+
+### Parameter: `weeklyRetention`
+
+Weekly retention in ISO 8601 duration format.
+
+- Required: No
+- Type: string
 
 ### Parameter: `weekOfYear`
 
@@ -76,7 +97,6 @@ Yearly retention in ISO 8601 duration format.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ## Outputs
 

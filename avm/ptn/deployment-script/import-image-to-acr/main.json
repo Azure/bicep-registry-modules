@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.3.12046",
-      "templateHash": "17375159703541878382"
+      "version": "0.32.4.45862",
+      "templateHash": "16033490696841065687"
     },
     "name": "import-image-to-acr",
-    "description": "This modules deployes an image to an Azure Container Registry.",
-    "owner": "Azure/module-maintainers"
+    "description": "This modules deployes an image to an Azure Container Registry."
   },
   "definitions": {
     "importedImageType": {
@@ -30,17 +29,24 @@
         }
       }
     },
-    "managedIdentitiesType": {
+    "managedIdentityOnlyUserAssignedType": {
       "type": "object",
       "properties": {
-        "userAssignedResourcesIds": {
+        "userAssignedResourceIds": {
           "type": "array",
           "items": {
             "type": "string"
           },
+          "nullable": true,
           "metadata": {
-            "description": "Optional. The resource ID(s) to assign to the resource."
+            "description": "Optional. The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption."
           }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a managed identity configuration. To be used if only user-assigned identities are supported by the resource provider.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
         }
       }
     }
@@ -87,7 +93,7 @@
       }
     },
     "managedIdentities": {
-      "$ref": "#/definitions/managedIdentitiesType",
+      "$ref": "#/definitions/managedIdentityOnlyUserAssignedType",
       "nullable": true,
       "metadata": {
         "description": "Conditional. The managed identity definition for this resource. Required if `assignRbacRole` is `true` and `managedIdentityName` is `null`."
@@ -122,6 +128,7 @@
       "type": "securestring",
       "defaultValue": "",
       "metadata": {
+        "example": "keyVault.getSecret(\"keyVaultSecretName\")",
         "description": "Optional. The password for the source registry. Required if the source registry is private, or to logon to the public docker registry."
       }
     },
@@ -193,7 +200,7 @@
     }
   },
   "variables": {
-    "useExistingManagedIdentity": "[greater(length(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createArray())), 0)]"
+    "useExistingManagedIdentity": "[greater(length(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray())), 0)]"
   },
   "resources": {
     "avmTelemetry": {
@@ -225,15 +232,15 @@
     "existingManagedIdentities": {
       "copy": {
         "name": "existingManagedIdentities",
-        "count": "[length(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createArray()))]"
+        "count": "[length(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()))]"
       },
       "condition": "[parameters('assignRbacRole')]",
       "existing": true,
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
       "apiVersion": "2023-01-31",
-      "subscriptionId": "[split(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createArray())[copyIndex()], '/')[2]]",
-      "resourceGroup": "[split(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createArray())[copyIndex()], '/')[4]]",
-      "name": "[last(split(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createArray())[copyIndex()], '/'))]"
+      "subscriptionId": "[split(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray())[copyIndex()], '/')[2]]",
+      "resourceGroup": "[split(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray())[copyIndex()], '/')[4]]",
+      "name": "[last(split(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray())[copyIndex()], '/'))]"
     },
     "newManagedIdentity": {
       "condition": "[and(not(variables('useExistingManagedIdentity')), parameters('assignRbacRole'))]",
@@ -246,22 +253,20 @@
     "acrRoleAssignmentExistingManagedIdentities": {
       "copy": {
         "name": "acrRoleAssignmentExistingManagedIdentities",
-        "count": "[length(range(0, length(if(parameters('assignRbacRole'), coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createArray()), createArray()))))]"
+        "count": "[length(range(0, length(if(parameters('assignRbacRole'), coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), createArray()))))]"
       },
       "condition": "[and(variables('useExistingManagedIdentity'), parameters('assignRbacRole'))]",
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
       "scope": "[format('Microsoft.ContainerRegistry/registries/{0}', parameters('acrName'))]",
-      "name": "[guid(format('roleAssignment-acr-{0}', last(split(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createArray())[range(0, length(if(parameters('assignRbacRole'), coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createArray()), createArray())))[copyIndex()]], '/'))))]",
+      "name": "[guid(format('roleAssignment-acr-{0}', last(split(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray())[range(0, length(if(parameters('assignRbacRole'), coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), createArray())))[copyIndex()]], '/'))))]",
       "properties": {
-        "principalId": "[reference(format('existingManagedIdentities[{0}]', range(0, length(if(parameters('assignRbacRole'), coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createArray()), createArray())))[copyIndex()])).principalId]",
+        "principalId": "[reference(format('existingManagedIdentities[{0}]', range(0, length(if(parameters('assignRbacRole'), coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), createArray())))[copyIndex()])).principalId]",
         "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
         "principalType": "ServicePrincipal"
       },
       "dependsOn": [
-        "acr",
-        "[format('existingManagedIdentities[{0}]', range(0, length(if(parameters('assignRbacRole'), coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createArray()), createArray())))[copyIndex()])]",
-        "[format('existingManagedIdentities[{0}]', range(0, length(if(parameters('assignRbacRole'), coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createArray()), createArray())))[copyIndex()])]"
+        "[format('existingManagedIdentities[{0}]', range(0, length(if(parameters('assignRbacRole'), coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), createArray())))[copyIndex()])]"
       ]
     },
     "acrRoleAssignmentNewManagedIdentity": {
@@ -276,7 +281,6 @@
         "principalType": "ServicePrincipal"
       },
       "dependsOn": [
-        "acr",
         "newManagedIdentity"
       ]
     },
@@ -299,7 +303,7 @@
           "tags": {
             "value": "[parameters('tags')]"
           },
-          "managedIdentities": "[if(variables('useExistingManagedIdentity'), createObject('value', parameters('managedIdentities')), createObject('value', createObject('userAssignedResourcesIds', createArray(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', coalesce(parameters('managedIdentityName'), 'id-ContainerRegistryImport'))))))]",
+          "managedIdentities": "[if(variables('useExistingManagedIdentity'), createObject('value', parameters('managedIdentities')), createObject('value', createObject('userAssignedResourceIds', createArray(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', coalesce(parameters('managedIdentityName'), 'id-ContainerRegistryImport'))))))]",
           "kind": {
             "value": "AzureCLI"
           },
@@ -378,14 +382,39 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "5978422939896103340"
+              "version": "0.30.23.60470",
+              "templateHash": "16722602669876377866"
             },
             "name": "Deployment Scripts",
             "description": "This module deploys Deployment Scripts.",
             "owner": "Azure/module-maintainers"
           },
           "definitions": {
+            "environmentVariableType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the environment variable."
+                  }
+                },
+                "secureValue": {
+                  "type": "securestring",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Conditional. The value of the secure environment variable. Required if `value` is null."
+                  }
+                },
+                "value": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Conditional. The value of the environment variable. Required if `secureValue` is null."
+                  }
+                }
+              }
+            },
             "lockType": {
               "type": "object",
               "properties": {
@@ -409,118 +438,106 @@
                   }
                 }
               },
-              "nullable": true
+              "metadata": {
+                "description": "An AVM-aligned type for a lock.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                }
+              }
             },
-            "managedIdentitiesType": {
+            "managedIdentityOnlyUserAssignedType": {
               "type": "object",
               "properties": {
-                "userAssignedResourcesIds": {
+                "userAssignedResourceIds": {
                   "type": "array",
                   "items": {
                     "type": "string"
                   },
+                  "nullable": true,
                   "metadata": {
-                    "description": "Optional. The resource ID(s) to assign to the resource."
+                    "description": "Optional. The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption."
                   }
                 }
               },
-              "nullable": true
+              "metadata": {
+                "description": "An AVM-aligned type for a managed identity configuration. To be used if only user-assigned identities are supported by the resource provider.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                }
+              }
             },
             "roleAssignmentType": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
-                    }
-                  },
-                  "roleDefinitionIdOrName": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-                    }
-                  },
-                  "principalId": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-                    }
-                  },
-                  "principalType": {
-                    "type": "string",
-                    "allowedValues": [
-                      "Device",
-                      "ForeignGroup",
-                      "Group",
-                      "ServicePrincipal",
-                      "User"
-                    ],
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The principal type of the assigned principal ID."
-                    }
-                  },
-                  "description": {
-                    "type": "string",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The description of the role assignment."
-                    }
-                  },
-                  "condition": {
-                    "type": "string",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-                    }
-                  },
-                  "conditionVersion": {
-                    "type": "string",
-                    "allowedValues": [
-                      "2.0"
-                    ],
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. Version of the condition."
-                    }
-                  },
-                  "delegatedManagedIdentityResourceId": {
-                    "type": "string",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The Resource Id of the delegated managed identity resource."
-                    }
-                  }
-                }
-              },
-              "nullable": true
-            },
-            "environmentVariableType": {
               "type": "object",
               "properties": {
                 "name": {
                   "type": "string",
-                  "metadata": {
-                    "description": "Required. The name of the environment variable."
-                  }
-                },
-                "secureValue": {
-                  "type": "securestring",
                   "nullable": true,
                   "metadata": {
-                    "description": "Required. The value of the secure environment variable."
+                    "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
                   }
                 },
-                "value": {
+                "roleDefinitionIdOrName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                  }
+                },
+                "principalId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                  }
+                },
+                "principalType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Device",
+                    "ForeignGroup",
+                    "Group",
+                    "ServicePrincipal",
+                    "User"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The principal type of the assigned principal ID."
+                  }
+                },
+                "description": {
                   "type": "string",
                   "nullable": true,
                   "metadata": {
-                    "description": "Required. The value of the environment variable."
+                    "description": "Optional. The description of the role assignment."
                   }
+                },
+                "condition": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                  }
+                },
+                "conditionVersion": {
+                  "type": "string",
+                  "allowedValues": [
+                    "2.0"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Version of the condition."
+                  }
+                },
+                "delegatedManagedIdentityResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The Resource Id of the delegated managed identity resource."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a role assignment.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
                 }
               }
             }
@@ -551,7 +568,8 @@
               }
             },
             "managedIdentities": {
-              "$ref": "#/definitions/managedIdentitiesType",
+              "$ref": "#/definitions/managedIdentityOnlyUserAssignedType",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The managed identity definition for this resource."
               }
@@ -681,12 +699,17 @@
             },
             "lock": {
               "$ref": "#/definitions/lockType",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The lock settings of the service."
               }
             },
             "roleAssignments": {
-              "$ref": "#/definitions/roleAssignmentType",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/roleAssignmentType"
+              },
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Array of role assignments to create."
               }
@@ -725,15 +748,15 @@
               "containerGroupName": "[parameters('containerGroupName')]",
               "subnetIds": "[if(not(empty(coalesce(variables('subnetIds'), createArray()))), variables('subnetIds'), null())]"
             },
-            "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
-            "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createObject()))), 'UserAssigned', null()), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]"
+            "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
+            "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null()), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]"
           },
           "resources": {
             "storageAccount": {
               "condition": "[not(empty(parameters('storageAccountResourceId')))]",
               "existing": true,
               "type": "Microsoft.Storage/storageAccounts",
-              "apiVersion": "2021-04-01",
+              "apiVersion": "2023-05-01",
               "subscriptionId": "[split(if(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountResourceId'), '//'), '/')[2]]",
               "resourceGroup": "[split(if(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountResourceId'), '////'), '/')[4]]",
               "name": "[last(split(if(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountResourceId'), 'dummyAccount'), '/'))]"
@@ -742,7 +765,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.resources-deploymentscript.{0}.{1}', replace('0.4.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.resources-deploymentscript.{0}.{1}', replace('0.5.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {

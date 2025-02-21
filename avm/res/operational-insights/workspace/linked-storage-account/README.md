@@ -12,7 +12,7 @@ This module deploys a Log Analytics Workspace Linked Storage Account.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.OperationalInsights/workspaces/linkedStorageAccounts` | [2020-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2020-08-01/workspaces/linkedStorageAccounts) |
+| `Microsoft.OperationalInsights/workspaces/linkedStorageAccounts` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces/linkedStorageAccounts) |
 
 ## Parameters
 
@@ -21,7 +21,7 @@ This module deploys a Log Analytics Workspace Linked Storage Account.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | Name of the link. |
-| [`resourceId`](#parameter-resourceid) | string | The resource ID of the resource that will be linked to the workspace. This should be used for linking resources which require read access. |
+| [`storageAccountIds`](#parameter-storageaccountids) | array | Linked storage accounts resources Ids. |
 
 **Conditional parameters**
 
@@ -45,12 +45,12 @@ Name of the link.
   ]
   ```
 
-### Parameter: `resourceId`
+### Parameter: `storageAccountIds`
 
-The resource ID of the resource that will be linked to the workspace. This should be used for linking resources which require read access.
+Linked storage accounts resources Ids.
 
 - Required: Yes
-- Type: string
+- Type: array
 
 ### Parameter: `logAnalyticsWorkspaceName`
 

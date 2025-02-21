@@ -1,6 +1,5 @@
 metadata name = 'Application Gateway for Containers Association'
 metadata description = 'This module deploys an Application Gateway for Containers Association'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the association to create.')
 param name string
@@ -11,7 +10,7 @@ param location string = resourceGroup().location
 @description('Conditional. The name of the parent Application Gateway for Containers instance. Required if the template is used in a standalone deployment.')
 param trafficControllerName string
 
-@description('Reuired. The resource ID of the subnet to associate with the traffic controller.')
+@description('Required. The resource ID of the subnet to associate with the traffic controller.')
 param subnetResourceId string
 
 // ============== //

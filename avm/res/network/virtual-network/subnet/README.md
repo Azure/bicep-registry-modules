@@ -7,6 +7,7 @@ This module deploys a Virtual Network Subnet.
 - [Resource Types](#Resource-Types)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Notes](#Notes)
 
 ## Resource Types
@@ -14,9 +15,15 @@ This module deploys a Virtual Network Subnet.
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Network/virtualNetworks/subnets` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/virtualNetworks/subnets) |
+| `Microsoft.Network/virtualNetworks/subnets` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks/subnets) |
 
 ## Parameters
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-name) | string | The Name of the subnet resource. |
 
 **Conditional parameters**
 
@@ -43,11 +50,12 @@ This module deploys a Virtual Network Subnet.
 | [`serviceEndpoints`](#parameter-serviceendpoints) | array | The service endpoints to enable on the subnet. |
 | [`sharingScope`](#parameter-sharingscope) | string | Set this property to Tenant to allow sharing subnet with other subscriptions in your AAD tenant. This property can only be set if defaultOutboundAccess is set to false, both properties can only be set if subnet is empty. |
 
-**Requird parameters**
+### Parameter: `name`
 
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | The Name of the subnet resource. |
+The Name of the subnet resource.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `addressPrefix`
 
@@ -112,13 +120,13 @@ Enable or disable apply network policies on private endpoint in the subnet.
 
 - Required: No
 - Type: string
-- Default: `''`
 - Allowed:
   ```Bicep
   [
-    ''
     'Disabled'
     'Enabled'
+    'NetworkSecurityGroupEnabled'
+    'RouteTableEnabled'
   ]
   ```
 
@@ -128,11 +136,9 @@ Enable or disable apply network policies on private link service in the subnet.
 
 - Required: No
 - Type: string
-- Default: `''`
 - Allowed:
   ```Bicep
   [
-    ''
     'Disabled'
     'Enabled'
   ]
@@ -279,13 +285,6 @@ Set this property to Tenant to allow sharing subnet with other subscriptions in 
   ]
   ```
 
-### Parameter: `name`
-
-The Name of the subnet resource.
-
-- Required: Yes
-- Type: string
-
 ## Outputs
 
 | Output | Type | Description |
@@ -295,6 +294,14 @@ The Name of the subnet resource.
 | `name` | string | The name of the virtual network peering. |
 | `resourceGroupName` | string | The resource group the virtual network peering was deployed into. |
 | `resourceId` | string | The resource ID of the virtual network peering. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |
 
 ## Notes
 

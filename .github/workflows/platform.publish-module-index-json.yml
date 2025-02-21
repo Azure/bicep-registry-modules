@@ -50,7 +50,7 @@ jobs:
         shell: pwsh
         run: |
           # Load used functions
-          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'platform' 'Invoke-AvmJsonModuleIndexGeneration.ps1')
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'platform' 'Invoke-AvmJsonModuleIndexGeneration.ps1')
 
           $functionInput = @{
             storageAccountName                           = 'biceplivedatasaprod'
@@ -74,7 +74,7 @@ jobs:
           }
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4.4.2
+        uses: actions/upload-artifact@v4.6.0
         with:
           name: publish-module-index-json-artifacts
           path: |

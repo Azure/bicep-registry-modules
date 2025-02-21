@@ -41,11 +41,11 @@ module nestedDependencies 'dependencies.bicep' = {
   }
 }
 
-
 // ============== //
 // Test Execution //
 // ============== //
 
+@batchSize(1)
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: if (true == false) {
     scope: resourceGroup
@@ -72,10 +72,16 @@ module testDeployment '../../../main.bicep' = [
       publicNetworkAccess: 'Disabled'
       privateEndpoints: [
         {
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.privateDNSZoneResourceId
-            nestedDependencies.outputs.privateDNSZoneOpenAIResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneOpenAIResourceId
+              }
+            ]
+          }
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
         }
       ]

@@ -1,6 +1,5 @@
 metadata name = 'Healthcare API Workspace FHIR Services'
 metadata description = 'This module deploys a Healthcare API Workspace FHIR Service.'
-metadata owner = 'Azure/module-maintainers'
 
 @minLength(3)
 @maxLength(24)

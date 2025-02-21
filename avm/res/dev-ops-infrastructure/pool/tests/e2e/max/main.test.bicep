@@ -70,33 +70,24 @@ module testDeployment '../../../main.bicep' = [
       agentProfile: {
         kind: 'Stateless'
         resourcePredictions: {
-          timeZone: 'Central Europe Standard Time'
-          daysData: [
-            // Monday
-            {
-              '09:00:00': 1
-              '17:00:00': 0
+          timeZone: 'UTC'
+          daysData: {
+            monday: {
+              startTime: '09:00:00'
+              startAgentCount: 1
+              endTime: '17:00:00'
+              endAgentCount: 0
             }
-            // Tuesday
-            {}
-            // Wednesday
-            {}
-            // Thursday
-            {}
-            // Friday
-            {
-              '09:00:00': 1
-              '17:00:00': 0
+            friday: {
+              startTime: '09:00:00'
+              startAgentCount: 1
+              endTime: '17:00:00'
+              endAgentCount: 0
             }
-            // Saturday
-            {}
-            // Sunday
-            {}
-          ]
+          }
         }
         resourcePredictionsProfile: {
-          kind: 'Automatic'
-          predictionPreference: 'Balanced'
+          kind: 'Manual'
         }
       }
       concurrency: 1

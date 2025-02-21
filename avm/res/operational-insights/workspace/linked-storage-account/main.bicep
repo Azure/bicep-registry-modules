@@ -1,6 +1,5 @@
 metadata name = 'Log Analytics Workspace Linked Storage Accounts'
 metadata description = 'This module deploys a Log Analytics Workspace Linked Storage Account.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent Log Analytics workspace. Required if the template is used in a standalone deployment.')
 param logAnalyticsWorkspaceName string
@@ -14,20 +13,19 @@ param logAnalyticsWorkspaceName string
 ])
 param name string
 
-@description('Required. The resource ID of the resource that will be linked to the workspace. This should be used for linking resources which require read access.')
-param resourceId string
+@minLength(1)
+@description('Required. Linked storage accounts resources Ids.')
+param storageAccountIds string[]
 
-resource workspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
+resource workspace 'Microsoft.OperationalInsights/workspaces@2023-09-01' existing = {
   name: logAnalyticsWorkspaceName
 }
 
-resource linkedStorageAccount 'Microsoft.OperationalInsights/workspaces/linkedStorageAccounts@2020-08-01' = {
+resource linkedStorageAccount 'Microsoft.OperationalInsights/workspaces/linkedStorageAccounts@2023-09-01' = {
   name: name
   parent: workspace
   properties: {
-    storageAccountIds: [
-      resourceId
-    ]
+    storageAccountIds: storageAccountIds
   }
 }
 

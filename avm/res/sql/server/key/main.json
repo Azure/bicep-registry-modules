@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "5863771213375512760"
+      "version": "0.32.4.45862",
+      "templateHash": "10291818452210242472"
     },
     "name": "Azure SQL Server Keys",
-    "description": "This module deploys an Azure SQL Server Key.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Azure SQL Server Key."
   },
   "parameters": {
     "name": {
@@ -34,14 +33,14 @@
         "ServiceManaged"
       ],
       "metadata": {
-        "description": "Optional. The encryption protector type like \"ServiceManaged\", \"AzureKeyVault\"."
+        "description": "Optional. The server key type."
       }
     },
     "uri": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. The URI of the key. If the ServerKeyType is AzureKeyVault, then either the URI or the keyVaultName/keyName combination is required."
+        "description": "Optional. The URI of the server key. If the ServerKeyType is AzureKeyVault, then the URI is required. The AKV URI is required to be in this format: 'https://YourVaultName.azure.net/keys/YourKeyName/YourKeyVersion'."
       }
     }
   },
@@ -63,10 +62,7 @@
       "properties": {
         "serverKeyType": "[parameters('serverKeyType')]",
         "uri": "[parameters('uri')]"
-      },
-      "dependsOn": [
-        "server"
-      ]
+      }
     }
   },
   "outputs": {

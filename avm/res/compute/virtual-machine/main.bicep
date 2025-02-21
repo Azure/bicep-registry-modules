@@ -1,6 +1,5 @@
 metadata name = 'Virtual Machines'
 metadata description = 'This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the virtual machine to be created. You should use a unique prefix to reduce name collisions in Active Directory.')
 param name string
@@ -50,6 +49,9 @@ param adminUsername string
 @description('Optional. When specifying a Windows Virtual Machine, this value should be passed.')
 @secure()
 param adminPassword string = ''
+
+@description('Optional. UserData for the VM, which must be base-64 encoded. Customer should not pass any secrets in here.')
+param userData string = ''
 
 @description('Optional. Custom data associated to the VM, this value will be automatically converted into base64 to account for the expected VM format.')
 param customData string = ''
@@ -157,9 +159,11 @@ param extensionAadJoinConfig object = {
 }
 
 @description('Optional. The configuration for the [Anti Malware] extension. Must at least contain the ["enabled": true] property to be executed.')
-param extensionAntiMalwareConfig object = {
-  enabled: false
-}
+param extensionAntiMalwareConfig object = osType == 'Windows'
+  ? {
+      enabled: true
+    }
+  : { enabled: false }
 
 @description('Optional. The configuration for the [Monitoring Agent] extension. Must at least contain the ["enabled": true] property to be executed.')
 param extensionMonitoringAgentConfig object = {
@@ -497,6 +501,25 @@ module vm_nic 'modules/nic-configuration.bicep' = [
   }
 ]
 
+resource managedDataDisks 'Microsoft.Compute/disks@2024-03-02' = [
+  for (dataDisk, index) in dataDisks ?? []: {
+    location: location
+    name: dataDisk.?name ?? '${name}-disk-data-${padLeft((index + 1), 2, '0')}'
+    sku: {
+      name: dataDisk.managedDisk.storageAccountType
+    }
+    properties: {
+      diskSizeGB: dataDisk.diskSizeGB
+      creationData: {
+        createOption: dataDisk.?createoption ?? 'Empty'
+      }
+      diskIOPSReadWrite: dataDisk.?diskIOPSReadWrite
+      diskMBpsReadWrite: dataDisk.?diskMBpsReadWrite
+    }
+    zones: zone != 0 ? array(string(zone)) : null
+  }
+]
+
 resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
   name: name
   location: location
@@ -538,11 +561,12 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
           lun: dataDisk.?lun ?? index
           name: dataDisk.?name ?? '${name}-disk-data-${padLeft((index + 1), 2, '0')}'
           diskSizeGB: dataDisk.diskSizeGB
-          createOption: dataDisk.?createoption ?? 'Empty'
+          createOption: (managedDataDisks[index].?id != null) ? 'Attach' : dataDisk.?createoption ?? 'Empty'
           deleteOption: dataDisk.?deleteOption ?? 'Delete'
           caching: dataDisk.?caching ?? 'ReadOnly'
           managedDisk: {
             storageAccountType: dataDisk.managedDisk.storageAccountType
+            id: managedDataDisks[index].?id
             diskEncryptionSet: {
               id: dataDisk.managedDisk.?diskEncryptionSetResourceId
             }
@@ -620,6 +644,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
         }
       : null
     licenseType: !empty(licenseType) ? licenseType : null
+    userData: !empty(userData) ? base64(userData) : null
   }
   dependsOn: [
     vm_nic
@@ -718,7 +743,17 @@ module vm_microsoftAntiMalwareExtension 'extension/main.bicep' = if (extensionAn
     typeHandlerVersion: extensionAntiMalwareConfig.?typeHandlerVersion ?? '1.3'
     autoUpgradeMinorVersion: extensionAntiMalwareConfig.?autoUpgradeMinorVersion ?? true
     enableAutomaticUpgrade: extensionAntiMalwareConfig.?enableAutomaticUpgrade ?? false
-    settings: extensionAntiMalwareConfig.settings
+    settings: extensionAntiMalwareConfig.?settings ?? {
+      AntimalwareEnabled: 'true'
+      Exclusions: {}
+      RealtimeProtectionEnabled: 'true'
+      ScheduledScanSettings: {
+        day: '7'
+        isEnabled: 'true'
+        scanType: 'Quick'
+        time: '120'
+      }
+    }
     supressFailures: extensionAntiMalwareConfig.?supressFailures ?? false
     tags: extensionAntiMalwareConfig.?tags ?? tags
   }
@@ -1004,7 +1039,7 @@ output resourceId string = vm.id
 output resourceGroupName string = resourceGroup().name
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = vm.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = vm.?identity.?principalId
 
 @description('The location the resource was deployed into.')
 output location string = vm.location
@@ -1107,6 +1142,12 @@ type dataDisksType = {
   @description('Optional. Specifies the caching requirements.')
   caching: 'None' | 'ReadOnly' | 'ReadWrite'?
 
+  @description('Optional. The number of IOPS allowed for this disk; only settable for UltraSSD disks. One operation can transfer between 4k and 256k bytes.')
+  diskIOPSReadWrite: int?
+
+  @description('Optional. The bandwidth allowed for this disk; only settable for UltraSSD disks. MBps means millions of bytes per second - MB here uses the ISO notation, of powers of 10.')
+  diskMBpsReadWrite: int?
+
   @description('Required. The managed disk parameters.')
   managedDisk: {
     @description('Required. Specifies the storage account type for the managed disk.')
@@ -1121,5 +1162,8 @@ type dataDisksType = {
 
     @description('Optional. Specifies the customer managed disk encryption set resource id for the managed disk.')
     diskEncryptionSetResourceId: string?
+
+    @description('Optional. Specifies the customer managed disk id for the managed disk.')
+    id: string?
   }
 }[]?

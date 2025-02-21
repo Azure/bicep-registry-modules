@@ -1,6 +1,5 @@
 metadata name = 'Event Grid Topics'
 metadata description = 'This module deploys an Event Grid Topic.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the Event Grid Topic.')
 param name string
@@ -287,7 +286,7 @@ output resourceGroupName string = resourceGroup().name
 output location string = topic.location
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = topic.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = topic.?identity.?principalId
 
 @description('The private endpoints of the event grid topic.')
 output privateEndpoints array = [
@@ -386,7 +385,7 @@ type privateEndpointType = {
 
   @description('Optional. Custom DNS configurations.')
   customDnsConfigs: {
-    @description('Required. Fqdn that resolves to private endpoint IP address.')
+    @description('Optional. FQDN that resolves to private endpoint IP address.')
     fqdn: string?
 
     @description('Required. A list of private IP addresses of the private endpoint.')

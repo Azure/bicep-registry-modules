@@ -33,7 +33,7 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2023-07-01' = {
 
 // Diagnostics
 // ===========
-module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
   params: {
@@ -69,7 +69,7 @@ module testDeployment '../../../main.bicep' = [
             publicIPAddressObject: {
               name: 'hub1PublicIp'
             }
-            threatIntelMode: 'Alert'
+            threatIntelMode: 'Deny'
             zones: [
               1
               2

@@ -1,6 +1,5 @@
 metadata name = 'DBforPostgreSQL Flexible Server Firewall Rules'
 metadata description = 'This module deploys a DBforPostgreSQL Flexible Server Firewall Rule.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the PostgreSQL flexible server Firewall Rule.')
 param name string
@@ -14,11 +13,11 @@ param endIpAddress string
 @description('Conditional. The name of the parent PostgreSQL flexible server. Required if the template is used in a standalone deployment.')
 param flexibleServerName string
 
-resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2022-12-01' existing = {
+resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2024-08-01' existing = {
   name: flexibleServerName
 }
 
-resource firewallRule 'Microsoft.DBforPostgreSQL/flexibleServers/firewallRules@2022-12-01' = {
+resource firewallRule 'Microsoft.DBforPostgreSQL/flexibleServers/firewallRules@2024-08-01' = {
   name: name
   parent: flexibleServer
   properties: {

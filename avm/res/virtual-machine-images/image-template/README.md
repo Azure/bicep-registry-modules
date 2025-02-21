@@ -8,6 +8,7 @@ This module deploys a Virtual Machine Image Template that can be consumed by Azu
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Notes](#Notes)
 - [Data Collection](#Data-Collection)
 
@@ -17,7 +18,7 @@ This module deploys a Virtual Machine Image Template that can be consumed by Azu
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.VirtualMachineImages/imageTemplates` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.VirtualMachineImages/2023-07-01/imageTemplates) |
+| `Microsoft.VirtualMachineImages/imageTemplates` | [2024-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.VirtualMachineImages/2024-02-01/imageTemplates) |
 
 ## Usage examples
 
@@ -201,6 +202,7 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
     }
     name: 'vmiitmax001'
     // Non-required parameters
+    autoRunState: 'Enabled'
     buildTimeoutInMinutes: 60
     customizationSteps: [
       {
@@ -222,10 +224,16 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
         type: 'Shell'
       }
     ]
+    errorHandlingOnCustomizerError: 'cleanup'
+    errorHandlingOnValidationError: 'abort'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
+    }
+    managedResourceTags: {
+      testKey1: 'testValue1'
+      testKey2: 'testValue2'
     }
     optimizeVmBoot: 'Enabled'
     osDiskSizeGB: 127
@@ -329,6 +337,9 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
       "value": "vmiitmax001"
     },
     // Non-required parameters
+    "autoRunState": {
+      "value": "Enabled"
+    },
     "buildTimeoutInMinutes": {
       "value": 60
     },
@@ -354,6 +365,12 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
         }
       ]
     },
+    "errorHandlingOnCustomizerError": {
+      "value": "cleanup"
+    },
+    "errorHandlingOnValidationError": {
+      "value": "abort"
+    },
     "location": {
       "value": "<location>"
     },
@@ -361,6 +378,12 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
       "value": {
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
+      }
+    },
+    "managedResourceTags": {
+      "value": {
+        "testKey1": "testValue1",
+        "testKey2": "testValue2"
       }
     },
     "optimizeVmBoot": {
@@ -473,6 +496,7 @@ param managedIdentities = {
 }
 param name = 'vmiitmax001'
 // Non-required parameters
+param autoRunState = 'Enabled'
 param buildTimeoutInMinutes = 60
 param customizationSteps = [
   {
@@ -494,10 +518,16 @@ param customizationSteps = [
     type: 'Shell'
   }
 ]
+param errorHandlingOnCustomizerError = 'cleanup'
+param errorHandlingOnValidationError = 'abort'
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
+}
+param managedResourceTags = {
+  testKey1: 'testValue1'
+  testKey2: 'testValue2'
 }
 param optimizeVmBoot = 'Enabled'
 param osDiskSizeGB = 127
@@ -730,11 +760,15 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`autoRunState`](#parameter-autorunstate) | string | Indicates whether or not to automatically run the image template build on template creation or update. |
 | [`buildTimeoutInMinutes`](#parameter-buildtimeoutinminutes) | int | The image build timeout in minutes. 0 means the default 240 minutes. |
 | [`customizationSteps`](#parameter-customizationsteps) | array | Customization steps to be run when building the VM image. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`errorHandlingOnCustomizerError`](#parameter-errorhandlingoncustomizererror) | string | If there is a customizer error and this field is set to 'cleanup', the build VM and associated network resources will be cleaned up. This is the default behavior. If there is a customizer error and this field is set to 'abort', the build VM will be preserved. |
+| [`errorHandlingOnValidationError`](#parameter-errorhandlingonvalidationerror) | string | If there is a validation error and this field is set to 'cleanup', the build VM and associated network resources will be cleaned up. If there is a validation error and this field is set to 'abort', the build VM will be preserved. This is the default behavior. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
+| [`managedResourceTags`](#parameter-managedresourcetags) | object | Tags that will be applied to the resource group and/or resources created by the service. |
 | [`optimizeVmBoot`](#parameter-optimizevmboot) | string | The optimize property can be enabled while creating a VM image and allows VM optimization to improve image creation time. |
 | [`osDiskSizeGB`](#parameter-osdisksizegb) | int | Specifies the size of OS disk. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
@@ -749,7 +783,7 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`baseTime`](#parameter-basetime) | string | Do not provide a value! This date value is used to generate a unique image template name. |
+| [`baseTime`](#parameter-basetime) | string | Do not provide a value! This date is used to generate a unique image template name. |
 
 ### Parameter: `distributions`
 
@@ -782,7 +816,7 @@ The managed identity definition for this resource.
 
 The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
 
-- Required: Yes
+- Required: No
 - Type: array
 
 ### Parameter: `name`
@@ -792,6 +826,21 @@ The name prefix of the Image Template to be built by the Azure Image Builder ser
 - Required: Yes
 - Type: string
 
+### Parameter: `autoRunState`
+
+Indicates whether or not to automatically run the image template build on template creation or update.
+
+- Required: No
+- Type: string
+- Default: `'Disabled'`
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
 ### Parameter: `buildTimeoutInMinutes`
 
 The image build timeout in minutes. 0 means the default 240 minutes.
@@ -799,6 +848,8 @@ The image build timeout in minutes. 0 means the default 240 minutes.
 - Required: No
 - Type: int
 - Default: `0`
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `customizationSteps`
 
@@ -806,6 +857,8 @@ Customization steps to be run when building the VM image.
 
 - Required: No
 - Type: array
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `enableTelemetry`
 
@@ -814,6 +867,42 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
+- MinValue: 0
+- MaxValue: 960
+
+### Parameter: `errorHandlingOnCustomizerError`
+
+If there is a customizer error and this field is set to 'cleanup', the build VM and associated network resources will be cleaned up. This is the default behavior. If there is a customizer error and this field is set to 'abort', the build VM will be preserved.
+
+- Required: No
+- Type: string
+- Default: `'cleanup'`
+- Allowed:
+  ```Bicep
+  [
+    'abort'
+    'cleanup'
+  ]
+  ```
+- MinValue: 0
+- MaxValue: 960
+
+### Parameter: `errorHandlingOnValidationError`
+
+If there is a validation error and this field is set to 'cleanup', the build VM and associated network resources will be cleaned up. If there is a validation error and this field is set to 'abort', the build VM will be preserved. This is the default behavior.
+
+- Required: No
+- Type: string
+- Default: `'cleanup'`
+- Allowed:
+  ```Bicep
+  [
+    'abort'
+    'cleanup'
+  ]
+  ```
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `location`
 
@@ -822,6 +911,8 @@ Location for all resources.
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `lock`
 
@@ -829,6 +920,8 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
+- MinValue: 0
+- MaxValue: 960
 
 **Optional parameters**
 
@@ -851,6 +944,8 @@ Specify the type of lock.
     'ReadOnly'
   ]
   ```
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `lock.name`
 
@@ -858,6 +953,17 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 960
+
+### Parameter: `managedResourceTags`
+
+Tags that will be applied to the resource group and/or resources created by the service.
+
+- Required: No
+- Type: object
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `optimizeVmBoot`
 
@@ -872,6 +978,8 @@ The optimize property can be enabled while creating a VM image and allows VM opt
     'Enabled'
   ]
   ```
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `osDiskSizeGB`
 
@@ -880,6 +988,8 @@ Specifies the size of OS disk.
 - Required: No
 - Type: int
 - Default: `128`
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `roleAssignments`
 
@@ -887,6 +997,8 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- MinValue: 0
+- MaxValue: 960
 - Roles configurable by name:
   - `'Contributor'`
   - `'Owner'`
@@ -918,6 +1030,8 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -925,6 +1039,8 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `roleAssignments.condition`
 
@@ -932,6 +1048,8 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -945,6 +1063,8 @@ Version of the condition.
     '2.0'
   ]
   ```
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `roleAssignments.delegatedManagedIdentityResourceId`
 
@@ -952,6 +1072,8 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `roleAssignments.description`
 
@@ -959,6 +1081,8 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `roleAssignments.name`
 
@@ -966,6 +1090,8 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -983,6 +1109,8 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `stagingResourceGroupResourceId`
 
@@ -990,6 +1118,8 @@ Resource ID of the staging resource group in the same subscription and location 
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `subnetResourceId`
 
@@ -997,6 +1127,8 @@ Resource ID of an already existing subnet, e.g.: /subscriptions/<subscriptionId>
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `tags`
 
@@ -1004,6 +1136,8 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `validationProcess`
 
@@ -1011,6 +1145,8 @@ Configuration options and list of validations to be performed on the resulting i
 
 - Required: No
 - Type: object
+- MinValue: 0
+- MaxValue: 960
 
 **Optional parameters**
 
@@ -1026,6 +1162,8 @@ If validation fails and this field is set to false, output image(s) will not be 
 
 - Required: No
 - Type: bool
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `validationProcess.inVMValidations`
 
@@ -1033,6 +1171,8 @@ A list of validators that will be performed on the image. Azure Image Builder su
 
 - Required: No
 - Type: array
+- MinValue: 0
+- MaxValue: 960
 
 **Required parameters**
 
@@ -1068,6 +1208,8 @@ The type of validation.
     'Shell'
   ]
   ```
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `validationProcess.inVMValidations.destination`
 
@@ -1075,6 +1217,8 @@ Destination of the file.
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `validationProcess.inVMValidations.inline`
 
@@ -1082,6 +1226,8 @@ Array of commands to be run, separated by commas.
 
 - Required: No
 - Type: array
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `validationProcess.inVMValidations.name`
 
@@ -1089,6 +1235,8 @@ Friendly Name to provide context on what this validation step does.
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `validationProcess.inVMValidations.runAsSystem`
 
@@ -1096,6 +1244,8 @@ If specified, the PowerShell script will be run with elevated privileges using t
 
 - Required: No
 - Type: bool
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `validationProcess.inVMValidations.runElevated`
 
@@ -1103,6 +1253,8 @@ If specified, the PowerShell script will be run with elevated privileges.
 
 - Required: No
 - Type: bool
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `validationProcess.inVMValidations.scriptUri`
 
@@ -1110,6 +1262,8 @@ URI of the PowerShell script to be run for validation. It can be a github link, 
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `validationProcess.inVMValidations.sha256Checksum`
 
@@ -1117,6 +1271,8 @@ Value of sha256 checksum of the file, you generate this locally, and then Image 
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `validationProcess.inVMValidations.sourceUri`
 
@@ -1124,6 +1280,8 @@ The source URI of the file.
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `validationProcess.inVMValidations.validExitCodes`
 
@@ -1131,6 +1289,8 @@ Valid codes that can be returned from the script/inline command, this avoids rep
 
 - Required: No
 - Type: array
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `validationProcess.sourceValidationOnly`
 
@@ -1138,6 +1298,8 @@ If this field is set to true, the image specified in the 'source' section will d
 
 - Required: No
 - Type: bool
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `vmSize`
 
@@ -1146,6 +1308,8 @@ Specifies the size for the VM.
 - Required: No
 - Type: string
 - Default: `'Standard_D2s_v3'`
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `vmUserAssignedIdentities`
 
@@ -1154,14 +1318,18 @@ List of User-Assigned Identities associated to the Build VM for accessing Azure 
 - Required: No
 - Type: array
 - Default: `[]`
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `baseTime`
 
-Do not provide a value! This date value is used to generate a unique image template name.
+Do not provide a value! This date is used to generate a unique image template name.
 
 - Required: No
 - Type: string
 - Default: `[utcNow('yyyy-MM-dd-HH-mm-ss')]`
+- MinValue: 0
+- MaxValue: 960
 
 ## Outputs
 
@@ -1173,6 +1341,14 @@ Do not provide a value! This date value is used to generate a unique image templ
 | `resourceGroupName` | string | The resource group the image template was deployed into. |
 | `resourceId` | string | The resource ID of the image template. |
 | `runThisCommand` | string | The command to run in order to trigger the image build. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Notes
 

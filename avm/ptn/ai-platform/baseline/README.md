@@ -19,13 +19,13 @@ By integrating with Microsoft Entra ID for secure identity management and utiliz
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Automanage/configurationProfileAssignments` | [2022-05-04](https://learn.microsoft.com/en-us/azure/templates) |
+| `Microsoft.Automanage/configurationProfileAssignments` | [2022-05-04](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automanage/2022-05-04/configurationProfileAssignments) |
 | `Microsoft.Compute/virtualMachines` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2023-09-01/virtualMachines) |
 | `Microsoft.Compute/virtualMachines/extensions` | [2022-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2022-11-01/virtualMachines/extensions) |
-| `Microsoft.ContainerRegistry/registries` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries) |
-| `Microsoft.ContainerRegistry/registries/cacheRules` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/cacheRules) |
-| `Microsoft.ContainerRegistry/registries/replications` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/replications) |
-| `Microsoft.ContainerRegistry/registries/webhooks` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/registries/webhooks) |
+| `Microsoft.ContainerRegistry/registries` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries) |
+| `Microsoft.ContainerRegistry/registries/cacheRules` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries/cacheRules) |
+| `Microsoft.ContainerRegistry/registries/replications` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries/replications) |
+| `Microsoft.ContainerRegistry/registries/webhooks` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries/webhooks) |
 | `Microsoft.DevTestLab/schedules` | [2018-09-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevTestLab/2018-09-15/schedules) |
 | `Microsoft.GuestConfiguration/guestConfigurationAssignments` | [2020-06-25](https://learn.microsoft.com/en-us/azure/templates/Microsoft.GuestConfiguration/2020-06-25/guestConfigurationAssignments) |
 | `Microsoft.Insights/components` | [2020-02-02](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2020-02-02/components) |
@@ -56,9 +56,9 @@ By integrating with Microsoft Entra ID for secure identity management and utiliz
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
 | `Microsoft.Network/publicIPAddresses` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-09-01/publicIPAddresses) |
-| `Microsoft.Network/virtualNetworks` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/virtualNetworks) |
-| `Microsoft.Network/virtualNetworks/subnets` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/virtualNetworks/subnets) |
-| `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/virtualNetworks/virtualNetworkPeerings) |
+| `Microsoft.Network/virtualNetworks` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks) |
+| `Microsoft.Network/virtualNetworks/subnets` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks/subnets) |
+| `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks/virtualNetworkPeerings) |
 | `Microsoft.OperationalInsights/workspaces` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces) |
 | `Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2023-01-01/vaults/backupFabrics/protectionContainers/protectedItems) |
 | `Microsoft.Storage/storageAccounts` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts) |
@@ -864,10 +864,10 @@ param workspaceConfiguration = {
 | [`keyVaultConfiguration`](#parameter-keyvaultconfiguration) | object | Configuration for the key vault. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`logAnalyticsConfiguration`](#parameter-loganalyticsconfiguration) | object | Configuration for the Log Analytics workspace. |
-| [`managedIdentityName`](#parameter-managedidentityname) | string | The name of the user assigned identity for the AI Studio hub. If not provided, the hub will use a system assigned identity. |
+| [`managedIdentityName`](#parameter-managedidentityname) | string | The name of the user-assigned identity for the AI Studio hub. If not provided, the hub will use a system-assigned identity. |
 | [`storageAccountConfiguration`](#parameter-storageaccountconfiguration) | object | Configuration for the storage account. |
 | [`tags`](#parameter-tags) | object | Resource tags. |
-| [`virtualMachineConfiguration`](#parameter-virtualmachineconfiguration) | secureObject | Configuration for the virtual machine. |
+| [`virtualMachineConfiguration`](#parameter-virtualmachineconfiguration) | object | Configuration for the virtual machine. |
 | [`virtualNetworkConfiguration`](#parameter-virtualnetworkconfiguration) | object | Configuration for the virtual network. |
 | [`workspaceConfiguration`](#parameter-workspaceconfiguration) | object | Configuration for the AI Studio workspace. |
 
@@ -1106,7 +1106,7 @@ The name of the Log Analytics workspace.
 
 ### Parameter: `managedIdentityName`
 
-The name of the user assigned identity for the AI Studio hub. If not provided, the hub will use a system assigned identity.
+The name of the user-assigned identity for the AI Studio hub. If not provided, the hub will use a system-assigned identity.
 
 - Required: No
 - Type: string
@@ -1172,7 +1172,304 @@ Resource tags.
 Configuration for the virtual machine.
 
 - Required: No
-- Type: secureObject
+- Type: object
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`adminPassword`](#parameter-virtualmachineconfigurationadminpassword) | securestring | The password for the administrator account on the virtual machine. Required if a virtual machine is created as part of the module. |
+| [`adminUsername`](#parameter-virtualmachineconfigurationadminusername) | string | The username for the administrator account on the virtual machine. Required if a virtual machine is created as part of the module. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enableAadLoginExtension`](#parameter-virtualmachineconfigurationenableaadloginextension) | bool | Whether to enable the Microsoft.Azure.ActiveDirectory AADLoginForWindows extension, allowing users to log in to the virtual machine using Microsoft Entra. Defaults to 'false'. |
+| [`enableAzureMonitorAgent`](#parameter-virtualmachineconfigurationenableazuremonitoragent) | bool | Whether to enable the Microsoft.Azure.Monitor AzureMonitorWindowsAgent extension. Defaults to 'false'. |
+| [`enabled`](#parameter-virtualmachineconfigurationenabled) | bool | Whether to create a virtual machine in the associated virtual network. Defaults to 'true'. |
+| [`encryptionAtHost`](#parameter-virtualmachineconfigurationencryptionathost) | bool | This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to 'true'. |
+| [`imageReference`](#parameter-virtualmachineconfigurationimagereference) | object | OS image reference. In case of marketplace images, it's the combination of the publisher, offer, sku, version attributes. In case of custom images it's the resource ID of the custom image. |
+| [`maintenanceConfigurationResourceId`](#parameter-virtualmachineconfigurationmaintenanceconfigurationresourceid) | string | The resource Id of a maintenance configuration for the virtual machine. |
+| [`name`](#parameter-virtualmachineconfigurationname) | string | The name of the virtual machine. |
+| [`nicConfigurationConfiguration`](#parameter-virtualmachineconfigurationnicconfigurationconfiguration) | object | Configuration for the virtual machine network interface. |
+| [`osDisk`](#parameter-virtualmachineconfigurationosdisk) | object | Specifies the OS disk. |
+| [`patchMode`](#parameter-virtualmachineconfigurationpatchmode) | string | VM guest patching orchestration mode. Refer to 'https://learn.microsoft.com/en-us/azure/virtual-machines/automatic-vm-guest-patching'. |
+| [`size`](#parameter-virtualmachineconfigurationsize) | string | The virtual machine size. Defaults to 'Standard_D2s_v3'. |
+| [`zone`](#parameter-virtualmachineconfigurationzone) | int | The availability zone of the virtual machine. If set to 0, no availability zone is used (default). |
+
+### Parameter: `virtualMachineConfiguration.adminPassword`
+
+The password for the administrator account on the virtual machine. Required if a virtual machine is created as part of the module.
+
+- Required: No
+- Type: securestring
+
+### Parameter: `virtualMachineConfiguration.adminUsername`
+
+The username for the administrator account on the virtual machine. Required if a virtual machine is created as part of the module.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualMachineConfiguration.enableAadLoginExtension`
+
+Whether to enable the Microsoft.Azure.ActiveDirectory AADLoginForWindows extension, allowing users to log in to the virtual machine using Microsoft Entra. Defaults to 'false'.
+
+- Required: No
+- Type: bool
+
+### Parameter: `virtualMachineConfiguration.enableAzureMonitorAgent`
+
+Whether to enable the Microsoft.Azure.Monitor AzureMonitorWindowsAgent extension. Defaults to 'false'.
+
+- Required: No
+- Type: bool
+
+### Parameter: `virtualMachineConfiguration.enabled`
+
+Whether to create a virtual machine in the associated virtual network. Defaults to 'true'.
+
+- Required: No
+- Type: bool
+
+### Parameter: `virtualMachineConfiguration.encryptionAtHost`
+
+This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to 'true'.
+
+- Required: No
+- Type: bool
+
+### Parameter: `virtualMachineConfiguration.imageReference`
+
+OS image reference. In case of marketplace images, it's the combination of the publisher, offer, sku, version attributes. In case of custom images it's the resource ID of the custom image.
+
+- Required: No
+- Type: object
+
+### Parameter: `virtualMachineConfiguration.maintenanceConfigurationResourceId`
+
+The resource Id of a maintenance configuration for the virtual machine.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualMachineConfiguration.name`
+
+The name of the virtual machine.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualMachineConfiguration.nicConfigurationConfiguration`
+
+Configuration for the virtual machine network interface.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`ipConfigName`](#parameter-virtualmachineconfigurationnicconfigurationconfigurationipconfigname) | string | The name of the IP configuration. |
+| [`name`](#parameter-virtualmachineconfigurationnicconfigurationconfigurationname) | string | The name of the network interface. |
+| [`networkSecurityGroupResourceId`](#parameter-virtualmachineconfigurationnicconfigurationconfigurationnetworksecuritygroupresourceid) | string | The resource ID of an existing network security group to associate with the network interface. |
+| [`privateIPAllocationMethod`](#parameter-virtualmachineconfigurationnicconfigurationconfigurationprivateipallocationmethod) | string | The private IP address allocation method. |
+
+### Parameter: `virtualMachineConfiguration.nicConfigurationConfiguration.ipConfigName`
+
+The name of the IP configuration.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualMachineConfiguration.nicConfigurationConfiguration.name`
+
+The name of the network interface.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualMachineConfiguration.nicConfigurationConfiguration.networkSecurityGroupResourceId`
+
+The resource ID of an existing network security group to associate with the network interface.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualMachineConfiguration.nicConfigurationConfiguration.privateIPAllocationMethod`
+
+The private IP address allocation method.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Dynamic'
+    'Static'
+  ]
+  ```
+
+### Parameter: `virtualMachineConfiguration.osDisk`
+
+Specifies the OS disk.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`managedDisk`](#parameter-virtualmachineconfigurationosdiskmanageddisk) | object | The managed disk parameters. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`caching`](#parameter-virtualmachineconfigurationosdiskcaching) | string | Specifies the caching requirements. |
+| [`createOption`](#parameter-virtualmachineconfigurationosdiskcreateoption) | string | Specifies how the virtual machine should be created. |
+| [`deleteOption`](#parameter-virtualmachineconfigurationosdiskdeleteoption) | string | Specifies whether data disk should be deleted or detached upon VM deletion. |
+| [`diskSizeGB`](#parameter-virtualmachineconfigurationosdiskdisksizegb) | int | Specifies the size of an empty data disk in gigabytes. |
+| [`name`](#parameter-virtualmachineconfigurationosdiskname) | string | The disk name. |
+
+### Parameter: `virtualMachineConfiguration.osDisk.managedDisk`
+
+The managed disk parameters.
+
+- Required: Yes
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`diskEncryptionSetResourceId`](#parameter-virtualmachineconfigurationosdiskmanageddiskdiskencryptionsetresourceid) | string | Specifies the customer managed disk encryption set resource id for the managed disk. |
+| [`storageAccountType`](#parameter-virtualmachineconfigurationosdiskmanageddiskstorageaccounttype) | string | Specifies the storage account type for the managed disk. |
+
+### Parameter: `virtualMachineConfiguration.osDisk.managedDisk.diskEncryptionSetResourceId`
+
+Specifies the customer managed disk encryption set resource id for the managed disk.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualMachineConfiguration.osDisk.managedDisk.storageAccountType`
+
+Specifies the storage account type for the managed disk.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Premium_LRS'
+    'Premium_ZRS'
+    'PremiumV2_LRS'
+    'Standard_LRS'
+    'StandardSSD_LRS'
+    'StandardSSD_ZRS'
+    'UltraSSD_LRS'
+  ]
+  ```
+
+### Parameter: `virtualMachineConfiguration.osDisk.caching`
+
+Specifies the caching requirements.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'None'
+    'ReadOnly'
+    'ReadWrite'
+  ]
+  ```
+
+### Parameter: `virtualMachineConfiguration.osDisk.createOption`
+
+Specifies how the virtual machine should be created.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Attach'
+    'Empty'
+    'FromImage'
+  ]
+  ```
+
+### Parameter: `virtualMachineConfiguration.osDisk.deleteOption`
+
+Specifies whether data disk should be deleted or detached upon VM deletion.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Delete'
+    'Detach'
+  ]
+  ```
+
+### Parameter: `virtualMachineConfiguration.osDisk.diskSizeGB`
+
+Specifies the size of an empty data disk in gigabytes.
+
+- Required: No
+- Type: int
+
+### Parameter: `virtualMachineConfiguration.osDisk.name`
+
+The disk name.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualMachineConfiguration.patchMode`
+
+VM guest patching orchestration mode. Refer to 'https://learn.microsoft.com/en-us/azure/virtual-machines/automatic-vm-guest-patching'.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AutomaticByOS'
+    'AutomaticByPlatform'
+    'Manual'
+  ]
+  ```
+
+### Parameter: `virtualMachineConfiguration.size`
+
+The virtual machine size. Defaults to 'Standard_D2s_v3'.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualMachineConfiguration.zone`
+
+The availability zone of the virtual machine. If set to 0, no availability zone is used (default).
+
+- Required: No
+- Type: int
+- Allowed:
+  ```Bicep
+  [
+    0
+    1
+    2
+    3
+  ]
+  ```
 
 ### Parameter: `virtualNetworkConfiguration`
 

@@ -17,6 +17,10 @@ param resourceLocation string = deployment().location
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'cvmsslinmax'
 
+@description('Optional. The password to leverage for the login.')
+@secure()
+param password string = newGuid()
+
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
@@ -48,7 +52,7 @@ module nestedDependencies 'dependencies.bicep' = {
 
 // Diagnostics
 // ===========
-module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
   params: {
@@ -73,6 +77,7 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       name: '${namePrefix}${serviceShort}001'
       adminUsername: 'scaleSetAdmin'
+      adminPassword: password
       imageReference: {
         publisher: 'Canonical'
         offer: '0001-com-ubuntu-server-jammy'
@@ -91,6 +96,7 @@ module testDeployment '../../../main.bicep' = [
       availabilityZones: [
         '2'
       ]
+      bootDiagnosticEnabled: true
       bootDiagnosticStorageAccountName: nestedDependencies.outputs.storageAccountName
       dataDisks: [
         {
@@ -156,6 +162,7 @@ module testDeployment '../../../main.bicep' = [
       }
       extensionMonitoringAgentConfig: {
         enabled: true
+        autoUpgradeMinorVersion: true
       }
       extensionNetworkWatcherAgentConfig: {
         enabled: true

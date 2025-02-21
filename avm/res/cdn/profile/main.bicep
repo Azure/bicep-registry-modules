@@ -1,6 +1,5 @@
 metadata name = 'CDN Profiles'
 metadata description = 'This module deploys a CDN Profile.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the CDN profile.')
 param name string
@@ -9,9 +8,7 @@ param name string
 param location string = resourceGroup().location
 
 @allowed([
-  'Custom_Verizon'
   'Premium_AzureFrontDoor'
-  'Premium_Verizon'
   'StandardPlus_955BandWidth_ChinaCdn'
   'StandardPlus_AvgBandWidth_ChinaCdn'
   'StandardPlus_ChinaCdn'
@@ -20,7 +17,6 @@ param location string = resourceGroup().location
   'Standard_AzureFrontDoor'
   'Standard_ChinaCdn'
   'Standard_Microsoft'
-  'Standard_Verizon'
 ])
 @description('Required. The pricing tier (defines a CDN provider, feature list and rate) of the CDN profile.')
 param sku string
@@ -38,16 +34,16 @@ param endpointProperties object?
 param secrets array = []
 
 @description('Optional. Array of custom domain objects.')
-param customDomains array = []
+param customDomains customDomainType[] = []
 
 @description('Conditional. Array of origin group objects. Required if the afdEndpoints is specified.')
-param originGroups array = []
+param originGroups originGroupType[] = []
 
 @description('Optional. Array of rule set objects.')
-param ruleSets array = []
+param ruleSets ruleSetType[] = []
 
 @description('Optional. Array of AFD endpoint objects.')
-param afdEndpoints array = []
+param afdEndpoints afdEndpointType[] = []
 
 @description('Optional. Array of Security Policy objects (see https://learn.microsoft.com/en-us/azure/templates/microsoft.cdn/profiles/securitypolicies for details).')
 param securityPolicies securityPolicyType = []
@@ -66,6 +62,9 @@ param roleAssignments roleAssignmentType
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
+
+@description('Optional. The diagnostic settings of the service.')
+param diagnosticSettings diagnosticSettingFullType[]?
 
 var builtInRoleNames = {
   'CDN Endpoint Contributor': subscriptionResourceId(
@@ -182,6 +181,35 @@ resource profile_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-0
   }
 ]
 
+resource profile_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
+  for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
+    name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
+    properties: {
+      storageAccountId: diagnosticSetting.?storageAccountResourceId
+      workspaceId: diagnosticSetting.?workspaceResourceId
+      eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
+      eventHubName: diagnosticSetting.?eventHubName
+      metrics: [
+        for group in (diagnosticSetting.?metricCategories ?? [{ category: 'AllMetrics' }]): {
+          category: group.category
+          enabled: group.?enabled ?? true
+          timeGrain: null
+        }
+      ]
+      logs: [
+        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
+          categoryGroup: group.?categoryGroup
+          category: group.?category
+          enabled: group.?enabled ?? true
+        }
+      ]
+      marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
+      logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
+    }
+    scope: profile
+  }
+]
+
 module profile_endpoint 'endpoint/main.bicep' = if (!empty(endpointProperties)) {
   name: '${uniqueString(deployment().name, location)}-Profile-Endpoint'
   params: {
@@ -248,7 +276,7 @@ module profile_ruleSets 'ruleset/main.bicep' = [
     params: {
       name: ruleSet.name
       profileName: profile.name
-      rules: ruleSet.rules
+      rules: ruleSet.?rules
     }
   }
 ]
@@ -314,11 +342,31 @@ output endpointId string = !empty(endpointProperties) ? profile_endpoint.outputs
 output uri string = !empty(endpointProperties) ? profile_endpoint.outputs.uri : ''
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = profile.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = profile.?identity.?principalId
+
+@description('The list of records required for custom domains validation.')
+output dnsValidation dnsValidationType[] = [
+  for (customDomain, index) in customDomains: profile_customDomains[index].outputs.dnsValidation
+]
+
+@description('The list of AFD endpoint host names.')
+output frontDoorEndpointHostNames array = [
+  for (afdEndpoint, index) in afdEndpoints: profile_afdEndpoints[index].outputs.frontDoorEndpointHostName
+]
 
 // =============== //
 //   Definitions   //
 // =============== //
+
+import { afdEndpointType } from 'afdEndpoint/main.bicep'
+import { customDomainType } from 'customdomain/main.bicep'
+import { originGroupType } from 'origingroup/main.bicep'
+import { originType } from 'origingroup//origin/main.bicep'
+import { associationsType } from 'securityPolicies/main.bicep'
+import { ruleSetType } from 'ruleset/main.bicep'
+import { ruleType } from 'ruleset/rule/main.bicep'
+import { dnsValidationType } from 'customdomain/main.bicep'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 
 type managedIdentitiesType = {
   @description('Optional. Enables system assigned managed identity on the resource.')
@@ -328,12 +376,12 @@ type managedIdentitiesType = {
   userAssignedResourceIds: string[]?
 }?
 
-import { associationsType } from 'securityPolicies/main.bicep'
+@export()
 type securityPolicyType = {
   @description('Required. Name of the security policy.')
   name: string
 
-  @description('Required. Domain names and URL patterns to math with this association.')
+  @description('Required. Domain names and URL patterns to match with this association.')
   associations: associationsType
 
   @description('Required. Resource ID of WAF policy.')

@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "6681425649721370761"
+      "version": "0.33.13.18514",
+      "templateHash": "10648420169478187370"
     },
     "name": "Digital Twins Instances",
-    "description": "This module deploys an Azure Digital Twins Instance.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Azure Digital Twins Instance."
   },
   "definitions": {
     "managedIdentitiesType": {
@@ -207,7 +206,7 @@
                   "type": "string",
                   "nullable": true,
                   "metadata": {
-                    "description": "Required. Fqdn that resolves to private endpoint IP address."
+                    "description": "Optional. FQDN that resolves to private endpoint IP address."
                   }
                 },
                 "ipAddresses": {
@@ -695,12 +694,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "13720195975702696848"
+              "version": "0.33.13.18514",
+              "templateHash": "16389406048518633124"
             },
             "name": "Digital Twins Instance EventHub Endpoint",
-            "description": "This module deploys a Digital Twins Instance EventHub Endpoint.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Digital Twins Instance EventHub Endpoint."
           },
           "definitions": {
             "managedIdentitiesType": {
@@ -822,10 +820,7 @@
                 "endpointUri": "[parameters('endpointUri')]",
                 "entityPath": "[parameters('entityPath')]",
                 "identity": "[variables('identity')]"
-              },
-              "dependsOn": [
-                "digitalTwinsInstance"
-              ]
+              }
             }
           },
           "outputs": {
@@ -852,10 +847,11 @@
             },
             "systemAssignedMIPrincipalId": {
               "type": "string",
+              "nullable": true,
               "metadata": {
                 "description": "The principal ID of the system assigned identity. Note: As of 2024-03 is not exported by API."
               },
-              "value": "[coalesce(tryGet(tryGet(reference('endpoint', '2023-01-31', 'full'), 'identity'), 'principalId'), '')]"
+              "value": "[tryGet(tryGet(reference('endpoint', '2023-01-31', 'full'), 'identity'), 'principalId')]"
             }
           }
         }
@@ -893,12 +889,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "17105935055209854005"
+              "version": "0.33.13.18514",
+              "templateHash": "10272263217980237853"
             },
             "name": "Digital Twins Instance Event Grid Endpoints",
-            "description": "This module deploys a Digital Twins Instance Event Grid Endpoint.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Digital Twins Instance Event Grid Endpoint."
           },
           "parameters": {
             "name": {
@@ -1020,12 +1015,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "13764805272277592098"
+              "version": "0.33.13.18514",
+              "templateHash": "11967411831157387474"
             },
             "name": "Digital Twins Instance ServiceBus Endpoint",
-            "description": "This module deploys a Digital Twins Instance ServiceBus Endpoint.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Digital Twins Instance ServiceBus Endpoint."
           },
           "definitions": {
             "managedIdentitiesType": {
@@ -1147,10 +1141,7 @@
                 "primaryConnectionString": "[parameters('primaryConnectionString')]",
                 "secondaryConnectionString": "[parameters('secondaryConnectionString')]",
                 "identity": "[variables('identity')]"
-              },
-              "dependsOn": [
-                "digitalTwinsInstance"
-              ]
+              }
             }
           },
           "outputs": {
@@ -1177,10 +1168,11 @@
             },
             "systemAssignedMIPrincipalId": {
               "type": "string",
+              "nullable": true,
               "metadata": {
                 "description": "The principal ID of the system assigned identity. Note: As of 2024-03 is not exported by API."
               },
-              "value": "[coalesce(tryGet(tryGet(reference('endpoint', '2023-01-31', 'full'), 'identity'), 'principalId'), '')]"
+              "value": "[tryGet(tryGet(reference('endpoint', '2023-01-31', 'full'), 'identity'), 'principalId')]"
             }
           }
         }
@@ -1890,10 +1882,11 @@
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",
+      "nullable": true,
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[coalesce(tryGet(tryGet(reference('digitalTwinsInstance', '2023-01-31', 'full'), 'identity'), 'principalId'), '')]"
+      "value": "[tryGet(tryGet(reference('digitalTwinsInstance', '2023-01-31', 'full'), 'identity'), 'principalId')]"
     }
   }
 }

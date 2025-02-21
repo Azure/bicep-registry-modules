@@ -18,7 +18,8 @@ This module deploys a Virtual Machine with one or multiple NICs and optionally o
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Automanage/configurationProfileAssignments` | [2022-05-04](https://learn.microsoft.com/en-us/azure/templates) |
+| `Microsoft.Automanage/configurationProfileAssignments` | [2022-05-04](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automanage/2022-05-04/configurationProfileAssignments) |
+| `Microsoft.Compute/disks` | [2024-03-02](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-03-02/disks) |
 | `Microsoft.Compute/virtualMachines` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-07-01/virtualMachines) |
 | `Microsoft.Compute/virtualMachines/extensions` | [2022-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2022-11-01/virtualMachines/extensions) |
 | `Microsoft.DevTestLab/schedules` | [2018-09-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevTestLab/2018-09-15/schedules) |
@@ -47,8 +48,9 @@ The following section provides usage examples for the module, which were used to
 - [Using a host pool to register the VM](#example-7-using-a-host-pool-to-register-the-vm)
 - [Using large parameter set for Windows](#example-8-using-large-parameter-set-for-windows)
 - [Deploy a VM with nVidia graphic card](#example-9-deploy-a-vm-with-nvidia-graphic-card)
-- [Using disk encryption set for the VM.](#example-10-using-disk-encryption-set-for-the-vm)
-- [Adding the VM to a VMSS.](#example-11-adding-the-vm-to-a-vmss)
+- [Deploying Windows VM with premium SSDv2 data disk](#example-10-deploying-windows-vm-with-premium-ssdv2-data-disk)
+- [Using disk encryption set for the VM.](#example-11-using-disk-encryption-set-for-the-vm)
+- [Adding the VM to a VMSS.](#example-12-adding-the-vm-to-a-vmss)
 
 ### Example 1: _Using automanage for the VM._
 
@@ -4152,7 +4154,209 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 10: _Using disk encryption set for the VM._
+### Example 10: _Deploying Windows VM with premium SSDv2 data disk_
+
+This instance deploys the module with premium SSDv2 data disk.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
+  name: 'virtualMachineDeployment'
+  params: {
+    // Required parameters
+    adminUsername: 'localAdminUser'
+    imageReference: {
+      offer: 'WindowsServer'
+      publisher: 'MicrosoftWindowsServer'
+      sku: '2022-datacenter-azure-edition'
+      version: 'latest'
+    }
+    name: 'cvmwinssdv2'
+    nicConfigurations: [
+      {
+        ipConfigurations: [
+          {
+            name: 'ipconfig01'
+            subnetResourceId: '<subnetResourceId>'
+          }
+        ]
+        nicSuffix: '-nic-01'
+      }
+    ]
+    osDisk: {
+      caching: 'ReadWrite'
+      diskSizeGB: 128
+      managedDisk: {
+        storageAccountType: 'Premium_LRS'
+      }
+    }
+    osType: 'Windows'
+    vmSize: 'Standard_D2s_v3'
+    zone: 1
+    // Non-required parameters
+    adminPassword: '<adminPassword>'
+    dataDisks: [
+      {
+        caching: 'None'
+        diskIOPSReadWrite: 3000
+        diskMBpsReadWrite: 125
+        diskSizeGB: 1024
+        managedDisk: {
+          storageAccountType: 'PremiumV2_LRS'
+        }
+      }
+    ]
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "adminUsername": {
+      "value": "localAdminUser"
+    },
+    "imageReference": {
+      "value": {
+        "offer": "WindowsServer",
+        "publisher": "MicrosoftWindowsServer",
+        "sku": "2022-datacenter-azure-edition",
+        "version": "latest"
+      }
+    },
+    "name": {
+      "value": "cvmwinssdv2"
+    },
+    "nicConfigurations": {
+      "value": [
+        {
+          "ipConfigurations": [
+            {
+              "name": "ipconfig01",
+              "subnetResourceId": "<subnetResourceId>"
+            }
+          ],
+          "nicSuffix": "-nic-01"
+        }
+      ]
+    },
+    "osDisk": {
+      "value": {
+        "caching": "ReadWrite",
+        "diskSizeGB": 128,
+        "managedDisk": {
+          "storageAccountType": "Premium_LRS"
+        }
+      }
+    },
+    "osType": {
+      "value": "Windows"
+    },
+    "vmSize": {
+      "value": "Standard_D2s_v3"
+    },
+    "zone": {
+      "value": 1
+    },
+    // Non-required parameters
+    "adminPassword": {
+      "value": "<adminPassword>"
+    },
+    "dataDisks": {
+      "value": [
+        {
+          "caching": "None",
+          "diskIOPSReadWrite": 3000,
+          "diskMBpsReadWrite": 125,
+          "diskSizeGB": 1024,
+          "managedDisk": {
+            "storageAccountType": "PremiumV2_LRS"
+          }
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/virtual-machine:<version>'
+
+// Required parameters
+param adminUsername = 'localAdminUser'
+param imageReference = {
+  offer: 'WindowsServer'
+  publisher: 'MicrosoftWindowsServer'
+  sku: '2022-datacenter-azure-edition'
+  version: 'latest'
+}
+param name = 'cvmwinssdv2'
+param nicConfigurations = [
+  {
+    ipConfigurations: [
+      {
+        name: 'ipconfig01'
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    nicSuffix: '-nic-01'
+  }
+]
+param osDisk = {
+  caching: 'ReadWrite'
+  diskSizeGB: 128
+  managedDisk: {
+    storageAccountType: 'Premium_LRS'
+  }
+}
+param osType = 'Windows'
+param vmSize = 'Standard_D2s_v3'
+param zone = 1
+// Non-required parameters
+param adminPassword = '<adminPassword>'
+param dataDisks = [
+  {
+    caching: 'None'
+    diskIOPSReadWrite: 3000
+    diskMBpsReadWrite: 125
+    diskSizeGB: 1024
+    managedDisk: {
+      storageAccountType: 'PremiumV2_LRS'
+    }
+  }
+]
+param location = '<location>'
+```
+
+</details>
+<p>
+
+### Example 11: _Using disk encryption set for the VM._
 
 This instance deploys the module with disk enryption set.
 
@@ -4360,7 +4564,7 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 11: _Adding the VM to a VMSS._
+### Example 12: _Adding the VM to a VMSS._
 
 This instance deploys the module with the minimum set of required parameters and adds it to a VMSS.
 
@@ -4613,6 +4817,7 @@ param virtualMachineScaleSetResourceId = '<virtualMachineScaleSetResourceId>'
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`timeZone`](#parameter-timezone) | string | Specifies the time zone of the virtual machine. e.g. 'Pacific Standard Time'. Possible values can be `TimeZoneInfo.id` value from time zones returned by `TimeZoneInfo.GetSystemTimeZones`. |
 | [`ultraSSDEnabled`](#parameter-ultrassdenabled) | bool | The flag that enables or disables a capability to have one or more managed data disks with UltraSSD_LRS storage account type on the VM or VMSS. Managed disks with storage account type UltraSSD_LRS can be added to a virtual machine or virtual machine scale set only if this property is enabled. |
+| [`userData`](#parameter-userdata) | string | UserData for the VM, which must be base-64 encoded. Customer should not pass any secrets in here. |
 | [`virtualMachineScaleSetResourceId`](#parameter-virtualmachinescalesetresourceid) | string | Resource ID of a virtual machine scale set, where the VM should be added. |
 | [`vTpmEnabled`](#parameter-vtpmenabled) | bool | Specifies whether vTPM should be enabled on the virtual machine. This parameter is part of the UefiSettings.  SecurityType should be set to TrustedLaunch to enable UefiSettings. |
 | [`winRM`](#parameter-winrm) | array | Specifies the Windows Remote Management listeners. This enables remote Windows PowerShell. - WinRMConfiguration object. |
@@ -4958,6 +5163,8 @@ Specifies the data disks. For security reasons, it is recommended to specify Dis
 | [`caching`](#parameter-datadiskscaching) | string | Specifies the caching requirements. |
 | [`createOption`](#parameter-datadiskscreateoption) | string | Specifies how the virtual machine should be created. |
 | [`deleteOption`](#parameter-datadisksdeleteoption) | string | Specifies whether data disk should be deleted or detached upon VM deletion. |
+| [`diskIOPSReadWrite`](#parameter-datadisksdiskiopsreadwrite) | int | The number of IOPS allowed for this disk; only settable for UltraSSD disks. One operation can transfer between 4k and 256k bytes. |
+| [`diskMBpsReadWrite`](#parameter-datadisksdiskmbpsreadwrite) | int | The bandwidth allowed for this disk; only settable for UltraSSD disks. MBps means millions of bytes per second - MB here uses the ISO notation, of powers of 10. |
 | [`lun`](#parameter-datadiskslun) | int | Specifies the logical unit number of the data disk. |
 | [`name`](#parameter-datadisksname) | string | The disk name. |
 
@@ -4986,6 +5193,7 @@ The managed disk parameters.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`diskEncryptionSetResourceId`](#parameter-datadisksmanageddiskdiskencryptionsetresourceid) | string | Specifies the customer managed disk encryption set resource id for the managed disk. |
+| [`id`](#parameter-datadisksmanageddiskid) | string | Specifies the customer managed disk id for the managed disk. |
 
 ### Parameter: `dataDisks.managedDisk.storageAccountType`
 
@@ -5009,6 +5217,13 @@ Specifies the storage account type for the managed disk.
 ### Parameter: `dataDisks.managedDisk.diskEncryptionSetResourceId`
 
 Specifies the customer managed disk encryption set resource id for the managed disk.
+
+- Required: No
+- Type: string
+
+### Parameter: `dataDisks.managedDisk.id`
+
+Specifies the customer managed disk id for the managed disk.
 
 - Required: No
 - Type: string
@@ -5056,6 +5271,20 @@ Specifies whether data disk should be deleted or detached upon VM deletion.
     'Detach'
   ]
   ```
+
+### Parameter: `dataDisks.diskIOPSReadWrite`
+
+The number of IOPS allowed for this disk; only settable for UltraSSD disks. One operation can transfer between 4k and 256k bytes.
+
+- Required: No
+- Type: int
+
+### Parameter: `dataDisks.diskMBpsReadWrite`
+
+The bandwidth allowed for this disk; only settable for UltraSSD disks. MBps means millions of bytes per second - MB here uses the ISO notation, of powers of 10.
+
+- Required: No
+- Type: int
 
 ### Parameter: `dataDisks.lun`
 
@@ -5146,12 +5375,7 @@ The configuration for the [Anti Malware] extension. Must at least contain the ["
 
 - Required: No
 - Type: object
-- Default:
-  ```Bicep
-  {
-      enabled: false
-  }
-  ```
+- Default: `[if(equals(parameters('osType'), 'Windows'), createObject('enabled', true()), createObject('enabled', false()))]`
 
 ### Parameter: `extensionAzureDiskEncryptionConfig`
 
@@ -5694,6 +5918,14 @@ The flag that enables or disables a capability to have one or more managed data 
 - Required: No
 - Type: bool
 - Default: `False`
+
+### Parameter: `userData`
+
+UserData for the VM, which must be base-64 encoded. Customer should not pass any secrets in here.
+
+- Required: No
+- Type: string
+- Default: `''`
 
 ### Parameter: `virtualMachineScaleSetResourceId`
 

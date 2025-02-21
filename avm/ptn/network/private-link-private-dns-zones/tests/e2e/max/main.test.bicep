@@ -58,6 +58,15 @@ module testDeployment '../../../main.bicep' = [
       virtualNetworkResourceIdsToLinkTo: [
         nestedDependencies.outputs.vnetResourceId
       ]
+      lock: {
+        kind: 'CanNotDelete'
+        name: 'pdnsZonesLock'
+      }
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Example'
+        Role: 'DeploymentValidation'
+      }
     }
   }
 ]

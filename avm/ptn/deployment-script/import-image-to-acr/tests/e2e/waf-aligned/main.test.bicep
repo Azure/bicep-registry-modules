@@ -55,7 +55,7 @@ module testDeployment '../../../main.bicep' = [
       acrName: dependencies.outputs.acrName
       image: 'mcr.microsoft.com/k8se/quickstart-jobs:latest'
       overwriteExistingImage: true
-      managedIdentities: { userAssignedResourcesIds: [dependencies.outputs.managedIdentityResourceId] }
+      managedIdentities: { userAssignedResourceIds: [dependencies.outputs.managedIdentityResourceId] }
     }
   }
 ]

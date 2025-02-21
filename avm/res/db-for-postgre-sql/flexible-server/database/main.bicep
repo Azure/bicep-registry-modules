@@ -1,6 +1,5 @@
 metadata name = 'DBforPostgreSQL Flexible Server Databases'
 metadata description = 'This module deploys a DBforPostgreSQL Flexible Server Database.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the database.')
 param name string
@@ -9,21 +8,21 @@ param name string
 param flexibleServerName string
 
 @description('Optional. The collation of the database.')
-param collation string = ''
+param collation string?
 
 @description('Optional. The charset of the database.')
-param charset string = ''
+param charset string?
 
-resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2022-12-01' existing = {
+resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2024-08-01' existing = {
   name: flexibleServerName
 }
 
-resource database 'Microsoft.DBforPostgreSQL/flexibleServers/databases@2022-12-01' = {
+resource database 'Microsoft.DBforPostgreSQL/flexibleServers/databases@2024-08-01' = {
   name: name
   parent: flexibleServer
   properties: {
-    collation: !empty(collation) ? collation : null
-    charset: !empty(charset) ? charset : null
+    collation: collation
+    charset: charset
   }
 }
 
@@ -33,5 +32,5 @@ output name string = database.name
 @description('The resource ID of the deployed database.')
 output resourceId string = database.id
 
-@description('The resource group of the deployed database.')
+@description('The resource group name of the deployed database.')
 output resourceGroupName string = resourceGroup().name

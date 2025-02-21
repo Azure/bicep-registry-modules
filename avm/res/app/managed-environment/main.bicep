@@ -1,6 +1,5 @@
 metadata name = 'App ManagedEnvironments'
 metadata description = 'This module deploys an App Managed Environment (also known as a Container App Environment).'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the Container Apps Managed Environment.')
 param name string
@@ -66,6 +65,9 @@ param certificatePassword string = ''
 @description('Optional. Certificate to use for the custom domain. PFX or PEM.')
 @secure()
 param certificateValue string = ''
+
+@description('Optional. A key vault reference to the certificate to use for the custom domain.')
+param certificateKeyVaultProperties certificateKeyVaultPropertiesType
 
 @description('Optional. DNS suffix for the environment domain.')
 param dnsSuffix string = ''
@@ -171,6 +173,12 @@ resource managedEnvironment 'Microsoft.App/managedEnvironments@2024-02-02-previe
       certificatePassword: certificatePassword
       certificateValue: !empty(certificateValue) ? certificateValue : null
       dnsSuffix: dnsSuffix
+      certificateKeyVaultProperties: !empty(certificateKeyVaultProperties)
+        ? {
+            identity: certificateKeyVaultProperties!.identityResourceId
+            keyVaultUrl: certificateKeyVaultProperties!.keyVaultUrl
+          }
+        : null
     }
     openTelemetryConfiguration: !empty(openTelemetryConfiguration) ? openTelemetryConfiguration : null
     peerTrafficConfiguration: {
@@ -261,7 +269,7 @@ output name string = managedEnvironment.name
 output resourceId string = managedEnvironment.id
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = managedEnvironment.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = managedEnvironment.?identity.?principalId
 
 @description('The Default domain of the Managed Environment.')
 output defaultDomain string = managedEnvironment.properties.defaultDomain
@@ -317,6 +325,14 @@ type roleAssignmentType = {
   @description('Optional. The Resource Id of the delegated managed identity resource.')
   delegatedManagedIdentityResourceId: string?
 }[]?
+
+type certificateKeyVaultPropertiesType = {
+  @description('Required. The resource ID of the identity. This is the identity that will be used to access the key vault.')
+  identityResourceId: string
+
+  @description('Required. A key vault URL referencing the wildcard certificate that will be used for the custom domain.')
+  keyVaultUrl: string
+}?
 
 type storageType = {
   @description('Required. Access mode for storage: "ReadOnly" or "ReadWrite".')

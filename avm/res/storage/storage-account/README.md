@@ -384,10 +384,10 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     // Non-required parameters
     location: '<location>'
     secretsExportConfiguration: {
-      accessKey1: 'custom-key1-name'
-      accessKey2: 'custom-key2-name'
-      connectionString1: 'custom-connectionString1-name'
-      connectionString2: 'custom-connectionString2-name'
+      accessKey1Name: 'custom-key1-name'
+      accessKey2Name: 'custom-key2-name'
+      connectionString1Name: 'custom-connectionString1-name'
+      connectionString2Name: 'custom-connectionString2-name'
       keyVaultResourceId: '<keyVaultResourceId>'
     }
   }
@@ -416,10 +416,10 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     },
     "secretsExportConfiguration": {
       "value": {
-        "accessKey1": "custom-key1-name",
-        "accessKey2": "custom-key2-name",
-        "connectionString1": "custom-connectionString1-name",
-        "connectionString2": "custom-connectionString2-name",
+        "accessKey1Name": "custom-key1-name",
+        "accessKey2Name": "custom-key2-name",
+        "connectionString1Name": "custom-connectionString1-name",
+        "connectionString2Name": "custom-connectionString2-name",
         "keyVaultResourceId": "<keyVaultResourceId>"
       }
     }
@@ -442,10 +442,10 @@ param name = 'kvref'
 // Non-required parameters
 param location = '<location>'
 param secretsExportConfiguration = {
-  accessKey1: 'custom-key1-name'
-  accessKey2: 'custom-key2-name'
-  connectionString1: 'custom-connectionString1-name'
-  connectionString2: 'custom-connectionString2-name'
+  accessKey1Name: 'custom-key1-name'
+  accessKey2Name: 'custom-key2-name'
+  connectionString1Name: 'custom-connectionString1-name'
+  connectionString2Name: 'custom-connectionString2-name'
   keyVaultResourceId: '<keyVaultResourceId>'
 }
 ```
@@ -500,13 +500,34 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
         }
         {
           allowProtectedAppendWrites: false
-          enableWORM: true
           metadata: {
             testKey: 'testValue'
           }
           name: 'archivecontainer'
           publicAccess: 'None'
-          WORMRetention: 666
+        }
+      ]
+      corsRules: [
+        {
+          allowedHeaders: [
+            'x-ms-meta-data'
+            'x-ms-meta-source-path'
+            'x-ms-meta-target-path'
+          ]
+          allowedMethods: [
+            'GET'
+            'PUT'
+          ]
+          allowedOrigins: [
+            'http://*.contoso.com'
+            'http://www.fabrikam.com'
+          ]
+          exposedHeaders: [
+            'x-ms-meta-data'
+            'x-ms-meta-source-path'
+            'x-ms-meta-target-path'
+          ]
+          maxAgeInSeconds: 200
         }
       ]
       deleteRetentionPolicyDays: 9
@@ -545,6 +566,29 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     enableNfsV3: true
     enableSftp: true
     fileServices: {
+      corsRules: [
+        {
+          allowedHeaders: [
+            'x-ms-meta-data'
+            'x-ms-meta-source-path'
+            'x-ms-meta-target-path'
+          ]
+          allowedMethods: [
+            'GET'
+            'PUT'
+          ]
+          allowedOrigins: [
+            'http://*.contoso.com'
+            'http://www.fabrikam.com'
+          ]
+          exposedHeaders: [
+            'x-ms-meta-data'
+            'x-ms-meta-source-path'
+            'x-ms-meta-target-path'
+          ]
+          maxAgeInSeconds: 200
+        }
+      ]
       diagnosticSettings: [
         {
           eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -605,7 +649,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
             service: 'blob'
           }
         ]
-        storageAccountName: 'ssamax001'
       }
     ]
     location: '<location>'
@@ -760,6 +803,29 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
       }
     ]
     queueServices: {
+      corsRules: [
+        {
+          allowedHeaders: [
+            'x-ms-meta-data'
+            'x-ms-meta-source-path'
+            'x-ms-meta-target-path'
+          ]
+          allowedMethods: [
+            'GET'
+            'PUT'
+          ]
+          allowedOrigins: [
+            'http://*.contoso.com'
+            'http://www.fabrikam.com'
+          ]
+          exposedHeaders: [
+            'x-ms-meta-data'
+            'x-ms-meta-source-path'
+            'x-ms-meta-target-path'
+          ]
+          maxAgeInSeconds: 200
+        }
+      ]
       diagnosticSettings: [
         {
           eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -828,6 +894,29 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     sasExpirationPeriod: '180.00:00:00'
     skuName: 'Standard_LRS'
     tableServices: {
+      corsRules: [
+        {
+          allowedHeaders: [
+            'x-ms-meta-data'
+            'x-ms-meta-source-path'
+            'x-ms-meta-target-path'
+          ]
+          allowedMethods: [
+            'GET'
+            'PUT'
+          ]
+          allowedOrigins: [
+            'http://*.contoso.com'
+            'http://www.fabrikam.com'
+          ]
+          exposedHeaders: [
+            'x-ms-meta-data'
+            'x-ms-meta-source-path'
+            'x-ms-meta-target-path'
+          ]
+          maxAgeInSeconds: 200
+        }
+      ]
       diagnosticSettings: [
         {
           eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -945,13 +1034,34 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
           },
           {
             "allowProtectedAppendWrites": false,
-            "enableWORM": true,
             "metadata": {
               "testKey": "testValue"
             },
             "name": "archivecontainer",
-            "publicAccess": "None",
-            "WORMRetention": 666
+            "publicAccess": "None"
+          }
+        ],
+        "corsRules": [
+          {
+            "allowedHeaders": [
+              "x-ms-meta-data",
+              "x-ms-meta-source-path",
+              "x-ms-meta-target-path"
+            ],
+            "allowedMethods": [
+              "GET",
+              "PUT"
+            ],
+            "allowedOrigins": [
+              "http://*.contoso.com",
+              "http://www.fabrikam.com"
+            ],
+            "exposedHeaders": [
+              "x-ms-meta-data",
+              "x-ms-meta-source-path",
+              "x-ms-meta-target-path"
+            ],
+            "maxAgeInSeconds": 200
           }
         ],
         "deleteRetentionPolicyDays": 9,
@@ -1000,6 +1110,29 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     },
     "fileServices": {
       "value": {
+        "corsRules": [
+          {
+            "allowedHeaders": [
+              "x-ms-meta-data",
+              "x-ms-meta-source-path",
+              "x-ms-meta-target-path"
+            ],
+            "allowedMethods": [
+              "GET",
+              "PUT"
+            ],
+            "allowedOrigins": [
+              "http://*.contoso.com",
+              "http://www.fabrikam.com"
+            ],
+            "exposedHeaders": [
+              "x-ms-meta-data",
+              "x-ms-meta-source-path",
+              "x-ms-meta-target-path"
+            ],
+            "maxAgeInSeconds": 200
+          }
+        ],
         "diagnosticSettings": [
           {
             "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
@@ -1063,8 +1196,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
               "resourceName": "avdscripts",
               "service": "blob"
             }
-          ],
-          "storageAccountName": "ssamax001"
+          ]
         }
       ]
     },
@@ -1233,6 +1365,29 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     },
     "queueServices": {
       "value": {
+        "corsRules": [
+          {
+            "allowedHeaders": [
+              "x-ms-meta-data",
+              "x-ms-meta-source-path",
+              "x-ms-meta-target-path"
+            ],
+            "allowedMethods": [
+              "GET",
+              "PUT"
+            ],
+            "allowedOrigins": [
+              "http://*.contoso.com",
+              "http://www.fabrikam.com"
+            ],
+            "exposedHeaders": [
+              "x-ms-meta-data",
+              "x-ms-meta-source-path",
+              "x-ms-meta-target-path"
+            ],
+            "maxAgeInSeconds": 200
+          }
+        ],
         "diagnosticSettings": [
           {
             "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
@@ -1311,6 +1466,29 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     },
     "tableServices": {
       "value": {
+        "corsRules": [
+          {
+            "allowedHeaders": [
+              "x-ms-meta-data",
+              "x-ms-meta-source-path",
+              "x-ms-meta-target-path"
+            ],
+            "allowedMethods": [
+              "GET",
+              "PUT"
+            ],
+            "allowedOrigins": [
+              "http://*.contoso.com",
+              "http://www.fabrikam.com"
+            ],
+            "exposedHeaders": [
+              "x-ms-meta-data",
+              "x-ms-meta-source-path",
+              "x-ms-meta-target-path"
+            ],
+            "maxAgeInSeconds": 200
+          }
+        ],
         "diagnosticSettings": [
           {
             "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
@@ -1424,13 +1602,34 @@ param blobServices = {
     }
     {
       allowProtectedAppendWrites: false
-      enableWORM: true
       metadata: {
         testKey: 'testValue'
       }
       name: 'archivecontainer'
       publicAccess: 'None'
-      WORMRetention: 666
+    }
+  ]
+  corsRules: [
+    {
+      allowedHeaders: [
+        'x-ms-meta-data'
+        'x-ms-meta-source-path'
+        'x-ms-meta-target-path'
+      ]
+      allowedMethods: [
+        'GET'
+        'PUT'
+      ]
+      allowedOrigins: [
+        'http://*.contoso.com'
+        'http://www.fabrikam.com'
+      ]
+      exposedHeaders: [
+        'x-ms-meta-data'
+        'x-ms-meta-source-path'
+        'x-ms-meta-target-path'
+      ]
+      maxAgeInSeconds: 200
     }
   ]
   deleteRetentionPolicyDays: 9
@@ -1469,6 +1668,29 @@ param enableHierarchicalNamespace = true
 enableNfsV3: true
 param enableSftp = true
 param fileServices = {
+  corsRules: [
+    {
+      allowedHeaders: [
+        'x-ms-meta-data'
+        'x-ms-meta-source-path'
+        'x-ms-meta-target-path'
+      ]
+      allowedMethods: [
+        'GET'
+        'PUT'
+      ]
+      allowedOrigins: [
+        'http://*.contoso.com'
+        'http://www.fabrikam.com'
+      ]
+      exposedHeaders: [
+        'x-ms-meta-data'
+        'x-ms-meta-source-path'
+        'x-ms-meta-target-path'
+      ]
+      maxAgeInSeconds: 200
+    }
+  ]
   diagnosticSettings: [
     {
       eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -1529,7 +1751,6 @@ param localUsers = [
         service: 'blob'
       }
     ]
-    storageAccountName: 'ssamax001'
   }
 ]
 param location = '<location>'
@@ -1684,6 +1905,29 @@ param privateEndpoints = [
   }
 ]
 param queueServices = {
+  corsRules: [
+    {
+      allowedHeaders: [
+        'x-ms-meta-data'
+        'x-ms-meta-source-path'
+        'x-ms-meta-target-path'
+      ]
+      allowedMethods: [
+        'GET'
+        'PUT'
+      ]
+      allowedOrigins: [
+        'http://*.contoso.com'
+        'http://www.fabrikam.com'
+      ]
+      exposedHeaders: [
+        'x-ms-meta-data'
+        'x-ms-meta-source-path'
+        'x-ms-meta-target-path'
+      ]
+      maxAgeInSeconds: 200
+    }
+  ]
   diagnosticSettings: [
     {
       eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -1752,6 +1996,29 @@ param roleAssignments = [
 param sasExpirationPeriod = '180.00:00:00'
 param skuName = 'Standard_LRS'
 param tableServices = {
+  corsRules: [
+    {
+      allowedHeaders: [
+        'x-ms-meta-data'
+        'x-ms-meta-source-path'
+        'x-ms-meta-target-path'
+      ]
+      allowedMethods: [
+        'GET'
+        'PUT'
+      ]
+      allowedOrigins: [
+        'http://*.contoso.com'
+        'http://www.fabrikam.com'
+      ]
+      exposedHeaders: [
+        'x-ms-meta-data'
+        'x-ms-meta-source-path'
+        'x-ms-meta-target-path'
+      ]
+      maxAgeInSeconds: 200
+    }
+  ]
   diagnosticSettings: [
     {
       eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -2353,13 +2620,11 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
         }
         {
           allowProtectedAppendWrites: false
-          enableWORM: true
           metadata: {
             testKey: 'testValue'
           }
           name: 'archivecontainer'
           publicAccess: 'None'
-          WORMRetention: 666
         }
       ]
       deleteRetentionPolicyDays: 9
@@ -2439,7 +2704,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
             service: 'blob'
           }
         ]
-        storageAccountName: 'ssawaf001'
       }
     ]
     location: '<location>'
@@ -2616,13 +2880,11 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
           },
           {
             "allowProtectedAppendWrites": false,
-            "enableWORM": true,
             "metadata": {
               "testKey": "testValue"
             },
             "name": "archivecontainer",
-            "publicAccess": "None",
-            "WORMRetention": 666
+            "publicAccess": "None"
           }
         ],
         "deleteRetentionPolicyDays": 9,
@@ -2715,8 +2977,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
               "resourceName": "avdscripts",
               "service": "blob"
             }
-          ],
-          "storageAccountName": "ssawaf001"
+          ]
         }
       ]
     },
@@ -2909,13 +3170,11 @@ param blobServices = {
     }
     {
       allowProtectedAppendWrites: false
-      enableWORM: true
       metadata: {
         testKey: 'testValue'
       }
       name: 'archivecontainer'
       publicAccess: 'None'
-      WORMRetention: 666
     }
   ]
   deleteRetentionPolicyDays: 9
@@ -2995,7 +3254,6 @@ param localUsers = [
         service: 'blob'
       }
     ]
-    storageAccountName: 'ssawaf001'
   }
 ]
 param location = '<location>'
@@ -3214,6 +3472,7 @@ Required if the Storage Account kind is set to BlobStorage. The access tier is u
 - Allowed:
   ```Bicep
   [
+    'Cold'
     'Cool'
     'Hot'
     'Premium'
@@ -3318,8 +3577,9 @@ The customer managed key definition.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`keyVersion`](#parameter-customermanagedkeykeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, using 'latest'. |
-| [`userAssignedIdentityResourceId`](#parameter-customermanagedkeyuserassignedidentityresourceid) | string | User assigned identity to use when fetching the customer managed key. If used must also be specified in `managedIdentities.userAssignedResourceIds`. Required if no system assigned identity is available for use. |
+| [`autoRotationEnabled`](#parameter-customermanagedkeyautorotationenabled) | bool | Enable or disable auto-rotating to the latest key version. Default is `true`. If set to `false`, the latest key version at the time of the deployment is used. |
+| [`keyVersion`](#parameter-customermanagedkeykeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationEnabled' setting. |
+| [`userAssignedIdentityResourceId`](#parameter-customermanagedkeyuserassignedidentityresourceid) | string | User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use. |
 
 ### Parameter: `customerManagedKey.keyName`
 
@@ -3335,16 +3595,23 @@ The resource ID of a key vault to reference a customer managed key for encryptio
 - Required: Yes
 - Type: string
 
+### Parameter: `customerManagedKey.autoRotationEnabled`
+
+Enable or disable auto-rotating to the latest key version. Default is `true`. If set to `false`, the latest key version at the time of the deployment is used.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `customerManagedKey.keyVersion`
 
-The version of the customer managed key to reference for encryption. If not provided, using 'latest'.
+The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationEnabled' setting.
 
 - Required: No
 - Type: string
 
 ### Parameter: `customerManagedKey.userAssignedIdentityResourceId`
 
-User assigned identity to use when fetching the customer managed key. If used must also be specified in `managedIdentities.userAssignedResourceIds`. Required if no system assigned identity is available for use.
+User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.
 
 - Required: No
 - Type: string
@@ -3371,9 +3638,10 @@ The diagnostic settings of the service.
 | [`eventHubAuthorizationRuleResourceId`](#parameter-diagnosticsettingseventhubauthorizationruleresourceid) | string | Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to. |
 | [`eventHubName`](#parameter-diagnosticsettingseventhubname) | string | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 | [`logAnalyticsDestinationType`](#parameter-diagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
+| [`logCategoriesAndGroups`](#parameter-diagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
 | [`marketplacePartnerResourceId`](#parameter-diagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
-| [`metricCategories`](#parameter-diagnosticsettingsmetriccategories) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
-| [`name`](#parameter-diagnosticsettingsname) | string | The name of diagnostic setting. |
+| [`metricCategories`](#parameter-diagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
+| [`name`](#parameter-diagnosticsettingsname) | string | The name of the diagnostic setting. |
 | [`storageAccountResourceId`](#parameter-diagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 | [`workspaceResourceId`](#parameter-diagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 
@@ -3405,6 +3673,42 @@ A string indicating whether the export to Log Analytics should use the default d
   ]
   ```
 
+### Parameter: `diagnosticSettings.logCategoriesAndGroups`
+
+The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-diagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
+| [`categoryGroup`](#parameter-diagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs. |
+| [`enabled`](#parameter-diagnosticsettingslogcategoriesandgroupsenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+
+### Parameter: `diagnosticSettings.logCategoriesAndGroups.category`
+
+Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.
+
+- Required: No
+- Type: string
+
+### Parameter: `diagnosticSettings.logCategoriesAndGroups.categoryGroup`
+
+Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.
+
+- Required: No
+- Type: string
+
+### Parameter: `diagnosticSettings.logCategoriesAndGroups.enabled`
+
+Enable or disable the category explicitly. Default is `true`.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `diagnosticSettings.marketplacePartnerResourceId`
 
 The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.
@@ -3414,7 +3718,7 @@ The full ARM resource ID of the Marketplace resource to which you would like to 
 
 ### Parameter: `diagnosticSettings.metricCategories`
 
-The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.
+The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.
 
 - Required: No
 - Type: array
@@ -3447,7 +3751,7 @@ Enable or disable the category explicitly. Default is `true`.
 
 ### Parameter: `diagnosticSettings.name`
 
-The name of diagnostic setting.
+The name of the diagnostic setting.
 
 - Required: No
 - Type: string
@@ -3575,7 +3879,127 @@ Local users to deploy for SFTP authentication.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`hasSshKey`](#parameter-localusershassshkey) | bool | Indicates whether SSH key exists. Set it to false to remove existing SSH key. |
+| [`hasSshPassword`](#parameter-localusershassshpassword) | bool | Indicates whether SSH password exists. Set it to false to remove existing SSH password. |
+| [`name`](#parameter-localusersname) | string | The name of the local user used for SFTP Authentication. |
+| [`permissionScopes`](#parameter-localuserspermissionscopes) | array | The permission scopes of the local user. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`hasSharedKey`](#parameter-localusershassharedkey) | bool | Indicates whether shared key exists. Set it to false to remove existing shared key. |
+| [`homeDirectory`](#parameter-localusershomedirectory) | string | The local user home directory. |
+| [`sshAuthorizedKeys`](#parameter-localuserssshauthorizedkeys) | array | The local user SSH authorized keys for SFTP. |
+
+### Parameter: `localUsers.hasSshKey`
+
+Indicates whether SSH key exists. Set it to false to remove existing SSH key.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `localUsers.hasSshPassword`
+
+Indicates whether SSH password exists. Set it to false to remove existing SSH password.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `localUsers.name`
+
+The name of the local user used for SFTP Authentication.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `localUsers.permissionScopes`
+
+The permission scopes of the local user.
+
+- Required: Yes
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`permissions`](#parameter-localuserspermissionscopespermissions) | string | The permissions for the local user. Possible values include: Read (r), Write (w), Delete (d), List (l), and Create (c). |
+| [`resourceName`](#parameter-localuserspermissionscopesresourcename) | string | The name of resource, normally the container name or the file share name, used by the local user. |
+| [`service`](#parameter-localuserspermissionscopesservice) | string | The service used by the local user, e.g. blob, file. |
+
+### Parameter: `localUsers.permissionScopes.permissions`
+
+The permissions for the local user. Possible values include: Read (r), Write (w), Delete (d), List (l), and Create (c).
+
+- Required: Yes
+- Type: string
+
+### Parameter: `localUsers.permissionScopes.resourceName`
+
+The name of resource, normally the container name or the file share name, used by the local user.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `localUsers.permissionScopes.service`
+
+The service used by the local user, e.g. blob, file.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `localUsers.hasSharedKey`
+
+Indicates whether shared key exists. Set it to false to remove existing shared key.
+
+- Required: No
+- Type: bool
+
+### Parameter: `localUsers.homeDirectory`
+
+The local user home directory.
+
+- Required: No
+- Type: string
+
+### Parameter: `localUsers.sshAuthorizedKeys`
+
+The local user SSH authorized keys for SFTP.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`key`](#parameter-localuserssshauthorizedkeyskey) | securestring | SSH public key base64 encoded. The format should be: '{keyType} {keyData}', e.g. ssh-rsa AAAABBBB. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-localuserssshauthorizedkeysdescription) | string | Description used to store the function/usage of the key. |
+
+### Parameter: `localUsers.sshAuthorizedKeys.key`
+
+SSH public key base64 encoded. The format should be: '{keyType} {keyData}', e.g. ssh-rsa AAAABBBB.
+
+- Required: Yes
+- Type: securestring
+
+### Parameter: `localUsers.sshAuthorizedKeys.description`
+
+Description used to store the function/usage of the key.
+
+- Required: No
+- Type: string
 
 ### Parameter: `location`
 
@@ -3633,7 +4057,7 @@ The managed identity definition for this resource.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
-| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
 
 ### Parameter: `managedIdentities.systemAssigned`
 
@@ -3644,7 +4068,7 @@ Enables system assigned managed identity on the resource.
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
-The resource ID(s) to assign to the resource.
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
 
 - Required: No
 - Type: array
@@ -3775,7 +4199,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`service`](#parameter-privateendpointsservice) | string | The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file". |
+| [`service`](#parameter-privateendpointsservice) | string | The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file" for a Storage Account's Private Endpoints. |
 | [`subnetResourceId`](#parameter-privateendpointssubnetresourceid) | string | Resource ID of the subnet where the endpoint needs to be created. |
 
 **Optional parameters**
@@ -3794,13 +4218,13 @@ Configuration details for private endpoints. For security reasons, it is recomme
 | [`name`](#parameter-privateendpointsname) | string | The name of the private endpoint. |
 | [`privateDnsZoneGroup`](#parameter-privateendpointsprivatednszonegroup) | object | The private DNS zone group to configure for the private endpoint. |
 | [`privateLinkServiceConnectionName`](#parameter-privateendpointsprivatelinkserviceconnectionname) | string | The name of the private link connection to create. |
-| [`resourceGroupName`](#parameter-privateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different resource group than the main resource. |
+| [`resourceGroupResourceId`](#parameter-privateendpointsresourcegroupresourceid) | string | The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-privateendpointstags) | object | Tags to be applied on all resources/resource groups in this deployment. |
 
 ### Parameter: `privateEndpoints.service`
 
-The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file".
+The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file" for a Storage Account's Private Endpoints.
 
 - Required: Yes
 - Type: string
@@ -3830,22 +4254,27 @@ Custom DNS configurations.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`fqdn`](#parameter-privateendpointscustomdnsconfigsfqdn) | string | Fqdn that resolves to private endpoint ip address. |
-| [`ipAddresses`](#parameter-privateendpointscustomdnsconfigsipaddresses) | array | A list of private ip addresses of the private endpoint. |
+| [`ipAddresses`](#parameter-privateendpointscustomdnsconfigsipaddresses) | array | A list of private IP addresses of the private endpoint. |
 
-### Parameter: `privateEndpoints.customDnsConfigs.fqdn`
+**Optional parameters**
 
-Fqdn that resolves to private endpoint ip address.
-
-- Required: No
-- Type: string
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`fqdn`](#parameter-privateendpointscustomdnsconfigsfqdn) | string | FQDN that resolves to private endpoint IP address. |
 
 ### Parameter: `privateEndpoints.customDnsConfigs.ipAddresses`
 
-A list of private ip addresses of the private endpoint.
+A list of private IP addresses of the private endpoint.
 
 - Required: Yes
 - Type: array
+
+### Parameter: `privateEndpoints.customDnsConfigs.fqdn`
+
+FQDN that resolves to private endpoint IP address.
+
+- Required: No
+- Type: string
 
 ### Parameter: `privateEndpoints.customNetworkInterfaceName`
 
@@ -3895,7 +4324,7 @@ Properties of private endpoint IP configurations.
 | :-- | :-- | :-- |
 | [`groupId`](#parameter-privateendpointsipconfigurationspropertiesgroupid) | string | The ID of a group obtained from the remote resource that this private endpoint should connect to. |
 | [`memberName`](#parameter-privateendpointsipconfigurationspropertiesmembername) | string | The member name of a group obtained from the remote resource that this private endpoint should connect to. |
-| [`privateIPAddress`](#parameter-privateendpointsipconfigurationspropertiesprivateipaddress) | string | A private ip address obtained from the private endpoint's subnet. |
+| [`privateIPAddress`](#parameter-privateendpointsipconfigurationspropertiesprivateipaddress) | string | A private IP address obtained from the private endpoint's subnet. |
 
 ### Parameter: `privateEndpoints.ipConfigurations.properties.groupId`
 
@@ -3913,7 +4342,7 @@ The member name of a group obtained from the remote resource that this private e
 
 ### Parameter: `privateEndpoints.ipConfigurations.properties.privateIPAddress`
 
-A private ip address obtained from the private endpoint's subnet.
+A private IP address obtained from the private endpoint's subnet.
 
 - Required: Yes
 - Type: string
@@ -3993,7 +4422,7 @@ The private DNS zone group to configure for the private endpoint.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`privateDnsZoneGroupConfigs`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigs) | array | The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones. |
+| [`privateDnsZoneGroupConfigs`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigs) | array | The private DNS Zone Groups to associate the Private Endpoint. A DNS Zone Group can support up to 5 DNS zones. |
 
 **Optional parameters**
 
@@ -4003,7 +4432,7 @@ The private DNS zone group to configure for the private endpoint.
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs`
 
-The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.
+The private DNS Zone Groups to associate the Private Endpoint. A DNS Zone Group can support up to 5 DNS zones.
 
 - Required: Yes
 - Type: array
@@ -4018,7 +4447,7 @@ The private DNS zone groups to associate the private endpoint. A DNS zone group 
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigsname) | string | The name of the private DNS zone group config. |
+| [`name`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigsname) | string | The name of the private DNS Zone Group config. |
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.privateDnsZoneResourceId`
 
@@ -4029,7 +4458,7 @@ The resource id of the private DNS zone.
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.name`
 
-The name of the private DNS zone group config.
+The name of the private DNS Zone Group config.
 
 - Required: No
 - Type: string
@@ -4048,9 +4477,9 @@ The name of the private link connection to create.
 - Required: No
 - Type: string
 
-### Parameter: `privateEndpoints.resourceGroupName`
+### Parameter: `privateEndpoints.resourceGroupResourceId`
 
-Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.
+The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used.
 
 - Required: No
 - Type: string
@@ -4071,7 +4500,7 @@ Array of role assignments to create.
   - `'Owner'`
   - `'Private DNS Zone Contributor'`
   - `'Reader'`
-  - `'Role Based Access Control Administrator (Preview)'`
+  - `'Role Based Access Control Administrator'`
 
 **Required parameters**
 
@@ -4349,10 +4778,10 @@ Key vault reference and secret settings for the module's secrets export.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`accessKey1`](#parameter-secretsexportconfigurationaccesskey1) | string | The accessKey1 secret name to create. |
-| [`accessKey2`](#parameter-secretsexportconfigurationaccesskey2) | string | The accessKey2 secret name to create. |
-| [`connectionString1`](#parameter-secretsexportconfigurationconnectionstring1) | string | The connectionString1 secret name to create. |
-| [`connectionString2`](#parameter-secretsexportconfigurationconnectionstring2) | string | The connectionString2 secret name to create. |
+| [`accessKey1Name`](#parameter-secretsexportconfigurationaccesskey1name) | string | The accessKey1 secret name to create. |
+| [`accessKey2Name`](#parameter-secretsexportconfigurationaccesskey2name) | string | The accessKey2 secret name to create. |
+| [`connectionString1Name`](#parameter-secretsexportconfigurationconnectionstring1name) | string | The connectionString1 secret name to create. |
+| [`connectionString2Name`](#parameter-secretsexportconfigurationconnectionstring2name) | string | The connectionString2 secret name to create. |
 
 ### Parameter: `secretsExportConfiguration.keyVaultResourceId`
 
@@ -4361,28 +4790,28 @@ The key vault name where to store the keys and connection strings generated by t
 - Required: Yes
 - Type: string
 
-### Parameter: `secretsExportConfiguration.accessKey1`
+### Parameter: `secretsExportConfiguration.accessKey1Name`
 
 The accessKey1 secret name to create.
 
 - Required: No
 - Type: string
 
-### Parameter: `secretsExportConfiguration.accessKey2`
+### Parameter: `secretsExportConfiguration.accessKey2Name`
 
 The accessKey2 secret name to create.
 
 - Required: No
 - Type: string
 
-### Parameter: `secretsExportConfiguration.connectionString1`
+### Parameter: `secretsExportConfiguration.connectionString1Name`
 
 The connectionString1 secret name to create.
 
 - Required: No
 - Type: string
 
-### Parameter: `secretsExportConfiguration.connectionString2`
+### Parameter: `secretsExportConfiguration.connectionString2Name`
 
 The connectionString2 secret name to create.
 
@@ -4453,7 +4882,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.7.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.10.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Notes
 

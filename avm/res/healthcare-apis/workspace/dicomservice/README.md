@@ -13,7 +13,7 @@ This module deploys a Healthcare API Workspace DICOM Service.
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.HealthcareApis/workspaces/dicomservices` | [2022-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.HealthcareApis/workspaces) |
+| `Microsoft.HealthcareApis/workspaces/dicomservices` | [2022-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.HealthcareApis/2022-06-01/workspaces/dicomservices) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 
 ## Parameters
@@ -22,6 +22,7 @@ This module deploys a Healthcare API Workspace DICOM Service.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`corsHeaders`](#parameter-corsheaders) | array | Specify HTTP headers which can be used during the request. Use "*" for any header. |
 | [`name`](#parameter-name) | string | The name of the DICOM service. |
 
 **Conditional parameters**
@@ -35,7 +36,6 @@ This module deploys a Healthcare API Workspace DICOM Service.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`corsAllowCredentials`](#parameter-corsallowcredentials) | bool | Use this setting to indicate that cookies should be included in CORS requests. |
-| [`corsHeaders`](#parameter-corsheaders) | array | Specify HTTP headers which can be used during the request. Use "*" for any header. |
 | [`corsMaxAge`](#parameter-corsmaxage) | int | Specify how long a result from a request can be cached in seconds. Example: 600 means 10 minutes. |
 | [`corsMethods`](#parameter-corsmethods) | array | Specify the allowed HTTP methods. |
 | [`corsOrigins`](#parameter-corsorigins) | array | Specify URLs of origin sites that can access this API, or use "*" to allow access from any site. |
@@ -45,6 +45,13 @@ This module deploys a Healthcare API Workspace DICOM Service.
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Control permission for data plane traffic coming from public networks while private endpoint is enabled. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
+
+### Parameter: `corsHeaders`
+
+Specify HTTP headers which can be used during the request. Use "*" for any header.
+
+- Required: Yes
+- Type: array
 
 ### Parameter: `name`
 
@@ -67,13 +74,6 @@ Use this setting to indicate that cookies should be included in CORS requests.
 - Required: No
 - Type: bool
 - Default: `False`
-
-### Parameter: `corsHeaders`
-
-Specify HTTP headers which can be used during the request. Use "*" for any header.
-
-- Required: Yes
-- Type: array
 
 ### Parameter: `corsMaxAge`
 

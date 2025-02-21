@@ -7,6 +7,7 @@ This module deploys a Storage Account Queue.
 - [Resource Types](#Resource-Types)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 
 ## Resource Types
 
@@ -21,7 +22,6 @@ This module deploys a Storage Account Queue.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`metadata`](#parameter-metadata) | object | A name-value pair that represents queue metadata. |
 | [`name`](#parameter-name) | string | The name of the storage queue to deploy. |
 
 **Conditional parameters**
@@ -34,15 +34,8 @@ This module deploys a Storage Account Queue.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`metadata`](#parameter-metadata) | object | A name-value pair that represents queue metadata. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-
-### Parameter: `metadata`
-
-A name-value pair that represents queue metadata.
-
-- Required: No
-- Type: object
-- Default: `{}`
 
 ### Parameter: `name`
 
@@ -57,6 +50,14 @@ The name of the parent Storage Account. Required if the template is used in a st
 
 - Required: Yes
 - Type: string
+
+### Parameter: `metadata`
+
+A name-value pair that represents queue metadata.
+
+- Required: No
+- Type: object
+- Default: `{}`
 
 ### Parameter: `roleAssignments`
 
@@ -176,3 +177,11 @@ The principal type of the assigned principal ID.
 | `name` | string | The name of the deployed queue. |
 | `resourceGroupName` | string | The resource group of the deployed queue. |
 | `resourceId` | string | The resource ID of the deployed queue. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |

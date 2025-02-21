@@ -30,6 +30,7 @@ This module deploys a Service Bus Namespace.
 | `Microsoft.ServiceBus/namespaces/topics` | [2022-10-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2022-10-01-preview/namespaces/topics) |
 | `Microsoft.ServiceBus/namespaces/topics/authorizationRules` | [2022-10-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2022-10-01-preview/namespaces/topics/authorizationRules) |
 | `Microsoft.ServiceBus/namespaces/topics/subscriptions` | [2021-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2021-11-01/namespaces/topics/subscriptions) |
+| `Microsoft.ServiceBus/namespaces/topics/subscriptions/rules` | [2022-10-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ServiceBus/2022-10-01-preview/namespaces/topics/subscriptions/rules) |
 
 ## Usage examples
 
@@ -60,7 +61,6 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
     // Required parameters
     name: 'sbnmin001'
     // Non-required parameters
-    location: '<location>'
     skuObject: {
       capacity: 2
       name: 'Premium'
@@ -86,9 +86,6 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
       "value": "sbnmin001"
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
     "skuObject": {
       "value": {
         "capacity": 2,
@@ -112,7 +109,6 @@ using 'br/public:avm/res/service-bus/namespace:<version>'
 // Required parameters
 param name = 'sbnmin001'
 // Non-required parameters
-param location = '<location>'
 param skuObject = {
   capacity: 2
   name: 'Premium'
@@ -143,10 +139,9 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
       keyVaultResourceId: '<keyVaultResourceId>'
       userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
     }
-    location: '<location>'
     managedIdentities: {
       systemAssigned: false
-      userAssignedResourcesIds: [
+      userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
     }
@@ -182,13 +177,10 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
         "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
       }
     },
-    "location": {
-      "value": "<location>"
-    },
     "managedIdentities": {
       "value": {
         "systemAssigned": false,
-        "userAssignedResourcesIds": [
+        "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
         ]
       }
@@ -221,10 +213,9 @@ param customerManagedKey = {
   keyVaultResourceId: '<keyVaultResourceId>'
   userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
 }
-param location = '<location>'
 param managedIdentities = {
   systemAssigned: false
-  userAssignedResourcesIds: [
+  userAssignedResourceIds: [
     '<managedIdentityResourceId>'
   ]
 }
@@ -297,7 +288,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
     }
     managedIdentities: {
       systemAssigned: true
-      userAssignedResourcesIds: [
+      userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
     }
@@ -480,6 +471,15 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
         subscriptions: [
           {
             name: 'subscription001'
+            rules: [
+              {
+                filterType: 'SqlFilter'
+                name: 'test-filter'
+                sqlFilter: {
+                  sqlExpression: 'Test=1'
+                }
+              }
+            ]
           }
         ]
       }
@@ -560,7 +560,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
     "managedIdentities": {
       "value": {
         "systemAssigned": true,
-        "userAssignedResourcesIds": [
+        "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
         ]
       }
@@ -762,7 +762,16 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
           ],
           "subscriptions": [
             {
-              "name": "subscription001"
+              "name": "subscription001",
+              "rules": [
+                {
+                  "filterType": "SqlFilter",
+                  "name": "test-filter",
+                  "sqlFilter": {
+                    "sqlExpression": "Test=1"
+                  }
+                }
+              ]
             }
           ]
         }
@@ -829,7 +838,7 @@ param lock = {
 }
 param managedIdentities = {
   systemAssigned: true
-  userAssignedResourcesIds: [
+  userAssignedResourceIds: [
     '<managedIdentityResourceId>'
   ]
 }
@@ -1012,6 +1021,15 @@ param topics = [
     subscriptions: [
       {
         name: 'subscription001'
+        rules: [
+          {
+            filterType: 'SqlFilter'
+            name: 'test-filter'
+            sqlFilter: {
+              sqlExpression: 'Test=1'
+            }
+          }
+        ]
       }
     ]
   }
@@ -1062,19 +1080,6 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    disableLocalAuth: true
-    location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    managedIdentities: {
-      systemAssigned: true
-      userAssignedResourcesIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
-    minimumTlsVersion: '1.2'
     networkRuleSets: {
       defaultAction: 'Deny'
       ipRules: [
@@ -1095,7 +1100,6 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
         }
       ]
     }
-    premiumMessagingPartitions: 1
     privateEndpoints: [
       {
         privateDnsZoneGroup: {
@@ -1140,11 +1144,6 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
         roleAssignments: []
       }
     ]
-    roleAssignments: []
-    skuObject: {
-      capacity: 2
-      name: 'Premium'
-    }
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -1223,29 +1222,6 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
         }
       ]
     },
-    "disableLocalAuth": {
-      "value": true
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
-    "managedIdentities": {
-      "value": {
-        "systemAssigned": true,
-        "userAssignedResourcesIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
-    },
-    "minimumTlsVersion": {
-      "value": "1.2"
-    },
     "networkRuleSets": {
       "value": {
         "defaultAction": "Deny",
@@ -1267,9 +1243,6 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
           }
         ]
       }
-    },
-    "premiumMessagingPartitions": {
-      "value": 1
     },
     "privateEndpoints": {
       "value": [
@@ -1320,15 +1293,6 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
           "roleAssignments": []
         }
       ]
-    },
-    "roleAssignments": {
-      "value": []
-    },
-    "skuObject": {
-      "value": {
-        "capacity": 2,
-        "name": "Premium"
-      }
     },
     "tags": {
       "value": {
@@ -1404,19 +1368,6 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
-param disableLocalAuth = true
-param location = '<location>'
-param lock = {
-  kind: 'CanNotDelete'
-  name: 'myCustomLockName'
-}
-param managedIdentities = {
-  systemAssigned: true
-  userAssignedResourcesIds: [
-    '<managedIdentityResourceId>'
-  ]
-}
-param minimumTlsVersion = '1.2'
 param networkRuleSets = {
   defaultAction: 'Deny'
   ipRules: [
@@ -1437,7 +1388,6 @@ param networkRuleSets = {
     }
   ]
 }
-param premiumMessagingPartitions = 1
 param privateEndpoints = [
   {
     privateDnsZoneGroup: {
@@ -1482,11 +1432,6 @@ param queues = [
     roleAssignments: []
   }
 ]
-param roleAssignments = []
-param skuObject = {
-  capacity: 2
-  name: 'Premium'
-}
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
@@ -1527,7 +1472,6 @@ param topics = [
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | Name of the Service Bus Namespace. |
-| [`skuObject`](#parameter-skuobject) | object | The SKU of the Service Bus Namespace. Defaulted to Premium for ZoneRedundant configurations by default. |
 
 **Optional parameters**
 
@@ -1552,6 +1496,7 @@ param topics = [
 | [`queues`](#parameter-queues) | array | The queues to create in the service bus namespace. |
 | [`requireInfrastructureEncryption`](#parameter-requireinfrastructureencryption) | bool | Enable infrastructure encryption (double encryption). Note, this setting requires the configuration of Customer-Managed-Keys (CMK) via the corresponding module parameters. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`skuObject`](#parameter-skuobject) | object | The SKU of the Service Bus Namespace. Defaulted to Premium for ZoneRedundant configurations by default. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`topics`](#parameter-topics) | array | The topics to create in the service bus namespace. |
 | [`zoneRedundant`](#parameter-zoneredundant) | bool | Enabled by default in order to align with resiliency best practices, thus requires Premium SKU. |
@@ -1562,54 +1507,6 @@ Name of the Service Bus Namespace.
 
 - Required: Yes
 - Type: string
-
-### Parameter: `skuObject`
-
-The SKU of the Service Bus Namespace. Defaulted to Premium for ZoneRedundant configurations by default.
-
-- Required: No
-- Type: object
-- Default:
-  ```Bicep
-  {
-      capacity: 2
-      name: 'Premium'
-  }
-  ```
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-skuobjectname) | string | Name of this SKU. - Basic, Standard, Premium. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`capacity`](#parameter-skuobjectcapacity) | int | The specified messaging units for the tier. Only used for Premium Sku tier. |
-
-### Parameter: `skuObject.name`
-
-Name of this SKU. - Basic, Standard, Premium.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Basic'
-    'Premium'
-    'Standard'
-  ]
-  ```
-
-### Parameter: `skuObject.capacity`
-
-The specified messaging units for the tier. Only used for Premium Sku tier.
-
-- Required: No
-- Type: int
 
 ### Parameter: `alternateName`
 
@@ -1690,7 +1587,8 @@ The customer managed key definition.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`keyVersion`](#parameter-customermanagedkeykeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, using 'latest'. |
+| [`autoRotationEnabled`](#parameter-customermanagedkeyautorotationenabled) | bool | Enable or disable auto-rotating to the latest key version. Default is `true`. If set to `false`, the latest key version at the time of the deployment is used. |
+| [`keyVersion`](#parameter-customermanagedkeykeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationEnabled' setting. |
 | [`userAssignedIdentityResourceId`](#parameter-customermanagedkeyuserassignedidentityresourceid) | string | User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use. |
 
 ### Parameter: `customerManagedKey.keyName`
@@ -1707,9 +1605,16 @@ The resource ID of a key vault to reference a customer managed key for encryptio
 - Required: Yes
 - Type: string
 
+### Parameter: `customerManagedKey.autoRotationEnabled`
+
+Enable or disable auto-rotating to the latest key version. Default is `true`. If set to `false`, the latest key version at the time of the deployment is used.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `customerManagedKey.keyVersion`
 
-The version of the customer managed key to reference for encryption. If not provided, using 'latest'.
+The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationEnabled' setting.
 
 - Required: No
 - Type: string
@@ -1738,7 +1643,7 @@ The diagnostic settings of the service.
 | [`logCategoriesAndGroups`](#parameter-diagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
 | [`marketplacePartnerResourceId`](#parameter-diagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
 | [`metricCategories`](#parameter-diagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
-| [`name`](#parameter-diagnosticsettingsname) | string | The name of diagnostic setting. |
+| [`name`](#parameter-diagnosticsettingsname) | string | The name of the diagnostic setting. |
 | [`storageAccountResourceId`](#parameter-diagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 | [`workspaceResourceId`](#parameter-diagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 
@@ -1848,7 +1753,7 @@ Enable or disable the category explicitly. Default is `true`.
 
 ### Parameter: `diagnosticSettings.name`
 
-The name of diagnostic setting.
+The name of the diagnostic setting.
 
 - Required: No
 - Type: string
@@ -1975,7 +1880,7 @@ The managed identity definition for this resource.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
-| [`userAssignedResourcesIds`](#parameter-managedidentitiesuserassignedresourcesids) | array | The resource ID(s) to assign to the resource. |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
 
 ### Parameter: `managedIdentities.systemAssigned`
 
@@ -1984,9 +1889,9 @@ Enables system assigned managed identity on the resource.
 - Required: No
 - Type: bool
 
-### Parameter: `managedIdentities.userAssignedResourcesIds`
+### Parameter: `managedIdentities.userAssignedResourceIds`
 
-The resource ID(s) to assign to the resource.
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
 
 - Required: No
 - Type: array
@@ -2175,22 +2080,22 @@ Configuration details for private endpoints. For security reasons, it is recomme
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`applicationSecurityGroupResourceIds`](#parameter-privateendpointsapplicationsecuritygroupresourceids) | array | Application security groups in which the private endpoint IP configuration is included. |
+| [`applicationSecurityGroupResourceIds`](#parameter-privateendpointsapplicationsecuritygroupresourceids) | array | Application security groups in which the Private Endpoint IP configuration is included. |
 | [`customDnsConfigs`](#parameter-privateendpointscustomdnsconfigs) | array | Custom DNS configurations. |
-| [`customNetworkInterfaceName`](#parameter-privateendpointscustomnetworkinterfacename) | string | The custom name of the network interface attached to the private endpoint. |
+| [`customNetworkInterfaceName`](#parameter-privateendpointscustomnetworkinterfacename) | string | The custom name of the network interface attached to the Private Endpoint. |
 | [`enableTelemetry`](#parameter-privateendpointsenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`ipConfigurations`](#parameter-privateendpointsipconfigurations) | array | A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints. |
+| [`ipConfigurations`](#parameter-privateendpointsipconfigurations) | array | A list of IP configurations of the Private Endpoint. This will be used to map to the first-party Service endpoints. |
 | [`isManualConnection`](#parameter-privateendpointsismanualconnection) | bool | If Manual Private Link Connection is required. |
-| [`location`](#parameter-privateendpointslocation) | string | The location to deploy the private endpoint to. |
+| [`location`](#parameter-privateendpointslocation) | string | The location to deploy the Private Endpoint to. |
 | [`lock`](#parameter-privateendpointslock) | object | Specify the type of lock. |
 | [`manualConnectionRequestMessage`](#parameter-privateendpointsmanualconnectionrequestmessage) | string | A message passed to the owner of the remote resource with the manual connection request. |
-| [`name`](#parameter-privateendpointsname) | string | The name of the private endpoint. |
-| [`privateDnsZoneGroup`](#parameter-privateendpointsprivatednszonegroup) | object | The private DNS zone group to configure for the private endpoint. |
+| [`name`](#parameter-privateendpointsname) | string | The name of the Private Endpoint. |
+| [`privateDnsZoneGroup`](#parameter-privateendpointsprivatednszonegroup) | object | The private DNS Zone Group to configure for the Private Endpoint. |
 | [`privateLinkServiceConnectionName`](#parameter-privateendpointsprivatelinkserviceconnectionname) | string | The name of the private link connection to create. |
-| [`resourceGroupName`](#parameter-privateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different resource group than the main resource. |
+| [`resourceGroupResourceId`](#parameter-privateendpointsresourcegroupresourceid) | string | The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
-| [`service`](#parameter-privateendpointsservice) | string | The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory". |
-| [`tags`](#parameter-privateendpointstags) | object | Tags to be applied on all resources/resource groups in this deployment. |
+| [`service`](#parameter-privateendpointsservice) | string | The subresource to deploy the Private Endpoint for. For example "vault" for a Key Vault Private Endpoint. |
+| [`tags`](#parameter-privateendpointstags) | object | Tags to be applied on all resources/Resource Groups in this deployment. |
 
 ### Parameter: `privateEndpoints.subnetResourceId`
 
@@ -2201,7 +2106,7 @@ Resource ID of the subnet where the endpoint needs to be created.
 
 ### Parameter: `privateEndpoints.applicationSecurityGroupResourceIds`
 
-Application security groups in which the private endpoint IP configuration is included.
+Application security groups in which the Private Endpoint IP configuration is included.
 
 - Required: No
 - Type: array
@@ -2217,15 +2122,13 @@ Custom DNS configurations.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`fqdn`](#parameter-privateendpointscustomdnsconfigsfqdn) | string | Fqdn that resolves to private endpoint IP address. |
 | [`ipAddresses`](#parameter-privateendpointscustomdnsconfigsipaddresses) | array | A list of private IP addresses of the private endpoint. |
 
-### Parameter: `privateEndpoints.customDnsConfigs.fqdn`
+**Optional parameters**
 
-Fqdn that resolves to private endpoint IP address.
-
-- Required: No
-- Type: string
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`fqdn`](#parameter-privateendpointscustomdnsconfigsfqdn) | string | FQDN that resolves to private endpoint IP address. |
 
 ### Parameter: `privateEndpoints.customDnsConfigs.ipAddresses`
 
@@ -2234,9 +2137,16 @@ A list of private IP addresses of the private endpoint.
 - Required: Yes
 - Type: array
 
+### Parameter: `privateEndpoints.customDnsConfigs.fqdn`
+
+FQDN that resolves to private endpoint IP address.
+
+- Required: No
+- Type: string
+
 ### Parameter: `privateEndpoints.customNetworkInterfaceName`
 
-The custom name of the network interface attached to the private endpoint.
+The custom name of the network interface attached to the Private Endpoint.
 
 - Required: No
 - Type: string
@@ -2250,7 +2160,7 @@ Enable/Disable usage telemetry for module.
 
 ### Parameter: `privateEndpoints.ipConfigurations`
 
-A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints.
+A list of IP configurations of the Private Endpoint. This will be used to map to the first-party Service endpoints.
 
 - Required: No
 - Type: array
@@ -2314,7 +2224,7 @@ If Manual Private Link Connection is required.
 
 ### Parameter: `privateEndpoints.location`
 
-The location to deploy the private endpoint to.
+The location to deploy the Private Endpoint to.
 
 - Required: No
 - Type: string
@@ -2364,14 +2274,14 @@ A message passed to the owner of the remote resource with the manual connection 
 
 ### Parameter: `privateEndpoints.name`
 
-The name of the private endpoint.
+The name of the Private Endpoint.
 
 - Required: No
 - Type: string
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup`
 
-The private DNS zone group to configure for the private endpoint.
+The private DNS Zone Group to configure for the Private Endpoint.
 
 - Required: No
 - Type: object
@@ -2380,7 +2290,7 @@ The private DNS zone group to configure for the private endpoint.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`privateDnsZoneGroupConfigs`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigs) | array | The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones. |
+| [`privateDnsZoneGroupConfigs`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigs) | array | The private DNS Zone Groups to associate the Private Endpoint. A DNS Zone Group can support up to 5 DNS zones. |
 
 **Optional parameters**
 
@@ -2390,7 +2300,7 @@ The private DNS zone group to configure for the private endpoint.
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs`
 
-The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.
+The private DNS Zone Groups to associate the Private Endpoint. A DNS Zone Group can support up to 5 DNS zones.
 
 - Required: Yes
 - Type: array
@@ -2405,7 +2315,7 @@ The private DNS zone groups to associate the private endpoint. A DNS zone group 
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigsname) | string | The name of the private DNS zone group config. |
+| [`name`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigsname) | string | The name of the private DNS Zone Group config. |
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.privateDnsZoneResourceId`
 
@@ -2416,7 +2326,7 @@ The resource id of the private DNS zone.
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.name`
 
-The name of the private DNS zone group config.
+The name of the private DNS Zone Group config.
 
 - Required: No
 - Type: string
@@ -2435,9 +2345,9 @@ The name of the private link connection to create.
 - Required: No
 - Type: string
 
-### Parameter: `privateEndpoints.resourceGroupName`
+### Parameter: `privateEndpoints.resourceGroupResourceId`
 
-Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.
+The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used.
 
 - Required: No
 - Type: string
@@ -2458,7 +2368,7 @@ Array of role assignments to create.
   - `'Owner'`
   - `'Private DNS Zone Contributor'`
   - `'Reader'`
-  - `'Role Based Access Control Administrator (Preview)'`
+  - `'Role Based Access Control Administrator'`
 
 **Required parameters**
 
@@ -2552,14 +2462,14 @@ The principal type of the assigned principal ID.
 
 ### Parameter: `privateEndpoints.service`
 
-The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory".
+The subresource to deploy the Private Endpoint for. For example "vault" for a Key Vault Private Endpoint.
 
 - Required: No
 - Type: string
 
 ### Parameter: `privateEndpoints.tags`
 
-Tags to be applied on all resources/resource groups in this deployment.
+Tags to be applied on all resources/Resource Groups in this deployment.
 
 - Required: No
 - Type: object
@@ -3048,6 +2958,54 @@ The principal type of the assigned principal ID.
   ]
   ```
 
+### Parameter: `skuObject`
+
+The SKU of the Service Bus Namespace. Defaulted to Premium for ZoneRedundant configurations by default.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      capacity: 2
+      name: 'Premium'
+  }
+  ```
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-skuobjectname) | string | Name of this SKU. - Basic, Standard, Premium. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`capacity`](#parameter-skuobjectcapacity) | int | The specified messaging units for the tier. Only used for Premium Sku tier. |
+
+### Parameter: `skuObject.name`
+
+Name of this SKU. - Basic, Standard, Premium.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Basic'
+    'Premium'
+    'Standard'
+  ]
+  ```
+
+### Parameter: `skuObject.capacity`
+
+The specified messaging units for the tier. Only used for Premium Sku tier.
+
+- Required: No
+- Type: int
+
 ### Parameter: `tags`
 
 Tags of the resource.
@@ -3392,7 +3350,8 @@ The subscriptions of the topic.
 | [`lockDuration`](#parameter-topicssubscriptionslockduration) | string | ISO 8601 timespan duration of a peek-lock; that is, the amount of time that the message is locked for other receivers. The maximum value for LockDuration is 5 minutes; the default value is 1 minute. |
 | [`maxDeliveryCount`](#parameter-topicssubscriptionsmaxdeliverycount) | int | Number of maximum deliveries. A message is automatically deadlettered after this number of deliveries. Default value is 10. |
 | [`requiresSession`](#parameter-topicssubscriptionsrequiressession) | bool | A value that indicates whether the subscription supports the concept of session. |
-| [`status`](#parameter-topicssubscriptionsstatus) | string | Enumerates the possible values for the status of a messaging entity. - Active, Disabled, Restoring, SendDisabled, ReceiveDisabled, Creating, Deleting, Renaming, Unknown. |
+| [`rules`](#parameter-topicssubscriptionsrules) | array | The subscription rules. |
+| [`status`](#parameter-topicssubscriptionsstatus) | string | Enumerates the possible values for the status of a messaging entity. |
 
 ### Parameter: `topics.subscriptions.name`
 
@@ -3526,9 +3485,227 @@ A value that indicates whether the subscription supports the concept of session.
 - Required: No
 - Type: bool
 
+### Parameter: `topics.subscriptions.rules`
+
+The subscription rules.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-topicssubscriptionsrulesname) | string | The name of the service bus namespace topic subscription rule. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`action`](#parameter-topicssubscriptionsrulesaction) | object | Represents the filter actions which are allowed for the transformation of a message that have been matched by a filter expression. |
+| [`correlationFilter`](#parameter-topicssubscriptionsrulescorrelationfilter) | object | Properties of correlationFilter. |
+| [`filterType`](#parameter-topicssubscriptionsrulesfiltertype) | string | Filter type that is evaluated against a BrokeredMessage. |
+| [`sqlFilter`](#parameter-topicssubscriptionsrulessqlfilter) | object | Properties of sqlFilter. |
+
+### Parameter: `topics.subscriptions.rules.name`
+
+The name of the service bus namespace topic subscription rule.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `topics.subscriptions.rules.action`
+
+Represents the filter actions which are allowed for the transformation of a message that have been matched by a filter expression.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`compatibilityLevel`](#parameter-topicssubscriptionsrulesactioncompatibilitylevel) | int | This property is reserved for future use. An integer value showing the compatibility level, currently hard-coded to 20. |
+| [`requiresPreprocessing`](#parameter-topicssubscriptionsrulesactionrequirespreprocessing) | bool | Value that indicates whether the rule action requires preprocessing. |
+| [`sqlExpression`](#parameter-topicssubscriptionsrulesactionsqlexpression) | string | SQL expression. e.g. MyProperty='ABC'. |
+
+### Parameter: `topics.subscriptions.rules.action.compatibilityLevel`
+
+This property is reserved for future use. An integer value showing the compatibility level, currently hard-coded to 20.
+
+- Required: No
+- Type: int
+
+### Parameter: `topics.subscriptions.rules.action.requiresPreprocessing`
+
+Value that indicates whether the rule action requires preprocessing.
+
+- Required: No
+- Type: bool
+
+### Parameter: `topics.subscriptions.rules.action.sqlExpression`
+
+SQL expression. e.g. MyProperty='ABC'.
+
+- Required: No
+- Type: string
+
+### Parameter: `topics.subscriptions.rules.correlationFilter`
+
+Properties of correlationFilter.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`to`](#parameter-topicssubscriptionsrulescorrelationfilterto) | string | Address to send to. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`contentType`](#parameter-topicssubscriptionsrulescorrelationfiltercontenttype) | string | Content type of the message. |
+| [`correlationId`](#parameter-topicssubscriptionsrulescorrelationfiltercorrelationid) | string | Identifier of the correlation. |
+| [`label`](#parameter-topicssubscriptionsrulescorrelationfilterlabel) | string | Application specific label. |
+| [`messageId`](#parameter-topicssubscriptionsrulescorrelationfiltermessageid) | string | Identifier of the message. |
+| [`properties`](#parameter-topicssubscriptionsrulescorrelationfilterproperties) | array | dictionary object for custom filters. |
+| [`replyTo`](#parameter-topicssubscriptionsrulescorrelationfilterreplyto) | string | Address of the queue to reply to. |
+| [`replyToSessionId`](#parameter-topicssubscriptionsrulescorrelationfilterreplytosessionid) | string | Session identifier to reply to. |
+| [`requiresPreprocessing`](#parameter-topicssubscriptionsrulescorrelationfilterrequirespreprocessing) | bool | Value that indicates whether the rule action requires preprocessing. |
+| [`sessionId`](#parameter-topicssubscriptionsrulescorrelationfiltersessionid) | string | Session identifier. |
+
+### Parameter: `topics.subscriptions.rules.correlationFilter.to`
+
+Address to send to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `topics.subscriptions.rules.correlationFilter.contentType`
+
+Content type of the message.
+
+- Required: No
+- Type: string
+
+### Parameter: `topics.subscriptions.rules.correlationFilter.correlationId`
+
+Identifier of the correlation.
+
+- Required: No
+- Type: string
+
+### Parameter: `topics.subscriptions.rules.correlationFilter.label`
+
+Application specific label.
+
+- Required: No
+- Type: string
+
+### Parameter: `topics.subscriptions.rules.correlationFilter.messageId`
+
+Identifier of the message.
+
+- Required: No
+- Type: string
+
+### Parameter: `topics.subscriptions.rules.correlationFilter.properties`
+
+dictionary object for custom filters.
+
+- Required: No
+- Type: array
+- Allowed:
+  ```Bicep
+  [
+    {}
+  ]
+  ```
+
+### Parameter: `topics.subscriptions.rules.correlationFilter.replyTo`
+
+Address of the queue to reply to.
+
+- Required: No
+- Type: string
+
+### Parameter: `topics.subscriptions.rules.correlationFilter.replyToSessionId`
+
+Session identifier to reply to.
+
+- Required: No
+- Type: string
+
+### Parameter: `topics.subscriptions.rules.correlationFilter.requiresPreprocessing`
+
+Value that indicates whether the rule action requires preprocessing.
+
+- Required: No
+- Type: bool
+
+### Parameter: `topics.subscriptions.rules.correlationFilter.sessionId`
+
+Session identifier.
+
+- Required: No
+- Type: string
+
+### Parameter: `topics.subscriptions.rules.filterType`
+
+Filter type that is evaluated against a BrokeredMessage.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'CorrelationFilter'
+    'SqlFilter'
+  ]
+  ```
+
+### Parameter: `topics.subscriptions.rules.sqlFilter`
+
+Properties of sqlFilter.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`compatibilityLevel`](#parameter-topicssubscriptionsrulessqlfiltercompatibilitylevel) | int | This property is reserved for future use. An integer value showing the compatibility level, currently hard-coded to 20. |
+| [`requiresPreprocessing`](#parameter-topicssubscriptionsrulessqlfilterrequirespreprocessing) | bool | Value that indicates whether the rule action requires preprocessing. |
+| [`sqlExpression`](#parameter-topicssubscriptionsrulessqlfiltersqlexpression) | string | SQL expression. e.g. MyProperty='ABC'. |
+
+### Parameter: `topics.subscriptions.rules.sqlFilter.compatibilityLevel`
+
+This property is reserved for future use. An integer value showing the compatibility level, currently hard-coded to 20.
+
+- Required: No
+- Type: int
+
+### Parameter: `topics.subscriptions.rules.sqlFilter.requiresPreprocessing`
+
+Value that indicates whether the rule action requires preprocessing.
+
+- Required: No
+- Type: bool
+
+### Parameter: `topics.subscriptions.rules.sqlFilter.sqlExpression`
+
+SQL expression. e.g. MyProperty='ABC'.
+
+- Required: No
+- Type: string
+
 ### Parameter: `topics.subscriptions.status`
 
-Enumerates the possible values for the status of a messaging entity. - Active, Disabled, Restoring, SendDisabled, ReceiveDisabled, Creating, Deleting, Renaming, Unknown.
+Enumerates the possible values for the status of a messaging entity.
 
 - Required: No
 - Type: string
@@ -3571,6 +3748,7 @@ Enabled by default in order to align with resiliency best practices, thus requir
 | `privateEndpoints` | array | The private endpoints of the service bus namespace. |
 | `resourceGroupName` | string | The resource group of the deployed service bus namespace. |
 | `resourceId` | string | The resource ID of the deployed service bus namespace. |
+| `serviceBusEndpoint` | string | The endpoint of the deployed service bus namespace. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 
 ## Cross-referenced modules
@@ -3579,7 +3757,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.7.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.10.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

@@ -1,9 +1,15 @@
 metadata name = 'avm/ptn/network/private-link-private-dns-zones'
 metadata description = 'Private Link Private DNS Zones'
-metadata owner = 'jtracey93'
 
 @description('Optional. Azure region where the each of the Private Link Private DNS Zones created will be deployed, default to Resource Group location if not specified.')
 param location string = resourceGroup().location
+
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+@description('Optional. The lock settings for the Private Link Private DNS Zones created.')
+param lock lockType?
+
+@description('Optional. Tags of the Private Link Private DNS Zones created.')
+param tags object?
 
 @description('''
 Optional. An array of Private Link Private DNS Zones to create. Each item must be a valid DNS zone name.
@@ -56,8 +62,7 @@ param privateLinkPrivateDnsZones array = [
   'privatelink.pbidedicated.windows.net'
   'privatelink.tip1.powerquery.microsoft.com'
   'privatelink.azuredatabricks.net'
-  '{regionName}.privatelink.batch.azure.com'
-  '{regionName}.service.privatelink.batch.azure.com'
+  'privatelink.batch.azure.com'
   'privatelink-global.wvd.microsoft.com'
   'privatelink.wvd.microsoft.com'
   'privatelink.{regionName}.azmk8s.io'
@@ -92,7 +97,7 @@ param privateLinkPrivateDnsZones array = [
   'privatelink.digitaltwins.azure.net'
   'privatelink.media.azure.net'
   'privatelink.azure-automation.net'
-  '{regionCode}.privatelink.backup.windowsazure.com'
+  'privatelink.{regionCode}.backup.windowsazure.com'
   'privatelink.siterecovery.windowsazure.com'
   'privatelink.monitor.azure.com'
   'privatelink.oms.opinsights.azure.com'
@@ -177,6 +182,12 @@ var azureRegionGeoCodeShortNameAsKey = {
   chilecentral: 'clc'
   westus: 'wus'
   swedensouth: 'sds'
+  usgovvirginia: 'ugv'
+  usgovtexas: 'ugt'
+  usgovarizona: 'uga'
+  usdodeast: 'ude'
+  usdodcentral: 'udc'
+  indonesiacentral: 'idc'
 }
 
 var azureRegionShortNameDisplayNameAsKey = {
@@ -237,6 +248,12 @@ var azureRegionShortNameDisplayNameAsKey = {
   'west us 3': 'westus3'
   'taiwan north': 'taiwannorth'
   'sweden central': 'swedencentral'
+  'usgov virginia': 'usgovvirginia'
+  'usgov texas': 'usgovtexas'
+  'usgov arizona': 'usgovarizona'
+  'usdod east': 'usdodeast'
+  'usdod central': 'usdodcentral'
+  'indonesia central': 'indonesiacentral'
 }
 
 var locationLowered = toLower(location)
@@ -287,7 +304,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
-module pdnsZones 'br/public:avm/res/network/private-dns-zone:0.3.0' = [
+module pdnsZones 'br/public:avm/res/network/private-dns-zone:0.6.0' = [
   for zone in combinedPrivateLinkPrivateDnsZonesReplacedWithVnetsToLink: {
     name: '${uniqueString(deployment().name, zone.pdnsZoneName, location)}-pdns-zone-deployment'
     params: {
@@ -298,6 +315,9 @@ module pdnsZones 'br/public:avm/res/network/private-dns-zone:0.3.0' = [
           virtualNetworkResourceId: vnet
         }
       ]
+      lock: lock
+      tags: tags
+      enableTelemetry: enableTelemetry
     }
   }
 ]

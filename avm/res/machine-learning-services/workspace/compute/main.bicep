@@ -2,7 +2,6 @@ metadata name = 'Machine Learning Services Workspaces Computes'
 metadata description = '''This module deploys a Machine Learning Services Workspaces Compute.
 
 Attaching a compute is not idempotent and will fail in case you try to redeploy over an existing compute in AML (see parameter `deployCompute`).'''
-metadata owner = 'Azure/module-maintainers'
 
 // ================ //
 // Parameters       //
@@ -64,8 +63,9 @@ param computeType string
 @sys.description('Optional. The properties of the compute. Will be ignored in case "resourceId" is set.')
 param properties object?
 
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @sys.description('Optional. The managed identity definition for this resource.')
-param managedIdentities managedIdentitiesType
+param managedIdentities managedIdentityAllType?
 
 // ================//
 // Variables       //
@@ -141,19 +141,7 @@ output resourceId string = compute.id
 output resourceGroupName string = resourceGroup().name
 
 @sys.description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = compute.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = compute.?identity.?principalId
 
 @sys.description('The location the resource was deployed into.')
 output location string = compute.location
-
-// =============== //
-//   Definitions   //
-// =============== //
-
-type managedIdentitiesType = {
-  @sys.description('Optional. Enables system assigned managed identity on the resource.')
-  systemAssigned: bool?
-
-  @sys.description('Optional. The resource ID(s) to assign to the resource.')
-  userAssignedResourceIds: string[]?
-}?

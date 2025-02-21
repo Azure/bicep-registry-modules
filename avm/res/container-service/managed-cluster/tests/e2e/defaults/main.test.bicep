@@ -38,18 +38,21 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      location: resourceLocation
       managedIdentities: {
         systemAssigned: true
       }
-      primaryAgentPoolProfile: [
+      primaryAgentPoolProfiles: [
         {
           name: 'systempool'
           count: 3
-          vmSize: 'Standard_DS2_v2'
+          vmSize: 'Standard_DS4_v2'
           mode: 'System'
         }
       ]
+      aadProfile: {
+        aadProfileEnableAzureRBAC: true
+        aadProfileManaged: true
+      }
     }
   }
 ]

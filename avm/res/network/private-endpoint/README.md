@@ -8,6 +8,7 @@ This module deploys a Private Endpoint.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -49,7 +50,6 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
     name: 'npemin001'
     subnetResourceId: '<subnetResourceId>'
     // Non-required parameters
-    location: '<location>'
     privateLinkServiceConnections: [
       {
         name: 'npemin001'
@@ -85,9 +85,6 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
       "value": "<subnetResourceId>"
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
     "privateLinkServiceConnections": {
       "value": [
         {
@@ -119,7 +116,6 @@ using 'br/public:avm/res/network/private-endpoint:<version>'
 param name = 'npemin001'
 param subnetResourceId = '<subnetResourceId>'
 // Non-required parameters
-param location = '<location>'
 param privateLinkServiceConnections = [
   {
     name: 'npemin001'
@@ -463,7 +459,6 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
         }
       }
     ]
-    location: '<location>'
     privateLinkServiceConnections: [
       {
         name: 'npepls001'
@@ -509,9 +504,6 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
         }
       ]
     },
-    "location": {
-      "value": "<location>"
-    },
     "privateLinkServiceConnections": {
       "value": [
         {
@@ -551,7 +543,6 @@ param ipConfigurations = [
     }
   }
 ]
-param location = '<location>'
 param privateLinkServiceConnections = [
   {
     name: 'npepls001'
@@ -597,11 +588,6 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
         }
       }
     ]
-    location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     privateDnsZoneGroup: {
       privateDnsZoneGroupConfigs: [
         {
@@ -669,15 +655,6 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:<version>' = 
         }
       ]
     },
-    "location": {
-      "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
     "privateDnsZoneGroup": {
       "value": {
         "privateDnsZoneGroupConfigs": [
@@ -739,11 +716,6 @@ param ipConfigurations = [
     }
   }
 ]
-param location = '<location>'
-param lock = {
-  kind: 'CanNotDelete'
-  name: 'myCustomLockName'
-}
 param privateDnsZoneGroup = {
   privateDnsZoneGroupConfigs: [
     {
@@ -781,6 +753,13 @@ param tags = {
 | [`name`](#parameter-name) | string | Name of the private endpoint resource to create. |
 | [`subnetResourceId`](#parameter-subnetresourceid) | string | Resource ID of the subnet where the endpoint needs to be created. |
 
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`manualPrivateLinkServiceConnections`](#parameter-manualprivatelinkserviceconnections) | array | A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource. Required if `privateLinkServiceConnections` is empty. |
+| [`privateLinkServiceConnections`](#parameter-privatelinkserviceconnections) | array | A grouping of information about the connection to the remote resource. Required if `manualPrivateLinkServiceConnections` is empty. |
+
 **Optional parameters**
 
 | Parameter | Type | Description |
@@ -792,9 +771,7 @@ param tags = {
 | [`ipConfigurations`](#parameter-ipconfigurations) | array | A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
-| [`manualPrivateLinkServiceConnections`](#parameter-manualprivatelinkserviceconnections) | array | A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource. |
 | [`privateDnsZoneGroup`](#parameter-privatednszonegroup) | object | The private DNS zone group to configure for the private endpoint. |
-| [`privateLinkServiceConnections`](#parameter-privatelinkserviceconnections) | array | A grouping of information about the connection to the remote resource. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags to be applied on all resources/resource groups in this deployment. |
 
@@ -810,6 +787,130 @@ Name of the private endpoint resource to create.
 Resource ID of the subnet where the endpoint needs to be created.
 
 - Required: Yes
+- Type: string
+
+### Parameter: `manualPrivateLinkServiceConnections`
+
+A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource. Required if `privateLinkServiceConnections` is empty.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-manualprivatelinkserviceconnectionsname) | string | The name of the private link service connection. |
+| [`properties`](#parameter-manualprivatelinkserviceconnectionsproperties) | object | Properties of private link service connection. |
+
+### Parameter: `manualPrivateLinkServiceConnections.name`
+
+The name of the private link service connection.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `manualPrivateLinkServiceConnections.properties`
+
+Properties of private link service connection.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`groupIds`](#parameter-manualprivatelinkserviceconnectionspropertiesgroupids) | array | The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`. |
+| [`privateLinkServiceId`](#parameter-manualprivatelinkserviceconnectionspropertiesprivatelinkserviceid) | string | The resource id of private link service. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`requestMessage`](#parameter-manualprivatelinkserviceconnectionspropertiesrequestmessage) | string | A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars. |
+
+### Parameter: `manualPrivateLinkServiceConnections.properties.groupIds`
+
+The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `manualPrivateLinkServiceConnections.properties.privateLinkServiceId`
+
+The resource id of private link service.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `manualPrivateLinkServiceConnections.properties.requestMessage`
+
+A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateLinkServiceConnections`
+
+A grouping of information about the connection to the remote resource. Required if `manualPrivateLinkServiceConnections` is empty.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-privatelinkserviceconnectionsname) | string | The name of the private link service connection. |
+| [`properties`](#parameter-privatelinkserviceconnectionsproperties) | object | Properties of private link service connection. |
+
+### Parameter: `privateLinkServiceConnections.name`
+
+The name of the private link service connection.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateLinkServiceConnections.properties`
+
+Properties of private link service connection.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`groupIds`](#parameter-privatelinkserviceconnectionspropertiesgroupids) | array | The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`. |
+| [`privateLinkServiceId`](#parameter-privatelinkserviceconnectionspropertiesprivatelinkserviceid) | string | The resource id of private link service. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`requestMessage`](#parameter-privatelinkserviceconnectionspropertiesrequestmessage) | string | A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars. |
+
+### Parameter: `privateLinkServiceConnections.properties.groupIds`
+
+The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `privateLinkServiceConnections.properties.privateLinkServiceId`
+
+The resource id of private link service.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateLinkServiceConnections.properties.requestMessage`
+
+A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars.
+
+- Required: No
 - Type: string
 
 ### Parameter: `applicationSecurityGroupResourceIds`
@@ -830,15 +931,13 @@ Custom DNS configurations.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`fqdn`](#parameter-customdnsconfigsfqdn) | string | Fqdn that resolves to private endpoint IP address. |
 | [`ipAddresses`](#parameter-customdnsconfigsipaddresses) | array | A list of private IP addresses of the private endpoint. |
 
-### Parameter: `customDnsConfigs.fqdn`
+**Optional parameters**
 
-Fqdn that resolves to private endpoint IP address.
-
-- Required: Yes
-- Type: string
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`fqdn`](#parameter-customdnsconfigsfqdn) | string | FQDN that resolves to private endpoint IP address. |
 
 ### Parameter: `customDnsConfigs.ipAddresses`
 
@@ -846,6 +945,13 @@ A list of private IP addresses of the private endpoint.
 
 - Required: Yes
 - Type: array
+
+### Parameter: `customDnsConfigs.fqdn`
+
+FQDN that resolves to private endpoint IP address.
+
+- Required: No
+- Type: string
 
 ### Parameter: `customNetworkInterfaceName`
 
@@ -963,68 +1069,6 @@ Specify the name of lock.
 - Required: No
 - Type: string
 
-### Parameter: `manualPrivateLinkServiceConnections`
-
-A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-manualprivatelinkserviceconnectionsname) | string | The name of the private link service connection. |
-| [`properties`](#parameter-manualprivatelinkserviceconnectionsproperties) | object | Properties of private link service connection. |
-
-### Parameter: `manualPrivateLinkServiceConnections.name`
-
-The name of the private link service connection.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `manualPrivateLinkServiceConnections.properties`
-
-Properties of private link service connection.
-
-- Required: Yes
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`groupIds`](#parameter-manualprivatelinkserviceconnectionspropertiesgroupids) | array | The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`. |
-| [`privateLinkServiceId`](#parameter-manualprivatelinkserviceconnectionspropertiesprivatelinkserviceid) | string | The resource id of private link service. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`requestMessage`](#parameter-manualprivatelinkserviceconnectionspropertiesrequestmessage) | string | A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars. |
-
-### Parameter: `manualPrivateLinkServiceConnections.properties.groupIds`
-
-The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`.
-
-- Required: Yes
-- Type: array
-
-### Parameter: `manualPrivateLinkServiceConnections.properties.privateLinkServiceId`
-
-The resource id of private link service.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `manualPrivateLinkServiceConnections.properties.requestMessage`
-
-A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars.
-
-- Required: Yes
-- Type: string
-
 ### Parameter: `privateDnsZoneGroup`
 
 The private DNS zone group to configure for the private endpoint.
@@ -1080,68 +1124,6 @@ The name of the private DNS zone group config.
 ### Parameter: `privateDnsZoneGroup.name`
 
 The name of the Private DNS Zone Group.
-
-- Required: No
-- Type: string
-
-### Parameter: `privateLinkServiceConnections`
-
-A grouping of information about the connection to the remote resource.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-privatelinkserviceconnectionsname) | string | The name of the private link service connection. |
-| [`properties`](#parameter-privatelinkserviceconnectionsproperties) | object | Properties of private link service connection. |
-
-### Parameter: `privateLinkServiceConnections.name`
-
-The name of the private link service connection.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `privateLinkServiceConnections.properties`
-
-Properties of private link service connection.
-
-- Required: Yes
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`groupIds`](#parameter-privatelinkserviceconnectionspropertiesgroupids) | array | The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`. |
-| [`privateLinkServiceId`](#parameter-privatelinkserviceconnectionspropertiesprivatelinkserviceid) | string | The resource id of private link service. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`requestMessage`](#parameter-privatelinkserviceconnectionspropertiesrequestmessage) | string | A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars. |
-
-### Parameter: `privateLinkServiceConnections.properties.groupIds`
-
-The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`.
-
-- Required: Yes
-- Type: array
-
-### Parameter: `privateLinkServiceConnections.properties.privateLinkServiceId`
-
-The resource id of private link service.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `privateLinkServiceConnections.properties.requestMessage`
-
-A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars.
 
 - Required: No
 - Type: string
@@ -1265,13 +1247,21 @@ Tags to be applied on all resources/resource groups in this deployment.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `customDnsConfig` |  | The custom DNS configurations of the private endpoint. |
+| `customDnsConfigs` | array | The custom DNS configurations of the private endpoint. |
 | `groupId` | string | The group Id for the private endpoint Group. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the private endpoint. |
-| `networkInterfaceIds` | array | The IDs of the network interfaces associated with the private endpoint. |
+| `networkInterfaceResourceIds` | array | The resource IDs of the network interfaces associated with the private endpoint. |
 | `resourceGroupName` | string | The resource group the private endpoint was deployed into. |
 | `resourceId` | string | The resource ID of the private endpoint. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

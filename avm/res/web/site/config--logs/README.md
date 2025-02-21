@@ -12,7 +12,7 @@ This module deploys a Site logs Configuration.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Web/sites/config` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/sites) |
+| `Microsoft.Web/sites/config` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/config) |
 
 ## Parameters
 
@@ -21,6 +21,11 @@ This module deploys a Site logs Configuration.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`appName`](#parameter-appname) | string | The name of the parent site resource. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
 | [`logsConfiguration`](#parameter-logsconfiguration) | object | The logs settings configuration. |
 
 ### Parameter: `appName`

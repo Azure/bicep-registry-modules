@@ -1,8 +1,7 @@
 metadata name = 'CDN Profiles Secret'
 metadata description = 'This module deploys a CDN Profile Secret.'
-metadata owner = 'Azure/module-maintainers'
 
-@description('Required. The name of the secrect.')
+@description('Required. The name of the secret.')
 param name string
 
 @description('Conditional. The name of the parent CDN profile. Required if the template is used in a standalone deployment.')
@@ -14,7 +13,7 @@ param profileName string
   'ManagedCertificate'
   'UrlSigningKey'
 ])
-@description('Required. The type of the secrect.')
+@description('Optional. The type of the secret.')
 param type string = 'AzureFirstPartyManagedCertificate'
 
 @description('Conditional. The resource ID of the secret source. Required if the `type` is "CustomerCertificate".')
@@ -24,10 +23,10 @@ param secretSourceResourceId string = ''
 @description('Optional. The version of the secret.')
 param secretVersion string = ''
 
-@description('Optional. The subject alternative names of the secrect.')
+@description('Optional. The subject alternative names of the secret.')
 param subjectAlternativeNames array = []
 
-@description('Optional. Indicates whether to use the latest version of the secrect.')
+@description('Optional. Indicates whether to use the latest version of the secret.')
 param useLatestVersion bool = false
 
 resource profile 'Microsoft.Cdn/profiles@2023-05-01' existing = {
@@ -54,10 +53,10 @@ resource secret 'Microsoft.Cdn/profiles/secrets@2023-05-01' = {
   }
 }
 
-@description('The name of the secrect.')
+@description('The name of the secret.')
 output name string = secret.name
 
-@description('The resource ID of the secrect.')
+@description('The resource ID of the secret.')
 output resourceId string = secret.id
 
 @description('The name of the resource group the secret was created in.')

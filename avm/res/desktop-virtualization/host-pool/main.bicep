@@ -1,6 +1,5 @@
 metadata name = 'Azure Virtual Desktop Host Pool'
 metadata description = 'This module deploys an Azure Virtual Desktop Host Pool'
-metadata owner = 'Azure/module-maintainers'
 
 @sys.description('Required. Name of the scaling plan.')
 param name string
@@ -447,7 +446,7 @@ type privateEndpointType = {
 
   @sys.description('Optional. Custom DNS configurations.')
   customDnsConfigs: {
-    @sys.description('Required. Fqdn that resolves to private endpoint IP address.')
+    @sys.description('Optional. FQDN that resolves to private endpoint IP address.')
     fqdn: string?
 
     @sys.description('Required. A list of private IP addresses of the private endpoint.')

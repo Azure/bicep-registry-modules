@@ -1,6 +1,5 @@
 metadata name = 'Azure Firewalls'
 metadata description = 'This module deploys an Azure Firewall.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the Azure Firewall.')
 param name string
@@ -46,7 +45,7 @@ param natRuleCollections natRuleCollectionType
 param firewallPolicyId string = ''
 
 @description('Conditional. IP addresses associated with AzureFirewall. Required if `virtualHubId` is supplied.')
-param hubIPAddresses object = {}
+param hubIPAddresses hubIPAddressesType?
 
 @description('Conditional. The virtualHub resource ID to which the firewall belongs. Required if `virtualNetworkId` is empty.')
 param virtualHubId string = ''
@@ -65,6 +64,9 @@ param zones array = [
   2
   3
 ]
+
+@description('Optional. Enable/Disable forced tunneling.')
+param enableForcedTunneling bool = false
 
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingType
@@ -85,7 +87,7 @@ param tags object?
 param enableTelemetry bool = true
 
 var azureSkuName = empty(virtualNetworkResourceId) ? 'AZFW_Hub' : 'AZFW_VNet'
-var requiresManagementIp = azureSkuTier == 'Basic' ? true : false
+var requiresManagementIp = (azureSkuTier == 'Basic' || enableForcedTunneling) ? true : false
 var isCreateDefaultManagementIP = empty(managementIPResourceID) && requiresManagementIp
 
 // ----------------------------------------------------------------------------
@@ -193,7 +195,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.5.1' = if (empty(publicIPResourceID) && azureSkuName == 'AZFW_VNet') {
+module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.6.0' = if (empty(publicIPResourceID) && azureSkuName == 'AZFW_VNet') {
   name: '${uniqueString(deployment().name, location)}-Firewall-PIP'
   params: {
     name: publicIPAddressObject.name
@@ -224,7 +226,7 @@ module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.5.1' = if 
 }
 
 // create a Management Public IP address if one is not provided and the flag is true
-module managementIPAddress 'br/public:avm/res/network/public-ip-address:0.5.1' = if (isCreateDefaultManagementIP && azureSkuName == 'AZFW_VNet') {
+module managementIPAddress 'br/public:avm/res/network/public-ip-address:0.6.0' = if (isCreateDefaultManagementIP && azureSkuName == 'AZFW_VNet') {
   name: '${uniqueString(deployment().name, location)}-Firewall-MIP'
   params: {
     name: contains(managementIPAddressObject, 'name')
@@ -257,7 +259,7 @@ module managementIPAddress 'br/public:avm/res/network/public-ip-address:0.5.1' =
   }
 }
 
-resource azureFirewall 'Microsoft.Network/azureFirewalls@2023-04-01' = {
+resource azureFirewall 'Microsoft.Network/azureFirewalls@2024-01-01' = {
   name: name
   location: location
   zones: length(zones) == 0 ? null : zones
@@ -618,3 +620,20 @@ type networkRuleCollectionType = {
     }[]
   }
 }[]?
+
+type hubIPAddressesType = {
+  @description('Optional. Private IP Address associated with AzureFirewall.')
+  privateIPAddress: string?
+  @description('Optional. List of public IP addresses associated with AzureFirewall.')
+  publicIPs: {
+    @description('Optional. The list of Public IP addresses associated with AzureFirewall or IP addresses to be retained.')
+    addresses: [
+      {
+        @description('Optional. Public IP.')
+        address: string?
+      }
+    ]?
+    @description('Optional. Public IP address count.')
+    count: int?
+  }?
+}

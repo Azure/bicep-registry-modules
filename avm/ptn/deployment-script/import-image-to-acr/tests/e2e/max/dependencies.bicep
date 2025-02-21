@@ -18,7 +18,7 @@ param keyVaultName string
 
 var ipRange = '10.0.0.0'
 
-module identity 'br/public:avm/res/managed-identity/user-assigned-identity:0.2.1' = {
+module identity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0' = {
   name: managedIdentityName
   params: {
     name: managedIdentityName
@@ -63,7 +63,7 @@ resource vnet 'Microsoft.Network/virtualNetworks@2023-11-01' = {
   }
 }
 
-module dnsZoneContainerRegistry 'br/public:avm/res/network/private-dns-zone:0.2.5' = {
+module dnsZoneContainerRegistry 'br/public:avm/res/network/private-dns-zone:0.6.0' = {
   name: '${uniqueString(deployment().name, location)}-dnsZone-ACR'
   params: {
     name: 'privatelink.azurecr.io'
@@ -77,7 +77,7 @@ module dnsZoneContainerRegistry 'br/public:avm/res/network/private-dns-zone:0.2.
   }
 }
 
-module storage 'br/public:avm/res/storage/storage-account:0.9.0' = {
+module storage 'br/public:avm/res/storage/storage-account:0.9.1' = {
   name: '${uniqueString(resourceGroup().name, location)}-storage'
   params: {
     name: storageAccountName
@@ -155,7 +155,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
 }
 
 // the container registry to upload the image into
-module acr 'br/public:avm/res/container-registry/registry:0.2.0' = {
+module acr 'br/public:avm/res/container-registry/registry:0.6.0' = {
   name: '${uniqueString(resourceGroup().name, location)}-acr'
   params: {
     name: acrName
@@ -172,10 +172,12 @@ module acr 'br/public:avm/res/container-registry/registry:0.2.0' = {
         subnetResourceId: vnet::subnet_privateendpoints.id
         customNetworkInterfaceName: '${uniqueString(resourceGroup().name, location)}-pe-ContainerRegistry-nic'
         location: location
-        privateDnsZoneGroupName: 'default'
-        privateDnsZoneResourceIds: [
-          dnsZoneContainerRegistry.outputs.resourceId
-        ]
+        privateDnsZoneGroup: {
+          name: 'default'
+          privateDnsZoneGroupConfigs: [
+            { privateDnsZoneResourceId: dnsZoneContainerRegistry.outputs.resourceId }
+          ]
+        }
         isManualConnection: false
         service: 'registry'
       }
