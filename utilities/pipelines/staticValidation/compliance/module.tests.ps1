@@ -888,7 +888,7 @@ Describe 'Module tests' -Tag 'Module' {
         }
 
         Context 'Resources' {
-            # If any resources in the module are deployed, a telemetry deployment should be carried out as well. Ignore e.g. utility modules
+            # If any resources in the module are deployed, a telemetry deployment should be carried out as well.
             It '[<moduleFolderName>] Telemetry deployment should be present in the template.' -TestCases ($moduleFolderTestCases | Where-Object { $_.versionFileExists -and $_.templateFileContent.resources.count -gt 0 }) {
 
                 param(
