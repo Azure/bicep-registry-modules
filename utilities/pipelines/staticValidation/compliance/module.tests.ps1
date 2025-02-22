@@ -1275,7 +1275,6 @@ Describe 'Module tests' -Tag 'Module' {
     }
 }
 
-
 Describe 'Governance tests' {
 
     BeforeDiscovery {
