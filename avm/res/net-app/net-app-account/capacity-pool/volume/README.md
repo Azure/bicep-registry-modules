@@ -27,6 +27,7 @@ This module deploys an Azure NetApp Files Capacity Pool Volume.
 | [`name`](#parameter-name) | string | The name of the pool volume. |
 | [`subnetResourceId`](#parameter-subnetresourceid) | string | The Azure Resource URI for a delegated subnet. Must have the delegation Microsoft.NetApp/volumes. |
 | [`usageThreshold`](#parameter-usagethreshold) | int | Maximum storage quota allowed for a file system in bytes. |
+| [`zone`](#parameter-zone) | int | The Availability Zone to place the resource in. If set to 0, then Availability Zone is not set. |
 
 **Conditional parameters**
 
@@ -39,7 +40,6 @@ This module deploys an Azure NetApp Files Capacity Pool Volume.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`availabilityZone`](#parameter-availabilityzone) | int | Zone where the volume will be placed. |
 | [`coolAccessRetrievalPolicy`](#parameter-coolaccessretrievalpolicy) | string | Determines the data retrieval behavior from the cool tier to standard storage based on the read pattern for cool access enabled volumes (Default/Never/Read). |
 | [`coolnessPeriod`](#parameter-coolnessperiod) | int | Specifies the number of days after which data that is not accessed by clients will be tiered. |
 | [`creationToken`](#parameter-creationtoken) | string | A unique file path for the volume. This is the name of the volume export. A volume is mounted using the export path. File path must start with an alphabetical character and be unique within the subscription. |
@@ -92,6 +92,22 @@ Maximum storage quota allowed for a file system in bytes.
 - Required: Yes
 - Type: int
 
+### Parameter: `zone`
+
+The Availability Zone to place the resource in. If set to 0, then Availability Zone is not set.
+
+- Required: Yes
+- Type: int
+- Allowed:
+  ```Bicep
+  [
+    0
+    1
+    2
+    3
+  ]
+  ```
+
 ### Parameter: `capacityPoolName`
 
 The name of the parent capacity pool. Required if the template is used in a standalone deployment.
@@ -105,21 +121,6 @@ The name of the parent NetApp account. Required if the template is used in a sta
 
 - Required: Yes
 - Type: string
-
-### Parameter: `availabilityZone`
-
-Zone where the volume will be placed.
-
-- Required: No
-- Type: int
-- Allowed:
-  ```Bicep
-  [
-    1
-    2
-    3
-  ]
-  ```
 
 ### Parameter: `coolAccessRetrievalPolicy`
 

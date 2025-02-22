@@ -31,9 +31,14 @@ param keyVaultPrivateEndpointResourceId string?
 @description('Optional. The type of the volume. DataProtection volumes are used for replication.')
 param volumeType string?
 
-@description('Optional. Zone where the volume will be placed.')
-@allowed([1, 2, 3])
-param availabilityZone int?
+@description('Required. The Availability Zone to place the resource in. If set to 0, then Availability Zone is not set.')
+@allowed([
+  0
+  1
+  2
+  3
+])
+param zone int
 
 @description('Optional. The pool service level. Must match the one of the parent capacity pool.')
 @allowed([
@@ -241,7 +246,7 @@ resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2024-07-0
     smbNonBrowsable: smbNonBrowsable
     kerberosEnabled: kerberosEnabled
   }
-  zones: availabilityZone != null ? ['${availabilityZone}'] : null
+  zones: zone != 0 ? [string(zone)] : null
 }
 
 resource volume_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [

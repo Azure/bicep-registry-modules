@@ -253,12 +253,12 @@ List of volumes to create in the capacity pool.
 | [`name`](#parameter-volumesname) | string | The name of the pool volume. |
 | [`subnetResourceId`](#parameter-volumessubnetresourceid) | string | The Azure Resource URI for a delegated subnet. Must have the delegation Microsoft.NetApp/volumes. |
 | [`usageThreshold`](#parameter-volumesusagethreshold) | int | Maximum storage quota allowed for a file system in bytes. |
+| [`zone`](#parameter-volumeszone) | int | The Availability Zone to place the resource in. If set to 0, then Availability Zone is not set. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`availabilityZone`](#parameter-volumesavailabilityzone) | int | Zone where the volume will be placed. |
 | [`coolAccess`](#parameter-volumescoolaccess) | bool | If enabled (true) the pool can contain cool Access enabled volumes. |
 | [`coolAccessRetrievalPolicy`](#parameter-volumescoolaccessretrievalpolicy) | string | Determines the data retrieval behavior from the cool tier to standard storage based on the read pattern for cool access enabled volumes (Default/Never/Read). |
 | [`coolnessPeriod`](#parameter-volumescoolnessperiod) | int | Specifies the number of days after which data that is not accessed by clients will be tiered. |
@@ -299,20 +299,12 @@ Maximum storage quota allowed for a file system in bytes.
 - Required: Yes
 - Type: int
 
-### Parameter: `volumes.availabilityZone`
+### Parameter: `volumes.zone`
 
-Zone where the volume will be placed.
+The Availability Zone to place the resource in. If set to 0, then Availability Zone is not set.
 
-- Required: No
+- Required: Yes
 - Type: int
-- Allowed:
-  ```Bicep
-  [
-    1
-    2
-    3
-  ]
-  ```
 
 ### Parameter: `volumes.coolAccess`
 
