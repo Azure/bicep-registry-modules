@@ -113,7 +113,7 @@ module testDeployment '../../../main.bicep' = {
                 }
               ]
             }
-            availabilityZone: '1'
+            availabilityZone: 1
             networkFeatures: 'Standard'
             encryptionKeySource: encryptionKeySource
             protocolTypes: [
@@ -150,7 +150,7 @@ module testDeployment '../../../main.bicep' = {
               ]
             }
             name: 'vol-002'
-            availabilityZone: '1'
+            availabilityZone: 1
             networkFeatures: 'Standard'
             encryptionKeySource: encryptionKeySource
             protocolTypes: [

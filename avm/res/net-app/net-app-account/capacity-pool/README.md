@@ -258,7 +258,7 @@ List of volumes to create in the capacity pool.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`availabilityZone`](#parameter-volumesavailabilityzone) | string | Zone where the volume will be placed. |
+| [`availabilityZone`](#parameter-volumesavailabilityzone) | int | Zone where the volume will be placed. |
 | [`coolAccess`](#parameter-volumescoolaccess) | bool | If enabled (true) the pool can contain cool Access enabled volumes. |
 | [`coolAccessRetrievalPolicy`](#parameter-volumescoolaccessretrievalpolicy) | string | Determines the data retrieval behavior from the cool tier to standard storage based on the read pattern for cool access enabled volumes (Default/Never/Read). |
 | [`coolnessPeriod`](#parameter-volumescoolnessperiod) | int | Specifies the number of days after which data that is not accessed by clients will be tiered. |
@@ -304,13 +304,13 @@ Maximum storage quota allowed for a file system in bytes.
 Zone where the volume will be placed.
 
 - Required: No
-- Type: string
+- Type: int
 - Allowed:
   ```Bicep
   [
-    '1'
-    '2'
-    '3'
+    1
+    2
+    3
   ]
   ```
 

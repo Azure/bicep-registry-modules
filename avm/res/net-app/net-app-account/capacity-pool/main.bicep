@@ -109,7 +109,7 @@ module capacityPool_volumes 'volume/main.bicep' = [
       exportPolicy: volume.?exportPolicy
       roleAssignments: volume.?roleAssignments
       networkFeatures: volume.?networkFeatures
-      availabilityZone: volume.?availabilityZone ?? null
+      availabilityZone: volume.?availabilityZone
       coolAccess: volume.?coolAccess ?? false
       coolAccessRetrievalPolicy: volume.?coolAccessRetrievalPolicy
       coolnessPeriod: volume.?coolnessPeriod
@@ -191,7 +191,7 @@ type volumeType = {
   location: string?
 
   @description('Optional. Zone where the volume will be placed.')
-  availabilityZone: ('1' | '2' | '3')?
+  availabilityZone: (1 | 2 | 3)?
 
   @description('Optional. The pool service level. Must match the one of the parent capacity pool.')
   serviceLevel: ('Premium' | 'Standard' | 'StandardZRS' | 'Ultra')?

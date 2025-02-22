@@ -148,7 +148,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
         size: 4398046511104
         volumes: [
           {
-            availabilityZone: '1'
+            availabilityZone: 1
             dataProtection: {
               backup: {
                 backupPolicyName: 'myBackupPolicy'
@@ -194,7 +194,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
             usageThreshold: 107374182400
           }
           {
-            availabilityZone: '1'
+            availabilityZone: 1
             encryptionKeySource: '<encryptionKeySource>'
             exportPolicy: {
               rules: [
@@ -342,7 +342,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
           "size": 4398046511104,
           "volumes": [
             {
-              "availabilityZone": "1",
+              "availabilityZone": 1,
               "dataProtection": {
                 "backup": {
                   "backupPolicyName": "myBackupPolicy",
@@ -388,7 +388,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
               "usageThreshold": 107374182400
             },
             {
-              "availabilityZone": "1",
+              "availabilityZone": 1,
               "encryptionKeySource": "<encryptionKeySource>",
               "exportPolicy": {
                 "rules": [
@@ -538,7 +538,7 @@ param capacityPools = [
     size: 4398046511104
     volumes: [
       {
-        availabilityZone: '1'
+        availabilityZone: 1
         dataProtection: {
           backup: {
             backupPolicyName: 'myBackupPolicy'
@@ -584,7 +584,7 @@ param capacityPools = [
         usageThreshold: 107374182400
       }
       {
-        availabilityZone: '1'
+        availabilityZone: 1
         encryptionKeySource: '<encryptionKeySource>'
         exportPolicy: {
           rules: [
@@ -711,7 +711,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
         size: 4398046511104
         volumes: [
           {
-            availabilityZone: '1'
+            availabilityZone: 1
             encryptionKeySource: '<encryptionKeySource>'
             exportPolicy: {
               rules: [
@@ -747,7 +747,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
             usageThreshold: 107374182400
           }
           {
-            availabilityZone: '1'
+            availabilityZone: 1
             encryptionKeySource: '<encryptionKeySource>'
             name: 'nanaanfs3-vol-002'
             networkFeatures: 'Standard'
@@ -840,7 +840,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
           "size": 4398046511104,
           "volumes": [
             {
-              "availabilityZone": "1",
+              "availabilityZone": 1,
               "encryptionKeySource": "<encryptionKeySource>",
               "exportPolicy": {
                 "rules": [
@@ -876,7 +876,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
               "usageThreshold": 107374182400
             },
             {
-              "availabilityZone": "1",
+              "availabilityZone": 1,
               "encryptionKeySource": "<encryptionKeySource>",
               "name": "nanaanfs3-vol-002",
               "networkFeatures": "Standard",
@@ -973,7 +973,7 @@ param capacityPools = [
     size: 4398046511104
     volumes: [
       {
-        availabilityZone: '1'
+        availabilityZone: 1
         encryptionKeySource: '<encryptionKeySource>'
         exportPolicy: {
           rules: [
@@ -1009,7 +1009,7 @@ param capacityPools = [
         usageThreshold: 107374182400
       }
       {
-        availabilityZone: '1'
+        availabilityZone: 1
         encryptionKeySource: '<encryptionKeySource>'
         name: 'nanaanfs3-vol-002'
         networkFeatures: 'Standard'
@@ -1592,7 +1592,7 @@ List of volumes to create in the capacity pool.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`availabilityZone`](#parameter-capacitypoolsvolumesavailabilityzone) | string | Zone where the volume will be placed. |
+| [`availabilityZone`](#parameter-capacitypoolsvolumesavailabilityzone) | int | Zone where the volume will be placed. |
 | [`coolAccess`](#parameter-capacitypoolsvolumescoolaccess) | bool | If enabled (true) the pool can contain cool Access enabled volumes. |
 | [`coolAccessRetrievalPolicy`](#parameter-capacitypoolsvolumescoolaccessretrievalpolicy) | string | Determines the data retrieval behavior from the cool tier to standard storage based on the read pattern for cool access enabled volumes (Default/Never/Read). |
 | [`coolnessPeriod`](#parameter-capacitypoolsvolumescoolnessperiod) | int | Specifies the number of days after which data that is not accessed by clients will be tiered. |
@@ -1638,13 +1638,13 @@ Maximum storage quota allowed for a file system in bytes.
 Zone where the volume will be placed.
 
 - Required: No
-- Type: string
+- Type: int
 - Allowed:
   ```Bicep
   [
-    '1'
-    '2'
-    '3'
+    1
+    2
+    3
   ]
   ```
 
