@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "3254665209073060520"
+      "templateHash": "17730994242644626467"
     },
     "name": "Elastic SANs",
     "description": "This module deploys an Elastic SAN."
@@ -1088,9 +1088,6 @@
           "tags": {
             "value": "[parameters('tags')]"
           },
-          "enableTelemetry": {
-            "value": "[variables('enableReferencedModulesTelemetry')]"
-          },
           "lock": {
             "value": "[parameters('lock')]"
           }
@@ -1103,7 +1100,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "11631320144986992996"
+              "templateHash": "10002384107919856685"
             },
             "name": "Elastic SAN Volume Groups",
             "description": "This module deploys an Elastic SAN Volume Group."
@@ -1771,13 +1768,6 @@
               "nullable": true,
               "metadata": {
                 "description": "Optional. Tags of the Elastic SAN Volume Group resource."
-              }
-            },
-            "enableTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable/Disable usage telemetry for module."
               }
             },
             "lock": {

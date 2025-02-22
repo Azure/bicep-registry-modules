@@ -205,7 +205,6 @@ module elasticSan_volumeGroups 'volume-group/main.bicep' = [
       customerManagedKey: volumeGroup.?customerManagedKey
       privateEndpoints: volumeGroup.?privateEndpoints
       tags: tags
-      enableTelemetry: enableReferencedModulesTelemetry
       lock: lock
     }
   }
