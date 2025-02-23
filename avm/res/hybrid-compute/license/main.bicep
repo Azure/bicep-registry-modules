@@ -7,7 +7,7 @@ param name string
 @description('Optional. The location of the Azure Arc License to be created.')
 param location string = resourceGroup().location
 
-@description('Optional. Describes the edition of the license. The values are either Standard or Datacenter..')
+@description('Optional. Describes the edition of the license. Default is Standard.')
 @allowed([
   'Standard'
   'Datacenter'
@@ -15,23 +15,24 @@ param location string = resourceGroup().location
 param licenseDetailEdition string = 'Standard'
 
 @description('Optional. Describes the number of processors.')
-param licenseDetailProcessors int = 2
+@minValue(8)
+param licenseDetailProcessors int = 8
 
-@description('Optional. Describes the license state.')
+@description('Optional. Describes the license state. Default is Deactivated.')
 @allowed([
   'Active'
   'Deactivated'
 ])
 param licenseDetailState string = 'Deactivated'
 
-@description('Optional. Describes the license target server.')
+@description('Optional. Describes the license target server. Default is Windows Server 2012 R2.')
 @allowed([
   'Windows Server 2012 R2'
   'Windows Server 2012'
 ])
 param licenseDetailTarget string = 'Windows Server 2012 R2'
 
-@description('Optional. Provide the core type (vCore or pCore) needed for this ESU licens.')
+@description('Optional. Provide the core type (vCore or pCore) needed for this ESU licens. Default is vCore.')
 @allowed([
   'pCore'
   'vCore'
