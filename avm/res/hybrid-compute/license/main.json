@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "11101073144149258419"
+      "templateHash": "11246082834080456613"
     },
     "name": "Azure Arc License",
     "description": "This module deploys an Azure Arc License for use with Azure Arc-enabled servers. This module should not be used for other Arc-enabled server scenarios, where the Arc License resource is created automatically by the onboarding process."
@@ -66,10 +66,9 @@
     },
     "licenseDetailProcessors": {
       "type": "int",
-      "defaultValue": 8,
-      "minValue": 8,
+      "defaultValue": 2,
       "metadata": {
-        "description": "Optional. Provide the amount needed for this ESU licens. The minimum number of cores is 16 for physical and 8 for virtual core license."
+        "description": "Optional. Describes the number of processors."
       }
     },
     "licenseDetailState": {
@@ -80,7 +79,7 @@
         "Deactivated"
       ],
       "metadata": {
-        "description": "Optional. Activate or Deactivate the license billing cycle. Billing will not start until the license is activated."
+        "description": "Optional. Describes the license state."
       }
     },
     "licenseDetailTarget": {
@@ -150,7 +149,7 @@
   "resources": {
     "license": {
       "type": "Microsoft.HybridCompute/licenses",
-      "apiVersion": "2024-07-31-preview",
+      "apiVersion": "2024-11-10-preview",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "properties": {
@@ -215,7 +214,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('license', '2024-07-31-preview', 'full').location]"
+      "value": "[reference('license', '2024-11-10-preview', 'full').location]"
     }
   }
 }

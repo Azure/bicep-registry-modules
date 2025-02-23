@@ -14,7 +14,7 @@ This module deploys an Azure Arc License for use with Azure Arc-enabled servers.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.HybridCompute/licenses` | [2024-07-31-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.HybridCompute/2024-07-31-preview/licenses) |
+| `Microsoft.HybridCompute/licenses` | [2024-11-10-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.HybridCompute/2024-11-10-preview/licenses) |
 
 ## Usage examples
 
@@ -147,8 +147,8 @@ param name = 'hclwaf001'
 | :-- | :-- | :-- |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`licenseDetailEdition`](#parameter-licensedetailedition) | string | Describes the edition of the license. The values are either Standard or Datacenter.. |
-| [`licenseDetailProcessors`](#parameter-licensedetailprocessors) | int | Provide the amount needed for this ESU licens. The minimum number of cores is 16 for physical and 8 for virtual core license. |
-| [`licenseDetailState`](#parameter-licensedetailstate) | string | Activate or Deactivate the license billing cycle. Billing will not start until the license is activated. |
+| [`licenseDetailProcessors`](#parameter-licensedetailprocessors) | int | Describes the number of processors. |
+| [`licenseDetailState`](#parameter-licensedetailstate) | string | Describes the license state. |
 | [`licenseDetailTarget`](#parameter-licensedetailtarget) | string | Describes the license target server. |
 | [`licenseDetailType`](#parameter-licensedetailtype) | string | Provide the core type (vCore or pCore) needed for this ESU licens. |
 | [`licenseType`](#parameter-licensetype) | string | The type of the license resource. The value is ESU. |
@@ -189,16 +189,15 @@ Describes the edition of the license. The values are either Standard or Datacent
 
 ### Parameter: `licenseDetailProcessors`
 
-Provide the amount needed for this ESU licens. The minimum number of cores is 16 for physical and 8 for virtual core license.
+Describes the number of processors.
 
 - Required: No
 - Type: int
-- Default: `8`
-- MinValue: 8
+- Default: `2`
 
 ### Parameter: `licenseDetailState`
 
-Activate or Deactivate the license billing cycle. Billing will not start until the license is activated.
+Describes the license state.
 
 - Required: No
 - Type: string
@@ -210,7 +209,6 @@ Activate or Deactivate the license billing cycle. Billing will not start until t
     'Deactivated'
   ]
   ```
-- MinValue: 8
 
 ### Parameter: `licenseDetailTarget`
 
@@ -226,7 +224,6 @@ Describes the license target server.
     'Windows Server 2012 R2'
   ]
   ```
-- MinValue: 8
 
 ### Parameter: `licenseDetailType`
 
@@ -242,7 +239,6 @@ Provide the core type (vCore or pCore) needed for this ESU licens.
     'vCore'
   ]
   ```
-- MinValue: 8
 
 ### Parameter: `licenseType`
 
@@ -257,7 +253,6 @@ The type of the license resource. The value is ESU.
     'ESU'
   ]
   ```
-- MinValue: 8
 
 ### Parameter: `licenseVolumeLicenseDetails`
 
@@ -266,7 +261,6 @@ A list of volume license details.
 - Required: No
 - Type: array
 - Default: `[]`
-- MinValue: 8
 
 **Required parameters**
 
@@ -281,7 +275,6 @@ The invoice id for the volume license.
 
 - Required: Yes
 - Type: string
-- MinValue: 8
 
 ### Parameter: `licenseVolumeLicenseDetails.programYear`
 
@@ -297,7 +290,6 @@ Describes the program year the volume license is for.
     'Year 3'
   ]
   ```
-- MinValue: 8
 
 ### Parameter: `location`
 
@@ -306,7 +298,6 @@ The location of the Azure Arc License to be created.
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
-- MinValue: 8
 
 ### Parameter: `tags`
 
@@ -314,7 +305,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-- MinValue: 8
 
 ### Parameter: `tenantId`
 
@@ -323,7 +313,6 @@ The tenant ID of the license resource. Default is the tenant ID of the current s
 - Required: No
 - Type: string
 - Default: `[tenant().tenantId]`
-- MinValue: 8
 
 ## Outputs
 
