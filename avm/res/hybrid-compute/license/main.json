@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "11246082834080456613"
+      "templateHash": "15046234377831925786"
     },
     "name": "Azure Arc License",
     "description": "This module deploys an Azure Arc License for use with Azure Arc-enabled servers. This module should not be used for other Arc-enabled server scenarios, where the Arc License resource is created automatically by the onboarding process."
@@ -61,12 +61,13 @@
         "Datacenter"
       ],
       "metadata": {
-        "description": "Optional. Describes the edition of the license. The values are either Standard or Datacenter.."
+        "description": "Optional. Describes the edition of the license. Default is Standard."
       }
     },
     "licenseDetailProcessors": {
       "type": "int",
-      "defaultValue": 2,
+      "defaultValue": 8,
+      "minValue": 8,
       "metadata": {
         "description": "Optional. Describes the number of processors."
       }
@@ -79,7 +80,7 @@
         "Deactivated"
       ],
       "metadata": {
-        "description": "Optional. Describes the license state."
+        "description": "Optional. Describes the license state. Default is Deactivated."
       }
     },
     "licenseDetailTarget": {
@@ -90,7 +91,7 @@
         "Windows Server 2012"
       ],
       "metadata": {
-        "description": "Optional. Describes the license target server."
+        "description": "Optional. Describes the license target server. Default is Windows Server 2012 R2."
       }
     },
     "licenseDetailType": {
@@ -101,7 +102,7 @@
         "vCore"
       ],
       "metadata": {
-        "description": "Optional. Provide the core type (vCore or pCore) needed for this ESU licens."
+        "description": "Optional. Provide the core type (vCore or pCore) needed for this ESU licens. Default is vCore."
       }
     },
     "licenseVolumeLicenseDetails": {

@@ -146,11 +146,11 @@ param name = 'hclwaf001'
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`licenseDetailEdition`](#parameter-licensedetailedition) | string | Describes the edition of the license. The values are either Standard or Datacenter.. |
+| [`licenseDetailEdition`](#parameter-licensedetailedition) | string | Describes the edition of the license. Default is Standard. |
 | [`licenseDetailProcessors`](#parameter-licensedetailprocessors) | int | Describes the number of processors. |
-| [`licenseDetailState`](#parameter-licensedetailstate) | string | Describes the license state. |
-| [`licenseDetailTarget`](#parameter-licensedetailtarget) | string | Describes the license target server. |
-| [`licenseDetailType`](#parameter-licensedetailtype) | string | Provide the core type (vCore or pCore) needed for this ESU licens. |
+| [`licenseDetailState`](#parameter-licensedetailstate) | string | Describes the license state. Default is Deactivated. |
+| [`licenseDetailTarget`](#parameter-licensedetailtarget) | string | Describes the license target server. Default is Windows Server 2012 R2. |
+| [`licenseDetailType`](#parameter-licensedetailtype) | string | Provide the core type (vCore or pCore) needed for this ESU licens. Default is vCore. |
 | [`licenseType`](#parameter-licensetype) | string | The type of the license resource. The value is ESU. |
 | [`licenseVolumeLicenseDetails`](#parameter-licensevolumelicensedetails) | array | A list of volume license details. |
 | [`location`](#parameter-location) | string | The location of the Azure Arc License to be created. |
@@ -174,7 +174,7 @@ Enable/Disable usage telemetry for module.
 
 ### Parameter: `licenseDetailEdition`
 
-Describes the edition of the license. The values are either Standard or Datacenter..
+Describes the edition of the license. Default is Standard.
 
 - Required: No
 - Type: string
@@ -193,11 +193,12 @@ Describes the number of processors.
 
 - Required: No
 - Type: int
-- Default: `2`
+- Default: `8`
+- MinValue: 8
 
 ### Parameter: `licenseDetailState`
 
-Describes the license state.
+Describes the license state. Default is Deactivated.
 
 - Required: No
 - Type: string
@@ -209,10 +210,11 @@ Describes the license state.
     'Deactivated'
   ]
   ```
+- MinValue: 8
 
 ### Parameter: `licenseDetailTarget`
 
-Describes the license target server.
+Describes the license target server. Default is Windows Server 2012 R2.
 
 - Required: No
 - Type: string
@@ -224,10 +226,11 @@ Describes the license target server.
     'Windows Server 2012 R2'
   ]
   ```
+- MinValue: 8
 
 ### Parameter: `licenseDetailType`
 
-Provide the core type (vCore or pCore) needed for this ESU licens.
+Provide the core type (vCore or pCore) needed for this ESU licens. Default is vCore.
 
 - Required: No
 - Type: string
@@ -239,6 +242,7 @@ Provide the core type (vCore or pCore) needed for this ESU licens.
     'vCore'
   ]
   ```
+- MinValue: 8
 
 ### Parameter: `licenseType`
 
@@ -253,6 +257,7 @@ The type of the license resource. The value is ESU.
     'ESU'
   ]
   ```
+- MinValue: 8
 
 ### Parameter: `licenseVolumeLicenseDetails`
 
@@ -261,6 +266,7 @@ A list of volume license details.
 - Required: No
 - Type: array
 - Default: `[]`
+- MinValue: 8
 
 **Required parameters**
 
@@ -275,6 +281,7 @@ The invoice id for the volume license.
 
 - Required: Yes
 - Type: string
+- MinValue: 8
 
 ### Parameter: `licenseVolumeLicenseDetails.programYear`
 
@@ -290,6 +297,7 @@ Describes the program year the volume license is for.
     'Year 3'
   ]
   ```
+- MinValue: 8
 
 ### Parameter: `location`
 
@@ -298,6 +306,7 @@ The location of the Azure Arc License to be created.
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
+- MinValue: 8
 
 ### Parameter: `tags`
 
@@ -305,6 +314,7 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+- MinValue: 8
 
 ### Parameter: `tenantId`
 
@@ -313,6 +323,7 @@ The tenant ID of the license resource. Default is the tenant ID of the current s
 - Required: No
 - Type: string
 - Default: `[tenant().tenantId]`
+- MinValue: 8
 
 ## Outputs
 
