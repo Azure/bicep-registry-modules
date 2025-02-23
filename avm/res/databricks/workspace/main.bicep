@@ -193,10 +193,10 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 }
 
 resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
-  name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
+  name: last(split(customerManagedKey.?keyVaultResourceId!, '/'))
   scope: resourceGroup(
-    split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
-    split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
+    split(customerManagedKey.?keyVaultResourceId!, '/')[2],
+    split(customerManagedKey.?keyVaultResourceId!, '/')[4]
   )
 
   resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
@@ -206,10 +206,10 @@ resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (!empt
 
 // Added condition if the key vault for the managed disk is the same as for the default encryption. Without the condition, the same key vault would be defined twice in the same template, which is not allowed
 resource cMKManagedDiskKeyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (!empty(customerManagedKeyManagedDisk.?keyVaultResourceId) && customerManagedKeyManagedDisk.?keyVaultResourceId != customerManagedKey.?keyVaultResourceId) {
-  name: last(split((customerManagedKeyManagedDisk.?keyVaultResourceId ?? 'dummyVault'), '/'))
+  name: last(split(customerManagedKeyManagedDisk.?keyVaultResourceId!, '/'))
   scope: resourceGroup(
-    split((customerManagedKeyManagedDisk.?keyVaultResourceId ?? '//'), '/')[2],
-    split((customerManagedKeyManagedDisk.?keyVaultResourceId ?? '////'), '/')[4]
+    split(customerManagedKeyManagedDisk.?keyVaultResourceId!, '/')[2],
+    split(customerManagedKeyManagedDisk.?keyVaultResourceId!, '/')[4]
   )
 
   resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKeyManagedDisk.?keyVaultResourceId) && !empty(customerManagedKeyManagedDisk.?keyName)) {
@@ -327,7 +327,7 @@ resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
                   keyVaultProperties: {
                     keyVaultUri: cMKKeyVault.properties.vaultUri
                     keyName: customerManagedKey!.keyName
-                    keyVersion: !empty(customerManagedKey.?keyVersion ?? '')
+                    keyVersion: !empty(customerManagedKey.?keyVersion)
                       ? customerManagedKey!.?keyVersion!
                       : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
                   }
@@ -348,7 +348,7 @@ resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
                       '/'
                     ))
                   }
-                  rotationToLatestKeyVersionEnabled: (customerManagedKeyManagedDisk.?autoRotationEnabled ?? true == true) ?? false
+                  rotationToLatestKeyVersionEnabled: (customerManagedKeyManagedDisk.?autoRotationEnabled ?? true) ?? false
                 }
               : null
           }
@@ -445,8 +445,8 @@ module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-workspace-PrivateEndpoint-${index}'
     scope: resourceGroup(
-      split(privateEndpoint.?resourceGroupResourceId ?? privateEndpoint.?subnetResourceId, '/')[2],
-      split(privateEndpoint.?resourceGroupResourceId ?? privateEndpoint.?subnetResourceId, '/')[4]
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
     )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(workspace.id, '/'))}-${privateEndpoint.service}-${index}'
@@ -509,8 +509,8 @@ module storageAccount_storageAccountPrivateEndpoints 'br/public:avm/res/network/
   for (privateEndpoint, index) in (storageAccountPrivateEndpoints ?? []): if (privateStorageAccount == 'Enabled') {
     name: '${uniqueString(deployment().name, location)}-workspacestorage-PrivateEndpoint-${index}'
     scope: resourceGroup(
-      split(privateEndpoint.?resourceGroupResourceId ?? privateEndpoint.?subnetResourceId, '/')[2],
-      split(privateEndpoint.?resourceGroupResourceId ?? privateEndpoint.?subnetResourceId, '/')[4]
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
     )
     params: {
       name: privateEndpoint.?name ?? 'pep-${_storageAccountName}-${privateEndpoint.service}-${index}'
@@ -592,25 +592,23 @@ output workspaceResourceId string = workspace.properties.workspaceId
 
 @description('The private endpoints of the Databricks Workspace.')
 output privateEndpoints privateEndpointOutputType[] = [
-  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
-    name: workspace_privateEndpoints[i].outputs.name
-    resourceId: workspace_privateEndpoints[i].outputs.resourceId
-    groupId: workspace_privateEndpoints[i].outputs.?groupId!
-    customDnsConfigs: workspace_privateEndpoints[i].outputs.customDnsConfigs
-    networkInterfaceResourceIds: workspace_privateEndpoints[i].outputs.networkInterfaceResourceIds
+  for (item, index) in (privateEndpoints ?? []): {
+    name: workspace_privateEndpoints[index].outputs.name
+    resourceId: workspace_privateEndpoints[index].outputs.resourceId
+    groupId: workspace_privateEndpoints[index].outputs.?groupId!
+    customDnsConfigs: workspace_privateEndpoints[index].outputs.customDnsConfigs
+    networkInterfaceResourceIds: workspace_privateEndpoints[index].outputs.networkInterfaceResourceIds
   }
 ]
 
 @description('The private endpoints of the Databricks Workspace Storage.')
 output storagePrivateEndpoints privateEndpointOutputType[] = [
-  for (pe, i) in ((!empty(storageAccountPrivateEndpoints) && privateStorageAccount == 'Enabled')
-    ? array(storageAccountPrivateEndpoints)
-    : []): {
-    name: storageAccount_storageAccountPrivateEndpoints[i].outputs.name
-    resourceId: storageAccount_storageAccountPrivateEndpoints[i].outputs.resourceId
-    groupId: storageAccount_storageAccountPrivateEndpoints[i].outputs.?groupId!
-    customDnsConfigs: storageAccount_storageAccountPrivateEndpoints[i].outputs.customDnsConfigs
-    networkInterfaceResourceIds: storageAccount_storageAccountPrivateEndpoints[i].outputs.networkInterfaceResourceIds
+  for (item, index) in (privateStorageAccount == 'Enabled' ? storageAccountPrivateEndpoints ?? [] : []): {
+    name: storageAccount_storageAccountPrivateEndpoints[index].outputs.name
+    resourceId: storageAccount_storageAccountPrivateEndpoints[index].outputs.resourceId
+    groupId: storageAccount_storageAccountPrivateEndpoints[index].outputs.?groupId!
+    customDnsConfigs: storageAccount_storageAccountPrivateEndpoints[index].outputs.customDnsConfigs
+    networkInterfaceResourceIds: storageAccount_storageAccountPrivateEndpoints[index].outputs.networkInterfaceResourceIds
   }
 ]
 

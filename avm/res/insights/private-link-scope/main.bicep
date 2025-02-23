@@ -159,8 +159,8 @@ module privateLinkScope_privateEndpoints 'br/public:avm/res/network/private-endp
     name: '${uniqueString(deployment().name, location)}-privateLinkScope-PrivateEndpoint-${index}'
     // use the subnet resource group if the resource group is not explicitly provided
     scope: resourceGroup(
-      split(privateEndpoint.?resourceGroupResourceId ?? privateEndpoint.?subnetResourceId, '/')[2],
-      split(privateEndpoint.?resourceGroupResourceId ?? privateEndpoint.?subnetResourceId, '/')[4]
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
     )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(privateLinkScope.id, '/'))}-${privateEndpoint.?service ?? 'azuremonitor'}-${index}'

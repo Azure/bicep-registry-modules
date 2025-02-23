@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "10562288197267069295"
+      "templateHash": "3889592928706338435"
     },
     "name": "Key Vaults",
     "description": "This module deploys a Key Vault."
@@ -2272,8 +2272,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-keyVault-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
-      "subscriptionId": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'subnetResourceId')), '/')[2]]",
-      "resourceGroup": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'subnetResourceId')), '/')[4]]",
+      "subscriptionId": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[2]]",
+      "resourceGroup": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[4]]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"

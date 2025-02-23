@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "17913522692754850617"
+      "templateHash": "7064847066299467788"
     },
     "name": "Purview Accounts",
     "description": "This module deploys a Purview Account."
@@ -875,8 +875,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-account-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
-      "subscriptionId": "[split(coalesce(tryGet(coalesce(parameters('accountPrivateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), tryGet(coalesce(parameters('accountPrivateEndpoints'), createArray())[copyIndex()], 'subnetResourceId')), '/')[2]]",
-      "resourceGroup": "[split(coalesce(tryGet(coalesce(parameters('accountPrivateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), tryGet(coalesce(parameters('accountPrivateEndpoints'), createArray())[copyIndex()], 'subnetResourceId')), '/')[4]]",
+      "subscriptionId": "[split(coalesce(tryGet(coalesce(parameters('accountPrivateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[2]]",
+      "resourceGroup": "[split(coalesce(tryGet(coalesce(parameters('accountPrivateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[4]]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -1632,8 +1632,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-portal-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
-      "subscriptionId": "[split(coalesce(tryGet(coalesce(parameters('portalPrivateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), tryGet(coalesce(parameters('portalPrivateEndpoints'), createArray())[copyIndex()], 'subnetResourceId')), '/')[2]]",
-      "resourceGroup": "[split(coalesce(tryGet(coalesce(parameters('portalPrivateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), tryGet(coalesce(parameters('portalPrivateEndpoints'), createArray())[copyIndex()], 'subnetResourceId')), '/')[4]]",
+      "subscriptionId": "[split(coalesce(tryGet(coalesce(parameters('portalPrivateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[2]]",
+      "resourceGroup": "[split(coalesce(tryGet(coalesce(parameters('portalPrivateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[4]]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -2389,8 +2389,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-blob-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
-      "subscriptionId": "[split(coalesce(tryGet(coalesce(parameters('storageBlobPrivateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), tryGet(coalesce(parameters('storageBlobPrivateEndpoints'), createArray())[copyIndex()], 'subnetResourceId')), '/')[2]]",
-      "resourceGroup": "[split(coalesce(tryGet(coalesce(parameters('storageBlobPrivateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), tryGet(coalesce(parameters('storageBlobPrivateEndpoints'), createArray())[copyIndex()], 'subnetResourceId')), '/')[4]]",
+      "subscriptionId": "[split(coalesce(tryGet(coalesce(parameters('storageBlobPrivateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[2]]",
+      "resourceGroup": "[split(coalesce(tryGet(coalesce(parameters('storageBlobPrivateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[4]]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -3146,8 +3146,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-queue-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
-      "subscriptionId": "[split(coalesce(tryGet(coalesce(parameters('storageQueuePrivateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), tryGet(coalesce(parameters('storageQueuePrivateEndpoints'), createArray())[copyIndex()], 'subnetResourceId')), '/')[2]]",
-      "resourceGroup": "[split(coalesce(tryGet(coalesce(parameters('storageQueuePrivateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), tryGet(coalesce(parameters('storageQueuePrivateEndpoints'), createArray())[copyIndex()], 'subnetResourceId')), '/')[4]]",
+      "subscriptionId": "[split(coalesce(tryGet(coalesce(parameters('storageQueuePrivateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[2]]",
+      "resourceGroup": "[split(coalesce(tryGet(coalesce(parameters('storageQueuePrivateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[4]]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -3903,8 +3903,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-eventHub-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
-      "subscriptionId": "[split(coalesce(tryGet(coalesce(parameters('eventHubPrivateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), tryGet(coalesce(parameters('eventHubPrivateEndpoints'), createArray())[copyIndex()], 'subnetResourceId')), '/')[2]]",
-      "resourceGroup": "[split(coalesce(tryGet(coalesce(parameters('eventHubPrivateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), tryGet(coalesce(parameters('eventHubPrivateEndpoints'), createArray())[copyIndex()], 'subnetResourceId')), '/')[4]]",
+      "subscriptionId": "[split(coalesce(tryGet(coalesce(parameters('eventHubPrivateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[2]]",
+      "resourceGroup": "[split(coalesce(tryGet(coalesce(parameters('eventHubPrivateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[4]]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -4727,7 +4727,7 @@
         "description": "The private endpoints of the Purview Account."
       },
       "copy": {
-        "count": "[length(if(not(empty(parameters('accountPrivateEndpoints'))), array(parameters('accountPrivateEndpoints')), createArray()))]",
+        "count": "[length(coalesce(parameters('accountPrivateEndpoints'), createArray()))]",
         "input": {
           "name": "[reference(format('account_accountPrivateEndpoints[{0}]', copyIndex())).outputs.name.value]",
           "resourceId": "[reference(format('account_accountPrivateEndpoints[{0}]', copyIndex())).outputs.resourceId.value]",
@@ -4746,7 +4746,7 @@
         "description": "The private endpoints of the Purview Account Portal."
       },
       "copy": {
-        "count": "[length(if(not(empty(parameters('portalPrivateEndpoints'))), array(parameters('portalPrivateEndpoints')), createArray()))]",
+        "count": "[length(coalesce(parameters('portalPrivateEndpoints'), createArray()))]",
         "input": {
           "name": "[reference(format('account_portalPrivateEndpoints[{0}]', copyIndex())).outputs.name.value]",
           "resourceId": "[reference(format('account_portalPrivateEndpoints[{0}]', copyIndex())).outputs.resourceId.value]",
@@ -4765,7 +4765,7 @@
         "description": "The private endpoints of the managed storage account blob service."
       },
       "copy": {
-        "count": "[length(if(not(empty(parameters('storageBlobPrivateEndpoints'))), array(parameters('storageBlobPrivateEndpoints')), createArray()))]",
+        "count": "[length(coalesce(parameters('storageBlobPrivateEndpoints'), createArray()))]",
         "input": {
           "name": "[reference(format('account_storageBlobPrivateEndpoints[{0}]', copyIndex())).outputs.name.value]",
           "resourceId": "[reference(format('account_storageBlobPrivateEndpoints[{0}]', copyIndex())).outputs.resourceId.value]",
@@ -4784,7 +4784,7 @@
         "description": "The private endpoints of the managed storage account queue service."
       },
       "copy": {
-        "count": "[length(if(not(empty(parameters('storageQueuePrivateEndpoints'))), array(parameters('storageQueuePrivateEndpoints')), createArray()))]",
+        "count": "[length(coalesce(parameters('storageQueuePrivateEndpoints'), createArray()))]",
         "input": {
           "name": "[reference(format('account_storageQueuePrivateEndpoints[{0}]', copyIndex())).outputs.name.value]",
           "resourceId": "[reference(format('account_storageQueuePrivateEndpoints[{0}]', copyIndex())).outputs.resourceId.value]",
@@ -4803,7 +4803,7 @@
         "description": "The private endpoints of the managed Event Hub Namespace."
       },
       "copy": {
-        "count": "[length(if(not(empty(parameters('eventHubPrivateEndpoints'))), array(parameters('eventHubPrivateEndpoints')), createArray()))]",
+        "count": "[length(coalesce(parameters('eventHubPrivateEndpoints'), createArray()))]",
         "input": {
           "name": "[reference(format('account_eventHubPrivateEndpoints[{0}]', copyIndex())).outputs.name.value]",
           "resourceId": "[reference(format('account_eventHubPrivateEndpoints[{0}]', copyIndex())).outputs.resourceId.value]",

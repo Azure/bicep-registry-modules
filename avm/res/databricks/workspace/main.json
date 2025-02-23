@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "18270590516761452101"
+      "templateHash": "11877768173688066898"
     },
     "name": "Azure Databricks Workspaces",
     "description": "This module deploys an Azure Databricks Workspace."
@@ -949,18 +949,18 @@
       "existing": true,
       "type": "Microsoft.KeyVault/vaults/keys",
       "apiVersion": "2023-02-01",
-      "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '//'), '/')[2]]",
-      "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '////'), '/')[4]]",
-      "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]"
+      "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
+      "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]"
     },
     "cMKManagedDiskKeyVault::cMKKey": {
       "condition": "[and(and(not(empty(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVaultResourceId'))), not(equals(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVaultResourceId'), tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))), and(not(empty(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyName')))))]",
       "existing": true,
       "type": "Microsoft.KeyVault/vaults/keys",
       "apiVersion": "2023-02-01",
-      "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVaultResourceId'), '//'), '/')[2]]",
-      "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVaultResourceId'), '////'), '/')[4]]",
-      "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyName'), 'dummyKey'))]"
+      "subscriptionId": "[split(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVaultResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVaultResourceId'), '/')[4]]",
+      "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVaultResourceId'), '/')), coalesce(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyName'), 'dummyKey'))]"
     },
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
@@ -987,18 +987,18 @@
       "existing": true,
       "type": "Microsoft.KeyVault/vaults",
       "apiVersion": "2023-07-01",
-      "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '//'), '/')[2]]",
-      "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '////'), '/')[4]]",
-      "name": "[last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/'))]"
+      "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
+      "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
     },
     "cMKManagedDiskKeyVault": {
       "condition": "[and(not(empty(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVaultResourceId'))), not(equals(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVaultResourceId'), tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))))]",
       "existing": true,
       "type": "Microsoft.KeyVault/vaults",
       "apiVersion": "2023-07-01",
-      "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVaultResourceId'), '//'), '/')[2]]",
-      "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVaultResourceId'), '////'), '/')[4]]",
-      "name": "[last(split(coalesce(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVaultResourceId'), 'dummyVault'), '/'))]"
+      "subscriptionId": "[split(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVaultResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVaultResourceId'), '/')[4]]",
+      "name": "[last(split(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVaultResourceId'), '/'))]"
     },
     "workspace": {
       "type": "Microsoft.Databricks/workspaces",
@@ -1009,10 +1009,10 @@
       "sku": {
         "name": "[parameters('skuName')]"
       },
-      "properties": "[shallowMerge(createArray(createObject('managedResourceGroupId', if(not(empty(parameters('managedResourceGroupResourceId'))), parameters('managedResourceGroupResourceId'), format('{0}/resourceGroups/rg-{1}-managed', subscription().id, parameters('name'))), 'parameters', shallowMerge(createArray(createObject('enableNoPublicIp', createObject('value', parameters('disablePublicIp')), 'prepareEncryption', createObject('value', parameters('prepareEncryption')), 'vnetAddressPrefix', createObject('value', parameters('vnetAddressPrefix')), 'requireInfrastructureEncryption', createObject('value', parameters('requireInfrastructureEncryption'))), if(not(empty(parameters('customVirtualNetworkResourceId'))), createObject('customVirtualNetworkId', createObject('value', parameters('customVirtualNetworkResourceId'))), createObject()), if(not(empty(parameters('amlWorkspaceResourceId'))), createObject('amlWorkspaceId', createObject('value', parameters('amlWorkspaceResourceId'))), createObject()), if(not(empty(parameters('customPrivateSubnetName'))), createObject('customPrivateSubnetName', createObject('value', parameters('customPrivateSubnetName'))), createObject()), if(not(empty(parameters('customPublicSubnetName'))), createObject('customPublicSubnetName', createObject('value', parameters('customPublicSubnetName'))), createObject()), if(not(empty(parameters('loadBalancerBackendPoolName'))), createObject('loadBalancerBackendPoolName', createObject('value', parameters('loadBalancerBackendPoolName'))), createObject()), if(not(empty(parameters('loadBalancerResourceId'))), createObject('loadBalancerId', createObject('value', parameters('loadBalancerResourceId'))), createObject()), if(not(empty(parameters('natGatewayName'))), createObject('natGatewayName', createObject('value', parameters('natGatewayName'))), createObject()), if(not(empty(parameters('publicIpName'))), createObject('publicIpName', createObject('value', parameters('publicIpName'))), createObject()), if(not(empty(parameters('storageAccountName'))), createObject('storageAccountName', createObject('value', parameters('storageAccountName'))), createObject()), if(not(empty(parameters('storageAccountSkuName'))), createObject('storageAccountSkuName', createObject('value', parameters('storageAccountSkuName'))), createObject()))), 'publicNetworkAccess', parameters('publicNetworkAccess'), 'requiredNsgRules', parameters('requiredNsgRules'), 'encryption', if(or(not(empty(parameters('customerManagedKey'))), not(empty(parameters('customerManagedKeyManagedDisk')))), createObject('entities', createObject('managedServices', if(not(empty(parameters('customerManagedKey'))), createObject('keySource', 'Microsoft.Keyvault', 'keyVaultProperties', createObject('keyVaultUri', reference('cMKKeyVault').vaultUri, 'keyName', parameters('customerManagedKey').keyName, 'keyVersion', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'keyVersion'), ''))), tryGet(parameters('customerManagedKey'), 'keyVersion'), last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/'))))), null()), 'managedDisk', if(not(empty(parameters('customerManagedKeyManagedDisk'))), createObject('keySource', 'Microsoft.Keyvault', 'keyVaultProperties', createObject('keyVaultUri', if(not(equals(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVaultName'), tryGet(parameters('customerManagedKey'), 'keyVaultName'))), reference('cMKManagedDiskKeyVault').vaultUri, reference('cMKKeyVault').vaultUri), 'keyName', parameters('customerManagedKeyManagedDisk').keyName, 'keyVersion', last(split(if(not(equals(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVaultName'), tryGet(parameters('customerManagedKey'), 'keyVaultName'))), reference('cMKManagedDiskKeyVault::cMKKey').keyUriWithVersion, reference('cMKKeyVault::cMKKey').keyUriWithVersion), '/'))), 'rotationToLatestKeyVersionEnabled', coalesce(coalesce(tryGet(parameters('customerManagedKeyManagedDisk'), 'autoRotationEnabled'), equals(true(), true())), false())), null()))), null())), if(not(empty(parameters('privateStorageAccount'))), createObject('defaultStorageFirewall', parameters('privateStorageAccount'), 'accessConnector', createObject('id', parameters('accessConnectorResourceId'), 'identityType', 'SystemAssigned')), createObject()), if(not(empty(parameters('defaultCatalog'))), createObject('defaultCatalog', createObject('initialName', '', 'initialType', tryGet(parameters('defaultCatalog'), 'initialType'))), createObject()), if(or(or(not(empty(parameters('automaticClusterUpdate'))), not(empty(parameters('complianceStandards')))), not(empty(parameters('enhancedSecurityMonitoring')))), createObject('enhancedSecurityCompliance', createObject('automaticClusterUpdate', createObject('value', parameters('automaticClusterUpdate')), 'complianceSecurityProfile', createObject('complianceStandards', parameters('complianceStandards'), 'value', parameters('complianceSecurityProfileValue')), 'enhancedSecurityMonitoring', createObject('value', parameters('enhancedSecurityMonitoring')))), createObject())))]",
+      "properties": "[shallowMerge(createArray(createObject('managedResourceGroupId', if(not(empty(parameters('managedResourceGroupResourceId'))), parameters('managedResourceGroupResourceId'), format('{0}/resourceGroups/rg-{1}-managed', subscription().id, parameters('name'))), 'parameters', shallowMerge(createArray(createObject('enableNoPublicIp', createObject('value', parameters('disablePublicIp')), 'prepareEncryption', createObject('value', parameters('prepareEncryption')), 'vnetAddressPrefix', createObject('value', parameters('vnetAddressPrefix')), 'requireInfrastructureEncryption', createObject('value', parameters('requireInfrastructureEncryption'))), if(not(empty(parameters('customVirtualNetworkResourceId'))), createObject('customVirtualNetworkId', createObject('value', parameters('customVirtualNetworkResourceId'))), createObject()), if(not(empty(parameters('amlWorkspaceResourceId'))), createObject('amlWorkspaceId', createObject('value', parameters('amlWorkspaceResourceId'))), createObject()), if(not(empty(parameters('customPrivateSubnetName'))), createObject('customPrivateSubnetName', createObject('value', parameters('customPrivateSubnetName'))), createObject()), if(not(empty(parameters('customPublicSubnetName'))), createObject('customPublicSubnetName', createObject('value', parameters('customPublicSubnetName'))), createObject()), if(not(empty(parameters('loadBalancerBackendPoolName'))), createObject('loadBalancerBackendPoolName', createObject('value', parameters('loadBalancerBackendPoolName'))), createObject()), if(not(empty(parameters('loadBalancerResourceId'))), createObject('loadBalancerId', createObject('value', parameters('loadBalancerResourceId'))), createObject()), if(not(empty(parameters('natGatewayName'))), createObject('natGatewayName', createObject('value', parameters('natGatewayName'))), createObject()), if(not(empty(parameters('publicIpName'))), createObject('publicIpName', createObject('value', parameters('publicIpName'))), createObject()), if(not(empty(parameters('storageAccountName'))), createObject('storageAccountName', createObject('value', parameters('storageAccountName'))), createObject()), if(not(empty(parameters('storageAccountSkuName'))), createObject('storageAccountSkuName', createObject('value', parameters('storageAccountSkuName'))), createObject()))), 'publicNetworkAccess', parameters('publicNetworkAccess'), 'requiredNsgRules', parameters('requiredNsgRules'), 'encryption', if(or(not(empty(parameters('customerManagedKey'))), not(empty(parameters('customerManagedKeyManagedDisk')))), createObject('entities', createObject('managedServices', if(not(empty(parameters('customerManagedKey'))), createObject('keySource', 'Microsoft.Keyvault', 'keyVaultProperties', createObject('keyVaultUri', reference('cMKKeyVault').vaultUri, 'keyName', parameters('customerManagedKey').keyName, 'keyVersion', if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), tryGet(parameters('customerManagedKey'), 'keyVersion'), last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/'))))), null()), 'managedDisk', if(not(empty(parameters('customerManagedKeyManagedDisk'))), createObject('keySource', 'Microsoft.Keyvault', 'keyVaultProperties', createObject('keyVaultUri', if(not(equals(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVaultName'), tryGet(parameters('customerManagedKey'), 'keyVaultName'))), reference('cMKManagedDiskKeyVault').vaultUri, reference('cMKKeyVault').vaultUri), 'keyName', parameters('customerManagedKeyManagedDisk').keyName, 'keyVersion', last(split(if(not(equals(tryGet(parameters('customerManagedKeyManagedDisk'), 'keyVaultName'), tryGet(parameters('customerManagedKey'), 'keyVaultName'))), reference('cMKManagedDiskKeyVault::cMKKey').keyUriWithVersion, reference('cMKKeyVault::cMKKey').keyUriWithVersion), '/'))), 'rotationToLatestKeyVersionEnabled', coalesce(coalesce(tryGet(parameters('customerManagedKeyManagedDisk'), 'autoRotationEnabled'), true()), false())), null()))), null())), if(not(empty(parameters('privateStorageAccount'))), createObject('defaultStorageFirewall', parameters('privateStorageAccount'), 'accessConnector', createObject('id', parameters('accessConnectorResourceId'), 'identityType', 'SystemAssigned')), createObject()), if(not(empty(parameters('defaultCatalog'))), createObject('defaultCatalog', createObject('initialName', '', 'initialType', tryGet(parameters('defaultCatalog'), 'initialType'))), createObject()), if(or(or(not(empty(parameters('automaticClusterUpdate'))), not(empty(parameters('complianceStandards')))), not(empty(parameters('enhancedSecurityMonitoring')))), createObject('enhancedSecurityCompliance', createObject('automaticClusterUpdate', createObject('value', parameters('automaticClusterUpdate')), 'complianceSecurityProfile', createObject('complianceStandards', parameters('complianceStandards'), 'value', parameters('complianceSecurityProfileValue')), 'enhancedSecurityMonitoring', createObject('value', parameters('enhancedSecurityMonitoring')))), createObject())))]",
       "dependsOn": [
-        "cMKKeyVault::cMKKey",
         "cMKManagedDiskKeyVault::cMKKey",
+        "cMKKeyVault::cMKKey",
         "cMKKeyVault",
         "cMKManagedDiskKeyVault"
       ]
@@ -1095,8 +1095,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-workspace-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
-      "subscriptionId": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'subnetResourceId')), '/')[2]]",
-      "resourceGroup": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'subnetResourceId')), '/')[4]]",
+      "subscriptionId": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[2]]",
+      "resourceGroup": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[4]]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -1855,8 +1855,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-workspacestorage-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
-      "subscriptionId": "[split(coalesce(tryGet(coalesce(parameters('storageAccountPrivateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), tryGet(coalesce(parameters('storageAccountPrivateEndpoints'), createArray())[copyIndex()], 'subnetResourceId')), '/')[2]]",
-      "resourceGroup": "[split(coalesce(tryGet(coalesce(parameters('storageAccountPrivateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), tryGet(coalesce(parameters('storageAccountPrivateEndpoints'), createArray())[copyIndex()], 'subnetResourceId')), '/')[4]]",
+      "subscriptionId": "[split(coalesce(tryGet(coalesce(parameters('storageAccountPrivateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[2]]",
+      "resourceGroup": "[split(coalesce(tryGet(coalesce(parameters('storageAccountPrivateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[4]]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -2685,7 +2685,7 @@
         "description": "The private endpoints of the Databricks Workspace."
       },
       "copy": {
-        "count": "[length(if(not(empty(parameters('privateEndpoints'))), array(parameters('privateEndpoints')), createArray()))]",
+        "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]",
         "input": {
           "name": "[reference(format('workspace_privateEndpoints[{0}]', copyIndex())).outputs.name.value]",
           "resourceId": "[reference(format('workspace_privateEndpoints[{0}]', copyIndex())).outputs.resourceId.value]",
@@ -2704,7 +2704,7 @@
         "description": "The private endpoints of the Databricks Workspace Storage."
       },
       "copy": {
-        "count": "[length(if(and(not(empty(parameters('storageAccountPrivateEndpoints'))), equals(parameters('privateStorageAccount'), 'Enabled')), array(parameters('storageAccountPrivateEndpoints')), createArray()))]",
+        "count": "[length(if(equals(parameters('privateStorageAccount'), 'Enabled'), coalesce(parameters('storageAccountPrivateEndpoints'), createArray()), createArray()))]",
         "input": {
           "name": "[reference(format('storageAccount_storageAccountPrivateEndpoints[{0}]', copyIndex())).outputs.name.value]",
           "resourceId": "[reference(format('storageAccount_storageAccountPrivateEndpoints[{0}]', copyIndex())).outputs.resourceId.value]",

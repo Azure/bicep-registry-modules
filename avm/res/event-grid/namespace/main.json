@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "4896325805194987111"
+      "version": "0.33.13.18514",
+      "templateHash": "1976622211901619784"
     },
     "name": "Event Grid Namespaces",
     "description": "This module deploys an Event Grid Namespace."
@@ -936,8 +936,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-namespace-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
-      "subscriptionId": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'subnetResourceId')), '/')[2]]",
-      "resourceGroup": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'subnetResourceId')), '/')[4]]",
+      "subscriptionId": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[2]]",
+      "resourceGroup": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[4]]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -1728,8 +1728,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "3750609028879158720"
+              "version": "0.33.13.18514",
+              "templateHash": "13625381498949263441"
             },
             "name": "Eventgrid Namespace Topics",
             "description": "This module deploys an Eventgrid Namespace Topic."
@@ -2022,8 +2022,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "2786410706674700781"
+                      "version": "0.33.13.18514",
+                      "templateHash": "14274639062376243006"
                     },
                     "name": "Event Subscriptions",
                     "description": "This module deploys an Event Subscription."
@@ -2320,8 +2320,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "5500161725034179010"
+              "version": "0.33.13.18514",
+              "templateHash": "16684000080098402376"
             },
             "name": "Eventgrid Namespace CA Certificates",
             "description": "This module deploys an Eventgrid Namespace CA Certificate."
@@ -2446,8 +2446,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "310861179374860968"
+              "version": "0.33.13.18514",
+              "templateHash": "11246395673519136496"
             },
             "name": "Eventgrid Namespace Clients",
             "description": "This module deploys an Eventgrid Namespace Client."
@@ -2608,8 +2608,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "15034210943727152335"
+              "version": "0.33.13.18514",
+              "templateHash": "15188233906898213813"
             },
             "name": "Eventgrid Namespace Client Groups",
             "description": "This module deploys an Eventgrid Namespace Client Group."
@@ -2725,8 +2725,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "8680886384150003323"
+              "version": "0.33.13.18514",
+              "templateHash": "2849991174853656103"
             },
             "name": "Eventgrid Namespace Topic Spaces",
             "description": "This module deploys an Eventgrid Namespace Topic Space."
@@ -2979,8 +2979,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "17347618187908890991"
+              "version": "0.33.13.18514",
+              "templateHash": "2140320336515533966"
             },
             "name": "Eventgrid Namespace Permissions Bindings",
             "description": "This module deploys an Eventgrid Namespace Permission Binding."
@@ -3135,7 +3135,7 @@
         "description": "The private endpoints of the EventGrid Namespace."
       },
       "copy": {
-        "count": "[length(if(not(empty(parameters('privateEndpoints'))), array(parameters('privateEndpoints')), createArray()))]",
+        "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]",
         "input": {
           "name": "[reference(format('namespace_privateEndpoints[{0}]', copyIndex())).outputs.name.value]",
           "resourceId": "[reference(format('namespace_privateEndpoints[{0}]', copyIndex())).outputs.resourceId.value]",

@@ -225,22 +225,22 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 }
 
 resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
-  name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
+  name: last(split(customerManagedKey.?keyVaultResourceId!, '/'))
   scope: resourceGroup(
-    split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
-    split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
+    split(customerManagedKey.?keyVaultResourceId!, '/')[2],
+    split(customerManagedKey.?keyVaultResourceId!, '/')[4]
   )
 
   resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
-    name: customerManagedKey.?keyName ?? 'dummyKey'
+    name: customerManagedKey.?keyName!
   }
 }
 
 resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
-  name: last(split(customerManagedKey.?userAssignedIdentityResourceId ?? 'dummyMsi', '/'))
+  name: last(split(customerManagedKey.?userAssignedIdentityResourceId!, '/'))
   scope: resourceGroup(
-    split((customerManagedKey.?userAssignedIdentityResourceId ?? '//'), '/')[2],
-    split((customerManagedKey.?userAssignedIdentityResourceId ?? '////'), '/')[4]
+    split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[2],
+    split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[4]
   )
 }
 
@@ -448,8 +448,8 @@ module registry_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.1
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-registry-PrivateEndpoint-${index}'
     scope: resourceGroup(
-      split(privateEndpoint.?resourceGroupResourceId ?? privateEndpoint.?subnetResourceId, '/')[2],
-      split(privateEndpoint.?resourceGroupResourceId ?? privateEndpoint.?subnetResourceId, '/')[4]
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
     )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(registry.id, '/'))}-${privateEndpoint.?service ?? 'registry'}-${index}'
@@ -532,12 +532,12 @@ output credentialSetsResourceIds array = [
 
 @description('The private endpoints of the Azure container registry.')
 output privateEndpoints privateEndpointOutputType[] = [
-  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
-    name: registry_privateEndpoints[i].outputs.name
-    resourceId: registry_privateEndpoints[i].outputs.resourceId
-    groupId: registry_privateEndpoints[i].outputs.?groupId!
-    customDnsConfigs: registry_privateEndpoints[i].outputs.customDnsConfigs
-    networkInterfaceResourceIds: registry_privateEndpoints[i].outputs.networkInterfaceResourceIds
+  for (item, index) in (privateEndpoints ?? []): {
+    name: registry_privateEndpoints[index].outputs.name
+    resourceId: registry_privateEndpoints[index].outputs.resourceId
+    groupId: registry_privateEndpoints[index].outputs.?groupId!
+    customDnsConfigs: registry_privateEndpoints[index].outputs.customDnsConfigs
+    networkInterfaceResourceIds: registry_privateEndpoints[index].outputs.networkInterfaceResourceIds
   }
 ]
 
