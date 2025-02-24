@@ -95,21 +95,21 @@ var varAIFoundryAIServicesContentUnderstandingLocation = contentUnderstandingLoc
   : contentUnderstandingLocation
 // var varAIFoundryAIServicesName_m = format(workloadNameFormat, 'aiam')
 var varAIFoundrySearchServiceName = format(workloadNameFormat, 'aifd-srch')
-var varAIFoundryStorageAccountName = replace(format(format(workloadNameFormat, 'aifd-strg')), '-', '') //NOTE: SA name should not contain hyphens
+var varAIFoundryStorageAccountName = replace(format(workloadNameFormat, 'aifd-strg'), '-', '') //NOTE: SA name should not contain hyphens
 var varAIFoundryMachineLearningServicesAIHubName = format(workloadNameFormat, 'aifd-aihb')
 var varAIFoundryMachineLearningServicesProjectName = format(workloadNameFormat, 'aifd-aipj')
 var varAIFoundryMachineLearningServicesModelPHIServerlessName = format(workloadNameFormat, 'aifd-sphi')
-var varStorageAccountName = replace(format(format(workloadNameFormat, 'strg')), '-', '') //NOTE: SA name should not contain hyphens
+var varStorageAccountName = replace(format(workloadNameFormat, 'strg'), '-', '') //NOTE: SA name should not contain hyphens
 var varCosmosDBAccountName = format(workloadNameFormat, 'cmdb')
 var varCosmosDBAccountLocation = secondaryLocation
 var varSQLServerName = format(workloadNameFormat, 'sqls')
 var varSQLServerLocation = secondaryLocation
 var varChartsManagedEnviornmentName = format(workloadNameFormat, 'fchr-ftme')
 var varChartsFunctionName = format(workloadNameFormat, 'fchr-azfct')
-var varChartsStorageAccountName = replace(format(format(workloadNameFormat, 'fchr-strg')), '-', '')
+var varChartsStorageAccountName = replace(format(workloadNameFormat, 'fchr-strg'), '-', '')
 var varRAGManagedEnviornmentName = format(workloadNameFormat, 'frag-ftme')
 var varRAGFunctionName = format(workloadNameFormat, 'frag-azfct')
-var varRAGStorageAccountName = replace(format(format(workloadNameFormat, 'frag-strg')), '-', '')
+var varRAGStorageAccountName = replace(format(workloadNameFormat, 'frag-strg'), '-', '')
 var varWebAppServerFarmLocation = ckmWebAppServerFarmLocation == '' ? solutionLocation : ckmWebAppServerFarmLocation
 var varWebAppServerFarmName = format(workloadNameFormat, 'waoo-srvf')
 var varWebAppName = format(workloadNameFormat, 'wapp-wapp')
