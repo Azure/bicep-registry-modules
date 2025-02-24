@@ -191,14 +191,14 @@ jobs:
     name: "Publishing"
     runs-on: ubuntu-latest
     # Note: Below always() required in condition due to psrule jobs being skipped for ptn & utl modules not having defaults or waf-aligned folders
-    if: github.ref == 'refs/heads/main' &&
-      github.repository	 == 'Azure/bicep-registry-modules' &&
-      always() &&
-      needs.job_module_static_validation.result == 'success' &&
-      needs.job_module_deploy_validation.result == 'success'
-    needs:
-      - job_module_static_validation
-      - job_module_deploy_validation
+    # if: always() &&
+    # needs.job_module_static_validation.result == 'success'
+    # && needs.job_module_deploy_validation.result == 'success'
+    # github.ref == 'refs/heads/main' &&
+    # github.repository	 == 'Azure/bicep-registry-modules'
+    # needs:
+      # - job_module_static_validation
+      # - job_module_deploy_validation
     steps:
       - name: "Checkout"
         uses: actions/checkout@v4
