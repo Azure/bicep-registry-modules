@@ -37,8 +37,7 @@ param targetRoleAssignmentScheduleInstanceId string = ''
 param ticketInfo ticketInfoType?
 
 @sys.description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to.')
-@sys.description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to.')
-param condition string?
+param condition string = ''
 
 @sys.description('Optional. Version of the condition. Currently accepted value is "2.0".')
 @allowed([
@@ -69,7 +68,7 @@ resource pimEligibleRoleAssignment 'Microsoft.Authorization/roleEligibilitySched
     roleDefinitionId: roleDefinitionIdVar
     requestType: requestType
     condition: condition
-    conditionVersion: conditionVersion
+    conditionVersion: !empty(condition) ? conditionVersion : null
     justification: justification
     targetRoleEligibilityScheduleId: targetRoleEligibilityScheduleId
     targetRoleEligibilityScheduleInstanceId: targetRoleEligibilityScheduleInstanceId
@@ -106,8 +105,8 @@ resource pimActiveRoleAssignment 'Microsoft.Authorization/roleAssignmentSchedule
     principalId: principalId
     roleDefinitionId: roleDefinitionIdVar
     requestType: requestType
-    condition: !empty(condition) ? condition : null
-    conditionVersion: conditionVersion
+    condition: condition
+    conditionVersion: !empty(condition) ? conditionVersion : null
     justification: justification
     targetRoleAssignmentScheduleId: targetRoleAssignmentScheduleId
     targetRoleAssignmentScheduleInstanceId: targetRoleAssignmentScheduleInstanceId
