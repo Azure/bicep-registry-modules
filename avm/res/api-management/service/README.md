@@ -342,6 +342,10 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         displayName: 'Echo API'
         name: 'echo-api'
         path: 'echo'
+        protocols: [
+          'http'
+          'https'
+        ]
         serviceUrl: 'http://echoapi.cloudapp.net/api'
       }
     ]
@@ -578,6 +582,10 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
           "displayName": "Echo API",
           "name": "echo-api",
           "path": "echo",
+          "protocols": [
+            "http",
+            "https"
+          ],
           "serviceUrl": "http://echoapi.cloudapp.net/api"
         }
       ]
@@ -840,6 +848,10 @@ param apis = [
     displayName: 'Echo API'
     name: 'echo-api'
     path: 'echo'
+    protocols: [
+      'http'
+      'https'
+    ]
     serviceUrl: 'http://echoapi.cloudapp.net/api'
   }
 ]
@@ -1140,6 +1152,9 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         displayName: 'Echo API'
         name: 'echo-api'
         path: 'echo'
+        protocols: [
+          'https'
+        ]
         serviceUrl: 'https://echoapi.cloudapp.net/api'
       }
     ]
@@ -1163,8 +1178,8 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       {
         name: 'backend'
         tls: {
-          validateCertificateChain: false
-          validateCertificateName: false
+          validateCertificateChain: true
+          validateCertificateName: true
         }
         url: 'https://echoapi.cloudapp.net/api'
       }
@@ -1351,6 +1366,9 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
           "displayName": "Echo API",
           "name": "echo-api",
           "path": "echo",
+          "protocols": [
+            "https"
+          ],
           "serviceUrl": "https://echoapi.cloudapp.net/api"
         }
       ]
@@ -1378,8 +1396,8 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         {
           "name": "backend",
           "tls": {
-            "validateCertificateChain": false,
-            "validateCertificateName": false
+            "validateCertificateChain": true,
+            "validateCertificateName": true
           },
           "url": "https://echoapi.cloudapp.net/api"
         }
@@ -1584,6 +1602,9 @@ param apis = [
     displayName: 'Echo API'
     name: 'echo-api'
     path: 'echo'
+    protocols: [
+      'https'
+    ]
     serviceUrl: 'https://echoapi.cloudapp.net/api'
   }
 ]
@@ -1607,8 +1628,8 @@ param backends = [
   {
     name: 'backend'
     tls: {
-      validateCertificateChain: false
-      validateCertificateName: false
+      validateCertificateChain: true
+      validateCertificateName: true
     }
     url: 'https://echoapi.cloudapp.net/api'
   }
