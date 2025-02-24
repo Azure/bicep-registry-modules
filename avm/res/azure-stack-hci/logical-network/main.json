@@ -5,13 +5,28 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "12463758954640973407"
+      "version": "0.33.93.31351",
+      "templateHash": "6169684789319839541"
     },
     "name": "Azure Stack HCI Logical Network",
     "description": "This module deploys an Azure Stack HCI Logical Network."
   },
   "definitions": {
+    "subnetIpConfigurationReferenceType": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The ARM ID for a Network Interface."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for an IP configuration reference."
+      }
+    },
     "roleAssignmentType": {
       "type": "object",
       "properties": {
@@ -143,7 +158,7 @@
       "type": "array",
       "defaultValue": [],
       "metadata": {
-        "description": "Optional. The DNS servers list."
+        "description": "Conditional. The DNS servers list. Required when ipAllocationMethod is Static."
       }
     },
     "tags": {
@@ -157,7 +172,7 @@
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Address prefix for the logical network."
+        "description": "Conditional. Address prefix for the logical network. Required when ipAllocationMethod is Static."
       }
     },
     "vlanId": {
@@ -169,7 +184,10 @@
     },
     "ipConfigurationReferences": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "$ref": "#/definitions/subnetIpConfigurationReferenceType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. A list of IP configuration references."
       }
@@ -178,28 +196,28 @@
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Optional. The starting IP address of the IP address range."
+        "description": "Conditional. The starting IP address of the IP address range. Required when ipAllocationMethod is Static."
       }
     },
     "endingAddress": {
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Optional. The ending IP address of the IP address range."
+        "description": "Conditional. The ending IP address of the IP address range. Required when ipAllocationMethod is Static."
       }
     },
     "routeName": {
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Optional. The route name."
+        "description": "Conditional. The route name. Required when ipAllocationMethod is Static."
       }
     },
     "defaultGateway": {
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Optional. The default gateway for the network."
+        "description": "Conditional. The default gateway for the network. Required when ipAllocationMethod is Static."
       }
     },
     "roleAssignments": {
@@ -226,7 +244,7 @@
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]",
-      "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]"
+      "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]"
     },
     "subnet1Pools": [
       {
@@ -290,7 +308,7 @@
             "properties": {
               "addressPrefix": "[parameters('addressPrefix')]",
               "ipAllocationMethod": "[parameters('ipAllocationMethod')]",
-              "ipConfigurationReferences": "[parameters('ipConfigurationReferences')]",
+              "ipConfigurationReferences": "[map(coalesce(parameters('ipConfigurationReferences'), createArray()), lambda('ipConfigurationReference', createObject('ID', lambdaVariables('ipConfigurationReference').id)))]",
               "vlan": "[parameters('vlanId')]",
               "ipPools": "[if(equals(parameters('ipAllocationMethod'), 'Dynamic'), null(), variables('subnet1Pools'))]",
               "routeTable": "[if(equals(parameters('ipAllocationMethod'), 'Dynamic'), null(), variables('routeTable'))]"

@@ -30,33 +30,31 @@ param subnet0Name string = 'default'
 ])
 param ipAllocationMethod string = 'Dynamic'
 
-@description('Optional. The DNS servers list.')
+@description('Conditional. The DNS servers list. Required when ipAllocationMethod is Static.')
 param dnsServers array = []
 
 @description('Optional. Tags for the logical network.')
 param tags object?
 
-@description('Optional. Address prefix for the logical network.')
+@description('Conditional. Address prefix for the logical network. Required when ipAllocationMethod is Static.')
 param addressPrefix string?
 
 @description('Optional. VLan Id for the logical network.')
 param vlanId int?
 
 @description('Optional. A list of IP configuration references.')
-param ipConfigurationReferences array = [
-  /*array of type {ID: string}*/
-]
+param ipConfigurationReferences subnetIpConfigurationReferenceType[]?
 
-@description('Optional. The starting IP address of the IP address range.')
+@description('Conditional. The starting IP address of the IP address range. Required when ipAllocationMethod is Static.')
 param startingAddress string?
 
-@description('Optional. The ending IP address of the IP address range.')
+@description('Conditional. The ending IP address of the IP address range. Required when ipAllocationMethod is Static.')
 param endingAddress string?
 
-@description('Optional. The route name.')
+@description('Conditional. The route name. Required when ipAllocationMethod is Static.')
 param routeName string?
 
-@description('Optional. The default gateway for the network.')
+@description('Conditional. The default gateway for the network. Required when ipAllocationMethod is Static.')
 param defaultGateway string?
 
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
@@ -72,7 +70,7 @@ var builtInRoleNames = {
     'Microsoft.Authorization/roleDefinitions',
     '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
   )
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+  'Role Based Access Control Administrator': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
   )
@@ -155,7 +153,10 @@ resource logicalNetwork 'Microsoft.AzureStackHCI/logicalNetworks@2024-05-01-prev
         properties: {
           addressPrefix: addressPrefix
           ipAllocationMethod: ipAllocationMethod
-          ipConfigurationReferences: ipConfigurationReferences
+          ipConfigurationReferences: map(
+            (ipConfigurationReferences ?? []),
+            (ipConfigurationReference) => { ID: ipConfigurationReference.id }
+          )
           vlan: vlanId
           ipPools: ipAllocationMethod == 'Dynamic' ? null : subnet1Pools
           routeTable: ipAllocationMethod == 'Dynamic' ? null : routeTable
@@ -193,3 +194,14 @@ output resourceGroupName string = resourceGroup().name
 
 @description('The location of the logical network.')
 output location string = logicalNetwork.location
+
+// =============== //
+//   Definitions   //
+// =============== //
+
+@export()
+@description('The type for an IP configuration reference.')
+type subnetIpConfigurationReferenceType = {
+  @description('Required. The ARM ID for a Network Interface.')
+  id: string
+}
