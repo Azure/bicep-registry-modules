@@ -355,7 +355,9 @@ The SKU for the web app. If empty, contentUnderstandingLocation will be used.
 
 ## Outputs
 
-_None_
+| Output | Type | Description |
+| :-- | :-- | :-- |
+| `resourceGroupName` | string | The resource group the resources were deployed into. |
 
 ## Cross-referenced modules
 

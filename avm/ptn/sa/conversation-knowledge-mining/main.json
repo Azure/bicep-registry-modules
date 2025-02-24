@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "17759797637766483415"
+      "templateHash": "8373092953939534413"
     },
     "name": "Conversation Knowledge Mining Solution Accelerator",
     "description": "This module deploys the [Conversation Knowledge Mining Solution Accelerator](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator)."
@@ -65954,5 +65954,14 @@
         "[resourceId('Microsoft.Web/sites', variables('varChartsFunctionName'))]"
       ]
     }
-  ]
+  ],
+  "outputs": {
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the resources were deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
 }

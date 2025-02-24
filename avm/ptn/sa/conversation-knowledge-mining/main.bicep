@@ -6,16 +6,16 @@ metadata description = 'This module deploys the [Conversation Knowledge Mining S
 
 // ========== Parameters ========== //
 // PARAMETERS: names
-@description('Required. The prefix for all deployed components log analytics workspace')
+@sys.description('Required. The prefix for all deployed components log analytics workspace')
 @maxLength(7)
 param environmentName string
 
 // PARAMETERS: locations
 //NOTE: allow for individual locations for each resource
 //NOTE: determine allowed locations for resources with limited region availability
-@description('Optional. Location for the solution deployment. Defaulted to resourceGroup().location')
+@sys.description('Optional. Location for the solution deployment. Defaulted to resourceGroup().location')
 param solutionLocation string = resourceGroup().location
-@description('Required. Location for the Content Understanding service deployment:')
+@sys.description('Required. Location for the Content Understanding service deployment:')
 @allowed(['West US', 'Sweden Central', 'Australia East'])
 @metadata({
   azd: {
@@ -23,23 +23,23 @@ param solutionLocation string = resourceGroup().location
   }
 })
 param contentUnderstandingLocation string
-@description('Optional. Secondary location for databases creation(example:eastus2):')
+@sys.description('Optional. Secondary location for databases creation(example:eastus2):')
 param secondaryLocation string = 'East US 2'
-@description('Optional. The location for the web app. If empty, contentUnderstandingLocation will be used.')
+@sys.description('Optional. The location for the web app. If empty, contentUnderstandingLocation will be used.')
 param ckmWebAppServerFarmLocation string = ''
 
 // PARAMETERS: Web app configuration
-@description('Optional. The SKU for the web app. If empty, contentUnderstandingLocation will be used.')
+@sys.description('Optional. The SKU for the web app. If empty, contentUnderstandingLocation will be used.')
 param webApServerFarmSku string = 'P0v3'
 
 // PARAMETERS: models configuration
-@description('Optional. GPT model deployment type.')
+@sys.description('Optional. GPT model deployment type.')
 @allowed([
   'Standard'
   'GlobalStandard'
 ])
 param deploymentType string = 'GlobalStandard'
-@description('Optional. Name of the GPT model to deploy.')
+@sys.description('Optional. Name of the GPT model to deploy.')
 @allowed([
   'gpt-4o-mini'
   'gpt-4o'
@@ -47,28 +47,28 @@ param deploymentType string = 'GlobalStandard'
 ])
 param gptModelName string = 'gpt-4o-mini'
 @minValue(10)
-@description('Optional. Capacity of the GPT deployment. You can increase this, but capacity is limited per model/region, so you will get errors if you go over. [Link](https://learn.microsoft.com/en-us/azure/ai-services/openai/quotas-limits) ')
+@sys.description('Optional. Capacity of the GPT deployment. You can increase this, but capacity is limited per model/region, so you will get errors if you go over. [Link](https://learn.microsoft.com/en-us/azure/ai-services/openai/quotas-limits) ')
 // https://learn.microsoft.com/en-us/azure/ai-services/openai/quotas-')
 // You can increase this, but capacity is limited per model/region, so you will get errors if you go over. // https://learn.microsoft.com/en-us/azure/ai-services/openai/quotas-limits
 param gptDeploymentCapacity int = 100
-@description('Optional. Name of the Text Embedding model to deploy:')
+@sys.description('Optional. Name of the Text Embedding model to deploy:')
 @allowed([
   'text-embedding-ada-002'
 ])
 param embeddingModel string = 'text-embedding-ada-002'
 @minValue(10)
-@description('Optional. Capacity of the Embedding Model deployment')
+@sys.description('Optional. Capacity of the Embedding Model deployment')
 param embeddingDeploymentCapacity int = 80
 
 // PARAMETERS: Docker image configuration
-@description('Optional. Docker image version to use for all deployed containers (functions and web app)')
+@sys.description('Optional. Docker image version to use for all deployed containers (functions and web app)')
 param imageTag string = 'latest'
 
-@description('Optional. The version string to add to Resource Group deployments. Defaulted to current UTC time stamp, this default can lead to reach the RG deployment limit.')
+@sys.description('Optional. The version string to add to Resource Group deployments. Defaulted to current UTC time stamp, this default can lead to reach the RG deployment limit.')
 param armDeploymentSuffix string = utcNow()
 
 // PARAMETERS: Telemetry
-@description('Optional. Enable/Disable usage telemetry for module.')
+@sys.description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 // ========== Variables ========== //
@@ -292,7 +292,7 @@ resource existingManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
 // NOTE: This is a role assignment at RG level and requires Owner permissions at subscription level
 // It is important to fine grain permissions
 
-@description('This is the built-in owner role. See https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#owner')
+@sys.description('This is the built-in owner role. See https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#owner')
 resource resOwnerRoleDefinition 'Microsoft.Authorization/roleDefinitions@2018-01-01-preview' existing = {
   scope: resourceGroup()
   name: '8e3af657-a8ff-443c-a75c-2fe8c4bcb635' //NOTE: Built-in role 'Owner'
@@ -1077,3 +1077,6 @@ resource resRoleAssignmentContributorWebappCosomosDB 'Microsoft.DocumentDB/datab
     scope: existingCosmosDB.id
   }
 }
+
+@description('The resource group the resources were deployed into.')
+output resourceGroupName string = resourceGroup().name
