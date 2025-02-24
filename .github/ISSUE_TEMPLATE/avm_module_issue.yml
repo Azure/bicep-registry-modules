@@ -129,6 +129,7 @@ body:
         - "avm/res/health-bot/health-bot"
         - "avm/res/healthcare-apis/workspace"
         - "avm/res/hybrid-compute/gateway"
+        - "avm/res/hybrid-compute/license"
         - "avm/res/hybrid-compute/machine"
         - "avm/res/insights/action-group"
         - "avm/res/insights/activity-log-alert"
