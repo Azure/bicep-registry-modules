@@ -94,3 +94,6 @@ output resourceId string = appSettings.id
 
 @description('The resource group the site config was deployed into.')
 output resourceGroupName string = resourceGroup().name
+
+@description('The expanded app settings.')
+output expandedAppSettings object = expandedAppSettings
