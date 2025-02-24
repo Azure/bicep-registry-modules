@@ -1,6 +1,5 @@
 metadata name = 'App Configuration Stores'
 metadata description = 'This module deploys an App Configuration Store.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the Azure App Configuration.')
 param name string

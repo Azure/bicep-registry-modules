@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "17165864764044430627"
+      "templateHash": "18374273039902105155"
     },
     "name": "Dns Forwarding Rulesets Forwarding Rules",
-    "description": "This template deploys Forwarding Rule in a Dns Forwarding Ruleset.",
-    "owner": "Azure/module-maintainers"
+    "description": "This template deploys Forwarding Rule in a Dns Forwarding Ruleset."
   },
   "parameters": {
     "name": {

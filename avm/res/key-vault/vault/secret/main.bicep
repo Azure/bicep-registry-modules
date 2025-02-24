@@ -1,6 +1,5 @@
 metadata name = 'Key Vault Secrets'
 metadata description = 'This module deploys a Key Vault Secret.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent key vault. Required if the template is used in a standalone deployment.')
 param keyVaultName string

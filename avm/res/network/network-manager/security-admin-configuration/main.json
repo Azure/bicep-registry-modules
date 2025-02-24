@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "12859267430568475361"
+      "templateHash": "15398119849930180416"
     },
     "name": "Network Manager Security Admin Configurations",
-    "description": "This module deploys an Network Manager Security Admin Configuration.\r\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Network Manager Security Admin Configuration.\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules."
   },
   "definitions": {
     "applyOnNetworkIntentPolicyBasedServicesType": {
@@ -368,11 +367,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "11555299168771769835"
+              "templateHash": "17868772067986931575"
             },
             "name": "Network Manager Security Admin Configuration Rule Collections",
-            "description": "This module deploys an Network Manager Security Admin Configuration Rule Collection.\r\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules. Security admin rules allows enforcing security policy criteria that matches the conditions set. Warning: A rule collection without rule will cause a deployment configuration for security admin goal state in network manager to fail.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Network Manager Security Admin Configuration Rule Collection.\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules. Security admin rules allows enforcing security policy criteria that matches the conditions set. Warning: A rule collection without rule will cause a deployment configuration for security admin goal state in network manager to fail."
           },
           "definitions": {
             "appliesToGroupsType": {
@@ -698,11 +696,10 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "11831246248888143865"
+                      "templateHash": "3195100427454268317"
                     },
                     "name": "Network Manager Security Admin Configuration Rule Collection Rules",
-                    "description": "This module deploys an Azure Virtual Network Manager (AVNM) Security Admin Configuration Rule Collection Rule.\r\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys an Azure Virtual Network Manager (AVNM) Security Admin Configuration Rule Collection Rule.\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules."
                   },
                   "definitions": {
                     "destinationPortRangesType": {

@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "12201850926589437696"
+      "templateHash": "9677932317263312170"
     },
     "name": "DocumentDB Database Account MongoDB Databases",
-    "description": "This module deploys a MongoDB Database within a CosmosDB Account.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a MongoDB Database within a CosmosDB Account."
   },
   "parameters": {
     "databaseAccountName": {
@@ -29,7 +28,7 @@
       "type": "int",
       "defaultValue": 400,
       "metadata": {
-        "description": "Optional. Request Units per second."
+        "description": "Optional. Request Units per second. Setting throughput at the database level is only recommended for development/test or when workload across all collections in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the collection level and not at the database level."
       }
     },
     "collections": {
@@ -109,11 +108,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "6624674794933817904"
+              "templateHash": "4404429052939193681"
             },
             "name": "DocumentDB Database Account MongoDB Database Collections",
-            "description": "This module deploys a MongoDB Database Collection.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a MongoDB Database Collection."
           },
           "parameters": {
             "databaseAccountName": {
@@ -138,7 +136,7 @@
               "type": "int",
               "defaultValue": 400,
               "metadata": {
-                "description": "Optional. Request Units per second."
+                "description": "Optional. Request Units per second. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the collection level and not at the database level."
               }
             },
             "indexes": {

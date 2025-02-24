@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "3109919695748867092"
+      "version": "0.32.4.45862",
+      "templateHash": "15109325313185095632"
     },
     "name": "Azure Front Doors",
-    "description": "This module deploys an Azure Front Door.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Azure Front Door."
   },
   "definitions": {
     "lockType": {

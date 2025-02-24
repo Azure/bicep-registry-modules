@@ -1,6 +1,5 @@
 metadata name = 'Resource Groups'
 metadata description = 'This module deploys a Resource Group.'
-metadata owner = 'Azure/module-maintainers'
 
 targetScope = 'subscription'
 

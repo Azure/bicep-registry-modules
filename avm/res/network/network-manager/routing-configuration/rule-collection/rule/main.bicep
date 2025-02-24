@@ -1,7 +1,6 @@
 metadata name = 'Network Manager Routing configuration Rule Collection Rules'
 metadata description = '''This module deploys an Azure Virtual Network Manager (AVNM) Routing Configuration Rule Collection Rule.
 A Routing configuration contains a set of rule collections. Each rule collection contains one or more routing rules.'''
-metadata owner = 'Azure/module-maintainers'
 
 @sys.description('Conditional. The name of the parent network manager. Required if the template is used in a standalone deployment.')
 param networkManagerName string

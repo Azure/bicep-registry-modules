@@ -227,7 +227,9 @@ module testDeployment '../../../main.bicep' = [
           ]
         }
       ]
-      useResourcePermissions: true
+      features: {
+        enableLogAccessUsingOnlyResourcePermissions: true
+      }
       tables: [
         {
           name: 'CustomTableBasic_CL'

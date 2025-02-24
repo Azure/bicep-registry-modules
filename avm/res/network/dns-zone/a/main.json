@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "2326491541446487905"
+      "templateHash": "15608891845705409701"
     },
     "name": "Public DNS Zone A record",
-    "description": "This module deploys a Public DNS Zone A record.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Public DNS Zone A record."
   },
   "definitions": {
     "roleAssignmentType": {

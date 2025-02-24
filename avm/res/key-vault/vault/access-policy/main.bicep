@@ -1,6 +1,5 @@
 metadata name = 'Key Vault Access Policies'
 metadata description = 'This module deploys a Key Vault Access Policy.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent key vault. Required if the template is used in a standalone deployment.')
 param keyVaultName string

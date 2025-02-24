@@ -5,11 +5,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "14846437278716777277"
+      "templateHash": "15938058071622087714"
     },
     "name": "Event Hub Namespace Event Hub Authorization Rules",
-    "description": "This module deploys an Event Hub Namespace Event Hub Authorization Rule.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Event Hub Namespace Event Hub Authorization Rule."
   },
   "parameters": {
     "namespaceName": {

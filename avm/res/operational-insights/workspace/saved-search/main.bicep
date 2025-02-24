@@ -1,6 +1,5 @@
 metadata name = 'Log Analytics Workspace Saved Searches'
 metadata description = 'This module deploys a Log Analytics Workspace Saved Search.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent Log Analytics workspace. Required if the template is used in a standalone deployment.')
 param logAnalyticsWorkspaceName string
@@ -32,11 +31,11 @@ param version int?
 @description('Optional. The ETag of the saved search. To override an existing saved search, use "*" or specify the current Etag.')
 param etag string = '*'
 
-resource workspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
+resource workspace 'Microsoft.OperationalInsights/workspaces@2023-09-01' existing = {
   name: logAnalyticsWorkspaceName
 }
 
-resource savedSearch 'Microsoft.OperationalInsights/workspaces/savedSearches@2020-08-01' = {
+resource savedSearch 'Microsoft.OperationalInsights/workspaces/savedSearches@2023-09-01' = {
   name: name
   parent: workspace
   //etag: etag // According to API, the variable should be here, but it doesn't work here.

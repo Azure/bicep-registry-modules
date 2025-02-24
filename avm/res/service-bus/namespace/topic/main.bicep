@@ -1,6 +1,5 @@
 metadata name = 'Service Bus Namespace Topic'
 metadata description = 'This module deploys a Service Bus Namespace Topic.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent Service Bus Namespace for the Service Bus Topic. Required if the template is used in a standalone deployment.')
 @minLength(1)
@@ -59,11 +58,11 @@ param enableExpress bool = false
 @description('Optional. Authorization Rules for the Service Bus Topic.')
 param authorizationRules array = []
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 

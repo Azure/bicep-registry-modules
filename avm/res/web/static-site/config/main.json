@@ -5,11 +5,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "12417882875937943110"
+      "templateHash": "12709536246529127181"
     },
     "name": "Static Web App Site Config",
-    "description": "This module deploys a Static Web App Site Config.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Static Web App Site Config."
   },
   "parameters": {
     "kind": {

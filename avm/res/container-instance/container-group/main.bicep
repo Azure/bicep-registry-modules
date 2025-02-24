@@ -1,6 +1,5 @@
 metadata name = 'Container Instances Container Groups'
 metadata description = 'This module deploys a Container Instance Container Group.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name for the container group.')
 param name string

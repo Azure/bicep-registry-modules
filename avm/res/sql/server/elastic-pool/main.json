@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "9155929618024075319"
+      "templateHash": "10716835460312206047"
     },
     "name": "SQL Server Elastic Pool",
-    "description": "This module deploys an Azure SQL Server Elastic Pool.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Azure SQL Server Elastic Pool."
   },
   "definitions": {
     "elasticPoolPerDatabaseSettingsType": {

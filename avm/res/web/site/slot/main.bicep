@@ -1,6 +1,5 @@
 metadata name = 'Web/Function App Deployment Slots'
 metadata description = 'This module deploys a Web or Function App Deployment Slot.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the slot.')
 param name string
@@ -375,18 +374,13 @@ resource slot_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-0
   }
 ]
 
-module slot_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
+module slot_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-slot-PrivateEndpoint-${index}'
-    scope: !empty(privateEndpoint.?resourceGroupResourceId)
-      ? resourceGroup(
-          split((privateEndpoint.?resourceGroupResourceId ?? '//'), '/')[2],
-          split((privateEndpoint.?resourceGroupResourceId ?? '////'), '/')[4]
-        )
-      : resourceGroup(
-          split((privateEndpoint.?subnetResourceId ?? '//'), '/')[2],
-          split((privateEndpoint.?subnetResourceId ?? '////'), '/')[4]
-        )
+    scope: resourceGroup(
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
+    )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(app.id, '/'))}-${privateEndpoint.?service ?? 'sites-${slot.name}'}-${index}'
       privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
@@ -451,12 +445,39 @@ output systemAssignedMIPrincipalId string? = slot.?identity.?principalId
 output location string = slot.location
 
 @description('The private endpoints of the slot.')
-output privateEndpoints array = [
-  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
-    name: slot_privateEndpoints[i].outputs.name
-    resourceId: slot_privateEndpoints[i].outputs.resourceId
-    groupId: slot_privateEndpoints[i].outputs.groupId
-    customDnsConfig: slot_privateEndpoints[i].outputs.customDnsConfig
-    networkInterfaceIds: slot_privateEndpoints[i].outputs.networkInterfaceIds
+output privateEndpoints privateEndpointOutputType[] = [
+  for (item, index) in (privateEndpoints ?? []): {
+    name: slot_privateEndpoints[index].outputs.name
+    resourceId: slot_privateEndpoints[index].outputs.resourceId
+    groupId: slot_privateEndpoints[index].outputs.?groupId!
+    customDnsConfigs: slot_privateEndpoints[index].outputs.customDnsConfigs
+    networkInterfaceResourceIds: slot_privateEndpoints[index].outputs.networkInterfaceResourceIds
   }
 ]
+
+// ================ //
+// Definitions      //
+// ================ //
+@export()
+type privateEndpointOutputType = {
+  @description('The name of the private endpoint.')
+  name: string
+
+  @description('The resource ID of the private endpoint.')
+  resourceId: string
+
+  @description('The group Id for the private endpoint Group.')
+  groupId: string?
+
+  @description('The custom DNS configurations of the private endpoint.')
+  customDnsConfigs: {
+    @description('FQDN that resolves to private endpoint IP address.')
+    fqdn: string?
+
+    @description('A list of private IP addresses of the private endpoint.')
+    ipAddresses: string[]
+  }[]
+
+  @description('The IDs of the network interfaces associated with the private endpoint.')
+  networkInterfaceResourceIds: string[]
+}

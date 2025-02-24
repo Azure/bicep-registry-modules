@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "18445188542008261648"
+      "templateHash": "860469689601275144"
     },
     "name": "Policy Exemptions (All scopes)",
-    "description": "This module deploys a Policy Exemption at a Management Group, Subscription or Resource Group scope.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Policy Exemption at a Management Group, Subscription or Resource Group scope."
   },
   "parameters": {
     "name": {
@@ -205,11 +204,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "17217850393909725714"
+              "templateHash": "5428405035932847140"
             },
             "name": "Policy Exemptions (Management Group scope)",
-            "description": "This module deploys a policy exemption at a Management Group scope.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a policy exemption at a Management Group scope."
           },
           "parameters": {
             "name": {
@@ -384,11 +382,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "2362298674161098325"
+              "templateHash": "5505971988172423733"
             },
             "name": "Policy Exemptions (Subscription scope)",
-            "description": "This module deploys a policy exemption at a Subscription scope.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a policy exemption at a Subscription scope."
           },
           "parameters": {
             "name": {
@@ -563,11 +560,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "8554892027886181020"
+              "templateHash": "11896729454122030890"
             },
             "name": "Policy Exemptions (Resource Group scope)",
-            "description": "This module deploys a policy exemption at a Resource Group scope.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a policy exemption at a Resource Group scope."
           },
           "parameters": {
             "name": {

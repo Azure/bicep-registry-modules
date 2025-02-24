@@ -1,6 +1,5 @@
 metadata name = 'Automation Account Credential'
 metadata description = 'This module deploys Azure Automation Account Credential.'
-metadata owner = 'Azure/module-maintainers'
 
 @sys.description('Conditional. The name of the parent Automation Account. Required if the template is used in a standalone deployment.')
 param automationAccountName string

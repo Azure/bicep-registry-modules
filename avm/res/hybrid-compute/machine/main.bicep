@@ -1,6 +1,5 @@
 metadata name = 'Hybrid Compute Machines'
 metadata description = 'This module deploys an Arc Machine for use with Arc Resource Bridge for Azure Stack HCI or VMware. In these scenarios, this resource module will be used in combination with another resource module to create the require Virtual Machine Instance extension resource on this Arc Machine resource. This module should not be used for other Arc-enabled server scenarios, where the Arc Machine resource is created automatically by the onboarding process.'
-metadata owner = 'Azure/module-maintainers'
 
 import { roleAssignmentType, lockType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
 
@@ -216,7 +215,7 @@ output resourceId string = machine.id
 output resourceGroupName string = resourceGroup().name
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = machine.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = machine.?identity.?principalId
 
 @description('The location the resource was deployed into.')
 output location string = machine.location

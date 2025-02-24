@@ -1,6 +1,5 @@
 metadata name = 'Log Analytics Workspace Data Exports'
 metadata description = 'This module deploys a Log Analytics Workspace Data Export.'
-metadata owner = 'Azure/module-maintainers'
 
 // ============== //
 //   Parameters   //
@@ -28,11 +27,11 @@ param tableNames string[]
 //   Deployments   //
 // =============== //
 
-resource workspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
+resource workspace 'Microsoft.OperationalInsights/workspaces@2023-09-01' existing = {
   name: workspaceName
 }
 
-resource dataExport 'Microsoft.OperationalInsights/workspaces/dataExports@2020-08-01' = {
+resource dataExport 'Microsoft.OperationalInsights/workspaces/dataExports@2023-09-01' = {
   parent: workspace
   name: name
   properties: {

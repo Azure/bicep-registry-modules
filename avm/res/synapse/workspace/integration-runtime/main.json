@@ -5,11 +5,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "15698775390725353911"
+      "templateHash": "1357925296617686979"
     },
     "name": "Synapse Workspace Integration Runtimes",
-    "description": "This module deploys a Synapse Workspace Integration Runtime.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Synapse Workspace Integration Runtime."
   },
   "parameters": {
     "workspaceName": {
@@ -47,7 +46,7 @@
       "type": "Microsoft.Synapse/workspaces/integrationRuntimes",
       "apiVersion": "2021-06-01",
       "name": "[format('{0}/{1}', parameters('workspaceName'), parameters('name'))]",
-      "properties": "[if(equals(parameters('type'), 'Managed'), createObject('type', parameters('type'), 'managedVirtualNetwork', createObject('referenceName', 'default', 'type', 'ManagedVirtualNetworkReference'), 'typeProperties', parameters('typeProperties')), createObject('type', parameters('type')))]"
+      "properties": "[shallowMerge(createArray(createObject('type', parameters('type')), if(equals(parameters('type'), 'Managed'), createObject('managedVirtualNetwork', createObject('referenceName', 'default', 'type', 'ManagedVirtualNetworkReference'), 'typeProperties', parameters('typeProperties')), createObject())))]"
     }
   ],
   "outputs": {

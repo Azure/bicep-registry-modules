@@ -1,6 +1,5 @@
 metadata name = 'Log Analytics Workspace Tables'
 metadata description = 'This module deploys a Log Analytics Workspace Table.'
-metadata owner = 'Azure/module-maintainers'
 
 // ============== //
 //   Parameters   //
@@ -87,11 +86,11 @@ var formattedRoleAssignments = [
 //   Deployments   //
 // =============== //
 
-resource workspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
+resource workspace 'Microsoft.OperationalInsights/workspaces@2023-09-01' existing = {
   name: workspaceName
 }
 
-resource table 'Microsoft.OperationalInsights/workspaces/tables@2022-10-01' = {
+resource table 'Microsoft.OperationalInsights/workspaces/tables@2023-09-01' = {
   parent: workspace
   name: name
   properties: {
