@@ -1,0 +1,1778 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.33.93.31351",
+      "templateHash": "2931179501063853931"
+    },
+    "name": "PIM Role Assignments (All scopes)",
+    "description": "This module deploys a PIM Role Assignment at a Management Group, Subscription or Resource Group scope."
+  },
+  "definitions": {
+    "requestTypeType": {
+      "type": "string",
+      "allowedValues": [
+        "AdminAssign",
+        "AdminExtend",
+        "AdminRemove",
+        "AdminRenew",
+        "AdminUpdate",
+        "SelfActivate",
+        "SelfDeactivate",
+        "SelfExtend",
+        "SelfRenew"
+      ],
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Optional. The request type of the role assignment."
+      }
+    },
+    "ticketInfoType": {
+      "type": "object",
+      "properties": {
+        "ticketNumber": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The ticket number for the role eligibility assignment."
+          }
+        },
+        "ticketSystem": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The ticket system name for the role eligibility assignment."
+          }
+        }
+      },
+      "nullable": true,
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "pimRoleAssignmentTypeType": {
+      "type": "object",
+      "discriminator": {
+        "propertyName": "roleAssignmentType",
+        "mapping": {
+          "Active": {
+            "$ref": "#/definitions/pimActiveRoleAssignmentType"
+          },
+          "Eligible": {
+            "$ref": "#/definitions/pimEligibleRoleAssignmentType"
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Optional. The type of the PIM role assignment whether its active or eligible."
+      }
+    },
+    "pimActiveRoleAssignmentType": {
+      "type": "object",
+      "properties": {
+        "roleAssignmentType": {
+          "type": "string",
+          "allowedValues": [
+            "Active"
+          ],
+          "metadata": {
+            "description": "Required. The type of the role assignment."
+          }
+        },
+        "linkedRoleEligibilityScheduleId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The linked role eligibility schedule id - to activate an eligibility."
+          }
+        },
+        "targetRoleAssignmentScheduleId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resultant role assignment schedule id or the role assignment schedule id being updated."
+          }
+        },
+        "targetRoleAssignmentScheduleInstanceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The role assignment schedule instance id being updated."
+          }
+        },
+        "scheduleInfo": {
+          "$ref": "#/definitions/roleAssignmentScheduleType",
+          "metadata": {
+            "description": "Required. The schedule information for the role assignment."
+          }
+        }
+      }
+    },
+    "pimEligibleRoleAssignmentType": {
+      "type": "object",
+      "properties": {
+        "roleAssignmentType": {
+          "type": "string",
+          "allowedValues": [
+            "Eligible"
+          ],
+          "metadata": {
+            "description": "Required. The type of the role assignment."
+          }
+        },
+        "targetRoleEligibilityScheduleId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resultant role eligibility schedule id or the role eligibility schedule id being updated."
+          }
+        },
+        "targetRoleEligibilityScheduleInstanceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The role eligibility assignment instance id being updated."
+          }
+        },
+        "scheduleInfo": {
+          "$ref": "#/definitions/roleAssignmentScheduleType",
+          "metadata": {
+            "description": "Required. The schedule information for the role assignment."
+          }
+        }
+      }
+    },
+    "roleAssignmentScheduleType": {
+      "type": "object",
+      "discriminator": {
+        "propertyName": "durationType",
+        "mapping": {
+          "NoExpiration": {
+            "$ref": "#/definitions/permenantRoleAssignmentScheduleType"
+          },
+          "AfterDuration": {
+            "$ref": "#/definitions/timeBoundDurationRoleAssignmentScheduleType"
+          },
+          "AfterDateTime": {
+            "$ref": "#/definitions/timeBoundDateTimeRoleAssignmentScheduleType"
+          }
+        }
+      },
+      "metadata": {
+        "description": "Optional. The schedule information for the role assignment."
+      }
+    },
+    "permenantRoleAssignmentScheduleType": {
+      "type": "object",
+      "properties": {
+        "durationType": {
+          "type": "string",
+          "allowedValues": [
+            "NoExpiration"
+          ],
+          "metadata": {
+            "description": "Required. The type of the duration."
+          }
+        }
+      }
+    },
+    "timeBoundDurationRoleAssignmentScheduleType": {
+      "type": "object",
+      "properties": {
+        "durationType": {
+          "type": "string",
+          "allowedValues": [
+            "AfterDuration"
+          ],
+          "metadata": {
+            "description": "Required. The type of the duration."
+          }
+        },
+        "duration": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The duration for the role assignment."
+          }
+        },
+        "startTime": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The start time for the role assignment."
+          }
+        }
+      }
+    },
+    "timeBoundDateTimeRoleAssignmentScheduleType": {
+      "type": "object",
+      "properties": {
+        "durationType": {
+          "type": "string",
+          "allowedValues": [
+            "AfterDateTime"
+          ],
+          "metadata": {
+            "description": "Required. The type of the duration."
+          }
+        },
+        "endDateTime": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The end date and time for the role assignment."
+          }
+        },
+        "startTime": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The start date and time for the role assignment."
+          }
+        }
+      }
+    }
+  },
+  "parameters": {
+    "roleDefinitionIdOrName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. You can provide either the display name of the role definition (must be configured in the variable `builtInRoleNames`), or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+      }
+    },
+    "principalId": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The Principal or Object ID of the Security Principal (User, Group, Service Principal, Managed Identity)."
+      }
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Name of the Resource Group to assign the RBAC role to. If Resource Group name is provided, and Subscription ID is provided, the module deploys at resource group level, therefore assigns the provided RBAC role to the resource group."
+      }
+    },
+    "subscriptionId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Subscription ID of the subscription to assign the RBAC role to. If no Resource Group name is provided, the module deploys at subscription level, therefore assigns the provided RBAC role to the subscription."
+      }
+    },
+    "managementGroupId": {
+      "type": "string",
+      "defaultValue": "[managementGroup().name]",
+      "metadata": {
+        "description": "Optional. Group ID of the Management Group to assign the RBAC role to. If not provided, will use the current scope for deployment."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[deployment().location]",
+      "metadata": {
+        "description": "Optional. Location deployment metadata."
+      }
+    },
+    "pimRoleAssignmentType": {
+      "$ref": "#/definitions/pimRoleAssignmentTypeType",
+      "metadata": {
+        "description": "Required. The type of the PIM role assignment whether its active or eligible."
+      }
+    },
+    "justification": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The justification for the role eligibility."
+      }
+    },
+    "requestType": {
+      "$ref": "#/definitions/requestTypeType",
+      "metadata": {
+        "description": "Required. The type of the role assignment eligibility request."
+      }
+    },
+    "targetRoleEligibilityScheduleId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The resultant role eligibility assignment id or the role eligibility assignment id being updated."
+      }
+    },
+    "targetRoleEligibilityScheduleInstanceId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The role eligibility assignment instance id being updated."
+      }
+    },
+    "targetRoleAssignmentScheduleId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The resultant role assignment schedule id or the role assignment schedule id being updated."
+      }
+    },
+    "targetRoleAssignmentScheduleInstanceId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The role assignment schedule instance id being updated."
+      }
+    },
+    "ticketInfo": {
+      "$ref": "#/definitions/ticketInfoType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Ticket Info of the role eligibility."
+      }
+    },
+    "condition": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to."
+      }
+    },
+    "conditionVersion": {
+      "type": "string",
+      "defaultValue": "2.0",
+      "allowedValues": [
+        "2.0"
+      ],
+      "metadata": {
+        "description": "Optional. Version of the condition. Currently accepted value is \"2.0\"."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    }
+  },
+  "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2024-03-01",
+      "name": "[format('46d3xbcp.ptn.authorization-pimroleassignment.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      },
+      "location": "[parameters('location')]"
+    },
+    "roleAssignment_mg": {
+      "condition": "[and(empty(parameters('subscriptionId')), empty(parameters('resourceGroupName')))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-PimRoleAssignment-MG-Module', uniqueString(deployment().name, parameters('location')))]",
+      "scope": "[format('Microsoft.Management/managementGroups/{0}', parameters('managementGroupId'))]",
+      "location": "[deployment().location]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "roleDefinitionIdOrName": {
+            "value": "[parameters('roleDefinitionIdOrName')]"
+          },
+          "principalId": {
+            "value": "[parameters('principalId')]"
+          },
+          "managementGroupId": {
+            "value": "[parameters('managementGroupId')]"
+          },
+          "requestType": {
+            "value": "[parameters('requestType')]"
+          },
+          "justification": {
+            "value": "[parameters('justification')]"
+          },
+          "targetRoleEligibilityScheduleId": {
+            "value": "[parameters('targetRoleEligibilityScheduleId')]"
+          },
+          "targetRoleEligibilityScheduleInstanceId": {
+            "value": "[parameters('targetRoleEligibilityScheduleInstanceId')]"
+          },
+          "targetRoleAssignmentScheduleId": {
+            "value": "[parameters('targetRoleAssignmentScheduleId')]"
+          },
+          "targetRoleAssignmentScheduleInstanceId": {
+            "value": "[parameters('targetRoleAssignmentScheduleInstanceId')]"
+          },
+          "ticketInfo": {
+            "value": "[parameters('ticketInfo')]"
+          },
+          "conditionVersion": {
+            "value": "[parameters('conditionVersion')]"
+          },
+          "condition": {
+            "value": "[parameters('condition')]"
+          },
+          "pimRoleAssignmentType": {
+            "value": "[parameters('pimRoleAssignmentType')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.33.93.31351",
+              "templateHash": "3274153567221137365"
+            },
+            "name": " PIM Role Assignments (Management Group scope)",
+            "description": "This module deploys a PIM Role Assignment at a Management Group scope."
+          },
+          "definitions": {
+            "requestTypeType": {
+              "type": "string",
+              "allowedValues": [
+                "AdminAssign",
+                "AdminExtend",
+                "AdminRemove",
+                "AdminRenew",
+                "AdminUpdate",
+                "SelfActivate",
+                "SelfDeactivate",
+                "SelfExtend",
+                "SelfRenew"
+              ],
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "Optional. The request type of the role assignment."
+              }
+            },
+            "ticketInfoType": {
+              "type": "object",
+              "properties": {
+                "ticketNumber": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The ticket number for the role eligibility assignment."
+                  }
+                },
+                "ticketSystem": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The ticket system name for the role eligibility assignment."
+                  }
+                }
+              },
+              "nullable": true,
+              "metadata": {
+                "__bicep_export!": true
+              }
+            },
+            "pimRoleAssignmentTypeType": {
+              "type": "object",
+              "discriminator": {
+                "propertyName": "roleAssignmentType",
+                "mapping": {
+                  "Active": {
+                    "$ref": "#/definitions/pimActiveRoleAssignmentType"
+                  },
+                  "Eligible": {
+                    "$ref": "#/definitions/pimEligibleRoleAssignmentType"
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "Optional. The type of the PIM role assignment whether its active or eligible."
+              }
+            },
+            "pimActiveRoleAssignmentType": {
+              "type": "object",
+              "properties": {
+                "roleAssignmentType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Active"
+                  ],
+                  "metadata": {
+                    "description": "Required. The type of the role assignment."
+                  }
+                },
+                "linkedRoleEligibilityScheduleId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The linked role eligibility schedule id - to activate an eligibility."
+                  }
+                },
+                "targetRoleAssignmentScheduleId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The resultant role assignment schedule id or the role assignment schedule id being updated."
+                  }
+                },
+                "targetRoleAssignmentScheduleInstanceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The role assignment schedule instance id being updated."
+                  }
+                },
+                "scheduleInfo": {
+                  "$ref": "#/definitions/roleAssignmentScheduleType",
+                  "metadata": {
+                    "description": "Required. The schedule information for the role assignment."
+                  }
+                }
+              }
+            },
+            "pimEligibleRoleAssignmentType": {
+              "type": "object",
+              "properties": {
+                "roleAssignmentType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Eligible"
+                  ],
+                  "metadata": {
+                    "description": "Required. The type of the role assignment."
+                  }
+                },
+                "targetRoleEligibilityScheduleId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The resultant role eligibility schedule id or the role eligibility schedule id being updated."
+                  }
+                },
+                "targetRoleEligibilityScheduleInstanceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The role eligibility assignment instance id being updated."
+                  }
+                },
+                "scheduleInfo": {
+                  "$ref": "#/definitions/roleAssignmentScheduleType",
+                  "metadata": {
+                    "description": "Required. The schedule information for the role assignment."
+                  }
+                }
+              }
+            },
+            "roleAssignmentScheduleType": {
+              "type": "object",
+              "discriminator": {
+                "propertyName": "durationType",
+                "mapping": {
+                  "NoExpiration": {
+                    "$ref": "#/definitions/permenantRoleAssignmentScheduleType"
+                  },
+                  "AfterDuration": {
+                    "$ref": "#/definitions/timeBoundDurationRoleAssignmentScheduleType"
+                  },
+                  "AfterDateTime": {
+                    "$ref": "#/definitions/timeBoundDateTimeRoleAssignmentScheduleType"
+                  }
+                }
+              },
+              "metadata": {
+                "description": "Optional. The schedule information for the role assignment."
+              }
+            },
+            "permenantRoleAssignmentScheduleType": {
+              "type": "object",
+              "properties": {
+                "durationType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "NoExpiration"
+                  ],
+                  "metadata": {
+                    "description": "Required. The type of the duration."
+                  }
+                }
+              }
+            },
+            "timeBoundDurationRoleAssignmentScheduleType": {
+              "type": "object",
+              "properties": {
+                "durationType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "AfterDuration"
+                  ],
+                  "metadata": {
+                    "description": "Required. The type of the duration."
+                  }
+                },
+                "duration": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The duration for the role assignment."
+                  }
+                },
+                "startTime": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The start time for the role assignment."
+                  }
+                }
+              }
+            },
+            "timeBoundDateTimeRoleAssignmentScheduleType": {
+              "type": "object",
+              "properties": {
+                "durationType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "AfterDateTime"
+                  ],
+                  "metadata": {
+                    "description": "Required. The type of the duration."
+                  }
+                },
+                "endDateTime": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The end date and time for the role assignment."
+                  }
+                },
+                "startTime": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The start date and time for the role assignment."
+                  }
+                }
+              }
+            }
+          },
+          "parameters": {
+            "roleDefinitionIdOrName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. You can provide either the display name of the role definition (must be configured in the variable `builtInRoleNames`), or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+              }
+            },
+            "principalId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The Principal or Object ID of the Security Principal (User, Group, Service Principal, Managed Identity)."
+              }
+            },
+            "managementGroupId": {
+              "type": "string",
+              "defaultValue": "[managementGroup().name]",
+              "metadata": {
+                "description": "Optional. Group ID of the Management Group to assign the RBAC role to. If not provided, will use the current scope for deployment."
+              }
+            },
+            "pimRoleAssignmentType": {
+              "$ref": "#/definitions/pimRoleAssignmentTypeType",
+              "metadata": {
+                "description": "Required. The type of the PIM role assignment whether its active or eligible."
+              }
+            },
+            "justification": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. The justification for the role eligibility."
+              }
+            },
+            "requestType": {
+              "$ref": "#/definitions/requestTypeType",
+              "metadata": {
+                "description": "Required. The type of the role assignment eligibility request."
+              }
+            },
+            "targetRoleEligibilityScheduleId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. The resultant role eligibility assignment id or the role eligibility assignment id being updated."
+              }
+            },
+            "targetRoleEligibilityScheduleInstanceId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. The role eligibility assignment instance id being updated."
+              }
+            },
+            "targetRoleAssignmentScheduleId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. The resultant role assignment schedule id or the role assignment schedule id being updated."
+              }
+            },
+            "targetRoleAssignmentScheduleInstanceId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. The role assignment schedule instance id being updated."
+              }
+            },
+            "ticketInfo": {
+              "$ref": "#/definitions/ticketInfoType",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Ticket Info of the role eligibility."
+              }
+            },
+            "condition": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to."
+              }
+            },
+            "conditionVersion": {
+              "type": "string",
+              "defaultValue": "2.0",
+              "allowedValues": [
+                "2.0"
+              ],
+              "metadata": {
+                "description": "Optional. Version of the condition. Currently accepted value is \"2.0\"."
+              }
+            }
+          },
+          "variables": {
+            "builtInRoleNames": {
+              "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+              "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+              "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+              "Resource Policy Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '36243c78-bf99-498c-9df9-86d9f8d28608')]",
+              "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+              "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]",
+              "Management Group Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ac63b705-f282-497d-ac71-919bf39d939d')]"
+            },
+            "roleDefinitionIdVar": "[coalesce(tryGet(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), parameters('roleDefinitionIdOrName'))]"
+          },
+          "resources": {
+            "pimEligibleRoleAssignment": {
+              "condition": "[equals(parameters('pimRoleAssignmentType').roleAssignmentType, 'Eligible')]",
+              "type": "Microsoft.Authorization/roleEligibilityScheduleRequests",
+              "apiVersion": "2022-04-01-preview",
+              "name": "[guid(deployment().name, parameters('managementGroupId'), variables('roleDefinitionIdVar'), parameters('principalId'))]",
+              "properties": {
+                "principalId": "[parameters('principalId')]",
+                "roleDefinitionId": "[variables('roleDefinitionIdVar')]",
+                "requestType": "[parameters('requestType')]",
+                "condition": "[parameters('condition')]",
+                "conditionVersion": "[parameters('conditionVersion')]",
+                "justification": "[parameters('justification')]",
+                "targetRoleEligibilityScheduleId": "[parameters('targetRoleEligibilityScheduleId')]",
+                "targetRoleEligibilityScheduleInstanceId": "[parameters('targetRoleEligibilityScheduleInstanceId')]",
+                "ticketInfo": "[parameters('ticketInfo')]",
+                "scheduleInfo": "[if(equals(parameters('pimRoleAssignmentType').scheduleInfo.durationType, 'NoExpiration'), createObject('expiration', createObject('type', 'NoExpiration')), if(equals(parameters('pimRoleAssignmentType').scheduleInfo.durationType, 'AfterDuration'), createObject('expiration', createObject('type', 'AfterDuration', 'duration', parameters('pimRoleAssignmentType').scheduleInfo.duration), 'startDateTime', parameters('pimRoleAssignmentType').scheduleInfo.startTime), if(equals(parameters('pimRoleAssignmentType').scheduleInfo.durationType, 'AfterDateTime'), createObject('expiration', createObject('type', 'AfterDateTime', 'endDateTime', parameters('pimRoleAssignmentType').scheduleInfo.endDateTime), 'startDateTime', parameters('pimRoleAssignmentType').scheduleInfo.startTime), null())))]"
+              }
+            },
+            "pimActiveRoleAssignment": {
+              "condition": "[equals(parameters('pimRoleAssignmentType').roleAssignmentType, 'Active')]",
+              "type": "Microsoft.Authorization/roleAssignmentScheduleRequests",
+              "apiVersion": "2022-04-01-preview",
+              "name": "[guid(deployment().name, parameters('managementGroupId'), variables('roleDefinitionIdVar'), parameters('principalId'))]",
+              "properties": {
+                "principalId": "[parameters('principalId')]",
+                "roleDefinitionId": "[variables('roleDefinitionIdVar')]",
+                "requestType": "[parameters('requestType')]",
+                "condition": "[if(not(empty(parameters('condition'))), parameters('condition'), null())]",
+                "conditionVersion": "[parameters('conditionVersion')]",
+                "justification": "[parameters('justification')]",
+                "targetRoleAssignmentScheduleId": "[parameters('targetRoleAssignmentScheduleId')]",
+                "targetRoleAssignmentScheduleInstanceId": "[parameters('targetRoleAssignmentScheduleInstanceId')]",
+                "ticketInfo": "[parameters('ticketInfo')]",
+                "scheduleInfo": "[if(equals(parameters('pimRoleAssignmentType').scheduleInfo.durationType, 'NoExpiration'), createObject('expiration', createObject('type', 'NoExpiration')), if(equals(parameters('pimRoleAssignmentType').scheduleInfo.durationType, 'AfterDuration'), createObject('expiration', createObject('type', 'AfterDuration', 'duration', parameters('pimRoleAssignmentType').scheduleInfo.duration), 'startDateTime', parameters('pimRoleAssignmentType').scheduleInfo.startTime), if(equals(parameters('pimRoleAssignmentType').scheduleInfo.durationType, 'AfterDateTime'), createObject('expiration', createObject('type', 'AfterDateTime', 'endDateTime', parameters('pimRoleAssignmentType').scheduleInfo.endDateTime), 'startDateTime', parameters('pimRoleAssignmentType').scheduleInfo.startTime), null())))]"
+              }
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The GUID of the PIM Role Assignment."
+              },
+              "value": "[if(equals(parameters('pimRoleAssignmentType').roleAssignmentType, 'Eligible'), guid(deployment().name, parameters('managementGroupId'), variables('roleDefinitionIdVar'), parameters('principalId')), guid(deployment().name, parameters('managementGroupId'), variables('roleDefinitionIdVar'), parameters('principalId')))]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the PIM Role Assignment."
+              },
+              "value": "[if(equals(parameters('pimRoleAssignmentType').roleAssignmentType, 'Eligible'), extensionResourceId(managementGroup().id, 'Microsoft.Authorization/roleEligibilityScheduleRequests', guid(deployment().name, parameters('managementGroupId'), variables('roleDefinitionIdVar'), parameters('principalId'))), extensionResourceId(managementGroup().id, 'Microsoft.Authorization/roleAssignmentScheduleRequests', guid(deployment().name, parameters('managementGroupId'), variables('roleDefinitionIdVar'), parameters('principalId'))))]"
+            },
+            "scope": {
+              "type": "string",
+              "metadata": {
+                "description": "The scope this PIM Role Assignment applies to."
+              },
+              "value": "[resourceId('Microsoft.Management/managementGroups', parameters('managementGroupId'))]"
+            }
+          }
+        }
+      }
+    },
+    "roleAssignment_sub": {
+      "condition": "[and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName')))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-PimRoleAssignment-Sub-Module', uniqueString(deployment().name, parameters('location')))]",
+      "subscriptionId": "[parameters('subscriptionId')]",
+      "location": "[deployment().location]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "roleDefinitionIdOrName": {
+            "value": "[parameters('roleDefinitionIdOrName')]"
+          },
+          "principalId": {
+            "value": "[parameters('principalId')]"
+          },
+          "subscriptionId": {
+            "value": "[parameters('subscriptionId')]"
+          },
+          "requestType": {
+            "value": "[parameters('requestType')]"
+          },
+          "justification": {
+            "value": "[parameters('justification')]"
+          },
+          "targetRoleEligibilityScheduleId": {
+            "value": "[parameters('targetRoleEligibilityScheduleId')]"
+          },
+          "targetRoleEligibilityScheduleInstanceId": {
+            "value": "[parameters('targetRoleEligibilityScheduleInstanceId')]"
+          },
+          "ticketInfo": {
+            "value": "[parameters('ticketInfo')]"
+          },
+          "conditionVersion": {
+            "value": "[parameters('conditionVersion')]"
+          },
+          "condition": {
+            "value": "[parameters('condition')]"
+          },
+          "pimRoleAssignmentType": {
+            "value": "[parameters('pimRoleAssignmentType')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.33.93.31351",
+              "templateHash": "15288642990461981614"
+            },
+            "name": "PIM Role Assignments (Subscription scope)",
+            "description": "This module deploys a PIM Role Assignment at a Subscription scope."
+          },
+          "definitions": {
+            "requestTypeType": {
+              "type": "string",
+              "allowedValues": [
+                "AdminAssign",
+                "AdminExtend",
+                "AdminRemove",
+                "AdminRenew",
+                "AdminUpdate",
+                "SelfActivate",
+                "SelfDeactivate",
+                "SelfExtend",
+                "SelfRenew"
+              ],
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "Optional. The request type of the role assignment."
+              }
+            },
+            "ticketInfoType": {
+              "type": "object",
+              "properties": {
+                "ticketNumber": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The ticket number for the role eligibility assignment."
+                  }
+                },
+                "ticketSystem": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The ticket system name for the role eligibility assignment."
+                  }
+                }
+              },
+              "nullable": true,
+              "metadata": {
+                "__bicep_export!": true
+              }
+            },
+            "pimRoleAssignmentTypeType": {
+              "type": "object",
+              "discriminator": {
+                "propertyName": "roleAssignmentType",
+                "mapping": {
+                  "Active": {
+                    "$ref": "#/definitions/pimActiveRoleAssignmentType"
+                  },
+                  "Eligible": {
+                    "$ref": "#/definitions/pimEligibleRoleAssignmentType"
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "Optional. The type of the PIM role assignment whether its active or eligible."
+              }
+            },
+            "pimActiveRoleAssignmentType": {
+              "type": "object",
+              "properties": {
+                "roleAssignmentType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Active"
+                  ],
+                  "metadata": {
+                    "description": "Required. The type of the role assignment."
+                  }
+                },
+                "linkedRoleEligibilityScheduleId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The linked role eligibility schedule id - to activate an eligibility."
+                  }
+                },
+                "targetRoleAssignmentScheduleId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The resultant role assignment schedule id or the role assignment schedule id being updated."
+                  }
+                },
+                "targetRoleAssignmentScheduleInstanceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The role assignment schedule instance id being updated."
+                  }
+                },
+                "scheduleInfo": {
+                  "$ref": "#/definitions/roleAssignmentScheduleType",
+                  "metadata": {
+                    "description": "Required. The schedule information for the role assignment."
+                  }
+                }
+              }
+            },
+            "pimEligibleRoleAssignmentType": {
+              "type": "object",
+              "properties": {
+                "roleAssignmentType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Eligible"
+                  ],
+                  "metadata": {
+                    "description": "Required. The type of the role assignment."
+                  }
+                },
+                "targetRoleEligibilityScheduleId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The resultant role eligibility schedule id or the role eligibility schedule id being updated."
+                  }
+                },
+                "targetRoleEligibilityScheduleInstanceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The role eligibility assignment instance id being updated."
+                  }
+                },
+                "scheduleInfo": {
+                  "$ref": "#/definitions/roleAssignmentScheduleType",
+                  "metadata": {
+                    "description": "Required. The schedule information for the role assignment."
+                  }
+                }
+              }
+            },
+            "roleAssignmentScheduleType": {
+              "type": "object",
+              "discriminator": {
+                "propertyName": "durationType",
+                "mapping": {
+                  "NoExpiration": {
+                    "$ref": "#/definitions/permenantRoleAssignmentScheduleType"
+                  },
+                  "AfterDuration": {
+                    "$ref": "#/definitions/timeBoundDurationRoleAssignmentScheduleType"
+                  },
+                  "AfterDateTime": {
+                    "$ref": "#/definitions/timeBoundDateTimeRoleAssignmentScheduleType"
+                  }
+                }
+              },
+              "metadata": {
+                "description": "Optional. The schedule information for the role assignment."
+              }
+            },
+            "permenantRoleAssignmentScheduleType": {
+              "type": "object",
+              "properties": {
+                "durationType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "NoExpiration"
+                  ],
+                  "metadata": {
+                    "description": "Required. The type of the duration."
+                  }
+                }
+              }
+            },
+            "timeBoundDurationRoleAssignmentScheduleType": {
+              "type": "object",
+              "properties": {
+                "durationType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "AfterDuration"
+                  ],
+                  "metadata": {
+                    "description": "Required. The type of the duration."
+                  }
+                },
+                "duration": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The duration for the role assignment."
+                  }
+                },
+                "startTime": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The start time for the role assignment."
+                  }
+                }
+              }
+            },
+            "timeBoundDateTimeRoleAssignmentScheduleType": {
+              "type": "object",
+              "properties": {
+                "durationType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "AfterDateTime"
+                  ],
+                  "metadata": {
+                    "description": "Required. The type of the duration."
+                  }
+                },
+                "endDateTime": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The end date and time for the role assignment."
+                  }
+                },
+                "startTime": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The start date and time for the role assignment."
+                  }
+                }
+              }
+            }
+          },
+          "parameters": {
+            "roleDefinitionIdOrName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. You can provide either the display name of the role definition (must be configured in the variable `builtInRoleNames`), or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+              }
+            },
+            "principalId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The Principal or Object ID of the Security Principal (User, Group, Service Principal, Managed Identity)."
+              }
+            },
+            "subscriptionId": {
+              "type": "string",
+              "defaultValue": "[subscription().subscriptionId]",
+              "metadata": {
+                "description": "Optional. Subscription ID of the subscription to assign the RBAC role to. If not provided, will use the current scope for deployment."
+              }
+            },
+            "pimRoleAssignmentType": {
+              "$ref": "#/definitions/pimRoleAssignmentTypeType",
+              "metadata": {
+                "description": "Required. The type of the PIM role assignment whether its active or eligible."
+              }
+            },
+            "justification": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. The justification for the role eligibility."
+              }
+            },
+            "requestType": {
+              "$ref": "#/definitions/requestTypeType",
+              "metadata": {
+                "description": "Required. The type of the role assignment eligibility request."
+              }
+            },
+            "targetRoleEligibilityScheduleId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. The resultant role eligibility assignment id or the role eligibility assignment id being updated."
+              }
+            },
+            "targetRoleEligibilityScheduleInstanceId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. The role eligibility assignment instance id being updated."
+              }
+            },
+            "targetRoleAssignmentScheduleId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. The resultant role assignment schedule id or the role assignment schedule id being updated."
+              }
+            },
+            "targetRoleAssignmentScheduleInstanceId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. The role assignment schedule instance id being updated."
+              }
+            },
+            "ticketInfo": {
+              "$ref": "#/definitions/ticketInfoType",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Ticket Info of the role eligibility."
+              }
+            },
+            "condition": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to."
+              }
+            },
+            "conditionVersion": {
+              "type": "string",
+              "defaultValue": "2.0",
+              "allowedValues": [
+                "2.0"
+              ],
+              "metadata": {
+                "description": "Optional. Version of the condition. Currently accepted value is \"2.0\"."
+              }
+            }
+          },
+          "variables": {
+            "builtInRoleNames": {
+              "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+              "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+              "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+              "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+              "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+            },
+            "roleDefinitionIdVar": "[coalesce(tryGet(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), parameters('roleDefinitionIdOrName'))]"
+          },
+          "resources": {
+            "pimEligibleRoleAssignment": {
+              "condition": "[equals(parameters('pimRoleAssignmentType').roleAssignmentType, 'Eligible')]",
+              "type": "Microsoft.Authorization/roleEligibilityScheduleRequests",
+              "apiVersion": "2022-04-01-preview",
+              "name": "[guid(deployment().name, parameters('subscriptionId'), variables('roleDefinitionIdVar'), parameters('principalId'))]",
+              "properties": {
+                "principalId": "[parameters('principalId')]",
+                "roleDefinitionId": "[variables('roleDefinitionIdVar')]",
+                "requestType": "[parameters('requestType')]",
+                "condition": "[parameters('condition')]",
+                "conditionVersion": "[parameters('conditionVersion')]",
+                "justification": "[parameters('justification')]",
+                "targetRoleEligibilityScheduleId": "[parameters('targetRoleEligibilityScheduleId')]",
+                "targetRoleEligibilityScheduleInstanceId": "[parameters('targetRoleEligibilityScheduleInstanceId')]",
+                "ticketInfo": "[parameters('ticketInfo')]",
+                "scheduleInfo": "[if(equals(parameters('pimRoleAssignmentType').scheduleInfo.durationType, 'NoExpiration'), createObject('expiration', createObject('type', 'NoExpiration')), if(equals(parameters('pimRoleAssignmentType').scheduleInfo.durationType, 'AfterDuration'), createObject('expiration', createObject('type', 'AfterDuration', 'duration', parameters('pimRoleAssignmentType').scheduleInfo.duration), 'startDateTime', parameters('pimRoleAssignmentType').scheduleInfo.startTime), if(equals(parameters('pimRoleAssignmentType').scheduleInfo.durationType, 'AfterDateTime'), createObject('expiration', createObject('type', 'AfterDateTime', 'endDateTime', parameters('pimRoleAssignmentType').scheduleInfo.endDateTime), 'startDateTime', parameters('pimRoleAssignmentType').scheduleInfo.startTime), null())))]"
+              }
+            },
+            "pimActiveRoleAssignment": {
+              "condition": "[equals(parameters('pimRoleAssignmentType').roleAssignmentType, 'Active')]",
+              "type": "Microsoft.Authorization/roleAssignmentScheduleRequests",
+              "apiVersion": "2022-04-01-preview",
+              "name": "[guid(deployment().name, parameters('subscriptionId'), variables('roleDefinitionIdVar'), parameters('principalId'))]",
+              "properties": {
+                "principalId": "[parameters('principalId')]",
+                "roleDefinitionId": "[variables('roleDefinitionIdVar')]",
+                "requestType": "[parameters('requestType')]",
+                "condition": "[if(not(empty(parameters('condition'))), parameters('condition'), null())]",
+                "conditionVersion": "[parameters('conditionVersion')]",
+                "justification": "[parameters('justification')]",
+                "targetRoleAssignmentScheduleId": "[parameters('targetRoleAssignmentScheduleId')]",
+                "targetRoleAssignmentScheduleInstanceId": "[parameters('targetRoleAssignmentScheduleInstanceId')]",
+                "ticketInfo": "[parameters('ticketInfo')]",
+                "scheduleInfo": "[if(equals(parameters('pimRoleAssignmentType').scheduleInfo.durationType, 'NoExpiration'), createObject('expiration', createObject('type', 'NoExpiration')), if(equals(parameters('pimRoleAssignmentType').scheduleInfo.durationType, 'AfterDuration'), createObject('expiration', createObject('type', 'AfterDuration', 'duration', parameters('pimRoleAssignmentType').scheduleInfo.duration), 'startDateTime', parameters('pimRoleAssignmentType').scheduleInfo.startTime), if(equals(parameters('pimRoleAssignmentType').scheduleInfo.durationType, 'AfterDateTime'), createObject('expiration', createObject('type', 'AfterDateTime', 'endDateTime', parameters('pimRoleAssignmentType').scheduleInfo.endDateTime), 'startDateTime', parameters('pimRoleAssignmentType').scheduleInfo.startTime), null())))]"
+              }
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The GUID of the PIM Role Assignment."
+              },
+              "value": "[if(equals(parameters('pimRoleAssignmentType').roleAssignmentType, 'Eligible'), guid(deployment().name, parameters('subscriptionId'), variables('roleDefinitionIdVar'), parameters('principalId')), guid(deployment().name, parameters('subscriptionId'), variables('roleDefinitionIdVar'), parameters('principalId')))]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the PIM Role Assignment."
+              },
+              "value": "[if(equals(parameters('pimRoleAssignmentType').roleAssignmentType, 'Eligible'), subscriptionResourceId('Microsoft.Authorization/roleEligibilityScheduleRequests', guid(deployment().name, parameters('subscriptionId'), variables('roleDefinitionIdVar'), parameters('principalId'))), subscriptionResourceId('Microsoft.Authorization/roleAssignmentScheduleRequests', guid(deployment().name, parameters('subscriptionId'), variables('roleDefinitionIdVar'), parameters('principalId'))))]"
+            },
+            "subscriptionName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the PIM role assignment was applied at."
+              },
+              "value": "[subscription().displayName]"
+            },
+            "scope": {
+              "type": "string",
+              "metadata": {
+                "description": "The scope this PIM Role Assignment applies to."
+              },
+              "value": "[subscription().id]"
+            }
+          }
+        }
+      }
+    },
+    "roleAssignment_rg": {
+      "condition": "[and(not(empty(parameters('resourceGroupName'))), not(empty(parameters('subscriptionId'))))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-PimRoleAssignment-RG-Module', uniqueString(deployment().name, parameters('location')))]",
+      "subscriptionId": "[parameters('subscriptionId')]",
+      "resourceGroup": "[parameters('resourceGroupName')]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "roleDefinitionIdOrName": {
+            "value": "[parameters('roleDefinitionIdOrName')]"
+          },
+          "principalId": {
+            "value": "[parameters('principalId')]"
+          },
+          "subscriptionId": {
+            "value": "[parameters('subscriptionId')]"
+          },
+          "resourceGroupName": {
+            "value": "[parameters('resourceGroupName')]"
+          },
+          "requestType": {
+            "value": "[parameters('requestType')]"
+          },
+          "justification": {
+            "value": "[parameters('justification')]"
+          },
+          "targetRoleEligibilityScheduleId": {
+            "value": "[parameters('targetRoleEligibilityScheduleId')]"
+          },
+          "targetRoleEligibilityScheduleInstanceId": {
+            "value": "[parameters('targetRoleEligibilityScheduleInstanceId')]"
+          },
+          "ticketInfo": {
+            "value": "[parameters('ticketInfo')]"
+          },
+          "conditionVersion": {
+            "value": "[parameters('conditionVersion')]"
+          },
+          "condition": {
+            "value": "[parameters('condition')]"
+          },
+          "pimRoleAssignmentType": {
+            "value": "[parameters('pimRoleAssignmentType')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.33.93.31351",
+              "templateHash": "9698835458053155186"
+            },
+            "name": "PIM Role Assignments (Resource Group scope)",
+            "description": "This module deploys a PIM Role Assignment at a Resource Group scope."
+          },
+          "definitions": {
+            "requestTypeType": {
+              "type": "string",
+              "allowedValues": [
+                "AdminAssign",
+                "AdminExtend",
+                "AdminRemove",
+                "AdminRenew",
+                "AdminUpdate",
+                "SelfActivate",
+                "SelfDeactivate",
+                "SelfExtend",
+                "SelfRenew"
+              ],
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "Optional. The request type of the role assignment."
+              }
+            },
+            "ticketInfoType": {
+              "type": "object",
+              "properties": {
+                "ticketNumber": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The ticket number for the role eligibility assignment."
+                  }
+                },
+                "ticketSystem": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The ticket system name for the role eligibility assignment."
+                  }
+                }
+              },
+              "nullable": true,
+              "metadata": {
+                "__bicep_export!": true
+              }
+            },
+            "pimRoleAssignmentTypeType": {
+              "type": "object",
+              "discriminator": {
+                "propertyName": "roleAssignmentType",
+                "mapping": {
+                  "Active": {
+                    "$ref": "#/definitions/pimActiveRoleAssignmentType"
+                  },
+                  "Eligible": {
+                    "$ref": "#/definitions/pimEligibleRoleAssignmentType"
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "Optional. The type of the PIM role assignment whether its active or eligible."
+              }
+            },
+            "pimActiveRoleAssignmentType": {
+              "type": "object",
+              "properties": {
+                "roleAssignmentType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Active"
+                  ],
+                  "metadata": {
+                    "description": "Required. The type of the role assignment."
+                  }
+                },
+                "linkedRoleEligibilityScheduleId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The linked role eligibility schedule id - to activate an eligibility."
+                  }
+                },
+                "targetRoleAssignmentScheduleId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The resultant role assignment schedule id or the role assignment schedule id being updated."
+                  }
+                },
+                "targetRoleAssignmentScheduleInstanceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The role assignment schedule instance id being updated."
+                  }
+                },
+                "scheduleInfo": {
+                  "$ref": "#/definitions/roleAssignmentScheduleType",
+                  "metadata": {
+                    "description": "Required. The schedule information for the role assignment."
+                  }
+                }
+              }
+            },
+            "pimEligibleRoleAssignmentType": {
+              "type": "object",
+              "properties": {
+                "roleAssignmentType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Eligible"
+                  ],
+                  "metadata": {
+                    "description": "Required. The type of the role assignment."
+                  }
+                },
+                "targetRoleEligibilityScheduleId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The resultant role eligibility schedule id or the role eligibility schedule id being updated."
+                  }
+                },
+                "targetRoleEligibilityScheduleInstanceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The role eligibility assignment instance id being updated."
+                  }
+                },
+                "scheduleInfo": {
+                  "$ref": "#/definitions/roleAssignmentScheduleType",
+                  "metadata": {
+                    "description": "Required. The schedule information for the role assignment."
+                  }
+                }
+              }
+            },
+            "roleAssignmentScheduleType": {
+              "type": "object",
+              "discriminator": {
+                "propertyName": "durationType",
+                "mapping": {
+                  "NoExpiration": {
+                    "$ref": "#/definitions/permenantRoleAssignmentScheduleType"
+                  },
+                  "AfterDuration": {
+                    "$ref": "#/definitions/timeBoundDurationRoleAssignmentScheduleType"
+                  },
+                  "AfterDateTime": {
+                    "$ref": "#/definitions/timeBoundDateTimeRoleAssignmentScheduleType"
+                  }
+                }
+              },
+              "metadata": {
+                "description": "Optional. The schedule information for the role assignment."
+              }
+            },
+            "permenantRoleAssignmentScheduleType": {
+              "type": "object",
+              "properties": {
+                "durationType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "NoExpiration"
+                  ],
+                  "metadata": {
+                    "description": "Required. The type of the duration."
+                  }
+                }
+              }
+            },
+            "timeBoundDurationRoleAssignmentScheduleType": {
+              "type": "object",
+              "properties": {
+                "durationType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "AfterDuration"
+                  ],
+                  "metadata": {
+                    "description": "Required. The type of the duration."
+                  }
+                },
+                "duration": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The duration for the role assignment."
+                  }
+                },
+                "startTime": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The start time for the role assignment."
+                  }
+                }
+              }
+            },
+            "timeBoundDateTimeRoleAssignmentScheduleType": {
+              "type": "object",
+              "properties": {
+                "durationType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "AfterDateTime"
+                  ],
+                  "metadata": {
+                    "description": "Required. The type of the duration."
+                  }
+                },
+                "endDateTime": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The end date and time for the role assignment."
+                  }
+                },
+                "startTime": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The start date and time for the role assignment."
+                  }
+                }
+              }
+            }
+          },
+          "parameters": {
+            "roleDefinitionIdOrName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. You can provide either the display name of the role definition (must be configured in the variable `builtInRoleNames`), or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+              }
+            },
+            "principalId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The Principal or Object ID of the Security Principal (User, Group, Service Principal, Managed Identity)."
+              }
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().name]",
+              "metadata": {
+                "description": "Optional. Name of the Resource Group to assign the RBAC role to. If not provided, will use the current scope for deployment."
+              }
+            },
+            "subscriptionId": {
+              "type": "string",
+              "defaultValue": "[subscription().subscriptionId]",
+              "metadata": {
+                "description": "Optional. Subscription ID of the subscription to assign the RBAC role to. If not provided, will use the current scope for deployment."
+              }
+            },
+            "pimRoleAssignmentType": {
+              "$ref": "#/definitions/pimRoleAssignmentTypeType",
+              "metadata": {
+                "description": "Required. The type of the PIM role assignment whether its active or eligible."
+              }
+            },
+            "justification": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. The justification for the role eligibility."
+              }
+            },
+            "requestType": {
+              "$ref": "#/definitions/requestTypeType",
+              "metadata": {
+                "description": "Required. The type of the role assignment eligibility request."
+              }
+            },
+            "targetRoleEligibilityScheduleId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. The resultant role eligibility assignment id or the role eligibility assignment id being updated."
+              }
+            },
+            "targetRoleEligibilityScheduleInstanceId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. The role eligibility assignment instance id being updated."
+              }
+            },
+            "targetRoleAssignmentScheduleId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. The resultant role assignment schedule id or the role assignment schedule id being updated."
+              }
+            },
+            "targetRoleAssignmentScheduleInstanceId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. The role assignment schedule instance id being updated."
+              }
+            },
+            "ticketInfo": {
+              "$ref": "#/definitions/ticketInfoType",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Ticket Info of the role eligibility."
+              }
+            },
+            "condition": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to."
+              }
+            },
+            "conditionVersion": {
+              "type": "string",
+              "defaultValue": "2.0",
+              "allowedValues": [
+                "2.0"
+              ],
+              "metadata": {
+                "description": "Optional. Version of the condition. Currently accepted value is \"2.0\"."
+              }
+            }
+          },
+          "variables": {
+            "builtInRoleNames": {
+              "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+              "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+              "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+              "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+              "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+            },
+            "roleDefinitionIdVar": "[coalesce(tryGet(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), parameters('roleDefinitionIdOrName'))]"
+          },
+          "resources": {
+            "pimEligibleRoleAssignment": {
+              "condition": "[equals(parameters('pimRoleAssignmentType').roleAssignmentType, 'Eligible')]",
+              "type": "Microsoft.Authorization/roleEligibilityScheduleRequests",
+              "apiVersion": "2022-04-01-preview",
+              "name": "[guid(deployment().name, parameters('subscriptionId'), parameters('resourceGroupName'), variables('roleDefinitionIdVar'), parameters('principalId'))]",
+              "properties": {
+                "roleDefinitionId": "[variables('roleDefinitionIdVar')]",
+                "principalId": "[parameters('principalId')]",
+                "requestType": "[parameters('requestType')]",
+                "conditionVersion": "[parameters('conditionVersion')]",
+                "condition": "[parameters('condition')]",
+                "justification": "[parameters('justification')]",
+                "targetRoleEligibilityScheduleId": "[parameters('targetRoleEligibilityScheduleId')]",
+                "targetRoleEligibilityScheduleInstanceId": "[parameters('targetRoleEligibilityScheduleInstanceId')]",
+                "ticketInfo": "[parameters('ticketInfo')]",
+                "scheduleInfo": "[if(equals(parameters('pimRoleAssignmentType').scheduleInfo.durationType, 'NoExpiration'), createObject('expiration', createObject('type', 'NoExpiration')), if(equals(parameters('pimRoleAssignmentType').scheduleInfo.durationType, 'AfterDuration'), createObject('expiration', createObject('type', 'AfterDuration', 'duration', parameters('pimRoleAssignmentType').scheduleInfo.duration), 'startDateTime', parameters('pimRoleAssignmentType').scheduleInfo.startTime), if(equals(parameters('pimRoleAssignmentType').scheduleInfo.durationType, 'AfterDateTime'), createObject('expiration', createObject('type', 'AfterDateTime', 'endDateTime', parameters('pimRoleAssignmentType').scheduleInfo.endDateTime), 'startDateTime', parameters('pimRoleAssignmentType').scheduleInfo.startTime), null())))]"
+              }
+            },
+            "pimActiveRoleAssignment": {
+              "condition": "[equals(parameters('pimRoleAssignmentType').roleAssignmentType, 'Active')]",
+              "type": "Microsoft.Authorization/roleAssignmentScheduleRequests",
+              "apiVersion": "2022-04-01-preview",
+              "name": "[guid(deployment().name, parameters('subscriptionId'), parameters('resourceGroupName'), variables('roleDefinitionIdVar'), parameters('principalId'))]",
+              "properties": {
+                "roleDefinitionId": "[variables('roleDefinitionIdVar')]",
+                "principalId": "[parameters('principalId')]",
+                "requestType": "[parameters('requestType')]",
+                "conditionVersion": "[parameters('conditionVersion')]",
+                "condition": "[if(not(empty(parameters('condition'))), parameters('condition'), null())]",
+                "justification": "[parameters('justification')]",
+                "targetRoleAssignmentScheduleId": "[parameters('targetRoleAssignmentScheduleId')]",
+                "targetRoleAssignmentScheduleInstanceId": "[parameters('targetRoleAssignmentScheduleInstanceId')]",
+                "ticketInfo": "[parameters('ticketInfo')]",
+                "scheduleInfo": "[if(equals(parameters('pimRoleAssignmentType').scheduleInfo.durationType, 'NoExpiration'), createObject('expiration', createObject('type', 'NoExpiration')), if(equals(parameters('pimRoleAssignmentType').scheduleInfo.durationType, 'AfterDuration'), createObject('expiration', createObject('type', 'AfterDuration', 'duration', parameters('pimRoleAssignmentType').scheduleInfo.duration), 'startDateTime', parameters('pimRoleAssignmentType').scheduleInfo.startTime), if(equals(parameters('pimRoleAssignmentType').scheduleInfo.durationType, 'AfterDateTime'), createObject('expiration', createObject('type', 'AfterDateTime', 'endDateTime', parameters('pimRoleAssignmentType').scheduleInfo.endDateTime), 'startDateTime', parameters('pimRoleAssignmentType').scheduleInfo.startTime), null())))]"
+              }
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The GUID of the PIM Role Assignment."
+              },
+              "value": "[if(equals(parameters('pimRoleAssignmentType').roleAssignmentType, 'Eligible'), guid(deployment().name, parameters('subscriptionId'), parameters('resourceGroupName'), variables('roleDefinitionIdVar'), parameters('principalId')), guid(deployment().name, parameters('subscriptionId'), parameters('resourceGroupName'), variables('roleDefinitionIdVar'), parameters('principalId')))]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the PIM Role Assignment."
+              },
+              "value": "[if(equals(parameters('pimRoleAssignmentType').roleAssignmentType, 'Eligible'), resourceId('Microsoft.Authorization/roleEligibilityScheduleRequests', guid(deployment().name, parameters('subscriptionId'), parameters('resourceGroupName'), variables('roleDefinitionIdVar'), parameters('principalId'))), resourceId('Microsoft.Authorization/roleAssignmentScheduleRequests', guid(deployment().name, parameters('subscriptionId'), parameters('resourceGroupName'), variables('roleDefinitionIdVar'), parameters('principalId'))))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the PIM role assignment was applied at."
+              },
+              "value": "[resourceGroup().name]"
+            },
+            "scope": {
+              "type": "string",
+              "metadata": {
+                "description": "The scope this PIM Role Assignment applies to."
+              },
+              "value": "[resourceGroup().id]"
+            }
+          }
+        }
+      }
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The GUID of the PIM Role Assignment."
+      },
+      "value": "[if(and(empty(parameters('subscriptionId')), empty(parameters('resourceGroupName'))), reference('roleAssignment_mg').outputs.name.value, if(and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName'))), reference('roleAssignment_sub').outputs.name.value, reference('roleAssignment_rg').outputs.name.value))]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the PIM Role Assignment."
+      },
+      "value": "[if(and(empty(parameters('subscriptionId')), empty(parameters('resourceGroupName'))), reference('roleAssignment_mg').outputs.resourceId.value, if(and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName'))), reference('roleAssignment_sub').outputs.resourceId.value, reference('roleAssignment_rg').outputs.resourceId.value))]"
+    },
+    "scope": {
+      "type": "string",
+      "metadata": {
+        "description": "The scope this PIM Role Assignment applies to."
+      },
+      "value": "[if(and(empty(parameters('subscriptionId')), empty(parameters('resourceGroupName'))), reference('roleAssignment_mg').outputs.scope.value, if(and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName'))), reference('roleAssignment_sub').outputs.scope.value, reference('roleAssignment_rg').outputs.scope.value))]"
+    }
+  }
+}
