@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "5043762592549190927"
+      "version": "0.33.93.31351",
+      "templateHash": "10002384107919856685"
     },
     "name": "Elastic SAN Volume Groups",
     "description": "This module deploys an Elastic SAN Volume Group."
@@ -676,13 +676,6 @@
         "description": "Optional. Tags of the Elastic SAN Volume Group resource."
       }
     },
-    "enableTelemetry": {
-      "type": "bool",
-      "defaultValue": true,
-      "metadata": {
-        "description": "Optional. Enable/Disable usage telemetry for module."
-      }
-    },
     "lock": {
       "$ref": "#/definitions/lockType",
       "nullable": true,
@@ -702,6 +695,7 @@
         }
       }
     ],
+    "enableReferencedModulesTelemetry": false,
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned, UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]"
   },
@@ -795,8 +789,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "8260850643378717237"
+              "version": "0.33.93.31351",
+              "templateHash": "11635704021988875359"
             },
             "name": "Elastic SAN Volumes",
             "description": "This module deploys an Elastic SAN Volume."
@@ -960,8 +954,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "4007403623410700025"
+                      "version": "0.33.93.31351",
+                      "templateHash": "6701978252436416407"
                     },
                     "name": "Elastic SAN Volume Snapshots",
                     "description": "This module deploys an Elastic SAN Volume Snapshot."
@@ -1163,7 +1157,7 @@
             "value": "[coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId]"
           },
           "enableTelemetry": {
-            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           },
           "location": {
             "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'location'), reference(split(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location)]"
