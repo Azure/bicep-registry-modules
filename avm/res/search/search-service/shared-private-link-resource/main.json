@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "10412795355958046746"
+      "version": "0.33.93.31351",
+      "templateHash": "16868169528574127897"
     },
     "name": "Search Services Private Link Resources",
     "description": "This module deploys a Search Service Private Link Resource."

@@ -76,7 +76,7 @@ resource pimEligibleRoleAssignment 'Microsoft.Authorization/roleEligibilitySched
     roleDefinitionId: roleDefinitionIdVar
     requestType: requestType
     condition: condition
-    conditionVersion: conditionVersion
+    conditionVersion: !empty(condition) ? conditionVersion : null
     justification: justification
     targetRoleEligibilityScheduleId: targetRoleEligibilityScheduleId
     targetRoleEligibilityScheduleInstanceId: targetRoleEligibilityScheduleInstanceId
@@ -113,8 +113,8 @@ resource pimActiveRoleAssignment 'Microsoft.Authorization/roleAssignmentSchedule
     principalId: principalId
     roleDefinitionId: roleDefinitionIdVar
     requestType: requestType
-    condition: !empty(condition) ? condition : null
-    conditionVersion: conditionVersion
+    condition: condition
+    conditionVersion: !empty(condition) ? conditionVersion : null
     justification: justification
     targetRoleAssignmentScheduleId: targetRoleAssignmentScheduleId
     targetRoleAssignmentScheduleInstanceId: targetRoleAssignmentScheduleInstanceId
