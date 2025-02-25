@@ -287,22 +287,22 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 }
 
 resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
-  name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
+  name: last(split(customerManagedKey.?keyVaultResourceId!, '/'))
   scope: resourceGroup(
-    split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
-    split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
+    split(customerManagedKey.?keyVaultResourceId!, '/')[2],
+    split(customerManagedKey.?keyVaultResourceId!, '/')[4]
   )
 
   resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
-    name: customerManagedKey.?keyName ?? 'dummyKey'
+    name: customerManagedKey.?keyName!
   }
 }
 
 resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
-  name: last(split(customerManagedKey.?userAssignedIdentityResourceId ?? 'dummyMsi', '/'))
+  name: last(split(customerManagedKey.?userAssignedIdentityResourceId!, '/'))
   scope: resourceGroup(
-    split((customerManagedKey.?userAssignedIdentityResourceId ?? '//'), '/')[2],
-    split((customerManagedKey.?userAssignedIdentityResourceId ?? '////'), '/')[4]
+    split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[2],
+    split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[4]
   )
 }
 
@@ -340,7 +340,7 @@ resource cognitiveService 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
             keyVaultUri: cMKKeyVault.properties.vaultUri
             keyName: customerManagedKey!.keyName
             keyVersion: !empty(customerManagedKey.?keyVersion ?? '')
-              ? customerManagedKey!.keyVersion
+              ? customerManagedKey!.?keyVersion
               : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
           }
         }
@@ -413,10 +413,13 @@ resource cognitiveService_diagnosticSettings 'Microsoft.Insights/diagnosticSetti
   }
 ]
 
-module cognitiveService_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.8.0' = [
+module cognitiveService_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-cognitiveService-PrivateEndpoint-${index}'
-    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
+    scope: resourceGroup(
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
+    )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(cognitiveService.id, '/'))}-${privateEndpoint.?service ?? 'account'}-${index}'
       privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
@@ -484,17 +487,17 @@ resource cognitiveService_roleAssignments 'Microsoft.Authorization/roleAssignmen
 module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfiguration != null) {
   name: '${uniqueString(deployment().name, location)}-secrets-kv'
   scope: resourceGroup(
-    split((secretsExportConfiguration.?keyVaultResourceId ?? '//'), '/')[2],
-    split((secretsExportConfiguration.?keyVaultResourceId ?? '////'), '/')[4]
+    split(secretsExportConfiguration.?keyVaultResourceId!, '/')[2],
+    split(secretsExportConfiguration.?keyVaultResourceId!, '/')[4]
   )
   params: {
-    keyVaultName: last(split(secretsExportConfiguration.?keyVaultResourceId ?? '//', '/'))
+    keyVaultName: last(split(secretsExportConfiguration.?keyVaultResourceId!, '/'))
     secretsToSet: union(
       [],
       contains(secretsExportConfiguration!, 'accessKey1Name')
         ? [
             {
-              name: secretsExportConfiguration!.accessKey1Name
+              name: secretsExportConfiguration!.?accessKey1Name
               value: cognitiveService.listKeys().key1
             }
           ]
@@ -502,7 +505,7 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
       contains(secretsExportConfiguration!, 'accessKey2Name')
         ? [
             {
-              name: secretsExportConfiguration!.accessKey2Name
+              name: secretsExportConfiguration!.?accessKey2Name
               value: cognitiveService.listKeys().key2
             }
           ]
@@ -539,19 +542,43 @@ output exportedSecrets secretsOutputType = (secretsExportConfiguration != null)
   : {}
 
 @description('The private endpoints of the congitive services account.')
-output privateEndpoints array = [
-  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
-    name: cognitiveService_privateEndpoints[i].outputs.name
-    resourceId: cognitiveService_privateEndpoints[i].outputs.resourceId
-    groupId: cognitiveService_privateEndpoints[i].outputs.groupId
-    customDnsConfig: cognitiveService_privateEndpoints[i].outputs.customDnsConfig
-    networkInterfaceIds: cognitiveService_privateEndpoints[i].outputs.networkInterfaceIds
+output privateEndpoints privateEndpointOutputType[] = [
+  for (pe, index) in (privateEndpoints ?? []): {
+    name: cognitiveService_privateEndpoints[index].outputs.name
+    resourceId: cognitiveService_privateEndpoints[index].outputs.resourceId
+    groupId: cognitiveService_privateEndpoints[index].outputs.?groupId!
+    customDnsConfigs: cognitiveService_privateEndpoints[index].outputs.customDnsConfigs
+    networkInterfaceResourceIds: cognitiveService_privateEndpoints[index].outputs.networkInterfaceResourceIds
   }
 ]
 
 // ================ //
 // Definitions      //
 // ================ //
+
+@export()
+type privateEndpointOutputType = {
+  @description('The name of the private endpoint.')
+  name: string
+
+  @description('The resource ID of the private endpoint.')
+  resourceId: string
+
+  @description('The group Id for the private endpoint Group.')
+  groupId: string?
+
+  @description('The custom DNS configurations of the private endpoint.')
+  customDnsConfigs: {
+    @description('FQDN that resolves to private endpoint IP address.')
+    fqdn: string?
+
+    @description('A list of private IP addresses of the private endpoint.')
+    ipAddresses: string[]
+  }[]
+
+  @description('The IDs of the network interfaces associated with the private endpoint.')
+  networkInterfaceResourceIds: string[]
+}
 
 @export()
 type deploymentsType = {
