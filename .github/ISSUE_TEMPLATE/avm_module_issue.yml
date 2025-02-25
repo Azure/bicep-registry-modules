@@ -68,6 +68,7 @@ body:
         - "avm/ptn/finops-toolkit/finops-hub"
         - "avm/ptn/lz/sub-vending"
         - "avm/ptn/mgmt-groups/subscription-placement"
+        - "avm/ptn/sa/conversation-knowledge-mining"
         - "avm/ptn/network/hub-networking"
         - "avm/ptn/network/private-link-private-dns-zones"
         - "avm/ptn/policy-insights/remediation"
