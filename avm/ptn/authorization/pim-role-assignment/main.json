@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "16967476406216563100"
+      "templateHash": "18360545365410556681"
     },
     "name": "PIM Role Assignments (All scopes)",
     "description": "This module deploys a PIM Role Assignment at a Management Group, Subscription or Resource Group scope."
@@ -434,7 +434,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "6168366957740709191"
+              "templateHash": "17408679000216503468"
             },
             "name": " PIM Role Assignments (Management Group scope)",
             "description": "This module deploys a PIM Role Assignment at a Management Group scope."
@@ -737,7 +737,7 @@
             },
             "condition": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to."
               }
@@ -882,7 +882,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "5782925367792192540"
+              "templateHash": "15073836979415881924"
             },
             "name": "PIM Role Assignments (Subscription scope)",
             "description": "This module deploys a PIM Role Assignment at a Subscription scope."
@@ -1185,7 +1185,7 @@
             },
             "condition": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to."
               }
@@ -1338,7 +1338,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "14653535287292116498"
+              "templateHash": "12905144514524239499"
             },
             "name": "PIM Role Assignments (Resource Group scope)",
             "description": "This module deploys a PIM Role Assignment at a Resource Group scope."
@@ -1648,7 +1648,7 @@
             },
             "condition": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to."
               }

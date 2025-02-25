@@ -37,7 +37,7 @@ param targetRoleAssignmentScheduleInstanceId string = ''
 param ticketInfo ticketInfoType?
 
 @sys.description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to.')
-param condition string = ''
+param condition string?
 
 @sys.description('Optional. Version of the condition. Currently accepted value is "2.0".')
 @allowed([
