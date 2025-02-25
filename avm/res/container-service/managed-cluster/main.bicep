@@ -422,6 +422,8 @@ param istioServiceMeshCertificateAuthority istioServiceMeshCertificateAuthorityT
 // Variables   //
 // =========== //
 
+var enableReferencedModulesTelemetry = false
+
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
@@ -944,7 +946,7 @@ module managedCluster_extension 'br/public:avm/res/kubernetes-configuration/exte
     clusterName: managedCluster.name
     configurationProtectedSettings: fluxExtension.?configurationProtectedSettings
     configurationSettings: fluxExtension.?configurationSettings
-    enableTelemetry: enableTelemetry
+    enableTelemetry: enableReferencedModulesTelemetry
     extensionType: 'microsoft.flux'
     fluxConfigurations: fluxExtension.?configurations
     location: location
