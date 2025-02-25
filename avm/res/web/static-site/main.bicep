@@ -88,7 +88,7 @@ param functionAppSettings object = {}
 @description('Optional. The custom domains associated with this static site. The deployment will fail as long as the validation records are not present.')
 param customDomains array = []
 
-@description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkAcls are not set.')
+@description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set.')
 @allowed([
   ''
   'Enabled'
