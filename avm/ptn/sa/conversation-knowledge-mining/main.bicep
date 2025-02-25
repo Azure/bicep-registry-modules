@@ -6,16 +6,16 @@ metadata description = 'This module deploys the [Conversation Knowledge Mining S
 
 // ========== Parameters ========== //
 // PARAMETERS: names
-@description('Required. The prefix for all deployed components log analytics workspace')
+@description('Required. The prefix for all deployed components log analytics workspace.')
 @maxLength(7)
 param environmentName string
 
 // PARAMETERS: locations
 //NOTE: allow for individual locations for each resource
 //NOTE: determine allowed locations for resources with limited region availability
-@description('Optional. Location for the solution deployment. Defaulted to resourceGroup().location')
+@description('Optional. Location for the solution deployment. Defaulted to the location of the Resource Group.')
 param solutionLocation string = resourceGroup().location
-@description('Required. Location for the Content Understanding service deployment:')
+@description('Required. Location for the Content Understanding service deployment.')
 @allowed(['West US', 'Sweden Central', 'Australia East'])
 @metadata({
   azd: {
@@ -23,7 +23,7 @@ param solutionLocation string = resourceGroup().location
   }
 })
 param contentUnderstandingLocation string
-@description('Optional. Secondary location for databases creation(example:eastus2):')
+@description('Optional. Secondary location for databases creation(example:eastus2).')
 param secondaryLocation string = 'East US 2'
 @description('Optional. The location for the web app. If empty, contentUnderstandingLocation will be used.')
 param ckmWebAppServerFarmLocation string = ''
@@ -47,21 +47,20 @@ param deploymentType string = 'GlobalStandard'
 ])
 param gptModelName string = 'gpt-4o-mini'
 @minValue(10)
-@description('Optional. Capacity of the GPT deployment. You can increase this, but capacity is limited per model/region, so you will get errors if you go over. [Link](https://learn.microsoft.com/en-us/azure/ai-services/openai/quotas-limits) ')
-// https://learn.microsoft.com/en-us/azure/ai-services/openai/quotas-')
+@description('Optional. Capacity of the GPT deployment. You can increase this, but capacity is limited per model/region, so you will get errors if you go over. [Quotas link](https://learn.microsoft.com/en-us/azure/ai-services/openai/quotas-limits).')
 // You can increase this, but capacity is limited per model/region, so you will get errors if you go over. // https://learn.microsoft.com/en-us/azure/ai-services/openai/quotas-limits
 param gptDeploymentCapacity int = 100
-@description('Optional. Name of the Text Embedding model to deploy:')
+@description('Optional. Name of the Text Embedding model to deploy.')
 @allowed([
   'text-embedding-ada-002'
 ])
 param embeddingModel string = 'text-embedding-ada-002'
 @minValue(10)
-@description('Optional. Capacity of the Embedding Model deployment')
+@description('Optional. Capacity of the Embedding Model deployment.')
 param embeddingDeploymentCapacity int = 80
 
 // PARAMETERS: Docker image configuration
-@description('Optional. Docker image version to use for all deployed containers (functions and web app)')
+@description('Optional. Docker image version to use for all deployed containers (functions and web app).')
 param imageTag string = 'latest'
 
 @description('Optional. The version string to add to Resource Group deployments. Defaulted to current UTC time stamp, this default can lead to reach the RG deployment limit.')

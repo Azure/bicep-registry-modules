@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "7049941816556949421"
+      "templateHash": "14420464332027931126"
     },
     "name": "Conversation Knowledge Mining Solution Accelerator",
     "description": "This module deploys the [Conversation Knowledge Mining Solution Accelerator](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator)."
@@ -15,14 +15,14 @@
       "type": "string",
       "maxLength": 7,
       "metadata": {
-        "description": "Required. The prefix for all deployed components log analytics workspace"
+        "description": "Required. The prefix for all deployed components log analytics workspace."
       }
     },
     "solutionLocation": {
       "type": "string",
       "defaultValue": "[resourceGroup().location]",
       "metadata": {
-        "description": "Optional. Location for the solution deployment. Defaulted to resourceGroup().location"
+        "description": "Optional. Location for the solution deployment. Defaulted to the location of the Resource Group."
       }
     },
     "contentUnderstandingLocation": {
@@ -36,14 +36,14 @@
         "azd": {
           "type": "location"
         },
-        "description": "Required. Location for the Content Understanding service deployment:"
+        "description": "Required. Location for the Content Understanding service deployment."
       }
     },
     "secondaryLocation": {
       "type": "string",
       "defaultValue": "East US 2",
       "metadata": {
-        "description": "Optional. Secondary location for databases creation(example:eastus2):"
+        "description": "Optional. Secondary location for databases creation(example:eastus2)."
       }
     },
     "ckmWebAppServerFarmLocation": {
@@ -88,7 +88,7 @@
       "defaultValue": 100,
       "minValue": 10,
       "metadata": {
-        "description": "Optional. Capacity of the GPT deployment. You can increase this, but capacity is limited per model/region, so you will get errors if you go over. [Link](https://learn.microsoft.com/en-us/azure/ai-services/openai/quotas-limits) "
+        "description": "Optional. Capacity of the GPT deployment. You can increase this, but capacity is limited per model/region, so you will get errors if you go over. [Quotas link](https://learn.microsoft.com/en-us/azure/ai-services/openai/quotas-limits)."
       }
     },
     "embeddingModel": {
@@ -98,7 +98,7 @@
         "text-embedding-ada-002"
       ],
       "metadata": {
-        "description": "Optional. Name of the Text Embedding model to deploy:"
+        "description": "Optional. Name of the Text Embedding model to deploy."
       }
     },
     "embeddingDeploymentCapacity": {
@@ -106,14 +106,14 @@
       "defaultValue": 80,
       "minValue": 10,
       "metadata": {
-        "description": "Optional. Capacity of the Embedding Model deployment"
+        "description": "Optional. Capacity of the Embedding Model deployment."
       }
     },
     "imageTag": {
       "type": "string",
       "defaultValue": "latest",
       "metadata": {
-        "description": "Optional. Docker image version to use for all deployed containers (functions and web app)"
+        "description": "Optional. Docker image version to use for all deployed containers (functions and web app)."
       }
     },
     "armDeploymentSuffix": {

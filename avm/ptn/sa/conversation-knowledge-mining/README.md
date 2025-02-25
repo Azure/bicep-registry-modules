@@ -185,8 +185,8 @@ param environmentName = 'avm-ckm'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`contentUnderstandingLocation`](#parameter-contentunderstandinglocation) | string | Location for the Content Understanding service deployment: |
-| [`environmentName`](#parameter-environmentname) | string | The prefix for all deployed components log analytics workspace |
+| [`contentUnderstandingLocation`](#parameter-contentunderstandinglocation) | string | Location for the Content Understanding service deployment. |
+| [`environmentName`](#parameter-environmentname) | string | The prefix for all deployed components log analytics workspace. |
 
 **Optional parameters**
 
@@ -195,19 +195,19 @@ param environmentName = 'avm-ckm'
 | [`armDeploymentSuffix`](#parameter-armdeploymentsuffix) | string | The version string to add to Resource Group deployments. Defaulted to current UTC time stamp, this default can lead to reach the RG deployment limit. |
 | [`ckmWebAppServerFarmLocation`](#parameter-ckmwebappserverfarmlocation) | string | The location for the web app. If empty, contentUnderstandingLocation will be used. |
 | [`deploymentType`](#parameter-deploymenttype) | string | GPT model deployment type. |
-| [`embeddingDeploymentCapacity`](#parameter-embeddingdeploymentcapacity) | int | Capacity of the Embedding Model deployment |
-| [`embeddingModel`](#parameter-embeddingmodel) | string | Name of the Text Embedding model to deploy: |
+| [`embeddingDeploymentCapacity`](#parameter-embeddingdeploymentcapacity) | int | Capacity of the Embedding Model deployment. |
+| [`embeddingModel`](#parameter-embeddingmodel) | string | Name of the Text Embedding model to deploy. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`gptDeploymentCapacity`](#parameter-gptdeploymentcapacity) | int | Capacity of the GPT deployment. You can increase this, but capacity is limited per model/region, so you will get errors if you go over. [Link](https://learn.microsoft.com/en-us/azure/ai-services/openai/quotas-limits)  |
+| [`gptDeploymentCapacity`](#parameter-gptdeploymentcapacity) | int | Capacity of the GPT deployment. You can increase this, but capacity is limited per model/region, so you will get errors if you go over. [Quotas link](https://learn.microsoft.com/en-us/azure/ai-services/openai/quotas-limits). |
 | [`gptModelName`](#parameter-gptmodelname) | string | Name of the GPT model to deploy. |
-| [`imageTag`](#parameter-imagetag) | string | Docker image version to use for all deployed containers (functions and web app) |
-| [`secondaryLocation`](#parameter-secondarylocation) | string | Secondary location for databases creation(example:eastus2): |
-| [`solutionLocation`](#parameter-solutionlocation) | string | Location for the solution deployment. Defaulted to resourceGroup().location |
+| [`imageTag`](#parameter-imagetag) | string | Docker image version to use for all deployed containers (functions and web app). |
+| [`secondaryLocation`](#parameter-secondarylocation) | string | Secondary location for databases creation(example:eastus2). |
+| [`solutionLocation`](#parameter-solutionlocation) | string | Location for the solution deployment. Defaulted to the location of the Resource Group. |
 | [`webApServerFarmSku`](#parameter-webapserverfarmsku) | string | The SKU for the web app. If empty, contentUnderstandingLocation will be used. |
 
 ### Parameter: `contentUnderstandingLocation`
 
-Location for the Content Understanding service deployment:
+Location for the Content Understanding service deployment.
 
 - Required: Yes
 - Type: string
@@ -222,7 +222,7 @@ Location for the Content Understanding service deployment:
 
 ### Parameter: `environmentName`
 
-The prefix for all deployed components log analytics workspace
+The prefix for all deployed components log analytics workspace.
 
 - Required: Yes
 - Type: string
@@ -260,7 +260,7 @@ GPT model deployment type.
 
 ### Parameter: `embeddingDeploymentCapacity`
 
-Capacity of the Embedding Model deployment
+Capacity of the Embedding Model deployment.
 
 - Required: No
 - Type: int
@@ -269,7 +269,7 @@ Capacity of the Embedding Model deployment
 
 ### Parameter: `embeddingModel`
 
-Name of the Text Embedding model to deploy:
+Name of the Text Embedding model to deploy.
 
 - Required: No
 - Type: string
@@ -293,7 +293,7 @@ Enable/Disable usage telemetry for module.
 
 ### Parameter: `gptDeploymentCapacity`
 
-Capacity of the GPT deployment. You can increase this, but capacity is limited per model/region, so you will get errors if you go over. [Link](https://learn.microsoft.com/en-us/azure/ai-services/openai/quotas-limits) 
+Capacity of the GPT deployment. You can increase this, but capacity is limited per model/region, so you will get errors if you go over. [Quotas link](https://learn.microsoft.com/en-us/azure/ai-services/openai/quotas-limits).
 
 - Required: No
 - Type: int
@@ -319,7 +319,7 @@ Name of the GPT model to deploy.
 
 ### Parameter: `imageTag`
 
-Docker image version to use for all deployed containers (functions and web app)
+Docker image version to use for all deployed containers (functions and web app).
 
 - Required: No
 - Type: string
@@ -328,7 +328,7 @@ Docker image version to use for all deployed containers (functions and web app)
 
 ### Parameter: `secondaryLocation`
 
-Secondary location for databases creation(example:eastus2):
+Secondary location for databases creation(example:eastus2).
 
 - Required: No
 - Type: string
@@ -337,7 +337,7 @@ Secondary location for databases creation(example:eastus2):
 
 ### Parameter: `solutionLocation`
 
-Location for the solution deployment. Defaulted to resourceGroup().location
+Location for the solution deployment. Defaulted to the location of the Resource Group.
 
 - Required: No
 - Type: string
