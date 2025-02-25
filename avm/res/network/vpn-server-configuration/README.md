@@ -8,6 +8,7 @@ This module deploys a VPN Server Configuration for a Virtual Hub P2S Gateway.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -47,8 +48,7 @@ module vpnServerConfiguration 'br/public:avm/res/network/vpn-server-configuratio
     // Non-required parameters
     aadAudience: '11111111-1234-4321-1234-111111111111'
     aadIssuer: 'https://sts.windows.net/11111111-1111-1111-1111-111111111111/'
-    aadTenant: 'https://login.microsoftonline.com/11111111-1111-1111-1111-111111111111'
-    location: '<location>'
+    aadTenant: '<aadTenant>'
     p2sConfigurationPolicyGroups: [
       {
         isDefault: 'true'
@@ -97,10 +97,7 @@ module vpnServerConfiguration 'br/public:avm/res/network/vpn-server-configuratio
       "value": "https://sts.windows.net/11111111-1111-1111-1111-111111111111/"
     },
     "aadTenant": {
-      "value": "https://login.microsoftonline.com/11111111-1111-1111-1111-111111111111"
-    },
-    "location": {
-      "value": "<location>"
+      "value": "<aadTenant>"
     },
     "p2sConfigurationPolicyGroups": {
       "value": [
@@ -147,8 +144,7 @@ param name = 'vscminVPNConfig'
 // Non-required parameters
 param aadAudience = '11111111-1234-4321-1234-111111111111'
 param aadIssuer = 'https://sts.windows.net/11111111-1111-1111-1111-111111111111/'
-param aadTenant = 'https://login.microsoftonline.com/11111111-1111-1111-1111-111111111111'
-param location = '<location>'
+param aadTenant = '<aadTenant>'
 p2sConfigurationPolicyGroups: [
   {
     isDefault: 'true'
@@ -192,7 +188,7 @@ module vpnServerConfiguration 'br/public:avm/res/network/vpn-server-configuratio
     // Non-required parameters
     aadAudience: '11111111-1234-4321-1234-111111111111'
     aadIssuer: 'https://sts.windows.net/11111111-1111-1111-1111-111111111111/'
-    aadTenant: 'https://login.microsoftonline.com/11111111-1111-1111-1111-111111111111'
+    aadTenant: '<aadTenant>'
     location: '<location>'
     p2sConfigurationPolicyGroups: [
       {
@@ -322,7 +318,7 @@ module vpnServerConfiguration 'br/public:avm/res/network/vpn-server-configuratio
       "value": "https://sts.windows.net/11111111-1111-1111-1111-111111111111/"
     },
     "aadTenant": {
-      "value": "https://login.microsoftonline.com/11111111-1111-1111-1111-111111111111"
+      "value": "<aadTenant>"
     },
     "location": {
       "value": "<location>"
@@ -464,7 +460,7 @@ param name = 'vscmaxVPNConfig'
 // Non-required parameters
 param aadAudience = '11111111-1234-4321-1234-111111111111'
 param aadIssuer = 'https://sts.windows.net/11111111-1111-1111-1111-111111111111/'
-param aadTenant = 'https://login.microsoftonline.com/11111111-1111-1111-1111-111111111111'
+param aadTenant = '<aadTenant>'
 param location = '<location>'
 p2sConfigurationPolicyGroups: [
   {
@@ -589,8 +585,7 @@ module vpnServerConfiguration 'br/public:avm/res/network/vpn-server-configuratio
     // Non-required parameters
     aadAudience: '11111111-1234-4321-1234-111111111111'
     aadIssuer: 'https://sts.windows.net/11111111-1111-1111-1111-111111111111/'
-    aadTenant: 'https://login.microsoftonline.com/11111111-1111-1111-1111-111111111111'
-    location: '<location>'
+    aadTenant: '<aadTenant>'
     p2sConfigurationPolicyGroups: [
       {
         isDefault: 'true'
@@ -639,10 +634,7 @@ module vpnServerConfiguration 'br/public:avm/res/network/vpn-server-configuratio
       "value": "https://sts.windows.net/11111111-1111-1111-1111-111111111111/"
     },
     "aadTenant": {
-      "value": "https://login.microsoftonline.com/11111111-1111-1111-1111-111111111111"
-    },
-    "location": {
-      "value": "<location>"
+      "value": "<aadTenant>"
     },
     "p2sConfigurationPolicyGroups": {
       "value": [
@@ -689,8 +681,7 @@ param name = 'vscwafVPNConfig'
 // Non-required parameters
 param aadAudience = '11111111-1234-4321-1234-111111111111'
 param aadIssuer = 'https://sts.windows.net/11111111-1111-1111-1111-111111111111/'
-param aadTenant = 'https://login.microsoftonline.com/11111111-1111-1111-1111-111111111111'
-param location = '<location>'
+param aadTenant = '<aadTenant>'
 p2sConfigurationPolicyGroups: [
   {
     isDefault: 'true'
@@ -1016,6 +1007,14 @@ The allowed VPN protocols for the configuration.
 | `name` | string | The name of the user VPN configuration. |
 | `resourceGroupName` | string | The name of the resource group the user VPN configuration was deployed into. |
 | `resourceId` | string | The resource ID of the user VPN configuration. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

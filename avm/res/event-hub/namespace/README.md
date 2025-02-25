@@ -25,6 +25,7 @@ This module deploys an Event Hub Namespace.
 | `Microsoft.EventHub/namespaces/eventhubs/consumergroups` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventHub/2024-01-01/namespaces/eventhubs/consumergroups) |
 | `Microsoft.EventHub/namespaces/networkRuleSets` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventHub/2024-01-01/namespaces/networkRuleSets) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
+| `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
 
@@ -38,8 +39,9 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using encryption with Customer-Managed-Key](#example-2-using-encryption-with-customer-managed-key)
-- [Using large parameter set](#example-3-using-large-parameter-set)
-- [WAF-aligned](#example-4-waf-aligned)
+- [Deploying with a key vault reference to save secrets](#example-3-deploying-with-a-key-vault-reference-to-save-secrets)
+- [Using large parameter set](#example-4-using-large-parameter-set)
+- [WAF-aligned](#example-5-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -216,7 +218,94 @@ param skuName = 'Premium'
 </details>
 <p>
 
-### Example 3: _Using large parameter set_
+### Example 3: _Deploying with a key vault reference to save secrets_
+
+This instance deploys the module saving all its secrets in a key vault.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
+  name: 'namespaceDeployment'
+  params: {
+    // Required parameters
+    name: 'ehnkv001'
+    // Non-required parameters
+    location: '<location>'
+    secretsExportConfiguration: {
+      keyVaultResourceId: '<keyVaultResourceId>'
+      rootPrimaryConnectionStringName: 'primaryConnectionString-name'
+      rootPrimaryKeyName: 'primaryKey-name'
+      rootSecondaryConnectionStringName: 'secondaryConnectionString-name'
+      rootSecondaryKeyName: 'secondaryKey-name'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "ehnkv001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "secretsExportConfiguration": {
+      "value": {
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "rootPrimaryConnectionStringName": "primaryConnectionString-name",
+        "rootPrimaryKeyName": "primaryKey-name",
+        "rootSecondaryConnectionStringName": "secondaryConnectionString-name",
+        "rootSecondaryKeyName": "secondaryKey-name"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/event-hub/namespace:<version>'
+
+// Required parameters
+param name = 'ehnkv001'
+// Non-required parameters
+param location = '<location>'
+param secretsExportConfiguration = {
+  keyVaultResourceId: '<keyVaultResourceId>'
+  rootPrimaryConnectionStringName: 'primaryConnectionString-name'
+  rootPrimaryKeyName: 'primaryKey-name'
+  rootSecondaryConnectionStringName: 'secondaryConnectionString-name'
+  rootSecondaryKeyName: 'secondaryKey-name'
+}
+```
+
+</details>
+<p>
+
+### Example 4: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -835,7 +924,7 @@ param zoneRedundant = true
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
+### Example 5: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -1339,6 +1428,7 @@ param tags = {
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set. |
 | [`requireInfrastructureEncryption`](#parameter-requireinfrastructureencryption) | bool | Enable infrastructure encryption (double encryption). Note, this setting requires the configuration of Customer-Managed-Keys (CMK) via the corresponding module parameters. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`secretsExportConfiguration`](#parameter-secretsexportconfiguration) | object | Key vault reference and secret settings for the module's secrets export. |
 | [`skuCapacity`](#parameter-skucapacity) | int | The Event Hub's throughput units for Basic or Standard tiers, where value should be 0 to 20 throughput units. The Event Hubs premium units for Premium tier, where value should be 0 to 10 premium units. |
 | [`skuName`](#parameter-skuname) | string | event hub plan SKU name. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
@@ -2399,6 +2489,75 @@ The principal type of the assigned principal ID.
 - MinValue: 0
 - MaxValue: 20
 
+### Parameter: `secretsExportConfiguration`
+
+Key vault reference and secret settings for the module's secrets export.
+
+- Required: No
+- Type: object
+- MinValue: 0
+- MaxValue: 20
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`keyVaultResourceId`](#parameter-secretsexportconfigurationkeyvaultresourceid) | string | The resource ID of the key vault where to store the secrets of this module. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`rootPrimaryConnectionStringName`](#parameter-secretsexportconfigurationrootprimaryconnectionstringname) | string | The rootPrimaryConnectionStringName secret name to create. |
+| [`rootPrimaryKeyName`](#parameter-secretsexportconfigurationrootprimarykeyname) | string | The rootPrimaryKeyName secret name to create. |
+| [`rootSecondaryConnectionStringName`](#parameter-secretsexportconfigurationrootsecondaryconnectionstringname) | string | The rootSecondaryConnectionStringName secret name to create. |
+| [`rootSecondaryKeyName`](#parameter-secretsexportconfigurationrootsecondarykeyname) | string | The rootSecondaryKeyName secret name to create. |
+
+### Parameter: `secretsExportConfiguration.keyVaultResourceId`
+
+The resource ID of the key vault where to store the secrets of this module.
+
+- Required: Yes
+- Type: string
+- MinValue: 0
+- MaxValue: 20
+
+### Parameter: `secretsExportConfiguration.rootPrimaryConnectionStringName`
+
+The rootPrimaryConnectionStringName secret name to create.
+
+- Required: No
+- Type: string
+- MinValue: 0
+- MaxValue: 20
+
+### Parameter: `secretsExportConfiguration.rootPrimaryKeyName`
+
+The rootPrimaryKeyName secret name to create.
+
+- Required: No
+- Type: string
+- MinValue: 0
+- MaxValue: 20
+
+### Parameter: `secretsExportConfiguration.rootSecondaryConnectionStringName`
+
+The rootSecondaryConnectionStringName secret name to create.
+
+- Required: No
+- Type: string
+- MinValue: 0
+- MaxValue: 20
+
+### Parameter: `secretsExportConfiguration.rootSecondaryKeyName`
+
+The rootSecondaryKeyName secret name to create.
+
+- Required: No
+- Type: string
+- MinValue: 0
+- MaxValue: 20
+
 ### Parameter: `skuCapacity`
 
 The Event Hub's throughput units for Basic or Standard tiers, where value should be 0 to 20 throughput units. The Event Hubs premium units for Premium tier, where value should be 0 to 10 premium units.
@@ -2451,6 +2610,7 @@ Switch to make the Event Hub Namespace zone redundant.
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `eventHubResourceIds` | array | The Resources IDs of the EventHubs within this eventspace. |
+| `exportedSecrets` |  | A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret's name. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the eventspace. |
 | `privateEndpoints` | array | The private endpoints of the eventspace. |
@@ -2464,7 +2624,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.9.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.10.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection

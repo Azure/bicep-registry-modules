@@ -499,10 +499,13 @@ resource storageAccount_roleAssignments 'Microsoft.Authorization/roleAssignments
   }
 ]
 
-module storageAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.9.1' = [
+module storageAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-storageAccount-PrivateEndpoint-${index}'
-    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
+    scope: resourceGroup(
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
+    )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(storageAccount.id, '/'))}-${privateEndpoint.service}-${index}'
       privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
@@ -650,34 +653,34 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
     keyVaultName: last(split(secretsExportConfiguration.?keyVaultResourceId ?? '//', '/'))
     secretsToSet: union(
       [],
-      contains(secretsExportConfiguration!, 'accessKey1')
+      contains(secretsExportConfiguration!, 'accessKey1Name')
         ? [
             {
-              name: secretsExportConfiguration!.accessKey1
+              name: secretsExportConfiguration!.?accessKey1Name
               value: storageAccount.listKeys().keys[0].value
             }
           ]
         : [],
-      contains(secretsExportConfiguration!, 'connectionString1')
+      contains(secretsExportConfiguration!, 'connectionString1Name')
         ? [
             {
-              name: secretsExportConfiguration!.connectionString1
+              name: secretsExportConfiguration!.?connectionString1Name
               value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};AccountKey=${storageAccount.listKeys().keys[0].value};EndpointSuffix=${environment().suffixes.storage}'
             }
           ]
         : [],
-      contains(secretsExportConfiguration!, 'accessKey2')
+      contains(secretsExportConfiguration!, 'accessKey2Name')
         ? [
             {
-              name: secretsExportConfiguration!.accessKey2
+              name: secretsExportConfiguration!.?accessKey2Name
               value: storageAccount.listKeys().keys[1].value
             }
           ]
         : [],
-      contains(secretsExportConfiguration!, 'connectionString2')
+      contains(secretsExportConfiguration!, 'connectionString2Name')
         ? [
             {
-              name: secretsExportConfiguration!.connectionString2
+              name: secretsExportConfiguration!.?connectionString2Name
               value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};AccountKey=${storageAccount.listKeys().keys[1].value};EndpointSuffix=${environment().suffixes.storage}'
             }
           ]
@@ -714,8 +717,8 @@ output privateEndpoints privateEndpointOutputType[] = [
   for (item, index) in (privateEndpoints ?? []): {
     name: storageAccount_privateEndpoints[index].outputs.name
     resourceId: storageAccount_privateEndpoints[index].outputs.resourceId
-    groupId: storageAccount_privateEndpoints[index].outputs.groupId
-    customDnsConfigs: storageAccount_privateEndpoints[index].outputs.customDnsConfig
+    groupId: storageAccount_privateEndpoints[index].outputs.?groupId!
+    customDnsConfigs: storageAccount_privateEndpoints[index].outputs.customDnsConfigs
     networkInterfaceResourceIds: storageAccount_privateEndpoints[index].outputs.networkInterfaceResourceIds
   }
 ]
@@ -792,16 +795,16 @@ type secretsExportConfigurationType = {
   keyVaultResourceId: string
 
   @description('Optional. The accessKey1 secret name to create.')
-  accessKey1: string?
+  accessKey1Name: string?
 
   @description('Optional. The connectionString1 secret name to create.')
-  connectionString1: string?
+  connectionString1Name: string?
 
   @description('Optional. The accessKey2 secret name to create.')
-  accessKey2: string?
+  accessKey2Name: string?
 
   @description('Optional. The connectionString2 secret name to create.')
-  connectionString2: string?
+  connectionString2Name: string?
 }
 
 import { sshAuthorizedKeyType, permissionScopeType } from 'local-user/main.bicep'

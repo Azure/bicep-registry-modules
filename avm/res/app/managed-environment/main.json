@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "15540000443534992861"
+      "version": "0.33.93.31351",
+      "templateHash": "10342722837469174682"
     },
     "name": "App ManagedEnvironments",
     "description": "This module deploys an App Managed Environment (also known as a Container App Environment)."
@@ -398,7 +398,7 @@
   "resources": {
     "managedEnvironment::storage": {
       "copy": {
-        "name": "storage",
+        "name": "managedEnvironment::storage",
         "count": "[length(coalesce(parameters('storages'), createArray()))]"
       },
       "type": "Microsoft.App/managedEnvironments/storages",
@@ -556,10 +556,11 @@
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",
+      "nullable": true,
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[coalesce(tryGet(tryGet(reference('managedEnvironment', '2024-02-02-preview', 'full'), 'identity'), 'principalId'), '')]"
+      "value": "[tryGet(tryGet(reference('managedEnvironment', '2024-02-02-preview', 'full'), 'identity'), 'principalId')]"
     },
     "defaultDomain": {
       "type": "string",
@@ -574,6 +575,13 @@
         "description": "The IP address of the Managed Environment."
       },
       "value": "[reference('managedEnvironment').staticIp]"
+    },
+    "domainVerificationId": {
+      "type": "string",
+      "metadata": {
+        "description": "The domain verification id for custom domains."
+      },
+      "value": "[reference('managedEnvironment').customDomainConfiguration.customDomainVerificationId]"
     }
   }
 }

@@ -753,6 +753,13 @@ param tags = {
 | [`name`](#parameter-name) | string | Name of the private endpoint resource to create. |
 | [`subnetResourceId`](#parameter-subnetresourceid) | string | Resource ID of the subnet where the endpoint needs to be created. |
 
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`manualPrivateLinkServiceConnections`](#parameter-manualprivatelinkserviceconnections) | array | A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource. Required if `privateLinkServiceConnections` is empty. |
+| [`privateLinkServiceConnections`](#parameter-privatelinkserviceconnections) | array | A grouping of information about the connection to the remote resource. Required if `manualPrivateLinkServiceConnections` is empty. |
+
 **Optional parameters**
 
 | Parameter | Type | Description |
@@ -764,9 +771,7 @@ param tags = {
 | [`ipConfigurations`](#parameter-ipconfigurations) | array | A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
-| [`manualPrivateLinkServiceConnections`](#parameter-manualprivatelinkserviceconnections) | array | A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource. |
 | [`privateDnsZoneGroup`](#parameter-privatednszonegroup) | object | The private DNS zone group to configure for the private endpoint. |
-| [`privateLinkServiceConnections`](#parameter-privatelinkserviceconnections) | array | A grouping of information about the connection to the remote resource. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags to be applied on all resources/resource groups in this deployment. |
 
@@ -782,6 +787,130 @@ Name of the private endpoint resource to create.
 Resource ID of the subnet where the endpoint needs to be created.
 
 - Required: Yes
+- Type: string
+
+### Parameter: `manualPrivateLinkServiceConnections`
+
+A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource. Required if `privateLinkServiceConnections` is empty.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-manualprivatelinkserviceconnectionsname) | string | The name of the private link service connection. |
+| [`properties`](#parameter-manualprivatelinkserviceconnectionsproperties) | object | Properties of private link service connection. |
+
+### Parameter: `manualPrivateLinkServiceConnections.name`
+
+The name of the private link service connection.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `manualPrivateLinkServiceConnections.properties`
+
+Properties of private link service connection.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`groupIds`](#parameter-manualprivatelinkserviceconnectionspropertiesgroupids) | array | The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`. |
+| [`privateLinkServiceId`](#parameter-manualprivatelinkserviceconnectionspropertiesprivatelinkserviceid) | string | The resource id of private link service. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`requestMessage`](#parameter-manualprivatelinkserviceconnectionspropertiesrequestmessage) | string | A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars. |
+
+### Parameter: `manualPrivateLinkServiceConnections.properties.groupIds`
+
+The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `manualPrivateLinkServiceConnections.properties.privateLinkServiceId`
+
+The resource id of private link service.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `manualPrivateLinkServiceConnections.properties.requestMessage`
+
+A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateLinkServiceConnections`
+
+A grouping of information about the connection to the remote resource. Required if `manualPrivateLinkServiceConnections` is empty.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-privatelinkserviceconnectionsname) | string | The name of the private link service connection. |
+| [`properties`](#parameter-privatelinkserviceconnectionsproperties) | object | Properties of private link service connection. |
+
+### Parameter: `privateLinkServiceConnections.name`
+
+The name of the private link service connection.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateLinkServiceConnections.properties`
+
+Properties of private link service connection.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`groupIds`](#parameter-privatelinkserviceconnectionspropertiesgroupids) | array | The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`. |
+| [`privateLinkServiceId`](#parameter-privatelinkserviceconnectionspropertiesprivatelinkserviceid) | string | The resource id of private link service. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`requestMessage`](#parameter-privatelinkserviceconnectionspropertiesrequestmessage) | string | A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars. |
+
+### Parameter: `privateLinkServiceConnections.properties.groupIds`
+
+The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `privateLinkServiceConnections.properties.privateLinkServiceId`
+
+The resource id of private link service.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateLinkServiceConnections.properties.requestMessage`
+
+A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars.
+
+- Required: No
 - Type: string
 
 ### Parameter: `applicationSecurityGroupResourceIds`
@@ -940,68 +1069,6 @@ Specify the name of lock.
 - Required: No
 - Type: string
 
-### Parameter: `manualPrivateLinkServiceConnections`
-
-A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-manualprivatelinkserviceconnectionsname) | string | The name of the private link service connection. |
-| [`properties`](#parameter-manualprivatelinkserviceconnectionsproperties) | object | Properties of private link service connection. |
-
-### Parameter: `manualPrivateLinkServiceConnections.name`
-
-The name of the private link service connection.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `manualPrivateLinkServiceConnections.properties`
-
-Properties of private link service connection.
-
-- Required: Yes
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`groupIds`](#parameter-manualprivatelinkserviceconnectionspropertiesgroupids) | array | The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`. |
-| [`privateLinkServiceId`](#parameter-manualprivatelinkserviceconnectionspropertiesprivatelinkserviceid) | string | The resource id of private link service. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`requestMessage`](#parameter-manualprivatelinkserviceconnectionspropertiesrequestmessage) | string | A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars. |
-
-### Parameter: `manualPrivateLinkServiceConnections.properties.groupIds`
-
-The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`.
-
-- Required: Yes
-- Type: array
-
-### Parameter: `manualPrivateLinkServiceConnections.properties.privateLinkServiceId`
-
-The resource id of private link service.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `manualPrivateLinkServiceConnections.properties.requestMessage`
-
-A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars.
-
-- Required: No
-- Type: string
-
 ### Parameter: `privateDnsZoneGroup`
 
 The private DNS zone group to configure for the private endpoint.
@@ -1057,68 +1124,6 @@ The name of the private DNS zone group config.
 ### Parameter: `privateDnsZoneGroup.name`
 
 The name of the Private DNS Zone Group.
-
-- Required: No
-- Type: string
-
-### Parameter: `privateLinkServiceConnections`
-
-A grouping of information about the connection to the remote resource.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-privatelinkserviceconnectionsname) | string | The name of the private link service connection. |
-| [`properties`](#parameter-privatelinkserviceconnectionsproperties) | object | Properties of private link service connection. |
-
-### Parameter: `privateLinkServiceConnections.name`
-
-The name of the private link service connection.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `privateLinkServiceConnections.properties`
-
-Properties of private link service connection.
-
-- Required: Yes
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`groupIds`](#parameter-privatelinkserviceconnectionspropertiesgroupids) | array | The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`. |
-| [`privateLinkServiceId`](#parameter-privatelinkserviceconnectionspropertiesprivatelinkserviceid) | string | The resource id of private link service. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`requestMessage`](#parameter-privatelinkserviceconnectionspropertiesrequestmessage) | string | A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars. |
-
-### Parameter: `privateLinkServiceConnections.properties.groupIds`
-
-The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`.
-
-- Required: Yes
-- Type: array
-
-### Parameter: `privateLinkServiceConnections.properties.privateLinkServiceId`
-
-The resource id of private link service.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `privateLinkServiceConnections.properties.requestMessage`
-
-A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars.
 
 - Required: No
 - Type: string

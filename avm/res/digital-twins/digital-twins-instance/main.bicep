@@ -308,7 +308,7 @@ output hostname string = digitalTwinsInstance.properties.hostName
 output location string = digitalTwinsInstance.location
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = digitalTwinsInstance.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = digitalTwinsInstance.?identity.?principalId
 
 // =============== //
 //   Definitions   //

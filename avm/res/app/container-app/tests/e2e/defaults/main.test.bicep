@@ -52,7 +52,6 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       environmentResourceId: nestedDependencies.outputs.managedEnvironmentResourceId
-      location: resourceLocation
       containers: [
         {
           name: 'simple-hello-world-container'
@@ -65,8 +64,5 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
     }
-    dependsOn: [
-      nestedDependencies
-    ]
   }
 ]

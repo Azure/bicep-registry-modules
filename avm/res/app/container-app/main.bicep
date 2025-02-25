@@ -135,8 +135,7 @@ param containers containerType[]
 param initContainersTemplate array = []
 
 @description('Optional. The secrets of the Container App.')
-@secure()
-param secrets object = {}
+param secrets secretType[]?
 
 @description('Optional. User friendly suffix that is appended to the revision name.')
 param revisionSuffix string = ''
@@ -146,8 +145,6 @@ param volumes array = []
 
 @description('Optional. Workload profile name to pin for container app execution.')
 param workloadProfileName string = ''
-
-var secretList = !empty(secrets) ? secrets.secureList : []
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -261,20 +258,24 @@ resource containerApp 'Microsoft.App/containerApps@2024-10-02-preview' = {
       service: (includeAddOns && !empty(service)) ? service : null
       maxInactiveRevisions: maxInactiveRevisions
       registries: !empty(registries) ? registries : null
-      secrets: secretList
+      secrets: secrets
       runtime: {
-        dotnet: !empty(runtime.?dotnet) ? {
-          autoConfigureDataProtection: runtime.?dotnet.autoConfigureDataProtection
-        } : null
-        java: !empty(runtime.?java) ? {
-          enableMetrics: runtime.?java.enableMetrics
-          javaAgent: {
-            enabled: runtime.?java.enableJavaAgent
-            logging: {
-              loggerSettings: runtime.?java.?loggerSettings
+        dotnet: !empty(runtime.?dotnet)
+          ? {
+              autoConfigureDataProtection: runtime.?dotnet.autoConfigureDataProtection
             }
-          }
-        } : null
+          : null
+        java: !empty(runtime.?java)
+          ? {
+              enableMetrics: runtime.?java.enableMetrics
+              javaAgent: {
+                enabled: runtime.?java.enableJavaAgent
+                logging: {
+                  loggerSettings: runtime.?java.?loggerSettings
+                }
+              }
+            }
+          : null
       }
     }
     template: {
@@ -333,7 +334,7 @@ output resourceGroupName string = resourceGroup().name
 output name string = containerApp.name
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = containerApp.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = containerApp.?identity.?principalId
 
 @description('The location the resource was deployed into.')
 output location string = containerApp.location
@@ -544,3 +545,20 @@ type runtimeType = {
     }[]?
   }?
 }?
+
+@export()
+@description('The type for a secret.')
+type secretType = {
+  @description('Optional. Resource ID of a managed identity to authenticate with Azure Key Vault, or System to use a system-assigned identity.')
+  identity: string?
+
+  @description('Conditional. Azure Key Vault URL pointing to the secret referenced by the Container App Job. Required if `value` is null.')
+  keyVaultUrl: string?
+
+  @description('Optional. The name of the secret.')
+  name: string?
+
+  @description('Conditional. The secret value, if not fetched from Key Vault. Required if `keyVaultUrl` is not null.')
+  @secure()
+  value: string?
+}

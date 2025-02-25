@@ -276,7 +276,7 @@ module profile_ruleSets 'ruleset/main.bicep' = [
     params: {
       name: ruleSet.name
       profileName: profile.name
-      rules: ruleSet.rules
+      rules: ruleSet.?rules
     }
   }
 ]
@@ -342,7 +342,7 @@ output endpointId string = !empty(endpointProperties) ? profile_endpoint.outputs
 output uri string = !empty(endpointProperties) ? profile_endpoint.outputs.uri : ''
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = profile.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = profile.?identity.?principalId
 
 @description('The list of records required for custom domains validation.')
 output dnsValidation dnsValidationType[] = [

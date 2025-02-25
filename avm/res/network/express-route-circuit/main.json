@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "17484476736436996858"
+      "version": "0.33.93.31351",
+      "templateHash": "8776591928362518786"
     },
     "name": "ExpressRoute Circuits",
     "description": "This module deploys an Express Route Circuit."
@@ -346,6 +346,16 @@
         "description": "Optional. Allow classic operations. You can connect to virtual networks in the classic deployment model by setting allowClassicOperations to true."
       }
     },
+    "authorizationNames": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. List of names for ExpressRoute circuit authorizations to create. To fetch the `authorizationKey` for the authorization, use the `existing` resource reference for `Microsoft.Network/expressRouteCircuits/authorizations`."
+      }
+    },
     "bandwidthInGbps": {
       "type": "int",
       "defaultValue": 0,
@@ -450,6 +460,15 @@
         "family": "[if(equals(parameters('skuTier'), 'Local'), 'UnlimitedData', parameters('skuFamily'))]"
       },
       "properties": {
+        "copy": [
+          {
+            "name": "authorizations",
+            "count": "[length(parameters('authorizationNames'))]",
+            "input": {
+              "name": "[parameters('authorizationNames')[copyIndex('authorizations')]]"
+            }
+          }
+        ],
         "allowClassicOperations": "[parameters('allowClassicOperations')]",
         "globalReachEnabled": "[parameters('globalReachEnabled')]",
         "bandwidthInGbps": "[if(not(equals(parameters('bandwidthInGbps'), 0)), parameters('bandwidthInGbps'), null())]",
@@ -568,6 +587,13 @@
         "description": "The service key of the express route circuit."
       },
       "value": "[reference('expressRouteCircuit').serviceKey]"
+    },
+    "serviceProviderProvisioningState": {
+      "type": "string",
+      "metadata": {
+        "description": "The service provider provisioning state of the express route circuit."
+      },
+      "value": "[reference('expressRouteCircuit').serviceProviderProvisioningState]"
     },
     "location": {
       "type": "string",

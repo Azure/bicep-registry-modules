@@ -91,6 +91,7 @@ module testDeployment '../../../main.bicep' = [
       images: [
         {
           name: '${namePrefix}-az-imgd-ws-001'
+          allowUpdateImage: true
           hyperVGeneration: 'V1'
           identifier: {
             publisher: 'MicrosoftWindowsServer'
@@ -114,6 +115,7 @@ module testDeployment '../../../main.bicep' = [
         }
         {
           name: '${namePrefix}-az-imgd-ws-002'
+          allowUpdateImage: false
           hyperVGeneration: 'V2'
           identifier: {
             publisher: 'MicrosoftWindowsServer'
@@ -178,6 +180,7 @@ module testDeployment '../../../main.bicep' = [
             max: 4
           }
           isAcceleratedNetworkSupported: false
+          diskControllerType: 'SCSI'
         }
         {
           name: '${namePrefix}-az-imgd-us-005'
@@ -198,6 +201,7 @@ module testDeployment '../../../main.bicep' = [
             max: 4
           }
           isAcceleratedNetworkSupported: true
+          diskControllerType: 'SCSI, NVMe'
         }
         {
           name: '${namePrefix}-az-imgd-us-006'
@@ -232,6 +236,7 @@ module testDeployment '../../../main.bicep' = [
           }
           releaseNoteUri: 'https://testReleaseNoteUri.com'
           isAcceleratedNetworkSupported: false
+          // diskControllerType: 'NVMe, SCSI' // --> needs to remain commented, as there is a bug setting the value starting with 'NVMe' again, which prevents the idem test to pass
         }
       ]
       roleAssignments: [
@@ -262,8 +267,5 @@ module testDeployment '../../../main.bicep' = [
         Role: 'DeploymentValidation'
       }
     }
-    dependsOn: [
-      nestedDependencies
-    ]
   }
 ]
