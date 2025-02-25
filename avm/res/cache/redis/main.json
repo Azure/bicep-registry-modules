@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "17904749553568757682"
+      "version": "0.33.13.18514",
+      "templateHash": "9499818712606838127"
     },
     "name": "Redis Cache",
     "description": "This module deploys a Redis Cache."
@@ -138,6 +138,13 @@
             "description": "Optional. The primaryConnectionString secret name to create."
           }
         },
+        "primaryStackExchangeRedisConnectionStringName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The primaryStackExchangeRedisConnectionString secret name to create."
+          }
+        },
         "secondaryAccessKeyName": {
           "type": "string",
           "nullable": true,
@@ -150,6 +157,13 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. The secondaryConnectionString secret name to create."
+          }
+        },
+        "secondaryStackExchangeRedisConnectionStringName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The secondaryStackExchangeRedisConnectionString secret name to create."
           }
         }
       },
@@ -828,7 +842,7 @@
     },
     "shardCount": {
       "type": "int",
-      "defaultValue": 1,
+      "nullable": true,
       "minValue": 1,
       "metadata": {
         "description": "Optional. The number of shards to be created on a Premium Cluster Cache."
@@ -1153,6 +1167,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-redis-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "subscriptionId": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[2]]",
+      "resourceGroup": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[4]]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -1931,8 +1947,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "395538410437204745"
+              "version": "0.33.13.18514",
+              "templateHash": "11294861621866290910"
             },
             "name": "Redis Cache Linked Servers",
             "description": "This module connects a primary and secondary Redis Cache together for geo-replication."
@@ -2047,7 +2063,7 @@
             "value": "[last(split(coalesce(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '//'), '/'))]"
           },
           "secretsToSet": {
-            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'primaryAccessKeyName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'primaryAccessKeyName'), 'value', listKeys(resourceId('Microsoft.Cache/redis', parameters('name')), '2024-11-01').primaryKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'primaryConnectionStringName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'primaryConnectionStringName'), 'value', format('rediss://:{0}@{1}:6380', listKeys(resourceId('Microsoft.Cache/redis', parameters('name')), '2024-11-01').primaryKey, reference('redis').hostName))), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryAccessKeyName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'secondaryAccessKeyName'), 'value', listKeys(resourceId('Microsoft.Cache/redis', parameters('name')), '2024-11-01').secondaryKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryConnectionStringName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'secondaryConnectionStringName'), 'value', format('rediss://:{0}@{1}:6380', listKeys(resourceId('Microsoft.Cache/redis', parameters('name')), '2024-11-01').secondaryKey, reference('redis').hostName))), createArray()))]"
+            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'primaryAccessKeyName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'primaryAccessKeyName'), 'value', listKeys(resourceId('Microsoft.Cache/redis', parameters('name')), '2024-11-01').primaryKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'primaryConnectionStringName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'primaryConnectionStringName'), 'value', format('rediss://:{0}@{1}:6380', listKeys(resourceId('Microsoft.Cache/redis', parameters('name')), '2024-11-01').primaryKey, reference('redis').hostName))), createArray()), if(contains(parameters('secretsExportConfiguration'), 'primaryStackExchangeRedisConnectionStringName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'primaryStackExchangeRedisConnectionStringName'), 'value', format('{0}:6380,password={1},ssl=True,abortConnect=False', reference('redis').hostName, listKeys(resourceId('Microsoft.Cache/redis', parameters('name')), '2024-11-01').primaryKey))), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryAccessKeyName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'secondaryAccessKeyName'), 'value', listKeys(resourceId('Microsoft.Cache/redis', parameters('name')), '2024-11-01').secondaryKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryConnectionStringName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'secondaryConnectionStringName'), 'value', format('rediss://:{0}@{1}:6380', listKeys(resourceId('Microsoft.Cache/redis', parameters('name')), '2024-11-01').secondaryKey, reference('redis').hostName))), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryStackExchangeRedisConnectionStringName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'secondaryStackExchangeRedisConnectionStringName'), 'value', format('{0}:6380,password={1},ssl=True,abortConnect=False', reference('redis').hostName, listKeys(resourceId('Microsoft.Cache/redis', parameters('name')), '2024-11-01').secondaryKey))), createArray()))]"
           }
         },
         "template": {
@@ -2057,8 +2073,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "9992767491398107530"
+              "version": "0.33.13.18514",
+              "templateHash": "14045530027687796477"
             }
           },
           "definitions": {
@@ -2223,10 +2239,11 @@
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",
+      "nullable": true,
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[coalesce(tryGet(tryGet(reference('redis', '2024-11-01', 'full'), 'identity'), 'principalId'), '')]"
+      "value": "[tryGet(tryGet(reference('redis', '2024-11-01', 'full'), 'identity'), 'principalId')]"
     },
     "location": {
       "type": "string",
@@ -2237,11 +2254,14 @@
     },
     "privateEndpoints": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/privateEndpointOutputType"
+      },
       "metadata": {
         "description": "The private endpoints of the Redis Cache."
       },
       "copy": {
-        "count": "[length(if(not(empty(parameters('privateEndpoints'))), array(parameters('privateEndpoints')), createArray()))]",
+        "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]",
         "input": {
           "name": "[reference(format('redis_privateEndpoints[{0}]', copyIndex())).outputs.name.value]",
           "resourceId": "[reference(format('redis_privateEndpoints[{0}]', copyIndex())).outputs.resourceId.value]",

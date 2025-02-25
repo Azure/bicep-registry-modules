@@ -269,13 +269,16 @@ output name string = managedEnvironment.name
 output resourceId string = managedEnvironment.id
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = managedEnvironment.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = managedEnvironment.?identity.?principalId
 
 @description('The Default domain of the Managed Environment.')
 output defaultDomain string = managedEnvironment.properties.defaultDomain
 
 @description('The IP address of the Managed Environment.')
 output staticIp string = managedEnvironment.properties.staticIp
+
+@description('The domain verification id for custom domains.')
+output domainVerificationId string = managedEnvironment.properties.customDomainConfiguration.customDomainVerificationId
 
 // =============== //
 //   Definitions   //

@@ -59,8 +59,6 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     ]
     environmentResourceId: '<environmentResourceId>'
     name: 'acamin001'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -95,10 +93,6 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     },
     "name": {
       "value": "acamin001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -127,8 +121,6 @@ param containers = [
 ]
 param environmentResourceId = '<environmentResourceId>'
 param name = 'acamin001'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -162,7 +154,6 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     name: 'acapriv001'
     // Non-required parameters
     disableIngress: true
-    location: '<location>'
   }
 }
 ```
@@ -201,9 +192,6 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     // Non-required parameters
     "disableIngress": {
       "value": true
-    },
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -234,7 +222,6 @@ param environmentResourceId = '<environmentResourceId>'
 param name = 'acapriv001'
 // Non-required parameters
 param disableIngress = true
-param location = '<location>'
 ```
 
 </details>
@@ -335,19 +322,17 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
         ]
       }
     }
-    secrets: {
-      secureList: [
-        {
-          name: 'containerappstoredsecret'
-          value: '<value>'
-        }
-        {
-          identity: '<identity>'
-          keyVaultUrl: '<keyVaultUrl>'
-          name: 'keyvaultstoredsecret'
-        }
-      ]
-    }
+    secrets: [
+      {
+        name: 'containerappstoredsecret'
+        value: '<value>'
+      }
+      {
+        identity: '<identity>'
+        keyVaultUrl: '<keyVaultUrl>'
+        name: 'keyvaultstoredsecret'
+      }
+    ]
     tags: {
       Env: 'test'
       'hidden-title': 'This is visible in the resource name'
@@ -467,19 +452,17 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
       }
     },
     "secrets": {
-      "value": {
-        "secureList": [
-          {
-            "name": "containerappstoredsecret",
-            "value": "<value>"
-          },
-          {
-            "identity": "<identity>",
-            "keyVaultUrl": "<keyVaultUrl>",
-            "name": "keyvaultstoredsecret"
-          }
-        ]
-      }
+      "value": [
+        {
+          "name": "containerappstoredsecret",
+          "value": "<value>"
+        },
+        {
+          "identity": "<identity>",
+          "keyVaultUrl": "<keyVaultUrl>",
+          "name": "keyvaultstoredsecret"
+        }
+      ]
     },
     "tags": {
       "value": {
@@ -583,19 +566,17 @@ param runtime = {
     ]
   }
 }
-param secrets = {
-  secureList: [
-    {
-      name: 'containerappstoredsecret'
-      value: '<value>'
-    }
-    {
-      identity: '<identity>'
-      keyVaultUrl: '<keyVaultUrl>'
-      name: 'keyvaultstoredsecret'
-    }
-  ]
-}
+param secrets = [
+  {
+    name: 'containerappstoredsecret'
+    value: '<value>'
+  }
+  {
+    identity: '<identity>'
+    keyVaultUrl: '<keyVaultUrl>'
+    name: 'keyvaultstoredsecret'
+  }
+]
 param tags = {
   Env: 'test'
   'hidden-title': 'This is visible in the resource name'
@@ -643,7 +624,6 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     ingressExternal: false
     ingressTargetPort: 80
     ingressTransport: 'tcp'
-    location: '<location>'
   }
 }
 ```
@@ -700,9 +680,6 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     },
     "ingressTransport": {
       "value": "tcp"
-    },
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -743,7 +720,6 @@ param ingressAllowInsecure = false
 param ingressExternal = false
 param ingressTargetPort = 80
 param ingressTransport = 'tcp'
-param location = '<location>'
 ```
 
 </details>
@@ -795,11 +771,6 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     // Non-required parameters
     ingressAllowInsecure: false
     ingressExternal: false
-    location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     managedIdentities: {
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
@@ -868,15 +839,6 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     "ingressExternal": {
       "value": false
     },
-    "location": {
-      "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
     "managedIdentities": {
       "value": {
         "userAssignedResourceIds": [
@@ -937,11 +899,6 @@ param name = 'acawaf001'
 // Non-required parameters
 param ingressAllowInsecure = false
 param ingressExternal = false
-param location = '<location>'
-param lock = {
-  kind: 'CanNotDelete'
-  name: 'myCustomLockName'
-}
 param managedIdentities = {
   userAssignedResourceIds: [
     '<managedIdentityResourceId>'
@@ -997,7 +954,7 @@ param tags = {
 | [`scaleMaxReplicas`](#parameter-scalemaxreplicas) | int | Maximum number of container replicas. Defaults to 10 if not set. |
 | [`scaleMinReplicas`](#parameter-scaleminreplicas) | int | Minimum number of container replicas. Defaults to 3 if not set. |
 | [`scaleRules`](#parameter-scalerules) | array | Scaling rules. |
-| [`secrets`](#parameter-secrets) | secureObject | The secrets of the Container App. |
+| [`secrets`](#parameter-secrets) | array | The secrets of the Container App. |
 | [`service`](#parameter-service) | object | Dev ContainerApp service type. |
 | [`serviceBinds`](#parameter-servicebinds) | array | List of container app services bound to the app. |
 | [`stickySessionsAffinity`](#parameter-stickysessionsaffinity) | string | Bool indicating if the Container App should enable session affinity. |
@@ -1970,8 +1927,49 @@ Scaling rules.
 The secrets of the Container App.
 
 - Required: No
-- Type: secureObject
-- Default: `{}`
+- Type: array
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`keyVaultUrl`](#parameter-secretskeyvaulturl) | string | Azure Key Vault URL pointing to the secret referenced by the Container App Job. Required if `value` is null. |
+| [`value`](#parameter-secretsvalue) | securestring | The secret value, if not fetched from Key Vault. Required if `keyVaultUrl` is not null. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`identity`](#parameter-secretsidentity) | string | Resource ID of a managed identity to authenticate with Azure Key Vault, or System to use a system-assigned identity. |
+| [`name`](#parameter-secretsname) | string | The name of the secret. |
+
+### Parameter: `secrets.keyVaultUrl`
+
+Azure Key Vault URL pointing to the secret referenced by the Container App Job. Required if `value` is null.
+
+- Required: No
+- Type: string
+
+### Parameter: `secrets.value`
+
+The secret value, if not fetched from Key Vault. Required if `keyVaultUrl` is not null.
+
+- Required: No
+- Type: securestring
+
+### Parameter: `secrets.identity`
+
+Resource ID of a managed identity to authenticate with Azure Key Vault, or System to use a system-assigned identity.
+
+- Required: No
+- Type: string
+
+### Parameter: `secrets.name`
+
+The name of the secret.
+
+- Required: No
+- Type: string
 
 ### Parameter: `service`
 

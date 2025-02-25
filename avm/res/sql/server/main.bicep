@@ -343,15 +343,10 @@ module server_elasticPools 'elastic-pool/main.bicep' = [
 module server_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-server-PrivateEndpoint-${index}'
-    scope: !empty(privateEndpoint.?resourceGroupResourceId)
-      ? resourceGroup(
-          split((privateEndpoint.?resourceGroupResourceId ?? '//'), '/')[2],
-          split((privateEndpoint.?resourceGroupResourceId ?? '////'), '/')[4]
-        )
-      : resourceGroup(
-          split((privateEndpoint.?subnetResourceId ?? '//'), '/')[2],
-          split((privateEndpoint.?subnetResourceId ?? '////'), '/')[4]
-        )
+    scope: resourceGroup(
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
+    )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(server.id, '/'))}-${privateEndpoint.?service ?? 'sqlServer'}-${index}'
       privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
@@ -559,7 +554,7 @@ output fullyQualifiedDomainName string = server.properties.fullyQualifiedDomainN
 output resourceGroupName string = resourceGroup().name
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = server.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = server.?identity.?principalId
 
 @description('The location the resource was deployed into.')
 output location string = server.location
@@ -572,12 +567,12 @@ output exportedSecrets secretsOutputType = (secretsExportConfiguration != null)
 
 @description('The private endpoints of the SQL server.')
 output privateEndpoints privateEndpointOutputType[] = [
-  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
-    name: server_privateEndpoints[i].outputs.name
-    resourceId: server_privateEndpoints[i].outputs.resourceId
-    groupId: server_privateEndpoints[i].outputs.?groupId!
-    customDnsConfigs: server_privateEndpoints[i].outputs.customDnsConfigs
-    networkInterfaceResourceIds: server_privateEndpoints[i].outputs.networkInterfaceResourceIds
+  for (pe, index) in (privateEndpoints ?? []): {
+    name: server_privateEndpoints[index].outputs.name
+    resourceId: server_privateEndpoints[index].outputs.resourceId
+    groupId: server_privateEndpoints[index].outputs.?groupId!
+    customDnsConfigs: server_privateEndpoints[index].outputs.customDnsConfigs
+    networkInterfaceResourceIds: server_privateEndpoints[index].outputs.networkInterfaceResourceIds
   }
 ]
 

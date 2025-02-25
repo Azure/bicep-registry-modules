@@ -27,19 +27,19 @@ param authorizationRules array = [
   }
 ]
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointSingleServiceType[]?
 
@@ -130,7 +130,7 @@ module namespace_authorizationRules 'authorization-rule/main.bicep' = [
     params: {
       namespaceName: namespace.name
       name: authorizationRule.name
-      rights: contains(authorizationRule, 'rights') ? authorizationRule.rights : []
+      rights: authorizationRule.?rights
     }
   }
 ]
@@ -139,11 +139,11 @@ module namespace_networkRuleSet 'network-rule-set/main.bicep' = if (!empty(netwo
   name: '${uniqueString(deployment().name, location)}-NetworkRuleSet'
   params: {
     namespaceName: namespace.name
-    publicNetworkAccess: contains(networkRuleSets, 'publicNetworkAccess')
-      ? networkRuleSets.publicNetworkAccess
-      : (!empty(privateEndpoints) && empty(networkRuleSets) ? 'Disabled' : 'Enabled')
-    defaultAction: contains(networkRuleSets, 'defaultAction') ? networkRuleSets.defaultAction : 'Allow'
-    ipRules: contains(networkRuleSets, 'ipRules') ? networkRuleSets.ipRules : []
+    publicNetworkAccess: networkRuleSets.?publicNetworkAccess ?? (!empty(privateEndpoints) && empty(networkRuleSets)
+      ? 'Disabled'
+      : 'Enabled')
+    defaultAction: networkRuleSets.?defaultAction
+    ipRules: networkRuleSets.?ipRules
   }
 }
 
@@ -153,33 +153,8 @@ module namespace_hybridConnections 'hybrid-connection/main.bicep' = [
     params: {
       namespaceName: namespace.name
       name: hybridConnection.name
-      authorizationRules: contains(hybridConnection, 'authorizationRules')
-        ? hybridConnection.authorizationRules
-        : [
-            {
-              name: 'RootManageSharedAccessKey'
-              rights: [
-                'Listen'
-                'Manage'
-                'Send'
-              ]
-            }
-            {
-              name: 'defaultListener'
-              rights: [
-                'Listen'
-              ]
-            }
-            {
-              name: 'defaultSender'
-              rights: [
-                'Send'
-              ]
-            }
-          ]
-      requiresClientAuthorization: contains(hybridConnection, 'requiresClientAuthorization')
-        ? hybridConnection.requiresClientAuthorization
-        : true
+      authorizationRules: hybridConnection.?authorizationRules
+      requiresClientAuthorization: hybridConnection.?requiresClientAuthorization
       userMetadata: hybridConnection.userMetadata
     }
   }
@@ -191,38 +166,11 @@ module namespace_wcfRelays 'wcf-relay/main.bicep' = [
     params: {
       namespaceName: namespace.name
       name: wcfRelay.name
-      authorizationRules: contains(wcfRelay, 'authorizationRules')
-        ? wcfRelay.authorizationRules
-        : [
-            {
-              name: 'RootManageSharedAccessKey'
-              rights: [
-                'Listen'
-                'Manage'
-                'Send'
-              ]
-            }
-            {
-              name: 'defaultListener'
-              rights: [
-                'Listen'
-              ]
-            }
-            {
-              name: 'defaultSender'
-              rights: [
-                'Send'
-              ]
-            }
-          ]
+      authorizationRules: wcfRelay.?authorizationRules
       relayType: wcfRelay.relayType
-      requiresClientAuthorization: contains(wcfRelay, 'requiresClientAuthorization')
-        ? wcfRelay.requiresClientAuthorization
-        : true
-      requiresTransportSecurity: contains(wcfRelay, 'requiresTransportSecurity')
-        ? wcfRelay.requiresTransportSecurity
-        : true
-      userMetadata: contains(wcfRelay, 'userMetadata') ? wcfRelay.userMetadata : null
+      requiresClientAuthorization: wcfRelay.?requiresClientAuthorization
+      requiresTransportSecurity: wcfRelay.?requiresTransportSecurity
+      userMetadata: wcfRelay.?userMetadata
     }
   }
 ]
@@ -267,10 +215,13 @@ resource namespace_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@202
   }
 ]
 
-module namespace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
+module namespace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-namespace-PrivateEndpoint-${index}'
-    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
+    scope: resourceGroup(
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
+    )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(namespace.id, '/'))}-${privateEndpoint.?service ?? 'namespace'}-${index}'
       privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
@@ -348,12 +299,40 @@ output name string = namespace.name
 output location string = namespace.location
 
 @description('The private endpoints of the relay namespace.')
-output privateEndpoints array = [
-  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
-    name: namespace_privateEndpoints[i].outputs.name
-    resourceId: namespace_privateEndpoints[i].outputs.resourceId
-    groupId: namespace_privateEndpoints[i].outputs.groupId
-    customDnsConfig: namespace_privateEndpoints[i].outputs.customDnsConfig
-    networkInterfaceIds: namespace_privateEndpoints[i].outputs.networkInterfaceIds
+output privateEndpoints privateEndpointOutputType[] = [
+  for (pe, index) in (privateEndpoints ?? []): {
+    name: namespace_privateEndpoints[index].outputs.name
+    resourceId: namespace_privateEndpoints[index].outputs.resourceId
+    groupId: namespace_privateEndpoints[index].outputs.?groupId!
+    customDnsConfigs: namespace_privateEndpoints[index].outputs.customDnsConfigs
+    networkInterfaceResourceIds: namespace_privateEndpoints[index].outputs.networkInterfaceResourceIds
   }
 ]
+
+// =============== //
+//   Definitions   //
+// =============== //
+
+@export()
+type privateEndpointOutputType = {
+  @description('The name of the private endpoint.')
+  name: string
+
+  @description('The resource ID of the private endpoint.')
+  resourceId: string
+
+  @description('The group Id for the private endpoint Group.')
+  groupId: string?
+
+  @description('The custom DNS configurations of the private endpoint.')
+  customDnsConfigs: {
+    @description('FQDN that resolves to private endpoint IP address.')
+    fqdn: string?
+
+    @description('A list of private IP addresses of the private endpoint.')
+    ipAddresses: string[]
+  }[]
+
+  @description('The IDs of the network interfaces associated with the private endpoint.')
+  networkInterfaceResourceIds: string[]
+}

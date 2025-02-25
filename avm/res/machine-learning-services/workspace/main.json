@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "5650097555924346793"
+      "version": "0.33.13.18514",
+      "templateHash": "3640059412959361960"
     },
     "name": "Machine Learning Services Workspaces",
     "description": "This module deploys a Machine Learning Services Workspace."
@@ -2068,8 +2068,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "7148981579356222264"
+              "version": "0.33.13.18514",
+              "templateHash": "7984703420037754517"
             },
             "name": "Machine Learning Services Workspaces Computes",
             "description": "This module deploys a Machine Learning Services Workspaces Compute.\n\nAttaching a compute is not idempotent and will fail in case you try to redeploy over an existing compute in AML (see parameter `deployCompute`)."
@@ -2261,10 +2261,11 @@
             },
             "systemAssignedMIPrincipalId": {
               "type": "string",
+              "nullable": true,
               "metadata": {
                 "description": "The principal ID of the system assigned identity."
               },
-              "value": "[coalesce(tryGet(tryGet(reference('compute', '2022-10-01', 'full'), 'identity'), 'principalId'), '')]"
+              "value": "[tryGet(tryGet(reference('compute', '2022-10-01', 'full'), 'identity'), 'principalId')]"
             },
             "location": {
               "type": "string",
@@ -2333,8 +2334,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "15890143708231344465"
+              "version": "0.33.13.18514",
+              "templateHash": "5713415122054029428"
             },
             "name": "Machine Learning Services Workspaces Connections",
             "description": "This module creates a connection in a Machine Learning Services workspace."

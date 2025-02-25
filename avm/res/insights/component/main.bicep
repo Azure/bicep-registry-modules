@@ -59,6 +59,12 @@ param retentionInDays int = 365
 @maxValue(100)
 param samplingPercentage int = 100
 
+@description('Optional. Used by the Application Insights system to determine what kind of flow this component was created by. This is to be set to \'Bluefield\' when creating/updating a component via the REST API.')
+param flowType string?
+
+@description('Optional. Describes what tool created this Application Insights component. Customers using this API should set this to the default \'rest\'.')
+param requestSource string?
+
 @description('Optional. The kind of application that this component refers to, used to customize UI. This value is a freeform string, values should typically be one of the following: web, ios, other, store, java, phone.')
 param kind string = ''
 
@@ -158,6 +164,8 @@ resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
     publicNetworkAccessForQuery: publicNetworkAccessForQuery
     RetentionInDays: retentionInDays
     SamplingPercentage: samplingPercentage
+    Flow_Type: flowType
+    Request_Source: requestSource
   }
 }
 

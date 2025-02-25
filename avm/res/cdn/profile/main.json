@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "7113649683631462027"
+      "version": "0.33.13.18514",
+      "templateHash": "17701317715444968473"
     },
     "name": "CDN Profiles",
     "description": "This module deploys a CDN Profile."
@@ -1331,8 +1331,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "9549854961484064285"
+              "version": "0.33.13.18514",
+              "templateHash": "9667828946590224838"
             },
             "name": "CDN Profiles Endpoints",
             "description": "This module deploys a CDN Profile Endpoint."
@@ -1447,8 +1447,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "13720707069401173773"
+                      "version": "0.33.13.18514",
+                      "templateHash": "14207274905612158052"
                     },
                     "name": "CDN Profiles Endpoints Origins",
                     "description": "This module deploys a CDN Profile Endpoint Origin."
@@ -1692,8 +1692,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "8122410068056305563"
+              "version": "0.33.13.18514",
+              "templateHash": "14557033028846709449"
             },
             "name": "CDN Profiles Secret",
             "description": "This module deploys a CDN Profile Secret."
@@ -1702,7 +1702,7 @@
             "name": {
               "type": "string",
               "metadata": {
-                "description": "Required. The name of the secrect."
+                "description": "Required. The name of the secret."
               }
             },
             "profileName": {
@@ -1721,7 +1721,7 @@
                 "UrlSigningKey"
               ],
               "metadata": {
-                "description": "Optional. The type of the secrect."
+                "description": "Optional. The type of the secret."
               }
             },
             "secretSourceResourceId": {
@@ -1742,14 +1742,14 @@
               "type": "array",
               "defaultValue": [],
               "metadata": {
-                "description": "Optional. The subject alternative names of the secrect."
+                "description": "Optional. The subject alternative names of the secret."
               }
             },
             "useLatestVersion": {
               "type": "bool",
               "defaultValue": false,
               "metadata": {
-                "description": "Optional. Indicates whether to use the latest version of the secrect."
+                "description": "Optional. Indicates whether to use the latest version of the secret."
               }
             }
           },
@@ -1767,14 +1767,14 @@
             "name": {
               "type": "string",
               "metadata": {
-                "description": "The name of the secrect."
+                "description": "The name of the secret."
               },
               "value": "[parameters('name')]"
             },
             "resourceId": {
               "type": "string",
               "metadata": {
-                "description": "The resource ID of the secrect."
+                "description": "The resource ID of the secret."
               },
               "value": "[resourceId('Microsoft.Cdn/profiles/secrets', parameters('profileName'), parameters('name'))]"
             },
@@ -1841,8 +1841,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "10872254821030072983"
+              "version": "0.33.13.18514",
+              "templateHash": "10369216656034565871"
             },
             "name": "CDN Profiles Custom Domains",
             "description": "This module deploys a CDN Profile Custom Domains."
@@ -2016,7 +2016,7 @@
             }
           },
           "resources": {
-            "profile::secrect": {
+            "profile::secret": {
               "condition": "[not(empty(parameters('secretName')))]",
               "existing": true,
               "type": "Microsoft.Cdn/profiles/secrets",
@@ -2130,8 +2130,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "2255246560564651285"
+              "version": "0.33.13.18514",
+              "templateHash": "2309166106272805364"
             },
             "name": "CDN Profiles Origin Group",
             "description": "This module deploys a CDN Profile Origin Group."
@@ -2473,8 +2473,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "12548128435491978362"
+                      "version": "0.33.13.18514",
+                      "templateHash": "4615820934914726240"
                     },
                     "name": "CDN Profiles Origin",
                     "description": "This module deploys a CDN Profile Origin."
@@ -2764,7 +2764,7 @@
             "value": "[parameters('name')]"
           },
           "rules": {
-            "value": "[parameters('ruleSets')[copyIndex()].rules]"
+            "value": "[tryGet(parameters('ruleSets')[copyIndex()], 'rules')]"
           }
         },
         "template": {
@@ -2774,8 +2774,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "16187656524256202445"
+              "version": "0.33.13.18514",
+              "templateHash": "832720268679200418"
             },
             "name": "CDN Profiles Rule Sets",
             "description": "This module deploys a CDN Profile rule set."
@@ -2932,8 +2932,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "5126669469544382460"
+                      "version": "0.33.13.18514",
+                      "templateHash": "4778641008462766741"
                     },
                     "name": "CDN Profiles Rules",
                     "description": "This module deploys a CDN Profile rule."
@@ -3160,8 +3160,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "13135731354374453249"
+              "version": "0.33.13.18514",
+              "templateHash": "8177824551774407436"
             },
             "name": "CDN Profiles AFD Endpoints",
             "description": "This module deploys a CDN Profile AFD Endpoint."
@@ -3534,8 +3534,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "14731142764965944373"
+                      "version": "0.33.13.18514",
+                      "templateHash": "5263422487313973220"
                     },
                     "name": "CDN Profiles AFD Endpoint Route",
                     "description": "This module deploys a CDN Profile AFD Endpoint route."
@@ -3831,7 +3831,7 @@
                     },
                     "profile::customDomains": {
                       "copy": {
-                        "name": "customDomains",
+                        "name": "profile::customDomains",
                         "count": "[length(coalesce(parameters('customDomainNames'), createArray()))]"
                       },
                       "existing": true,
@@ -3847,7 +3847,7 @@
                     },
                     "profile::ruleSet": {
                       "copy": {
-                        "name": "ruleSet",
+                        "name": "profile::ruleSet",
                         "count": "[length(parameters('ruleSets'))]"
                       },
                       "existing": true,
@@ -4013,8 +4013,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "11785514765749998247"
+              "version": "0.33.13.18514",
+              "templateHash": "6987560302604046970"
             },
             "name": "CDN Profiles Security Policy",
             "description": "This module deploys a CDN Profile Security Policy."
@@ -4110,14 +4110,14 @@
             "name": {
               "type": "string",
               "metadata": {
-                "description": "The name of the secrect."
+                "description": "The name of the secret."
               },
               "value": "[parameters('name')]"
             },
             "resourceId": {
               "type": "string",
               "metadata": {
-                "description": "The resource ID of the secrect."
+                "description": "The resource ID of the secret."
               },
               "value": "[resourceId('Microsoft.Cdn/profiles/securityPolicies', parameters('profileName'), parameters('name'))]"
             },
@@ -4197,10 +4197,11 @@
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",
+      "nullable": true,
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[coalesce(tryGet(tryGet(reference('profile', '2023-05-01', 'full'), 'identity'), 'principalId'), '')]"
+      "value": "[tryGet(tryGet(reference('profile', '2023-05-01', 'full'), 'identity'), 'principalId')]"
     },
     "dnsValidation": {
       "type": "array",

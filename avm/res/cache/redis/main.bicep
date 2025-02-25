@@ -64,7 +64,7 @@ param replicasPerPrimary int = 3
 
 @minValue(1)
 @description('Optional. The number of shards to be created on a Premium Cluster Cache.')
-param shardCount int = 1
+param shardCount int?
 
 @allowed([
   0
@@ -304,15 +304,10 @@ resource redis_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-
 module redis_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-redis-PrivateEndpoint-${index}'
-    scope: !empty(privateEndpoint.?resourceGroupResourceId)
-      ? resourceGroup(
-          split((privateEndpoint.?resourceGroupResourceId ?? '//'), '/')[2],
-          split((privateEndpoint.?resourceGroupResourceId ?? '////'), '/')[4]
-        )
-      : resourceGroup(
-          split((privateEndpoint.?subnetResourceId ?? '//'), '/')[2],
-          split((privateEndpoint.?subnetResourceId ?? '////'), '/')[4]
-        )
+    scope: resourceGroup(
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
+    )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(redis.id, '/'))}-${privateEndpoint.?service ?? 'redisCache'}-${index}'
       privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
@@ -398,6 +393,14 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
             }
           ]
         : [],
+      contains(secretsExportConfiguration!, 'primaryStackExchangeRedisConnectionStringName')
+        ? [
+            {
+              name: secretsExportConfiguration!.?primaryStackExchangeRedisConnectionStringName
+              value: '${redis.properties.hostName}:6380,password=${redis.listKeys().primaryKey},ssl=True,abortConnect=False'
+            }
+          ]
+        : [],
       contains(secretsExportConfiguration!, 'secondaryAccessKeyName')
         ? [
             {
@@ -411,6 +414,14 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
             {
               name: secretsExportConfiguration!.?secondaryConnectionStringName
               value: 'rediss://:${redis.listKeys().secondaryKey}@${redis.properties.hostName}:6380'
+            }
+          ]
+        : [],
+      contains(secretsExportConfiguration!, 'secondaryStackExchangeRedisConnectionStringName')
+        ? [
+            {
+              name: secretsExportConfiguration!.?secondaryStackExchangeRedisConnectionStringName
+              value: '${redis.properties.hostName}:6380,password=${redis.listKeys().secondaryKey},ssl=True,abortConnect=False'
             }
           ]
         : []
@@ -437,19 +448,19 @@ output sslPort int = redis.properties.sslPort
 output subnetResourceId string = !empty(subnetResourceId) ? redis.properties.subnetId : ''
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = redis.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = redis.?identity.?principalId
 
 @description('The location the resource was deployed into.')
 output location string = redis.location
 
 @description('The private endpoints of the Redis Cache.')
-output privateEndpoints array = [
-  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
-    name: redis_privateEndpoints[i].outputs.name
-    resourceId: redis_privateEndpoints[i].outputs.resourceId
-    groupId: redis_privateEndpoints[i].outputs.?groupId!
-    customDnsConfigs: redis_privateEndpoints[i].outputs.customDnsConfigs
-    networkInterfaceResourceIds: redis_privateEndpoints[i].outputs.networkInterfaceResourceIds
+output privateEndpoints privateEndpointOutputType[] = [
+  for (item, index) in (privateEndpoints ?? []): {
+    name: redis_privateEndpoints[index].outputs.name
+    resourceId: redis_privateEndpoints[index].outputs.resourceId
+    groupId: redis_privateEndpoints[index].outputs.?groupId!
+    customDnsConfigs: redis_privateEndpoints[index].outputs.customDnsConfigs
+    networkInterfaceResourceIds: redis_privateEndpoints[index].outputs.networkInterfaceResourceIds
   }
 ]
 
@@ -514,9 +525,15 @@ type secretsExportConfigurationType = {
   @description('Optional. The primaryConnectionString secret name to create.')
   primaryConnectionStringName: string?
 
+  @description('Optional. The primaryStackExchangeRedisConnectionString secret name to create.')
+  primaryStackExchangeRedisConnectionStringName: string?
+
   @description('Optional. The secondaryAccessKey secret name to create.')
   secondaryAccessKeyName: string?
 
   @description('Optional. The secondaryConnectionString secret name to create.')
   secondaryConnectionStringName: string?
+
+  @description('Optional. The secondaryStackExchangeRedisConnectionString secret name to create.')
+  secondaryStackExchangeRedisConnectionStringName: string?
 }

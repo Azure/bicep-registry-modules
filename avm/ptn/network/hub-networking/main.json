@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "17389954898374222994"
+      "version": "0.33.93.31351",
+      "templateHash": "13578022486694565821"
     },
     "name": "Hub Networking",
     "description": "This module is designed to simplify the creation of multi-region hub networks in Azure. It will create a number of virtual networks and subnets, and optionally peer them together in a mesh topology with routing."
@@ -280,6 +280,13 @@
                   "description": "Optional. Enable/Disable shareable link functionality."
                 }
               },
+              "enableKerberos": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Enable/Disable Kerberos authentication."
+                }
+              },
               "scaleUnits": {
                 "type": "int",
                 "nullable": true,
@@ -289,9 +296,22 @@
               },
               "skuName": {
                 "type": "string",
+                "allowedValues": [
+                  "Basic",
+                  "Developer",
+                  "Premium",
+                  "Standard"
+                ],
                 "nullable": true,
                 "metadata": {
                   "description": "Optional. The SKU name of the Bastion host. Defaults to Standard."
+                }
+              },
+              "bastionHostName": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The name of the bastion host."
                 }
               }
             },
@@ -391,6 +411,13 @@
               "description": "Optional. Routes to add to the virtual network route table."
             }
           },
+          "routeTableName": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The name of the route table."
+            }
+          },
           "subnets": {
             "type": "array",
             "nullable": true,
@@ -473,6 +500,13 @@
     "azureFirewallType": {
       "type": "object",
       "properties": {
+        "azureFirewallName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the Azure Firewall."
+          }
+        },
         "hubIpAddresses": {
           "type": "object",
           "nullable": true,
@@ -503,6 +537,11 @@
         },
         "azureSkuTier": {
           "type": "string",
+          "allowedValues": [
+            "Basic",
+            "Premium",
+            "Standard"
+          ],
           "nullable": true,
           "metadata": {
             "description": "Optional. Azure Firewall SKU."
@@ -2340,8 +2379,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "13800865708253602673"
+              "version": "0.33.93.31351",
+              "templateHash": "6971888757750761810"
             },
             "name": "Virtual Networks",
             "description": "This module deploys a Virtual Network."
@@ -2406,7 +2445,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key]"
+            "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'routeTableName'), items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key)]"
           },
           "location": {
             "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'location'), parameters('location'))]"
@@ -2425,6 +2464,9 @@
           },
           "tags": {
             "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'tags'), createObject())]"
+          },
+          "lock": {
+            "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'lock'), createObject())]"
           }
         },
         "template": {
@@ -2790,7 +2832,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key]"
+            "value": "[coalesce(tryGet(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'bastionHost'), 'bastionHostName'), items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key)]"
           },
           "virtualNetworkResourceId": {
             "value": "[reference(format('hubVirtualNetwork[{0}]', copyIndex())).outputs.resourceId.value]"
@@ -2827,6 +2869,12 @@
           },
           "tags": {
             "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'tags'), createObject())]"
+          },
+          "lock": {
+            "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'lock'), createObject())]"
+          },
+          "enableKerberos": {
+            "value": "[coalesce(tryGet(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'bastionHost'), 'enableKerberos'), false())]"
           }
         },
         "template": {
@@ -4010,7 +4058,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key]"
+            "value": "[coalesce(tryGet(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'azureFirewallSettings'), 'azureFirewallName'), items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key)]"
           },
           "hubIPAddresses": {
             "value": "[coalesce(tryGet(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'azureFirewallSettings'), 'hubIpAddresses'), createObject())]"
@@ -6467,8 +6515,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "17332298613317998164"
+              "version": "0.33.93.31351",
+              "templateHash": "4695558034353162860"
             },
             "name": "Existing Virtual Network Subnets",
             "description": "This module retrieves an existing Virtual Network Subnet."
@@ -6549,8 +6597,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "13712864569972623739"
+              "version": "0.33.93.31351",
+              "templateHash": "3980815084200627301"
             },
             "name": "Virtual Network Subnets",
             "description": "This module deploys a Virtual Network Subnet."
