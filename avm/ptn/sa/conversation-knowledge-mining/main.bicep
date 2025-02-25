@@ -12,9 +12,6 @@ param environmentName string
 
 // PARAMETERS: locations
 //NOTE: allow for individual locations for each resource
-//NOTE: determine allowed locations for resources with limited region availability
-@description('Optional. Location for the solution deployment. Defaulted to the location of the Resource Group.')
-param solutionLocation string = resourceGroup().location
 @description('Required. Location for the Content Understanding service deployment.')
 @allowed(['West US', 'Sweden Central', 'Australia East'])
 @metadata({
@@ -23,6 +20,9 @@ param solutionLocation string = resourceGroup().location
   }
 })
 param contentUnderstandingLocation string
+//NOTE: determine allowed locations for resources with limited region availability
+@description('Optional. Location for the solution deployment. Defaulted to the location of the Resource Group.')
+param solutionLocation string = resourceGroup().location
 @description('Optional. Secondary location for databases creation(example:eastus2).')
 param secondaryLocation string = 'East US 2'
 @description('Optional. The location for the web app. If empty, contentUnderstandingLocation will be used.')

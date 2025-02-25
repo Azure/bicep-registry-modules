@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "14420464332027931126"
+      "templateHash": "7519664035823369918"
     },
     "name": "Conversation Knowledge Mining Solution Accelerator",
     "description": "This module deploys the [Conversation Knowledge Mining Solution Accelerator](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator)."
@@ -16,13 +16,6 @@
       "maxLength": 7,
       "metadata": {
         "description": "Required. The prefix for all deployed components log analytics workspace."
-      }
-    },
-    "solutionLocation": {
-      "type": "string",
-      "defaultValue": "[resourceGroup().location]",
-      "metadata": {
-        "description": "Optional. Location for the solution deployment. Defaulted to the location of the Resource Group."
       }
     },
     "contentUnderstandingLocation": {
@@ -37,6 +30,13 @@
           "type": "location"
         },
         "description": "Required. Location for the Content Understanding service deployment."
+      }
+    },
+    "solutionLocation": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. Location for the solution deployment. Defaulted to the location of the Resource Group."
       }
     },
     "secondaryLocation": {
