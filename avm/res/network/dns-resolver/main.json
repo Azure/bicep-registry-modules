@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "353797495875556869"
+      "version": "0.33.93.31351",
+      "templateHash": "9878118517622307415"
     },
     "name": "DNS Resolver",
     "description": "This module deploys a DNS Resolver."
@@ -392,8 +392,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "3824129655159697612"
+              "version": "0.33.93.31351",
+              "templateHash": "457587831316183445"
             },
             "name": "DNS Resolver Inbound Endpoint",
             "description": "This module deploys a DNS Resolver Inbound Endpoint."
@@ -539,8 +539,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "17231952253556640030"
+              "version": "0.33.93.31351",
+              "templateHash": "6512088712263491853"
             },
             "name": "DNS Resolver Outbound Endpoint",
             "description": "This module deploys a DNS Resolver Outbound Endpoint."
@@ -658,6 +658,26 @@
         "description": "The location the resource was deployed into."
       },
       "value": "[reference('dnsResolver', '2022-07-01', 'full').location]"
+    },
+    "outboundEndpointsObject": {
+      "type": "array",
+      "metadata": {
+        "description": "The outbound endpoints object."
+      },
+      "copy": {
+        "count": "[length(range(0, length(coalesce(parameters('outboundEndpoints'), createArray()))))]",
+        "input": "[reference(format('dnsResolver_outboundEndpoints[{0}]', range(0, length(coalesce(parameters('outboundEndpoints'), createArray())))[copyIndex()])).outputs]"
+      }
+    },
+    "inboundEndpointsObject": {
+      "type": "array",
+      "metadata": {
+        "description": "The inbound endpoints object."
+      },
+      "copy": {
+        "count": "[length(range(0, length(coalesce(parameters('inboundEndpoints'), createArray()))))]",
+        "input": "[reference(format('dnsResolver_inboundEndpoints[{0}]', range(0, length(coalesce(parameters('inboundEndpoints'), createArray())))[copyIndex()])).outputs]"
+      }
     }
   }
 }

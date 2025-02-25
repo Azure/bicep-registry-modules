@@ -171,6 +171,16 @@ output name string = dnsResolver.name
 @description('The location the resource was deployed into.')
 output location string = dnsResolver.location
 
+@description('The outbound endpoints object.')
+output outboundEndpointsObject array = [
+  for i in range(0, length(outboundEndpoints ?? [])): dnsResolver_outboundEndpoints[i].outputs
+]
+
+@description('The inbound endpoints object.')
+output inboundEndpointsObject array = [
+  for i in range(0, length(inboundEndpoints ?? [])): dnsResolver_inboundEndpoints[i].outputs
+]
+
 // ================ //
 // Definitions      //
 // ================ //
