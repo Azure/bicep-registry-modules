@@ -245,4 +245,5 @@ type volumeType = {
 // Functions        //
 // ================ //
 
+@description('Converts from tebibytes to bytes.')
 func tebibytesToBytes(tebibytes int) int => tebibytes * 1024 * 1024 * 1024 * 1024
