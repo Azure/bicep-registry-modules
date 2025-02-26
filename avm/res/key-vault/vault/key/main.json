@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "8627699258587559559"
+      "version": "0.33.93.31351",
+      "templateHash": "12000970886778046699"
     },
     "name": "Key Vault Keys",
     "description": "This module deploys a Key Vault Key."

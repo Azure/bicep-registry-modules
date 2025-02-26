@@ -23,7 +23,6 @@ This module deploys an Azure NetApp Files Capacity Pool Volume.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`coolAccess`](#parameter-coolaccess) | bool | If enabled (true) the pool can contain cool Access enabled volumes. |
-| [`coolnessPeriod`](#parameter-coolnessperiod) | int | Specifies the number of days after which data that is not accessed by clients will be tiered. |
 | [`encryptionKeySource`](#parameter-encryptionkeysource) | string | The source of the encryption key. |
 | [`name`](#parameter-name) | string | The name of the pool volume. |
 | [`subnetResourceId`](#parameter-subnetresourceid) | string | The Azure Resource URI for a delegated subnet. Must have the delegation Microsoft.NetApp/volumes. |
@@ -41,6 +40,7 @@ This module deploys an Azure NetApp Files Capacity Pool Volume.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`coolAccessRetrievalPolicy`](#parameter-coolaccessretrievalpolicy) | string | Determines the data retrieval behavior from the cool tier to standard storage based on the read pattern for cool access enabled volumes (Default/Never/Read). |
+| [`coolnessPeriod`](#parameter-coolnessperiod) | int | Specifies the number of days after which data that is not accessed by clients will be tiered. |
 | [`creationToken`](#parameter-creationtoken) | string | A unique file path for the volume. This is the name of the volume export. A volume is mounted using the export path. File path must start with an alphabetical character and be unique within the subscription. |
 | [`dataProtection`](#parameter-dataprotection) | object | DataProtection type volumes include an object containing details of the replication. |
 | [`exportPolicy`](#parameter-exportpolicy) | object | The export policy rules. |
@@ -63,13 +63,6 @@ If enabled (true) the pool can contain cool Access enabled volumes.
 
 - Required: Yes
 - Type: bool
-
-### Parameter: `coolnessPeriod`
-
-Specifies the number of days after which data that is not accessed by clients will be tiered.
-
-- Required: Yes
-- Type: int
 
 ### Parameter: `encryptionKeySource`
 
@@ -119,7 +112,13 @@ Determines the data retrieval behavior from the cool tier to standard storage ba
 
 - Required: No
 - Type: string
-- Default: `'Default'`
+
+### Parameter: `coolnessPeriod`
+
+Specifies the number of days after which data that is not accessed by clients will be tiered.
+
+- Required: No
+- Type: int
 
 ### Parameter: `creationToken`
 
@@ -192,8 +191,6 @@ Replication properties.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`endpointType`](#parameter-dataprotectionreplicationendpointtype) | string | Indicates whether the local volume is the source or destination for the Volume Replication. |
-| [`remoteVolumeRegion`](#parameter-dataprotectionreplicationremotevolumeregion) | string | The remote region for the other end of the Volume Replication. |
-| [`remoteVolumeResourceId`](#parameter-dataprotectionreplicationremotevolumeresourceid) | string | The resource ID of the remote volume. |
 | [`replicationSchedule`](#parameter-dataprotectionreplicationreplicationschedule) | string | The replication schedule for the volume. |
 
 **Optional parameters**
@@ -201,6 +198,8 @@ Replication properties.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`remotePath`](#parameter-dataprotectionreplicationremotepath) | object | The full path to a volume that is to be migrated into ANF. Required for Migration volumes. |
+| [`remoteVolumeRegion`](#parameter-dataprotectionreplicationremotevolumeregion) | string | The remote region for the other end of the Volume Replication.Required for Data Protection volumes. |
+| [`remoteVolumeResourceId`](#parameter-dataprotectionreplicationremotevolumeresourceid) | string | The resource ID of the remote volume. Required for Data Protection volumes. |
 
 ### Parameter: `dataProtection.replication.endpointType`
 
@@ -215,20 +214,6 @@ Indicates whether the local volume is the source or destination for the Volume R
     'src'
   ]
   ```
-
-### Parameter: `dataProtection.replication.remoteVolumeRegion`
-
-The remote region for the other end of the Volume Replication.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `dataProtection.replication.remoteVolumeResourceId`
-
-The resource ID of the remote volume.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `dataProtection.replication.replicationSchedule`
 
@@ -279,6 +264,20 @@ The name of a server on the ONTAP Host.
 The name of a volume on the server.
 
 - Required: Yes
+- Type: string
+
+### Parameter: `dataProtection.replication.remoteVolumeRegion`
+
+The remote region for the other end of the Volume Replication.Required for Data Protection volumes.
+
+- Required: No
+- Type: string
+
+### Parameter: `dataProtection.replication.remoteVolumeResourceId`
+
+The resource ID of the remote volume. Required for Data Protection volumes.
+
+- Required: No
 - Type: string
 
 ### Parameter: `dataProtection.snapshot`

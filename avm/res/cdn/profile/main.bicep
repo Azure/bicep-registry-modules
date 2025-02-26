@@ -276,7 +276,7 @@ module profile_ruleSets 'ruleset/main.bicep' = [
     params: {
       name: ruleSet.name
       profileName: profile.name
-      rules: ruleSet.rules
+      rules: ruleSet.?rules
     }
   }
 ]
