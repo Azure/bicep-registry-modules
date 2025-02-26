@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "7519664035823369918"
+      "templateHash": "9684945265321902595"
     },
     "name": "Conversation Knowledge Mining Solution Accelerator",
     "description": "This module deploys the [Conversation Knowledge Mining Solution Accelerator](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator)."
@@ -43,7 +43,7 @@
       "type": "string",
       "defaultValue": "East US 2",
       "metadata": {
-        "description": "Optional. Secondary location for databases creation(example:eastus2)."
+        "description": "Optional. Secondary location for databases creation."
       }
     },
     "ckmWebAppServerFarmLocation": {
@@ -225,7 +225,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[take(format('46d3xbcp.ptn.sa-ckm.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('solutionLocation')), 0, 4)), 64)]",
+      "name": "[take(format('46d3xbcp.ptn.sa-convknowledgemining.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('solutionLocation')), 0, 4)), 64)]",
       "properties": {
         "mode": "Incremental",
         "template": {

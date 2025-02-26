@@ -23,7 +23,7 @@ param contentUnderstandingLocation string
 //NOTE: determine allowed locations for resources with limited region availability
 @description('Optional. Location for the solution deployment. Defaulted to the location of the Resource Group.')
 param solutionLocation string = resourceGroup().location
-@description('Optional. Secondary location for databases creation(example:eastus2).')
+@description('Optional. Secondary location for databases creation.')
 param secondaryLocation string = 'East US 2'
 @description('Optional. The location for the web app. If empty, contentUnderstandingLocation will be used.')
 param ckmWebAppServerFarmLocation string = ''
@@ -251,7 +251,7 @@ var varWebAppAppConfigReact = '''{
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: take(
-    '46d3xbcp.ptn.sa-ckm.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, solutionLocation), 0, 4)}',
+    '46d3xbcp.ptn.sa-convknowledgemining.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, solutionLocation), 0, 4)}',
     64
   )
   properties: {

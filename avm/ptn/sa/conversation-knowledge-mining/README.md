@@ -201,7 +201,7 @@ param environmentName = 'avm-ckm'
 | [`gptDeploymentCapacity`](#parameter-gptdeploymentcapacity) | int | Capacity of the GPT deployment. You can increase this, but capacity is limited per model/region, so you will get errors if you go over. [Quotas link](https://learn.microsoft.com/en-us/azure/ai-services/openai/quotas-limits). |
 | [`gptModelName`](#parameter-gptmodelname) | string | Name of the GPT model to deploy. |
 | [`imageTag`](#parameter-imagetag) | string | Docker image version to use for all deployed containers (functions and web app). |
-| [`secondaryLocation`](#parameter-secondarylocation) | string | Secondary location for databases creation(example:eastus2). |
+| [`secondaryLocation`](#parameter-secondarylocation) | string | Secondary location for databases creation. |
 | [`solutionLocation`](#parameter-solutionlocation) | string | Location for the solution deployment. Defaulted to the location of the Resource Group. |
 | [`webApServerFarmSku`](#parameter-webapserverfarmsku) | string | The SKU for the web app. If empty, contentUnderstandingLocation will be used. |
 
@@ -328,7 +328,7 @@ Docker image version to use for all deployed containers (functions and web app).
 
 ### Parameter: `secondaryLocation`
 
-Secondary location for databases creation(example:eastus2).
+Secondary location for databases creation.
 
 - Required: No
 - Type: string
