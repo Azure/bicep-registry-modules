@@ -23,7 +23,9 @@ param testUserObjectId string = ''
 // Test Execution //
 // ============== //
 
-// To be able to successfully execute the test, the PIM policy for the specified role and scope must be configured to allow Active Permenant assignments
+// Pre-requisite for this test:
+// To be able to successfully execute the test, the PIM policy for the specified role and scope must be configured to allow Active Permanent assignments
+//
 
 module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name)}-test-${serviceShort}-${namePrefix}'
