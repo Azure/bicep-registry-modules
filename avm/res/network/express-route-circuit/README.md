@@ -8,6 +8,7 @@ This module deploys an Express Route Circuit.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -17,7 +18,7 @@ This module deploys an Express Route Circuit.
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Network/expressRouteCircuits` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/expressRouteCircuits) |
+| `Microsoft.Network/expressRouteCircuits` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/expressRouteCircuits) |
 
 ## Usage examples
 
@@ -144,6 +145,7 @@ module expressRouteCircuit 'br/public:avm/res/network/express-route-circuit:<ver
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
+    enableDirectPortRateLimit: true
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -224,6 +226,9 @@ module expressRouteCircuit 'br/public:avm/res/network/express-route-circuit:<ver
         }
       ]
     },
+    "enableDirectPortRateLimit": {
+      "value": true
+    },
     "location": {
       "value": "<location>"
     },
@@ -302,6 +307,7 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
+param enableDirectPortRateLimit = true
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
@@ -526,6 +532,7 @@ param tags = {
 | [`authorizationNames`](#parameter-authorizationnames) | array | List of names for ExpressRoute circuit authorizations to create. To fetch the `authorizationKey` for the authorization, use the `existing` resource reference for `Microsoft.Network/expressRouteCircuits/authorizations`. |
 | [`bandwidthInGbps`](#parameter-bandwidthingbps) | int | The bandwidth of the circuit when the circuit is provisioned on an ExpressRoutePort resource. Available when configuring Express Route Direct. Default value of 0 will set the property to null. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`enableDirectPortRateLimit`](#parameter-enabledirectportratelimit) | bool | Flag denoting rate-limiting status of the ExpressRoute direct-port circuit. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`expressRoutePortResourceId`](#parameter-expressrouteportresourceid) | string | The reference to the ExpressRoutePort resource when the circuit is provisioned on an ExpressRoutePort resource. Available when configuring Express Route Direct. |
 | [`globalReachEnabled`](#parameter-globalreachenabled) | bool | Flag denoting global reach status. To enable ExpressRoute Global Reach between different geopolitical regions, your circuits must be Premium SKU. |
@@ -612,7 +619,7 @@ The diagnostic settings of the service.
 | [`logCategoriesAndGroups`](#parameter-diagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
 | [`marketplacePartnerResourceId`](#parameter-diagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
 | [`metricCategories`](#parameter-diagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
-| [`name`](#parameter-diagnosticsettingsname) | string | The name of diagnostic setting. |
+| [`name`](#parameter-diagnosticsettingsname) | string | The name of the diagnostic setting. |
 | [`storageAccountResourceId`](#parameter-diagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 | [`workspaceResourceId`](#parameter-diagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 
@@ -722,7 +729,7 @@ Enable or disable the category explicitly. Default is `true`.
 
 ### Parameter: `diagnosticSettings.name`
 
-The name of diagnostic setting.
+The name of the diagnostic setting.
 
 - Required: No
 - Type: string
@@ -740,6 +747,14 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 - Required: No
 - Type: string
+
+### Parameter: `enableDirectPortRateLimit`
+
+Flag denoting rate-limiting status of the ExpressRoute direct-port circuit.
+
+- Required: No
+- Type: bool
+- Default: `False`
 
 ### Parameter: `enableTelemetry`
 
@@ -1024,6 +1039,14 @@ Specifies the identifier that is used to identify the customer.
 | `resourceId` | string | The resource ID of express route curcuit. |
 | `serviceKey` | string | The service key of the express route circuit. |
 | `serviceProviderProvisioningState` | string | The service provider provisioning state of the express route circuit. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 
