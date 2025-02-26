@@ -66,7 +66,7 @@ module testDeployment '../../../main.bicep' = {
           }
         ]
         serviceLevel: 'Premium'
-        size: 4398046511104
+        size: 1
         volumes: [
           {
             exportPolicy: {
@@ -127,7 +127,7 @@ module testDeployment '../../../main.bicep' = {
           }
         ]
         serviceLevel: 'Premium'
-        size: 4398046511104
+        size: 1
         volumes: []
       }
     ]

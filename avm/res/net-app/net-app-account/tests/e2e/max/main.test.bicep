@@ -81,7 +81,7 @@ module testDeployment '../../../main.bicep' = {
           }
         ]
         serviceLevel: 'Premium'
-        size: 4398046511104
+        size: 1
         volumes: [
           {
             name: 'vol-001'
@@ -174,7 +174,7 @@ module testDeployment '../../../main.bicep' = {
           }
         ]
         serviceLevel: 'Premium'
-        size: 4398046511104
+        size: 1
         volumes: []
       }
     ]

@@ -22,7 +22,9 @@ param tags object?
 ])
 param serviceLevel string = 'Standard'
 
-@description('Required. Provisioned size of the pool (in bytes). Allowed values are in 4TiB chunks (value must be multiply of 4398046511104).')
+@description('Required. Provisioned size of the pool (in tebibytes).')
+@minValue(1)
+@maxValue(2048)
 param size int
 
 @description('Optional. The qos type of the pool.')
@@ -85,7 +87,7 @@ resource capacityPool 'Microsoft.NetApp/netAppAccounts/capacityPools@2024-07-01'
   tags: tags
   properties: {
     serviceLevel: serviceLevel
-    size: size
+    size: tebibytesToBytes(size)
     qosType: qosType
     coolAccess: coolAccess
     encryptionType: encryptionType
@@ -238,3 +240,9 @@ type volumeType = {
   @description('Optional. The type of the volume. DataProtection volumes are used for replication.')
   volumeType: string?
 }
+
+// ================ //
+// Functions        //
+// ================ //
+
+func tebibytesToBytes(tebibytes int) int => tebibytes * 1024 * 1024 * 1024 * 1024

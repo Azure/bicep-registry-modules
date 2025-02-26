@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "16172406954506853313"
+      "templateHash": "1492125217760643259"
     },
     "name": "Azure NetApp Files",
     "description": "This module deploys an Azure NetApp File."
@@ -83,8 +83,10 @@
         },
         "size": {
           "type": "int",
+          "minValue": 1,
+          "maxValue": 2048,
           "metadata": {
-            "description": "Required. Provisioned size of the pool (in bytes). Allowed values are in 4TiB chunks (value must be multiply of 4398046511104)."
+            "description": "Required. Provisioned size of the pool (in tebibytes)."
           }
         },
         "qosType": {
@@ -2267,7 +2269,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "14610233835402841656"
+              "templateHash": "14340579752127446693"
             },
             "name": "Azure NetApp Files Capacity Pools",
             "description": "This module deploys an Azure NetApp Files Capacity Pool."
@@ -2803,6 +2805,25 @@
               }
             }
           },
+          "functions": [
+            {
+              "namespace": "__bicep",
+              "members": {
+                "tebibytesToBytes": {
+                  "parameters": [
+                    {
+                      "type": "int",
+                      "name": "tebibytes"
+                    }
+                  ],
+                  "output": {
+                    "type": "int",
+                    "value": "[mul(mul(mul(mul(parameters('tebibytes'), 1024), 1024), 1024), 1024)]"
+                  }
+                }
+              }
+            }
+          ],
           "parameters": {
             "netAppAccountName": {
               "type": "string",
@@ -2845,8 +2866,10 @@
             },
             "size": {
               "type": "int",
+              "minValue": 1,
+              "maxValue": 2048,
               "metadata": {
-                "description": "Required. Provisioned size of the pool (in bytes). Allowed values are in 4TiB chunks (value must be multiply of 4398046511104)."
+                "description": "Required. Provisioned size of the pool (in tebibytes)."
               }
             },
             "qosType": {
@@ -2930,7 +2953,7 @@
               "tags": "[parameters('tags')]",
               "properties": {
                 "serviceLevel": "[parameters('serviceLevel')]",
-                "size": "[parameters('size')]",
+                "size": "[__bicep.tebibytesToBytes(parameters('size'))]",
                 "qosType": "[parameters('qosType')]",
                 "coolAccess": "[parameters('coolAccess')]",
                 "encryptionType": "[parameters('encryptionType')]"
