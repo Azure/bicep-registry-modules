@@ -2,14 +2,7 @@
 targetScope = 'resourceGroup'
 
 metadata name = 'Conversation Knowledge Mining Solution Accelerator'
-metadata description = '''This module deploys the [Conversation Knowledge Mining Solution Accelerator](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator).'
-
-## Notes
-
-This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator product. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case.
-
-This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.
-'''
+metadata description = 'This module deploys the [Conversation Knowledge Mining Solution Accelerator](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator)'
 
 // ========== Parameters ========== //
 // PARAMETERS: names
