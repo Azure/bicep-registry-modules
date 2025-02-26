@@ -1,15 +1,23 @@
 # Conversation Knowledge Mining Solution Accelerator `[Sa/ConversationKnowledgeMining]`
 
-This module deploys the [Conversation Knowledge Mining Solution Accelerator](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator).
+This module deploys the [Conversation Knowledge Mining Solution Accelerator](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator).'
 
 ## Navigation
 
+- [Notes](#Notes)
 - [Resource Types](#Resource-Types)
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
+
+## Notes
+
+This module is not intended for broad, generic use, as it was designed to cater for the requirements of the Commercial Solution Areas CTO team, as a solution accelerator product. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case.
+
+This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.
+
 
 ## Resource Types
 
