@@ -272,17 +272,12 @@ Describe 'File/folder tests' -Tag 'Modules' {
             }
         }
 
-        It '[<moduleFolderName>] Resource Modules must not skip the "defaults" or "waf-aligned" tests with a [` .e2eignore `] file.' -TestCases $topLevelModuleTestCases {
+        It '[<moduleFolderName>] Resource Modules must not skip the "defaults" or "waf-aligned" tests with a [` .e2eignore `] file.' -TestCases ($topLevelModuleTestCases | Where-Object { $_.moduleType -eq 'res' }) {
 
             param(
                 [string] $moduleFolderName,
                 [string] $moduleFolderPath
             )
-
-            if ($moduleFolderName -notmatch 'res/.*') {
-                Set-ItResult -Skipped -Because 'this test only applies to resource modules.'
-                return
-            }
 
             $e2eTestFolderPathList = Get-ChildItem -Directory (Join-Path -Path $moduleFolderPath 'tests' 'e2e') | Where-Object { $_.Name -in 'defaults', 'waf-aligned' }
             foreach ($e2eTestFolderPath in $e2eTestFolderPathList) {
