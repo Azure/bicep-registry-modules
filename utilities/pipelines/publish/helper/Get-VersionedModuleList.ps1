@@ -67,7 +67,7 @@ function Get-VersionedModuleList {
         # }
 
         $moduleFolderPath = Split-Path $versionJsonPath -Parent
-        $moduleFolderRelativePath = ($moduleFolderPath -replace ('{0}[\/|\\]' -f [Regex]::Escape($repoRoot)), '') -replace '\\', '/' # Replaces slashes # Remove root
+        # $moduleFolderRelativePath = ($moduleFolderPath -replace ('{0}[\/|\\]' -f [Regex]::Escape($repoRoot)), '') -replace '\\', '/' # Replaces slashes # Remove root
         ## avm/res/<provider>/<resourceType>
         # $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]')[2] -replace '\\', '/'
 
@@ -76,7 +76,8 @@ function Get-VersionedModuleList {
         # $providerNamespace = ($resourceTypeIdentifier -split '[\/|\\]')[0]
         # $resourceType = $resourceTypeIdentifier.Substring($providerNamespace.Length + 1)
 
-        $resultSet += $moduleFolderRelativePath
+        # $resultSet += $moduleFolderRelativePath
+        $resultSet += $moduleFolderPath
         # }
     }
 

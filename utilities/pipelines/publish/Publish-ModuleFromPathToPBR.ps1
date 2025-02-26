@@ -53,10 +53,10 @@ function Publish-ModuleFromPathToPBR {
 
     # 1. Get list of all versioned modules (including top level and child modules) and iterate on it
     Write-Verbose "topModuleFolderPath:  $topModuleFolderPath" -Verbose
-    # $list = Get-VersionedModuleList -Path $topModuleFolderPath
-    # foreach ($moduleFolderPath in $list) {
-    #     Write-Verbose "moduleFolderPath:  $moduleFolderPath" -Verbose
-    # }
+    $list = Get-VersionedModuleList -Path $topModuleFolderPath
+    foreach ($moduleFolderPath in $list) {
+        Write-Verbose "moduleFolderPath:  $moduleFolderPath" -Verbose
+    }
     # foreach ($moduleFolderPath in $list) {
 
     # 1. Test if module qualifies for publishing
