@@ -51,8 +51,8 @@ function Publish-ModuleFromPathToPBR {
     $moduleBicepFilePath = Join-Path $moduleFolderPath 'main.bicep'
     $resultSet = [ordered]@{}
 
-    # # 1. Get list of all versioned modules (including top level and child modules) and iterate on it
-    # Write-Verbose "topModuleFolderPath:  $topModuleFolderPath" -Verbose
+    # 1. Get list of all versioned modules (including top level and child modules) and iterate on it
+    Write-Verbose "topModuleFolderPath:  $topModuleFolderPath" -Verbose
     # $list = Get-VersionedModuleList -Path $topModuleFolderPath
     # foreach ($moduleFolderPath in $list) {
     #     Write-Verbose "moduleFolderPath:  $moduleFolderPath" -Verbose
