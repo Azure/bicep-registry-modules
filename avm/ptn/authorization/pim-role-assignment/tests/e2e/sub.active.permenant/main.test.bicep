@@ -2,6 +2,11 @@ targetScope = 'managementGroup'
 metadata name = 'PIM Active permanent Role Assignments (Subscription scope)'
 metadata description = 'This module deploys a PIM permanent Role Assignment at a Subscription scope using minimal parameters.'
 
+// ============= //
+// Pre-requisite //
+// ============= //
+// To be able to successfully execute the test, the PIM policy for the specified role and scope must be configured to allow Active Permanent assignments.
+
 // ========== //
 // Parameters //
 // ========== //
@@ -22,11 +27,6 @@ param testUserObjectId string = ''
 // ============== //
 // Test Execution //
 // ============== //
-
-// Pre-requisite for this test:
-// To be able to successfully execute the test, the PIM policy for the specified role and scope must be configured to allow Active Permanent assignments
-//
-
 module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name)}-test-${serviceShort}-${namePrefix}'
   params: {
