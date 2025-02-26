@@ -1,6 +1,5 @@
 metadata name = 'Elastic SAN Volume Groups'
 metadata description = 'This module deploys an Elastic SAN Volume Group.'
-metadata owner = 'Azure/module-maintainers'
 
 @sys.minLength(3)
 @sys.maxLength(24)
@@ -37,9 +36,6 @@ param privateEndpoints privateEndpointSingleServiceType[]?
 @sys.description('Optional. Tags of the Elastic SAN Volume Group resource.')
 param tags object?
 
-@sys.description('Optional. Enable/Disable usage telemetry for module.')
-param enableTelemetry bool = true
-
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
 @sys.description('Optional. The lock settings of the service.')
 param lock lockType?
@@ -47,6 +43,8 @@ param lock lockType?
 // ============== //
 // Variables      //
 // ============== //
+
+var enableReferencedModulesTelemetry = false
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -181,7 +179,7 @@ module volumeGroup_privateEndpoints 'br/public:avm/res/network/private-endpoint:
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
-      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',
@@ -216,7 +214,7 @@ output location string = location
 output resourceGroupName string = resourceGroup().name
 
 @sys.description('The principal ID of the system assigned identity of the deployed Elastic SAN Volume Group.')
-output systemAssignedMIPrincipalId string = volumeGroup.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = volumeGroup.?identity.?principalId
 
 @sys.description('Details on the deployed Elastic SAN Volumes.')
 output volumes volumeOutputType[] = [

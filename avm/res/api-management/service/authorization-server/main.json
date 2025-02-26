@@ -4,12 +4,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.34.60546",
-      "templateHash": "7143680740173420481"
+      "version": "0.33.93.31351",
+      "templateHash": "6804762094873651550"
     },
     "name": "API Management Service Authorization Servers",
-    "description": "This module deploys an API Management Service Authorization Server.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an API Management Service Authorization Server."
   },
   "parameters": {
     "name": {

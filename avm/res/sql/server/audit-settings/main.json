@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "4626140114742164628"
+      "version": "0.33.93.31351",
+      "templateHash": "18193643807269591015"
     },
     "name": "Azure SQL Server Audit Settings",
-    "description": "This module deploys an Azure SQL Server Audit Settings.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Azure SQL Server Audit Settings."
   },
   "parameters": {
     "name": {
@@ -123,10 +122,7 @@
         "storageAccountAccessKey": "[if(and(not(empty(parameters('storageAccountResourceId'))), not(parameters('isManagedIdentityInUse'))), listKeys(parameters('storageAccountResourceId'), '2019-06-01').keys[0].value, null())]",
         "storageAccountSubscriptionId": "[if(not(empty(parameters('storageAccountResourceId'))), split(parameters('storageAccountResourceId'), '/')[2], null())]",
         "storageEndpoint": "[if(not(empty(parameters('storageAccountResourceId'))), format('https://{0}.blob.{1}', last(split(parameters('storageAccountResourceId'), '/')), environment().suffixes.storage), null())]"
-      },
-      "dependsOn": [
-        "server"
-      ]
+      }
     },
     "storageAccount_sbdc_rbac": {
       "condition": "[and(parameters('isManagedIdentityInUse'), not(empty(parameters('storageAccountResourceId'))))]",
@@ -142,9 +138,7 @@
           "storageAccountName": {
             "value": "[last(split(parameters('storageAccountResourceId'), '/'))]"
           },
-          "managedInstanceIdentityPrincipalId": {
-            "value": "[reference('server', '2023-08-01-preview', 'full').identity.principalId]"
-          }
+          "managedIdentityPrincipalId": "[if(equals(reference('server', '2023-08-01-preview', 'full').identity.type, 'UserAssigned'), createObject('value', filter(items(reference('server', '2023-08-01-preview', 'full').identity.userAssignedIdentities), lambda('identity', equals(lambdaVariables('identity').key, reference('server').primaryUserAssignedIdentityId)))[0].value.principalId), createObject('value', reference('server', '2023-08-01-preview', 'full').identity.principalId))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -152,15 +146,15 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "2903956714854050681"
+              "version": "0.33.93.31351",
+              "templateHash": "3456585740193014655"
             }
           },
           "parameters": {
             "storageAccountName": {
               "type": "string"
             },
-            "managedInstanceIdentityPrincipalId": {
+            "managedIdentityPrincipalId": {
               "type": "string"
             }
           },
@@ -169,10 +163,10 @@
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
               "scope": "[format('Microsoft.Storage/storageAccounts/{0}', parameters('storageAccountName'))]",
-              "name": "[guid(format('{0}-{1}-Storage-Blob-Data-Contributor', resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), parameters('managedInstanceIdentityPrincipalId')))]",
+              "name": "[guid(format('{0}-{1}-Storage-Blob-Data-Contributor', resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), parameters('managedIdentityPrincipalId')))]",
               "properties": {
                 "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')]",
-                "principalId": "[parameters('managedInstanceIdentityPrincipalId')]",
+                "principalId": "[parameters('managedIdentityPrincipalId')]",
                 "principalType": "ServicePrincipal"
               }
             }

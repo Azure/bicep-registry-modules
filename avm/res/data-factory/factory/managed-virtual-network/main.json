@@ -4,12 +4,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "8469223320923719233"
+      "version": "0.33.93.31351",
+      "templateHash": "14125623215975510552"
     },
     "name": "Data Factory Managed Virtual Networks",
-    "description": "This module deploys a Data Factory Managed Virtual Network.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Data Factory Managed Virtual Network."
   },
   "parameters": {
     "dataFactoryName": {
@@ -78,12 +77,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "18056121862353335725"
+              "version": "0.33.93.31351",
+              "templateHash": "8874930941679557296"
             },
             "name": "Data Factory Managed Virtual Network Managed PrivateEndpoints",
-            "description": "This module deploys a Data Factory Managed Virtual Network Managed Private Endpoint.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Data Factory Managed Virtual Network Managed Private Endpoint."
           },
           "parameters": {
             "dataFactoryName": {

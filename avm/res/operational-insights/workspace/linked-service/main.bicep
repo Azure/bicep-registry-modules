@@ -1,6 +1,5 @@
 metadata name = 'Log Analytics Workspace Linked Services'
 metadata description = 'This module deploys a Log Analytics Workspace Linked Service.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent Log Analytics workspace. Required if the template is used in a standalone deployment.')
 param logAnalyticsWorkspaceName string
@@ -17,11 +16,11 @@ param writeAccessResourceId string?
 @description('Optional. Tags to configure in the resource.')
 param tags object?
 
-resource workspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = {
+resource workspace 'Microsoft.OperationalInsights/workspaces@2023-09-01' existing = {
   name: logAnalyticsWorkspaceName
 }
 
-resource linkedService 'Microsoft.OperationalInsights/workspaces/linkedServices@2020-08-01' = {
+resource linkedService 'Microsoft.OperationalInsights/workspaces/linkedServices@2023-09-01' = {
   name: name
   parent: workspace
   tags: tags

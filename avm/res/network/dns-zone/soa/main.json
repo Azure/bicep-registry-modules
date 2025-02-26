@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "18205185605727276078"
+      "version": "0.32.4.45862",
+      "templateHash": "13888523145142266910"
     },
     "name": "Public DNS Zone SOA record",
-    "description": "This module deploys a Public DNS Zone SOA record.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Public DNS Zone SOA record."
   },
   "definitions": {
     "roleAssignmentType": {
@@ -165,10 +164,7 @@
         "metadata": "[parameters('metadata')]",
         "SOARecord": "[parameters('soaRecord')]",
         "TTL": "[parameters('ttl')]"
-      },
-      "dependsOn": [
-        "dnsZone"
-      ]
+      }
     },
     "SOA_roleAssignments": {
       "copy": {

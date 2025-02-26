@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "16761257324786961037"
+      "version": "0.33.93.31351",
+      "templateHash": "2762256234913724536"
     },
     "name": "Digital Twins Instance ServiceBus Endpoint",
-    "description": "This module deploys a Digital Twins Instance ServiceBus Endpoint.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Digital Twins Instance ServiceBus Endpoint."
   },
   "definitions": {
     "managedIdentitiesType": {
@@ -132,10 +131,7 @@
         "primaryConnectionString": "[parameters('primaryConnectionString')]",
         "secondaryConnectionString": "[parameters('secondaryConnectionString')]",
         "identity": "[variables('identity')]"
-      },
-      "dependsOn": [
-        "digitalTwinsInstance"
-      ]
+      }
     }
   },
   "outputs": {
@@ -162,10 +158,11 @@
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",
+      "nullable": true,
       "metadata": {
         "description": "The principal ID of the system assigned identity. Note: As of 2024-03 is not exported by API."
       },
-      "value": "[coalesce(tryGet(tryGet(reference('endpoint', '2023-01-31', 'full'), 'identity'), 'principalId'), '')]"
+      "value": "[tryGet(tryGet(reference('endpoint', '2023-01-31', 'full'), 'identity'), 'principalId')]"
     }
   }
 }

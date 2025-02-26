@@ -43,7 +43,7 @@ function Clear-ManagementGroupDeploymentHistory {
     # Load helper functions
     . (Join-Path (Split-Path $PSScriptRoot) 'helper' 'Split-Array.ps1')
 
-    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12 # Enables web reponse
+    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12 # Enables web response
     $deploymentThreshold = (Get-Date).AddDays(-1 * $maxDeploymentRetentionInDays)
 
     $getInputObject = @{
@@ -61,7 +61,7 @@ function Clear-ManagementGroupDeploymentHistory {
     }
 
     if (($response | Get-Member -MemberType 'NoteProperty').Name -notcontains 'value') {
-        throw ('Fetching deployments failed with error [{0}]' -f ($reponse | Out-String))
+        throw ('Fetching deployments failed with error [{0}]' -f ($response | Out-String))
     }
 
     Write-Verbose ('Found [{0}] deployments in management group [{1}]' -f $response.value.Count, $ManagementGroupId) -Verbose

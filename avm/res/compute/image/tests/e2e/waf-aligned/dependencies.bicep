@@ -25,6 +25,9 @@ param triggerImageDeploymentScriptName string
 @description('Required. The name of the Deployment Script to copy the VHD to a destination storage account.')
 param copyVhdDeploymentScriptName string
 
+@description('Required. The name of the deployment script that waits for a role assignment to propagate.')
+param waitDeploymentScriptName string
+
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
   name: managedIdentityName
   location: location
@@ -51,12 +54,16 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
   }
 }
 
-module roleAssignment 'dependencies_rbac.bicep' = {
-  name: '${deployment().name}-MSI-roleAssignment'
-  scope: subscription()
-  params: {
-    managedIdentityPrincipalId: managedIdentity.properties.principalId
-    managedIdentityResourceId: managedIdentity.id
+resource resourceGroupContributorRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(subscription().subscriptionId, 'Contributor', managedIdentity.id)
+  scope: resourceGroup()
+  properties: {
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      'b24988ac-6180-42a0-ab88-20f7382dd24c'
+    ) // Contributor
+    principalId: managedIdentity.properties.principalId
+    principalType: 'ServicePrincipal'
   }
 }
 
@@ -120,7 +127,7 @@ resource triggerImageDeploymentScript 'Microsoft.Resources/deploymentScripts@202
     forceUpdateTag: baseTime
   }
   dependsOn: [
-    roleAssignment
+    resourceGroupContributorRole
   ]
 }
 
@@ -143,7 +150,9 @@ resource copyVhdDeploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-
     cleanupPreference: 'OnSuccess'
     forceUpdateTag: baseTime
   }
-  dependsOn: [triggerImageDeploymentScript]
+  dependsOn: [
+    triggerImageDeploymentScript
+  ]
 }
 
 resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
@@ -172,8 +181,8 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
   }
 }
 
-resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('msi-${keyVault::key.id}-${location}-${managedIdentity.id}-Key-Reader-RoleAssignment')
+resource keyVaultKeyCryptoRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid('msi-${keyVault::key.id}-${location}-${managedIdentity.id}-Key-RoleAssignment')
   scope: keyVault::key
   properties: {
     principalId: managedIdentity.properties.principalId
@@ -185,7 +194,22 @@ resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   }
 }
 
-resource diskEncryptionSet 'Microsoft.Compute/diskEncryptionSets@2022-07-02' = {
+// Waiting for the role assignment to propagate
+resource waitForDeployment 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
+  dependsOn: [keyVaultKeyCryptoRole]
+  name: waitDeploymentScriptName
+  location: location
+  kind: 'AzurePowerShell'
+  properties: {
+    retentionInterval: 'PT1H'
+    azPowerShellVersion: '11.0'
+    cleanupPreference: 'Always'
+    scriptContent: 'write-output "Sleeping for 15"; start-sleep -Seconds 15'
+  }
+}
+
+resource diskEncryptionSet 'Microsoft.Compute/diskEncryptionSets@2023-10-02' = {
+  dependsOn: [waitForDeployment]
   name: diskEncryptionSetName
   location: location
   identity: {
@@ -203,9 +227,6 @@ resource diskEncryptionSet 'Microsoft.Compute/diskEncryptionSets@2022-07-02' = {
     }
     encryptionType: 'EncryptionAtRestWithCustomerKey'
   }
-  dependsOn: [
-    keyPermissions
-  ]
 }
 
 @description('The URI of the created VHD.')

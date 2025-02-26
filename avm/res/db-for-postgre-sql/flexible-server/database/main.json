@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.34.60546",
-      "templateHash": "5925943942284222024"
+      "version": "0.33.93.31351",
+      "templateHash": "562413302994246231"
     },
     "name": "DBforPostgreSQL Flexible Server Databases",
-    "description": "This module deploys a DBforPostgreSQL Flexible Server Database.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a DBforPostgreSQL Flexible Server Database."
   },
   "parameters": {
     "name": {
@@ -44,16 +43,16 @@
     "flexibleServer": {
       "existing": true,
       "type": "Microsoft.DBforPostgreSQL/flexibleServers",
-      "apiVersion": "2022-12-01",
+      "apiVersion": "2024-08-01",
       "name": "[parameters('flexibleServerName')]"
     },
     "database": {
       "type": "Microsoft.DBforPostgreSQL/flexibleServers/databases",
-      "apiVersion": "2022-12-01",
+      "apiVersion": "2024-08-01",
       "name": "[format('{0}/{1}', parameters('flexibleServerName'), parameters('name'))]",
       "properties": {
-        "collation": "[if(not(empty(parameters('collation'))), parameters('collation'), null())]",
-        "charset": "[if(not(empty(parameters('charset'))), parameters('charset'), null())]"
+        "collation": "[parameters('collation')]",
+        "charset": "[parameters('charset')]"
       }
     }
   },
@@ -75,7 +74,7 @@
     "resourceGroupName": {
       "type": "string",
       "metadata": {
-        "description": "The resource group of the deployed database."
+        "description": "The resource group name of the deployed database."
       },
       "value": "[resourceGroup().name]"
     }

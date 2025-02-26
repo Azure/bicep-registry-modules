@@ -1,10 +1,5 @@
 # Virtual Networks `[Microsoft.Network/virtualNetworks]`
 
-> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
-> 
-> - Only security and bug fixes are being handled by the AVM core team at present.
-> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
-
 This module deploys a Virtual Network (vNet).
 
 ## Navigation
@@ -1337,6 +1332,7 @@ The flow timeout in minutes for the Virtual Network, which is used to enable con
 - Required: No
 - Type: int
 - Default: `0`
+- MaxValue: 30
 
 ### Parameter: `location`
 
@@ -1345,6 +1341,7 @@ Location for all resources.
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
+- MaxValue: 30
 
 ### Parameter: `lock`
 
@@ -1352,6 +1349,7 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
+- MaxValue: 30
 
 **Optional parameters**
 
@@ -1374,6 +1372,7 @@ Specify the type of lock.
     'ReadOnly'
   ]
   ```
+- MaxValue: 30
 
 ### Parameter: `lock.name`
 
@@ -1381,6 +1380,7 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+- MaxValue: 30
 
 ### Parameter: `peerings`
 
@@ -1388,6 +1388,7 @@ Virtual Network Peering configurations.
 
 - Required: No
 - Type: array
+- MaxValue: 30
 
 **Required parameters**
 
@@ -1419,6 +1420,7 @@ The Resource ID of the VNet that is this Local VNet is being peered to. Should b
 
 - Required: Yes
 - Type: string
+- MaxValue: 30
 
 ### Parameter: `peerings.allowForwardedTraffic`
 
@@ -1426,6 +1428,7 @@ Whether the forwarded traffic from the VMs in the local virtual network will be 
 
 - Required: No
 - Type: bool
+- MaxValue: 30
 
 ### Parameter: `peerings.allowGatewayTransit`
 
@@ -1433,6 +1436,7 @@ If gateway links can be used in remote virtual networking to link to this virtua
 
 - Required: No
 - Type: bool
+- MaxValue: 30
 
 ### Parameter: `peerings.allowVirtualNetworkAccess`
 
@@ -1440,6 +1444,7 @@ Whether the VMs in the local virtual network space would be able to access the V
 
 - Required: No
 - Type: bool
+- MaxValue: 30
 
 ### Parameter: `peerings.doNotVerifyRemoteGateways`
 
@@ -1447,6 +1452,7 @@ Do not verify the provisioning state of the remote gateway. Default is true.
 
 - Required: No
 - Type: bool
+- MaxValue: 30
 
 ### Parameter: `peerings.name`
 
@@ -1454,6 +1460,7 @@ The Name of VNET Peering resource. If not provided, default value will be peer-l
 
 - Required: No
 - Type: string
+- MaxValue: 30
 
 ### Parameter: `peerings.remotePeeringAllowForwardedTraffic`
 
@@ -1461,6 +1468,7 @@ Whether the forwarded traffic from the VMs in the local virtual network will be 
 
 - Required: No
 - Type: bool
+- MaxValue: 30
 
 ### Parameter: `peerings.remotePeeringAllowGatewayTransit`
 
@@ -1468,6 +1476,7 @@ If gateway links can be used in remote virtual networking to link to this virtua
 
 - Required: No
 - Type: bool
+- MaxValue: 30
 
 ### Parameter: `peerings.remotePeeringAllowVirtualNetworkAccess`
 
@@ -1475,6 +1484,7 @@ Whether the VMs in the local virtual network space would be able to access the V
 
 - Required: No
 - Type: bool
+- MaxValue: 30
 
 ### Parameter: `peerings.remotePeeringDoNotVerifyRemoteGateways`
 
@@ -1482,6 +1492,7 @@ Do not verify the provisioning state of the remote gateway. Default is true.
 
 - Required: No
 - Type: bool
+- MaxValue: 30
 
 ### Parameter: `peerings.remotePeeringEnabled`
 
@@ -1489,6 +1500,7 @@ Deploy the outbound and the inbound peering.
 
 - Required: No
 - Type: bool
+- MaxValue: 30
 
 ### Parameter: `peerings.remotePeeringName`
 
@@ -1496,6 +1508,7 @@ The name of the VNET Peering resource in the remove Virtual Network. If not prov
 
 - Required: No
 - Type: string
+- MaxValue: 30
 
 ### Parameter: `peerings.remotePeeringUseRemoteGateways`
 
@@ -1503,6 +1516,7 @@ If remote gateways can be used on this virtual network. If the flag is set to tr
 
 - Required: No
 - Type: bool
+- MaxValue: 30
 
 ### Parameter: `peerings.useRemoteGateways`
 
@@ -1510,6 +1524,7 @@ If remote gateways can be used on this virtual network. If the flag is set to tr
 
 - Required: No
 - Type: bool
+- MaxValue: 30
 
 ### Parameter: `roleAssignments`
 
@@ -1517,6 +1532,7 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- MaxValue: 30
 - Roles configurable by name:
   - `'Contributor'`
   - `'Network Contributor'`
@@ -1549,6 +1565,7 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- MaxValue: 30
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -1556,6 +1573,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- MaxValue: 30
 
 ### Parameter: `roleAssignments.condition`
 
@@ -1563,6 +1581,7 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- MaxValue: 30
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -1576,6 +1595,7 @@ Version of the condition.
     '2.0'
   ]
   ```
+- MaxValue: 30
 
 ### Parameter: `roleAssignments.delegatedManagedIdentityResourceId`
 
@@ -1583,6 +1603,7 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- MaxValue: 30
 
 ### Parameter: `roleAssignments.description`
 
@@ -1590,6 +1611,7 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- MaxValue: 30
 
 ### Parameter: `roleAssignments.name`
 
@@ -1597,6 +1619,7 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- MaxValue: 30
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -1614,6 +1637,7 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
+- MaxValue: 30
 
 ### Parameter: `subnets`
 
@@ -1621,6 +1645,7 @@ An Array of subnets to deploy to the Virtual Network.
 
 - Required: No
 - Type: array
+- MaxValue: 30
 
 **Required parameters**
 
@@ -1658,6 +1683,7 @@ The Name of the subnet resource.
 
 - Required: Yes
 - Type: string
+- MaxValue: 30
 
 ### Parameter: `subnets.addressPrefix`
 
@@ -1665,6 +1691,7 @@ The address prefix for the subnet. Required if `addressPrefixes` is empty.
 
 - Required: No
 - Type: string
+- MaxValue: 30
 
 ### Parameter: `subnets.addressPrefixes`
 
@@ -1672,6 +1699,7 @@ List of address prefixes for the subnet. Required if `addressPrefix` is empty.
 
 - Required: No
 - Type: array
+- MaxValue: 30
 
 ### Parameter: `subnets.applicationGatewayIPConfigurations`
 
@@ -1679,6 +1707,7 @@ Application gateway IP configurations of virtual network resource.
 
 - Required: No
 - Type: array
+- MaxValue: 30
 
 ### Parameter: `subnets.defaultOutboundAccess`
 
@@ -1686,6 +1715,7 @@ Set this property to false to disable default outbound connectivity for all VMs 
 
 - Required: No
 - Type: bool
+- MaxValue: 30
 
 ### Parameter: `subnets.delegation`
 
@@ -1693,6 +1723,7 @@ The delegation to enable on the subnet.
 
 - Required: No
 - Type: string
+- MaxValue: 30
 
 ### Parameter: `subnets.natGatewayResourceId`
 
@@ -1700,6 +1731,7 @@ The resource ID of the NAT Gateway to use for the subnet.
 
 - Required: No
 - Type: string
+- MaxValue: 30
 
 ### Parameter: `subnets.networkSecurityGroupResourceId`
 
@@ -1707,6 +1739,7 @@ The resource ID of the network security group to assign to the subnet.
 
 - Required: No
 - Type: string
+- MaxValue: 30
 
 ### Parameter: `subnets.privateEndpointNetworkPolicies`
 
@@ -1723,6 +1756,7 @@ enable or disable apply network policies on private endpoint in the subnet.
     'RouteTableEnabled'
   ]
   ```
+- MaxValue: 30
 
 ### Parameter: `subnets.privateLinkServiceNetworkPolicies`
 
@@ -1737,6 +1771,7 @@ enable or disable apply network policies on private link service in the subnet.
     'Enabled'
   ]
   ```
+- MaxValue: 30
 
 ### Parameter: `subnets.roleAssignments`
 
@@ -1744,6 +1779,7 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- MaxValue: 30
 - Roles configurable by name:
   - `'Contributor'`
   - `'Network Contributor'`
@@ -1776,6 +1812,7 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- MaxValue: 30
 
 ### Parameter: `subnets.roleAssignments.roleDefinitionIdOrName`
 
@@ -1783,6 +1820,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- MaxValue: 30
 
 ### Parameter: `subnets.roleAssignments.condition`
 
@@ -1790,6 +1828,7 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- MaxValue: 30
 
 ### Parameter: `subnets.roleAssignments.conditionVersion`
 
@@ -1803,6 +1842,7 @@ Version of the condition.
     '2.0'
   ]
   ```
+- MaxValue: 30
 
 ### Parameter: `subnets.roleAssignments.delegatedManagedIdentityResourceId`
 
@@ -1810,6 +1850,7 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- MaxValue: 30
 
 ### Parameter: `subnets.roleAssignments.description`
 
@@ -1817,6 +1858,7 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- MaxValue: 30
 
 ### Parameter: `subnets.roleAssignments.name`
 
@@ -1824,6 +1866,7 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- MaxValue: 30
 
 ### Parameter: `subnets.roleAssignments.principalType`
 
@@ -1841,6 +1884,7 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
+- MaxValue: 30
 
 ### Parameter: `subnets.routeTableResourceId`
 
@@ -1848,6 +1892,7 @@ The resource ID of the route table to assign to the subnet.
 
 - Required: No
 - Type: string
+- MaxValue: 30
 
 ### Parameter: `subnets.serviceEndpointPolicies`
 
@@ -1855,6 +1900,7 @@ An array of service endpoint policies.
 
 - Required: No
 - Type: array
+- MaxValue: 30
 
 ### Parameter: `subnets.serviceEndpoints`
 
@@ -1862,6 +1908,7 @@ The service endpoints to enable on the subnet.
 
 - Required: No
 - Type: array
+- MaxValue: 30
 
 ### Parameter: `subnets.sharingScope`
 
@@ -1876,6 +1923,7 @@ Set this property to Tenant to allow sharing subnet with other subscriptions in 
     'Tenant'
   ]
   ```
+- MaxValue: 30
 
 ### Parameter: `tags`
 
@@ -1883,6 +1931,7 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+- MaxValue: 30
 
 ### Parameter: `virtualNetworkBgpCommunity`
 
@@ -1890,6 +1939,7 @@ The BGP community associated with the virtual network.
 
 - Required: No
 - Type: string
+- MaxValue: 30
 
 ### Parameter: `vnetEncryption`
 
@@ -1898,6 +1948,7 @@ Indicates if encryption is enabled on virtual network and if VM without encrypti
 - Required: No
 - Type: bool
 - Default: `False`
+- MaxValue: 30
 
 ### Parameter: `vnetEncryptionEnforcement`
 
@@ -1913,6 +1964,7 @@ If the encrypted VNet allows VM that does not support encryption. Can only be us
     'DropUnencrypted'
   ]
   ```
+- MaxValue: 30
 
 ## Outputs
 

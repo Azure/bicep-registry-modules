@@ -1,6 +1,5 @@
 metadata name = 'Service Fabric Cluster Application Types'
 metadata description = 'This module deploys a Service Fabric Cluster Application Type.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent Service Fabric cluster. Required if the template is used in a standalone deployment.')
 param serviceFabricClusterName string

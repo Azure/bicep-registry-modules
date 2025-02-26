@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "14380397644512533588"
+      "version": "0.32.4.45862",
+      "templateHash": "13132579465005423306"
     },
     "name": "Public DNS Zone NS record",
-    "description": "This module deploys a Public DNS Zone NS record.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Public DNS Zone NS record."
   },
   "definitions": {
     "roleAssignmentType": {
@@ -165,10 +164,7 @@
         "metadata": "[parameters('metadata')]",
         "NSRecords": "[parameters('nsRecords')]",
         "TTL": "[parameters('ttl')]"
-      },
-      "dependsOn": [
-        "dnsZone"
-      ]
+      }
     },
     "NS_roleAssignments": {
       "copy": {

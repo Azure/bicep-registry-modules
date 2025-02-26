@@ -17,12 +17,12 @@ This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.ContainerService/managedClusters` | [2024-03-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerService/2024-03-02-preview/managedClusters) |
-| `Microsoft.ContainerService/managedClusters/agentPools` | [2023-07-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerService/2023-07-02-preview/managedClusters/agentPools) |
+| `Microsoft.ContainerService/managedClusters` | [2024-09-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerService/2024-09-02-preview/managedClusters) |
+| `Microsoft.ContainerService/managedClusters/agentPools` | [2024-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerService/2024-09-01/managedClusters/agentPools) |
 | `Microsoft.ContainerService/managedClusters/maintenanceConfigurations` | [2023-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerService/2023-10-01/managedClusters/maintenanceConfigurations) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.KubernetesConfiguration/extensions` | [2022-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KubernetesConfiguration/2022-03-01/extensions) |
-| `Microsoft.KubernetesConfiguration/fluxConfigurations` | [2022-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KubernetesConfiguration/2022-03-01/fluxConfigurations) |
+| `Microsoft.KubernetesConfiguration/fluxConfigurations` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KubernetesConfiguration/2023-05-01/fluxConfigurations) |
 
 ## Usage examples
 
@@ -76,12 +76,11 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       aadProfileManaged: true
     }
     autoNodeOsUpgradeProfileUpgradeChannel: 'NodeImage'
+    defaultIngressControllerType: 'Internal'
     disableLocalAccounts: true
     enableKeyvaultSecretsProvider: true
     enableSecretRotation: true
     kedaAddon: true
-    kubernetesVersion: '1.28'
-    location: '<location>'
     maintenanceConfigurations: [
       {
         maintenanceWindow: {
@@ -154,6 +153,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     "autoNodeOsUpgradeProfileUpgradeChannel": {
       "value": "NodeImage"
     },
+    "defaultIngressControllerType": {
+      "value": "Internal"
+    },
     "disableLocalAccounts": {
       "value": true
     },
@@ -165,12 +167,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     },
     "kedaAddon": {
       "value": true
-    },
-    "kubernetesVersion": {
-      "value": "1.28"
-    },
-    "location": {
-      "value": "<location>"
     },
     "maintenanceConfigurations": {
       "value": [
@@ -252,12 +248,11 @@ param aadProfile = {
   aadProfileManaged: true
 }
 param autoNodeOsUpgradeProfileUpgradeChannel = 'NodeImage'
+param defaultIngressControllerType = 'Internal'
 param disableLocalAccounts = true
 param enableKeyvaultSecretsProvider = true
 param enableSecretRotation = true
 param kedaAddon = true
-param kubernetesVersion = '1.28'
-param location = '<location>'
 param maintenanceConfigurations = [
   {
     maintenanceWindow: {
@@ -384,11 +379,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     ]
     autoNodeOsUpgradeProfileUpgradeChannel: 'Unmanaged'
     autoUpgradeProfileUpgradeChannel: 'stable'
-    customerManagedKey: {
-      keyName: '<keyName>'
-      keyVaultNetworkAccess: 'Public'
-      keyVaultResourceId: '<keyVaultResourceId>'
-    }
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -425,6 +415,11 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
             syncIntervalInSeconds: 300
             timeoutInSeconds: 180
             url: 'https://github.com/mspnp/aks-baseline'
+          }
+          kustomizations: {
+            unified: {
+              path: './cluster-manifests'
+            }
           }
           namespace: 'flux-system'
           scope: 'cluster'
@@ -515,7 +510,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       }
     ]
     managedIdentities: {
-      userAssignedResourcesIds: [
+      userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
     }
@@ -653,13 +648,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     "autoUpgradeProfileUpgradeChannel": {
       "value": "stable"
     },
-    "customerManagedKey": {
-      "value": {
-        "keyName": "<keyName>",
-        "keyVaultNetworkAccess": "Public",
-        "keyVaultResourceId": "<keyVaultResourceId>"
-      }
-    },
     "diagnosticSettings": {
       "value": [
         {
@@ -721,6 +709,11 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
               "syncIntervalInSeconds": 300,
               "timeoutInSeconds": 180,
               "url": "https://github.com/mspnp/aks-baseline"
+            },
+            "kustomizations": {
+              "unified": {
+                "path": "./cluster-manifests"
+              }
             },
             "namespace": "flux-system",
             "scope": "cluster"
@@ -821,7 +814,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     },
     "managedIdentities": {
       "value": {
-        "userAssignedResourcesIds": [
+        "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
         ]
       }
@@ -962,11 +955,6 @@ param agentPools = [
 ]
 param autoNodeOsUpgradeProfileUpgradeChannel = 'Unmanaged'
 param autoUpgradeProfileUpgradeChannel = 'stable'
-param customerManagedKey = {
-  keyName: '<keyName>'
-  keyVaultNetworkAccess: 'Public'
-  keyVaultResourceId: '<keyVaultResourceId>'
-}
 param diagnosticSettings = [
   {
     eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -1003,6 +991,11 @@ param fluxExtension = {
         syncIntervalInSeconds: 300
         timeoutInSeconds: 180
         url: 'https://github.com/mspnp/aks-baseline'
+      }
+      kustomizations: {
+        unified: {
+          path: './cluster-manifests'
+        }
       }
       namespace: 'flux-system'
       scope: 'cluster'
@@ -1093,7 +1086,7 @@ param maintenanceConfigurations = [
   }
 ]
 param managedIdentities = {
-  userAssignedResourcesIds: [
+  userAssignedResourceIds: [
     '<managedIdentityResourceId>'
   ]
 }
@@ -1160,7 +1153,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       aadProfileEnableAzureRBAC: true
       aadProfileManaged: true
     }
-    location: '<location>'
     managedIdentities: {
       systemAssigned: true
     }
@@ -1201,9 +1193,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         "aadProfileManaged": true
       }
     },
-    "location": {
-      "value": "<location>"
-    },
     "managedIdentities": {
       "value": {
         "systemAssigned": true
@@ -1238,7 +1227,6 @@ param aadProfile = {
   aadProfileEnableAzureRBAC: true
   aadProfileManaged: true
 }
-param location = '<location>'
 param managedIdentities = {
   systemAssigned: true
 }
@@ -1493,9 +1481,8 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    location: '<location>'
     managedIdentities: {
-      userAssignedResourcesIds: [
+      userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
     }
@@ -1614,12 +1601,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
         }
       ]
     },
-    "location": {
-      "value": "<location>"
-    },
     "managedIdentities": {
       "value": {
-        "userAssignedResourcesIds": [
+        "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
         ]
       }
@@ -1733,9 +1717,8 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
-param location = '<location>'
 param managedIdentities = {
-  userAssignedResourcesIds: [
+  userAssignedResourceIds: [
     '<managedIdentityResourceId>'
   ]
 }
@@ -1795,7 +1778,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     // Non-required parameters
     aadProfile: '<aadProfile>'
     disableLocalAccounts: false
-    location: '<location>'
     managedIdentities: {
       systemAssigned: true
     }
@@ -1836,9 +1818,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     "disableLocalAccounts": {
       "value": false
     },
-    "location": {
-      "value": "<location>"
-    },
     "managedIdentities": {
       "value": {
         "systemAssigned": true
@@ -1871,7 +1850,6 @@ param primaryAgentPoolProfiles = [
 // Non-required parameters
 param aadProfile = '<aadProfile>'
 param disableLocalAccounts = false
-param location = '<location>'
 param managedIdentities = {
   systemAssigned: true
 }
@@ -1947,9 +1925,8 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     ]
     dnsServiceIP: '10.10.200.10'
     enablePrivateCluster: true
-    location: '<location>'
     managedIdentities: {
-      userAssignedResourcesIds: [
+      userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
     }
@@ -2039,12 +2016,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     "enablePrivateCluster": {
       "value": true
     },
-    "location": {
-      "value": "<location>"
-    },
     "managedIdentities": {
       "value": {
-        "userAssignedResourcesIds": [
+        "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
         ]
       }
@@ -2129,9 +2103,8 @@ param agentPools = [
 ]
 param dnsServiceIP = '10.10.200.10'
 param enablePrivateCluster = true
-param location = '<location>'
 param managedIdentities = {
-  userAssignedResourcesIds: [
+  userAssignedResourceIds: [
     '<managedIdentityResourceId>'
   ]
 }
@@ -2265,7 +2238,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     dnsServiceIP: '10.10.200.10'
     enableAzureDefender: true
     enablePrivateCluster: true
-    location: '<location>'
     maintenanceConfigurations: [
       {
         maintenanceWindow: {
@@ -2299,7 +2271,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       }
     ]
     managedIdentities: {
-      userAssignedResourcesIds: [
+      userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
     }
@@ -2461,9 +2433,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     "enablePrivateCluster": {
       "value": true
     },
-    "location": {
-      "value": "<location>"
-    },
     "maintenanceConfigurations": {
       "value": [
         {
@@ -2500,7 +2469,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     },
     "managedIdentities": {
       "value": {
-        "userAssignedResourcesIds": [
+        "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
         ]
       }
@@ -2655,7 +2624,6 @@ param disableLocalAccounts = true
 param dnsServiceIP = '10.10.200.10'
 param enableAzureDefender = true
 param enablePrivateCluster = true
-param location = '<location>'
 param maintenanceConfigurations = [
   {
     maintenanceWindow: {
@@ -2689,7 +2657,7 @@ param maintenanceConfigurations = [
   }
 ]
 param managedIdentities = {
-  userAssignedResourcesIds: [
+  userAssignedResourceIds: [
     '<managedIdentityResourceId>'
   ]
 }
@@ -2758,7 +2726,7 @@ param tags = {
 | [`azurePolicyVersion`](#parameter-azurepolicyversion) | string | Specifies the azure policy version to use. |
 | [`backendPoolType`](#parameter-backendpooltype) | string | The type of the managed inbound Load Balancer BackendPool. |
 | [`costAnalysisEnabled`](#parameter-costanalysisenabled) | bool | Specifies whether the cost analysis add-on is enabled or not. If Enabled `enableStorageProfileDiskCSIDriver` is set to true as it is needed. |
-| [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
+| [`defaultIngressControllerType`](#parameter-defaultingresscontrollertype) | string | Ingress type for the default NginxIngressController custom resource. It will be ignored if `webApplicationRoutingEnabled` is set to `false`. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`disableCustomMetrics`](#parameter-disablecustommetrics) | bool | Indicates whether custom metrics collection has to be disabled or not. If not specified the default is false. No custom metrics will be emitted if this field is false but the container insights enabled field is false. |
 | [`disableLocalAccounts`](#parameter-disablelocalaccounts) | bool | If set to true, getting static credentials will be disabled for this cluster. This must only be used on Managed Clusters that are AAD enabled. |
@@ -2817,6 +2785,7 @@ param tags = {
 | [`nodeResourceGroup`](#parameter-noderesourcegroup) | string | Name of the resource group containing agent pool nodes. |
 | [`nodeResourceGroupProfile`](#parameter-noderesourcegroupprofile) | object | The node resource group configuration profile. |
 | [`omsAgentEnabled`](#parameter-omsagentenabled) | bool | Specifies whether the OMS agent is enabled. |
+| [`omsAgentUseAADAuth`](#parameter-omsagentuseaadauth) | bool | Specifies whether the OMS agent is using managed identity authentication. |
 | [`openServiceMeshEnabled`](#parameter-openservicemeshenabled) | bool | Specifies whether the openServiceMesh add-on is enabled or not. |
 | [`outboundType`](#parameter-outboundtype) | string | Specifies outbound (egress) routing method. |
 | [`podCidr`](#parameter-podcidr) | string | Specifies the CIDR notation IP range from which to assign pod IPs when kubenet is used. |
@@ -2868,7 +2837,9 @@ Properties of the primary agent pool.
 | [`enableEncryptionAtHost`](#parameter-primaryagentpoolprofilesenableencryptionathost) | bool | Whether to enable encryption at host for the agent pool. |
 | [`enableFIPS`](#parameter-primaryagentpoolprofilesenablefips) | bool | Whether to enable FIPS for the agent pool. |
 | [`enableNodePublicIP`](#parameter-primaryagentpoolprofilesenablenodepublicip) | bool | Whether to enable node public IP for the agent pool. |
+| [`enableSecureBoot`](#parameter-primaryagentpoolprofilesenablesecureboot) | bool | Secure Boot is a feature of Trusted Launch which ensures that only signed operating systems and drivers can boot. For more details, see aka.ms/aks/trustedlaunch. |
 | [`enableUltraSSD`](#parameter-primaryagentpoolprofilesenableultrassd) | bool | Whether to enable Ultra SSD for the agent pool. |
+| [`enableVTPM`](#parameter-primaryagentpoolprofilesenablevtpm) | bool | vTPM is a Trusted Launch feature for configuring a dedicated secure vault for keys and measurements held locally on the node. For more details, see aka.ms/aks/trustedlaunch. |
 | [`gpuInstanceProfile`](#parameter-primaryagentpoolprofilesgpuinstanceprofile) | string | The GPU instance profile of the agent pool. |
 | [`kubeletDiskType`](#parameter-primaryagentpoolprofileskubeletdisktype) | string | The kubelet disk type of the agent pool. |
 | [`maxCount`](#parameter-primaryagentpoolprofilesmaxcount) | int | The maximum number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive). |
@@ -2883,7 +2854,7 @@ Properties of the primary agent pool.
 | [`orchestratorVersion`](#parameter-primaryagentpoolprofilesorchestratorversion) | string | The Kubernetes version of the agent pool. |
 | [`osDiskSizeGB`](#parameter-primaryagentpoolprofilesosdisksizegb) | int | The OS disk size in GB of the agent pool. |
 | [`osDiskType`](#parameter-primaryagentpoolprofilesosdisktype) | string | The OS disk type of the agent pool. |
-| [`osSku`](#parameter-primaryagentpoolprofilesossku) | string | The OS SKU of the agent pool. |
+| [`osSKU`](#parameter-primaryagentpoolprofilesossku) | string | The OS SKU of the agent pool. |
 | [`osType`](#parameter-primaryagentpoolprofilesostype) | string | The OS type of the agent pool. |
 | [`podSubnetResourceId`](#parameter-primaryagentpoolprofilespodsubnetresourceid) | string | The pod subnet ID of the agent pool. |
 | [`proximityPlacementGroupResourceId`](#parameter-primaryagentpoolprofilesproximityplacementgroupresourceid) | string | The proximity placement group resource ID of the agent pool. |
@@ -2954,9 +2925,23 @@ Whether to enable node public IP for the agent pool.
 - Required: No
 - Type: bool
 
+### Parameter: `primaryAgentPoolProfiles.enableSecureBoot`
+
+Secure Boot is a feature of Trusted Launch which ensures that only signed operating systems and drivers can boot. For more details, see aka.ms/aks/trustedlaunch.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `primaryAgentPoolProfiles.enableUltraSSD`
 
 Whether to enable Ultra SSD for the agent pool.
+
+- Required: No
+- Type: bool
+
+### Parameter: `primaryAgentPoolProfiles.enableVTPM`
+
+vTPM is a Trusted Launch feature for configuring a dedicated secure vault for keys and measurements held locally on the node. For more details, see aka.ms/aks/trustedlaunch.
 
 - Required: No
 - Type: bool
@@ -3076,7 +3061,7 @@ The OS disk type of the agent pool.
 - Required: No
 - Type: string
 
-### Parameter: `primaryAgentPoolProfiles.osSku`
+### Parameter: `primaryAgentPoolProfiles.osSKU`
 
 The OS SKU of the agent pool.
 
@@ -3337,7 +3322,9 @@ Define one or more secondary/additional agent pools.
 | [`enableEncryptionAtHost`](#parameter-agentpoolsenableencryptionathost) | bool | Whether to enable encryption at host for the agent pool. |
 | [`enableFIPS`](#parameter-agentpoolsenablefips) | bool | Whether to enable FIPS for the agent pool. |
 | [`enableNodePublicIP`](#parameter-agentpoolsenablenodepublicip) | bool | Whether to enable node public IP for the agent pool. |
+| [`enableSecureBoot`](#parameter-agentpoolsenablesecureboot) | bool | Secure Boot is a feature of Trusted Launch which ensures that only signed operating systems and drivers can boot. For more details, see aka.ms/aks/trustedlaunch. |
 | [`enableUltraSSD`](#parameter-agentpoolsenableultrassd) | bool | Whether to enable Ultra SSD for the agent pool. |
+| [`enableVTPM`](#parameter-agentpoolsenablevtpm) | bool | vTPM is a Trusted Launch feature for configuring a dedicated secure vault for keys and measurements held locally on the node. For more details, see aka.ms/aks/trustedlaunch. |
 | [`gpuInstanceProfile`](#parameter-agentpoolsgpuinstanceprofile) | string | The GPU instance profile of the agent pool. |
 | [`kubeletDiskType`](#parameter-agentpoolskubeletdisktype) | string | The kubelet disk type of the agent pool. |
 | [`maxCount`](#parameter-agentpoolsmaxcount) | int | The maximum number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive). |
@@ -3352,7 +3339,7 @@ Define one or more secondary/additional agent pools.
 | [`orchestratorVersion`](#parameter-agentpoolsorchestratorversion) | string | The Kubernetes version of the agent pool. |
 | [`osDiskSizeGB`](#parameter-agentpoolsosdisksizegb) | int | The OS disk size in GB of the agent pool. |
 | [`osDiskType`](#parameter-agentpoolsosdisktype) | string | The OS disk type of the agent pool. |
-| [`osSku`](#parameter-agentpoolsossku) | string | The OS SKU of the agent pool. |
+| [`osSKU`](#parameter-agentpoolsossku) | string | The OS SKU of the agent pool. |
 | [`osType`](#parameter-agentpoolsostype) | string | The OS type of the agent pool. |
 | [`podSubnetResourceId`](#parameter-agentpoolspodsubnetresourceid) | string | The pod subnet ID of the agent pool. |
 | [`proximityPlacementGroupResourceId`](#parameter-agentpoolsproximityplacementgroupresourceid) | string | The proximity placement group resource ID of the agent pool. |
@@ -3423,9 +3410,23 @@ Whether to enable node public IP for the agent pool.
 - Required: No
 - Type: bool
 
+### Parameter: `agentPools.enableSecureBoot`
+
+Secure Boot is a feature of Trusted Launch which ensures that only signed operating systems and drivers can boot. For more details, see aka.ms/aks/trustedlaunch.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `agentPools.enableUltraSSD`
 
 Whether to enable Ultra SSD for the agent pool.
+
+- Required: No
+- Type: bool
+
+### Parameter: `agentPools.enableVTPM`
+
+vTPM is a Trusted Launch feature for configuring a dedicated secure vault for keys and measurements held locally on the node. For more details, see aka.ms/aks/trustedlaunch.
 
 - Required: No
 - Type: bool
@@ -3545,7 +3546,7 @@ The OS disk type of the agent pool.
 - Required: No
 - Type: string
 
-### Parameter: `agentPools.osSku`
+### Parameter: `agentPools.osSKU`
 
 The OS SKU of the agent pool.
 
@@ -3905,61 +3906,21 @@ Specifies whether the cost analysis add-on is enabled or not. If Enabled `enable
 - Type: bool
 - Default: `False`
 
-### Parameter: `customerManagedKey`
+### Parameter: `defaultIngressControllerType`
 
-The customer managed key definition.
+Ingress type for the default NginxIngressController custom resource. It will be ignored if `webApplicationRoutingEnabled` is set to `false`.
 
 - Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`keyName`](#parameter-customermanagedkeykeyname) | string | The name of the customer managed key to use for encryption. |
-| [`keyVaultNetworkAccess`](#parameter-customermanagedkeykeyvaultnetworkaccess) | string | Network access of key vault. The possible values are Public and Private. Public means the key vault allows public access from all networks. Private means the key vault disables public access and enables private link. The default value is Public. |
-| [`keyVaultResourceId`](#parameter-customermanagedkeykeyvaultresourceid) | string | The resource ID of a key vault to reference a customer managed key for encryption from. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`keyVersion`](#parameter-customermanagedkeykeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, using 'latest'. |
-
-### Parameter: `customerManagedKey.keyName`
-
-The name of the customer managed key to use for encryption.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `customerManagedKey.keyVaultNetworkAccess`
-
-Network access of key vault. The possible values are Public and Private. Public means the key vault allows public access from all networks. Private means the key vault disables public access and enables private link. The default value is Public.
-
-- Required: Yes
 - Type: string
 - Allowed:
   ```Bicep
   [
-    'Private'
-    'Public'
+    'AnnotationControlled'
+    'External'
+    'Internal'
+    'None'
   ]
   ```
-
-### Parameter: `customerManagedKey.keyVaultResourceId`
-
-The resource ID of a key vault to reference a customer managed key for encryption from.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `customerManagedKey.keyVersion`
-
-The version of the customer managed key to reference for encryption. If not provided, using 'latest'.
-
-- Required: No
-- Type: string
 
 ### Parameter: `diagnosticSettings`
 
@@ -3978,7 +3939,7 @@ The diagnostic settings of the service.
 | [`logCategoriesAndGroups`](#parameter-diagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
 | [`marketplacePartnerResourceId`](#parameter-diagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
 | [`metricCategories`](#parameter-diagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
-| [`name`](#parameter-diagnosticsettingsname) | string | The name of diagnostic setting. |
+| [`name`](#parameter-diagnosticsettingsname) | string | The name of the diagnostic setting. |
 | [`storageAccountResourceId`](#parameter-diagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 | [`workspaceResourceId`](#parameter-diagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 
@@ -4088,7 +4049,7 @@ Enable or disable the category explicitly. Default is `true`.
 
 ### Parameter: `diagnosticSettings.name`
 
-The name of diagnostic setting.
+The name of the diagnostic setting.
 
 - Required: No
 - Type: string
@@ -4343,14 +4304,14 @@ The configuration protected settings of the extension.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`sshPrivateKey`](#parameter-fluxextensionconfigurationprotectedsettingssshprivatekey) | string | The SSH private key to use for Git authentication. |
+| [`sshPrivateKey`](#parameter-fluxextensionconfigurationprotectedsettingssshprivatekey) | securestring | The SSH private key to use for Git authentication. |
 
 ### Parameter: `fluxExtension.configurationProtectedSettings.sshPrivateKey`
 
 The SSH private key to use for Git authentication.
 
 - Required: No
-- Type: string
+- Type: securestring
 
 ### Parameter: `fluxExtension.configurations`
 
@@ -4430,6 +4391,7 @@ The interval in hours Image Cleaner will run. The maximum value is three months.
 - Required: No
 - Type: int
 - Default: `24`
+- MinValue: 24
 
 ### Parameter: `ingressApplicationGatewayEnabled`
 
@@ -4438,6 +4400,7 @@ Specifies whether the ingressApplicationGateway (AGIC) add-on is enabled or not.
 - Required: No
 - Type: bool
 - Default: `False`
+- MinValue: 24
 
 ### Parameter: `istioServiceMeshCertificateAuthority`
 
@@ -4445,6 +4408,7 @@ The Istio Certificate Authority definition.
 
 - Required: No
 - Type: object
+- MinValue: 24
 
 **Required parameters**
 
@@ -4462,6 +4426,7 @@ The Certificate chain object name in Azure Key Vault.
 
 - Required: Yes
 - Type: string
+- MinValue: 24
 
 ### Parameter: `istioServiceMeshCertificateAuthority.certObjectName`
 
@@ -4469,6 +4434,7 @@ The Intermediate certificate object name in Azure Key Vault.
 
 - Required: Yes
 - Type: string
+- MinValue: 24
 
 ### Parameter: `istioServiceMeshCertificateAuthority.keyObjectName`
 
@@ -4476,6 +4442,7 @@ The Intermediate certificate private key object name in Azure Key Vault.
 
 - Required: Yes
 - Type: string
+- MinValue: 24
 
 ### Parameter: `istioServiceMeshCertificateAuthority.keyVaultResourceId`
 
@@ -4483,6 +4450,7 @@ The resource ID of a key vault to reference a Certificate Authority from.
 
 - Required: Yes
 - Type: string
+- MinValue: 24
 
 ### Parameter: `istioServiceMeshCertificateAuthority.rootCertObjectName`
 
@@ -4490,6 +4458,7 @@ Root certificate object name in Azure Key Vault.
 
 - Required: Yes
 - Type: string
+- MinValue: 24
 
 ### Parameter: `istioServiceMeshEnabled`
 
@@ -4498,6 +4467,7 @@ Specifies whether the Istio ServiceMesh add-on is enabled or not.
 - Required: No
 - Type: bool
 - Default: `False`
+- MinValue: 24
 
 ### Parameter: `istioServiceMeshExternalIngressGatewayEnabled`
 
@@ -4506,6 +4476,7 @@ Specifies whether the External Istio Ingress Gateway is enabled or not.
 - Required: No
 - Type: bool
 - Default: `False`
+- MinValue: 24
 
 ### Parameter: `istioServiceMeshInternalIngressGatewayEnabled`
 
@@ -4514,6 +4485,7 @@ Specifies whether the Internal Istio Ingress Gateway is enabled or not.
 - Required: No
 - Type: bool
 - Default: `False`
+- MinValue: 24
 
 ### Parameter: `istioServiceMeshRevisions`
 
@@ -4521,6 +4493,7 @@ The list of revisions of the Istio control plane. When an upgrade is not in prog
 
 - Required: No
 - Type: array
+- MinValue: 24
 
 ### Parameter: `kedaAddon`
 
@@ -4529,6 +4502,7 @@ Enables Kubernetes Event-driven Autoscaling (KEDA).
 - Required: No
 - Type: bool
 - Default: `False`
+- MinValue: 24
 
 ### Parameter: `kubeDashboardEnabled`
 
@@ -4537,6 +4511,7 @@ Specifies whether the kubeDashboard add-on is enabled or not.
 - Required: No
 - Type: bool
 - Default: `False`
+- MinValue: 24
 
 ### Parameter: `kubernetesVersion`
 
@@ -4544,6 +4519,7 @@ Version of Kubernetes specified when creating the managed cluster.
 
 - Required: No
 - Type: string
+- MinValue: 24
 
 ### Parameter: `loadBalancerSku`
 
@@ -4559,6 +4535,7 @@ Specifies the sku of the load balancer used by the virtual machine scale sets us
     'standard'
   ]
   ```
+- MinValue: 24
 
 ### Parameter: `location`
 
@@ -4567,6 +4544,7 @@ Specifies the location of AKS cluster. It picks up Resource Group's location by 
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
+- MinValue: 24
 
 ### Parameter: `lock`
 
@@ -4574,6 +4552,7 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
+- MinValue: 24
 
 **Optional parameters**
 
@@ -4596,6 +4575,7 @@ Specify the type of lock.
     'ReadOnly'
   ]
   ```
+- MinValue: 24
 
 ### Parameter: `lock.name`
 
@@ -4603,6 +4583,7 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+- MinValue: 24
 
 ### Parameter: `maintenanceConfigurations`
 
@@ -4610,6 +4591,7 @@ Whether or not to use AKS Automatic mode.
 
 - Required: No
 - Type: array
+- MinValue: 24
 
 **Required parameters**
 
@@ -4624,6 +4606,7 @@ Maintenance window for the maintenance configuration.
 
 - Required: Yes
 - Type: object
+- MinValue: 24
 
 ### Parameter: `maintenanceConfigurations.name`
 
@@ -4638,6 +4621,7 @@ Name of maintenance window.
     'aksManagedNodeOSUpgradeSchedule'
   ]
   ```
+- MinValue: 24
 
 ### Parameter: `managedIdentities`
 
@@ -4645,13 +4629,14 @@ The managed identity definition for this resource. Only one type of identity is 
 
 - Required: No
 - Type: object
+- MinValue: 24
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
-| [`userAssignedResourcesIds`](#parameter-managedidentitiesuserassignedresourcesids) | array | The resource ID(s) to assign to the resource. |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
 
 ### Parameter: `managedIdentities.systemAssigned`
 
@@ -4659,13 +4644,15 @@ Enables system assigned managed identity on the resource.
 
 - Required: No
 - Type: bool
+- MinValue: 24
 
-### Parameter: `managedIdentities.userAssignedResourcesIds`
+### Parameter: `managedIdentities.userAssignedResourceIds`
 
-The resource ID(s) to assign to the resource.
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
 
 - Required: No
 - Type: array
+- MinValue: 24
 
 ### Parameter: `managedOutboundIPCount`
 
@@ -4674,6 +4661,7 @@ Outbound IP Count for the Load balancer.
 - Required: No
 - Type: int
 - Default: `0`
+- MinValue: 24
 
 ### Parameter: `metricAnnotationsAllowList`
 
@@ -4682,6 +4670,7 @@ A comma-separated list of Kubernetes cluster metrics annotations.
 - Required: No
 - Type: string
 - Default: `''`
+- MinValue: 24
 
 ### Parameter: `metricLabelsAllowlist`
 
@@ -4690,6 +4679,7 @@ A comma-separated list of kubernetes cluster metrics labels.
 - Required: No
 - Type: string
 - Default: `''`
+- MinValue: 24
 
 ### Parameter: `monitoringWorkspaceResourceId`
 
@@ -4697,6 +4687,7 @@ Resource ID of the monitoring log analytics workspace.
 
 - Required: No
 - Type: string
+- MinValue: 24
 
 ### Parameter: `networkDataplane`
 
@@ -4711,6 +4702,7 @@ Network dataplane used in the Kubernetes cluster. Not compatible with kubenet ne
     'cilium'
   ]
   ```
+- MinValue: 24
 
 ### Parameter: `networkPlugin`
 
@@ -4725,6 +4717,7 @@ Specifies the network plugin used for building Kubernetes network.
     'kubenet'
   ]
   ```
+- MinValue: 24
 
 ### Parameter: `networkPluginMode`
 
@@ -4738,6 +4731,7 @@ Network plugin mode used for building the Kubernetes network. Not compatible wit
     'overlay'
   ]
   ```
+- MinValue: 24
 
 ### Parameter: `networkPolicy`
 
@@ -4753,6 +4747,7 @@ Specifies the network policy used for building Kubernetes network. - calico or a
     'cilium'
   ]
   ```
+- MinValue: 24
 
 ### Parameter: `nodeProvisioningProfileMode`
 
@@ -4767,6 +4762,7 @@ Node provisioning settings that apply to the whole cluster. AUTO MODE IS A PARAM
     'Manual'
   ]
   ```
+- MinValue: 24
 
 ### Parameter: `nodeResourceGroup`
 
@@ -4775,6 +4771,7 @@ Name of the resource group containing agent pool nodes.
 - Required: No
 - Type: string
 - Default: `[format('{0}_aks_{1}_nodes', resourceGroup().name, parameters('name'))]`
+- MinValue: 24
 
 ### Parameter: `nodeResourceGroupProfile`
 
@@ -4782,6 +4779,7 @@ The node resource group configuration profile.
 
 - Required: No
 - Type: object
+- MinValue: 24
 
 ### Parameter: `omsAgentEnabled`
 
@@ -4790,6 +4788,16 @@ Specifies whether the OMS agent is enabled.
 - Required: No
 - Type: bool
 - Default: `True`
+- MinValue: 24
+
+### Parameter: `omsAgentUseAADAuth`
+
+Specifies whether the OMS agent is using managed identity authentication.
+
+- Required: No
+- Type: bool
+- Default: `False`
+- MinValue: 24
 
 ### Parameter: `openServiceMeshEnabled`
 
@@ -4798,6 +4806,7 @@ Specifies whether the openServiceMesh add-on is enabled or not.
 - Required: No
 - Type: bool
 - Default: `False`
+- MinValue: 24
 
 ### Parameter: `outboundType`
 
@@ -4815,6 +4824,7 @@ Specifies outbound (egress) routing method.
     'userDefinedRouting'
   ]
   ```
+- MinValue: 24
 
 ### Parameter: `podCidr`
 
@@ -4822,6 +4832,7 @@ Specifies the CIDR notation IP range from which to assign pod IPs when kubenet i
 
 - Required: No
 - Type: string
+- MinValue: 24
 
 ### Parameter: `podIdentityProfileAllowNetworkPluginKubenet`
 
@@ -4830,6 +4841,7 @@ Running in Kubenet is disabled by default due to the security related nature of 
 - Required: No
 - Type: bool
 - Default: `False`
+- MinValue: 24
 
 ### Parameter: `podIdentityProfileEnable`
 
@@ -4838,6 +4850,7 @@ Whether the pod identity addon is enabled.
 - Required: No
 - Type: bool
 - Default: `False`
+- MinValue: 24
 
 ### Parameter: `podIdentityProfileUserAssignedIdentities`
 
@@ -4845,6 +4858,7 @@ The pod identities to use in the cluster.
 
 - Required: No
 - Type: array
+- MinValue: 24
 
 ### Parameter: `podIdentityProfileUserAssignedIdentityExceptions`
 
@@ -4852,6 +4866,7 @@ The pod identity exceptions to allow.
 
 - Required: No
 - Type: array
+- MinValue: 24
 
 ### Parameter: `privateDNSZone`
 
@@ -4859,6 +4874,7 @@ Private DNS Zone configuration. Set to 'system' and AKS will create a private DN
 
 - Required: No
 - Type: string
+- MinValue: 24
 
 ### Parameter: `publicNetworkAccess`
 
@@ -4875,6 +4891,7 @@ Allow or deny public network access for AKS.
     'SecuredByPerimeter'
   ]
   ```
+- MinValue: 24
 
 ### Parameter: `roleAssignments`
 
@@ -4882,6 +4899,7 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- MinValue: 24
 - Roles configurable by name:
   - `'Azure Kubernetes Fleet Manager Contributor Role'`
   - `'Azure Kubernetes Fleet Manager RBAC Admin'`
@@ -4927,6 +4945,7 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- MinValue: 24
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -4934,6 +4953,7 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- MinValue: 24
 
 ### Parameter: `roleAssignments.condition`
 
@@ -4941,6 +4961,7 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- MinValue: 24
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -4954,6 +4975,7 @@ Version of the condition.
     '2.0'
   ]
   ```
+- MinValue: 24
 
 ### Parameter: `roleAssignments.delegatedManagedIdentityResourceId`
 
@@ -4961,6 +4983,7 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- MinValue: 24
 
 ### Parameter: `roleAssignments.description`
 
@@ -4968,6 +4991,7 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- MinValue: 24
 
 ### Parameter: `roleAssignments.name`
 
@@ -4975,6 +4999,7 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- MinValue: 24
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -4992,6 +5017,7 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
+- MinValue: 24
 
 ### Parameter: `serviceCidr`
 
@@ -4999,6 +5025,7 @@ A CIDR notation IP range from which to assign service cluster IPs. It must not o
 
 - Required: No
 - Type: string
+- MinValue: 24
 
 ### Parameter: `skuName`
 
@@ -5014,6 +5041,7 @@ Name of a managed cluster SKU. AUTOMATIC CLUSTER SKU IS A PARAMETER USED FOR A P
     'Base'
   ]
   ```
+- MinValue: 24
 
 ### Parameter: `skuTier`
 
@@ -5030,6 +5058,7 @@ Tier of a managed cluster SKU.
     'Standard'
   ]
   ```
+- MinValue: 24
 
 ### Parameter: `sshPublicKey`
 
@@ -5037,6 +5066,7 @@ Specifies the SSH RSA public key string for the Linux nodes.
 
 - Required: No
 - Type: string
+- MinValue: 24
 
 ### Parameter: `supportPlan`
 
@@ -5052,6 +5082,7 @@ The support plan for the Managed Cluster.
     'KubernetesOfficial'
   ]
   ```
+- MinValue: 24
 
 ### Parameter: `syslogPort`
 
@@ -5060,6 +5091,7 @@ The syslog host port. If not specified, the default port is 28330.
 - Required: No
 - Type: int
 - Default: `28330`
+- MinValue: 24
 
 ### Parameter: `tags`
 
@@ -5067,6 +5099,7 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+- MinValue: 24
 
 ### Parameter: `vpaAddon`
 
@@ -5075,6 +5108,7 @@ Whether to enable VPA add-on in cluster. Default value is false.
 - Required: No
 - Type: bool
 - Default: `False`
+- MinValue: 24
 
 ### Parameter: `webApplicationRoutingEnabled`
 
@@ -5083,6 +5117,7 @@ Specifies whether the webApplicationRoutingEnabled add-on is enabled or not.
 - Required: No
 - Type: bool
 - Default: `False`
+- MinValue: 24
 
 ## Outputs
 
@@ -5111,7 +5146,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/kubernetes-configuration/extension:0.2.0` | Remote reference |
+| `br/public:avm/res/kubernetes-configuration/extension:0.3.5` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

@@ -5,11 +5,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "3902127955131309221"
+      "templateHash": "18206582420908895315"
     },
     "name": "Policy Assignments (All scopes)",
-    "description": "This module deploys a Policy Assignment at a Management Group, Subscription or Resource Group scope.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Policy Assignment at a Management Group, Subscription or Resource Group scope."
   },
   "parameters": {
     "name": {
@@ -254,11 +253,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "7784495768661856271"
+              "templateHash": "10678509985815740940"
             },
             "name": "Policy Assignments (Management Group scope)",
-            "description": "This module deploys a Policy Assignment at a Management Group scope.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Policy Assignment at a Management Group scope."
           },
           "parameters": {
             "name": {
@@ -989,11 +987,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "5956652963277088316"
+              "templateHash": "2523227409976507857"
             },
             "name": "Policy Assignments (Subscription scope)",
-            "description": "This module deploys a Policy Assignment at a Subscription scope.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Policy Assignment at a Subscription scope."
           },
           "parameters": {
             "name": {
@@ -1244,11 +1241,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "15421130529251696480"
+              "templateHash": "3323049503112762784"
             },
             "name": "Policy Assignments (Resource Group scope)",
-            "description": "This module deploys a Policy Assignment at a Resource Group scope.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Policy Assignment at a Resource Group scope."
           },
           "parameters": {
             "name": {

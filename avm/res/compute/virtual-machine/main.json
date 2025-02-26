@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "8928644602939334563"
+      "version": "0.33.93.31351",
+      "templateHash": "12566234555040465553"
     },
     "name": "Virtual Machines",
-    "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs."
   },
   "definitions": {
     "managedIdentitiesType": {
@@ -648,9 +647,7 @@
     },
     "extensionAntiMalwareConfig": {
       "type": "object",
-      "defaultValue": {
-        "enabled": false
-      },
+      "defaultValue": "[if(equals(parameters('osType'), 'Windows'), createObject('enabled', true()), createObject('enabled', false()))]",
       "metadata": {
         "description": "Optional. The configuration for the [Anti Malware] extension. Must at least contain the [\"enabled\": true] property to be executed."
       }
@@ -934,6 +931,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
+    "enableReferencedModulesTelemetry": false,
     "linuxConfiguration": {
       "disablePasswordAuthentication": "[parameters('disablePasswordAuthentication')]",
       "ssh": {
@@ -1294,7 +1292,7 @@
             "value": "[tryGet(parameters('nicConfigurations')[copyIndex()], 'roleAssignments')]"
           },
           "enableTelemetry": {
-            "value": "[coalesce(tryGet(parameters('nicConfigurations')[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -1304,8 +1302,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "5147048658891642308"
+              "version": "0.33.93.31351",
+              "templateHash": "17423406578946107257"
             }
           },
           "definitions": {
@@ -2908,12 +2906,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "688718350646227538"
+              "version": "0.33.93.31351",
+              "templateHash": "2171772621334669730"
             },
             "name": "Virtual Machine Extensions",
-            "description": "This module deploys a Virtual Machine Extension.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Virtual Machine Extension."
           },
           "parameters": {
             "virtualMachineName": {
@@ -3024,10 +3021,7 @@
                 "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
                 "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
                 "suppressFailures": "[parameters('supressFailures')]"
-              },
-              "dependsOn": [
-                "virtualMachine"
-              ]
+              }
             }
           },
           "outputs": {
@@ -3123,12 +3117,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "688718350646227538"
+              "version": "0.33.93.31351",
+              "templateHash": "2171772621334669730"
             },
             "name": "Virtual Machine Extensions",
-            "description": "This module deploys a Virtual Machine Extension.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Virtual Machine Extension."
           },
           "parameters": {
             "virtualMachineName": {
@@ -3239,10 +3232,7 @@
                 "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
                 "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
                 "suppressFailures": "[parameters('supressFailures')]"
-              },
-              "dependsOn": [
-                "virtualMachine"
-              ]
+              }
             }
           },
           "outputs": {
@@ -3318,7 +3308,7 @@
             "value": "[coalesce(tryGet(parameters('extensionAntiMalwareConfig'), 'enableAutomaticUpgrade'), false())]"
           },
           "settings": {
-            "value": "[parameters('extensionAntiMalwareConfig').settings]"
+            "value": "[coalesce(tryGet(parameters('extensionAntiMalwareConfig'), 'settings'), createObject('AntimalwareEnabled', 'true', 'Exclusions', createObject(), 'RealtimeProtectionEnabled', 'true', 'ScheduledScanSettings', createObject('day', '7', 'isEnabled', 'true', 'scanType', 'Quick', 'time', '120')))]"
           },
           "supressFailures": {
             "value": "[coalesce(tryGet(parameters('extensionAntiMalwareConfig'), 'supressFailures'), false())]"
@@ -3334,12 +3324,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "688718350646227538"
+              "version": "0.33.93.31351",
+              "templateHash": "2171772621334669730"
             },
             "name": "Virtual Machine Extensions",
-            "description": "This module deploys a Virtual Machine Extension.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Virtual Machine Extension."
           },
           "parameters": {
             "virtualMachineName": {
@@ -3450,10 +3439,7 @@
                 "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
                 "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
                 "suppressFailures": "[parameters('supressFailures')]"
-              },
-              "dependsOn": [
-                "virtualMachine"
-              ]
+              }
             }
           },
           "outputs": {
@@ -3540,12 +3526,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "688718350646227538"
+              "version": "0.33.93.31351",
+              "templateHash": "2171772621334669730"
             },
             "name": "Virtual Machine Extensions",
-            "description": "This module deploys a Virtual Machine Extension.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Virtual Machine Extension."
           },
           "parameters": {
             "virtualMachineName": {
@@ -3656,10 +3641,7 @@
                 "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
                 "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
                 "suppressFailures": "[parameters('supressFailures')]"
-              },
-              "dependsOn": [
-                "virtualMachine"
-              ]
+              }
             }
           },
           "outputs": {
@@ -3751,12 +3733,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "688718350646227538"
+              "version": "0.33.93.31351",
+              "templateHash": "2171772621334669730"
             },
             "name": "Virtual Machine Extensions",
-            "description": "This module deploys a Virtual Machine Extension.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Virtual Machine Extension."
           },
           "parameters": {
             "virtualMachineName": {
@@ -3867,10 +3848,7 @@
                 "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
                 "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
                 "suppressFailures": "[parameters('supressFailures')]"
-              },
-              "dependsOn": [
-                "virtualMachine"
-              ]
+              }
             }
           },
           "outputs": {
@@ -3957,12 +3935,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "688718350646227538"
+              "version": "0.33.93.31351",
+              "templateHash": "2171772621334669730"
             },
             "name": "Virtual Machine Extensions",
-            "description": "This module deploys a Virtual Machine Extension.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Virtual Machine Extension."
           },
           "parameters": {
             "virtualMachineName": {
@@ -4073,10 +4050,7 @@
                 "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
                 "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
                 "suppressFailures": "[parameters('supressFailures')]"
-              },
-              "dependsOn": [
-                "virtualMachine"
-              ]
+              }
             }
           },
           "outputs": {
@@ -4171,12 +4145,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "688718350646227538"
+              "version": "0.33.93.31351",
+              "templateHash": "2171772621334669730"
             },
             "name": "Virtual Machine Extensions",
-            "description": "This module deploys a Virtual Machine Extension.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Virtual Machine Extension."
           },
           "parameters": {
             "virtualMachineName": {
@@ -4287,10 +4260,7 @@
                 "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
                 "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
                 "suppressFailures": "[parameters('supressFailures')]"
-              },
-              "dependsOn": [
-                "virtualMachine"
-              ]
+              }
             }
           },
           "outputs": {
@@ -4389,12 +4359,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "688718350646227538"
+              "version": "0.33.93.31351",
+              "templateHash": "2171772621334669730"
             },
             "name": "Virtual Machine Extensions",
-            "description": "This module deploys a Virtual Machine Extension.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Virtual Machine Extension."
           },
           "parameters": {
             "virtualMachineName": {
@@ -4505,10 +4474,7 @@
                 "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
                 "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
                 "suppressFailures": "[parameters('supressFailures')]"
-              },
-              "dependsOn": [
-                "virtualMachine"
-              ]
+              }
             }
           },
           "outputs": {
@@ -4601,12 +4567,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "688718350646227538"
+              "version": "0.33.93.31351",
+              "templateHash": "2171772621334669730"
             },
             "name": "Virtual Machine Extensions",
-            "description": "This module deploys a Virtual Machine Extension.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Virtual Machine Extension."
           },
           "parameters": {
             "virtualMachineName": {
@@ -4717,10 +4682,7 @@
                 "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
                 "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
                 "suppressFailures": "[parameters('supressFailures')]"
-              },
-              "dependsOn": [
-                "virtualMachine"
-              ]
+              }
             }
           },
           "outputs": {
@@ -4809,12 +4771,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "688718350646227538"
+              "version": "0.33.93.31351",
+              "templateHash": "2171772621334669730"
             },
             "name": "Virtual Machine Extensions",
-            "description": "This module deploys a Virtual Machine Extension.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Virtual Machine Extension."
           },
           "parameters": {
             "virtualMachineName": {
@@ -4925,10 +4886,7 @@
                 "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
                 "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
                 "suppressFailures": "[parameters('supressFailures')]"
-              },
-              "dependsOn": [
-                "virtualMachine"
-              ]
+              }
             }
           },
           "outputs": {
@@ -5026,12 +4984,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "688718350646227538"
+              "version": "0.33.93.31351",
+              "templateHash": "2171772621334669730"
             },
             "name": "Virtual Machine Extensions",
-            "description": "This module deploys a Virtual Machine Extension.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Virtual Machine Extension."
           },
           "parameters": {
             "virtualMachineName": {
@@ -5142,10 +5099,7 @@
                 "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
                 "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
                 "suppressFailures": "[parameters('supressFailures')]"
-              },
-              "dependsOn": [
-                "virtualMachine"
-              ]
+              }
             }
           },
           "outputs": {
@@ -5239,12 +5193,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "688718350646227538"
+              "version": "0.33.93.31351",
+              "templateHash": "2171772621334669730"
             },
             "name": "Virtual Machine Extensions",
-            "description": "This module deploys a Virtual Machine Extension.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Virtual Machine Extension."
           },
           "parameters": {
             "virtualMachineName": {
@@ -5355,10 +5308,7 @@
                 "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
                 "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
                 "suppressFailures": "[parameters('supressFailures')]"
-              },
-              "dependsOn": [
-                "virtualMachine"
-              ]
+              }
             }
           },
           "outputs": {
@@ -5438,12 +5388,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "17378339479808033328"
+              "version": "0.33.93.31351",
+              "templateHash": "5910828956272534599"
             },
             "name": "Recovery Service Vaults Protection Container Protected Item",
-            "description": "This module deploys a Recovery Services Vault Protection Container Protected Item.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Recovery Services Vault Protection Container Protected Item."
           },
           "parameters": {
             "name": {
@@ -5570,10 +5519,11 @@
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",
+      "nullable": true,
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[coalesce(tryGet(tryGet(reference('vm', '2024-07-01', 'full'), 'identity'), 'principalId'), '')]"
+      "value": "[tryGet(tryGet(reference('vm', '2024-07-01', 'full'), 'identity'), 'principalId')]"
     },
     "location": {
       "type": "string",

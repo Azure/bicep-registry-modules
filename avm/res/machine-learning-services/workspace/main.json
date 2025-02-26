@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "13439990734076953525"
+      "version": "0.33.93.31351",
+      "templateHash": "15776608798550000052"
     },
     "name": "Machine Learning Services Workspaces",
-    "description": "This module deploys a Machine Learning Services Workspace.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Machine Learning Services Workspace."
   },
   "definitions": {
     "featureStoreSettingType": {
@@ -1852,6 +1851,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
+    "enableReferencedModulesTelemetry": false,
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "builtInRoleNames": {
@@ -1874,10 +1874,7 @@
       "apiVersion": "2023-02-01",
       "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '//'), '/')[2]]",
       "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '////'), '/')[4]]",
-      "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]",
-      "dependsOn": [
-        "cMKKeyVault"
-      ]
+      "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]"
     },
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
@@ -1931,8 +1928,7 @@
       "properties": "[shallowMerge(createArray(createObject('friendlyName', parameters('name'), 'storageAccount', parameters('associatedStorageAccountResourceId'), 'keyVault', parameters('associatedKeyVaultResourceId'), 'applicationInsights', parameters('associatedApplicationInsightsResourceId'), 'containerRegistry', parameters('associatedContainerRegistryResourceId'), 'hbiWorkspace', parameters('hbiWorkspace'), 'description', parameters('description'), 'discoveryUrl', parameters('discoveryUrl'), 'encryption', if(not(empty(parameters('customerManagedKey'))), createObject('status', 'Enabled', 'identity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), createObject('userAssignedIdentity', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '//'), '/')[2], split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '////'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), 'dummyMsi'), '/')))), null()), 'keyVaultProperties', createObject('keyVaultArmId', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '//'), '/')[2], split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '////'), '/')[4]), 'Microsoft.KeyVault/vaults', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/'))), 'keyIdentifier', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'keyVersion'), ''))), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, parameters('customerManagedKey').keyVersion), reference('cMKKeyVault::cMKKey').keyUriWithVersion))), null()), 'imageBuildCompute', parameters('imageBuildCompute'), 'primaryUserAssignedIdentity', parameters('primaryUserAssignedIdentity'), 'systemDatastoresAuthMode', parameters('systemDatastoresAuthMode'), 'publicNetworkAccess', parameters('publicNetworkAccess'), 'serviceManagedResourcesSettings', parameters('serviceManagedResourcesSettings'), 'featureStoreSettings', parameters('featureStoreSettings'), 'hubResourceId', parameters('hubResourceId'), 'managedNetwork', parameters('managedNetworkSettings'), 'serverlessComputeSettings', parameters('serverlessComputeSettings'), 'workspaceHubConfig', parameters('workspaceHubConfig')), if(not(empty(parameters('sharedPrivateLinkResources'))), createObject('sharedPrivateLinkResources', parameters('sharedPrivateLinkResources')), createObject())))]",
       "kind": "[parameters('kind')]",
       "dependsOn": [
-        "cMKKeyVault",
-        "cMKUserAssignedIdentity"
+        "cMKKeyVault::cMKKey"
       ]
     },
     "workspace_lock": {
@@ -2073,12 +2069,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "2023974498049700881"
+              "version": "0.33.93.31351",
+              "templateHash": "6400587070695625658"
             },
             "name": "Machine Learning Services Workspaces Computes",
-            "description": "This module deploys a Machine Learning Services Workspaces Compute.\n\nAttaching a compute is not idempotent and will fail in case you try to redeploy over an existing compute in AML (see parameter `deployCompute`).",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Machine Learning Services Workspaces Compute.\n\nAttaching a compute is not idempotent and will fail in case you try to redeploy over an existing compute in AML (see parameter `deployCompute`)."
           },
           "definitions": {
             "managedIdentityAllType": {
@@ -2240,10 +2235,7 @@
               "tags": "[if(empty(parameters('resourceId')), parameters('tags'), null())]",
               "sku": "[if(empty(parameters('resourceId')), createObject('name', parameters('sku'), 'tier', parameters('sku')), null())]",
               "identity": "[if(empty(parameters('resourceId')), variables('identity'), null())]",
-              "properties": "[union(createObject('description', parameters('description'), 'disableLocalAuth', parameters('disableLocalAuth'), 'computeType', parameters('computeType')), if(not(empty(parameters('resourceId'))), createObject('resourceId', parameters('resourceId')), createObject('computeLocation', parameters('computeLocation'), 'properties', parameters('properties'))))]",
-              "dependsOn": [
-                "machineLearningWorkspace"
-              ]
+              "properties": "[union(createObject('description', parameters('description'), 'disableLocalAuth', parameters('disableLocalAuth'), 'computeType', parameters('computeType')), if(not(empty(parameters('resourceId'))), createObject('resourceId', parameters('resourceId')), createObject('computeLocation', parameters('computeLocation'), 'properties', parameters('properties'))))]"
             }
           },
           "outputs": {
@@ -2270,10 +2262,11 @@
             },
             "systemAssignedMIPrincipalId": {
               "type": "string",
+              "nullable": true,
               "metadata": {
                 "description": "The principal ID of the system assigned identity."
               },
-              "value": "[coalesce(tryGet(tryGet(reference('compute', '2022-10-01', 'full'), 'identity'), 'principalId'), '')]"
+              "value": "[tryGet(tryGet(reference('compute', '2022-10-01', 'full'), 'identity'), 'principalId')]"
             },
             "location": {
               "type": "string",
@@ -2342,12 +2335,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "342595729147977821"
+              "version": "0.33.93.31351",
+              "templateHash": "10473859406464148345"
             },
             "name": "Machine Learning Services Workspaces Connections",
-            "description": "This module creates a connection in a Machine Learning Services workspace.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module creates a connection in a Machine Learning Services workspace."
           },
           "definitions": {
             "metadataType": {
@@ -3028,10 +3020,7 @@
               "type": "Microsoft.MachineLearningServices/workspaces/connections",
               "apiVersion": "2024-04-01",
               "name": "[format('{0}/{1}', parameters('machineLearningWorkspaceName'), parameters('name'))]",
-              "properties": "[union(createObject('category', parameters('category'), 'expiryTime', parameters('expiryTime'), 'isSharedToAll', parameters('isSharedToAll'), 'metadata', parameters('metadata'), 'sharedUserList', parameters('sharedUserList'), 'target', parameters('target'), 'value', parameters('value')), parameters('connectionProperties'))]",
-              "dependsOn": [
-                "machineLearningWorkspace"
-              ]
+              "properties": "[union(createObject('category', parameters('category'), 'expiryTime', parameters('expiryTime'), 'isSharedToAll', parameters('isSharedToAll'), 'metadata', parameters('metadata'), 'sharedUserList', parameters('sharedUserList'), 'target', parameters('target'), 'value', parameters('value')), parameters('connectionProperties'))]"
             }
           },
           "outputs": {
@@ -3087,7 +3076,7 @@
             "value": "[coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId]"
           },
           "enableTelemetry": {
-            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           },
           "location": {
             "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'location'), reference(split(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location)]"

@@ -65,10 +65,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
       {
         model: {
           format: 'OpenAI'
-          name: 'gpt-35-turbo'
-          version: '0301'
+          name: 'gpt-4'
+          version: '0613'
         }
-        name: 'gpt-35-turbo'
+        name: 'gpt-4'
         sku: {
           capacity: 10
           name: 'Standard'
@@ -124,10 +124,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         {
           "model": {
             "format": "OpenAI",
-            "name": "gpt-35-turbo",
-            "version": "0301"
+            "name": "gpt-4",
+            "version": "0613"
           },
-          "name": "gpt-35-turbo",
+          "name": "gpt-4",
           "sku": {
             "capacity": 10,
             "name": "Standard"
@@ -181,10 +181,10 @@ param deployments = [
   {
     model: {
       format: 'OpenAI'
-      name: 'gpt-35-turbo'
-      version: '0301'
+      name: 'gpt-4'
+      version: '0613'
     }
-    name: 'gpt-35-turbo'
+    name: 'gpt-4'
     sku: {
       capacity: 10
       name: 'Standard'
@@ -235,10 +235,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
       {
         model: {
           format: 'OpenAI'
-          name: 'gpt-35-turbo'
-          version: '0301'
+          name: 'gpt-4'
+          version: '0613'
         }
-        name: 'gpt-35-turbo'
+        name: 'gpt-4'
         sku: {
           capacity: 10
           name: 'Standard'
@@ -278,10 +278,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         {
           "model": {
             "format": "OpenAI",
-            "name": "gpt-35-turbo",
-            "version": "0301"
+            "name": "gpt-4",
+            "version": "0613"
           },
-          "name": "gpt-35-turbo",
+          "name": "gpt-4",
           "sku": {
             "capacity": 10,
             "name": "Standard"
@@ -315,10 +315,10 @@ param deployments = [
   {
     model: {
       format: 'OpenAI'
-      name: 'gpt-35-turbo'
-      version: '0301'
+      name: 'gpt-4'
+      version: '0613'
     }
-    name: 'gpt-35-turbo'
+    name: 'gpt-4'
     sku: {
       capacity: 10
       name: 'Standard'
@@ -951,10 +951,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
       {
         model: {
           format: 'OpenAI'
-          name: 'gpt-35-turbo'
-          version: '0301'
+          name: 'gpt-4'
+          version: '0613'
         }
-        name: 'gpt-35-turbo'
+        name: 'gpt-4'
         sku: {
           capacity: 10
           name: 'Standard'
@@ -1007,10 +1007,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         {
           "model": {
             "format": "OpenAI",
-            "name": "gpt-35-turbo",
-            "version": "0301"
+            "name": "gpt-4",
+            "version": "0613"
           },
-          "name": "gpt-35-turbo",
+          "name": "gpt-4",
           "sku": {
             "capacity": 10,
             "name": "Standard"
@@ -1061,10 +1061,10 @@ param deployments = [
   {
     model: {
       format: 'OpenAI'
-      name: 'gpt-35-turbo'
-      version: '0301'
+      name: 'gpt-4'
+      version: '0613'
     }
-    name: 'gpt-35-turbo'
+    name: 'gpt-4'
     sku: {
       capacity: 10
       name: 'Standard'
@@ -1861,6 +1861,7 @@ Array of deployments about cognitive service accounts to create.
 | [`name`](#parameter-deploymentsname) | string | Specify the name of cognitive service account deployment. |
 | [`raiPolicyName`](#parameter-deploymentsraipolicyname) | string | The name of RAI policy. |
 | [`sku`](#parameter-deploymentssku) | object | The resource model definition representing SKU. |
+| [`versionUpgradeOption`](#parameter-deploymentsversionupgradeoption) | string | The version upgrade option. |
 
 ### Parameter: `deployments.model`
 
@@ -1930,6 +1931,9 @@ The resource model definition representing SKU.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`capacity`](#parameter-deploymentsskucapacity) | int | The capacity of the resource model definition representing SKU. |
+| [`family`](#parameter-deploymentsskufamily) | string | The family of the resource model definition representing SKU. |
+| [`size`](#parameter-deploymentsskusize) | string | The size of the resource model definition representing SKU. |
+| [`tier`](#parameter-deploymentsskutier) | string | The tier of the resource model definition representing SKU. |
 
 ### Parameter: `deployments.sku.name`
 
@@ -1944,6 +1948,34 @@ The capacity of the resource model definition representing SKU.
 
 - Required: No
 - Type: int
+
+### Parameter: `deployments.sku.family`
+
+The family of the resource model definition representing SKU.
+
+- Required: No
+- Type: string
+
+### Parameter: `deployments.sku.size`
+
+The size of the resource model definition representing SKU.
+
+- Required: No
+- Type: string
+
+### Parameter: `deployments.sku.tier`
+
+The tier of the resource model definition representing SKU.
+
+- Required: No
+- Type: string
+
+### Parameter: `deployments.versionUpgradeOption`
+
+The version upgrade option.
+
+- Required: No
+- Type: string
 
 ### Parameter: `diagnosticSettings`
 
@@ -2874,7 +2906,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.8.0` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.10.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |
 
 ## Data Collection

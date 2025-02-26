@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "10088627667414343400"
+      "version": "0.33.93.31351",
+      "templateHash": "16881410177731489630"
     },
     "name": "SQL Server Database",
-    "description": "This module deploys an Azure SQL Server Database.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Azure SQL Server Database."
   },
   "definitions": {
     "databaseSkuType": {
@@ -252,7 +251,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     }
@@ -645,10 +644,7 @@
         "sourceResourceId": "[parameters('sourceResourceId')]",
         "useFreeLimit": "[parameters('useFreeLimit')]",
         "zoneRedundant": "[parameters('zoneRedundant')]"
-      },
-      "dependsOn": [
-        "server"
-      ]
+      }
     },
     "database_diagnosticSettings": {
       "copy": {
@@ -721,12 +717,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "1465086214783345027"
+              "version": "0.33.93.31351",
+              "templateHash": "8340051145755870485"
             },
             "name": "Azure SQL Server Database Short Term Backup Retention Policies",
-            "description": "This module deploys an Azure SQL Server Database Short-Term Backup Retention Policy.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Azure SQL Server Database Short-Term Backup Retention Policy."
           },
           "parameters": {
             "serverName": {
@@ -839,12 +834,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "3060709558343951533"
+              "version": "0.33.93.31351",
+              "templateHash": "3863560552324183850"
             },
             "name": "SQL Server Database Long Term Backup Retention Policies",
-            "description": "This module deploys an Azure SQL Server Database Long-Term Backup Retention Policy.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Azure SQL Server Database Long-Term Backup Retention Policy."
           },
           "parameters": {
             "serverName": {
@@ -911,10 +905,7 @@
               "existing": true,
               "type": "Microsoft.Sql/servers/databases",
               "apiVersion": "2023-08-01-preview",
-              "name": "[format('{0}/{1}', parameters('serverName'), parameters('databaseName'))]",
-              "dependsOn": [
-                "server"
-              ]
+              "name": "[format('{0}/{1}', parameters('serverName'), parameters('databaseName'))]"
             },
             "server": {
               "existing": true,
@@ -933,10 +924,7 @@
                 "weeklyRetention": "[parameters('weeklyRetention')]",
                 "weekOfYear": "[parameters('weekOfYear')]",
                 "yearlyRetention": "[parameters('yearlyRetention')]"
-              },
-              "dependsOn": [
-                "server::database"
-              ]
+              }
             }
           },
           "outputs": {

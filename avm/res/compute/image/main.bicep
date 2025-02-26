@@ -1,6 +1,5 @@
 metadata name = 'Images'
 metadata description = 'This module deploys a Compute Image.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the image.')
 param name string
@@ -11,38 +10,58 @@ param location string = resourceGroup().location
 @description('Required. The Virtual Hard Disk.')
 param osDiskBlobUri string
 
-@description('Required. This property allows you to specify the type of the OS that is included in the disk if creating a VM from a custom image. - Windows or Linux.')
+@description('Required. This property allows you to specify the type of the OS that is included in the disk if creating a VM from a custom image.')
+@allowed([
+  'Windows'
+  'Linux'
+])
 param osType string
 
-@description('Optional. Specifies the caching requirements. Default: None for Standard storage. ReadOnly for Premium storage. - None, ReadOnly, ReadWrite.')
+@description('Required. Specifies the caching requirements. Default: None for Standard storage. ReadOnly for Premium storage.')
+@allowed([
+  'None'
+  'ReadOnly'
+  'ReadWrite'
+])
 param osDiskCaching string
 
-@description('Optional. Specifies the storage account type for the managed disk. NOTE: UltraSSD_LRS can only be used with data disks, it cannot be used with OS Disk. - Standard_LRS, Premium_LRS, StandardSSD_LRS, UltraSSD_LRS.')
+@description('Required. Specifies the storage account type for the managed disk. NOTE: UltraSSD_LRS can only be used with data disks, it cannot be used with OS Disk.')
+@allowed([
+  'Standard_LRS'
+  'Premium_LRS'
+  'StandardSSD_LRS'
+  'UltraSSD_LRS'
+])
 param osAccountType string
 
 @description('Optional. Default is false. Specifies whether an image is zone resilient or not. Zone resilient images can be created only in regions that provide Zone Redundant Storage (ZRS).')
 param zoneResilient bool = false
 
-@description('Optional. Gets the HyperVGenerationType of the VirtualMachine created from the image. - V1 or V2.')
+@description('Optional. Gets the HyperVGenerationType of the VirtualMachine created from the image.')
+@allowed([
+  'V1'
+  'V2'
+])
 param hyperVGeneration string = 'V1'
 
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
 @description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
 param tags object?
 
 @description('Optional. The extended location of the Image.')
-param extendedLocation object = {}
+param extendedLocation object?
 
 @description('Optional. The source virtual machine from which Image is created.')
-param sourceVirtualMachineResourceId string = ''
+param sourceVirtualMachineResourceId string?
 
 @description('Optional. Specifies the customer managed disk encryption set resource ID for the managed image disk.')
-param diskEncryptionSetResourceId string = ''
+param diskEncryptionSetResourceId string?
 
 @description('Optional. The managedDisk.')
-param managedDiskResourceId string = ''
+param managedDiskResourceId string?
 
 @description('Optional. Specifies the size of empty data disks in gigabytes. This element can be used to overwrite the name of the disk in a virtual machine image. This value cannot be larger than 1023 GB.')
 param diskSizeGB int = 128
@@ -55,7 +74,7 @@ param diskSizeGB int = 128
 param osState string = 'Generalized'
 
 @description('Optional. The snapshot resource ID.')
-param snapshotResourceId string = ''
+param snapshotResourceId string?
 
 @description('Optional. Specifies the parameters that are used to add a data disk to a virtual machine.')
 param dataDisks array = []
@@ -107,11 +126,11 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource image 'Microsoft.Compute/images@2022-11-01' = {
+resource image 'Microsoft.Compute/images@2024-07-01' = {
   name: name
   location: location
   tags: tags
-  extendedLocation: !empty(extendedLocation) ? extendedLocation : null
+  extendedLocation: extendedLocation
   properties: {
     storageProfile: {
       osDisk: {
@@ -176,33 +195,3 @@ output name string = image.name
 
 @description('The location the resource was deployed into.')
 output location string = image.location
-
-// =============== //
-//   Definitions   //
-// =============== //
-
-type roleAssignmentType = {
-  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
-  name: string?
-
-  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
-
-  @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
-
-  @description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
-
-  @description('Optional. The description of the role assignment.')
-  description: string?
-
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
-
-  @description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
-
-  @description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?

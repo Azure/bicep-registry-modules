@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.34.60546",
-      "templateHash": "4744350024962623928"
+      "version": "0.33.93.31351",
+      "templateHash": "10184004603904028584"
     },
     "name": "DBforPostgreSQL Flexible Server Configurations",
-    "description": "This module deploys a DBforPostgreSQL Flexible Server Configuration.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a DBforPostgreSQL Flexible Server Configuration."
   },
   "parameters": {
     "name": {
@@ -44,16 +43,16 @@
     "flexibleServer": {
       "existing": true,
       "type": "Microsoft.DBforPostgreSQL/flexibleServers",
-      "apiVersion": "2022-12-01",
+      "apiVersion": "2024-08-01",
       "name": "[parameters('flexibleServerName')]"
     },
     "configuration": {
       "type": "Microsoft.DBforPostgreSQL/flexibleServers/configurations",
-      "apiVersion": "2022-12-01",
+      "apiVersion": "2024-08-01",
       "name": "[format('{0}/{1}', parameters('flexibleServerName'), parameters('name'))]",
       "properties": {
-        "source": "[if(not(empty(parameters('source'))), parameters('source'), null())]",
-        "value": "[if(not(empty(parameters('value'))), parameters('value'), null())]"
+        "source": "[parameters('source')]",
+        "value": "[parameters('value')]"
       }
     }
   },
@@ -75,7 +74,7 @@
     "resourceGroupName": {
       "type": "string",
       "metadata": {
-        "description": "The resource group of the deployed configuration."
+        "description": "The resource group name of the deployed configuration."
       },
       "value": "[resourceGroup().name]"
     }

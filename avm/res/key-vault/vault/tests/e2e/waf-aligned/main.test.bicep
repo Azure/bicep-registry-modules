@@ -66,7 +66,6 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}002'
-      location: resourceLocation
       diagnosticSettings: [
         {
           eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName

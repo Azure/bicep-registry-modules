@@ -1,0 +1,601 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.31.92.45157",
+      "templateHash": "11243086501777108136"
+    },
+    "name": "Container App Session Pool",
+    "description": "This module deploys a Container App Session Pool."
+  },
+  "definitions": {
+    "sessionContainerType": {
+      "type": "object",
+      "properties": {
+        "args": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Container start command arguments."
+          }
+        },
+        "command": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Container start command."
+          }
+        },
+        "env": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/sessionContainerEnvType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Container environment variables."
+          }
+        },
+        "image": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Container image tag."
+          }
+        },
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Custom container name."
+          }
+        },
+        "resources": {
+          "$ref": "#/definitions/sessionContainerResourceType",
+          "metadata": {
+            "description": "Required. Container resource requirements."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Optional. Custom container definition."
+      }
+    },
+    "sessionContainerEnvType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Environment variable name."
+          }
+        },
+        "secretRef": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Required if value is not set. Name of the Container App secret from which to pull the environment variable value."
+          }
+        },
+        "value": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Required if secretRef is not set. Non-secret environment variable value."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Optional. Environment variable definition for a container. Only used with custom containers."
+      }
+    },
+    "sessionContainerResourceType": {
+      "type": "object",
+      "properties": {
+        "cpu": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Required CPU in cores, e.g. 0.5."
+          }
+        },
+        "memory": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Required memory, e.g. \"1.25Gi\"."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Optional. Container resource requirements. Only used with custom containers."
+      }
+    },
+    "sessionRegistryCredentialsType": {
+      "type": "object",
+      "properties": {
+        "identity": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A Managed Identity to use to authenticate with Azure Container Registry. For user-assigned identities, use the full user-assigned identity Resource ID. For system-assigned identities, use \"system\"."
+          }
+        },
+        "passwordSecretRef": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the secret that contains the registry login password. Not used if identity is specified."
+          }
+        },
+        "server": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Container registry server."
+          }
+        },
+        "username": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Container registry username."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Optional. Container registry credentials. Only used with custom containers."
+      }
+    },
+    "managedIdentitySettingType": {
+      "type": "object",
+      "properties": {
+        "identity": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of a user-assigned managed identity that is assigned to the Session Pool, or \"system\" for system-assigned identity."
+          }
+        },
+        "lifecycle": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Use to select the lifecycle stages of a Session Pool during which the Managed Identity should be available. Valid values: \"All\", \"Init\", \"Main\", \"None\"."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Optional. Managed Identity settings for the session pool."
+      }
+    },
+    "lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+        }
+      }
+    },
+    "managedIdentityAllType": {
+      "type": "object",
+      "properties": {
+        "systemAssigned": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enables system assigned managed identity on the resource."
+          }
+        },
+        "userAssignedResourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+        }
+      }
+    },
+    "roleAssignmentType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+          }
+        },
+        "roleDefinitionIdOrName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+          }
+        },
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+          }
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "Device",
+            "ForeignGroup",
+            "Group",
+            "ServicePrincipal",
+            "User"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The principal type of the assigned principal ID."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The description of the role assignment."
+          }
+        },
+        "condition": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+          }
+        },
+        "conditionVersion": {
+          "type": "string",
+          "allowedValues": [
+            "2.0"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Version of the condition."
+          }
+        },
+        "delegatedManagedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Resource Id of the delegated managed identity resource."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a role assignment.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+        }
+      }
+    }
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Name of the Container App Session Pool."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. Location for all Resources."
+      }
+    },
+    "containerType": {
+      "type": "string",
+      "allowedValues": [
+        "PythonLTS",
+        "CustomContainer"
+      ],
+      "metadata": {
+        "description": "Required. The container type of the sessions."
+      }
+    },
+    "containers": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/sessionContainerType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Custom container definitions. Only required if containerType is CustomContainer."
+      }
+    },
+    "targetIngressPort": {
+      "type": "int",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Required if containerType == 'CustomContainer'. Target port in containers for traffic from ingress. Only required if containerType is CustomContainer."
+      }
+    },
+    "registryCredentials": {
+      "$ref": "#/definitions/sessionRegistryCredentialsType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Container registry credentials. Only required if containerType is CustomContainer and the container registry requires authentication."
+      }
+    },
+    "cooldownPeriodInSeconds": {
+      "type": "int",
+      "defaultValue": 300,
+      "metadata": {
+        "description": "Optional. The cooldown period of a session in seconds."
+      }
+    },
+    "maxConcurrentSessions": {
+      "type": "int",
+      "defaultValue": 5,
+      "metadata": {
+        "description": "Optional. The maximum count of sessions at the same time."
+      }
+    },
+    "readySessionInstances": {
+      "type": "int",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The minimum count of ready session instances."
+      }
+    },
+    "sessionNetworkStatus": {
+      "type": "string",
+      "defaultValue": "EgressDisabled",
+      "allowedValues": [
+        "EgressEnabled",
+        "EgressDisabled"
+      ],
+      "metadata": {
+        "description": "Optional. Network status for the sessions. Defaults to EgressDisabled."
+      }
+    },
+    "poolManagementType": {
+      "type": "string",
+      "defaultValue": "Dynamic",
+      "allowedValues": [
+        "Dynamic",
+        "Manual"
+      ],
+      "metadata": {
+        "description": "Optional. The pool management type of the session pool. Defaults to Dynamic."
+      }
+    },
+    "lock": {
+      "$ref": "#/definitions/lockType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The lock settings of the service."
+      }
+    },
+    "roleAssignments": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/roleAssignmentType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Array of role assignments to create."
+      }
+    },
+    "managedIdentities": {
+      "$ref": "#/definitions/managedIdentityAllType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The managed identity definition for this resource."
+      }
+    },
+    "managedIdentitySettings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/managedIdentitySettingType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Settings for a Managed Identity that is assigned to the Session pool."
+      }
+    },
+    "environmentId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Resource ID of the session pool's environment."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags of the Automation Account resource."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    }
+  },
+  "variables": {
+    "copy": [
+      {
+        "name": "formattedRoleAssignments",
+        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+        "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+      }
+    ],
+    "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
+    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
+    "builtInRoleNames": {
+      "Azure ContainerApps Session Executor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0fb8eba5-a2bb-4abe-b1c1-49dfad359bb0')]",
+      "Container Apps SessionPools Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f7669afb-68b2-44b4-9c5f-6d2a47fddda0')]",
+      "Container Apps SessionPools Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'af61e8fc-2633-4b95-bed3-421ad6826515')]",
+      "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+      "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+      "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+      "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+      "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+    }
+  },
+  "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2024-03-01",
+      "name": "[format('46d3xbcp.res.app-sessionpool.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "#_moduleVersion_#.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
+    "sessionPool": {
+      "type": "Microsoft.App/sessionPools",
+      "apiVersion": "2024-10-02-preview",
+      "name": "[parameters('name')]",
+      "location": "[parameters('location')]",
+      "identity": "[variables('identity')]",
+      "properties": {
+        "containerType": "[parameters('containerType')]",
+        "environmentId": "[parameters('environmentId')]",
+        "customContainerTemplate": "[if(equals(parameters('containerType'), 'CustomContainer'), createObject('containers', parameters('containers'), 'ingress', createObject('targetPort', parameters('targetIngressPort')), 'registryCredentials', parameters('registryCredentials')), null())]",
+        "dynamicPoolConfiguration": {
+          "cooldownPeriodInSeconds": "[parameters('cooldownPeriodInSeconds')]",
+          "executionType": "Timed"
+        },
+        "managedIdentitySettings": "[parameters('managedIdentitySettings')]",
+        "scaleConfiguration": {
+          "maxConcurrentSessions": "[parameters('maxConcurrentSessions')]",
+          "readySessionInstances": "[parameters('readySessionInstances')]"
+        },
+        "sessionNetworkConfiguration": {
+          "status": "[parameters('sessionNetworkStatus')]"
+        },
+        "poolManagementType": "[parameters('poolManagementType')]"
+      },
+      "tags": "[parameters('tags')]"
+    },
+    "sessionPool_lock": {
+      "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+      "type": "Microsoft.Authorization/locks",
+      "apiVersion": "2020-05-01",
+      "scope": "[format('Microsoft.App/sessionPools/{0}', parameters('name'))]",
+      "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+      "properties": {
+        "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+      },
+      "dependsOn": [
+        "sessionPool"
+      ]
+    },
+    "sessionPool_roleAssignments": {
+      "copy": {
+        "name": "sessionPool_roleAssignments",
+        "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
+      },
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "scope": "[format('Microsoft.App/sessionPools/{0}', parameters('name'))]",
+      "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.App/sessionPools', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
+      "properties": {
+        "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+        "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+        "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+        "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+        "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+        "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+      },
+      "dependsOn": [
+        "sessionPool"
+      ]
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the session pool."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the deployed session pool."
+      },
+      "value": "[resourceId('Microsoft.App/sessionPools', parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group in which the session pool was created."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "managementEndpoint": {
+      "type": "string",
+      "metadata": {
+        "description": "The management endpoint of the session pool."
+      },
+      "value": "[reference('sessionPool').poolManagementEndpoint]"
+    },
+    "systemAssignedMIPrincipalId": {
+      "type": "string",
+      "metadata": {
+        "description": "The principal ID of the system assigned identity."
+      },
+      "value": "[coalesce(tryGet(tryGet(reference('sessionPool', '2024-10-02-preview', 'full'), 'identity'), 'principalId'), '')]"
+    }
+  }
+}

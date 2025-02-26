@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "2179775660826652695"
+      "version": "0.33.13.18514",
+      "templateHash": "17701317715444968473"
     },
     "name": "CDN Profiles",
-    "description": "This module deploys a CDN Profile.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a CDN Profile."
   },
   "definitions": {
     "managedIdentitiesType": {
@@ -656,6 +655,128 @@
         }
       }
     },
+    "diagnosticSettingFullType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the diagnostic setting."
+          }
+        },
+        "logCategoriesAndGroups": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "category": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
+                }
+              },
+              "categoryGroup": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
+                }
+              },
+              "enabled": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
+          }
+        },
+        "metricCategories": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "category": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
+                }
+              },
+              "enabled": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
+          }
+        },
+        "logAnalyticsDestinationType": {
+          "type": "string",
+          "allowedValues": [
+            "AzureDiagnostics",
+            "Dedicated"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
+          }
+        },
+        "workspaceResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "storageAccountResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "eventHubAuthorizationRuleResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
+          }
+        },
+        "eventHubName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "marketplacePartnerResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+        }
+      }
+    },
     "dnsValidationType": {
       "type": "object",
       "properties": {
@@ -913,9 +1034,7 @@
     "sku": {
       "type": "string",
       "allowedValues": [
-        "Custom_Verizon",
         "Premium_AzureFrontDoor",
-        "Premium_Verizon",
         "StandardPlus_955BandWidth_ChinaCdn",
         "StandardPlus_AvgBandWidth_ChinaCdn",
         "StandardPlus_ChinaCdn",
@@ -923,8 +1042,7 @@
         "Standard_AvgBandWidth_ChinaCdn",
         "Standard_AzureFrontDoor",
         "Standard_ChinaCdn",
-        "Standard_Microsoft",
-        "Standard_Verizon"
+        "Standard_Microsoft"
       ],
       "metadata": {
         "description": "Required. The pricing tier (defines a CDN provider, feature list and rate) of the CDN profile."
@@ -1036,6 +1154,16 @@
       "metadata": {
         "description": "Optional. Enable/Disable usage telemetry for module."
       }
+    },
+    "diagnosticSettings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/diagnosticSettingFullType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The diagnostic settings of the service."
+      }
     }
   },
   "variables": {
@@ -1131,6 +1259,47 @@
         "profile"
       ]
     },
+    "profile_diagnosticSettings": {
+      "copy": {
+        "name": "profile_diagnosticSettings",
+        "count": "[length(coalesce(parameters('diagnosticSettings'), createArray()))]"
+      },
+      "type": "Microsoft.Insights/diagnosticSettings",
+      "apiVersion": "2021-05-01-preview",
+      "scope": "[format('Microsoft.Cdn/profiles/{0}', parameters('name'))]",
+      "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
+      "properties": {
+        "copy": [
+          {
+            "name": "metrics",
+            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics'))))]",
+            "input": {
+              "category": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')].category]",
+              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')], 'enabled'), true())]",
+              "timeGrain": null
+            }
+          },
+          {
+            "name": "logs",
+            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs'))))]",
+            "input": {
+              "categoryGroup": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'categoryGroup')]",
+              "category": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'category')]",
+              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'enabled'), true())]"
+            }
+          }
+        ],
+        "storageAccountId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'storageAccountResourceId')]",
+        "workspaceId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'workspaceResourceId')]",
+        "eventHubAuthorizationRuleId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubAuthorizationRuleResourceId')]",
+        "eventHubName": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubName')]",
+        "marketplacePartnerId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'marketplacePartnerResourceId')]",
+        "logAnalyticsDestinationType": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logAnalyticsDestinationType')]"
+      },
+      "dependsOn": [
+        "profile"
+      ]
+    },
     "profile_endpoint": {
       "condition": "[not(empty(parameters('endpointProperties')))]",
       "type": "Microsoft.Resources/deployments",
@@ -1162,12 +1331,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "12158435617192568330"
+              "version": "0.33.13.18514",
+              "templateHash": "9667828946590224838"
             },
             "name": "CDN Profiles Endpoints",
-            "description": "This module deploys a CDN Profile Endpoint.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a CDN Profile Endpoint."
           },
           "parameters": {
             "profileName": {
@@ -1279,12 +1447,11 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "1967881427631941882"
+                      "version": "0.33.13.18514",
+                      "templateHash": "14207274905612158052"
                     },
                     "name": "CDN Profiles Endpoints Origins",
-                    "description": "This module deploys a CDN Profile Endpoint Origin.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a CDN Profile Endpoint Origin."
                   },
                   "parameters": {
                     "endpointName": {
@@ -1525,18 +1692,17 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "6471061278844735033"
+              "version": "0.33.13.18514",
+              "templateHash": "14557033028846709449"
             },
             "name": "CDN Profiles Secret",
-            "description": "This module deploys a CDN Profile Secret.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a CDN Profile Secret."
           },
           "parameters": {
             "name": {
               "type": "string",
               "metadata": {
-                "description": "Required. The name of the secrect."
+                "description": "Required. The name of the secret."
               }
             },
             "profileName": {
@@ -1555,7 +1721,7 @@
                 "UrlSigningKey"
               ],
               "metadata": {
-                "description": "Optional. The type of the secrect."
+                "description": "Optional. The type of the secret."
               }
             },
             "secretSourceResourceId": {
@@ -1576,14 +1742,14 @@
               "type": "array",
               "defaultValue": [],
               "metadata": {
-                "description": "Optional. The subject alternative names of the secrect."
+                "description": "Optional. The subject alternative names of the secret."
               }
             },
             "useLatestVersion": {
               "type": "bool",
               "defaultValue": false,
               "metadata": {
-                "description": "Optional. Indicates whether to use the latest version of the secrect."
+                "description": "Optional. Indicates whether to use the latest version of the secret."
               }
             }
           },
@@ -1601,14 +1767,14 @@
             "name": {
               "type": "string",
               "metadata": {
-                "description": "The name of the secrect."
+                "description": "The name of the secret."
               },
               "value": "[parameters('name')]"
             },
             "resourceId": {
               "type": "string",
               "metadata": {
-                "description": "The resource ID of the secrect."
+                "description": "The resource ID of the secret."
               },
               "value": "[resourceId('Microsoft.Cdn/profiles/secrets', parameters('profileName'), parameters('name'))]"
             },
@@ -1675,12 +1841,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "12647886167890211057"
+              "version": "0.33.13.18514",
+              "templateHash": "10369216656034565871"
             },
             "name": "CDN Profiles Custom Domains",
-            "description": "This module deploys a CDN Profile Custom Domains.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a CDN Profile Custom Domains."
           },
           "definitions": {
             "customDomainType": {
@@ -1851,7 +2016,7 @@
             }
           },
           "resources": {
-            "profile::secrect": {
+            "profile::secret": {
               "condition": "[not(empty(parameters('secretName')))]",
               "existing": true,
               "type": "Microsoft.Cdn/profiles/secrets",
@@ -1965,12 +2130,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "3450465162010752754"
+              "version": "0.33.13.18514",
+              "templateHash": "2309166106272805364"
             },
             "name": "CDN Profiles Origin Group",
-            "description": "This module deploys a CDN Profile Origin Group.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a CDN Profile Origin Group."
           },
           "definitions": {
             "originGroupType": {
@@ -2309,12 +2473,11 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "5172201899085933507"
+                      "version": "0.33.13.18514",
+                      "templateHash": "4615820934914726240"
                     },
                     "name": "CDN Profiles Origin",
-                    "description": "This module deploys a CDN Profile Origin.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a CDN Profile Origin."
                   },
                   "definitions": {
                     "originType": {
@@ -2601,7 +2764,7 @@
             "value": "[parameters('name')]"
           },
           "rules": {
-            "value": "[parameters('ruleSets')[copyIndex()].rules]"
+            "value": "[tryGet(parameters('ruleSets')[copyIndex()], 'rules')]"
           }
         },
         "template": {
@@ -2611,12 +2774,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "8263137294746797692"
+              "version": "0.33.13.18514",
+              "templateHash": "832720268679200418"
             },
             "name": "CDN Profiles Rule Sets",
-            "description": "This module deploys a CDN Profile rule set.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a CDN Profile rule set."
           },
           "definitions": {
             "ruleSetType": {
@@ -2770,12 +2932,11 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "14540406126609060699"
+                      "version": "0.33.13.18514",
+                      "templateHash": "4778641008462766741"
                     },
                     "name": "CDN Profiles Rules",
-                    "description": "This module deploys a CDN Profile rule.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a CDN Profile rule."
                   },
                   "definitions": {
                     "ruleType": {
@@ -2999,12 +3160,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "5418845183779263042"
+              "version": "0.33.13.18514",
+              "templateHash": "8177824551774407436"
             },
             "name": "CDN Profiles AFD Endpoints",
-            "description": "This module deploys a CDN Profile AFD Endpoint.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a CDN Profile AFD Endpoint."
           },
           "definitions": {
             "afdEndpointType": {
@@ -3374,12 +3534,11 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "11233659924871585320"
+                      "version": "0.33.13.18514",
+                      "templateHash": "5263422487313973220"
                     },
                     "name": "CDN Profiles AFD Endpoint Route",
-                    "description": "This module deploys a CDN Profile AFD Endpoint route.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a CDN Profile AFD Endpoint route."
                   },
                   "definitions": {
                     "routeType": {
@@ -3672,7 +3831,7 @@
                     },
                     "profile::customDomains": {
                       "copy": {
-                        "name": "customDomains",
+                        "name": "profile::customDomains",
                         "count": "[length(coalesce(parameters('customDomainNames'), createArray()))]"
                       },
                       "existing": true,
@@ -3688,7 +3847,7 @@
                     },
                     "profile::ruleSet": {
                       "copy": {
-                        "name": "ruleSet",
+                        "name": "profile::ruleSet",
                         "count": "[length(parameters('ruleSets'))]"
                       },
                       "existing": true,
@@ -3854,12 +4013,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "13846745009559493983"
+              "version": "0.33.13.18514",
+              "templateHash": "6987560302604046970"
             },
             "name": "CDN Profiles Security Policy",
-            "description": "This module deploys a CDN Profile Security Policy.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a CDN Profile Security Policy."
           },
           "definitions": {
             "associationsType": {
@@ -3952,14 +4110,14 @@
             "name": {
               "type": "string",
               "metadata": {
-                "description": "The name of the secrect."
+                "description": "The name of the secret."
               },
               "value": "[parameters('name')]"
             },
             "resourceId": {
               "type": "string",
               "metadata": {
-                "description": "The resource ID of the secrect."
+                "description": "The resource ID of the secret."
               },
               "value": "[resourceId('Microsoft.Cdn/profiles/securityPolicies', parameters('profileName'), parameters('name'))]"
             },
@@ -4039,10 +4197,11 @@
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",
+      "nullable": true,
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[coalesce(tryGet(tryGet(reference('profile', '2023-05-01', 'full'), 'identity'), 'principalId'), '')]"
+      "value": "[tryGet(tryGet(reference('profile', '2023-05-01', 'full'), 'identity'), 'principalId')]"
     },
     "dnsValidation": {
       "type": "array",

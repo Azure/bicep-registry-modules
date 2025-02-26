@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "342595729147977821"
+      "version": "0.33.93.31351",
+      "templateHash": "10473859406464148345"
     },
     "name": "Machine Learning Services Workspaces Connections",
-    "description": "This module creates a connection in a Machine Learning Services workspace.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module creates a connection in a Machine Learning Services workspace."
   },
   "definitions": {
     "metadataType": {
@@ -691,10 +690,7 @@
       "type": "Microsoft.MachineLearningServices/workspaces/connections",
       "apiVersion": "2024-04-01",
       "name": "[format('{0}/{1}', parameters('machineLearningWorkspaceName'), parameters('name'))]",
-      "properties": "[union(createObject('category', parameters('category'), 'expiryTime', parameters('expiryTime'), 'isSharedToAll', parameters('isSharedToAll'), 'metadata', parameters('metadata'), 'sharedUserList', parameters('sharedUserList'), 'target', parameters('target'), 'value', parameters('value')), parameters('connectionProperties'))]",
-      "dependsOn": [
-        "machineLearningWorkspace"
-      ]
+      "properties": "[union(createObject('category', parameters('category'), 'expiryTime', parameters('expiryTime'), 'isSharedToAll', parameters('isSharedToAll'), 'metadata', parameters('metadata'), 'sharedUserList', parameters('sharedUserList'), 'target', parameters('target'), 'value', parameters('value')), parameters('connectionProperties'))]"
     }
   },
   "outputs": {

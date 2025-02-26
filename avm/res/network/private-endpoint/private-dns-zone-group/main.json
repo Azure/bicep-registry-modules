@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "12329174801198479603"
+      "version": "0.32.4.45862",
+      "templateHash": "15534698908285836761"
     },
     "name": "Private Endpoint Private DNS Zone Groups",
-    "description": "This module deploys a Private Endpoint Private DNS Zone Group.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Private Endpoint Private DNS Zone Group."
   },
   "definitions": {
     "privateDnsZoneGroupConfigType": {
@@ -88,10 +87,7 @@
       "name": "[format('{0}/{1}', parameters('privateEndpointName'), parameters('name'))]",
       "properties": {
         "privateDnsZoneConfigs": "[variables('privateDnsZoneConfigsVar')]"
-      },
-      "dependsOn": [
-        "privateEndpoint"
-      ]
+      }
     }
   },
   "outputs": {

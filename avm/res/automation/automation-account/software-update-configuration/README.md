@@ -177,6 +177,7 @@ The interval of the frequency for the deployment schedule. 1 Hour is every hour,
 - Required: No
 - Type: int
 - Default: `1`
+- MaxValue: 100
 
 ### Parameter: `isEnabled`
 
@@ -185,6 +186,7 @@ Enables the deployment schedule.
 - Required: No
 - Type: bool
 - Default: `True`
+- MaxValue: 100
 
 ### Parameter: `maintenanceWindow`
 
@@ -193,6 +195,7 @@ Maximum time allowed for the deployment schedule to run. Duration needs to be sp
 - Required: No
 - Type: string
 - Default: `'PT2H'`
+- MaxValue: 100
 
 ### Parameter: `monthDays`
 
@@ -236,6 +239,7 @@ Can be used with frequency 'Month'. Provides the specific days of the month to r
     31
   ]
   ```
+- MaxValue: 100
 
 ### Parameter: `monthlyOccurrences`
 
@@ -243,6 +247,7 @@ Can be used with frequency 'Month'. Provides the pattern/cadence for running the
 
 - Required: No
 - Type: array
+- MaxValue: 100
 
 ### Parameter: `nextRun`
 
@@ -251,6 +256,7 @@ The next time the deployment schedule runs in ISO 8601 format. YYYY-MM-DDTHH:MM:
 - Required: No
 - Type: string
 - Default: `''`
+- MaxValue: 100
 
 ### Parameter: `nextRunOffsetMinutes`
 
@@ -259,6 +265,7 @@ The next run's offset in minutes.
 - Required: No
 - Type: int
 - Default: `0`
+- MaxValue: 100
 
 ### Parameter: `nonAzureComputerNames`
 
@@ -267,6 +274,7 @@ List of names of non-azure machines in scope for the deployment schedule.
 - Required: No
 - Type: array
 - Default: `[]`
+- MaxValue: 100
 
 ### Parameter: `nonAzureQueries`
 
@@ -275,6 +283,7 @@ Array of functions from a Log Analytics workspace, used to scope the deployment 
 - Required: No
 - Type: array
 - Default: `[]`
+- MaxValue: 100
 
 ### Parameter: `postTaskParameters`
 
@@ -282,6 +291,7 @@ Parameters provided to the task running after the deployment schedule.
 
 - Required: No
 - Type: object
+- MaxValue: 100
 
 ### Parameter: `postTaskSource`
 
@@ -289,6 +299,7 @@ The source of the task running after the deployment schedule.
 
 - Required: No
 - Type: string
+- MaxValue: 100
 
 ### Parameter: `preTaskParameters`
 
@@ -296,6 +307,7 @@ Parameters provided to the task running before the deployment schedule.
 
 - Required: No
 - Type: object
+- MaxValue: 100
 
 ### Parameter: `preTaskSource`
 
@@ -303,6 +315,7 @@ The source of the task running before the deployment schedule.
 
 - Required: No
 - Type: string
+- MaxValue: 100
 
 ### Parameter: `scheduleDescription`
 
@@ -311,6 +324,7 @@ The schedules description.
 - Required: No
 - Type: string
 - Default: `''`
+- MaxValue: 100
 
 ### Parameter: `scopeByLocations`
 
@@ -319,6 +333,7 @@ Specify locations to which to scope the deployment schedule to.
 - Required: No
 - Type: array
 - Default: `[]`
+- MaxValue: 100
 
 ### Parameter: `scopeByResources`
 
@@ -332,6 +347,7 @@ Specify the resources to scope the deployment schedule to.
     '[subscription().id]'
   ]
   ```
+- MaxValue: 100
 
 ### Parameter: `scopeByTags`
 
@@ -340,6 +356,7 @@ Specify tags to which to scope the deployment schedule to.
 - Required: No
 - Type: object
 - Default: `{}`
+- MaxValue: 100
 
 ### Parameter: `scopeByTagsOperation`
 
@@ -355,6 +372,7 @@ Enables the scopeByTags to require All (Tag A and Tag B) or Any (Tag A or Tag B)
     'Any'
   ]
   ```
+- MaxValue: 100
 
 ### Parameter: `startTime`
 
@@ -363,6 +381,7 @@ The start time of the deployment schedule in ISO 8601 format. To specify a speci
 - Required: No
 - Type: string
 - Default: `''`
+- MaxValue: 100
 
 ### Parameter: `timeZone`
 
@@ -371,6 +390,7 @@ Time zone for the deployment schedule. IANA ID or a Windows Time Zone ID.
 - Required: No
 - Type: string
 - Default: `'UTC'`
+- MaxValue: 100
 
 ### Parameter: `updateClassifications`
 
@@ -399,6 +419,7 @@ Update classification included in the deployment schedule.
     'Updates'
   ]
   ```
+- MaxValue: 100
 
 ### Parameter: `weekDays`
 
@@ -418,6 +439,7 @@ Required when used with frequency 'Week'. Specified the day of the week to run t
     'Wednesday'
   ]
   ```
+- MaxValue: 100
 
 ### Parameter: `baseTime`
 
@@ -426,6 +448,7 @@ Do not touch. Is used to provide the base time for time comparison for startTime
 - Required: No
 - Type: string
 - Default: `[utcNow('u')]`
+- MaxValue: 100
 
 ## Outputs
 

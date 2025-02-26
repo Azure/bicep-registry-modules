@@ -21,9 +21,9 @@ on:
         required: true
 
 env:
+  # Used for token replacement steps in both PSRule and deployment validation
   ARM_SUBSCRIPTION_ID: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
   ARM_MGMTGROUP_ID: "${{ secrets.ARM_MGMTGROUP_ID }}"
-  ARM_TENANT_ID: "${{ secrets.ARM_TENANT_ID }}"
   TOKEN_NAMEPREFIX: "${{ secrets.TOKEN_NAMEPREFIX }}"
   CI_KEY_VAULT_NAME: "${{ vars.CI_KEY_VAULT_NAME }}"
 
@@ -143,6 +143,7 @@ jobs:
   #############################
   job_module_deploy_validation: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
     name: "Deploy [${{ matrix.testCases.name}}]"
+    environment: avm-validation
     runs-on: ubuntu-latest
     if: |
       !cancelled() &&
@@ -179,6 +180,9 @@ jobs:
           customLocation: "${{ fromJson(inputs.workflowInput).customLocation }}"
         env:
           AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+          VALIDATE_CLIENT_ID: ${{ secrets.VALIDATE_CLIENT_ID }}
+          VALIDATE_SUBSCRIPTION_ID: ${{ secrets.VALIDATE_SUBSCRIPTION_ID }}
+          VALIDATE_TENANT_ID: ${{ secrets.VALIDATE_TENANT_ID }}
 
   ##################
   #   Publishing   #

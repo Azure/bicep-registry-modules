@@ -14,7 +14,7 @@ This module deploys a Log Analytics Workspace Table.
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.OperationalInsights/workspaces/tables` | [2022-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2022-10-01/workspaces/tables) |
+| `Microsoft.OperationalInsights/workspaces/tables` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces/tables) |
 
 ## Parameters
 
@@ -114,6 +114,8 @@ The table retention in days, between 4 and 730. Setting this property to -1 will
 - Required: No
 - Type: int
 - Default: `-1`
+- MinValue: -1
+- MaxValue: 730
 
 ### Parameter: `roleAssignments`
 
@@ -121,6 +123,8 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- MinValue: -1
+- MaxValue: 730
 - Roles configurable by name:
   - `'Contributor'`
   - `'Log Analytics Contributor'`
@@ -156,6 +160,8 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- MinValue: -1
+- MaxValue: 730
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -163,6 +169,8 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- MinValue: -1
+- MaxValue: 730
 
 ### Parameter: `roleAssignments.condition`
 
@@ -170,6 +178,8 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- MinValue: -1
+- MaxValue: 730
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -183,6 +193,8 @@ Version of the condition.
     '2.0'
   ]
   ```
+- MinValue: -1
+- MaxValue: 730
 
 ### Parameter: `roleAssignments.delegatedManagedIdentityResourceId`
 
@@ -190,6 +202,8 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- MinValue: -1
+- MaxValue: 730
 
 ### Parameter: `roleAssignments.description`
 
@@ -197,6 +211,8 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- MinValue: -1
+- MaxValue: 730
 
 ### Parameter: `roleAssignments.name`
 
@@ -204,6 +220,8 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- MinValue: -1
+- MaxValue: 730
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -221,6 +239,8 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
+- MinValue: -1
+- MaxValue: 730
 
 ### Parameter: `schema`
 
@@ -228,6 +248,8 @@ Table's schema.
 
 - Required: No
 - Type: object
+- MinValue: -1
+- MaxValue: 730
 
 **Required parameters**
 
@@ -249,6 +271,8 @@ A list of table custom columns.
 
 - Required: Yes
 - Type: array
+- MinValue: -1
+- MaxValue: 730
 
 **Required parameters**
 
@@ -271,6 +295,8 @@ The column name.
 
 - Required: Yes
 - Type: string
+- MinValue: -1
+- MaxValue: 730
 
 ### Parameter: `schema.columns.type`
 
@@ -291,6 +317,8 @@ The column type.
     'string'
   ]
   ```
+- MinValue: -1
+- MaxValue: 730
 
 ### Parameter: `schema.columns.dataTypeHint`
 
@@ -307,6 +335,8 @@ The column data type logical hint.
     'uri'
   ]
   ```
+- MinValue: -1
+- MaxValue: 730
 
 ### Parameter: `schema.columns.description`
 
@@ -314,6 +344,8 @@ The column description.
 
 - Required: No
 - Type: string
+- MinValue: -1
+- MaxValue: 730
 
 ### Parameter: `schema.columns.displayName`
 
@@ -321,6 +353,8 @@ Column display name.
 
 - Required: No
 - Type: string
+- MinValue: -1
+- MaxValue: 730
 
 ### Parameter: `schema.name`
 
@@ -328,6 +362,8 @@ The table name.
 
 - Required: Yes
 - Type: string
+- MinValue: -1
+- MaxValue: 730
 
 ### Parameter: `schema.description`
 
@@ -335,6 +371,8 @@ The table description.
 
 - Required: No
 - Type: string
+- MinValue: -1
+- MaxValue: 730
 
 ### Parameter: `schema.displayName`
 
@@ -342,6 +380,8 @@ The table display name.
 
 - Required: No
 - Type: string
+- MinValue: -1
+- MaxValue: 730
 
 ### Parameter: `searchResults`
 
@@ -349,6 +389,8 @@ Parameters of the search job that initiated this table.
 
 - Required: No
 - Type: object
+- MinValue: -1
+- MaxValue: 730
 
 **Required parameters**
 
@@ -371,6 +413,8 @@ The search job query.
 
 - Required: Yes
 - Type: string
+- MinValue: -1
+- MaxValue: 730
 
 ### Parameter: `searchResults.description`
 
@@ -378,6 +422,8 @@ The search description.
 
 - Required: No
 - Type: string
+- MinValue: -1
+- MaxValue: 730
 
 ### Parameter: `searchResults.endSearchTime`
 
@@ -385,6 +431,8 @@ The timestamp to end the search by (UTC).
 
 - Required: No
 - Type: string
+- MinValue: -1
+- MaxValue: 730
 
 ### Parameter: `searchResults.limit`
 
@@ -392,6 +440,8 @@ Limit the search job to return up to specified number of rows.
 
 - Required: No
 - Type: int
+- MinValue: -1
+- MaxValue: 730
 
 ### Parameter: `searchResults.startSearchTime`
 
@@ -399,6 +449,8 @@ The timestamp to start the search from (UTC).
 
 - Required: No
 - Type: string
+- MinValue: -1
+- MaxValue: 730
 
 ### Parameter: `totalRetentionInDays`
 
@@ -407,6 +459,8 @@ The table total retention in days, between 4 and 2555. Setting this property to 
 - Required: No
 - Type: int
 - Default: `-1`
+- MinValue: -1
+- MaxValue: 2555
 
 ## Outputs
 

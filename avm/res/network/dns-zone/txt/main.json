@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "8037353991621891503"
+      "version": "0.32.4.45862",
+      "templateHash": "6318820825027351839"
     },
     "name": "Public DNS Zone TXT record",
-    "description": "This module deploys a Public DNS Zone TXT record.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Public DNS Zone TXT record."
   },
   "definitions": {
     "roleAssignmentType": {
@@ -165,10 +164,7 @@
         "metadata": "[parameters('metadata')]",
         "TTL": "[parameters('ttl')]",
         "TXTRecords": "[parameters('txtRecords')]"
-      },
-      "dependsOn": [
-        "dnsZone"
-      ]
+      }
     },
     "TXT_roleAssignments": {
       "copy": {

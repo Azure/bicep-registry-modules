@@ -1,6 +1,5 @@
 metadata name = 'Data Collection Endpoints'
 metadata description = 'This module deploys a Data Collection Endpoint.'
-metadata owner = 'Azure/module-maintainers'
 
 // ============== //
 //   Parameters   //

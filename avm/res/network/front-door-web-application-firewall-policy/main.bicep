@@ -1,6 +1,5 @@
 metadata name = 'Front Door Web Application Firewall (WAF) Policies'
 metadata description = 'This module deploys a Front Door Web Application Firewall (WAF) Policy.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the Front Door WAF policy.')
 @minLength(1)

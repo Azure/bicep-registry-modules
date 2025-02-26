@@ -1167,6 +1167,8 @@ Size of the Elastic SAN base capacity in Tebibytes (TiB). The supported capacity
 - Required: No
 - Type: int
 - Default: `1`
+- MinValue: 1
+- MaxValue: 400
 
 ### Parameter: `diagnosticSettings`
 
@@ -1174,6 +1176,8 @@ The diagnostic settings of the service.
 
 - Required: No
 - Type: array
+- MinValue: 1
+- MaxValue: 400
 
 **Optional parameters**
 
@@ -1194,6 +1198,8 @@ Resource ID of the diagnostic event hub authorization rule for the Event Hubs na
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 400
 
 ### Parameter: `diagnosticSettings.eventHubName`
 
@@ -1201,6 +1207,8 @@ Name of the diagnostic event hub within the namespace to which logs are streamed
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 400
 
 ### Parameter: `diagnosticSettings.logAnalyticsDestinationType`
 
@@ -1215,6 +1223,8 @@ A string indicating whether the export to Log Analytics should use the default d
     'Dedicated'
   ]
   ```
+- MinValue: 1
+- MaxValue: 400
 
 ### Parameter: `diagnosticSettings.marketplacePartnerResourceId`
 
@@ -1222,6 +1232,8 @@ The full ARM resource ID of the Marketplace resource to which you would like to 
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 400
 
 ### Parameter: `diagnosticSettings.metricCategories`
 
@@ -1229,6 +1241,8 @@ The name of metrics that will be streamed. "allMetrics" includes all possible me
 
 - Required: No
 - Type: array
+- MinValue: 1
+- MaxValue: 400
 
 **Required parameters**
 
@@ -1248,6 +1262,8 @@ Name of a Diagnostic Metric category for a resource type this setting is applied
 
 - Required: Yes
 - Type: string
+- MinValue: 1
+- MaxValue: 400
 
 ### Parameter: `diagnosticSettings.metricCategories.enabled`
 
@@ -1255,6 +1271,8 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
+- MinValue: 1
+- MaxValue: 400
 
 ### Parameter: `diagnosticSettings.name`
 
@@ -1262,6 +1280,8 @@ The name of diagnostic setting.
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 400
 
 ### Parameter: `diagnosticSettings.storageAccountResourceId`
 
@@ -1269,6 +1289,8 @@ Resource ID of the diagnostic storage account. For security reasons, it is recom
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 400
 
 ### Parameter: `diagnosticSettings.workspaceResourceId`
 
@@ -1276,6 +1298,8 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 400
 
 ### Parameter: `enableTelemetry`
 
@@ -1284,6 +1308,8 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
+- MinValue: 1
+- MaxValue: 400
 
 ### Parameter: `extendedCapacitySizeTiB`
 
@@ -1292,6 +1318,8 @@ Size of the Elastic SAN additional capacity in Tebibytes (TiB). The supported ca
 - Required: No
 - Type: int
 - Default: `0`
+- MinValue: 0
+- MaxValue: 600
 
 ### Parameter: `location`
 
@@ -1300,6 +1328,8 @@ Location for all resources.
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
+- MinValue: 0
+- MaxValue: 600
 
 ### Parameter: `lock`
 
@@ -1307,6 +1337,8 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
+- MinValue: 0
+- MaxValue: 600
 
 **Optional parameters**
 
@@ -1329,6 +1361,8 @@ Specify the type of lock.
     'ReadOnly'
   ]
   ```
+- MinValue: 0
+- MaxValue: 600
 
 ### Parameter: `lock.name`
 
@@ -1336,6 +1370,8 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 600
 
 ### Parameter: `publicNetworkAccess`
 
@@ -1350,6 +1386,8 @@ Whether or not public network access is allowed for this resource. For security 
     'Enabled'
   ]
   ```
+- MinValue: 0
+- MaxValue: 600
 
 ### Parameter: `roleAssignments`
 
@@ -1357,6 +1395,8 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- MinValue: 0
+- MaxValue: 600
 - Roles configurable by name:
   - `'Contributor'`
   - `'Owner'`
@@ -1392,6 +1432,8 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- MinValue: 0
+- MaxValue: 600
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -1399,6 +1441,8 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- MinValue: 0
+- MaxValue: 600
 
 ### Parameter: `roleAssignments.condition`
 
@@ -1406,6 +1450,8 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 600
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -1419,6 +1465,8 @@ Version of the condition.
     '2.0'
   ]
   ```
+- MinValue: 0
+- MaxValue: 600
 
 ### Parameter: `roleAssignments.delegatedManagedIdentityResourceId`
 
@@ -1426,6 +1474,8 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 600
 
 ### Parameter: `roleAssignments.description`
 
@@ -1433,6 +1483,8 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 600
 
 ### Parameter: `roleAssignments.name`
 
@@ -1440,6 +1492,8 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 600
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -1457,6 +1511,8 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
+- MinValue: 0
+- MaxValue: 600
 
 ### Parameter: `sku`
 
@@ -1472,6 +1528,8 @@ Specifies the SKU for the Elastic SAN.
     'Premium_ZRS'
   ]
   ```
+- MinValue: 0
+- MaxValue: 600
 
 ### Parameter: `tags`
 
@@ -1479,6 +1537,8 @@ Tags of the Elastic SAN resource.
 
 - Required: No
 - Type: object
+- MinValue: 0
+- MaxValue: 600
 
 ### Parameter: `volumeGroups`
 
@@ -1486,6 +1546,8 @@ List of Elastic SAN Volume Groups to be created in the Elastic SAN. An Elastic S
 
 - Required: No
 - Type: array
+- MinValue: 0
+- MaxValue: 600
 
 **Required parameters**
 
@@ -1509,6 +1571,8 @@ The name of the Elastic SAN Volume Group. The name can only contain lowercase le
 
 - Required: Yes
 - Type: string
+- MinValue: 0
+- MaxValue: 600
 
 ### Parameter: `volumeGroups.customerManagedKey`
 
@@ -1516,6 +1580,8 @@ The customer managed key definition. This parameter enables the encryption of El
 
 - Required: No
 - Type: object
+- MinValue: 0
+- MaxValue: 600
 
 **Required parameters**
 
@@ -1537,6 +1603,8 @@ The name of the customer managed key to use for encryption.
 
 - Required: Yes
 - Type: string
+- MinValue: 0
+- MaxValue: 600
 
 ### Parameter: `volumeGroups.customerManagedKey.keyVaultResourceId`
 
@@ -1544,6 +1612,8 @@ The resource ID of a key vault to reference a customer managed key for encryptio
 
 - Required: Yes
 - Type: string
+- MinValue: 0
+- MaxValue: 600
 
 ### Parameter: `volumeGroups.customerManagedKey.keyVersion`
 
@@ -1551,6 +1621,8 @@ The version of the customer managed key to reference for encryption. If not prov
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 600
 
 ### Parameter: `volumeGroups.customerManagedKey.userAssignedIdentityResourceId`
 
@@ -1558,6 +1630,8 @@ User assigned identity to use when fetching the customer managed key. Required i
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 600
 
 ### Parameter: `volumeGroups.managedIdentities`
 
@@ -1565,6 +1639,8 @@ The managed identity definition for this resource. The Elastic SAN Volume Group 
 
 - Required: No
 - Type: object
+- MinValue: 0
+- MaxValue: 600
 
 **Optional parameters**
 
@@ -1579,6 +1655,8 @@ Enables system assigned managed identity on the resource.
 
 - Required: No
 - Type: bool
+- MinValue: 0
+- MaxValue: 600
 
 ### Parameter: `volumeGroups.managedIdentities.userAssignedResourceIds`
 
@@ -1586,6 +1664,8 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 
 - Required: No
 - Type: array
+- MinValue: 0
+- MaxValue: 600
 
 ### Parameter: `volumeGroups.privateEndpoints`
 
@@ -1593,6 +1673,8 @@ Configuration details for private endpoints. For security reasons, it is recomme
 
 - Required: No
 - Type: array
+- MinValue: 0
+- MaxValue: 600
 
 **Required parameters**
 
@@ -1627,6 +1709,8 @@ Resource ID of the subnet where the endpoint needs to be created.
 
 - Required: Yes
 - Type: string
+- MinValue: 0
+- MaxValue: 600
 
 ### Parameter: `volumeGroups.privateEndpoints.applicationSecurityGroupResourceIds`
 
@@ -1634,6 +1718,8 @@ Application security groups in which the Private Endpoint IP configuration is in
 
 - Required: No
 - Type: array
+- MinValue: 0
+- MaxValue: 600
 
 ### Parameter: `volumeGroups.privateEndpoints.customDnsConfigs`
 
@@ -1641,6 +1727,8 @@ Custom DNS configurations.
 
 - Required: No
 - Type: array
+- MinValue: 0
+- MaxValue: 600
 
 **Required parameters**
 
@@ -1660,6 +1748,8 @@ A list of private IP addresses of the private endpoint.
 
 - Required: Yes
 - Type: array
+- MinValue: 0
+- MaxValue: 600
 
 ### Parameter: `volumeGroups.privateEndpoints.customDnsConfigs.fqdn`
 
@@ -1667,6 +1757,8 @@ FQDN that resolves to private endpoint IP address.
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 600
 
 ### Parameter: `volumeGroups.privateEndpoints.customNetworkInterfaceName`
 
@@ -1674,6 +1766,8 @@ The custom name of the network interface attached to the Private Endpoint.
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 600
 
 ### Parameter: `volumeGroups.privateEndpoints.enableTelemetry`
 
@@ -1681,6 +1775,8 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
+- MinValue: 0
+- MaxValue: 600
 
 ### Parameter: `volumeGroups.privateEndpoints.ipConfigurations`
 
@@ -1688,6 +1784,8 @@ A list of IP configurations of the Private Endpoint. This will be used to map to
 
 - Required: No
 - Type: array
+- MinValue: 0
+- MaxValue: 600
 
 **Required parameters**
 
@@ -1702,6 +1800,8 @@ The name of the resource that is unique within a resource group.
 
 - Required: Yes
 - Type: string
+- MinValue: 0
+- MaxValue: 600
 
 ### Parameter: `volumeGroups.privateEndpoints.ipConfigurations.properties`
 
@@ -1709,6 +1809,8 @@ Properties of private endpoint IP configurations.
 
 - Required: Yes
 - Type: object
+- MinValue: 0
+- MaxValue: 600
 
 **Required parameters**
 
@@ -1724,6 +1826,8 @@ The ID of a group obtained from the remote resource that this private endpoint s
 
 - Required: Yes
 - Type: string
+- MinValue: 0
+- MaxValue: 600
 
 ### Parameter: `volumeGroups.privateEndpoints.ipConfigurations.properties.memberName`
 
@@ -1731,6 +1835,8 @@ The member name of a group obtained from the remote resource that this private e
 
 - Required: Yes
 - Type: string
+- MinValue: 0
+- MaxValue: 600
 
 ### Parameter: `volumeGroups.privateEndpoints.ipConfigurations.properties.privateIPAddress`
 
@@ -1738,6 +1844,8 @@ A private IP address obtained from the private endpoint's subnet.
 
 - Required: Yes
 - Type: string
+- MinValue: 0
+- MaxValue: 600
 
 ### Parameter: `volumeGroups.privateEndpoints.isManualConnection`
 
@@ -1745,6 +1853,8 @@ If Manual Private Link Connection is required.
 
 - Required: No
 - Type: bool
+- MinValue: 0
+- MaxValue: 600
 
 ### Parameter: `volumeGroups.privateEndpoints.location`
 
@@ -1752,6 +1862,8 @@ The location to deploy the Private Endpoint to.
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 600
 
 ### Parameter: `volumeGroups.privateEndpoints.lock`
 
@@ -1759,6 +1871,8 @@ Specify the type of lock.
 
 - Required: No
 - Type: object
+- MinValue: 0
+- MaxValue: 600
 
 **Optional parameters**
 
@@ -1781,6 +1895,8 @@ Specify the type of lock.
     'ReadOnly'
   ]
   ```
+- MinValue: 0
+- MaxValue: 600
 
 ### Parameter: `volumeGroups.privateEndpoints.lock.name`
 
@@ -1788,6 +1904,8 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 600
 
 ### Parameter: `volumeGroups.privateEndpoints.manualConnectionRequestMessage`
 
@@ -1795,6 +1913,8 @@ A message passed to the owner of the remote resource with the manual connection 
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 600
 
 ### Parameter: `volumeGroups.privateEndpoints.name`
 
@@ -1802,6 +1922,8 @@ The name of the Private Endpoint.
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 600
 
 ### Parameter: `volumeGroups.privateEndpoints.privateDnsZoneGroup`
 
@@ -1809,6 +1931,8 @@ The private DNS Zone Group to configure for the Private Endpoint.
 
 - Required: No
 - Type: object
+- MinValue: 0
+- MaxValue: 600
 
 **Required parameters**
 
@@ -1828,6 +1952,8 @@ The private DNS Zone Groups to associate the Private Endpoint. A DNS Zone Group 
 
 - Required: Yes
 - Type: array
+- MinValue: 0
+- MaxValue: 600
 
 **Required parameters**
 
@@ -1847,6 +1973,8 @@ The resource id of the private DNS zone.
 
 - Required: Yes
 - Type: string
+- MinValue: 0
+- MaxValue: 600
 
 ### Parameter: `volumeGroups.privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.name`
 
@@ -1854,6 +1982,8 @@ The name of the private DNS Zone Group config.
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 600
 
 ### Parameter: `volumeGroups.privateEndpoints.privateDnsZoneGroup.name`
 
@@ -1861,6 +1991,8 @@ The name of the Private DNS Zone Group.
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 600
 
 ### Parameter: `volumeGroups.privateEndpoints.privateLinkServiceConnectionName`
 
@@ -1868,6 +2000,8 @@ The name of the private link connection to create.
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 600
 
 ### Parameter: `volumeGroups.privateEndpoints.resourceGroupName`
 
@@ -1875,6 +2009,8 @@ Specify if you want to deploy the Private Endpoint into a different Resource Gro
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 600
 
 ### Parameter: `volumeGroups.privateEndpoints.roleAssignments`
 
@@ -1882,6 +2018,8 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- MinValue: 0
+- MaxValue: 600
 - Roles configurable by name:
   - `'Contributor'`
   - `'Owner'`
@@ -1917,6 +2055,8 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- MinValue: 0
+- MaxValue: 600
 
 ### Parameter: `volumeGroups.privateEndpoints.roleAssignments.roleDefinitionIdOrName`
 
@@ -1924,6 +2064,8 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- MinValue: 0
+- MaxValue: 600
 
 ### Parameter: `volumeGroups.privateEndpoints.roleAssignments.condition`
 
@@ -1931,6 +2073,8 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 600
 
 ### Parameter: `volumeGroups.privateEndpoints.roleAssignments.conditionVersion`
 
@@ -1944,6 +2088,8 @@ Version of the condition.
     '2.0'
   ]
   ```
+- MinValue: 0
+- MaxValue: 600
 
 ### Parameter: `volumeGroups.privateEndpoints.roleAssignments.delegatedManagedIdentityResourceId`
 
@@ -1951,6 +2097,8 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 600
 
 ### Parameter: `volumeGroups.privateEndpoints.roleAssignments.description`
 
@@ -1958,6 +2106,8 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 600
 
 ### Parameter: `volumeGroups.privateEndpoints.roleAssignments.name`
 
@@ -1965,6 +2115,8 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 600
 
 ### Parameter: `volumeGroups.privateEndpoints.roleAssignments.principalType`
 
@@ -1982,6 +2134,8 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
+- MinValue: 0
+- MaxValue: 600
 
 ### Parameter: `volumeGroups.privateEndpoints.service`
 
@@ -1989,6 +2143,8 @@ The subresource to deploy the Private Endpoint for. For example "vault" for a Ke
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 600
 
 ### Parameter: `volumeGroups.privateEndpoints.tags`
 
@@ -1996,6 +2152,8 @@ Tags to be applied on all resources/Resource Groups in this deployment.
 
 - Required: No
 - Type: object
+- MinValue: 0
+- MaxValue: 600
 
 ### Parameter: `volumeGroups.virtualNetworkRules`
 
@@ -2003,6 +2161,8 @@ List of Virtual Network Rules, permitting virtual network subnet to connect to t
 
 - Required: No
 - Type: array
+- MinValue: 0
+- MaxValue: 600
 
 **Required parameters**
 
@@ -2016,6 +2176,8 @@ The resource ID of the subnet in the virtual network.
 
 - Required: Yes
 - Type: string
+- MinValue: 0
+- MaxValue: 600
 
 ### Parameter: `volumeGroups.volumes`
 
@@ -2023,6 +2185,8 @@ List of Elastic SAN Volumes to be created in the Elastic SAN Volume Group. Elast
 
 - Required: No
 - Type: array
+- MinValue: 0
+- MaxValue: 600
 
 **Required parameters**
 
@@ -2043,6 +2207,8 @@ The name of the Elastic SAN Volume. The name can only contain lowercase letters,
 
 - Required: Yes
 - Type: string
+- MinValue: 0
+- MaxValue: 600
 
 ### Parameter: `volumeGroups.volumes.sizeGiB`
 
@@ -2050,6 +2216,8 @@ Size of the Elastic SAN Volume in Gibibytes (GiB). The supported capacity ranges
 
 - Required: Yes
 - Type: int
+- MinValue: 1
+- MaxValue: 65536
 
 ### Parameter: `volumeGroups.volumes.snapshots`
 
@@ -2057,6 +2225,8 @@ List of Elastic SAN Volume Snapshots to be created in the Elastic SAN Volume.
 
 - Required: No
 - Type: array
+- MinValue: 1
+- MaxValue: 65536
 
 **Required parameters**
 
@@ -2070,6 +2240,8 @@ The name of the Elastic SAN Volume Snapshot. The name can only contain lowercase
 
 - Required: Yes
 - Type: string
+- MinValue: 1
+- MaxValue: 65536
 
 ## Outputs
 
