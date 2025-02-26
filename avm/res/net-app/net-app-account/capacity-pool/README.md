@@ -24,7 +24,7 @@ This module deploys an Azure NetApp Files Capacity Pool.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | The name of the capacity pool. |
-| [`size`](#parameter-size) | int | Provisioned size of the pool (in tebibytes). |
+| [`size`](#parameter-size) | int | Provisioned size of the pool in Tebibytes (TiB). |
 
 **Conditional parameters**
 
@@ -54,7 +54,7 @@ The name of the capacity pool.
 
 ### Parameter: `size`
 
-Provisioned size of the pool (in tebibytes).
+Provisioned size of the pool in Tebibytes (TiB).
 
 - Required: Yes
 - Type: int

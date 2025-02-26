@@ -1376,7 +1376,7 @@ Capacity pools to create.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-capacitypoolsname) | string | The name of the capacity pool. |
-| [`size`](#parameter-capacitypoolssize) | int | Provisioned size of the pool (in tebibytes). |
+| [`size`](#parameter-capacitypoolssize) | int | Provisioned size of the pool in Tebibytes (TiB). |
 
 **Optional parameters**
 
@@ -1400,7 +1400,7 @@ The name of the capacity pool.
 
 ### Parameter: `capacityPools.size`
 
-Provisioned size of the pool (in tebibytes).
+Provisioned size of the pool in Tebibytes (TiB).
 
 - Required: Yes
 - Type: int

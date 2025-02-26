@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "1492125217760643259"
+      "templateHash": "17807010386700434469"
     },
     "name": "Azure NetApp Files",
     "description": "This module deploys an Azure NetApp File."
@@ -86,7 +86,7 @@
           "minValue": 1,
           "maxValue": 2048,
           "metadata": {
-            "description": "Required. Provisioned size of the pool (in tebibytes)."
+            "description": "Required. Provisioned size of the pool in Tebibytes (TiB)."
           }
         },
         "qosType": {
@@ -2269,7 +2269,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "14340579752127446693"
+              "templateHash": "567288787230162458"
             },
             "name": "Azure NetApp Files Capacity Pools",
             "description": "This module deploys an Azure NetApp Files Capacity Pool."
@@ -2819,6 +2819,9 @@
                   "output": {
                     "type": "int",
                     "value": "[mul(mul(mul(mul(parameters('tebibytes'), 1024), 1024), 1024), 1024)]"
+                  },
+                  "metadata": {
+                    "description": "Converts from tebibytes to bytes."
                   }
                 }
               }
@@ -2869,7 +2872,7 @@
               "minValue": 1,
               "maxValue": 2048,
               "metadata": {
-                "description": "Required. Provisioned size of the pool (in tebibytes)."
+                "description": "Required. Provisioned size of the pool in Tebibytes (TiB)."
               }
             },
             "qosType": {

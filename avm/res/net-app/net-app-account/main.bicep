@@ -362,7 +362,7 @@ type capacityPoolType = {
   @description('Optional. The pool service level.')
   serviceLevel: ('Premium' | 'Standard' | 'StandardZRS' | 'Ultra')?
 
-  @description('Required. Provisioned size of the pool (in tebibytes).')
+  @description('Required. Provisioned size of the pool in Tebibytes (TiB).')
   @minValue(1)
   @maxValue(2048)
   size: int

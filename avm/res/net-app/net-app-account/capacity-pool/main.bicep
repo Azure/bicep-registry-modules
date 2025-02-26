@@ -22,7 +22,7 @@ param tags object?
 ])
 param serviceLevel string = 'Standard'
 
-@description('Required. Provisioned size of the pool (in tebibytes).')
+@description('Required. Provisioned size of the pool in Tebibytes (TiB).')
 @minValue(1)
 @maxValue(2048)
 param size int
