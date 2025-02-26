@@ -315,7 +315,6 @@ resource machine_learning_services_workspaces_project 'Microsoft.MachineLearning
 //Model deployment guide: https://learn.microsoft.com/en-us/azure/ai-studio/how-to/deploy-models-serverless?tabs=bicep
 //Region availability: https://learn.microsoft.com/en-us/azure/ai-studio/how-to/deploy-models-serverless-availability
 
-
 resource machine_learning_services_workspaces_serverless_endpoint_phiModel 'Microsoft.MachineLearningServices/workspaces/serverlessEndpoints@2024-10-01' = if (isInPhiList) {
   parent: machine_learning_services_workspaces_project
   location: location
@@ -342,7 +341,9 @@ resource azureOpenAIInferenceEndpoint 'Microsoft.keyvault/vaults/secrets@2021-11
   parent: existing_keyvault_vaults
   name: 'AZURE-OPENAI-INFERENCE-ENDPOINT'
   properties: {
-    value: machine_learning_services_workspaces_serverless_endpoint_phiModel != null ? machine_learning_services_workspaces_serverless_endpoint_phiModel.properties.inferenceEndpoint.uri : ''
+    value: machine_learning_services_workspaces_serverless_endpoint_phiModel != null
+      ? machine_learning_services_workspaces_serverless_endpoint_phiModel.properties.inferenceEndpoint.uri
+      : ''
     // value: phiserverless.properties.inferenceEndpoint.uri
   }
 }
@@ -351,7 +352,9 @@ resource azureOpenAIInferenceKey 'Microsoft.keyvault/vaults/secrets@2021-11-01-p
   parent: existing_keyvault_vaults
   name: 'AZURE-OPENAI-INFERENCE-KEY'
   properties: {
-    value: machine_learning_services_workspaces_serverless_endpoint_phiModel != null ? machine_learning_services_workspaces_serverless_endpoint_phiModel.listKeys().primaryKey : ''
+    value: machine_learning_services_workspaces_serverless_endpoint_phiModel != null
+      ? machine_learning_services_workspaces_serverless_endpoint_phiModel.listKeys().primaryKey
+      : ''
     // listKeys(phiserverless.id, '2024-10-01').primaryKey
   }
 }
@@ -376,7 +379,7 @@ resource azureOpenAIApiVersionEntry 'Microsoft.KeyVault/vaults/secrets@2021-11-0
   parent: existing_keyvault_vaults
   name: 'AZURE-OPENAI-PREVIEW-API-VERSION'
   properties: {
-    value: gptModelVersionPreview  //'2024-02-15-preview'
+    value: gptModelVersionPreview //'2024-02-15-preview'
   }
 }
 
