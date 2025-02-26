@@ -82,6 +82,8 @@ param tags object?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+var enableReferencedModulesTelemetry = false
+
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
@@ -322,7 +324,7 @@ module automationAccount_linkedService 'modules/linked-service.bicep' = if (!emp
   )
 }
 
-module automationAccount_solutions 'br/public:avm/res/operations-management/solution:0.3.0' = [
+module automationAccount_solutions 'br/public:avm/res/operations-management/solution:0.3.1' = [
   for (gallerySolution, index) in gallerySolutions ?? []: if (!empty(linkedWorkspaceResourceId)) {
     name: '${uniqueString(deployment().name, location)}-AutoAccount-Solution-${index}'
     params: {
@@ -330,7 +332,7 @@ module automationAccount_solutions 'br/public:avm/res/operations-management/solu
       location: location
       logAnalyticsWorkspaceName: last(split(linkedWorkspaceResourceId, '/'))!
       plan: gallerySolution.plan
-      enableTelemetry: enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
     }
     // This is to support solution to law in different subscription and resource group than the automation account.
     // The current scope is used by default if no linked service is intended to be created.
@@ -465,7 +467,7 @@ module automationAccount_privateEndpoints 'br/public:avm/res/network/private-end
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
-      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',

@@ -150,6 +150,8 @@ param credentialSets credentialSetType[]?
 @description('Optional. Scope maps setting.')
 param scopeMaps scopeMapsType[]?
 
+var enableReferencedModulesTelemetry = false
+
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
@@ -481,7 +483,7 @@ module registry_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.1
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
-      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',

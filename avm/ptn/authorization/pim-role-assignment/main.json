@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "2931179501063853931"
+      "templateHash": "18360545365410556681"
     },
     "name": "PIM Role Assignments (All scopes)",
     "description": "This module deploys a PIM Role Assignment at a Management Group, Subscription or Resource Group scope."
@@ -418,9 +418,7 @@
           "ticketInfo": {
             "value": "[parameters('ticketInfo')]"
           },
-          "conditionVersion": {
-            "value": "[parameters('conditionVersion')]"
-          },
+          "conditionVersion": "[if(not(empty(parameters('condition'))), createObject('value', parameters('conditionVersion')), createObject('value', null()))]",
           "condition": {
             "value": "[parameters('condition')]"
           },
@@ -436,7 +434,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "3274153567221137365"
+              "templateHash": "17408679000216503468"
             },
             "name": " PIM Role Assignments (Management Group scope)",
             "description": "This module deploys a PIM Role Assignment at a Management Group scope."
@@ -778,7 +776,7 @@
                 "roleDefinitionId": "[variables('roleDefinitionIdVar')]",
                 "requestType": "[parameters('requestType')]",
                 "condition": "[parameters('condition')]",
-                "conditionVersion": "[parameters('conditionVersion')]",
+                "conditionVersion": "[if(not(empty(parameters('condition'))), parameters('conditionVersion'), null())]",
                 "justification": "[parameters('justification')]",
                 "targetRoleEligibilityScheduleId": "[parameters('targetRoleEligibilityScheduleId')]",
                 "targetRoleEligibilityScheduleInstanceId": "[parameters('targetRoleEligibilityScheduleInstanceId')]",
@@ -795,8 +793,8 @@
                 "principalId": "[parameters('principalId')]",
                 "roleDefinitionId": "[variables('roleDefinitionIdVar')]",
                 "requestType": "[parameters('requestType')]",
-                "condition": "[if(not(empty(parameters('condition'))), parameters('condition'), null())]",
-                "conditionVersion": "[parameters('conditionVersion')]",
+                "condition": "[parameters('condition')]",
+                "conditionVersion": "[if(not(empty(parameters('condition'))), parameters('conditionVersion'), null())]",
                 "justification": "[parameters('justification')]",
                 "targetRoleAssignmentScheduleId": "[parameters('targetRoleAssignmentScheduleId')]",
                 "targetRoleAssignmentScheduleInstanceId": "[parameters('targetRoleAssignmentScheduleInstanceId')]",
@@ -868,9 +866,7 @@
           "ticketInfo": {
             "value": "[parameters('ticketInfo')]"
           },
-          "conditionVersion": {
-            "value": "[parameters('conditionVersion')]"
-          },
+          "conditionVersion": "[if(not(empty(parameters('condition'))), createObject('value', parameters('conditionVersion')), createObject('value', null()))]",
           "condition": {
             "value": "[parameters('condition')]"
           },
@@ -886,7 +882,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "15288642990461981614"
+              "templateHash": "15073836979415881924"
             },
             "name": "PIM Role Assignments (Subscription scope)",
             "description": "This module deploys a PIM Role Assignment at a Subscription scope."
@@ -1226,7 +1222,7 @@
                 "roleDefinitionId": "[variables('roleDefinitionIdVar')]",
                 "requestType": "[parameters('requestType')]",
                 "condition": "[parameters('condition')]",
-                "conditionVersion": "[parameters('conditionVersion')]",
+                "conditionVersion": "[if(not(empty(parameters('condition'))), parameters('conditionVersion'), null())]",
                 "justification": "[parameters('justification')]",
                 "targetRoleEligibilityScheduleId": "[parameters('targetRoleEligibilityScheduleId')]",
                 "targetRoleEligibilityScheduleInstanceId": "[parameters('targetRoleEligibilityScheduleInstanceId')]",
@@ -1243,8 +1239,8 @@
                 "principalId": "[parameters('principalId')]",
                 "roleDefinitionId": "[variables('roleDefinitionIdVar')]",
                 "requestType": "[parameters('requestType')]",
-                "condition": "[if(not(empty(parameters('condition'))), parameters('condition'), null())]",
-                "conditionVersion": "[parameters('conditionVersion')]",
+                "condition": "[parameters('condition')]",
+                "conditionVersion": "[if(not(empty(parameters('condition'))), parameters('conditionVersion'), null())]",
                 "justification": "[parameters('justification')]",
                 "targetRoleAssignmentScheduleId": "[parameters('targetRoleAssignmentScheduleId')]",
                 "targetRoleAssignmentScheduleInstanceId": "[parameters('targetRoleAssignmentScheduleInstanceId')]",
@@ -1326,9 +1322,7 @@
           "ticketInfo": {
             "value": "[parameters('ticketInfo')]"
           },
-          "conditionVersion": {
-            "value": "[parameters('conditionVersion')]"
-          },
+          "conditionVersion": "[if(not(empty(parameters('condition'))), createObject('value', parameters('conditionVersion')), createObject('value', null()))]",
           "condition": {
             "value": "[parameters('condition')]"
           },
@@ -1344,7 +1338,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "9698835458053155186"
+              "templateHash": "12905144514524239499"
             },
             "name": "PIM Role Assignments (Resource Group scope)",
             "description": "This module deploys a PIM Role Assignment at a Resource Group scope."
@@ -1690,7 +1684,7 @@
                 "roleDefinitionId": "[variables('roleDefinitionIdVar')]",
                 "principalId": "[parameters('principalId')]",
                 "requestType": "[parameters('requestType')]",
-                "conditionVersion": "[parameters('conditionVersion')]",
+                "conditionVersion": "[if(not(empty(parameters('condition'))), parameters('conditionVersion'), null())]",
                 "condition": "[parameters('condition')]",
                 "justification": "[parameters('justification')]",
                 "targetRoleEligibilityScheduleId": "[parameters('targetRoleEligibilityScheduleId')]",
@@ -1708,8 +1702,8 @@
                 "roleDefinitionId": "[variables('roleDefinitionIdVar')]",
                 "principalId": "[parameters('principalId')]",
                 "requestType": "[parameters('requestType')]",
-                "conditionVersion": "[parameters('conditionVersion')]",
-                "condition": "[if(not(empty(parameters('condition'))), parameters('condition'), null())]",
+                "conditionVersion": "[if(not(empty(parameters('condition'))), parameters('conditionVersion'), null())]",
+                "condition": "[parameters('condition')]",
                 "justification": "[parameters('justification')]",
                 "targetRoleAssignmentScheduleId": "[parameters('targetRoleAssignmentScheduleId')]",
                 "targetRoleAssignmentScheduleInstanceId": "[parameters('targetRoleAssignmentScheduleInstanceId')]",
