@@ -69,6 +69,9 @@ param bandwidthInGbps int = 0
 @description('Optional. The reference to the ExpressRoutePort resource when the circuit is provisioned on an ExpressRoutePort resource. Available when configuring Express Route Direct.')
 param expressRoutePortResourceId string = ''
 
+@description('Optional. Flag denoting rate-limiting status of the ExpressRoute direct-port circuit.')
+param enableDirectPortRateLimit bool = false
+
 @description('Optional. Flag denoting global reach status. To enable ExpressRoute Global Reach between different geopolitical regions, your circuits must be Premium SKU.')
 param globalReachEnabled bool = false
 
@@ -135,7 +138,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource expressRouteCircuit 'Microsoft.Network/expressRouteCircuits@2023-04-01' = {
+resource expressRouteCircuit 'Microsoft.Network/expressRouteCircuits@2024-05-01' = {
   name: name
   location: location
   tags: tags
@@ -153,6 +156,7 @@ resource expressRouteCircuit 'Microsoft.Network/expressRouteCircuits@2023-04-01'
     ]
     globalReachEnabled: globalReachEnabled
     bandwidthInGbps: bandwidthInGbps != 0 ? bandwidthInGbps : null
+    enableDirectPortRateLimit: enableDirectPortRateLimit
     expressRoutePort: !empty(expressRoutePortResourceId)
       ? {
           id: expressRoutePortResourceId

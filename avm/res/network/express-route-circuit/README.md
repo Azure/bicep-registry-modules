@@ -17,7 +17,7 @@ This module deploys an Express Route Circuit.
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Network/expressRouteCircuits` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/expressRouteCircuits) |
+| `Microsoft.Network/expressRouteCircuits` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/expressRouteCircuits) |
 
 ## Usage examples
 
@@ -144,6 +144,7 @@ module expressRouteCircuit 'br/public:avm/res/network/express-route-circuit:<ver
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
+    enableDirectPortRateLimit: true
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -224,6 +225,9 @@ module expressRouteCircuit 'br/public:avm/res/network/express-route-circuit:<ver
         }
       ]
     },
+    "enableDirectPortRateLimit": {
+      "value": true
+    },
     "location": {
       "value": "<location>"
     },
@@ -302,6 +306,7 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
+param enableDirectPortRateLimit = true
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
@@ -526,6 +531,7 @@ param tags = {
 | [`authorizationNames`](#parameter-authorizationnames) | array | List of names for ExpressRoute circuit authorizations to create. To fetch the `authorizationKey` for the authorization, use the `existing` resource reference for `Microsoft.Network/expressRouteCircuits/authorizations`. |
 | [`bandwidthInGbps`](#parameter-bandwidthingbps) | int | The bandwidth of the circuit when the circuit is provisioned on an ExpressRoutePort resource. Available when configuring Express Route Direct. Default value of 0 will set the property to null. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`enableDirectPortRateLimit`](#parameter-enabledirectportratelimit) | bool | Flag denoting rate-limiting status of the ExpressRoute direct-port circuit. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`expressRoutePortResourceId`](#parameter-expressrouteportresourceid) | string | The reference to the ExpressRoutePort resource when the circuit is provisioned on an ExpressRoutePort resource. Available when configuring Express Route Direct. |
 | [`globalReachEnabled`](#parameter-globalreachenabled) | bool | Flag denoting global reach status. To enable ExpressRoute Global Reach between different geopolitical regions, your circuits must be Premium SKU. |
@@ -740,6 +746,14 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 - Required: No
 - Type: string
+
+### Parameter: `enableDirectPortRateLimit`
+
+Flag denoting rate-limiting status of the ExpressRoute direct-port circuit.
+
+- Required: No
+- Type: bool
+- Default: `False`
 
 ### Parameter: `enableTelemetry`
 
