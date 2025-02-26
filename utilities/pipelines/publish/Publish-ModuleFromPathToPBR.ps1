@@ -38,7 +38,7 @@ function Publish-ModuleFromPathToPBR {
     )
 
     # Load used functions
-    # . (Join-Path $RepoRoot 'utilities' 'pipelines' 'publish' 'helper' 'Get-VersionedModuleList.ps1')
+    . (Join-Path $RepoRoot 'utilities' 'pipelines' 'publish' 'helper' 'Get-VersionedModuleList.ps1')
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'publish' 'helper' 'Get-ModulesToPublish.ps1')
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'publish' 'helper' 'Get-ModuleTargetVersion.ps1')
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'publish' 'helper' 'New-ModuleReleaseTag.ps1')
@@ -46,10 +46,10 @@ function Publish-ModuleFromPathToPBR {
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'sharedScripts' 'Get-BRMRepositoryName.ps1')
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'sharedScripts' 'tokenReplacement' 'Convert-TokensInFileList.ps1')
 
-    # $topModuleFolderPath = Split-Path $TemplateFilePath -Parent
+    $topModuleFolderPath = Split-Path $TemplateFilePath -Parent
     $moduleFolderPath = Split-Path $TemplateFilePath -Parent
     $moduleBicepFilePath = Join-Path $moduleFolderPath 'main.bicep'
-    # $resultSet = [ordered]@{}
+    $resultSet = [ordered]@{}
 
     # # 1. Get list of all versioned modules (including top level and child modules) and iterate on it
     # Write-Verbose "topModuleFolderPath:  $topModuleFolderPath" -Verbose
@@ -116,13 +116,13 @@ function Publish-ModuleFromPathToPBR {
 
     bicep publish @publishInput
 
-    # $resultSet[$moduleFolderPath] = @{
-    return @{
+    $resultSet[$moduleFolderPath] = @{
+        # return @{
         version             = $targetVersion
         publishedModuleName = $publishedModuleName
         gitTagName          = $gitTagName
     }
 
     # }
-    # return $resultSet
+    return $resultSet
 }
