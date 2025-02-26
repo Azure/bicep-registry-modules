@@ -78,6 +78,8 @@ param lock lockType?
 // Variables   //
 // =========== //
 
+var enableReferencedModulesTelemetry = false
+
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
@@ -224,7 +226,7 @@ module account_accountPrivateEndpoints 'br/public:avm/res/network/private-endpoi
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
-      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',
@@ -279,7 +281,7 @@ module account_portalPrivateEndpoints 'br/public:avm/res/network/private-endpoin
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
-      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',
@@ -334,7 +336,7 @@ module account_storageBlobPrivateEndpoints 'br/public:avm/res/network/private-en
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
-      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',
@@ -389,7 +391,7 @@ module account_storageQueuePrivateEndpoints 'br/public:avm/res/network/private-e
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
-      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',
@@ -444,7 +446,7 @@ module account_eventHubPrivateEndpoints 'br/public:avm/res/network/private-endpo
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
-      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',

@@ -102,6 +102,8 @@ param tags object?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+var enableReferencedModulesTelemetry = false
+
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
@@ -360,7 +362,7 @@ module logAnalyticsWorkspace_solutions 'br/public:avm/res/operations-management/
       location: location
       logAnalyticsWorkspaceName: logAnalyticsWorkspace.name
       plan: gallerySolution.plan
-      enableTelemetry: gallerySolution.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "8506855526660659778"
+      "version": "0.33.93.31351",
+      "templateHash": "6350795977347687440"
     },
     "name": "DBforPostgreSQL Flexible Servers",
     "description": "This module deploys a DBforPostgreSQL Flexible Server."
@@ -987,6 +987,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
+    "enableReferencedModulesTelemetry": false,
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None'), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "builtInRoleNames": {
@@ -1201,8 +1202,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "12559382321541199726"
+              "version": "0.33.93.31351",
+              "templateHash": "562413302994246231"
             },
             "name": "DBforPostgreSQL Flexible Server Databases",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Database."
@@ -1314,8 +1315,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "533163168353951900"
+              "version": "0.33.93.31351",
+              "templateHash": "17303238617469661530"
             },
             "name": "DBforPostgreSQL Flexible Server Firewall Rules",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Firewall Rule."
@@ -1423,8 +1424,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "14381841795302215842"
+              "version": "0.33.93.31351",
+              "templateHash": "10184004603904028584"
             },
             "name": "DBforPostgreSQL Flexible Server Configurations",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Configuration."
@@ -1540,8 +1541,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "9438694500506305843"
+              "version": "0.33.93.31351",
+              "templateHash": "14949929816214813418"
             },
             "name": "DBforPostgreSQL Flexible Server Administrators",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Administrator."
@@ -1651,8 +1652,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "17600786812294347393"
+              "version": "0.33.93.31351",
+              "templateHash": "7080936927606489698"
             },
             "name": "DBforPostgreSQL Flexible Server Advanced Threat Protection",
             "description": "This module deploys a DBforPostgreSQL Advanced Threat Protection."
@@ -1748,7 +1749,7 @@
             "value": "[coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId]"
           },
           "enableTelemetry": {
-            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           },
           "location": {
             "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'location'), reference(split(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location)]"
