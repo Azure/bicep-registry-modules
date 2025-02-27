@@ -3,7 +3,7 @@
 
 param location string
 param tags object
-param managedIdentity_name string
+//param managedIdentity_name string
 param avm_operational_insights_workspace_resourceId string
 param applicationInsights_name string
 param containerRegistry_name string
@@ -42,9 +42,9 @@ var phiModelRegions = [
 var isInPhiList = contains(phiModelRegions, location)
 var varPhiModelUrl = 'azureml://registries/azureml/models/Phi-4'
 
-resource avm_managed_identity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = {
-  name: managedIdentity_name
-}
+// resource avm_managed_identity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = {
+//   name: managedIdentity_name
+// }
 
 resource existing_keyvault_vaults 'Microsoft.keyvault/vaults@2024-04-01-preview' existing = {
   name: keyVault_name
@@ -183,40 +183,46 @@ module avm_search_search_services 'br/public:avm/res/search/search-service:0.9.0
 }
 
 // AI Foundry: Storage account
-module avm_storage_storage_account 'br/public:avm/res/storage/storage-account:0.9.0' = {
-  name: format(deploymentNameFormat, storageAccount_name)
-  params: {
-    name: storageAccount_name
-    location: location
-    tags: tags
-    skuName: 'Standard_LRS'
-    kind: 'StorageV2'
-    accessTier: 'Hot'
-    allowBlobPublicAccess: false
-    allowCrossTenantReplication: false
-    allowSharedKeyAccess: false
-    requireInfrastructureEncryption: true
-    enableHierarchicalNamespace: false
-    enableNfsV3: false
-    // NOTE: Missing in AVM
-    // keyPolicy: {
-    //   keyExpirationPeriodInDays: 7
-    // }
-    largeFileSharesState: 'Disabled'
-    minimumTlsVersion: 'TLS1_2'
-    networkAcls: {
-      bypass: 'AzureServices'
-      defaultAction: 'Deny'
-    }
-    supportsHttpsTrafficOnly: true
-    roleAssignments: [
-      {
-        principalId: avm_managed_identity.properties.principalId
-        roleDefinitionIdOrName: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe' //NOTE: Built-in role 'Storage Blob Data Contributor'
-      }
-    ]
-  }
+
+resource avm_storage_storage_account 'Microsoft.Storage/storageAccounts@2023-05-01' existing = {
+  name: storageAccount_name
+  scope: resourceGroup()
 }
+
+// module avm_storage_storage_account 'br/public:avm/res/storage/storage-account:0.9.0' = {
+//   name: format(deploymentNameFormat, storageAccount_name)
+//   params: {
+//     name: storageAccount_name
+//     location: location
+//     tags: tags
+//     skuName: 'Standard_LRS'
+//     kind: 'StorageV2'
+//     accessTier: 'Hot'
+//     allowBlobPublicAccess: false
+//     allowCrossTenantReplication: false
+//     allowSharedKeyAccess: false
+//     requireInfrastructureEncryption: true
+//     enableHierarchicalNamespace: false
+//     enableNfsV3: false
+//     // NOTE: Missing in AVM
+//     // keyPolicy: {
+//     //   keyExpirationPeriodInDays: 7
+//     // }
+//     largeFileSharesState: 'Disabled'
+//     minimumTlsVersion: 'TLS1_2'
+//     networkAcls: {
+//       bypass: 'AzureServices'
+//       defaultAction: 'Deny'
+//     }
+//     supportsHttpsTrafficOnly: true
+//     roleAssignments: [
+//       {
+//         principalId: avm_managed_identity.properties.principalId
+//         roleDefinitionIdOrName: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe' //NOTE: Built-in role 'Storage Blob Data Contributor'
+//       }
+//     ]
+//   }
+// }
 
 // AI Foundry: AI Hub
 // NOTE: Evaluate if this is an appropriate solution or if we should manage keys through KV
@@ -249,7 +255,10 @@ module avm_machine_learning_services_workspaces_aihub 'br/public:avm/res/machine
     publicNetworkAccess: 'Enabled' // Not in original script, check this
     description: 'AI Hub for KM template'
     associatedKeyVaultResourceId: existing_keyvault_vaults.id
-    associatedStorageAccountResourceId: avm_storage_storage_account.outputs.resourceId
+    associatedStorageAccountResourceId: resourceId(
+      'Microsoft.Storage/storageAccounts@2023-05-01',
+      avm_storage_storage_account.name
+    )
     associatedContainerRegistryResourceId: avm_container_registry_registry.outputs.resourceId
     associatedApplicationInsightsResourceId: avm_insights_component.outputs.resourceId
     connections: [

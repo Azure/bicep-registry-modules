@@ -108,10 +108,11 @@ var varCosmosDBAccountName = format(workloadNameFormat, 'cmdb')
 var varCosmosDBAccountLocation = secondaryLocation
 var varSQLServerName = format(workloadNameFormat, 'sqls')
 var varSQLServerLocation = secondaryLocation
-var varChartsManagedEnviornmentName = format(workloadNameFormat, 'fchr-ftme')
+var varFunctionsManagedEnvironment = format(workloadNameFormat, 'ftme')
+//var varChartsManagedEnviornmentName = format(workloadNameFormat, 'fchr-ftme')
 var varChartsFunctionName = format(workloadNameFormat, 'fchr-azfct')
 var varChartsStorageAccountName = replace(format(workloadNameFormat, 'fchr-strg'), '-', '')
-var varRAGManagedEnviornmentName = format(workloadNameFormat, 'frag-ftme')
+//var varRAGManagedEnviornmentName = format(workloadNameFormat, 'frag-ftme')
 var varRAGFunctionName = format(workloadNameFormat, 'frag-azfct')
 var varRAGStorageAccountName = replace(format(workloadNameFormat, 'frag-strg'), '-', '')
 var varWebAppServerFarmLocation = ckmWebAppServerFarmLocation == '' ? solutionLocation : ckmWebAppServerFarmLocation
@@ -160,12 +161,12 @@ var varAIFoundryAIServicesModelDeployments = [
 ]
 
 // VARIABLES: CosmosDB
-var varCosmosDBSQLDatabaseName = 'db_conversation_history'
-var varCosmosDBSQLDatabaseNameCollectionName = 'conversations'
-var varCosmosDBSQLDatabaseContainers = [
+var varCosdbSqlDbName = 'db_conversation_history'
+var varCosdbSqlDbNameCollName = 'conversations'
+var varCosdbSqlDbContainers = [
   {
-    name: varCosmosDBSQLDatabaseNameCollectionName
-    id: varCosmosDBSQLDatabaseNameCollectionName //NOT: Might not be needed
+    name: varCosdbSqlDbNameCollName
+    id: varCosdbSqlDbNameCollName //NOT: Might not be needed
     partitionKey: '/userId'
   }
 ]
@@ -392,7 +393,7 @@ module moduleAIFoundry './modules/ai-foundry.bicep' = {
   params: {
     location: solutionLocation
     tags: tags
-    managedIdentity_name: varManagedIdentityName
+    //managedIdentity_name: varManagedIdentityName
     keyVault_name: varKeyVaultName
     avm_operational_insights_workspace_resourceId: avmLogAnalyticsWorkspace.outputs.resourceId
     applicationInsights_name: varAIFoundryApplicationInsightsName
@@ -428,6 +429,9 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.17.0' = {
     kind: 'StorageV2'
     minimumTlsVersion: 'TLS1_2'
     allowBlobPublicAccess: false
+    //     allowCrossTenantReplication: false
+    //     allowSharedKeyAccess: false
+    //     enableNfsV3: false
     enableHierarchicalNamespace: true //NOTE: Set to true
     networkAcls: {
       bypass: 'AzureServices'
@@ -464,6 +468,41 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.17.0' = {
     ]
   }
 }
+
+// module avm_storage_storage_account 'br/public:avm/res/storage/storage-account:0.9.0' = {
+//   name: format(deploymentNameFormat, storageAccount_name)
+//   params: {
+//     name: storageAccount_name
+//     location: location
+//     tags: tags
+//     skuName: 'Standard_LRS'
+//     kind: 'StorageV2'
+//     accessTier: 'Hot'
+//     allowBlobPublicAccess: false
+//     allowCrossTenantReplication: false
+//     allowSharedKeyAccess: false
+//     requireInfrastructureEncryption: true
+//     enableHierarchicalNamespace: false
+//     enableNfsV3: false
+//     // NOTE: Missing in AVM
+//     // keyPolicy: {
+//     //   keyExpirationPeriodInDays: 7
+//     // }
+//     largeFileSharesState: 'Disabled'
+//     minimumTlsVersion: 'TLS1_2'
+//     networkAcls: {
+//       bypass: 'AzureServices'
+//       defaultAction: 'Deny'
+//     }
+//     supportsHttpsTrafficOnly: true
+//     roleAssignments: [
+//       {
+//         principalId: avm_managed_identity.properties.principalId
+//         roleDefinitionIdOrName: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe' //NOTE: Built-in role 'Storage Blob Data Contributor'
+//       }
+//     ]
+//   }
+// }
 
 resource existingStorageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' existing = {
   name: varStorageAccountName
@@ -526,9 +565,9 @@ module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.11.0' = {
     serverVersion: '4.0'
     sqlDatabases: [
       {
-        name: varCosmosDBSQLDatabaseName
+        name: varCosdbSqlDbName
         containers: [
-          for container in varCosmosDBSQLDatabaseContainers: {
+          for container in varCosdbSqlDbContainers: {
             name: container.name
             paths: [container.partitionKey]
           }
@@ -568,7 +607,7 @@ resource kvSecretAzureCosmosDBAccountKey 'Microsoft.KeyVault/vaults/secrets@2021
 resource kvSecretAzureCosmosDBDatabase 'Microsoft.KeyVault/vaults/secrets@2021-11-01-preview' = {
   name: '${varKeyVaultName}/AZURE-COSMOSDB-DATABASE'
   properties: {
-    value: varCosmosDBSQLDatabaseName
+    value: varCosdbSqlDbName
   }
   dependsOn: [
     avmKeyVault
@@ -578,7 +617,7 @@ resource kvSecretAzureCosmosDBDatabase 'Microsoft.KeyVault/vaults/secrets@2021-1
 resource kvSecretAzureCosmosDBConversationsContainer 'Microsoft.KeyVault/vaults/secrets@2021-11-01-preview' = {
   name: '${varKeyVaultName}/AZURE-COSMOSDB-CONVERSATIONS-CONTAINER'
   properties: {
-    value: varCosmosDBSQLDatabaseNameCollectionName
+    value: varCosdbSqlDbNameCollName
   }
   dependsOn: [
     avmKeyVault
@@ -722,12 +761,12 @@ module avmDeploymentScritptIndexData 'br/public:avm/res/resources/deployment-scr
   }
 }
 
-//========== Azure function: Chart ========== //
+//========== Azure function: Managed Environment ========== //
 
-module avmManagedEnvironmentCharts 'br/public:avm/res/app/managed-environment:0.9.0' = {
-  name: format(deploymentNameFormat, varChartsManagedEnviornmentName)
+module avmFunctionsManagedEnvironment 'br/public:avm/res/app/managed-environment:0.9.0' = {
+  name: format(deploymentNameFormat, varFunctionsManagedEnvironment)
   params: {
-    name: varChartsManagedEnviornmentName
+    name: varFunctionsManagedEnvironment
     tags: tags
     location: solutionLocation
     zoneRedundant: false
@@ -741,6 +780,8 @@ module avmManagedEnvironmentCharts 'br/public:avm/res/app/managed-environment:0.
     logAnalyticsWorkspaceResourceId: avmLogAnalyticsWorkspace.outputs.resourceId
   }
 }
+
+//========== Azure function: Chart ========== //
 
 // NOTE: AVM module deployment is not working for this Azure Function configuration
 // ERROR: VnetRouteAllEnabled cannot be configured for function app deployed on Azure Container Apps. Please try to configure from Azure Container Apps Environment resource
@@ -822,7 +863,7 @@ resource resManagedIdentity 'Microsoft.Web/sites@2023-12-01' = {
       // use32BitWorkerProcess: false
       // ftpsState: 'FtpsOnly'
     }
-    managedEnvironmentId: avmManagedEnvironmentCharts.outputs.resourceId
+    managedEnvironmentId: avmFunctionsManagedEnvironment.outputs.resourceId
     workloadProfileName: 'Consumption'
     // virtualNetworkSubnetId: null
     // clientAffinityEnabled: false
@@ -855,23 +896,23 @@ module avmStorageAccountCharts 'br/public:avm/res/storage/storage-account:0.17.3
 //========== Azure function: Rag ========== //
 
 // NOTE: Can we share the same managed environment for both functions?
-module avmManagedEnvironmentRAG 'br/public:avm/res/app/managed-environment:0.9.0' = {
-  name: format(deploymentNameFormat, varRAGManagedEnviornmentName)
-  params: {
-    name: varRAGManagedEnviornmentName
-    tags: tags
-    location: solutionLocation
-    zoneRedundant: false
-    workloadProfiles: [
-      {
-        workloadProfileType: 'Consumption'
-        name: 'Consumption'
-      }
-    ]
-    peerTrafficEncryption: false
-    logAnalyticsWorkspaceResourceId: avmLogAnalyticsWorkspace.outputs.resourceId
-  }
-}
+// module avmManagedEnvironmentRAG 'br/public:avm/res/app/managed-environment:0.9.0' = {
+//   name: format(deploymentNameFormat, varRAGManagedEnviornmentName)
+//   params: {
+//     name: varRAGManagedEnviornmentName
+//     tags: tags
+//     location: solutionLocation
+//     zoneRedundant: false
+//     workloadProfiles: [
+//       {
+//         workloadProfileType: 'Consumption'
+//         name: 'Consumption'
+//       }
+//     ]
+//     peerTrafficEncryption: false
+//     logAnalyticsWorkspaceResourceId: avmLogAnalyticsWorkspace.outputs.resourceId
+//   }
+// }
 
 resource existingAIFoundryAIServices 'Microsoft.CognitiveServices/accounts@2024-10-01' existing = {
   name: varAIFoundryAIServicesName
@@ -964,7 +1005,7 @@ resource resFunctionRAG 'Microsoft.Web/sites@2023-12-01' = {
       // use32BitWorkerProcess: false
       // ftpsState: 'FtpsOnly'
     }
-    managedEnvironmentId: avmManagedEnvironmentRAG.outputs.resourceId
+    managedEnvironmentId: avmFunctionsManagedEnvironment.outputs.resourceId
     workloadProfileName: 'Consumption'
     // virtualNetworkSubnetId: null
     // clientAffinityEnabled: false
@@ -1057,8 +1098,8 @@ module avmWebsiteWebapp 'br/public:avm/res/web/site:0.13.3' = {
       REACT_APP_LAYOUT_CONFIG: varWebAppAppConfigReact
       AzureCosmosDB_ACCOUNT: avmCosmosDB.outputs.name
       //AzureCosmosDB_ACCOUNT_KEY: existingCosmosDB.listKeys().primaryMasterKey //AzureCosmosDB_ACCOUNT_KEY
-      AzureCosmosDB_CONVERSATIONS_CONTAINER: varCosmosDBSQLDatabaseNameCollectionName
-      AzureCosmosDB_DATABASE: varCosmosDBSQLDatabaseName
+      AzureCosmosDB_CONVERSATIONS_CONTAINER: varCosdbSqlDbNameCollName
+      AzureCosmosDB_DATABASE: varCosdbSqlDbName
       AzureCosmosDB_ENABLE_FEEDBACK: 'True'
       SCM_DO_BUILD_DURING_DEPLOYMENT: 'true'
       UWSGI_PROCESSES: '2'
