@@ -50,15 +50,15 @@ param tags object?
 @sys.description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @sys.description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { diagnosticSettingMetricsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
+import { diagnosticSettingMetricsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingMetricsOnlyType[]?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -275,7 +275,7 @@ output volumeGroups volumeGroupOutputType[] = [
 // Definitions      //
 // ================ //
 
-import { managedIdentityAllType, customerManagedKeyType, privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
+import { managedIdentityAllType, customerManagedKeyType, privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 import { volumeType, virtualNetworkRuleType, volumeOutputType } from './volume-group/main.bicep'
 
 @sys.export()
