@@ -62,10 +62,6 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.3
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-// ============== //
-// Variables      //
-// ============== //
-
 // Default to Premium_ZRS unless the user specifically chooses Premium_LRS and specifies an availability zone number.
 var calculatedSku = sku == 'Premium_LRS' ? (availabilityZone != null ? 'Premium_LRS' : 'Premium_ZRS') : 'Premium_ZRS'
 
@@ -203,7 +199,6 @@ module elasticSan_volumeGroups 'volume-group/main.bicep' = [
       customerManagedKey: volumeGroup.?customerManagedKey
       privateEndpoints: volumeGroup.?privateEndpoints
       tags: tags
-      enableTelemetry: enableTelemetry
       lock: lock
     }
   }
@@ -270,7 +265,7 @@ output volumeGroups volumeGroupOutputType[] = [
     name: elasticSan_volumeGroups[i].outputs.name
     location: elasticSan_volumeGroups[i].outputs.location
     resourceGroupName: elasticSan_volumeGroups[i].outputs.resourceGroupName
-    systemAssignedMIPrincipalId: elasticSan_volumeGroups[i].outputs.systemAssignedMIPrincipalId
+    systemAssignedMIPrincipalId: elasticSan_volumeGroups[i].outputs.?systemAssignedMIPrincipalId
     volumes: elasticSan_volumeGroups[i].outputs.volumes
     privateEndpoints: elasticSan_volumeGroups[i].outputs.privateEndpoints
   }
@@ -321,7 +316,7 @@ type volumeGroupOutputType = {
   resourceGroupName: string
 
   @sys.description('The principal ID of the system assigned identity of the deployed Elastic SAN Volume Group.')
-  systemAssignedMIPrincipalId: string
+  systemAssignedMIPrincipalId: string?
 
   @sys.description('Details on the deployed Elastic SAN Volumes.')
   volumes: volumeOutputType[]

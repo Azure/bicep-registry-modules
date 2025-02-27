@@ -112,6 +112,8 @@ param disasterRecoveryConfig disasterRecoveryConfigType?
 @description('Optional. Key vault reference and secret settings for the module\'s secrets export.')
 param secretsExportConfiguration secretsExportConfigurationType?
 
+var enableReferencedModulesTelemetry = false
+
 var maximumThroughputUnitsVar = !isAutoInflateEnabled ? 0 : maximumThroughputUnits
 
 var formattedUserAssignedIdentities = reduce(
@@ -347,7 +349,7 @@ module eventHubNamespace_privateEndpoints 'br/public:avm/res/network/private-end
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
-      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',

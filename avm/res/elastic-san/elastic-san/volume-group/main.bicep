@@ -36,9 +36,6 @@ param privateEndpoints privateEndpointSingleServiceType[]?
 @sys.description('Optional. Tags of the Elastic SAN Volume Group resource.')
 param tags object?
 
-@sys.description('Optional. Enable/Disable usage telemetry for module.')
-param enableTelemetry bool = true
-
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
 @sys.description('Optional. The lock settings of the service.')
 param lock lockType?
@@ -46,6 +43,8 @@ param lock lockType?
 // ============== //
 // Variables      //
 // ============== //
+
+var enableReferencedModulesTelemetry = false
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -121,7 +120,7 @@ resource volumeGroup 'Microsoft.ElasticSan/elasticSans/volumegroups@2023-01-01' 
                 keyName: customerManagedKey!.keyName
                 keyVaultUri: cMKKeyVault.properties.vaultUri
                 keyVersion: !empty(customerManagedKey.?keyVersion ?? '')
-                  ? customerManagedKey!.keyVersion
+                  ? customerManagedKey!.?keyVersion
                   : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
               }
             : null
@@ -146,10 +145,13 @@ module volumeGroup_volumes 'volume/main.bicep' = [
   }
 ]
 
-module volumeGroup_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.9.0' = [
+module volumeGroup_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-ElasticSan-PrivateEndpoint-${index}'
-    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
+    scope: resourceGroup(
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
+    )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(elasticSan.id, '/'))}-${privateEndpoint.?service ?? volumeGroup.name}-${index}'
       privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
@@ -180,7 +182,7 @@ module volumeGroup_privateEndpoints 'br/public:avm/res/network/private-endpoint:
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
-      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',
@@ -233,20 +235,43 @@ output volumes volumeOutputType[] = [
 ]
 
 @sys.description('The private endpoints of the Elastic SAN Volume Group.')
-output privateEndpoints array = [
-  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
-    name: volumeGroup_privateEndpoints[i].outputs.name
-    location: volumeGroup_privateEndpoints[i].outputs.location
-    resourceId: volumeGroup_privateEndpoints[i].outputs.resourceId
-    groupId: volumeGroup_privateEndpoints[i].outputs.groupId
-    customDnsConfig: volumeGroup_privateEndpoints[i].outputs.customDnsConfig
-    networkInterfaceResourceIds: volumeGroup_privateEndpoints[i].outputs.networkInterfaceResourceIds
+output privateEndpoints privateEndpointOutputType[] = [
+  for (item, index) in (privateEndpoints ?? []): {
+    name: volumeGroup_privateEndpoints[index].outputs.name
+    resourceId: volumeGroup_privateEndpoints[index].outputs.resourceId
+    groupId: volumeGroup_privateEndpoints[index].outputs.?groupId!
+    customDnsConfigs: volumeGroup_privateEndpoints[index].outputs.customDnsConfigs
+    networkInterfaceResourceIds: volumeGroup_privateEndpoints[index].outputs.networkInterfaceResourceIds
   }
 ]
 
 // ================ //
 // Definitions      //
 // ================ //
+
+@export()
+type privateEndpointOutputType = {
+  @description('The name of the private endpoint.')
+  name: string
+
+  @description('The resource ID of the private endpoint.')
+  resourceId: string
+
+  @description('The group Id for the private endpoint Group.')
+  groupId: string?
+
+  @description('The custom DNS configurations of the private endpoint.')
+  customDnsConfigs: {
+    @description('FQDN that resolves to private endpoint IP address.')
+    fqdn: string?
+
+    @description('A list of private IP addresses of the private endpoint.')
+    ipAddresses: string[]
+  }[]
+
+  @description('The IDs of the network interfaces associated with the private endpoint.')
+  networkInterfaceResourceIds: string[]
+}
 
 import { volumeSnapshotType, volumeSnapshotOutputType } from 'volume/main.bicep'
 

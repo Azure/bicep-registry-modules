@@ -14,7 +14,7 @@ param location string = resourceGroup().location
 ])
 param skuName string = 'Basic'
 
-import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyType?
 
@@ -56,23 +56,23 @@ param publicNetworkAccess string = ''
 @description('Optional. Disable local authentication profile used within the resource.')
 param disableLocalAuth bool = true
 
-import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointMultiServiceType[]?
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -81,6 +81,8 @@ param tags object?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
+
+var enableReferencedModulesTelemetry = false
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -198,7 +200,7 @@ resource automationAccount 'Microsoft.Automation/automationAccounts@2022-08-08' 
             keyName: customerManagedKey!.keyName
             keyvaultUri: cMKKeyVault.properties.vaultUri
             keyVersion: !empty(customerManagedKey.?keyVersion ?? '')
-              ? customerManagedKey!.keyVersion
+              ? customerManagedKey!.?keyVersion!
               : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
           }
         }
@@ -322,7 +324,7 @@ module automationAccount_linkedService 'modules/linked-service.bicep' = if (!emp
   )
 }
 
-module automationAccount_solutions 'br/public:avm/res/operations-management/solution:0.3.0' = [
+module automationAccount_solutions 'br/public:avm/res/operations-management/solution:0.3.1' = [
   for (gallerySolution, index) in gallerySolutions ?? []: if (!empty(linkedWorkspaceResourceId)) {
     name: '${uniqueString(deployment().name, location)}-AutoAccount-Solution-${index}'
     params: {
@@ -330,7 +332,7 @@ module automationAccount_solutions 'br/public:avm/res/operations-management/solu
       location: location
       logAnalyticsWorkspaceName: last(split(linkedWorkspaceResourceId, '/'))!
       plan: gallerySolution.plan
-      enableTelemetry: enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
     }
     // This is to support solution to law in different subscription and resource group than the automation account.
     // The current scope is used by default if no linked service is intended to be created.
@@ -431,10 +433,13 @@ resource automationAccount_diagnosticSettings 'Microsoft.Insights/diagnosticSett
   }
 ]
 
-module automationAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
+module automationAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-automationAccount-PrivateEndpoint-${index}'
-    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
+    scope: resourceGroup(
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
+    )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(automationAccount.id, '/'))}-${privateEndpoint.service}-${index}'
       privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
@@ -465,7 +470,7 @@ module automationAccount_privateEndpoints 'br/public:avm/res/network/private-end
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
-      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',
@@ -519,19 +524,42 @@ output systemAssignedMIPrincipalId string? = automationAccount.?identity.?princi
 output location string = automationAccount.location
 
 @description('The private endpoints of the automation account.')
-output privateEndpoints array = [
-  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
-    name: automationAccount_privateEndpoints[i].outputs.name
-    resourceId: automationAccount_privateEndpoints[i].outputs.resourceId
-    groupId: automationAccount_privateEndpoints[i].outputs.groupId
-    customDnsConfig: automationAccount_privateEndpoints[i].outputs.customDnsConfig
-    networkInterfaceIds: automationAccount_privateEndpoints[i].outputs.networkInterfaceIds
+output privateEndpoints privateEndpointOutputType[] = [
+  for (item, index) in (privateEndpoints ?? []): {
+    name: automationAccount_privateEndpoints[index].outputs.name
+    resourceId: automationAccount_privateEndpoints[index].outputs.resourceId
+    groupId: automationAccount_privateEndpoints[index].outputs.?groupId!
+    customDnsConfigs: automationAccount_privateEndpoints[index].outputs.customDnsConfigs
+    networkInterfaceResourceIds: automationAccount_privateEndpoints[index].outputs.networkInterfaceResourceIds
   }
 ]
 
 // =============== //
 //   Definitions   //
 // =============== //
+@export()
+type privateEndpointOutputType = {
+  @description('The name of the private endpoint.')
+  name: string
+
+  @description('The resource ID of the private endpoint.')
+  resourceId: string
+
+  @description('The group Id for the private endpoint Group.')
+  groupId: string?
+
+  @description('The custom DNS configurations of the private endpoint.')
+  customDnsConfigs: {
+    @description('FQDN that resolves to private endpoint IP address.')
+    fqdn: string?
+
+    @description('A list of private IP addresses of the private endpoint.')
+    ipAddresses: string[]
+  }[]
+
+  @description('The IDs of the network interfaces associated with the private endpoint.')
+  networkInterfaceResourceIds: string[]
+}
 
 @export()
 type credentialType = {

@@ -57,10 +57,7 @@ This instance deploys the module with the minimum set of required parameters.
 module automationAccount 'br/public:avm/res/automation/automation-account:<version>' = {
   name: 'automationAccountDeployment'
   params: {
-    // Required parameters
     name: 'aamin001'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -77,13 +74,8 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
     "name": {
       "value": "aamin001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -99,10 +91,7 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
 ```bicep-params
 using 'br/public:avm/res/automation/automation-account:<version>'
 
-// Required parameters
 param name = 'aamin001'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -129,7 +118,6 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
       keyVaultResourceId: '<keyVaultResourceId>'
       userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
     }
-    location: '<location>'
     managedIdentities: {
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
@@ -163,9 +151,6 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
         "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
       }
     },
-    "location": {
-      "value": "<location>"
-    },
     "managedIdentities": {
       "value": {
         "userAssignedResourceIds": [
@@ -195,7 +180,6 @@ param customerManagedKey = {
   keyVaultResourceId: '<keyVaultResourceId>'
   userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
 }
-param location = '<location>'
 param managedIdentities = {
   userAssignedResourceIds: [
     '<managedIdentityResourceId>'
@@ -1044,7 +1028,6 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
       }
     ]
     linkedWorkspaceResourceId: '<linkedWorkspaceResourceId>'
-    location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
@@ -1259,9 +1242,6 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
     },
     "linkedWorkspaceResourceId": {
       "value": "<linkedWorkspaceResourceId>"
-    },
-    "location": {
-      "value": "<location>"
     },
     "lock": {
       "value": {
@@ -1482,7 +1462,6 @@ param jobSchedules = [
   }
 ]
 param linkedWorkspaceResourceId = '<linkedWorkspaceResourceId>'
-param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
@@ -2137,7 +2116,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 | [`name`](#parameter-privateendpointsname) | string | The name of the private endpoint. |
 | [`privateDnsZoneGroup`](#parameter-privateendpointsprivatednszonegroup) | object | The private DNS zone group to configure for the private endpoint. |
 | [`privateLinkServiceConnectionName`](#parameter-privateendpointsprivatelinkserviceconnectionname) | string | The name of the private link connection to create. |
-| [`resourceGroupName`](#parameter-privateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different resource group than the main resource. |
+| [`resourceGroupResourceId`](#parameter-privateendpointsresourcegroupresourceid) | string | The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-privateendpointstags) | object | Tags to be applied on all resources/resource groups in this deployment. |
 
@@ -2396,9 +2375,9 @@ The name of the private link connection to create.
 - Required: No
 - Type: string
 
-### Parameter: `privateEndpoints.resourceGroupName`
+### Parameter: `privateEndpoints.resourceGroupResourceId`
 
-Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.
+The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used.
 
 - Required: No
 - Type: string
@@ -2419,7 +2398,7 @@ Array of role assignments to create.
   - `'Owner'`
   - `'Private DNS Zone Contributor'`
   - `'Reader'`
-  - `'Role Based Access Control Administrator (Preview)'`
+  - `'Role Based Access Control Administrator'`
 
 **Required parameters**
 
@@ -2712,9 +2691,10 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.7.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.10.1` | Remote reference |
 | `br/public:avm/res/operations-management/solution:0.3.0` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |
+| `br/public:avm/res/operations-management/solution:0.3.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

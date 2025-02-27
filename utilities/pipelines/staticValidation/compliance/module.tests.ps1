@@ -116,7 +116,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
         }
 
         # if the child modules version has been increased, the main modules version should be increased as well
-        It '[<moduleFolderName>] main module version should be increased if the child version number has been increased.' -TestCases ($moduleFolderTestCases | Where-Object { (-Not $_.isTopLevelModule) }) {
+        It '[<moduleFolderName>] main module version should be increased if the child version number has been increased.' -TestCases ($moduleFolderTestCases | Where-Object { -Not $_.isTopLevelModule }) {
 
             param (
                 [string] $moduleFolderPath
@@ -128,7 +128,8 @@ Describe 'File/folder tests' -Tag 'Modules' {
                 $parentFolderPath = Split-Path -Path $moduleFolderPath -Parent
                 $moduleVersion = Get-ModuleTargetVersion -ModuleFolderPath $parentFolderPath
 
-                ($childModuleVersion.EndsWith('.0') -and -not $moduleVersion.EndsWith('.0')) | Should -Be $false
+                # the first release of a child module does not require the parent module to be updated
+                ($childModuleVersion -ne '0.1.0' -and $childModuleVersion.EndsWith('.0') -and -not $moduleVersion.EndsWith('.0')) | Should -Be $false
             }
         }
 
@@ -487,6 +488,7 @@ Describe 'Module tests' -Tag 'Module' {
                     readMeFilePath         = Join-Path (Split-Path $templateFilePath) 'README.md'
                     isTopLevelModule       = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
                     moduleType             = $moduleType
+                    versionFileExists      = Test-Path (Join-Path -Path $moduleFolderPath 'version.json')
                 }
             }
         }
@@ -579,7 +581,7 @@ Describe 'Module tests' -Tag 'Module' {
             }
 
             # If any resources in the module are deployed, a telemetry deployment should be carried out as well
-            It '[<moduleFolderName>] The telemetry parameter should be present & have the expected type, default value & metadata description.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule -and $_.templateFileContent.resources.count -gt 0 }) {
+            It '[<moduleFolderName>] The telemetry parameter should be present & have the expected type, default value & metadata description.' -TestCases ($moduleFolderTestCases | Where-Object { $_.versionFileExists -and $_.templateFileContent.resources.count -gt 0 }) {
 
                 param(
                     [hashtable] $templateFileParameters
@@ -672,7 +674,6 @@ Describe 'Module tests' -Tag 'Module' {
                 }
                 $incorrectParameters | Should -BeNullOrEmpty -Because ('conditional parameters in the template file should lack a description that starts with "Required.". Found incorrect items: [{0}].' -f ($incorrectParameters -join ', '))
             }
-
 
             It '[<moduleFolderName>] All non-required parameters & UDTs in template file should not have description that start with "Required.".' -TestCases $moduleFolderTestCases {
                 param (
@@ -868,11 +869,32 @@ Describe 'Module tests' -Tag 'Module' {
                 }
                 $incorrectVariables | Should -BeNullOrEmpty
             }
+
+            It '[<moduleFolderName>] Variable "enableReferencedModulesTelemetry" should exist and set to "false" if module references other modules with dedicated telemetry.' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleType -eq 'res' }) {
+
+                param(
+                    [hashtable] $templateFileContent
+                )
+
+                # get all referenced modules, that offer a telemetry parameter
+                $referencesWithTelemetry = $templateFileContent.resources.Values | Where-Object {
+                    $_.type -eq 'Microsoft.Resources/deployments' -and
+                    $_.properties.template.parameters.Keys -contains 'enableTelemetry'
+                }
+
+                if ($referencesWithTelemetry.Count -eq 0) {
+                    Set-ItResult -Skipped -Because 'no modules with dedicated telemetry are deployed.'
+                    return
+                }
+
+                $templateFileContent.variables.Keys | Should -Contain 'enableReferencedModulesTelemetry'
+                $templateFileContent.variables.enableReferencedModulesTelemetry | Should -Be $false
+            }
         }
 
         Context 'Resources' {
-            # If any resources in the module are deployed, a telemetry deployment should be carried out as well
-            It '[<moduleFolderName>] Telemetry deployment should be present in the template.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule -and $_.templateFileContent.resources.count -gt 0 }) {
+            # If any resources in the module are deployed, a telemetry deployment should be carried out as well.
+            It '[<moduleFolderName>] Telemetry deployment should be present in the template.' -TestCases ($moduleFolderTestCases | Where-Object { $_.versionFileExists -and $_.templateFileContent.resources.count -gt 0 }) {
 
                 param(
                     [hashtable] $templateFileContent
@@ -889,7 +911,7 @@ Describe 'Module tests' -Tag 'Module' {
                 $telemetryDeployment | Should -Not -BeNullOrEmpty -Because 'A telemetry resource with name prefix [46d3xbcp] should be present in the template'
             }
 
-            It '[<moduleFolderName>] Telemetry deployment should have correct condition in the template.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule }) {
+            It '[<moduleFolderName>] Telemetry deployment should have correct condition in the template.' -TestCases ($moduleFolderTestCases | Where-Object { $_.versionFileExists }) {
 
                 param(
                     [hashtable] $templateFileContent
@@ -912,7 +934,7 @@ Describe 'Module tests' -Tag 'Module' {
                 $telemetryDeployment.condition | Should -Be "[parameters('enableTelemetry')]"
             }
 
-            It '[<moduleFolderName>] Telemetry deployment should have expected inner output for verbosity.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule }) {
+            It '[<moduleFolderName>] Telemetry deployment should have expected inner output for verbosity.' -TestCases ($moduleFolderTestCases | Where-Object { $_.versionFileExists }) {
 
                 param(
                     [hashtable] $templateFileContent
@@ -936,7 +958,7 @@ Describe 'Module tests' -Tag 'Module' {
                 $telemetryDeployment.properties.template.outputs['telemetry'].value | Should -Be 'For more information, see https://aka.ms/avm/TelemetryInfo'
             }
 
-            It '[<moduleFolderName>] Telemetry deployment should have expected telemetry identifier.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule }) {
+            It '[<moduleFolderName>] Telemetry deployment should have expected telemetry identifier.' -TestCases ($moduleFolderTestCases | Where-Object { $_.versionFileExists }) {
 
                 param(
                     [string] $templateFilePath,
@@ -996,6 +1018,37 @@ Describe 'Module tests' -Tag 'Module' {
 
                 $telemetryDeploymentName = $telemetryDeployment.name # The AVM telemetry prefix
                 $telemetryDeploymentName | Should -Match "$expectedTelemetryIdentifier"
+            }
+
+            It '[<moduleFolderName>] Telemetry should be disabled for referenced modules with dedicated telemetry.' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleType -eq 'res' }) {
+
+                param(
+                    [hashtable] $templateFileContent,
+                    [string] $templateFilePath
+                )
+
+                # get all referenced modules, that offer a telemetry parameter
+                $referencesWithTelemetry = $templateFileContent.resources.Values | Where-Object {
+                    $_.type -eq 'Microsoft.Resources/deployments' -and
+                    $_.properties.template.parameters.Keys -contains 'enableTelemetry'
+                }
+
+                if ($referencesWithTelemetry.Count -eq 0) {
+                    Set-ItResult -Skipped -Because 'no modules with dedicated telemetry are deployed.'
+                    return
+                }
+
+                # telemetry should be disabled for the referenced module
+                $incorrectCrossReferences = [System.Collections.ArrayList]@()
+                foreach ($referencedModule in $referencesWithTelemetry) {
+                    if ($referencedModule.properties.parameters.Keys -notcontains 'enableTelemetry' -or
+                        $referencedModule.properties.parameters.enableTelemetry.value -ne "[variables('enableReferencedModulesTelemetry')]") {
+                        # remember the names (e.g. 'virtualNetwork_subnets') to provide a better error message
+                        $incorrectCrossReferences.Add($referencedModule.identifier)
+                    }
+                }
+
+                $incorrectCrossReferences | Should -BeNullOrEmpty -Because ('cross reference modules must be referenced with the enableTelemetry parameter set to the "enableReferencedModulesTelemetry" variable. Found incorrect items: [{0}].' -f ($incorrectCrossReferences -join ', '))
             }
         }
 

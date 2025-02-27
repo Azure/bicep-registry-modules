@@ -11,10 +11,10 @@ param virtualHubName string
 param enableInternetSecurity bool = true
 
 @description('Required. Resource ID of the virtual network to link to.')
-param remoteVirtualNetworkId string
+param remoteVirtualNetworkResourceId string
 
 @description('Optional. Routing Configuration indicating the associated and propagated route tables for this connection.')
-param routingConfiguration object = {}
+param routingConfiguration object?
 
 resource virtualHub 'Microsoft.Network/virtualHubs@2024-01-01' existing = {
   name: virtualHubName
@@ -26,9 +26,9 @@ resource hubVirtualNetworkConnection 'Microsoft.Network/virtualHubs/hubVirtualNe
   properties: {
     enableInternetSecurity: enableInternetSecurity
     remoteVirtualNetwork: {
-      id: remoteVirtualNetworkId
+      id: remoteVirtualNetworkResourceId
     }
-    routingConfiguration: !empty(routingConfiguration) ? routingConfiguration : null
+    routingConfiguration: routingConfiguration
   }
 }
 
