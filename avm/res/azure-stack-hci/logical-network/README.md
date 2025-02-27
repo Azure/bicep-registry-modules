@@ -254,12 +254,12 @@ param vlanId = '<vlanId>'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`addressPrefix`](#parameter-addressprefix) | string | Address prefix for the logical network. Required when ipAllocationMethod is Static. |
-| [`defaultGateway`](#parameter-defaultgateway) | string | The default gateway for the network. Required when ipAllocationMethod is Static. |
-| [`dnsServers`](#parameter-dnsservers) | array | The DNS servers list. Required when ipAllocationMethod is Static. |
-| [`endingAddress`](#parameter-endingaddress) | string | The ending IP address of the IP address range. Required when ipAllocationMethod is Static. |
-| [`routeName`](#parameter-routename) | string | The route name. Required when ipAllocationMethod is Static. |
-| [`startingAddress`](#parameter-startingaddress) | string | The starting IP address of the IP address range. Required when ipAllocationMethod is Static. |
+| [`addressPrefix`](#parameter-addressprefix) | string | Address prefix for the logical network. Required if ipAllocationMethod is Static. |
+| [`defaultGateway`](#parameter-defaultgateway) | string | The default gateway for the network. Required if ipAllocationMethod is Static. |
+| [`dnsServers`](#parameter-dnsservers) | array | The DNS servers list. Required if ipAllocationMethod is Static. |
+| [`endingAddress`](#parameter-endingaddress) | string | The ending IP address of the IP address range. Required if ipAllocationMethod is Static. |
+| [`routeName`](#parameter-routename) | string | The route name. Required if ipAllocationMethod is Static. |
+| [`startingAddress`](#parameter-startingaddress) | string | The starting IP address of the IP address range. Required if ipAllocationMethod is Static. |
 
 **Optional parameters**
 
@@ -297,21 +297,21 @@ The VM switch name.
 
 ### Parameter: `addressPrefix`
 
-Address prefix for the logical network. Required when ipAllocationMethod is Static.
+Address prefix for the logical network. Required if ipAllocationMethod is Static.
 
 - Required: No
 - Type: string
 
 ### Parameter: `defaultGateway`
 
-The default gateway for the network. Required when ipAllocationMethod is Static.
+The default gateway for the network. Required if ipAllocationMethod is Static.
 
 - Required: No
 - Type: string
 
 ### Parameter: `dnsServers`
 
-The DNS servers list. Required when ipAllocationMethod is Static.
+The DNS servers list. Required if ipAllocationMethod is Static.
 
 - Required: No
 - Type: array
@@ -319,21 +319,21 @@ The DNS servers list. Required when ipAllocationMethod is Static.
 
 ### Parameter: `endingAddress`
 
-The ending IP address of the IP address range. Required when ipAllocationMethod is Static.
+The ending IP address of the IP address range. Required if ipAllocationMethod is Static.
 
 - Required: No
 - Type: string
 
 ### Parameter: `routeName`
 
-The route name. Required when ipAllocationMethod is Static.
+The route name. Required if ipAllocationMethod is Static.
 
 - Required: No
 - Type: string
 
 ### Parameter: `startingAddress`
 
-The starting IP address of the IP address range. Required when ipAllocationMethod is Static.
+The starting IP address of the IP address range. Required if ipAllocationMethod is Static.
 
 - Required: No
 - Type: string

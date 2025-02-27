@@ -30,13 +30,13 @@ param subnet0Name string = 'default'
 ])
 param ipAllocationMethod string = 'Dynamic'
 
-@description('Conditional. The DNS servers list. Required when ipAllocationMethod is Static.')
+@description('Conditional. The DNS servers list. Required if ipAllocationMethod is Static.')
 param dnsServers array = []
 
 @description('Optional. Tags for the logical network.')
 param tags object?
 
-@description('Conditional. Address prefix for the logical network. Required when ipAllocationMethod is Static.')
+@description('Conditional. Address prefix for the logical network. Required if ipAllocationMethod is Static.')
 param addressPrefix string?
 
 @description('Optional. VLan Id for the logical network.')
@@ -45,16 +45,16 @@ param vlanId int?
 @description('Optional. A list of IP configuration references.')
 param ipConfigurationReferences subnetIpConfigurationReferenceType[]?
 
-@description('Conditional. The starting IP address of the IP address range. Required when ipAllocationMethod is Static.')
+@description('Conditional. The starting IP address of the IP address range. Required if ipAllocationMethod is Static.')
 param startingAddress string?
 
-@description('Conditional. The ending IP address of the IP address range. Required when ipAllocationMethod is Static.')
+@description('Conditional. The ending IP address of the IP address range. Required if ipAllocationMethod is Static.')
 param endingAddress string?
 
-@description('Conditional. The route name. Required when ipAllocationMethod is Static.')
+@description('Conditional. The route name. Required if ipAllocationMethod is Static.')
 param routeName string?
 
-@description('Conditional. The default gateway for the network. Required when ipAllocationMethod is Static.')
+@description('Conditional. The default gateway for the network. Required if ipAllocationMethod is Static.')
 param defaultGateway string?
 
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'

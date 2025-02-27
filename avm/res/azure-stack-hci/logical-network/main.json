@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "6169684789319839541"
+      "templateHash": "16691190683135212036"
     },
     "name": "Azure Stack HCI Logical Network",
     "description": "This module deploys an Azure Stack HCI Logical Network."
@@ -158,7 +158,7 @@
       "type": "array",
       "defaultValue": [],
       "metadata": {
-        "description": "Conditional. The DNS servers list. Required when ipAllocationMethod is Static."
+        "description": "Conditional. The DNS servers list. Required if ipAllocationMethod is Static."
       }
     },
     "tags": {
@@ -172,7 +172,7 @@
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Conditional. Address prefix for the logical network. Required when ipAllocationMethod is Static."
+        "description": "Conditional. Address prefix for the logical network. Required if ipAllocationMethod is Static."
       }
     },
     "vlanId": {
@@ -196,28 +196,28 @@
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Conditional. The starting IP address of the IP address range. Required when ipAllocationMethod is Static."
+        "description": "Conditional. The starting IP address of the IP address range. Required if ipAllocationMethod is Static."
       }
     },
     "endingAddress": {
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Conditional. The ending IP address of the IP address range. Required when ipAllocationMethod is Static."
+        "description": "Conditional. The ending IP address of the IP address range. Required if ipAllocationMethod is Static."
       }
     },
     "routeName": {
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Conditional. The route name. Required when ipAllocationMethod is Static."
+        "description": "Conditional. The route name. Required if ipAllocationMethod is Static."
       }
     },
     "defaultGateway": {
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Conditional. The default gateway for the network. Required when ipAllocationMethod is Static."
+        "description": "Conditional. The default gateway for the network. Required if ipAllocationMethod is Static."
       }
     },
     "roleAssignments": {
