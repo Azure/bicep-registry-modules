@@ -111,7 +111,7 @@ module capacityPool_volumes 'volume/main.bicep' = [
       exportPolicy: volume.?exportPolicy
       roleAssignments: volume.?roleAssignments
       networkFeatures: volume.?networkFeatures
-      zone: volume.?availabilityZone
+      zone: volume.?zone
       coolAccess: volume.?coolAccess ?? false
       coolAccessRetrievalPolicy: volume.?coolAccessRetrievalPolicy
       coolnessPeriod: volume.?coolnessPeriod
