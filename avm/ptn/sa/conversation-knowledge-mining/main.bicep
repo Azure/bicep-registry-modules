@@ -125,6 +125,8 @@ var varIndexDataScriptName = format(workloadNameFormat, 'scrp-idxd')
 // Secret names can only contain alphanumeric characters and dashes.
 // The value you provide may be copied globally for the purpose of running the service.
 // The value provided should not include personally identifiable or sensitive information
+var varKvSecretNameAdlsAccountKey = 'ADLS-ACCOUNT-KEY'
+var varKvSecretNameAzureCosmosdbAccountKey = 'AZURE-COSMOSDB-ACCOUNT-KEY'
 
 // VARIABLES: AI Model deployments
 var varGPTModelVersion = '2024-07-18'
@@ -326,7 +328,7 @@ module avmKeyVault 'br/public:avm/res/key-vault/vault:0.11.2' = {
     enableVaultForDeployment: true
     enableVaultForDiskEncryption: true
     enableVaultForTemplateDeployment: true
-    enableSoftDelete: true //NOTE: This must vary per environment
+    enableSoftDelete: false //NOTE: This must vary per environment
     softDeleteRetentionInDays: 7
     enablePurgeProtection: false //NOTE: Set to true on original
     publicNetworkAccess: 'Enabled'
@@ -351,6 +353,12 @@ module avmKeyVault 'br/public:avm/res/key-vault/vault:0.11.2' = {
         roleDefinitionIdOrName: '00482a5a-887f-4fb3-b363-3b7fe8e74483' //NOTE: Built-in role 'Key Vault Administrator'
       }
     ]
+    // secrets: [
+    //   {
+    //     name: secret_name
+    //     value: secret_value
+    //   }
+    // ]
   }
 }
 
@@ -466,6 +474,10 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.17.0' = {
         roleDefinitionIdOrName: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe' //NOTE: Built-in role 'Storage Blob Data Contributor'
       }
     ]
+    secretsExportConfiguration: {
+      keyVaultResourceId: avmKeyVault.outputs.resourceId
+      accessKey1Name: varKvSecretNameAdlsAccountKey
+    }
   }
 }
 
@@ -504,21 +516,18 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.17.0' = {
 //   }
 // }
 
-resource existingStorageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' existing = {
-  name: varStorageAccountName
-  dependsOn: [
-    avmStorageAccount
-  ]
-}
+// resource existingStorageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' existing = {
+//   name: varStorageAccountName
+//   dependsOn: [
+//     avmStorageAccount
+//   ]
+// }
 
 resource kvSecretADLSAccountName 'Microsoft.KeyVault/vaults/secrets@2021-11-01-preview' = {
   name: '${varKeyVaultName}/ADLS-ACCOUNT-NAME'
   properties: {
-    value: existingStorageAccount.name
+    value: avmStorageAccount.outputs.name
   }
-  dependsOn: [
-    avmKeyVault
-  ]
 }
 
 resource kvSecretADLSAccountContainer 'Microsoft.KeyVault/vaults/secrets@2021-11-01-preview' = {
@@ -531,15 +540,16 @@ resource kvSecretADLSAccountContainer 'Microsoft.KeyVault/vaults/secrets@2021-11
   ]
 }
 
-resource kvSecretADLSAccountKey 'Microsoft.KeyVault/vaults/secrets@2021-11-01-preview' = {
-  name: '${varKeyVaultName}/ADLS-ACCOUNT-KEY'
-  properties: {
-    value: existingStorageAccount.listKeys().keys[0].value
-  }
-  dependsOn: [
-    avmKeyVault
-  ]
-}
+// NOTE: Added through storage account module
+// resource kvSecretADLSAccountKey 'Microsoft.KeyVault/vaults/secrets@2021-11-01-preview' = {
+//   name: '${varKeyVaultName}/ADLS-ACCOUNT-KEY'
+//   properties: {
+//     value: existingStorageAccount.listKeys().keys[0].value
+//   }
+//   dependsOn: [
+//     avmKeyVault
+//   ]
+// }
 
 // ========== Cosmos Database ========== //
 
@@ -574,35 +584,36 @@ module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.11.0' = {
         ]
       }
     ]
+    secretsExportConfiguration: {
+      keyVaultResourceId: avmKeyVault.outputs.resourceId
+      primaryWriteKeySecretName: varKvSecretNameAzureCosmosdbAccountKey
+    }
   }
 }
 
-resource existingCosmosDB 'Microsoft.DocumentDB/databaseAccounts@2022-05-15' existing = {
-  name: varCosmosDBAccountName
-  dependsOn: [
-    avmCosmosDB
-  ]
-}
+// resource existingCosmosDB 'Microsoft.DocumentDB/databaseAccounts@2022-05-15' existing = {
+//   name: varCosmosDBAccountName
+//   dependsOn: [
+//     avmCosmosDB
+//   ]
+// }
 
 resource kvSecretAzureCosmosDBAccount 'Microsoft.KeyVault/vaults/secrets@2021-11-01-preview' = {
   name: '${varKeyVaultName}/AZURE-COSMOSDB-ACCOUNT'
   properties: {
-    value: existingCosmosDB.name
+    value: avmCosmosDB.outputs.name
   }
-  dependsOn: [
-    avmKeyVault
-  ]
 }
 
-resource kvSecretAzureCosmosDBAccountKey 'Microsoft.KeyVault/vaults/secrets@2021-11-01-preview' = {
-  name: '${varKeyVaultName}/AZURE-COSMOSDB-ACCOUNT-KEY'
-  properties: {
-    value: existingCosmosDB.listKeys().primaryMasterKey
-  }
-  dependsOn: [
-    avmKeyVault
-  ]
-}
+// resource kvSecretAzureCosmosDBAccountKey 'Microsoft.KeyVault/vaults/secrets@2021-11-01-preview' = {
+//   name: '${varKeyVaultName}/AZURE-COSMOSDB-ACCOUNT-KEY'
+//   properties: {
+//     value: existingCosmosDB.listKeys().primaryMasterKey
+//   }
+//   dependsOn: [
+//     avmKeyVault
+//   ]
+// }
 
 resource kvSecretAzureCosmosDBDatabase 'Microsoft.KeyVault/vaults/secrets@2021-11-01-preview' = {
   name: '${varKeyVaultName}/AZURE-COSMOSDB-DATABASE'
@@ -1106,6 +1117,14 @@ module avmWebsiteWebapp 'br/public:avm/res/web/site:0.13.3' = {
       UWSGI_THREADS: '2'
     }
   }
+}
+
+resource existingCosmosDB 'Microsoft.DocumentDB/databaseAccounts@2024-05-15' existing = {
+  name: varCosmosDBAccountName
+  dependsOn: [
+    avmCosmosDB
+    avmWebsiteWebapp
+  ]
 }
 
 resource resContributorRoleDefinition 'Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions@2024-05-15' existing = {

@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "5607121457360213466"
+      "templateHash": "1640090837394285692"
     },
     "name": "Conversation Knowledge Mining Solution Accelerator",
     "description": "This module deploys the [Conversation Knowledge Mining Solution Accelerator](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator).\n\n**Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator product. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future.\n\nThis may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -167,6 +167,8 @@
     "varWebAppName": "[format(variables('workloadNameFormat'), 'wapp-wapp')]",
     "varCopyDataScriptName": "[format(variables('workloadNameFormat'), 'scrp-cpdt')]",
     "varIndexDataScriptName": "[format(variables('workloadNameFormat'), 'scrp-idxd')]",
+    "varKvSecretNameAdlsAccountKey": "ADLS-ACCOUNT-KEY",
+    "varKvSecretNameAzureCosmosdbAccountKey": "AZURE-COSMOSDB-ACCOUNT-KEY",
     "varGPTModelVersion": "2024-07-18",
     "varGPTModelVersionPreview": "2024-02-15-preview",
     "varTextEmbeddingModelVersion": "2",
@@ -269,10 +271,9 @@
       "apiVersion": "2021-11-01-preview",
       "name": "[format('{0}/ADLS-ACCOUNT-NAME', variables('varKeyVaultName'))]",
       "properties": {
-        "value": "[variables('varStorageAccountName')]"
+        "value": "[reference(resourceId('Microsoft.Resources/deployments', format(variables('deploymentNameFormat'), variables('varStorageAccountName'))), '2022-09-01').outputs.name.value]"
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Resources/deployments', format(variables('deploymentNameFormat'), variables('varKeyVaultName')))]",
         "[resourceId('Microsoft.Resources/deployments', format(variables('deploymentNameFormat'), variables('varStorageAccountName')))]"
       ]
     },
@@ -290,37 +291,12 @@
     {
       "type": "Microsoft.KeyVault/vaults/secrets",
       "apiVersion": "2021-11-01-preview",
-      "name": "[format('{0}/ADLS-ACCOUNT-KEY', variables('varKeyVaultName'))]",
-      "properties": {
-        "value": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('varStorageAccountName')), '2022-09-01').keys[0].value]"
-      },
-      "dependsOn": [
-        "[resourceId('Microsoft.Resources/deployments', format(variables('deploymentNameFormat'), variables('varKeyVaultName')))]",
-        "[resourceId('Microsoft.Resources/deployments', format(variables('deploymentNameFormat'), variables('varStorageAccountName')))]"
-      ]
-    },
-    {
-      "type": "Microsoft.KeyVault/vaults/secrets",
-      "apiVersion": "2021-11-01-preview",
       "name": "[format('{0}/AZURE-COSMOSDB-ACCOUNT', variables('varKeyVaultName'))]",
       "properties": {
-        "value": "[variables('varCosmosDBAccountName')]"
+        "value": "[reference(resourceId('Microsoft.Resources/deployments', format(variables('deploymentNameFormat'), variables('varCosmosDBAccountName'))), '2022-09-01').outputs.name.value]"
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Resources/deployments', format(variables('deploymentNameFormat'), variables('varCosmosDBAccountName')))]",
-        "[resourceId('Microsoft.Resources/deployments', format(variables('deploymentNameFormat'), variables('varKeyVaultName')))]"
-      ]
-    },
-    {
-      "type": "Microsoft.KeyVault/vaults/secrets",
-      "apiVersion": "2021-11-01-preview",
-      "name": "[format('{0}/AZURE-COSMOSDB-ACCOUNT-KEY', variables('varKeyVaultName'))]",
-      "properties": {
-        "value": "[listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', variables('varCosmosDBAccountName')), '2022-05-15').primaryMasterKey]"
-      },
-      "dependsOn": [
-        "[resourceId('Microsoft.Resources/deployments', format(variables('deploymentNameFormat'), variables('varCosmosDBAccountName')))]",
-        "[resourceId('Microsoft.Resources/deployments', format(variables('deploymentNameFormat'), variables('varKeyVaultName')))]"
+        "[resourceId('Microsoft.Resources/deployments', format(variables('deploymentNameFormat'), variables('varCosmosDBAccountName')))]"
       ]
     },
     {
@@ -1069,7 +1045,7 @@
             "value": true
           },
           "enableSoftDelete": {
-            "value": true
+            "value": false
           },
           "softDeleteRetentionInDays": {
             "value": 7
@@ -26009,6 +25985,12 @@
                 "roleDefinitionIdOrName": "ba92f5b4-2d11-453d-a403-e96b0029c9fe"
               }
             ]
+          },
+          "secretsExportConfiguration": {
+            "value": {
+              "keyVaultResourceId": "[reference(resourceId('Microsoft.Resources/deployments', format(variables('deploymentNameFormat'), variables('varKeyVaultName'))), '2022-09-01').outputs.resourceId.value]",
+              "accessKey1Name": "[variables('varKvSecretNameAdlsAccountKey')]"
+            }
           }
         },
         "template": {
@@ -31668,6 +31650,7 @@
         }
       },
       "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments', format(variables('deploymentNameFormat'), variables('varKeyVaultName')))]",
         "[resourceId('Microsoft.Resources/deployments', format(variables('deploymentNameFormat'), variables('varManagedIdentityName')))]"
       ]
     },
@@ -31740,6 +31723,12 @@
                 "name": "[variables('varCosdbSqlDbName')]"
               }
             ]
+          },
+          "secretsExportConfiguration": {
+            "value": {
+              "keyVaultResourceId": "[reference(resourceId('Microsoft.Resources/deployments', format(variables('deploymentNameFormat'), variables('varKeyVaultName'))), '2022-09-01').outputs.resourceId.value]",
+              "primaryWriteKeySecretName": "[variables('varKvSecretNameAzureCosmosdbAccountKey')]"
+            }
           }
         },
         "template": {
@@ -35454,7 +35443,10 @@
             }
           }
         }
-      }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments', format(variables('deploymentNameFormat'), variables('varKeyVaultName')))]"
+      ]
     },
     {
       "type": "Microsoft.Resources/deployments",
