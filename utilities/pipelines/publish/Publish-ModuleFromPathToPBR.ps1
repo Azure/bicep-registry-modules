@@ -52,34 +52,36 @@ function Publish-ModuleFromPathToPBR {
     $resultSet = [ordered]@{}
 
     # 1. Get list of all versioned modules (including top level and child modules) and iterate on it
-    Write-Verbose "topModuleFolderPath:  $topModuleFolderPath" -Verbose
+    Write-Verbose "topModuleFolderPath: $topModuleFolderPath" -Verbose
     $list = Get-VersionedModuleList -Path $topModuleFolderPath
+    $versionedModuleCount = $list.count
+    Write-Verbose "number of versioned modules: $versionedModuleCount" -Verbose
+
     foreach ($moduleFolderPath in $list) {
-        Write-Verbose "moduleFolderPath:  $moduleFolderPath" -Verbose
+
+        Write-Verbose "moduleFolderPath: $moduleFolderPath" -Verbose
         $moduleFolderRelativePath = ($moduleFolderPath -replace ('{0}[\/|\\]' -f [Regex]::Escape($repoRoot)), '') -replace '\\', '/'
         Write-Verbose "moduleFolderRelativePath:  $moduleFolderRelativePath" -Verbose
-        # }
-        # foreach ($moduleFolderPath in $list) {
 
-        # 1. Test if module qualifies for publishing
+        # 2. Test if module qualifies for publishing
         if (-not (Get-ModulesToPublish -ModuleFolderPath $moduleFolderPath)) {
             Write-Verbose 'No changes detected. Skipping publishing' -Verbose
             return
         }
 
-        # 2. Calculate the version that we would publish with
+        # 3. Calculate the version that we would publish with
         $targetVersion = Get-ModuleTargetVersion -ModuleFolderPath $moduleFolderPath
 
-        # 3. Get Target Published Module Name
+        # 4. Get Target Published Module Name
         $publishedModuleName = Get-BRMRepositoryName -TemplateFilePath $TemplateFilePath
 
-        # 4.Create release tag
+        # 5.Create release tag
         $gitTagName = New-ModuleReleaseTag -ModuleFolderPath $moduleFolderPath -TargetVersion $targetVersion
 
-        # 5. Get the documentation link
+        # 6. Get the documentation link
         $documentationUri = Get-ModuleReadmeLink -TagName $gitTagName -ModuleFolderPath $moduleFolderPath
 
-        # 6. Replace telemetry version value (in Bicep)
+        # 7. Replace telemetry version value (in Bicep)
         $tokenConfiguration = @{
             FilePathList   = @($moduleBicepFilePath)
             AbsoluteTokens = @{
@@ -102,7 +104,7 @@ function Publish-ModuleFromPathToPBR {
         }
 
         ###################
-        ## 7.  Publish   ##
+        ## 8.  Publish   ##
         ###################
         $plainPublicRegistryServer = ConvertFrom-SecureString $PublicRegistryServer -AsPlainText
 
