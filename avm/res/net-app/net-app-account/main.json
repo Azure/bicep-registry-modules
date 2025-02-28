@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "17807010386700434469"
+      "templateHash": "7313510258873685995"
     },
     "name": "Azure NetApp Files",
     "description": "This module deploys an Azure NetApp File."
@@ -2269,7 +2269,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "567288787230162458"
+              "templateHash": "18256505389133665653"
             },
             "name": "Azure NetApp Files Capacity Pools",
             "description": "This module deploys an Azure NetApp Files Capacity Pool."
@@ -3037,7 +3037,7 @@
                     "value": "[tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'networkFeatures')]"
                   },
                   "zone": {
-                    "value": "[tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'availabilityZone')]"
+                    "value": "[tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'zone')]"
                   },
                   "coolAccess": {
                     "value": "[coalesce(tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'coolAccess'), false())]"
