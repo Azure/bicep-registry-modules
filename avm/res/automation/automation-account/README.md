@@ -2217,12 +2217,6 @@ Module version or specify latest to get the latest version.
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'latest'
-  ]
-  ```
 
 ### Parameter: `privateEndpoints`
 
@@ -2699,12 +2693,6 @@ Module version or specify latest to get the latest version.
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'latest'
-  ]
-  ```
 
 ### Parameter: `python3Packages`
 
@@ -2754,12 +2742,6 @@ Module version or specify latest to get the latest version.
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'latest'
-  ]
-  ```
 
 ### Parameter: `roleAssignments`
 
