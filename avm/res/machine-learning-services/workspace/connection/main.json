@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "10473859406464148345"
+      "templateHash": "14805144270257776390"
     },
     "name": "Machine Learning Services Workspaces Connections",
     "description": "This module creates a connection in a Machine Learning Services workspace."
@@ -60,6 +60,7 @@
         "Dynamics",
         "DynamicsAx",
         "DynamicsCrm",
+        "Elasticsearch",
         "Eloqua",
         "FileServer",
         "FtpServer",
@@ -79,6 +80,7 @@
         "Informix",
         "Jira",
         "Magento",
+        "ManagedOnlineEndpoint",
         "MariaDb",
         "Marketo",
         "MicrosoftAccess",
@@ -95,6 +97,7 @@
         "OracleServiceCloud",
         "PayPal",
         "Phoenix",
+        "Pinecone",
         "PostgreSql",
         "Presto",
         "PythonFeed",
@@ -688,7 +691,7 @@
     },
     "connection": {
       "type": "Microsoft.MachineLearningServices/workspaces/connections",
-      "apiVersion": "2024-04-01",
+      "apiVersion": "2024-10-01",
       "name": "[format('{0}/{1}', parameters('machineLearningWorkspaceName'), parameters('name'))]",
       "properties": "[union(createObject('category', parameters('category'), 'expiryTime', parameters('expiryTime'), 'isSharedToAll', parameters('isSharedToAll'), 'metadata', parameters('metadata'), 'sharedUserList', parameters('sharedUserList'), 'target', parameters('target'), 'value', parameters('value')), parameters('connectionProperties'))]"
     }

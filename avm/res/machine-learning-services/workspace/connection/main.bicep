@@ -47,7 +47,7 @@ resource machineLearningWorkspace 'Microsoft.MachineLearningServices/workspaces@
 // Resources      //
 // ============== //
 
-resource connection 'Microsoft.MachineLearningServices/workspaces/connections@2024-04-01' = {
+resource connection 'Microsoft.MachineLearningServices/workspaces/connections@2024-10-01' = {
   name: name
   parent: machineLearningWorkspace
   properties: union(
@@ -123,6 +123,7 @@ type categoryType =
   | 'Dynamics'
   | 'DynamicsAx'
   | 'DynamicsCrm'
+  | 'Elasticsearch'
   | 'Eloqua'
   | 'FileServer'
   | 'FtpServer'
@@ -142,6 +143,7 @@ type categoryType =
   | 'Informix'
   | 'Jira'
   | 'Magento'
+  | 'ManagedOnlineEndpoint'
   | 'MariaDb'
   | 'Marketo'
   | 'MicrosoftAccess'
@@ -158,6 +160,7 @@ type categoryType =
   | 'OracleServiceCloud'
   | 'PayPal'
   | 'Phoenix'
+  | 'Pinecone'
   | 'PostgreSql'
   | 'Presto'
   | 'PythonFeed'

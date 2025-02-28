@@ -62,8 +62,5 @@ module testDeployment '../../../main.bicep' = [
       associatedStorageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
       sku: 'Basic'
     }
-    dependsOn: [
-      nestedDependencies
-    ]
   }
 ]

@@ -69,6 +69,7 @@ module testDeployment '../../../main.bicep' = [
         keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
         userAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
       }
+      enableServiceSideCMKEncryption: true
       primaryUserAssignedIdentity: nestedDependencies.outputs.managedIdentityResourceId
       managedIdentities: {
         systemAssigned: false
@@ -88,10 +89,8 @@ module testDeployment '../../../main.bicep' = [
             category: 'UserDefined'
           }
         }
+        firewallSku: 'Basic'
       }
     }
-    dependsOn: [
-      nestedDependencies
-    ]
   }
 ]
