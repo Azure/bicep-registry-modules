@@ -111,7 +111,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
             )
 
             $versionFileContent = Get-Content (Join-Path -Path $moduleFolderPath 'version.json') | ConvertFrom-Json -AsHashtable
-            $versionFileContent.Version | Should -Match '^\d+\.\d+$'
+            $versionFileContent.version | Should -Match '^[0-9]+\.[0-9]+$' -Because 'only the <major>.<minor> version may be specified in the version.json file.'
         }
 
         # only avm/res/network/virtual-network/subnet is allowed to have a version.json file (PoC for child module publishing)
