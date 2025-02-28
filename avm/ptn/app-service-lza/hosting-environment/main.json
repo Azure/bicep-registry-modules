@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "15852906503828982481"
+      "templateHash": "12509568782624978205"
     },
     "name": "App Service Landing Zone Accelerator",
     "description": "This Azure App Service pattern module represents an Azure App Service deployment aligned with the cloud adoption framework",
@@ -2749,7 +2749,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "11286008840431150376"
+              "templateHash": "8063411304184048906"
             }
           },
           "definitions": {
@@ -9204,7 +9204,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "13705175535655799125"
+                      "templateHash": "10723577142787125606"
                     }
                   },
                   "parameters": {
@@ -9425,7 +9425,7 @@
                       "condition": "[parameters('deployAseV3')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
-                      "name": "[take(format('{0}-ASEv3-Deployment', parameters('aseName')), 64)]",
+                      "name": "[format('{0}-ase', uniqueString(deployment().name, parameters('location')))]",
                       "properties": {
                         "expressionEvaluationOptions": {
                           "scope": "inner"
@@ -9461,7 +9461,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.32.4.45862",
-                              "templateHash": "9046799108204851655"
+                              "templateHash": "5930185849138822389"
                             }
                           },
                           "parameters": {
@@ -9654,7 +9654,7 @@
                             {
                               "type": "Microsoft.Resources/deployments",
                               "apiVersion": "2022-09-01",
-                              "name": "[take(format('{0}-ASEv3-Deployment', parameters('name')), 64)]",
+                              "name": "[format('{0}-ase-avm', uniqueString(deployment().name, parameters('location')))]",
                               "properties": {
                                 "expressionEvaluationOptions": {
                                   "scope": "inner"
@@ -10512,7 +10512,7 @@
                             {
                               "type": "Microsoft.Resources/deployments",
                               "apiVersion": "2022-09-01",
-                              "name": "asev3-hub-PrivateDnsZone-Deployment",
+                              "name": "[format('{0}-ase-dnszone', uniqueString(deployment().name, parameters('location')))]",
                               "properties": {
                                 "expressionEvaluationOptions": {
                                   "scope": "inner"
@@ -10520,7 +10520,7 @@
                                 "mode": "Incremental",
                                 "parameters": {
                                   "name": {
-                                    "value": "[format('{0}.appserviceenvironment.net', reference(resourceId('Microsoft.Resources/deployments', take(format('{0}-ASEv3-Deployment', parameters('name')), 64)), '2022-09-01').outputs.name.value)]"
+                                    "value": "[format('{0}.appserviceenvironment.net', reference(resourceId('Microsoft.Resources/deployments', format('{0}-ase-avm', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.name.value)]"
                                   },
                                   "virtualNetworkLinks": {
                                     "value": "[parameters('virtualNetworkLinks')]"
@@ -13583,7 +13583,7 @@
                                 }
                               },
                               "dependsOn": [
-                                "[resourceId('Microsoft.Resources/deployments', take(format('{0}-ASEv3-Deployment', parameters('name')), 64))]"
+                                "[resourceId('Microsoft.Resources/deployments', format('{0}-ase-avm', uniqueString(deployment().name, parameters('location'))))]"
                               ]
                             }
                           ],
@@ -13593,7 +13593,7 @@
                               "metadata": {
                                 "description": "The resource ID of the App Service Environment."
                               },
-                              "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('{0}-ASEv3-Deployment', parameters('name')), 64)), '2022-09-01').outputs.resourceId.value]"
+                              "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-ase-avm', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.resourceId.value]"
                             },
                             "resourceGroupName": {
                               "type": "string",
@@ -13607,14 +13607,14 @@
                               "metadata": {
                                 "description": "The name of the App Service Environment."
                               },
-                              "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('{0}-ASEv3-Deployment', parameters('name')), 64)), '2022-09-01').outputs.name.value]"
+                              "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-ase-avm', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.name.value]"
                             },
                             "location": {
                               "type": "string",
                               "metadata": {
                                 "description": "The location the resource was deployed into."
                               },
-                              "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('{0}-ASEv3-Deployment', parameters('name')), 64)), '2022-09-01').outputs.location.value]"
+                              "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-ase-avm', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.location.value]"
                             },
                             "internalInboundIpAddress": {
                               "type": "string",
@@ -13630,7 +13630,7 @@
                     {
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
-                      "name": "[format('{0}-appInsights-Deployment', uniqueString(deployment().name, parameters('location')))]",
+                      "name": "[format('{0}-appInsights', uniqueString(deployment().name, parameters('location')))]",
                       "properties": {
                         "expressionEvaluationOptions": {
                           "scope": "inner"
@@ -14281,7 +14281,7 @@
                     {
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
-                      "name": "[take(format('{0}-app-Deployment', parameters('webAppName')), 64)]",
+                      "name": "[format('{0}-plan', uniqueString(deployment().name, parameters('location'), 'webapp'))]",
                       "properties": {
                         "expressionEvaluationOptions": {
                           "scope": "inner"
@@ -14315,7 +14315,7 @@
                           "targetWorkerSize": {
                             "value": "[parameters('targetWorkerSize')]"
                           },
-                          "appServiceEnvironmentId": "[if(parameters('deployAseV3'), createObject('value', reference(resourceId('Microsoft.Resources/deployments', take(format('{0}-ASEv3-Deployment', parameters('aseName')), 64)), '2022-09-01').outputs.resourceId.value), createObject('value', ''))]",
+                          "appServiceEnvironmentId": "[if(parameters('deployAseV3'), createObject('value', reference(resourceId('Microsoft.Resources/deployments', format('{0}-ase', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.resourceId.value), createObject('value', ''))]",
                           "diagnosticSettings": {
                             "value": "[parameters('diagnosticMetricsToEnable')]"
                           }
@@ -14818,13 +14818,13 @@
                         }
                       },
                       "dependsOn": [
-                        "[resourceId('Microsoft.Resources/deployments', take(format('{0}-ASEv3-Deployment', parameters('aseName')), 64))]"
+                        "[resourceId('Microsoft.Resources/deployments', format('{0}-ase', uniqueString(deployment().name, parameters('location'))))]"
                       ]
                     },
                     {
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
-                      "name": "[take(format('{0}-webApp-Deployment', parameters('webAppName')), 64)]",
+                      "name": "[format('{0}-webapp', uniqueString(deployment().name, parameters('location')))]",
                       "properties": {
                         "expressionEvaluationOptions": {
                           "scope": "inner"
@@ -14839,10 +14839,10 @@
                             "value": "[parameters('location')]"
                           },
                           "serverFarmResourceId": {
-                            "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('{0}-app-Deployment', parameters('webAppName')), 64)), '2022-09-01').outputs.resourceId.value]"
+                            "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-plan', uniqueString(deployment().name, parameters('location'), 'webapp'))), '2022-09-01').outputs.resourceId.value]"
                           },
                           "appInsightResourceId": {
-                            "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-appInsights-Deployment', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.resourceId.value]"
+                            "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-appInsights', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.resourceId.value]"
                           },
                           "siteConfig": {
                             "value": "[parameters('siteConfig')]"
@@ -14861,7 +14861,7 @@
                           "managedIdentities": {
                             "value": {
                               "userAssignedResourceIds": [
-                                "[format('{0}', reference(resourceId('Microsoft.Resources/deployments', format('{0}-deployment', uniqueString(deployment().name, parameters('location'), 'webapp'))), '2022-09-01').outputs.resourceId.value)]"
+                                "[format('{0}', reference(resourceId('Microsoft.Resources/deployments', format('{0}-uami', uniqueString(deployment().name, parameters('location'), 'webapp'))), '2022-09-01').outputs.resourceId.value)]"
                               ]
                             }
                           },
@@ -14872,7 +14872,7 @@
                               }
                             ]
                           },
-                          "privateEndpoints": "[if(and(not(empty(parameters('subnetPrivateEndpointId'))), not(parameters('deployAseV3'))), createObject('value', createArray(createObject('name', 'webApp', 'subnetResourceId', parameters('subnetPrivateEndpointId'), 'privateDnsZoneGroup', createObject('name', 'webApp', 'privateDnsZoneGroupConfigs', createArray(createObject('name', variables('webAppDnsZoneName'), 'privateDnsZoneResourceId', reference(resourceId('Microsoft.Resources/deployments', take(format('{0}-PrivateDnsZoneDeployment', replace(variables('webAppDnsZoneName'), '.', '-')), 64)), '2022-09-01').outputs.resourceId.value)))))), createObject('value', createArray()))]",
+                          "privateEndpoints": "[if(and(not(empty(parameters('subnetPrivateEndpointId'))), not(parameters('deployAseV3'))), createObject('value', createArray(createObject('name', 'webApp', 'subnetResourceId', parameters('subnetPrivateEndpointId'), 'privateDnsZoneGroup', createObject('name', 'webApp', 'privateDnsZoneGroupConfigs', createArray(createObject('name', variables('webAppDnsZoneName'), 'privateDnsZoneResourceId', reference(resourceId('Microsoft.Resources/deployments', format('{0}-dnszone', uniqueString(deployment().name, parameters('location'), 'webapp'))), '2022-09-01').outputs.resourceId.value)))))), createObject('value', createArray()))]",
                           "tags": {
                             "value": "[parameters('tags')]"
                           }
@@ -20069,17 +20069,17 @@
                         }
                       },
                       "dependsOn": [
-                        "[resourceId('Microsoft.Resources/deployments', format('{0}-appInsights-Deployment', uniqueString(deployment().name, parameters('location'))))]",
-                        "[resourceId('Microsoft.Resources/deployments', take(format('{0}-app-Deployment', parameters('webAppName')), 64))]",
-                        "[resourceId('Microsoft.Resources/deployments', take(format('{0}-PrivateDnsZoneDeployment', replace(variables('webAppDnsZoneName'), '.', '-')), 64))]",
-                        "[resourceId('Microsoft.Resources/deployments', format('{0}-deployment', uniqueString(deployment().name, parameters('location'), 'webapp')))]"
+                        "[resourceId('Microsoft.Resources/deployments', format('{0}-appInsights', uniqueString(deployment().name, parameters('location'))))]",
+                        "[resourceId('Microsoft.Resources/deployments', format('{0}-plan', uniqueString(deployment().name, parameters('location'), 'webapp')))]",
+                        "[resourceId('Microsoft.Resources/deployments', format('{0}-dnszone', uniqueString(deployment().name, parameters('location'), 'webapp')))]",
+                        "[resourceId('Microsoft.Resources/deployments', format('{0}-uami', uniqueString(deployment().name, parameters('location'), 'webapp')))]"
                       ]
                     },
                     {
                       "condition": "[and(not(empty(parameters('subnetPrivateEndpointId'))), not(parameters('deployAseV3')))]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
-                      "name": "[take(format('{0}-PrivateDnsZoneDeployment', replace(variables('webAppDnsZoneName'), '.', '-')), 64)]",
+                      "name": "[format('{0}-dnszone', uniqueString(deployment().name, parameters('location'), 'webapp'))]",
                       "properties": {
                         "expressionEvaluationOptions": {
                           "scope": "inner"
@@ -23125,7 +23125,7 @@
                     {
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
-                      "name": "[format('{0}-deployment', uniqueString(deployment().name, parameters('location'), 'webapp'))]",
+                      "name": "[format('{0}-uami', uniqueString(deployment().name, parameters('location'), 'webapp'))]",
                       "properties": {
                         "expressionEvaluationOptions": {
                           "scope": "inner"
@@ -23591,7 +23591,7 @@
                       "condition": "[and(not(empty(parameters('subnetPrivateEndpointId'))), not(parameters('deployAseV3')))]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
-                      "name": "[take(format('pe-{0}-slot-{1}-Deployment', parameters('webAppName'), variables('slotName')), 64)]",
+                      "name": "[format('{0}-slot-{1}', uniqueString(deployment().name, parameters('location'), 'webapp'), variables('slotName'))]",
                       "properties": {
                         "expressionEvaluationOptions": {
                           "scope": "inner"
@@ -23607,7 +23607,7 @@
                           "tags": {
                             "value": "[parameters('tags')]"
                           },
-                          "privateDnsZoneGroup": "[if(and(not(empty(parameters('subnetPrivateEndpointId'))), not(parameters('deployAseV3'))), createObject('value', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', reference(resourceId('Microsoft.Resources/deployments', take(format('{0}-PrivateDnsZoneDeployment', replace(variables('webAppDnsZoneName'), '.', '-')), 64)), '2022-09-01').outputs.resourceId.value)))), createObject('value', null()))]",
+                          "privateDnsZoneGroup": "[if(and(not(empty(parameters('subnetPrivateEndpointId'))), not(parameters('deployAseV3'))), createObject('value', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', reference(resourceId('Microsoft.Resources/deployments', format('{0}-dnszone', uniqueString(deployment().name, parameters('location'), 'webapp'))), '2022-09-01').outputs.resourceId.value)))), createObject('value', null()))]",
                           "subnetResourceId": {
                             "value": "[parameters('subnetPrivateEndpointId')]"
                           },
@@ -23616,7 +23616,7 @@
                               {
                                 "name": "webApp",
                                 "properties": {
-                                  "privateLinkServiceId": "[reference(resourceId('Microsoft.Resources/deployments', take(format('{0}-webApp-Deployment', parameters('webAppName')), 64)), '2022-09-01').outputs.resourceId.value]",
+                                  "privateLinkServiceId": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-webapp', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.resourceId.value]",
                                   "groupIds": [
                                     "[format('sites-{0}', variables('slotName'))]"
                                   ]
@@ -24373,45 +24373,45 @@
                         }
                       },
                       "dependsOn": [
-                        "[resourceId('Microsoft.Resources/deployments', take(format('{0}-webApp-Deployment', parameters('webAppName')), 64))]",
-                        "[resourceId('Microsoft.Resources/deployments', take(format('{0}-PrivateDnsZoneDeployment', replace(variables('webAppDnsZoneName'), '.', '-')), 64))]"
+                        "[resourceId('Microsoft.Resources/deployments', format('{0}-webapp', uniqueString(deployment().name, parameters('location'))))]",
+                        "[resourceId('Microsoft.Resources/deployments', format('{0}-dnszone', uniqueString(deployment().name, parameters('location'), 'webapp')))]"
                       ]
                     }
                   ],
                   "outputs": {
                     "webAppName": {
                       "type": "string",
-                      "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('{0}-webApp-Deployment', parameters('webAppName')), 64)), '2022-09-01').outputs.name.value]"
+                      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-webapp', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.name.value]"
                     },
                     "webAppHostName": {
                       "type": "string",
-                      "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('{0}-webApp-Deployment', parameters('webAppName')), 64)), '2022-09-01').outputs.defaultHostname.value]"
+                      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-webapp', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.defaultHostname.value]"
                     },
                     "webAppResourceId": {
                       "type": "string",
-                      "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('{0}-webApp-Deployment', parameters('webAppName')), 64)), '2022-09-01').outputs.resourceId.value]"
+                      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-webapp', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.resourceId.value]"
                     },
                     "webAppLocation": {
                       "type": "string",
-                      "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('{0}-webApp-Deployment', parameters('webAppName')), 64)), '2022-09-01').outputs.location.value]"
+                      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-webapp', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.location.value]"
                     },
                     "webAppSystemAssignedPrincipalId": {
                       "type": "string",
-                      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-deployment', uniqueString(deployment().name, parameters('location'), 'webapp'))), '2022-09-01').outputs.principalId.value]"
+                      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-uami', uniqueString(deployment().name, parameters('location'), 'webapp'))), '2022-09-01').outputs.principalId.value]"
                     },
                     "internalInboundIpAddress": {
                       "type": "string",
                       "metadata": {
                         "description": "The Internal ingress IP of the ASE."
                       },
-                      "value": "[if(parameters('deployAseV3'), reference(resourceId('Microsoft.Resources/deployments', take(format('{0}-ASEv3-Deployment', parameters('aseName')), 64)), '2022-09-01').outputs.internalInboundIpAddress.value, '')]"
+                      "value": "[if(parameters('deployAseV3'), reference(resourceId('Microsoft.Resources/deployments', format('{0}-ase', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.internalInboundIpAddress.value, '')]"
                     },
                     "aseName": {
                       "type": "string",
                       "metadata": {
                         "description": "The name of the ASE."
                       },
-                      "value": "[if(parameters('deployAseV3'), reference(resourceId('Microsoft.Resources/deployments', take(format('{0}-ASEv3-Deployment', parameters('aseName')), 64)), '2022-09-01').outputs.name.value, '')]"
+                      "value": "[if(parameters('deployAseV3'), reference(resourceId('Microsoft.Resources/deployments', format('{0}-ase', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.name.value, '')]"
                     }
                   }
                 }
@@ -30091,7 +30091,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "1162517588303584498"
+                      "templateHash": "16152009141598552646"
                     }
                   },
                   "parameters": {
@@ -30189,11 +30189,11 @@
                       "properties": {
                         "addressPrefix": "[parameters('vmSubnetAddressPrefix')]",
                         "networkSecurityGroup": {
-                          "id": "[reference(resourceId('Microsoft.Resources/deployments', 'vmNetworkSecurityDeployment'), '2022-09-01').outputs.resourceId.value]"
+                          "id": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-vm-nsg', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.resourceId.value]"
                         }
                       },
                       "dependsOn": [
-                        "[resourceId('Microsoft.Resources/deployments', 'vmNetworkSecurityDeployment')]"
+                        "[resourceId('Microsoft.Resources/deployments', format('{0}-vm-nsg', uniqueString(deployment().name, parameters('location'))))]"
                       ]
                     },
                     {
@@ -30230,11 +30230,11 @@
                       "name": "[variables('roleAssignmentName')]",
                       "properties": {
                         "roleDefinitionId": "[variables('contributorRoleDefinitionId')]",
-                        "principalId": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-deployment', parameters('sshKeyGenName'))), '2022-09-01').outputs.principalId.value]",
+                        "principalId": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-ssh-uami', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.principalId.value]",
                         "principalType": "ServicePrincipal"
                       },
                       "dependsOn": [
-                        "[resourceId('Microsoft.Resources/deployments', format('{0}-deployment', parameters('sshKeyGenName')))]"
+                        "[resourceId('Microsoft.Resources/deployments', format('{0}-ssh-uami', uniqueString(deployment().name, parameters('location'))))]"
                       ],
                       "metadata": {
                         "description": "The role assignment that will be created to give the User Assigned Managed Identity Contributor role on the Resource Group in order to auto-approve the Private Endpoint Connection of the AFD."
@@ -30366,7 +30366,7 @@
                     {
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
-                      "name": "vmNetworkSecurityDeployment",
+                      "name": "[format('{0}-vm-nsg', uniqueString(deployment().name, parameters('location')))]",
                       "properties": {
                         "expressionEvaluationOptions": {
                           "scope": "inner"
@@ -31065,7 +31065,7 @@
                     {
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
-                      "name": "[format('{0}-deployment', parameters('sshKeyGenName'))]",
+                      "name": "[format('{0}-ssh-uami', uniqueString(deployment().name, parameters('location')))]",
                       "properties": {
                         "expressionEvaluationOptions": {
                           "scope": "inner"
@@ -31530,7 +31530,7 @@
                     {
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
-                      "name": "vmDeployment",
+                      "name": "[format('{0}-linux-vm', uniqueString(deployment().name, parameters('location')))]",
                       "properties": {
                         "expressionEvaluationOptions": {
                           "scope": "inner"
@@ -37261,7 +37261,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "16187377704767202990"
+                      "templateHash": "18194422760653575144"
                     }
                   },
                   "parameters": {
@@ -37332,11 +37332,11 @@
                       "properties": {
                         "addressPrefix": "[parameters('vmSubnetAddressPrefix')]",
                         "networkSecurityGroup": {
-                          "id": "[reference(resourceId('Microsoft.Resources/deployments', 'vmNetworkSecurityDeployment'), '2022-09-01').outputs.resourceId.value]"
+                          "id": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-vm-nsg', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.resourceId.value]"
                         }
                       },
                       "dependsOn": [
-                        "[resourceId('Microsoft.Resources/deployments', 'vmNetworkSecurityDeployment')]"
+                        "[resourceId('Microsoft.Resources/deployments', format('{0}-vm-nsg', uniqueString(deployment().name, parameters('location'))))]"
                       ]
                     },
                     {
@@ -37459,7 +37459,7 @@
                     {
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
-                      "name": "vmNetworkSecurityDeployment",
+                      "name": "[format('{0}-vm-nsg', uniqueString(deployment().name, parameters('location')))]",
                       "properties": {
                         "expressionEvaluationOptions": {
                           "scope": "inner"
@@ -38158,7 +38158,7 @@
                     {
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
-                      "name": "vmDeployment",
+                      "name": "[format('{0}-win-vm', uniqueString(deployment().name, parameters('location')))]",
                       "properties": {
                         "expressionEvaluationOptions": {
                           "scope": "inner"

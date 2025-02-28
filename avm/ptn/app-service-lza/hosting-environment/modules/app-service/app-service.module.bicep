@@ -185,7 +185,7 @@ var slotName = 'staging'
 // }
 
 module ase './ase.module.bicep' = if (deployAseV3) {
-  name: take('${aseName}-ASEv3-Deployment', 64)
+  name: '${uniqueString(deployment().name, location)}-ase'
   params: {
     name: aseName
     location: location
@@ -198,7 +198,7 @@ module ase './ase.module.bicep' = if (deployAseV3) {
 }
 
 module appInsights 'br/public:avm/res/insights/component:0.4.1' = {
-  name: '${uniqueString(deployment().name, location)}-appInsights-Deployment'
+  name: '${uniqueString(deployment().name, location)}-appInsights'
   params: {
     name: 'appi-${webAppName}'
     location: location
@@ -213,7 +213,7 @@ module appInsights 'br/public:avm/res/insights/component:0.4.1' = {
 }
 
 module plan 'br/public:avm/res/web/serverfarm:0.2.4' = {
-  name: take('${webAppName}-app-Deployment', 64)
+  name: '${uniqueString(deployment().name, location, 'webapp')}-plan'
   params: {
     name: appServicePlanName
     location: location
@@ -232,7 +232,7 @@ module plan 'br/public:avm/res/web/serverfarm:0.2.4' = {
 }
 
 module webApp 'br/public:avm/res/web/site:0.9.0' = {
-  name: take('${webAppName}-webApp-Deployment', 64)
+  name: '${uniqueString(deployment().name, location)}-webapp'
   params: {
     kind: !empty(kind) ? 'app,linux' : 'app'
     name: webAppName
@@ -277,7 +277,7 @@ module webApp 'br/public:avm/res/web/site:0.9.0' = {
 }
 
 module webAppPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.6.0' = if (!empty(subnetPrivateEndpointId) && !deployAseV3) {
-  name: take('${replace(webAppDnsZoneName, '.', '-')}-PrivateDnsZoneDeployment', 64)
+  name: '${uniqueString(deployment().name, location, 'webapp')}-dnszone'
   params: {
     name: webAppDnsZoneName
     location: 'global'
@@ -287,7 +287,7 @@ module webAppPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.6.0' =
 }
 
 module webAppUserAssignedManagedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0' = {
-  name: '${uniqueString(deployment().name, location, 'webapp')}-deployment'
+  name: '${uniqueString(deployment().name, location, 'webapp')}-uami'
   params: {
     name: managedIdentityName
     location: location
@@ -296,7 +296,7 @@ module webAppUserAssignedManagedIdentity 'br/public:avm/res/managed-identity/use
 }
 
 module peWebAppSlot 'br/public:avm/res/network/private-endpoint:0.9.0' = if (!empty(subnetPrivateEndpointId) && !deployAseV3) {
-  name: take('pe-${webAppName}-slot-${slotName}-Deployment', 64)
+  name: '${uniqueString(deployment().name, location, 'webapp')}-slot-${slotName}'
   params: {
     name: take('pe-${webAppName}-slot-${slotName}', 64)
     location: location

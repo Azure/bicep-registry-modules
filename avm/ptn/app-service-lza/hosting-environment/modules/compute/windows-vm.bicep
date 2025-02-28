@@ -37,7 +37,7 @@ param location string = resourceGroup().location
 // ------------------
 
 module vmNetworkSecurityGroup 'br/public:avm/res/network/network-security-group:0.2.0' = {
-  name: 'vmNetworkSecurityDeployment'
+  name: '${uniqueString(deployment().name, location)}-vm-nsg'
   params: {
     name: vmNetworkSecurityGroupName
     location: location
@@ -136,7 +136,7 @@ resource maintenanceConfiguration 'Microsoft.Maintenance/maintenanceConfiguratio
 }
 
 module vm 'br/public:avm/res/compute/virtual-machine:0.11.0' = {
-  name: 'vmDeployment'
+  name: '${uniqueString(deployment().name, location)}-win-vm'
   params: {
     name: vmName
     location: location

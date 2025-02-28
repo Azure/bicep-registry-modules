@@ -56,7 +56,7 @@ var uami = resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', sshKey
 // ------------------
 
 module vmNetworkSecurityGroup 'br/public:avm/res/network/network-security-group:0.2.0' = {
-  name: 'vmNetworkSecurityDeployment'
+  name: '${uniqueString(deployment().name, location)}-vm-nsg'
   params: {
     name: vmNetworkSecurityGroupName
     location: location
@@ -155,7 +155,7 @@ resource maintenanceConfiguration 'Microsoft.Maintenance/maintenanceConfiguratio
 
 @description('The User Assigned Managed Identity that will be given Contributor role on the Resource Group in order to auto-approve the Private Endpoint Connection of the AFD.')
 module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0' = {
-  name: '${sshKeyGenName}-deployment'
+  name: '${uniqueString(deployment().name, location)}-ssh-uami'
   params: {
     name: sshKeyGenName
     location: location
@@ -203,7 +203,7 @@ resource sshKey 'Microsoft.Compute/sshPublicKeys@2022-03-01' = {
 }
 
 module vm 'br/public:avm/res/compute/virtual-machine:0.11.0' = {
-  name: 'vmDeployment'
+  name: '${uniqueString(deployment().name, location)}-linux-vm'
   params: {
     name: vmName
     location: location

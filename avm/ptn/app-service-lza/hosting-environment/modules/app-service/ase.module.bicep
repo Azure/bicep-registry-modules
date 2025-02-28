@@ -107,7 +107,7 @@ var diagnosticsLogs = contains(diagnosticLogCategoriesToEnable, 'allLogs')
   : contains(diagnosticLogCategoriesToEnable, '') ? [] : diagnosticsLogsSpecified
 
 module ase 'br/public:avm/res/web/hosting-environment:0.1.1' = {
-  name: take('${name}-ASEv3-Deployment', 64)
+  name: '${uniqueString(deployment().name, location)}-ase-avm'
   params: {
     name: name
     location: location
@@ -137,7 +137,7 @@ module ase 'br/public:avm/res/web/hosting-environment:0.1.1' = {
 }
 
 module asePrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.6.0' = {
-  name: 'asev3-hub-PrivateDnsZone-Deployment'
+  name: '${uniqueString(deployment().name, location)}-ase-dnszone'
   params: {
     name: '${ase.outputs.name}.appserviceenvironment.net'
     virtualNetworkLinks: virtualNetworkLinks
