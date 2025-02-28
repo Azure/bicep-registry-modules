@@ -4,13 +4,13 @@ metadata description = 'This module deploys an Express Route Circuit.'
 @description('Required. This is the name of the ExpressRoute circuit.')
 param name string
 
-@description('Conditional. This is the name of the ExpressRoute Service Provider. It must exactly match one of the Service Providers from List ExpressRoute Service Providers API call. If the circuit is provisioned on an ExpressRoutePort resource, this property is not required.')
+@description('Conditional. This is the name of the ExpressRoute Service Provider. It must exactly match one of the Service Providers from List ExpressRoute Service Providers API call. This property is required if the circuit is provisioned on an ExpressRoutePort resource.')
 param serviceProviderName string?
 
-@description('Conditional. This is the name of the peering location and not the ARM resource location. It must exactly match one of the available peering locations from List ExpressRoute Service Providers API call. If the circuit is provisioned on an ExpressRoutePort resource, this property is not required.')
+@description('Conditional. This is the name of the peering location and not the ARM resource location. It must exactly match one of the available peering locations from List ExpressRoute Service Providers API call. This property is required if the circuit is provisioned on an ExpressRoutePort resource.')
 param peeringLocation string?
 
-@description('Conditional. This is the bandwidth in Mbps of the circuit being created. It must exactly match one of the available bandwidth offers List ExpressRoute Service Providers API call. If the circuit is provisioned on an ExpressRoutePort resource, this property is not required.')
+@description('Conditional. This is the bandwidth in Mbps of the circuit being created. It must exactly match one of the available bandwidth offers List ExpressRoute Service Providers API call. This property is required if the circuit is provisioned on an ExpressRoutePort resource.')
 param bandwidthInMbps int?
 
 @description('Optional. Chosen SKU Tier of ExpressRoute circuit. Choose from Local, Premium or Standard SKU tiers.')

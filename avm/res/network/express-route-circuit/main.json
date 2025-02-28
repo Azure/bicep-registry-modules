@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "1183919487519006759"
+      "templateHash": "3221812275685520819"
     },
     "name": "ExpressRoute Circuits",
     "description": "This module deploys an Express Route Circuit."
@@ -251,21 +251,21 @@
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Conditional. This is the name of the ExpressRoute Service Provider. It must exactly match one of the Service Providers from List ExpressRoute Service Providers API call. If the circuit is provisioned on an ExpressRoutePort resource, this property is not required."
+        "description": "Conditional. This is the name of the ExpressRoute Service Provider. It must exactly match one of the Service Providers from List ExpressRoute Service Providers API call. This property is required if the circuit is provisioned on an ExpressRoutePort resource."
       }
     },
     "peeringLocation": {
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Conditional. This is the name of the peering location and not the ARM resource location. It must exactly match one of the available peering locations from List ExpressRoute Service Providers API call. If the circuit is provisioned on an ExpressRoutePort resource, this property is not required."
+        "description": "Conditional. This is the name of the peering location and not the ARM resource location. It must exactly match one of the available peering locations from List ExpressRoute Service Providers API call. This property is required if the circuit is provisioned on an ExpressRoutePort resource."
       }
     },
     "bandwidthInMbps": {
       "type": "int",
       "nullable": true,
       "metadata": {
-        "description": "Conditional. This is the bandwidth in Mbps of the circuit being created. It must exactly match one of the available bandwidth offers List ExpressRoute Service Providers API call. If the circuit is provisioned on an ExpressRoutePort resource, this property is not required."
+        "description": "Conditional. This is the bandwidth in Mbps of the circuit being created. It must exactly match one of the available bandwidth offers List ExpressRoute Service Providers API call. This property is required if the circuit is provisioned on an ExpressRoutePort resource."
       }
     },
     "skuTier": {

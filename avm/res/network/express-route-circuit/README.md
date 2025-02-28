@@ -526,10 +526,10 @@ param tags = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`bandwidthInGbps`](#parameter-bandwidthingbps) | int | The bandwidth of the circuit when the circuit is provisioned on an ExpressRoutePort resource. Available when configuring Express Route Direct. Default value of 0 will set the property to null. |
-| [`bandwidthInMbps`](#parameter-bandwidthinmbps) | int | This is the bandwidth in Mbps of the circuit being created. It must exactly match one of the available bandwidth offers List ExpressRoute Service Providers API call. If the circuit is provisioned on an ExpressRoutePort resource, this property is not required. |
+| [`bandwidthInMbps`](#parameter-bandwidthinmbps) | int | This is the bandwidth in Mbps of the circuit being created. It must exactly match one of the available bandwidth offers List ExpressRoute Service Providers API call. This property is required if the circuit is provisioned on an ExpressRoutePort resource. |
 | [`expressRoutePortResourceId`](#parameter-expressrouteportresourceid) | string | The reference to the ExpressRoutePort resource when the circuit is provisioned on an ExpressRoutePort resource. Available when configuring Express Route Direct. |
-| [`peeringLocation`](#parameter-peeringlocation) | string | This is the name of the peering location and not the ARM resource location. It must exactly match one of the available peering locations from List ExpressRoute Service Providers API call. If the circuit is provisioned on an ExpressRoutePort resource, this property is not required. |
-| [`serviceProviderName`](#parameter-serviceprovidername) | string | This is the name of the ExpressRoute Service Provider. It must exactly match one of the Service Providers from List ExpressRoute Service Providers API call. If the circuit is provisioned on an ExpressRoutePort resource, this property is not required. |
+| [`peeringLocation`](#parameter-peeringlocation) | string | This is the name of the peering location and not the ARM resource location. It must exactly match one of the available peering locations from List ExpressRoute Service Providers API call. This property is required if the circuit is provisioned on an ExpressRoutePort resource. |
+| [`serviceProviderName`](#parameter-serviceprovidername) | string | This is the name of the ExpressRoute Service Provider. It must exactly match one of the Service Providers from List ExpressRoute Service Providers API call. This property is required if the circuit is provisioned on an ExpressRoutePort resource. |
 
 **Optional parameters**
 
@@ -572,7 +572,7 @@ The bandwidth of the circuit when the circuit is provisioned on an ExpressRouteP
 
 ### Parameter: `bandwidthInMbps`
 
-This is the bandwidth in Mbps of the circuit being created. It must exactly match one of the available bandwidth offers List ExpressRoute Service Providers API call. If the circuit is provisioned on an ExpressRoutePort resource, this property is not required.
+This is the bandwidth in Mbps of the circuit being created. It must exactly match one of the available bandwidth offers List ExpressRoute Service Providers API call. This property is required if the circuit is provisioned on an ExpressRoutePort resource.
 
 - Required: No
 - Type: int
@@ -587,14 +587,14 @@ The reference to the ExpressRoutePort resource when the circuit is provisioned o
 
 ### Parameter: `peeringLocation`
 
-This is the name of the peering location and not the ARM resource location. It must exactly match one of the available peering locations from List ExpressRoute Service Providers API call. If the circuit is provisioned on an ExpressRoutePort resource, this property is not required.
+This is the name of the peering location and not the ARM resource location. It must exactly match one of the available peering locations from List ExpressRoute Service Providers API call. This property is required if the circuit is provisioned on an ExpressRoutePort resource.
 
 - Required: No
 - Type: string
 
 ### Parameter: `serviceProviderName`
 
-This is the name of the ExpressRoute Service Provider. It must exactly match one of the Service Providers from List ExpressRoute Service Providers API call. If the circuit is provisioned on an ExpressRoutePort resource, this property is not required.
+This is the name of the ExpressRoute Service Provider. It must exactly match one of the Service Providers from List ExpressRoute Service Providers API call. This property is required if the circuit is provisioned on an ExpressRoutePort resource.
 
 - Required: No
 - Type: string
