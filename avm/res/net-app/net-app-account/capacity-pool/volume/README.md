@@ -27,6 +27,7 @@ This module deploys an Azure NetApp Files Capacity Pool Volume.
 | [`name`](#parameter-name) | string | The name of the pool volume. |
 | [`subnetResourceId`](#parameter-subnetresourceid) | string | The Azure Resource URI for a delegated subnet. Must have the delegation Microsoft.NetApp/volumes. |
 | [`usageThreshold`](#parameter-usagethreshold) | int | Maximum storage quota allowed for a file system in bytes. |
+| [`zone`](#parameter-zone) | int | The Availability Zone to place the resource in. If set to 0, then Availability Zone is not set. |
 
 **Conditional parameters**
 
@@ -48,14 +49,13 @@ This module deploys an Azure NetApp Files Capacity Pool Volume.
 | [`keyVaultPrivateEndpointResourceId`](#parameter-keyvaultprivateendpointresourceid) | string | The resource ID of the key vault private endpoint. |
 | [`location`](#parameter-location) | string | Location of the pool volume. |
 | [`networkFeatures`](#parameter-networkfeatures) | string | Network feature for the volume. |
-| [`protocolTypes`](#parameter-protocoltypes) | array | Set of protocol types. |
+| [`protocolTypes`](#parameter-protocoltypes) | array | Set of protocol types. Default value is `['NFSv3']`. If you are creating a dual-stack volume, set either `['NFSv3','CIFS']` or `['NFSv4.1','CIFS']`. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`serviceLevel`](#parameter-servicelevel) | string | The pool service level. Must match the one of the parent capacity pool. |
 | [`smbContinuouslyAvailable`](#parameter-smbcontinuouslyavailable) | bool | Enables continuously available share property for SMB volume. Only applicable for SMB volume. |
 | [`smbEncryption`](#parameter-smbencryption) | bool | Enables SMB encryption. Only applicable for SMB/DualProtocol volume. |
 | [`smbNonBrowsable`](#parameter-smbnonbrowsable) | string | Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProtocol volume. |
 | [`volumeType`](#parameter-volumetype) | string | The type of the volume. DataProtection volumes are used for replication. |
-| [`zones`](#parameter-zones) | array | Zone where the volume will be placed. |
 
 ### Parameter: `coolAccess`
 
@@ -91,6 +91,22 @@ Maximum storage quota allowed for a file system in bytes.
 
 - Required: Yes
 - Type: int
+
+### Parameter: `zone`
+
+The Availability Zone to place the resource in. If set to 0, then Availability Zone is not set.
+
+- Required: Yes
+- Type: int
+- Allowed:
+  ```Bicep
+  [
+    0
+    1
+    2
+    3
+  ]
+  ```
 
 ### Parameter: `capacityPoolName`
 
@@ -499,11 +515,24 @@ Network feature for the volume.
 
 ### Parameter: `protocolTypes`
 
-Set of protocol types.
+Set of protocol types. Default value is `['NFSv3']`. If you are creating a dual-stack volume, set either `['NFSv3','CIFS']` or `['NFSv4.1','CIFS']`.
 
 - Required: No
 - Type: array
-- Default: `[]`
+- Default:
+  ```Bicep
+  [
+    'NFSv3'
+  ]
+  ```
+- Allowed:
+  ```Bicep
+  [
+    'CIFS'
+    'NFSv3'
+    'NFSv4.1'
+  ]
+  ```
 
 ### Parameter: `roleAssignments`
 
@@ -662,21 +691,6 @@ The type of the volume. DataProtection volumes are used for replication.
 
 - Required: No
 - Type: string
-
-### Parameter: `zones`
-
-Zone where the volume will be placed.
-
-- Required: No
-- Type: array
-- Default:
-  ```Bicep
-  [
-    1
-    2
-    3
-  ]
-  ```
 
 ## Outputs
 
