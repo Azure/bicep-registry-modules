@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "15467174942437862431"
+      "templateHash": "10260423698998007856"
     },
     "name": "Elastic SANs",
     "description": "This module deploys an Elastic SAN."
@@ -3161,7 +3161,7 @@
           "name": "[reference(format('elasticSan_volumeGroups[{0}]', copyIndex())).outputs.name.value]",
           "location": "[reference(format('elasticSan_volumeGroups[{0}]', copyIndex())).outputs.location.value]",
           "resourceGroupName": "[reference(format('elasticSan_volumeGroups[{0}]', copyIndex())).outputs.resourceGroupName.value]",
-          "systemAssignedMIPrincipalId": "[tryGet(tryGet(reference(format('elasticSan_volumeGroups[{0}]', copyIndex())).outputs, 'systemAssignedMIPrincipalId'), 'value')]",
+          "systemAssignedMIPrincipalId": "[reference(format('elasticSan_volumeGroups[{0}]', copyIndex())).outputs.systemAssignedMIPrincipalId.value]",
           "volumes": "[reference(format('elasticSan_volumeGroups[{0}]', copyIndex())).outputs.volumes.value]",
           "privateEndpoints": "[reference(format('elasticSan_volumeGroups[{0}]', copyIndex())).outputs.privateEndpoints.value]"
         }
@@ -3173,7 +3173,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": ""
+      "value": null
     }
   }
 }

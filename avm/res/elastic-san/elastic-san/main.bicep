@@ -269,7 +269,7 @@ output volumeGroups volumeGroupOutputType[] = [
     name: elasticSan_volumeGroups[i].outputs.name
     location: elasticSan_volumeGroups[i].outputs.location
     resourceGroupName: elasticSan_volumeGroups[i].outputs.resourceGroupName
-    systemAssignedMIPrincipalId: elasticSan_volumeGroups[i].outputs.?systemAssignedMIPrincipalId!
+    systemAssignedMIPrincipalId: elasticSan_volumeGroups[i].outputs.systemAssignedMIPrincipalId
     volumes: elasticSan_volumeGroups[i].outputs.volumes
     privateEndpoints: elasticSan_volumeGroups[i].outputs.privateEndpoints
   }
@@ -277,7 +277,7 @@ output volumeGroups volumeGroupOutputType[] = [
 
 // temporary solution to the static test "If a UDT definition [managedIdentitiesType] exists and supports system-assigned-identities, the template should have an output for its principal ID."
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string? = ''
+output systemAssignedMIPrincipalId string? = null
 
 // ================ //
 // Definitions      //
