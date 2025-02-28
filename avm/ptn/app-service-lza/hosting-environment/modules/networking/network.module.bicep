@@ -119,9 +119,10 @@ module nsgPep 'br/public:avm/res/network/network-security-group:0.5.0' = {
         properties: {
           priority: 200
           access: 'Deny'
-          protocol: 'Tcp'
+          protocol: '*'
           direction: 'Outbound'
           sourceAddressPrefix: 'VirtualNetwork'
+          sourcePortRange: '*'
           destinationAddressPrefix: '*'
           destinationPortRanges: [
             '3389'
