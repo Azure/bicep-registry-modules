@@ -172,13 +172,19 @@ output name string = dnsResolver.name
 output location string = dnsResolver.location
 
 @description('The outbound endpoints object.')
-output outboundEndpointsObject array = [
-  for i in range(0, length(outboundEndpoints ?? [])): dnsResolver_outboundEndpoints[i].outputs
+output outboundEndpointsObject endpointDetailsType[] = [
+  for index in range(0, length(outboundEndpoints ?? [])): {
+    name: dnsResolver_outboundEndpoints[index].outputs.name
+    resourceId: dnsResolver_outboundEndpoints[index].outputs.resourceId
+  }
 ]
 
-@description('The inbound endpoints object.')
-output inboundEndpointsObject array = [
-  for i in range(0, length(inboundEndpoints ?? [])): dnsResolver_inboundEndpoints[i].outputs
+@description('The outbound endpoints object.')
+output inboundEndpointsObject endpointDetailsType[] = [
+  for index in range(0, length(inboundEndpoints ?? [])): {
+    name: dnsResolver_inboundEndpoints[index].outputs.name
+    resourceId: dnsResolver_inboundEndpoints[index].outputs.resourceId
+  }
 ]
 
 // ================ //
@@ -252,3 +258,13 @@ type outboundEndpointType = {
   @description('Optional. Location for all resources.')
   location: string?
 }[]?
+
+@export()
+@description('The type for an endpoint details.')
+type endpointDetailsType = {
+  @description('The name of the resource.')
+  name: string
+
+  @description('The resource ID of the resource.')
+  resourceId: string
+}

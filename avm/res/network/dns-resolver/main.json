@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "9878118517622307415"
+      "templateHash": "13539851033295848425"
     },
     "name": "DNS Resolver",
     "description": "This module deploys a DNS Resolver."
@@ -197,6 +197,27 @@
         }
       },
       "nullable": true
+    },
+    "endpointDetailsType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "The name of the resource."
+          }
+        },
+        "resourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "The resource ID of the resource."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for an endpoint details."
+      }
     }
   },
   "parameters": {
@@ -661,22 +682,34 @@
     },
     "outboundEndpointsObject": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/endpointDetailsType"
+      },
       "metadata": {
         "description": "The outbound endpoints object."
       },
       "copy": {
         "count": "[length(range(0, length(coalesce(parameters('outboundEndpoints'), createArray()))))]",
-        "input": "[reference(format('dnsResolver_outboundEndpoints[{0}]', range(0, length(coalesce(parameters('outboundEndpoints'), createArray())))[copyIndex()])).outputs]"
+        "input": {
+          "name": "[reference(format('dnsResolver_outboundEndpoints[{0}]', range(0, length(coalesce(parameters('outboundEndpoints'), createArray())))[copyIndex()])).outputs.name.value]",
+          "resourceId": "[reference(format('dnsResolver_outboundEndpoints[{0}]', range(0, length(coalesce(parameters('outboundEndpoints'), createArray())))[copyIndex()])).outputs.resourceId.value]"
+        }
       }
     },
     "inboundEndpointsObject": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/endpointDetailsType"
+      },
       "metadata": {
-        "description": "The inbound endpoints object."
+        "description": "The outbound endpoints object."
       },
       "copy": {
         "count": "[length(range(0, length(coalesce(parameters('inboundEndpoints'), createArray()))))]",
-        "input": "[reference(format('dnsResolver_inboundEndpoints[{0}]', range(0, length(coalesce(parameters('inboundEndpoints'), createArray())))[copyIndex()])).outputs]"
+        "input": {
+          "name": "[reference(format('dnsResolver_inboundEndpoints[{0}]', range(0, length(coalesce(parameters('inboundEndpoints'), createArray())))[copyIndex()])).outputs.name.value]",
+          "resourceId": "[reference(format('dnsResolver_inboundEndpoints[{0}]', range(0, length(coalesce(parameters('inboundEndpoints'), createArray())))[copyIndex()])).outputs.resourceId.value]"
+        }
       }
     }
   }
