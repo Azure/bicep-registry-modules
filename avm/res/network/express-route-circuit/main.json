@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "1505491278391097164"
+      "templateHash": "6988243528298159368"
     },
     "name": "ExpressRoute Circuits",
     "description": "This module deploys an Express Route Circuit."
@@ -249,20 +249,23 @@
     },
     "serviceProviderName": {
       "type": "string",
+      "nullable": true,
       "metadata": {
-        "description": "Required. This is the name of the ExpressRoute Service Provider. It must exactly match one of the Service Providers from List ExpressRoute Service Providers API call."
+        "description": "Conditional. Required if 'expressRoutePortResourceId' is not set. This is the name of the ExpressRoute Service Provider. It must exactly match one of the Service Providers from List ExpressRoute Service Providers API call."
       }
     },
     "peeringLocation": {
       "type": "string",
+      "nullable": true,
       "metadata": {
-        "description": "Required. This is the name of the peering location and not the ARM resource location. It must exactly match one of the available peering locations from List ExpressRoute Service Providers API call."
+        "description": "Conditional. Required if 'expressRoutePortResourceId' is not set. This is the name of the peering location and not the ARM resource location. It must exactly match one of the available peering locations from List ExpressRoute Service Providers API call."
       }
     },
     "bandwidthInMbps": {
       "type": "int",
+      "nullable": true,
       "metadata": {
-        "description": "Required. This is the bandwidth in Mbps of the circuit being created. It must exactly match one of the available bandwidth offers List ExpressRoute Service Providers API call."
+        "description": "Conditional. Required if 'expressRoutePortResourceId' is not set. This is the bandwidth in Mbps of the circuit being created. It must exactly match one of the available bandwidth offers List ExpressRoute Service Providers API call."
       }
     },
     "skuTier": {
@@ -369,14 +372,14 @@
       "type": "int",
       "defaultValue": 0,
       "metadata": {
-        "description": "Optional. The bandwidth of the circuit when the circuit is provisioned on an ExpressRoutePort resource. Available when configuring Express Route Direct. Default value of 0 will set the property to null."
+        "description": "Conditional. Required if 'serviceProviderName', 'peeringLocation', and 'bandwidthInMbps' are not set. The bandwidth of the circuit when the circuit is provisioned on an ExpressRoutePort resource. Available when configuring Express Route Direct. Default value of 0 will set the property to null."
       }
     },
     "expressRoutePortResourceId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. The reference to the ExpressRoutePort resource when the circuit is provisioned on an ExpressRoutePort resource. Available when configuring Express Route Direct."
+        "description": "Conditional. Required if 'serviceProviderName', 'peeringLocation', and 'bandwidthInMbps' are not set. The reference to the ExpressRoutePort resource when the circuit is provisioned on an ExpressRoutePort resource. Available when configuring Express Route Direct."
       }
     },
     "enableDirectPortRateLimit": {
@@ -499,11 +502,7 @@
         "bandwidthInGbps": "[if(not(equals(parameters('bandwidthInGbps'), 0)), parameters('bandwidthInGbps'), null())]",
         "enableDirectPortRateLimit": "[parameters('enableDirectPortRateLimit')]",
         "expressRoutePort": "[if(not(empty(parameters('expressRoutePortResourceId'))), createObject('id', parameters('expressRoutePortResourceId')), null())]",
-        "serviceProviderProperties": {
-          "serviceProviderName": "[parameters('serviceProviderName')]",
-          "peeringLocation": "[parameters('peeringLocation')]",
-          "bandwidthInMbps": "[parameters('bandwidthInMbps')]"
-        },
+        "serviceProviderProperties": "[if(empty(parameters('expressRoutePortResourceId')), createObject('serviceProviderName', parameters('serviceProviderName'), 'peeringLocation', parameters('peeringLocation'), 'bandwidthInMbps', parameters('bandwidthInMbps')), null())]",
         "peerings": "[if(parameters('peering'), createArray(createObject('name', parameters('peeringType'), 'properties', createObject('peeringType', parameters('peeringType'), 'sharedKey', parameters('sharedKey'), 'peerASN', parameters('peerASN'), 'primaryPeerAddressPrefix', parameters('primaryPeerAddressPrefix'), 'secondaryPeerAddressPrefix', parameters('secondaryPeerAddressPrefix'), 'vlanId', parameters('vlanId')))), null())]"
       }
     },
