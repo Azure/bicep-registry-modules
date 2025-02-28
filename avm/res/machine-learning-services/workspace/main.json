@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "3071580844119506351"
+      "templateHash": "16092882599098315854"
     },
     "name": "Machine Learning Services Workspaces",
     "description": "This module deploys a Machine Learning Services Workspace."
@@ -2116,7 +2116,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "6400587070695625658"
+              "templateHash": "13679175688936595005"
             },
             "name": "Machine Learning Services Workspaces Computes",
             "description": "This module deploys a Machine Learning Services Workspaces Compute.\n\nAttaching a compute is not idempotent and will fail in case you try to redeploy over an existing compute in AML (see parameter `deployCompute`)."
@@ -2275,7 +2275,7 @@
             "compute": {
               "condition": "[equals(parameters('deployCompute'), true())]",
               "type": "Microsoft.MachineLearningServices/workspaces/computes",
-              "apiVersion": "2022-10-01",
+              "apiVersion": "2024-10-01",
               "name": "[format('{0}/{1}', parameters('machineLearningWorkspaceName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "tags": "[if(empty(parameters('resourceId')), parameters('tags'), null())]",
@@ -2312,14 +2312,14 @@
               "metadata": {
                 "description": "The principal ID of the system assigned identity."
               },
-              "value": "[tryGet(tryGet(reference('compute', '2022-10-01', 'full'), 'identity'), 'principalId')]"
+              "value": "[tryGet(tryGet(reference('compute', '2024-10-01', 'full'), 'identity'), 'principalId')]"
             },
             "location": {
               "type": "string",
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('compute', '2022-10-01', 'full').location]"
+              "value": "[reference('compute', '2024-10-01', 'full').location]"
             }
           }
         }
@@ -2382,7 +2382,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "14805144270257776390"
+              "templateHash": "3135951919631286272"
             },
             "name": "Machine Learning Services Workspaces Connections",
             "description": "This module creates a connection in a Machine Learning Services workspace."
@@ -2558,7 +2558,7 @@
                   }
                 },
                 "credentials": {
-                  "$ref": "#/definitions/workspaceConnectionAccountKey",
+                  "$ref": "#/definitions/workspaceConnectionAccountKeyType",
                   "metadata": {
                     "description": "Required. The credentials for the connection."
                   }
@@ -2774,7 +2774,7 @@
                 }
               }
             },
-            "workspaceConnectionAccountKey": {
+            "workspaceConnectionAccountKeyType": {
               "type": "object",
               "properties": {
                 "key": {
