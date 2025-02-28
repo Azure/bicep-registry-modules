@@ -8,6 +8,7 @@ This module deploys a Data Protection Backup Vault.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Notes](#Notes)
 - [Data Collection](#Data-Collection)
 
@@ -17,7 +18,7 @@ This module deploys a Data Protection Backup Vault.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.DataProtection/backupVaults` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DataProtection/2023-05-01/backupVaults) |
+| `Microsoft.DataProtection/backupVaults` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DataProtection/2024-04-01/backupVaults) |
 | `Microsoft.DataProtection/backupVaults/backupPolicies` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DataProtection/2023-05-01/backupVaults/backupPolicies) |
 
 ## Usage examples
@@ -767,15 +768,18 @@ param tags = {
 | :-- | :-- | :-- |
 | [`azureMonitorAlertSettingsAlertsForAllJobFailures`](#parameter-azuremonitoralertsettingsalertsforalljobfailures) | string | Settings for Azure Monitor based alerts for job failures. |
 | [`backupPolicies`](#parameter-backuppolicies) | array | List of all backup policies. |
+| [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
 | [`dataStoreType`](#parameter-datastoretype) | string | The datastore type to use. ArchiveStore does not support ZoneRedundancy. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`featureSettings`](#parameter-featuresettings) | object | Feature settings for the backup vault. |
+| [`immutabilitySettingState`](#parameter-immutabilitysettingstate) | string | The immmutability setting state of the backup vault resource. |
+| [`infrastructureEncryption`](#parameter-infrastructureencryption) | string | Whether or not the service applies a secondary layer of encryption. For security reasons, it is recommended to set it to Enabled. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`securitySettings`](#parameter-securitysettings) | object | Security settings for the backup vault. |
-| [`tags`](#parameter-tags) | object | Tags of the Recovery Service Vault resource. |
+| [`softDeleteSettings`](#parameter-softdeletesettings) | object | The soft delete related settings. |
+| [`tags`](#parameter-tags) | object | Tags of the backup vault resource. |
 | [`type`](#parameter-type) | string | The vault redundancy level to use. |
 
 ### Parameter: `name`
@@ -808,6 +812,55 @@ List of all backup policies.
 - Type: array
 - Default: `[]`
 
+### Parameter: `customerManagedKey`
+
+The customer managed key definition.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`keyName`](#parameter-customermanagedkeykeyname) | string | The name of the customer managed key to use for encryption. |
+| [`keyVaultResourceId`](#parameter-customermanagedkeykeyvaultresourceid) | string | The resource ID of a key vault to reference a customer managed key for encryption from. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`keyVersion`](#parameter-customermanagedkeykeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, the deployment will use the latest version available at deployment time. |
+| [`userAssignedIdentityResourceId`](#parameter-customermanagedkeyuserassignedidentityresourceid) | string | User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use. |
+
+### Parameter: `customerManagedKey.keyName`
+
+The name of the customer managed key to use for encryption.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `customerManagedKey.keyVaultResourceId`
+
+The resource ID of a key vault to reference a customer managed key for encryption from.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `customerManagedKey.keyVersion`
+
+The version of the customer managed key to reference for encryption. If not provided, the deployment will use the latest version available at deployment time.
+
+- Required: No
+- Type: string
+
+### Parameter: `customerManagedKey.userAssignedIdentityResourceId`
+
+User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.
+
+- Required: No
+- Type: string
+
 ### Parameter: `dataStoreType`
 
 The datastore type to use. ArchiveStore does not support ZoneRedundancy.
@@ -839,6 +892,36 @@ Feature settings for the backup vault.
 - Required: No
 - Type: object
 - Default: `{}`
+
+### Parameter: `immutabilitySettingState`
+
+The immmutability setting state of the backup vault resource.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Locked'
+    'Unlocked'
+  ]
+  ```
+
+### Parameter: `infrastructureEncryption`
+
+Whether or not the service applies a secondary layer of encryption. For security reasons, it is recommended to set it to Enabled.
+
+- Required: No
+- Type: string
+- Default: `'Enabled'`
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
 
 ### Parameter: `location`
 
@@ -896,6 +979,7 @@ The managed identity definition for this resource.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
 
 ### Parameter: `managedIdentities.systemAssigned`
 
@@ -903,6 +987,13 @@ Enables system assigned managed identity on the resource.
 
 - Required: No
 - Type: bool
+
+### Parameter: `managedIdentities.userAssignedResourceIds`
+
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
+
+- Required: No
+- Type: array
 
 ### Parameter: `roleAssignments`
 
@@ -1010,17 +1101,45 @@ The principal type of the assigned principal ID.
   ]
   ```
 
-### Parameter: `securitySettings`
+### Parameter: `softDeleteSettings`
 
-Security settings for the backup vault.
+The soft delete related settings.
 
 - Required: No
 - Type: object
-- Default: `{}`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`retentionDurationInDays`](#parameter-softdeletesettingsretentiondurationindays) | int | The soft delete retention period in days. |
+| [`state`](#parameter-softdeletesettingsstate) | string | The soft delete state. |
+
+### Parameter: `softDeleteSettings.retentionDurationInDays`
+
+The soft delete retention period in days.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `softDeleteSettings.state`
+
+The soft delete state.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AlwaysON'
+    'Off'
+    'On'
+  ]
+  ```
 
 ### Parameter: `tags`
 
-Tags of the Recovery Service Vault resource.
+Tags of the backup vault resource.
 
 - Required: No
 - Type: object
@@ -1050,6 +1169,14 @@ The vault redundancy level to use.
 | `resourceGroupName` | string | The name of the resource group the recovery services vault was created in. |
 | `resourceId` | string | The resource ID of the backup vault. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Notes
 
