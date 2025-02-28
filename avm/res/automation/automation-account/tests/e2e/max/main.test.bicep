@@ -117,6 +117,27 @@ module testDeployment '../../../main.bicep' = [
           version: 'latest'
         }
       ]
+      powershell72Modules: [
+        {
+          name: 'powershell-yaml'
+          uri: 'https://www.powershellgallery.com/api/v2/package'
+          version: 'latest'
+        }
+      ]
+      python3Packages: [
+        {
+          name: 'geniz-0.0.1-py3-none-any.whl'
+          uri: 'https://files.pythonhosted.org/packages/8f/4b/c61bb7b176b34dd0c9ab0f3d821234c1e9f81f3ba5a609a1cf9032c852e7'
+          version: 'latest'
+        }
+      ]
+      python2Packages: [
+        {
+          name: 'pycx2-1.0.3-py2-none-any.whl'
+          uri: 'https://files.pythonhosted.org/packages/59/8c/40f66c4ac7564a68edd629a7836536af53d10b2d89f78c63e77cfcd9d460'
+          version: 'latest'
+        }
+      ]
       privateEndpoints: [
         {
           privateDnsZoneGroup: {
@@ -306,9 +327,5 @@ module testDeployment '../../../main.bicep' = [
         Role: 'DeploymentValidation'
       }
     }
-    dependsOn: [
-      nestedDependencies
-      diagnosticDependencies
-    ]
   }
 ]
