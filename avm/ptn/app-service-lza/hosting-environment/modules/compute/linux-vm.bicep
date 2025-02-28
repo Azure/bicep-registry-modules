@@ -127,7 +127,7 @@ resource vmSubnet 'Microsoft.Network/virtualNetworks/subnets@2023-11-01' = {
   }
 }
 resource maintenanceConfiguration 'Microsoft.Maintenance/maintenanceConfigurations@2023-10-01-preview' = {
-  name: 'dep-mc-${vmName}'
+  name: 'linux-mc-${vmName}'
   location: location
   properties: {
     extensionProperties: {

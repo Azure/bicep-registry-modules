@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "12509568782624978205"
+      "templateHash": "4424819470181296941"
     },
     "name": "App Service Landing Zone Accelerator",
     "description": "This Azure App Service pattern module represents an Azure App Service deployment aligned with the cloud adoption framework",
@@ -2749,7 +2749,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "8063411304184048906"
+              "templateHash": "5471026852223926717"
             }
           },
           "definitions": {
@@ -30091,7 +30091,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "16152009141598552646"
+                      "templateHash": "12768029165754514099"
                     }
                   },
                   "parameters": {
@@ -30199,7 +30199,7 @@
                     {
                       "type": "Microsoft.Maintenance/maintenanceConfigurations",
                       "apiVersion": "2023-10-01-preview",
-                      "name": "[format('dep-mc-{0}', parameters('vmName'))]",
+                      "name": "[format('linux-mc-{0}', parameters('vmName'))]",
                       "location": "[parameters('location')]",
                       "properties": {
                         "extensionProperties": {
@@ -31573,7 +31573,7 @@
                             "value": true
                           },
                           "maintenanceConfigurationResourceId": {
-                            "value": "[resourceId('Microsoft.Maintenance/maintenanceConfigurations', format('dep-mc-{0}', parameters('vmName')))]"
+                            "value": "[resourceId('Microsoft.Maintenance/maintenanceConfigurations', format('linux-mc-{0}', parameters('vmName')))]"
                           },
                           "publicKeys": "[if(equals(parameters('vmAuthenticationType'), 'sshPublicKey'), createObject('value', createArray(createObject('keyData', reference(resourceId('Microsoft.Compute/sshPublicKeys', parameters('sshKeyName')), '2022-03-01').publicKey, 'path', format('/home/{0}/.ssh/authorized_keys', parameters('vmAdminUsername'))))), createObject('value', createArray()))]",
                           "nicConfigurations": {
@@ -37180,7 +37180,7 @@
                       },
                       "dependsOn": [
                         "[resourceId('Microsoft.Insights/dataCollectionRules', format('dcr-{0}', parameters('vmName')))]",
-                        "[resourceId('Microsoft.Maintenance/maintenanceConfigurations', format('dep-mc-{0}', parameters('vmName')))]",
+                        "[resourceId('Microsoft.Maintenance/maintenanceConfigurations', format('linux-mc-{0}', parameters('vmName')))]",
                         "[resourceId('Microsoft.Compute/sshPublicKeys', parameters('sshKeyName'))]",
                         "[resourceId('Microsoft.Network/virtualNetworks/subnets', split(format('{0}/{1}', parameters('vmVnetName'), parameters('vmSubnetName')), '/')[0], split(format('{0}/{1}', parameters('vmVnetName'), parameters('vmSubnetName')), '/')[1])]"
                       ]
@@ -37261,7 +37261,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "18194422760653575144"
+                      "templateHash": "16016041267612136476"
                     }
                   },
                   "parameters": {
@@ -37342,7 +37342,7 @@
                     {
                       "type": "Microsoft.Maintenance/maintenanceConfigurations",
                       "apiVersion": "2023-10-01-preview",
-                      "name": "[format('dep-mc-{0}', parameters('vmName'))]",
+                      "name": "[format('win-mc-{0}', parameters('vmName'))]",
                       "location": "[parameters('location')]",
                       "properties": {
                         "extensionProperties": {
@@ -38202,7 +38202,7 @@
                             "value": true
                           },
                           "maintenanceConfigurationResourceId": {
-                            "value": "[resourceId('Microsoft.Maintenance/maintenanceConfigurations', format('dep-mc-{0}', parameters('vmName')))]"
+                            "value": "[resourceId('Microsoft.Maintenance/maintenanceConfigurations', format('win-mc-{0}', parameters('vmName')))]"
                           },
                           "nicConfigurations": {
                             "value": [
@@ -43808,7 +43808,7 @@
                       },
                       "dependsOn": [
                         "[resourceId('Microsoft.Insights/dataCollectionRules', format('dcr-{0}', parameters('vmName')))]",
-                        "[resourceId('Microsoft.Maintenance/maintenanceConfigurations', format('dep-mc-{0}', parameters('vmName')))]",
+                        "[resourceId('Microsoft.Maintenance/maintenanceConfigurations', format('win-mc-{0}', parameters('vmName')))]",
                         "[resourceId('Microsoft.Network/virtualNetworks/subnets', split(format('{0}/{1}', parameters('vmVnetName'), parameters('vmSubnetName')), '/')[0], split(format('{0}/{1}', parameters('vmVnetName'), parameters('vmSubnetName')), '/')[1])]"
                       ]
                     }
