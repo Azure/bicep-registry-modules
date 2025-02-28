@@ -55,7 +55,6 @@ List of labels associated with this route table.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `routes`
 
@@ -63,7 +62,6 @@ List of all routes.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ## Outputs
 
