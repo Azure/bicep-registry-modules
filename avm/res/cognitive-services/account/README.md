@@ -65,10 +65,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
       {
         model: {
           format: 'OpenAI'
-          name: 'gpt-35-turbo'
-          version: '0301'
+          name: 'gpt-4'
+          version: '0613'
         }
-        name: 'gpt-35-turbo'
+        name: 'gpt-4'
         sku: {
           capacity: 10
           name: 'Standard'
@@ -124,10 +124,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         {
           "model": {
             "format": "OpenAI",
-            "name": "gpt-35-turbo",
-            "version": "0301"
+            "name": "gpt-4",
+            "version": "0613"
           },
-          "name": "gpt-35-turbo",
+          "name": "gpt-4",
           "sku": {
             "capacity": 10,
             "name": "Standard"
@@ -181,10 +181,10 @@ param deployments = [
   {
     model: {
       format: 'OpenAI'
-      name: 'gpt-35-turbo'
-      version: '0301'
+      name: 'gpt-4'
+      version: '0613'
     }
-    name: 'gpt-35-turbo'
+    name: 'gpt-4'
     sku: {
       capacity: 10
       name: 'Standard'
@@ -235,10 +235,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
       {
         model: {
           format: 'OpenAI'
-          name: 'gpt-35-turbo'
-          version: '0301'
+          name: 'gpt-4'
+          version: '0613'
         }
-        name: 'gpt-35-turbo'
+        name: 'gpt-4'
         sku: {
           capacity: 10
           name: 'Standard'
@@ -278,10 +278,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         {
           "model": {
             "format": "OpenAI",
-            "name": "gpt-35-turbo",
-            "version": "0301"
+            "name": "gpt-4",
+            "version": "0613"
           },
-          "name": "gpt-35-turbo",
+          "name": "gpt-4",
           "sku": {
             "capacity": 10,
             "name": "Standard"
@@ -315,10 +315,10 @@ param deployments = [
   {
     model: {
       format: 'OpenAI'
-      name: 'gpt-35-turbo'
-      version: '0301'
+      name: 'gpt-4'
+      version: '0613'
     }
-    name: 'gpt-35-turbo'
+    name: 'gpt-4'
     sku: {
       capacity: 10
       name: 'Standard'
@@ -951,10 +951,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
       {
         model: {
           format: 'OpenAI'
-          name: 'gpt-35-turbo'
-          version: '0301'
+          name: 'gpt-4'
+          version: '0613'
         }
-        name: 'gpt-35-turbo'
+        name: 'gpt-4'
         sku: {
           capacity: 10
           name: 'Standard'
@@ -1007,10 +1007,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         {
           "model": {
             "format": "OpenAI",
-            "name": "gpt-35-turbo",
-            "version": "0301"
+            "name": "gpt-4",
+            "version": "0613"
           },
-          "name": "gpt-35-turbo",
+          "name": "gpt-4",
           "sku": {
             "capacity": 10,
             "name": "Standard"
@@ -1061,10 +1061,10 @@ param deployments = [
   {
     model: {
       format: 'OpenAI'
-      name: 'gpt-35-turbo'
-      version: '0301'
+      name: 'gpt-4'
+      version: '0613'
     }
-    name: 'gpt-35-turbo'
+    name: 'gpt-4'
     sku: {
       capacity: 10
       name: 'Standard'
@@ -2906,7 +2906,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.8.0` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.10.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |
 
 ## Data Collection
