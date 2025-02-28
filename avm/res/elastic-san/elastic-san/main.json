@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "17181272843392709683"
+      "templateHash": "15467174942437862431"
     },
     "name": "Elastic SANs",
     "description": "This module deploys an Elastic SAN."
@@ -3173,7 +3173,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": null
+      "value": ""
     }
   }
 }

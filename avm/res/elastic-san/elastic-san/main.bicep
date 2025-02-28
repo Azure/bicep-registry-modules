@@ -277,7 +277,7 @@ output volumeGroups volumeGroupOutputType[] = [
 
 // temporary solution to the static test "If a UDT definition [managedIdentitiesType] exists and supports system-assigned-identities, the template should have an output for its principal ID."
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string? = null
+output systemAssignedMIPrincipalId string? = ''
 
 // ================ //
 // Definitions      //
