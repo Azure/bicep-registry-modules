@@ -212,7 +212,7 @@ type accountKeyAuthTypeWorkspaceConnectionPropertyType = {
   authType: 'AccountKey'
 
   @description('Required. The credentials for the connection.')
-  credentials: workspaceConnectionAccountKey
+  credentials: workspaceConnectionAccountKeyType
 }
 
 type apiKeyAuthWorkspaceConnectionPropertyType = {
@@ -300,7 +300,7 @@ type workspaceConnectionAccessKeyType = {
   secretAccessKey: string
 }
 
-type workspaceConnectionAccountKey = {
+type workspaceConnectionAccountKeyType = {
   @description('Required. The connection key.')
   key: string
 }

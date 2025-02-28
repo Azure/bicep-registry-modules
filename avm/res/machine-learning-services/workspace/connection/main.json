@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "14805144270257776390"
+      "templateHash": "3135951919631286272"
     },
     "name": "Machine Learning Services Workspaces Connections",
     "description": "This module creates a connection in a Machine Learning Services workspace."
@@ -182,7 +182,7 @@
           }
         },
         "credentials": {
-          "$ref": "#/definitions/workspaceConnectionAccountKey",
+          "$ref": "#/definitions/workspaceConnectionAccountKeyType",
           "metadata": {
             "description": "Required. The credentials for the connection."
           }
@@ -398,7 +398,7 @@
         }
       }
     },
-    "workspaceConnectionAccountKey": {
+    "workspaceConnectionAccountKeyType": {
       "type": "object",
       "properties": {
         "key": {
