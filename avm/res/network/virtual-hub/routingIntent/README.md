@@ -1,4 +1,4 @@
-# Virtual Hub Routing Intent `[Microsoft.Network/virtualHubs]`
+# Virtual Hub Routing Intent `[Microsoft.Network/virtualHubs/routingIntent]`
 
 This module configures Routing Intent for a Virtual Hub; this module requires an existing Virtual Hub, as well the firewall Resource ID.
 
@@ -22,9 +22,15 @@ This module configures Routing Intent for a Virtual Hub; this module requires an
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`azureFirewallResourceId`](#parameter-azurefirewallresourceid) | string | Hub firewall Resource ID. |
-| [`internetToFirewall`](#parameter-internettofirewall) | bool | Configures Routing Intent to Forward Internet traffic to the firewall (0.0.0.0/0). |
-| [`privateToFirewall`](#parameter-privatetofirewall) | bool | Configures Routing Intent to forward Private traffic to the firewall (RFC1918). |
 | [`virtualHubName`](#parameter-virtualhubname) | string | Name of the Virtual Hub. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`internetToFirewall`](#parameter-internettofirewall) | bool | Configures Routing Intent to Forward Internet traffic to the firewall (0.0.0.0/0). |
+| [`name`](#parameter-name) | string | The name of the routing intent configuration. |
+| [`privateToFirewall`](#parameter-privatetofirewall) | bool | Configures Routing Intent to forward Private traffic to the firewall (RFC1918). |
 
 ### Parameter: `azureFirewallResourceId`
 
@@ -33,26 +39,42 @@ Hub firewall Resource ID.
 - Required: Yes
 - Type: string
 
-### Parameter: `internetToFirewall`
-
-Configures Routing Intent to Forward Internet traffic to the firewall (0.0.0.0/0).
-
-- Required: Yes
-- Type: bool
-
-### Parameter: `privateToFirewall`
-
-Configures Routing Intent to forward Private traffic to the firewall (RFC1918).
-
-- Required: Yes
-- Type: bool
-
 ### Parameter: `virtualHubName`
 
 Name of the Virtual Hub.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `internetToFirewall`
+
+Configures Routing Intent to Forward Internet traffic to the firewall (0.0.0.0/0).
+
+- Required: No
+- Type: bool
+- Default: `True`
+
+### Parameter: `name`
+
+The name of the routing intent configuration.
+
+- Required: No
+- Type: string
+- Default: `'defaultRouteTable'`
+- Allowed:
+  ```Bicep
+  [
+    'defaultRouteTable'
+  ]
+  ```
+
+### Parameter: `privateToFirewall`
+
+Configures Routing Intent to forward Private traffic to the firewall (RFC1918).
+
+- Required: No
+- Type: bool
+- Default: `True`
 
 ## Outputs
 

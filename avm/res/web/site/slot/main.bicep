@@ -126,9 +126,6 @@ param dailyMemoryTimeQuota int?
 @description('Optional. Setting this value to false disables the app (takes the app offline).')
 param enabled bool = true
 
-@description('Optional. Enable/Disable usage telemetry for module.')
-param enableTelemetry bool = true
-
 @description('Optional. Hostname SSL states are used to manage the SSL bindings for app\'s hostnames.')
 param hostNameSslStates array?
 
@@ -166,6 +163,8 @@ param vnetRouteAllEnabled bool = false
 
 @description('Optional. Names of hybrid connection relays to connect app with.')
 param hybridConnectionRelays array?
+
+var enableReferencedModulesTelemetry = false
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -411,7 +410,7 @@ module slot_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1'
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
-      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',

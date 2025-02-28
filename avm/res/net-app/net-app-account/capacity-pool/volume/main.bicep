@@ -31,8 +31,14 @@ param keyVaultPrivateEndpointResourceId string?
 @description('Optional. The type of the volume. DataProtection volumes are used for replication.')
 param volumeType string?
 
-@description('Optional. Zone where the volume will be placed.')
-param zones int[] = [1, 2, 3]
+@description('Required. The Availability Zone to place the resource in. If set to 0, then Availability Zone is not set.')
+@allowed([
+  0
+  1
+  2
+  3
+])
+param zone int
 
 @description('Optional. The pool service level. Must match the one of the parent capacity pool.')
 @allowed([
@@ -58,8 +64,13 @@ param creationToken string = name
 @description('Required. Maximum storage quota allowed for a file system in bytes.')
 param usageThreshold int
 
-@description('Optional. Set of protocol types.')
-param protocolTypes array = []
+@description('Optional. Set of protocol types. Default value is `[\'NFSv3\']`. If you are creating a dual-stack volume, set either `[\'NFSv3\',\'CIFS\']` or `[\'NFSv4.1\',\'CIFS\']`.')
+@allowed([
+  'NFSv3'
+  'NFSv4.1'
+  'CIFS'
+])
+param protocolTypes string[] = ['NFSv3']
 
 @description('Required. The Azure Resource URI for a delegated subnet. Must have the delegation Microsoft.NetApp/volumes.')
 param subnetResourceId string
@@ -235,7 +246,7 @@ resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2024-07-0
     smbNonBrowsable: smbNonBrowsable
     kerberosEnabled: kerberosEnabled
   }
-  zones: map(zones, zone => '${zone}')
+  zones: zone != 0 ? [string(zone)] : null
 }
 
 resource volume_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
