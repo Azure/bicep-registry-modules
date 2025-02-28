@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "7114757100204147897"
+      "templateHash": "14522435549795935846"
     },
     "name": "Virtual Network Gateways",
     "description": "This module deploys a Virtual Network Gateway."
@@ -725,6 +725,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
+    "enableReferencedModulesTelemetry": false,
     "isExpressRoute": "[equals(parameters('gatewayType'), 'ExpressRoute')]",
     "isBgp": "[and(or(equals(parameters('clusterSettings').clusterMode, 'activeActiveBgp'), equals(parameters('clusterSettings').clusterMode, 'activePassiveBgp')), not(variables('isExpressRoute')))]",
     "isActiveActive": "[and(or(equals(parameters('clusterSettings').clusterMode, 'activeActiveNoBgp'), equals(parameters('clusterSettings').clusterMode, 'activeActiveBgp')), not(variables('isExpressRoute')))]",
@@ -930,6 +931,9 @@
               "domainNameLabel": "[if(equals(length(variables('arrayPipNameVar')), length(parameters('domainNameLabel'))), parameters('domainNameLabel')[copyIndex()], variables('arrayPipNameVar')[copyIndex()])]",
               "domainNameLabelScope": ""
             }
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {

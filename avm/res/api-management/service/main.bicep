@@ -147,6 +147,9 @@ param subscriptions array = []
 @description('Optional. Public Standard SKU IP V4 based IP address to be associated with Virtual Network deployed service in the region. Supported only for Developer and Premium SKU being deployed in Virtual Network.')
 param publicIpAddressResourceId string?
 
+@description('Optional. Enable the Developer Portal. The developer portal is not supported on the Consumption SKU.')
+param enableDeveloperPortal bool = false
+
 var authorizationServerList = !empty(authorizationServers) ? authorizationServers.secureList : []
 
 var formattedUserAssignedIdentities = reduce(
@@ -224,7 +227,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource service 'Microsoft.ApiManagement/service@2023-05-01-preview' = {
+resource service 'Microsoft.ApiManagement/service@2024-05-01' = {
   name: name
   location: location
   tags: tags
@@ -259,6 +262,7 @@ resource service 'Microsoft.ApiManagement/service@2023-05-01-preview' = {
           minApiVersion: '2021-08-01'
         }
     restore: restore
+    developerPortalStatus: sku != 'Consumption' ? (enableDeveloperPortal ? 'Enabled' : 'Disabled') : null
   }
 }
 
@@ -278,7 +282,7 @@ module service_apis 'api/main.bicep' = [
       apiVersionDescription: api.?apiVersionDescription
       apiVersionSetId: api.?apiVersionSetId
       authenticationSettings: api.?authenticationSettings
-      format: api.?format ?? 'openapi'
+      format: api.?format
       isCurrent: api.?isCurrent
       protocols: api.?protocols
       policies: api.?policies
@@ -347,7 +351,7 @@ module service_backends 'backend/main.bicep' = [
       resourceId: backend.?resourceId
       serviceFabricCluster: backend.?serviceFabricCluster
       title: backend.?title
-      tls: backend.?tls
+      tls: backend.?tls ?? { validateCertificateChain: true, validateCertificateName: true }
     }
   }
 ]
