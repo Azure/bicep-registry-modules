@@ -15,7 +15,7 @@ param name string
 param defaultEncryptionScope string = ''
 
 @description('Optional. Block override of encryption scope from the container default.')
-param denyEncryptionScopeOverride bool = false
+param denyEncryptionScopeOverride bool?
 
 @description('Optional. Enable NFSv3 all squash on blob container.')
 param enableNfsV3AllSquash bool = false
@@ -43,7 +43,7 @@ param metadata object = {}
 @description('Optional. Specifies whether data in the container may be accessed publicly and the level of access.')
 param publicAccess string = 'None'
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -117,7 +117,7 @@ resource container 'Microsoft.Storage/storageAccounts/blobServices/containers@20
   parent: storageAccount::blobServices
   properties: {
     defaultEncryptionScope: !empty(defaultEncryptionScope) ? defaultEncryptionScope : null
-    denyEncryptionScopeOverride: denyEncryptionScopeOverride == true ? denyEncryptionScopeOverride : null
+    denyEncryptionScopeOverride: denyEncryptionScopeOverride
     enableNfsV3AllSquash: enableNfsV3AllSquash == true ? enableNfsV3AllSquash : null
     enableNfsV3RootSquash: enableNfsV3RootSquash == true ? enableNfsV3RootSquash : null
     immutableStorageWithVersioning: immutableStorageWithVersioningEnabled == true

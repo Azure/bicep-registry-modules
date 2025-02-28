@@ -440,7 +440,7 @@ How long this blob can be restored. It should be less than DeleteRetentionPolicy
 
 - Required: No
 - Type: int
-- Default: `6`
+- Default: `7`
 - MinValue: 1
 - MaxValue: 365
 
@@ -468,4 +468,4 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |

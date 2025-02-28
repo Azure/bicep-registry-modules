@@ -101,6 +101,9 @@ output containerRegistryName string = containerRegistry.outputs.containerRegistr
 @description('The name of the container registry login server.')
 output containerRegistryLoginServer string = containerRegistry.outputs.containerRegistryLoginServer
 
+@description('The name of the internal agent pool for the container registry.')
+output containerRegistryAgentPoolName string = containerRegistry.outputs.containerRegistryAgentPoolName
+
 @description('The resource ID of the user-assigned managed identity for the Azure Container Registry to be able to pull images from it.')
 output containerRegistryUserAssignedIdentityId string = containerRegistry.outputs.containerRegistryUserAssignedIdentityId
 

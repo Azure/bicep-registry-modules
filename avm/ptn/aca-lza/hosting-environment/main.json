@@ -1,11 +1,12 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "9242720855517012815"
+      "templateHash": "17279097223066691618"
     },
     "name": "Container Apps Landing Zone Accelerator",
     "description": "This Azure Container Apps pattern module represents an Azure Container Apps deployment aligned with the cloud adoption framework"
@@ -201,6 +202,13 @@
         "description": "Optional. Enable/Disable usage telemetry for module."
       }
     },
+    "applicationGatewayBackendFqdn": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The FQDN of the backend to use for the Application Gateway. Default is empty."
+      }
+    },
     "deployZoneRedundantResources": {
       "type": "bool",
       "defaultValue": true,
@@ -235,8 +243,8 @@
       }
     }
   },
-  "resources": [
-    {
+  "resources": {
+    "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-07-01",
@@ -257,7 +265,7 @@
         }
       }
     },
-    {
+    "naming": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[take(format('deploy-naming-{0}', deployment().name), 64)]",
@@ -331,7 +339,7 @@
             }
           },
           "variables": {
-            "$fxv#0": "{\r\n  // Recommended abreviations: https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations\r\n  \"resourceTypeAbbreviations\": {\r\n    \"applicationGateway\": \"agw\",\r\n    \"applicationInsights\": \"appi\",\r\n    \"appService\": \"app\",\r\n    \"azureFirewall\": \"azfw\",\r\n    \"bastion\": \"bas\",\r\n    \"containerAppsEnvironment\": \"cae\",\r\n    \"containerRegistry\": \"cr\",\r\n    \"cosmosDbNoSql\": \"cosno\",\r\n    \"frontDoor\": \"afd\",\r\n    \"frontDoorEndpoint\": \"fde\",\r\n    \"frontDoorWaf\": \"fdfp\",\r\n    \"keyVault\": \"kv\",\r\n    \"logAnalyticsWorkspace\": \"log\",\r\n    \"managedIdentity\": \"id\",\r\n    \"networkInterface\": \"nic\",\r\n    \"networkSecurityGroup\": \"nsg\",\r\n    \"privateEndpoint\": \"pep\",\r\n    \"privateLinkService\": \"pls\",\r\n    \"publicIpAddress\": \"pip\",\r\n    \"resourceGroup\": \"rg\",\r\n    \"routeTable\": \"rt\",\r\n    \"serviceBus\": \"sb\",\r\n    \"serviceBusQueue\": \"sbq\",\r\n    \"serviceBusTopic\": \"sbt\",\r\n    \"storageAccount\": \"st\",\r\n    \"virtualMachine\": \"vm\",\r\n    \"virtualNetwork\": \"vnet\",\r\n    \"redisCache\": \"redis\",\r\n    \"cognitiveAccount\": \"cog\",\r\n    \"openAiDeployment\": \"oaidep\",\r\n    \"azureAISearch\": \"srch\",\r\n    \"documentIntelligence\": \"di\",\r\n    \"eventGridSystemTopic\": \"egst\",\r\n    \"eventGridSubscription\": \"evgs\"\r\n  },\r\n  //copied from here: https://github.com/nianton/azure-naming/blob/main/datafiles/regionAbbreviations.json\r\n  \"regionAbbreviations\": {\r\n    \"australiacentral\": \"auc\",\r\n    \"australiacentral2\": \"auc2\",\r\n    \"australiaeast\": \"aue\",\r\n    \"australiasoutheast\": \"ause\",\r\n    \"brazilsouth\": \"brs\",\r\n    \"brazilsoutheast\": \"brse\",\r\n    \"canadacentral\": \"canc\",\r\n    \"canadaeast\": \"cane\",\r\n    \"centralindia\": \"cin\",\r\n    \"centralus\": \"cus\",\r\n    \"centraluseuap\": \"cuseuap\",\r\n    \"eastasia\": \"ea\",\r\n    \"eastus\": \"eus\",\r\n    \"eastus2\": \"eus2\",\r\n    \"eastus2euap\": \"eus2euap\",\r\n    \"francecentral\": \"frc\",\r\n    \"francesouth\": \"frs\",\r\n    \"germanynorth\": \"gern\",\r\n    \"germanywestcentral\": \"gerwc\",\r\n    \"japaneast\": \"jae\",\r\n    \"japanwest\": \"jaw\",\r\n    \"jioindiacentral\": \"jioinc\",\r\n    \"jioindiawest\": \"jioinw\",\r\n    \"koreacentral\": \"koc\",\r\n    \"koreasouth\": \"kors\",\r\n    \"northcentralus\": \"ncus\",\r\n    \"northeurope\": \"neu\",\r\n    \"norwayeast\": \"nore\",\r\n    \"norwaywest\": \"norw\",\r\n    \"southafricanorth\": \"san\",\r\n    \"southafricawest\": \"saw\",\r\n    \"southcentralus\": \"scus\",\r\n    \"southeastasia\": \"sea\",\r\n    \"southindia\": \"sin\",\r\n    \"swedencentral\": \"swc\",\r\n    \"switzerlandnorth\": \"swn\",\r\n    \"switzerlandwest\": \"sww\",\r\n    \"uaecentral\": \"uaec\",\r\n    \"uaenorth\": \"uaen\",\r\n    \"uksouth\": \"uks\",\r\n    \"ukwest\": \"ukw\",\r\n    \"westcentralus\": \"wcus\",\r\n    \"westeurope\": \"weu\",\r\n    \"westindia\": \"win\",\r\n    \"westus\": \"wus\",\r\n    \"westus2\": \"wus2\",\r\n    \"westus3\": \"wus3\"\r\n  }\r\n}",
+            "$fxv#0": "{\n  // Recommended abreviations: https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-abbreviations\n  \"resourceTypeAbbreviations\": {\n    \"applicationGateway\": \"agw\",\n    \"applicationInsights\": \"appi\",\n    \"appService\": \"app\",\n    \"azureFirewall\": \"azfw\",\n    \"bastion\": \"bas\",\n    \"containerAppsEnvironment\": \"cae\",\n    \"containerRegistry\": \"cr\",\n    \"cosmosDbNoSql\": \"cosno\",\n    \"frontDoor\": \"afd\",\n    \"frontDoorEndpoint\": \"fde\",\n    \"frontDoorWaf\": \"fdfp\",\n    \"keyVault\": \"kv\",\n    \"logAnalyticsWorkspace\": \"log\",\n    \"managedIdentity\": \"id\",\n    \"networkInterface\": \"nic\",\n    \"networkSecurityGroup\": \"nsg\",\n    \"privateEndpoint\": \"pep\",\n    \"privateLinkService\": \"pls\",\n    \"publicIpAddress\": \"pip\",\n    \"resourceGroup\": \"rg\",\n    \"routeTable\": \"rt\",\n    \"serviceBus\": \"sb\",\n    \"serviceBusQueue\": \"sbq\",\n    \"serviceBusTopic\": \"sbt\",\n    \"storageAccount\": \"st\",\n    \"virtualMachine\": \"vm\",\n    \"virtualNetwork\": \"vnet\",\n    \"redisCache\": \"redis\",\n    \"cognitiveAccount\": \"cog\",\n    \"openAiDeployment\": \"oaidep\",\n    \"azureAISearch\": \"srch\",\n    \"documentIntelligence\": \"di\",\n    \"eventGridSystemTopic\": \"egst\",\n    \"eventGridSubscription\": \"evgs\"\n  },\n  //copied from here: https://github.com/nianton/azure-naming/blob/main/datafiles/regionAbbreviations.json\n  \"regionAbbreviations\": {\n    \"australiacentral\": \"auc\",\n    \"australiacentral2\": \"auc2\",\n    \"australiaeast\": \"aue\",\n    \"australiasoutheast\": \"ause\",\n    \"brazilsouth\": \"brs\",\n    \"brazilsoutheast\": \"brse\",\n    \"canadacentral\": \"canc\",\n    \"canadaeast\": \"cane\",\n    \"centralindia\": \"cin\",\n    \"centralus\": \"cus\",\n    \"centraluseuap\": \"cuseuap\",\n    \"eastasia\": \"ea\",\n    \"eastus\": \"eus\",\n    \"eastus2\": \"eus2\",\n    \"eastus2euap\": \"eus2euap\",\n    \"francecentral\": \"frc\",\n    \"francesouth\": \"frs\",\n    \"germanynorth\": \"gern\",\n    \"germanywestcentral\": \"gerwc\",\n    \"japaneast\": \"jae\",\n    \"japanwest\": \"jaw\",\n    \"jioindiacentral\": \"jioinc\",\n    \"jioindiawest\": \"jioinw\",\n    \"koreacentral\": \"koc\",\n    \"koreasouth\": \"kors\",\n    \"northcentralus\": \"ncus\",\n    \"northeurope\": \"neu\",\n    \"norwayeast\": \"nore\",\n    \"norwaywest\": \"norw\",\n    \"southafricanorth\": \"san\",\n    \"southafricawest\": \"saw\",\n    \"southcentralus\": \"scus\",\n    \"southeastasia\": \"sea\",\n    \"southindia\": \"sin\",\n    \"swedencentral\": \"swc\",\n    \"switzerlandnorth\": \"swn\",\n    \"switzerlandwest\": \"sww\",\n    \"uaecentral\": \"uaec\",\n    \"uaenorth\": \"uaen\",\n    \"uksouth\": \"uks\",\n    \"ukwest\": \"ukw\",\n    \"westcentralus\": \"wcus\",\n    \"westeurope\": \"weu\",\n    \"westindia\": \"win\",\n    \"westus\": \"wus\",\n    \"westus2\": \"wus2\",\n    \"westus3\": \"wus3\"\n  }\n}",
             "naming": "[json(variables('$fxv#0'))]",
             "uniqueIdShort": "[substring(parameters('uniqueId'), 0, 5)]",
             "resourceTypeToken": "RES_TYPE",
@@ -407,7 +415,7 @@
         "description": "User-configured naming rules"
       }
     },
-    {
+    "spokeResourceGroup": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[take(format('deploy-rg-{0}', deployment().name), 64)]",
@@ -419,7 +427,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-naming-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value.resourceGroup]"
+            "value": "[reference('naming').outputs.resourcesNames.value.resourceGroup]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -889,10 +897,10 @@
         }
       },
       "dependsOn": [
-        "[subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-naming-{0}', deployment().name), 64))]"
+        "naming"
       ]
     },
-    {
+    "spoke": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[take(format('deploy-spoke-{0}', deployment().name), 64)]",
@@ -904,7 +912,7 @@
         "mode": "Incremental",
         "parameters": {
           "resourcesNames": {
-            "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-naming-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value]"
+            "value": "[reference('naming').outputs.resourcesNames.value]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -21512,11 +21520,11 @@
         }
       },
       "dependsOn": [
-        "[subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-naming-{0}', deployment().name), 64))]",
-        "[subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-rg-{0}', deployment().name), 64))]"
+        "naming",
+        "spokeResourceGroup"
       ]
     },
-    {
+    "supportingServices": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[take(format('deploy-supportingServices-{0}', deployment().name), 64)]",
@@ -21528,7 +21536,7 @@
         "mode": "Incremental",
         "parameters": {
           "resourcesNames": {
-            "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-naming-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value]"
+            "value": "[reference('naming').outputs.resourcesNames.value]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -21540,16 +21548,16 @@
             "value": "[parameters('enableTelemetry')]"
           },
           "spokePrivateEndpointSubnetResourceId": {
-            "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-spoke-{0}', deployment().name), 64)), '2022-09-01').outputs.spokePrivateEndpointsSubnetResourceId.value]"
+            "value": "[reference('spoke').outputs.spokePrivateEndpointsSubnetResourceId.value]"
           },
           "spokeVNetResourceId": {
-            "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-spoke-{0}', deployment().name), 64)), '2022-09-01').outputs.spokeVNetId.value]"
+            "value": "[reference('spoke').outputs.spokeVNetId.value]"
           },
           "hubVNetResourceId": {
             "value": "[parameters('hubVirtualNetworkResourceId')]"
           },
           "logAnalyticsWorkspaceId": {
-            "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-spoke-{0}', deployment().name), 64)), '2022-09-01').outputs.logAnalyticsWorkspaceId.value]"
+            "value": "[reference('spoke').outputs.logAnalyticsWorkspaceId.value]"
           }
         },
         "template": {
@@ -21559,7 +21567,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "3392565495195178374"
+              "templateHash": "6969527040213596528"
             }
           },
           "parameters": {
@@ -21674,7 +21682,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "13612380323081755495"
+                      "templateHash": "15466368506945451556"
                     }
                   },
                   "parameters": {
@@ -21756,6 +21764,21 @@
                     "virtualNetworkLinks": "[concat(createArray(createObject('virtualNetworkResourceId', parameters('spokeVNetResourceId'), 'registrationEnabled', false())), if(not(empty(parameters('hubVNetResourceId'))), createArray(createObject('virtualNetworkResourceId', parameters('hubVNetResourceId'), 'registrationEnabled', false())), createArray()))]"
                   },
                   "resources": [
+                    {
+                      "type": "Microsoft.ContainerRegistry/registries/agentPools",
+                      "apiVersion": "2019-06-01-preview",
+                      "name": "[format('{0}/agentpool', parameters('containerRegistryName'))]",
+                      "location": "[parameters('location')]",
+                      "properties": {
+                        "count": 2,
+                        "virtualNetworkSubnetResourceId": "[parameters('spokePrivateEndpointSubnetResourceId')]",
+                        "os": "Linux",
+                        "tier": "S2"
+                      },
+                      "dependsOn": [
+                        "[resourceId('Microsoft.Resources/deployments', format('containerRegistry-{0}', uniqueString(resourceGroup().id)))]"
+                      ]
+                    },
                     {
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
@@ -28010,6 +28033,13 @@
                         "description": "The name of the container registry login server."
                       },
                       "value": "[reference(resourceId('Microsoft.Resources/deployments', format('containerRegistry-{0}', uniqueString(resourceGroup().id))), '2022-09-01').outputs.loginServer.value]"
+                    },
+                    "containerRegistryAgentPoolName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the internal agent pool for the container registry."
+                      },
+                      "value": "[format('{0}/agentpool', parameters('containerRegistryName'))]"
                     },
                     "containerRegistryUserAssignedIdentityId": {
                       "type": "string",
@@ -43238,6 +43268,13 @@
               },
               "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', format('containerRegistryModule-{0}', uniqueString(parameters('resourcesNames').resourceGroup))), '2022-09-01').outputs.containerRegistryLoginServer.value]"
             },
+            "containerRegistryAgentPoolName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the internal agent pool for the container registry."
+              },
+              "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourcesNames').resourceGroup), 'Microsoft.Resources/deployments', format('containerRegistryModule-{0}', uniqueString(parameters('resourcesNames').resourceGroup))), '2022-09-01').outputs.containerRegistryAgentPoolName.value]"
+            },
             "containerRegistryUserAssignedIdentityId": {
               "type": "string",
               "metadata": {
@@ -43277,12 +43314,12 @@
         }
       },
       "dependsOn": [
-        "[subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-naming-{0}', deployment().name), 64))]",
-        "[subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-spoke-{0}', deployment().name), 64))]",
-        "[subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-rg-{0}', deployment().name), 64))]"
+        "naming",
+        "spoke",
+        "spokeResourceGroup"
       ]
     },
-    {
+    "containerAppsEnvironment": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[take(format('deploy-containerAppsEnvironment-{0}', deployment().name), 64)]",
@@ -43294,7 +43331,7 @@
         "mode": "Incremental",
         "parameters": {
           "resourcesNames": {
-            "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-naming-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value]"
+            "value": "[reference('naming').outputs.resourcesNames.value]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -43309,10 +43346,10 @@
             "value": "[parameters('hubVirtualNetworkResourceId')]"
           },
           "spokeVNetName": {
-            "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-spoke-{0}', deployment().name), 64)), '2022-09-01').outputs.spokeVNetName.value]"
+            "value": "[reference('spoke').outputs.spokeVNetName.value]"
           },
           "spokeInfraSubnetName": {
-            "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-spoke-{0}', deployment().name), 64)), '2022-09-01').outputs.spokeInfraSubnetName.value]"
+            "value": "[reference('spoke').outputs.spokeInfraSubnetName.value]"
           },
           "enableApplicationInsights": {
             "value": "[parameters('enableApplicationInsights')]"
@@ -43321,13 +43358,13 @@
             "value": "[parameters('enableDaprInstrumentation')]"
           },
           "storageAccountName": {
-            "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-supportingServices-{0}', deployment().name), 64)), '2022-09-01').outputs.storageAccountName.value]"
+            "value": "[reference('supportingServices').outputs.storageAccountName.value]"
           },
           "containerRegistryUserAssignedIdentityId": {
-            "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-supportingServices-{0}', deployment().name), 64)), '2022-09-01').outputs.containerRegistryUserAssignedIdentityId.value]"
+            "value": "[reference('supportingServices').outputs.containerRegistryUserAssignedIdentityId.value]"
           },
           "logAnalyticsWorkspaceId": {
-            "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-spoke-{0}', deployment().name), 64)), '2022-09-01').outputs.logAnalyticsWorkspaceId.value]"
+            "value": "[reference('spoke').outputs.logAnalyticsWorkspaceId.value]"
           }
         },
         "template": {
@@ -47836,13 +47873,13 @@
         }
       },
       "dependsOn": [
-        "[subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-naming-{0}', deployment().name), 64))]",
-        "[subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-spoke-{0}', deployment().name), 64))]",
-        "[subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-rg-{0}', deployment().name), 64))]",
-        "[subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-supportingServices-{0}', deployment().name), 64))]"
+        "naming",
+        "spoke",
+        "spokeResourceGroup",
+        "supportingServices"
       ]
     },
-    {
+    "sampleApplication": {
       "condition": "[parameters('deploySampleApplication')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -47855,7 +47892,7 @@
         "mode": "Incremental",
         "parameters": {
           "resourcesNames": {
-            "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-naming-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value]"
+            "value": "[reference('naming').outputs.resourcesNames.value]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -47867,13 +47904,13 @@
             "value": "[parameters('enableTelemetry')]"
           },
           "containerAppsEnvironmentResourceId": {
-            "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-containerAppsEnvironment-{0}', deployment().name), 64)), '2022-09-01').outputs.containerAppsEnvironmentId.value]"
+            "value": "[reference('containerAppsEnvironment').outputs.containerAppsEnvironmentId.value]"
           },
           "workloadProfileName": {
-            "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-containerAppsEnvironment-{0}', deployment().name), 64)), '2022-09-01').outputs.workloadProfileNames.value[0]]"
+            "value": "[reference('containerAppsEnvironment').outputs.workloadProfileNames.value[0]]"
           },
           "containerRegistryUserAssignedIdentityId": {
-            "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-supportingServices-{0}', deployment().name), 64)), '2022-09-01').outputs.containerRegistryUserAssignedIdentityId.value]"
+            "value": "[reference('supportingServices').outputs.containerRegistryUserAssignedIdentityId.value]"
           }
         },
         "template": {
@@ -49151,13 +49188,13 @@
         }
       },
       "dependsOn": [
-        "[subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-containerAppsEnvironment-{0}', deployment().name), 64))]",
-        "[subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-naming-{0}', deployment().name), 64))]",
-        "[subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-rg-{0}', deployment().name), 64))]",
-        "[subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-supportingServices-{0}', deployment().name), 64))]"
+        "containerAppsEnvironment",
+        "naming",
+        "spokeResourceGroup",
+        "supportingServices"
       ]
     },
-    {
+    "applicationGateway": {
       "condition": "[equals(parameters('exposeContainerAppsWith'), 'applicationGateway')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -49170,7 +49207,7 @@
         "mode": "Incremental",
         "parameters": {
           "resourcesNames": {
-            "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-naming-{0}', deployment().name), 64)), '2022-09-01').outputs.resourcesNames.value]"
+            "value": "[reference('naming').outputs.resourcesNames.value]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -49187,21 +49224,21 @@
           "applicationGatewayFqdn": {
             "value": "[parameters('applicationGatewayFqdn')]"
           },
-          "applicationGatewayPrimaryBackendEndFqdn": "[if(parameters('deploySampleApplication'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-sampleApplication-{0}', deployment().name), 64)), '2022-09-01').outputs.helloWorldAppFqdn.value), createObject('value', ''))]",
+          "applicationGatewayPrimaryBackendEndFqdn": "[if(empty(parameters('applicationGatewayBackendFqdn')), if(parameters('deploySampleApplication'), createObject('value', reference('sampleApplication').outputs.helloWorldAppFqdn.value), createObject('value', '')), createObject('value', parameters('applicationGatewayBackendFqdn')))]",
           "applicationGatewaySubnetId": {
-            "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-spoke-{0}', deployment().name), 64)), '2022-09-01').outputs.spokeApplicationGatewaySubnetId.value]"
+            "value": "[reference('spoke').outputs.spokeApplicationGatewaySubnetId.value]"
           },
           "base64Certificate": {
             "value": "[parameters('base64Certificate')]"
           },
           "keyVaultId": {
-            "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-supportingServices-{0}', deployment().name), 64)), '2022-09-01').outputs.keyVaultResourceId.value]"
+            "value": "[reference('supportingServices').outputs.keyVaultResourceId.value]"
           },
           "storageAccountName": {
-            "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-supportingServices-{0}', deployment().name), 64)), '2022-09-01').outputs.storageAccountName.value]"
+            "value": "[reference('supportingServices').outputs.storageAccountName.value]"
           },
           "deploymentSubnetResourceId": {
-            "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-spoke-{0}', deployment().name), 64)), '2022-09-01').outputs.deploymentSubnetResourceId.value]"
+            "value": "[reference('spoke').outputs.deploymentSubnetResourceId.value]"
           },
           "deployZoneRedundantResources": {
             "value": "[parameters('deployZoneRedundantResources')]"
@@ -49210,7 +49247,7 @@
             "value": "[parameters('enableDdosProtection')]"
           },
           "applicationGatewayLogAnalyticsId": {
-            "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-spoke-{0}', deployment().name), 64)), '2022-09-01').outputs.logAnalyticsWorkspaceId.value]"
+            "value": "[reference('spoke').outputs.logAnalyticsWorkspaceId.value]"
           }
         },
         "template": {
@@ -51186,161 +51223,192 @@
         }
       },
       "dependsOn": [
-        "[subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-naming-{0}', deployment().name), 64))]",
-        "[subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-sampleApplication-{0}', deployment().name), 64))]",
-        "[subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-spoke-{0}', deployment().name), 64))]",
-        "[subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-rg-{0}', deployment().name), 64))]",
-        "[subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-supportingServices-{0}', deployment().name), 64))]"
+        "naming",
+        "sampleApplication",
+        "spoke",
+        "spokeResourceGroup",
+        "supportingServices"
       ]
     }
-  ],
+  },
   "outputs": {
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the created resource group."
+      },
+      "value": "[reference('spokeResourceGroup').outputs.name.value]"
+    },
     "spokeVNetResourceId": {
       "type": "string",
       "metadata": {
         "description": "The  resource ID of the Spoke Virtual Network."
       },
-      "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-spoke-{0}', deployment().name), 64)), '2022-09-01').outputs.spokeVNetId.value]"
+      "value": "[reference('spoke').outputs.spokeVNetId.value]"
     },
     "spokeVnetName": {
       "type": "string",
       "metadata": {
         "description": "The name of the Spoke Virtual Network."
       },
-      "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-spoke-{0}', deployment().name), 64)), '2022-09-01').outputs.spokeVNetName.value]"
+      "value": "[reference('spoke').outputs.spokeVNetName.value]"
     },
     "spokeInfraSubnetResourceId": {
       "type": "string",
       "metadata": {
         "description": "The resource ID of the Spoke Infrastructure Subnet."
       },
-      "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-spoke-{0}', deployment().name), 64)), '2022-09-01').outputs.spokeInfraSubnetId.value]"
+      "value": "[reference('spoke').outputs.spokeInfraSubnetId.value]"
     },
     "spokeInfraSubnetName": {
       "type": "string",
       "metadata": {
         "description": "The name of the Spoke Infrastructure Subnet."
       },
-      "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-spoke-{0}', deployment().name), 64)), '2022-09-01').outputs.spokeInfraSubnetName.value]"
+      "value": "[reference('spoke').outputs.spokeInfraSubnetName.value]"
     },
     "spokePrivateEndpointsSubnetName": {
       "type": "string",
       "metadata": {
         "description": "The name of the Spoke Private Endpoints Subnet."
       },
-      "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-spoke-{0}', deployment().name), 64)), '2022-09-01').outputs.spokePrivateEndpointsSubnetName.value]"
+      "value": "[reference('spoke').outputs.spokePrivateEndpointsSubnetName.value]"
     },
     "spokeApplicationGatewaySubnetResourceId": {
       "type": "string",
       "metadata": {
         "description": "The resource ID of the Spoke Application Gateway Subnet. If \"spokeApplicationGatewaySubnetAddressPrefix\" is empty, the subnet will not be created and the value returned is empty."
       },
-      "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-spoke-{0}', deployment().name), 64)), '2022-09-01').outputs.spokeApplicationGatewaySubnetId.value]"
+      "value": "[reference('spoke').outputs.spokeApplicationGatewaySubnetId.value]"
     },
     "spokeApplicationGatewaySubnetName": {
       "type": "string",
       "metadata": {
         "description": "The name of the Spoke Application Gateway Subnet.  If \"spokeApplicationGatewaySubnetAddressPrefix\" is empty, the subnet will not be created and the value returned is empty."
       },
-      "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-spoke-{0}', deployment().name), 64)), '2022-09-01').outputs.spokeApplicationGatewaySubnetName.value]"
+      "value": "[reference('spoke').outputs.spokeApplicationGatewaySubnetName.value]"
     },
     "logAnalyticsWorkspaceResourceId": {
       "type": "string",
       "metadata": {
         "description": "The resource ID of the Log Analytics workspace created in the spoke vnet."
       },
-      "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-spoke-{0}', deployment().name), 64)), '2022-09-01').outputs.logAnalyticsWorkspaceId.value]"
+      "value": "[reference('spoke').outputs.logAnalyticsWorkspaceId.value]"
     },
     "vmJumpBoxName": {
       "type": "string",
       "metadata": {
         "description": "The name of the jump box virtual machine."
       },
-      "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-spoke-{0}', deployment().name), 64)), '2022-09-01').outputs.vmJumpBoxName.value]"
+      "value": "[reference('spoke').outputs.vmJumpBoxName.value]"
     },
     "containerRegistryResourceId": {
       "type": "string",
       "metadata": {
         "description": "The resource ID of the container registry."
       },
-      "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-supportingServices-{0}', deployment().name), 64)), '2022-09-01').outputs.containerRegistryId.value]"
+      "value": "[reference('supportingServices').outputs.containerRegistryId.value]"
     },
     "containerRegistryName": {
       "type": "string",
       "metadata": {
         "description": "The name of the container registry."
       },
-      "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-supportingServices-{0}', deployment().name), 64)), '2022-09-01').outputs.containerRegistryName.value]"
+      "value": "[reference('supportingServices').outputs.containerRegistryName.value]"
     },
     "containerRegistryLoginServer": {
       "type": "string",
       "metadata": {
         "description": "The name of the container registry login server."
       },
-      "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-supportingServices-{0}', deployment().name), 64)), '2022-09-01').outputs.containerRegistryLoginServer.value]"
+      "value": "[reference('supportingServices').outputs.containerRegistryLoginServer.value]"
+    },
+    "containerRegistryAgentPoolName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the internal agent pool for the container registry."
+      },
+      "value": "[reference('supportingServices').outputs.containerRegistryAgentPoolName.value]"
     },
     "containerRegistryUserAssignedIdentityResourceId": {
       "type": "string",
       "metadata": {
         "description": "The resource ID of the user assigned managed identity for the container registry to be able to pull images from it."
       },
-      "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-supportingServices-{0}', deployment().name), 64)), '2022-09-01').outputs.containerRegistryUserAssignedIdentityId.value]"
+      "value": "[reference('supportingServices').outputs.containerRegistryUserAssignedIdentityId.value]"
     },
     "keyVaultResourceId": {
       "type": "string",
       "metadata": {
         "description": "The resource ID of the key vault."
       },
-      "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-supportingServices-{0}', deployment().name), 64)), '2022-09-01').outputs.keyVaultResourceId.value]"
+      "value": "[reference('supportingServices').outputs.keyVaultResourceId.value]"
     },
     "keyVaultName": {
       "type": "string",
       "metadata": {
         "description": "The name of the Azure key vault."
       },
-      "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-supportingServices-{0}', deployment().name), 64)), '2022-09-01').outputs.keyVaultName.value]"
+      "value": "[reference('supportingServices').outputs.keyVaultName.value]"
+    },
+    "keyVaultUri": {
+      "type": "string",
+      "metadata": {
+        "description": "The keyvault URI endpoint."
+      },
+      "value": "[format('{0}.{1}', reference('supportingServices').outputs.keyVaultName.value, environment().suffixes.keyvaultDns)]"
     },
     "applicationGatewayResourceId": {
       "type": "string",
       "metadata": {
         "description": "The resource ID of the Azure Application Gateway."
       },
-      "value": "[if(equals(parameters('exposeContainerAppsWith'), 'applicationGateway'), reference(subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-applicationGateway-{0}', deployment().name), 64)), '2022-09-01').outputs.applicationGatewayResourceId.value, '')]"
+      "value": "[if(equals(parameters('exposeContainerAppsWith'), 'applicationGateway'), reference('applicationGateway').outputs.applicationGatewayResourceId.value, '')]"
     },
     "applicationGatewayFqdn": {
       "type": "string",
       "metadata": {
         "description": "The FQDN of the Azure Application Gateway."
       },
-      "value": "[if(equals(parameters('exposeContainerAppsWith'), 'applicationGateway'), reference(subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-applicationGateway-{0}', deployment().name), 64)), '2022-09-01').outputs.applicationGatewayFqdn.value, '')]"
+      "value": "[if(equals(parameters('exposeContainerAppsWith'), 'applicationGateway'), reference('applicationGateway').outputs.applicationGatewayFqdn.value, '')]"
     },
     "applicationGatewayPublicIp": {
       "type": "string",
       "metadata": {
         "description": "The public IP address of the Azure Application Gateway."
       },
-      "value": "[if(equals(parameters('exposeContainerAppsWith'), 'applicationGateway'), reference(subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-applicationGateway-{0}', deployment().name), 64)), '2022-09-01').outputs.applicationGatewayPublicIp.value, '')]"
+      "value": "[if(equals(parameters('exposeContainerAppsWith'), 'applicationGateway'), reference('applicationGateway').outputs.applicationGatewayPublicIp.value, '')]"
     },
     "containerAppsEnvironmentResourceId": {
       "type": "string",
       "metadata": {
         "description": "The resource ID of the container apps environment."
       },
-      "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-containerAppsEnvironment-{0}', deployment().name), 64)), '2022-09-01').outputs.containerAppsEnvironmentId.value]"
+      "value": "[reference('containerAppsEnvironment').outputs.containerAppsEnvironmentId.value]"
+    },
+    "containerAppsEnvironmentWorkloadProfileNames": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "metadata": {
+        "description": "The available workload profile names of the container apps environment."
+      },
+      "value": "[reference('containerAppsEnvironment').outputs.workloadProfileNames.value]"
     },
     "containerAppsEnvironmentName": {
       "type": "string",
       "metadata": {
         "description": "The name of the container apps environment."
       },
-      "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-containerAppsEnvironment-{0}', deployment().name), 64)), '2022-09-01').outputs.containerAppsEnvironmentName.value]"
+      "value": "[reference('containerAppsEnvironment').outputs.containerAppsEnvironmentName.value]"
     },
     "applicationInsightsName": {
       "type": "string",
       "metadata": {
         "description": "The name of application Insights instance."
       },
-      "value": "[if(parameters('enableApplicationInsights'), reference(subscriptionResourceId('Microsoft.Resources/deployments', take(format('deploy-containerAppsEnvironment-{0}', deployment().name), 64)), '2022-09-01').outputs.applicationInsightsName.value, '')]"
+      "value": "[if(parameters('enableApplicationInsights'), reference('containerAppsEnvironment').outputs.applicationInsightsName.value, '')]"
     }
   }
 }

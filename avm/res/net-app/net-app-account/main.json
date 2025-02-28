@@ -5,13 +5,563 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "4975644618849979197"
+      "version": "0.33.93.31351",
+      "templateHash": "7313510258873685995"
     },
     "name": "Azure NetApp Files",
     "description": "This module deploys an Azure NetApp File."
   },
   "definitions": {
+    "backupVaultType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the backup vault."
+          }
+        },
+        "backups": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/backupType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The list of backups to create."
+          }
+        },
+        "location": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Location of the backup vault."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a backup vault."
+      }
+    },
+    "capacityPoolType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the capacity pool."
+          }
+        },
+        "location": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Location of the pool volume."
+          }
+        },
+        "tags": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Tags for the capcity pool."
+          }
+        },
+        "serviceLevel": {
+          "type": "string",
+          "allowedValues": [
+            "Premium",
+            "Standard",
+            "StandardZRS",
+            "Ultra"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The pool service level."
+          }
+        },
+        "size": {
+          "type": "int",
+          "minValue": 1,
+          "maxValue": 2048,
+          "metadata": {
+            "description": "Required. Provisioned size of the pool in Tebibytes (TiB)."
+          }
+        },
+        "qosType": {
+          "type": "string",
+          "allowedValues": [
+            "Auto",
+            "Manual"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The qos type of the pool."
+          }
+        },
+        "volumes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/volumeType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. List of volumes to create in the capacity pool."
+          }
+        },
+        "coolAccess": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. If enabled (true) the pool can contain cool Access enabled volumes."
+          }
+        },
+        "roleAssignments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/roleAssignmentType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Array of role assignments to create."
+          }
+        },
+        "encryptionType": {
+          "type": "string",
+          "allowedValues": [
+            "Double",
+            "Single"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Encryption type of the capacity pool, set encryption type for data at rest for this pool and all volumes in it. This value can only be set when creating new pool."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a capacity pool."
+      }
+    },
+    "snapshotPolicyType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the snapshot policy."
+          }
+        },
+        "location": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Location of the snapshot policy."
+          }
+        },
+        "dailySchedule": {
+          "$ref": "#/definitions/dailyScheduleType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Daily schedule for the snapshot policy."
+          }
+        },
+        "hourlySchedule": {
+          "$ref": "#/definitions/hourlyScheduleType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Hourly schedule for the snapshot policy."
+          }
+        },
+        "monthlySchedule": {
+          "$ref": "#/definitions/monthlyScheduleType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Monthly schedule for the snapshot policy."
+          }
+        },
+        "weeklySchedule": {
+          "$ref": "#/definitions/weeklyScheduleType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Weekly schedule for the snapshot policy."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a snapshot policy."
+      }
+    },
+    "backupPolicyType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the backup policy."
+          }
+        },
+        "location": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The location of the backup policy."
+          }
+        },
+        "dailyBackupsToKeep": {
+          "type": "int",
+          "nullable": true,
+          "minValue": 2,
+          "maxValue": 1019,
+          "metadata": {
+            "description": "Optional. The daily backups to keep."
+          }
+        },
+        "monthlyBackupsToKeep": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The monthly backups to keep."
+          }
+        },
+        "weeklyBackupsToKeep": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The weekly backups to keep."
+          }
+        },
+        "enabled": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Indicates whether the backup policy is enabled."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a backup policy."
+      }
+    },
+    "_1.backupType": {
+      "type": "object",
+      "properties": {
+        "backupPolicyName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the backup policy to link."
+          }
+        },
+        "policyEnforced": {
+          "type": "bool",
+          "metadata": {
+            "description": "Required. Enable to enforce the policy."
+          }
+        },
+        "backupVaultName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the Backup Vault."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for the backup properties.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "capacity-pool/volume/main.bicep"
+        }
+      }
+    },
+    "_1.dataProtectionType": {
+      "type": "object",
+      "properties": {
+        "replication": {
+          "$ref": "#/definitions/_1.replicationType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Replication properties."
+          }
+        },
+        "backup": {
+          "$ref": "#/definitions/_1.backupType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Backup properties."
+          }
+        },
+        "snapshot": {
+          "$ref": "#/definitions/_1.snapshotType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Snapshot properties."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for the data protection properties.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "capacity-pool/volume/main.bicep"
+        }
+      }
+    },
+    "_1.exportPolicyType": {
+      "type": "object",
+      "properties": {
+        "rules": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "ruleIndex": {
+                "type": "int",
+                "metadata": {
+                  "description": "Required. Order index."
+                }
+              },
+              "allowedClients": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Client ingress specification as comma separated string with IPv4 CIDRs, IPv4 host addresses and host names."
+                }
+              },
+              "chownMode": {
+                "type": "string",
+                "allowedValues": [
+                  "Restricted",
+                  "Unrestricted"
+                ],
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. This parameter specifies who is authorized to change the ownership of a file. restricted - Only root user can change the ownership of the file. unrestricted - Non-root users can change ownership of files that they own."
+                }
+              },
+              "cifs": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Allows CIFS protocol."
+                }
+              },
+              "hasRootAccess": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Has root access to volume."
+                }
+              },
+              "kerberos5ReadOnly": {
+                "type": "bool",
+                "metadata": {
+                  "description": "Required. Kerberos5 Read only access."
+                }
+              },
+              "kerberos5ReadWrite": {
+                "type": "bool",
+                "metadata": {
+                  "description": "Required. Kerberos5 Read and write access."
+                }
+              },
+              "kerberos5iReadOnly": {
+                "type": "bool",
+                "metadata": {
+                  "description": "Required. Kerberos5i Read only access."
+                }
+              },
+              "kerberos5iReadWrite": {
+                "type": "bool",
+                "metadata": {
+                  "description": "Required. Kerberos5i Read and write access."
+                }
+              },
+              "kerberos5pReadOnly": {
+                "type": "bool",
+                "metadata": {
+                  "description": "Required. Kerberos5p Read only access."
+                }
+              },
+              "kerberos5pReadWrite": {
+                "type": "bool",
+                "metadata": {
+                  "description": "Required. Kerberos5p Read and write access."
+                }
+              },
+              "nfsv3": {
+                "type": "bool",
+                "metadata": {
+                  "description": "Required. Allows NFSv3 protocol. Enable only for NFSv3 type volumes."
+                }
+              },
+              "nfsv41": {
+                "type": "bool",
+                "metadata": {
+                  "description": "Required. Allows NFSv4.1 protocol. Enable only for NFSv4.1 type volumes."
+                }
+              },
+              "unixReadOnly": {
+                "type": "bool",
+                "metadata": {
+                  "description": "Required. Read only access."
+                }
+              },
+              "unixReadWrite": {
+                "type": "bool",
+                "metadata": {
+                  "description": "Required. Read and write access."
+                }
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. The Export policy rules."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for export policy rules.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "capacity-pool/volume/main.bicep"
+        }
+      }
+    },
+    "_1.replicationType": {
+      "type": "object",
+      "properties": {
+        "endpointType": {
+          "type": "string",
+          "allowedValues": [
+            "dst",
+            "src"
+          ],
+          "metadata": {
+            "description": "Required. Indicates whether the local volume is the source or destination for the Volume Replication."
+          }
+        },
+        "remoteVolumeRegion": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The remote region for the other end of the Volume Replication.Required for Data Protection volumes."
+          }
+        },
+        "remoteVolumeResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID of the remote volume. Required for Data Protection volumes."
+          }
+        },
+        "replicationSchedule": {
+          "type": "string",
+          "allowedValues": [
+            "_10minutely",
+            "daily",
+            "hourly"
+          ],
+          "metadata": {
+            "description": "Required. The replication schedule for the volume."
+          }
+        },
+        "remotePath": {
+          "type": "object",
+          "properties": {
+            "externalHostName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The Path to a ONTAP Host."
+              }
+            },
+            "serverName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of a server on the ONTAP Host."
+              }
+            },
+            "volumeName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of a volume on the server."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The full path to a volume that is to be migrated into ANF. Required for Migration volumes."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for the replication properties.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "capacity-pool/volume/main.bicep"
+        }
+      }
+    },
+    "_1.snapshotType": {
+      "type": "object",
+      "properties": {
+        "snapshotPolicyName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the snapshot policy to link."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for the snapshot properties.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "capacity-pool/volume/main.bicep"
+        }
+      }
+    },
+    "backupType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the backup."
+          }
+        },
+        "label": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Label for backup."
+          }
+        },
+        "snapshotName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the snapshot."
+          }
+        },
+        "volumeName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the volume to backup."
+          }
+        },
+        "capacityPoolName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the capacity pool containing the volume."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for a backup.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "backup-vault/main.bicep"
+        }
+      }
+    },
     "customerManagedKeyType": {
       "type": "object",
       "properties": {
@@ -46,6 +596,82 @@
         "description": "An AVM-aligned type for a customer-managed key. To be used if the resource type does not support auto-rotation of the customer-managed key.",
         "__bicep_imported_from!": {
           "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+        }
+      }
+    },
+    "dailyScheduleType": {
+      "type": "object",
+      "properties": {
+        "hour": {
+          "type": "int",
+          "minValue": 0,
+          "maxValue": 23,
+          "metadata": {
+            "description": "Required. The daily snapshot hour."
+          }
+        },
+        "minute": {
+          "type": "int",
+          "minValue": 0,
+          "maxValue": 59,
+          "metadata": {
+            "description": "Required. The daily snapshot minute."
+          }
+        },
+        "snapshotsToKeep": {
+          "type": "int",
+          "minValue": 1,
+          "maxValue": 255,
+          "metadata": {
+            "description": "Required. Daily snapshot count to keep."
+          }
+        },
+        "usedBytes": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource size in bytes, current storage usage for the volume in bytes."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for a daily schedule for the snapshot policy.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "snapshot-policies/main.bicep"
+        }
+      }
+    },
+    "hourlyScheduleType": {
+      "type": "object",
+      "properties": {
+        "minute": {
+          "type": "int",
+          "minValue": 0,
+          "maxValue": 59,
+          "metadata": {
+            "description": "Required. The hourly snapshot minute."
+          }
+        },
+        "snapshotsToKeep": {
+          "type": "int",
+          "minValue": 1,
+          "maxValue": 255,
+          "metadata": {
+            "description": "Required. Hourly snapshot count to keep."
+          }
+        },
+        "usedBytes": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource size in bytes, current storage usage for the volume in bytes."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for an hourly schedule for the snapshot policy.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "snapshot-policies/main.bicep"
         }
       }
     },
@@ -97,6 +723,54 @@
         "description": "An AVM-aligned type for a managed identity configuration. To be used if only user-assigned identities are supported by the resource provider.",
         "__bicep_imported_from!": {
           "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+        }
+      }
+    },
+    "monthlyScheduleType": {
+      "type": "object",
+      "properties": {
+        "daysOfMonth": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Indicates which days of the month snapshot should be taken. A comma delimited string. E.g., '10,11,12'."
+          }
+        },
+        "hour": {
+          "type": "int",
+          "minValue": 0,
+          "maxValue": 23,
+          "metadata": {
+            "description": "Required. The monthly snapshot hour."
+          }
+        },
+        "minute": {
+          "type": "int",
+          "minValue": 0,
+          "maxValue": 59,
+          "metadata": {
+            "description": "Required. The monthly snapshot minute."
+          }
+        },
+        "snapshotsToKeep": {
+          "type": "int",
+          "minValue": 1,
+          "maxValue": 255,
+          "metadata": {
+            "description": "Required. Monthly snapshot count to keep."
+          }
+        },
+        "usedBytes": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource size in bytes, current storage usage for the volume in bytes."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for a monthly schedule for the snapshot policy.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "snapshot-policies/main.bicep"
         }
       }
     },
@@ -172,6 +846,248 @@
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
           "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+        }
+      }
+    },
+    "volumeType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the pool volume."
+          }
+        },
+        "coolAccess": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. If enabled (true) the pool can contain cool Access enabled volumes."
+          }
+        },
+        "coolnessPeriod": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the number of days after which data that is not accessed by clients will be tiered."
+          }
+        },
+        "coolAccessRetrievalPolicy": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Determines the data retrieval behavior from the cool tier to standard storage based on the read pattern for cool access enabled volumes (Default/Never/Read)."
+          }
+        },
+        "encryptionKeySource": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The source of the encryption key."
+          }
+        },
+        "keyVaultPrivateEndpointResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID of the key vault private endpoint."
+          }
+        },
+        "dataProtection": {
+          "$ref": "#/definitions/_1.dataProtectionType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. DataProtection type volumes include an object containing details of the replication."
+          }
+        },
+        "location": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Location of the pool volume."
+          }
+        },
+        "zone": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. The Availability Zone to place the resource in. If set to 0, then Availability Zone is not set."
+          }
+        },
+        "serviceLevel": {
+          "type": "string",
+          "allowedValues": [
+            "Premium",
+            "Standard",
+            "StandardZRS",
+            "Ultra"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The pool service level. Must match the one of the parent capacity pool."
+          }
+        },
+        "networkFeatures": {
+          "type": "string",
+          "allowedValues": [
+            "Basic",
+            "Basic_Standard",
+            "Standard",
+            "Standard_Basic"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Network feature for the volume."
+          }
+        },
+        "creationToken": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A unique file path for the volume. This is the name of the volume export. A volume is mounted using the export path. File path must start with an alphabetical character and be unique within the subscription."
+          }
+        },
+        "usageThreshold": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. Maximum storage quota allowed for a file system in bytes."
+          }
+        },
+        "protocolTypes": {
+          "type": "array",
+          "allowedValues": [
+            "CIFS",
+            "NFSv3",
+            "NFSv4.1"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Set of protocol types. Default value is `['NFSv3']`. If you are creating a dual-stack volume, set either `['NFSv3','CIFS']` or `['NFSv4.1','CIFS']`."
+          }
+        },
+        "subnetResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The Azure Resource URI for a delegated subnet. Must have the delegation Microsoft.NetApp/volumes."
+          }
+        },
+        "exportPolicy": {
+          "$ref": "#/definitions/_1.exportPolicyType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Export policy rules."
+          }
+        },
+        "roleAssignments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/roleAssignmentType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Array of role assignments to create."
+          }
+        },
+        "smbEncryption": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enables SMB encryption. Only applicable for SMB/DualProtocol volume."
+          }
+        },
+        "smbContinuouslyAvailable": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enables continuously available share property for SMB volume. Only applicable for SMB volume."
+          }
+        },
+        "smbNonBrowsable": {
+          "type": "string",
+          "allowedValues": [
+            "Disabled",
+            "Enabled"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProtocol volume."
+          }
+        },
+        "kerberosEnabled": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Define if a volume is KerberosEnabled."
+          }
+        },
+        "volumeType": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The type of the volume. DataProtection volumes are used for replication."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for a volume in the capacity pool.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "capacity-pool/main.bicep"
+        }
+      }
+    },
+    "weeklyScheduleType": {
+      "type": "object",
+      "properties": {
+        "day": {
+          "type": "string",
+          "allowedValues": [
+            "Friday",
+            "Monday",
+            "Saturday",
+            "Sunday",
+            "Thursday",
+            "Tuesday",
+            "Wednesday"
+          ],
+          "metadata": {
+            "description": "Required. The weekly snapshot day."
+          }
+        },
+        "hour": {
+          "type": "int",
+          "minValue": 0,
+          "maxValue": 23,
+          "metadata": {
+            "description": "Required. The weekly snapshot hour."
+          }
+        },
+        "minute": {
+          "type": "int",
+          "minValue": 0,
+          "maxValue": 59,
+          "metadata": {
+            "description": "Required. The weekly snapshot minute."
+          }
+        },
+        "snapshotsToKeep": {
+          "type": "int",
+          "minValue": 1,
+          "maxValue": 255,
+          "metadata": {
+            "description": "Required. Weekly snapshot count to keep."
+          }
+        },
+        "usedBytes": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource size in bytes, current storage usage for the volume in bytes."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for a weekly schedule for the snapshot policy.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "snapshot-policies/main.bicep"
         }
       }
     }
@@ -255,7 +1171,10 @@
     },
     "capacityPools": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "$ref": "#/definitions/capacityPoolType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Capacity pools to create."
       }
@@ -331,6 +1250,33 @@
       "defaultValue": true,
       "metadata": {
         "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    },
+    "backupVault": {
+      "$ref": "#/definitions/backupVaultType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The netapp backup vault to create & configure."
+      }
+    },
+    "snapshotPolicies": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/snapshotPolicyType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The snapshot policies to create."
+      }
+    },
+    "backupPolicies": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/backupPolicyType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The backup policies to create."
       }
     }
   },
@@ -419,7 +1365,7 @@
     },
     "netAppAccount": {
       "type": "Microsoft.NetApp/netAppAccounts",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2024-07-01",
       "name": "[parameters('name')]",
       "tags": "[parameters('tags')]",
       "identity": "[variables('identity')]",
@@ -468,10 +1414,809 @@
         "netAppAccount"
       ]
     },
+    "netAppAccount_backupPolicies": {
+      "copy": {
+        "name": "netAppAccount_backupPolicies",
+        "count": "[length(coalesce(parameters('backupPolicies'), createArray()))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-ANFAccount-backupPolicy-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "netAppAccountName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[tryGet(coalesce(parameters('backupPolicies'), createArray())[copyIndex()], 'name')]"
+          },
+          "dailyBackupsToKeep": {
+            "value": "[tryGet(coalesce(parameters('backupPolicies'), createArray())[copyIndex()], 'dailyBackupsToKeep')]"
+          },
+          "monthlyBackupsToKeep": {
+            "value": "[tryGet(coalesce(parameters('backupPolicies'), createArray())[copyIndex()], 'monthlyBackupsToKeep')]"
+          },
+          "weeklyBackupsToKeep": {
+            "value": "[tryGet(coalesce(parameters('backupPolicies'), createArray())[copyIndex()], 'weeklyBackupsToKeep')]"
+          },
+          "enabled": {
+            "value": "[tryGet(coalesce(parameters('backupPolicies'), createArray())[copyIndex()], 'enabled')]"
+          },
+          "location": {
+            "value": "[coalesce(tryGet(coalesce(parameters('backupPolicies'), createArray())[copyIndex()], 'location'), parameters('location'))]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.33.93.31351",
+              "templateHash": "2748634922557584170"
+            },
+            "name": "Azure NetApp Files Backup Policy",
+            "description": "This module deploys a Backup Policy for Azure NetApp File."
+          },
+          "parameters": {
+            "netAppAccountName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent NetApp account. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "defaultValue": "backupPolicy",
+              "metadata": {
+                "description": "Optional. The name of the backup policy."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Optional. The location of the backup policy."
+              }
+            },
+            "dailyBackupsToKeep": {
+              "type": "int",
+              "defaultValue": 2,
+              "minValue": 2,
+              "maxValue": 1019,
+              "metadata": {
+                "description": "Optional. The daily backups to keep."
+              }
+            },
+            "monthlyBackupsToKeep": {
+              "type": "int",
+              "defaultValue": 0,
+              "metadata": {
+                "description": "Optional. The monthly backups to keep."
+              }
+            },
+            "weeklyBackupsToKeep": {
+              "type": "int",
+              "defaultValue": 0,
+              "metadata": {
+                "description": "Optional. The weekly backups to keep."
+              }
+            },
+            "enabled": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Indicates whether the backup policy is enabled."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.NetApp/netAppAccounts/backupPolicies",
+              "apiVersion": "2024-07-01",
+              "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('name'))]",
+              "location": "[parameters('location')]",
+              "properties": {
+                "enabled": "[parameters('enabled')]",
+                "dailyBackupsToKeep": "[parameters('dailyBackupsToKeep')]",
+                "weeklyBackupsToKeep": "[parameters('weeklyBackupsToKeep')]",
+                "monthlyBackupsToKeep": "[parameters('monthlyBackupsToKeep')]"
+              }
+            }
+          ],
+          "outputs": {
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource IDs of the backup Policy created within volume."
+              },
+              "value": "[resourceId('Microsoft.NetApp/netAppAccounts/backupPolicies', parameters('netAppAccountName'), parameters('name'))]"
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the Backup Policy."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the Resource Group the Backup Policy was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "netAppAccount"
+      ]
+    },
+    "netAppAccount_snapshotPolicies": {
+      "copy": {
+        "name": "netAppAccount_snapshotPolicies",
+        "count": "[length(coalesce(parameters('snapshotPolicies'), createArray()))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-ANFAccount-snapshotPolicy-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "netAppAccountName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[tryGet(coalesce(parameters('snapshotPolicies'), createArray())[copyIndex()], 'name')]"
+          },
+          "location": {
+            "value": "[coalesce(tryGet(coalesce(parameters('snapshotPolicies'), createArray())[copyIndex()], 'location'), parameters('location'))]"
+          },
+          "snapEnabled": {
+            "value": "[tryGet(coalesce(parameters('snapshotPolicies'), createArray())[copyIndex()], 'snapEnabled')]"
+          },
+          "dailySchedule": {
+            "value": "[tryGet(coalesce(parameters('snapshotPolicies'), createArray())[copyIndex()], 'dailySchedule')]"
+          },
+          "hourlySchedule": {
+            "value": "[tryGet(coalesce(parameters('snapshotPolicies'), createArray())[copyIndex()], 'hourlySchedule')]"
+          },
+          "monthlySchedule": {
+            "value": "[tryGet(coalesce(parameters('snapshotPolicies'), createArray())[copyIndex()], 'monthlySchedule')]"
+          },
+          "weeklySchedule": {
+            "value": "[tryGet(coalesce(parameters('snapshotPolicies'), createArray())[copyIndex()], 'weeklySchedule')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.33.93.31351",
+              "templateHash": "7661114070380487495"
+            },
+            "name": "Azure NetApp Files Snapshot Policy",
+            "description": "This module deploys a Snapshot Policy for an Azure NetApp File."
+          },
+          "definitions": {
+            "dailyScheduleType": {
+              "type": "object",
+              "properties": {
+                "hour": {
+                  "type": "int",
+                  "minValue": 0,
+                  "maxValue": 23,
+                  "metadata": {
+                    "description": "Required. The daily snapshot hour."
+                  }
+                },
+                "minute": {
+                  "type": "int",
+                  "minValue": 0,
+                  "maxValue": 59,
+                  "metadata": {
+                    "description": "Required. The daily snapshot minute."
+                  }
+                },
+                "snapshotsToKeep": {
+                  "type": "int",
+                  "minValue": 1,
+                  "maxValue": 255,
+                  "metadata": {
+                    "description": "Required. Daily snapshot count to keep."
+                  }
+                },
+                "usedBytes": {
+                  "type": "int",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Resource size in bytes, current storage usage for the volume in bytes."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for a daily schedule for the snapshot policy."
+              }
+            },
+            "hourlyScheduleType": {
+              "type": "object",
+              "properties": {
+                "minute": {
+                  "type": "int",
+                  "minValue": 0,
+                  "maxValue": 59,
+                  "metadata": {
+                    "description": "Required. The hourly snapshot minute."
+                  }
+                },
+                "snapshotsToKeep": {
+                  "type": "int",
+                  "minValue": 1,
+                  "maxValue": 255,
+                  "metadata": {
+                    "description": "Required. Hourly snapshot count to keep."
+                  }
+                },
+                "usedBytes": {
+                  "type": "int",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Resource size in bytes, current storage usage for the volume in bytes."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for an hourly schedule for the snapshot policy."
+              }
+            },
+            "weeklyScheduleType": {
+              "type": "object",
+              "properties": {
+                "day": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Friday",
+                    "Monday",
+                    "Saturday",
+                    "Sunday",
+                    "Thursday",
+                    "Tuesday",
+                    "Wednesday"
+                  ],
+                  "metadata": {
+                    "description": "Required. The weekly snapshot day."
+                  }
+                },
+                "hour": {
+                  "type": "int",
+                  "minValue": 0,
+                  "maxValue": 23,
+                  "metadata": {
+                    "description": "Required. The weekly snapshot hour."
+                  }
+                },
+                "minute": {
+                  "type": "int",
+                  "minValue": 0,
+                  "maxValue": 59,
+                  "metadata": {
+                    "description": "Required. The weekly snapshot minute."
+                  }
+                },
+                "snapshotsToKeep": {
+                  "type": "int",
+                  "minValue": 1,
+                  "maxValue": 255,
+                  "metadata": {
+                    "description": "Required. Weekly snapshot count to keep."
+                  }
+                },
+                "usedBytes": {
+                  "type": "int",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Resource size in bytes, current storage usage for the volume in bytes."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for a weekly schedule for the snapshot policy."
+              }
+            },
+            "monthlyScheduleType": {
+              "type": "object",
+              "properties": {
+                "daysOfMonth": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. Indicates which days of the month snapshot should be taken. A comma delimited string. E.g., '10,11,12'."
+                  }
+                },
+                "hour": {
+                  "type": "int",
+                  "minValue": 0,
+                  "maxValue": 23,
+                  "metadata": {
+                    "description": "Required. The monthly snapshot hour."
+                  }
+                },
+                "minute": {
+                  "type": "int",
+                  "minValue": 0,
+                  "maxValue": 59,
+                  "metadata": {
+                    "description": "Required. The monthly snapshot minute."
+                  }
+                },
+                "snapshotsToKeep": {
+                  "type": "int",
+                  "minValue": 1,
+                  "maxValue": 255,
+                  "metadata": {
+                    "description": "Required. Monthly snapshot count to keep."
+                  }
+                },
+                "usedBytes": {
+                  "type": "int",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Resource size in bytes, current storage usage for the volume in bytes."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for a monthly schedule for the snapshot policy."
+              }
+            }
+          },
+          "parameters": {
+            "netAppAccountName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent NetApp account. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "defaultValue": "snapshotPolicy",
+              "metadata": {
+                "description": "Optional. The name of the snapshot policy."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Optional. The location of the snapshot policy."
+              }
+            },
+            "hourlySchedule": {
+              "$ref": "#/definitions/hourlyScheduleType",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Schedule for hourly snapshots."
+              }
+            },
+            "dailySchedule": {
+              "$ref": "#/definitions/dailyScheduleType",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Schedule for daily snapshots."
+              }
+            },
+            "monthlySchedule": {
+              "$ref": "#/definitions/monthlyScheduleType",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Schedule for monthly snapshots."
+              }
+            },
+            "weeklySchedule": {
+              "$ref": "#/definitions/weeklyScheduleType",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Schedule for weekly snapshots."
+              }
+            },
+            "snapEnabled": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Indicates whether the snapshot policy is enabled."
+              }
+            }
+          },
+          "resources": {
+            "netAppAccount": {
+              "existing": true,
+              "type": "Microsoft.NetApp/netAppAccounts",
+              "apiVersion": "2024-07-01",
+              "name": "[parameters('netAppAccountName')]"
+            },
+            "snapshotPolicies": {
+              "type": "Microsoft.NetApp/netAppAccounts/snapshotPolicies",
+              "apiVersion": "2024-07-01",
+              "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('name'))]",
+              "location": "[parameters('location')]",
+              "properties": {
+                "enabled": "[parameters('snapEnabled')]",
+                "dailySchedule": "[parameters('dailySchedule')]",
+                "hourlySchedule": "[parameters('hourlySchedule')]",
+                "monthlySchedule": "[parameters('monthlySchedule')]",
+                "weeklySchedule": "[parameters('weeklySchedule')]"
+              }
+            }
+          },
+          "outputs": {
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource IDs of the snapshot Policy created within volume."
+              },
+              "value": "[resourceId('Microsoft.NetApp/netAppAccounts/snapshotPolicies', parameters('netAppAccountName'), parameters('name'))]"
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the Backup Policy."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the Resource Group the Snapshot was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "netAppAccount"
+      ]
+    },
+    "netAppAccount_backupVault": {
+      "condition": "[not(empty(parameters('backupVault')))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-ANFAccount-BackupVault', uniqueString(deployment().name, parameters('location')))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "netAppAccountName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[tryGet(parameters('backupVault'), 'name')]"
+          },
+          "location": {
+            "value": "[coalesce(tryGet(parameters('backupVault'), 'location'), parameters('location'))]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.33.93.31351",
+              "templateHash": "6704781490326075849"
+            },
+            "name": "Azure NetApp Files Volume Backup Vault",
+            "description": "This module deploys a NetApp Files Backup Vault."
+          },
+          "definitions": {
+            "backupType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name of the backup."
+                  }
+                },
+                "label": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Label for backup."
+                  }
+                },
+                "snapshotName": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name of the snapshot."
+                  }
+                },
+                "volumeName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the volume to backup."
+                  }
+                },
+                "capacityPoolName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the capacity pool containing the volume."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for a backup."
+              }
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "defaultValue": "vault",
+              "metadata": {
+                "description": "Optional. The name of the backup vault."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Optional. Location of the backup vault."
+              }
+            },
+            "netAppAccountName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent NetApp account. Required if the template is used in a standalone deployment."
+              }
+            },
+            "backups": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/backupType"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The list of backups to create."
+              }
+            }
+          },
+          "resources": {
+            "netAppAccount": {
+              "existing": true,
+              "type": "Microsoft.NetApp/netAppAccounts",
+              "apiVersion": "2024-07-01",
+              "name": "[parameters('netAppAccountName')]"
+            },
+            "backupVault": {
+              "type": "Microsoft.NetApp/netAppAccounts/backupVaults",
+              "apiVersion": "2024-07-01",
+              "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('name'))]",
+              "location": "[parameters('location')]",
+              "properties": {}
+            },
+            "backupVault_backups": {
+              "copy": {
+                "name": "backupVault_backups",
+                "count": "[length(coalesce(parameters('backups'), createArray()))]"
+              },
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}-ANF-Backup-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "netAppAccountName": {
+                    "value": "[parameters('netAppAccountName')]"
+                  },
+                  "backupVaultName": {
+                    "value": "[parameters('name')]"
+                  },
+                  "name": {
+                    "value": "[tryGet(coalesce(parameters('backups'), createArray())[copyIndex()], 'name')]"
+                  },
+                  "label": {
+                    "value": "[tryGet(coalesce(parameters('backups'), createArray())[copyIndex()], 'label')]"
+                  },
+                  "snapshotName": {
+                    "value": "[tryGet(coalesce(parameters('backups'), createArray())[copyIndex()], 'snapshotName')]"
+                  },
+                  "volumeName": {
+                    "value": "[coalesce(parameters('backups'), createArray())[copyIndex()].volumeName]"
+                  },
+                  "capacityPoolName": {
+                    "value": "[coalesce(parameters('backups'), createArray())[copyIndex()].capacityPoolName]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "languageVersion": "2.0",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.33.93.31351",
+                      "templateHash": "17452697444375969559"
+                    },
+                    "name": "Azure NetApp Files Volume Backup",
+                    "description": "This module deploys a backup of a NetApp Files Volume."
+                  },
+                  "parameters": {
+                    "name": {
+                      "type": "string",
+                      "defaultValue": "backup",
+                      "metadata": {
+                        "description": "Optional. The name of the backup."
+                      }
+                    },
+                    "backupVaultName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent backup vault. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "netAppAccountName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent NetApp account. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "label": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Label for backup."
+                      }
+                    },
+                    "snapshotName": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The name of the snapshot."
+                      }
+                    },
+                    "volumeName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The name of the volume to backup."
+                      }
+                    },
+                    "capacityPoolName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The name of the capacity pool containing the volume."
+                      }
+                    }
+                  },
+                  "resources": {
+                    "netAppAccount::remoteCapacityPool::volume": {
+                      "existing": true,
+                      "type": "Microsoft.NetApp/netAppAccounts/capacityPools/volumes",
+                      "apiVersion": "2024-07-01",
+                      "name": "[format('{0}/{1}/{2}', parameters('netAppAccountName'), parameters('capacityPoolName'), parameters('volumeName'))]"
+                    },
+                    "netAppAccount::backupVault": {
+                      "existing": true,
+                      "type": "Microsoft.NetApp/netAppAccounts/backupVaults",
+                      "apiVersion": "2024-07-01",
+                      "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('backupVaultName'))]"
+                    },
+                    "netAppAccount::remoteCapacityPool": {
+                      "existing": true,
+                      "type": "Microsoft.NetApp/netAppAccounts/capacityPools",
+                      "apiVersion": "2024-07-01",
+                      "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('capacityPoolName'))]"
+                    },
+                    "netAppAccount": {
+                      "existing": true,
+                      "type": "Microsoft.NetApp/netAppAccounts",
+                      "apiVersion": "2024-07-01",
+                      "name": "[parameters('netAppAccountName')]"
+                    },
+                    "backup": {
+                      "type": "Microsoft.NetApp/netAppAccounts/backupVaults/backups",
+                      "apiVersion": "2024-07-01",
+                      "name": "[format('{0}/{1}/{2}', parameters('netAppAccountName'), parameters('backupVaultName'), parameters('name'))]",
+                      "properties": {
+                        "label": "[parameters('label')]",
+                        "snapshotName": "[parameters('snapshotName')]",
+                        "volumeResourceId": "[resourceId('Microsoft.NetApp/netAppAccounts/capacityPools/volumes', parameters('netAppAccountName'), parameters('capacityPoolName'), parameters('volumeName'))]"
+                      }
+                    }
+                  },
+                  "outputs": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the backup."
+                      },
+                      "value": "[parameters('name')]"
+                    },
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The Resource ID of the backup."
+                      },
+                      "value": "[resourceId('Microsoft.NetApp/netAppAccounts/backupVaults/backups', parameters('netAppAccountName'), parameters('backupVaultName'), parameters('name'))]"
+                    },
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the Resource Group the backup was created in."
+                      },
+                      "value": "[resourceGroup().name]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "backupVault"
+              ]
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the backup vault."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The Resource ID of the backup vault."
+              },
+              "value": "[resourceId('Microsoft.NetApp/netAppAccounts/backupVaults', parameters('netAppAccountName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the Resource Group the backup vault was created in."
+              },
+              "value": "[resourceGroup().name]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location the resource was deployed into."
+              },
+              "value": "[reference('backupVault', '2024-07-01', 'full').location]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "netAppAccount"
+      ]
+    },
     "netAppAccount_capacityPools": {
       "copy": {
         "name": "netAppAccount_capacityPools",
-        "count": "[length(parameters('capacityPools'))]"
+        "count": "[length(coalesce(parameters('capacityPools'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -486,34 +2231,34 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[parameters('capacityPools')[copyIndex()].name]"
-          },
-          "location": {
-            "value": "[parameters('location')]"
+            "value": "[coalesce(parameters('capacityPools'), createArray())[copyIndex()].name]"
           },
           "size": {
-            "value": "[parameters('capacityPools')[copyIndex()].size]"
+            "value": "[coalesce(parameters('capacityPools'), createArray())[copyIndex()].size]"
+          },
+          "location": {
+            "value": "[coalesce(tryGet(coalesce(parameters('capacityPools'), createArray())[copyIndex()], 'location'), parameters('location'))]"
           },
           "serviceLevel": {
-            "value": "[coalesce(tryGet(parameters('capacityPools')[copyIndex()], 'serviceLevel'), 'Standard')]"
+            "value": "[coalesce(tryGet(coalesce(parameters('capacityPools'), createArray())[copyIndex()], 'serviceLevel'), 'Standard')]"
           },
           "qosType": {
-            "value": "[coalesce(tryGet(parameters('capacityPools')[copyIndex()], 'qosType'), 'Auto')]"
+            "value": "[coalesce(tryGet(coalesce(parameters('capacityPools'), createArray())[copyIndex()], 'qosType'), 'Auto')]"
           },
           "volumes": {
-            "value": "[coalesce(tryGet(parameters('capacityPools')[copyIndex()], 'volumes'), createArray())]"
+            "value": "[coalesce(tryGet(coalesce(parameters('capacityPools'), createArray())[copyIndex()], 'volumes'), createArray())]"
           },
           "coolAccess": {
-            "value": "[coalesce(tryGet(parameters('capacityPools')[copyIndex()], 'coolAccess'), false())]"
+            "value": "[coalesce(tryGet(coalesce(parameters('capacityPools'), createArray())[copyIndex()], 'coolAccess'), false())]"
           },
           "roleAssignments": {
-            "value": "[coalesce(tryGet(parameters('capacityPools')[copyIndex()], 'roleAssignments'), createArray())]"
+            "value": "[coalesce(tryGet(coalesce(parameters('capacityPools'), createArray())[copyIndex()], 'roleAssignments'), createArray())]"
           },
           "encryptionType": {
-            "value": "[coalesce(tryGet(parameters('capacityPools')[copyIndex()], 'encryptionType'), 'Single')]"
+            "value": "[coalesce(tryGet(coalesce(parameters('capacityPools'), createArray())[copyIndex()], 'encryptionType'), 'Single')]"
           },
           "tags": {
-            "value": "[coalesce(tryGet(parameters('capacityPools')[copyIndex()], 'tags'), parameters('tags'))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('capacityPools'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
           }
         },
         "template": {
@@ -523,13 +2268,467 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "17937651504078156143"
+              "version": "0.33.93.31351",
+              "templateHash": "18256505389133665653"
             },
             "name": "Azure NetApp Files Capacity Pools",
             "description": "This module deploys an Azure NetApp Files Capacity Pool."
           },
           "definitions": {
+            "volumeType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the pool volume."
+                  }
+                },
+                "coolAccess": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. If enabled (true) the pool can contain cool Access enabled volumes."
+                  }
+                },
+                "coolnessPeriod": {
+                  "type": "int",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specifies the number of days after which data that is not accessed by clients will be tiered."
+                  }
+                },
+                "coolAccessRetrievalPolicy": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Determines the data retrieval behavior from the cool tier to standard storage based on the read pattern for cool access enabled volumes (Default/Never/Read)."
+                  }
+                },
+                "encryptionKeySource": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The source of the encryption key."
+                  }
+                },
+                "keyVaultPrivateEndpointResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The resource ID of the key vault private endpoint."
+                  }
+                },
+                "dataProtection": {
+                  "$ref": "#/definitions/dataProtectionType",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. DataProtection type volumes include an object containing details of the replication."
+                  }
+                },
+                "location": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Location of the pool volume."
+                  }
+                },
+                "zone": {
+                  "type": "int",
+                  "metadata": {
+                    "description": "Required. The Availability Zone to place the resource in. If set to 0, then Availability Zone is not set."
+                  }
+                },
+                "serviceLevel": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Premium",
+                    "Standard",
+                    "StandardZRS",
+                    "Ultra"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The pool service level. Must match the one of the parent capacity pool."
+                  }
+                },
+                "networkFeatures": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Basic",
+                    "Basic_Standard",
+                    "Standard",
+                    "Standard_Basic"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Network feature for the volume."
+                  }
+                },
+                "creationToken": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. A unique file path for the volume. This is the name of the volume export. A volume is mounted using the export path. File path must start with an alphabetical character and be unique within the subscription."
+                  }
+                },
+                "usageThreshold": {
+                  "type": "int",
+                  "metadata": {
+                    "description": "Required. Maximum storage quota allowed for a file system in bytes."
+                  }
+                },
+                "protocolTypes": {
+                  "type": "array",
+                  "allowedValues": [
+                    "CIFS",
+                    "NFSv3",
+                    "NFSv4.1"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Set of protocol types. Default value is `['NFSv3']`. If you are creating a dual-stack volume, set either `['NFSv3','CIFS']` or `['NFSv4.1','CIFS']`."
+                  }
+                },
+                "subnetResourceId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The Azure Resource URI for a delegated subnet. Must have the delegation Microsoft.NetApp/volumes."
+                  }
+                },
+                "exportPolicy": {
+                  "$ref": "#/definitions/exportPolicyType",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Export policy rules."
+                  }
+                },
+                "roleAssignments": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/roleAssignmentType"
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Array of role assignments to create."
+                  }
+                },
+                "smbEncryption": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Enables SMB encryption. Only applicable for SMB/DualProtocol volume."
+                  }
+                },
+                "smbContinuouslyAvailable": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Enables continuously available share property for SMB volume. Only applicable for SMB volume."
+                  }
+                },
+                "smbNonBrowsable": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Disabled",
+                    "Enabled"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProtocol volume."
+                  }
+                },
+                "kerberosEnabled": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Define if a volume is KerberosEnabled."
+                  }
+                },
+                "volumeType": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The type of the volume. DataProtection volumes are used for replication."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for a volume in the capacity pool."
+              }
+            },
+            "_1.backupType": {
+              "type": "object",
+              "properties": {
+                "backupPolicyName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the backup policy to link."
+                  }
+                },
+                "policyEnforced": {
+                  "type": "bool",
+                  "metadata": {
+                    "description": "Required. Enable to enforce the policy."
+                  }
+                },
+                "backupVaultName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the Backup Vault."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "The type for the backup properties.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "volume/main.bicep"
+                }
+              }
+            },
+            "_1.replicationType": {
+              "type": "object",
+              "properties": {
+                "endpointType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "dst",
+                    "src"
+                  ],
+                  "metadata": {
+                    "description": "Required. Indicates whether the local volume is the source or destination for the Volume Replication."
+                  }
+                },
+                "remoteVolumeRegion": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The remote region for the other end of the Volume Replication.Required for Data Protection volumes."
+                  }
+                },
+                "remoteVolumeResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The resource ID of the remote volume. Required for Data Protection volumes."
+                  }
+                },
+                "replicationSchedule": {
+                  "type": "string",
+                  "allowedValues": [
+                    "_10minutely",
+                    "daily",
+                    "hourly"
+                  ],
+                  "metadata": {
+                    "description": "Required. The replication schedule for the volume."
+                  }
+                },
+                "remotePath": {
+                  "type": "object",
+                  "properties": {
+                    "externalHostName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The Path to a ONTAP Host."
+                      }
+                    },
+                    "serverName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The name of a server on the ONTAP Host."
+                      }
+                    },
+                    "volumeName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The name of a volume on the server."
+                      }
+                    }
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The full path to a volume that is to be migrated into ANF. Required for Migration volumes."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "The type for the replication properties.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "volume/main.bicep"
+                }
+              }
+            },
+            "_1.snapshotType": {
+              "type": "object",
+              "properties": {
+                "snapshotPolicyName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the snapshot policy to link."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "The type for the snapshot properties.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "volume/main.bicep"
+                }
+              }
+            },
+            "dataProtectionType": {
+              "type": "object",
+              "properties": {
+                "replication": {
+                  "$ref": "#/definitions/_1.replicationType",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Replication properties."
+                  }
+                },
+                "backup": {
+                  "$ref": "#/definitions/_1.backupType",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Backup properties."
+                  }
+                },
+                "snapshot": {
+                  "$ref": "#/definitions/_1.snapshotType",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Snapshot properties."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "The type for the data protection properties.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "volume/main.bicep"
+                }
+              }
+            },
+            "exportPolicyType": {
+              "type": "object",
+              "properties": {
+                "rules": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "ruleIndex": {
+                        "type": "int",
+                        "metadata": {
+                          "description": "Required. Order index."
+                        }
+                      },
+                      "allowedClients": {
+                        "type": "string",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. Client ingress specification as comma separated string with IPv4 CIDRs, IPv4 host addresses and host names."
+                        }
+                      },
+                      "chownMode": {
+                        "type": "string",
+                        "allowedValues": [
+                          "Restricted",
+                          "Unrestricted"
+                        ],
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. This parameter specifies who is authorized to change the ownership of a file. restricted - Only root user can change the ownership of the file. unrestricted - Non-root users can change ownership of files that they own."
+                        }
+                      },
+                      "cifs": {
+                        "type": "bool",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. Allows CIFS protocol."
+                        }
+                      },
+                      "hasRootAccess": {
+                        "type": "bool",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. Has root access to volume."
+                        }
+                      },
+                      "kerberos5ReadOnly": {
+                        "type": "bool",
+                        "metadata": {
+                          "description": "Required. Kerberos5 Read only access."
+                        }
+                      },
+                      "kerberos5ReadWrite": {
+                        "type": "bool",
+                        "metadata": {
+                          "description": "Required. Kerberos5 Read and write access."
+                        }
+                      },
+                      "kerberos5iReadOnly": {
+                        "type": "bool",
+                        "metadata": {
+                          "description": "Required. Kerberos5i Read only access."
+                        }
+                      },
+                      "kerberos5iReadWrite": {
+                        "type": "bool",
+                        "metadata": {
+                          "description": "Required. Kerberos5i Read and write access."
+                        }
+                      },
+                      "kerberos5pReadOnly": {
+                        "type": "bool",
+                        "metadata": {
+                          "description": "Required. Kerberos5p Read only access."
+                        }
+                      },
+                      "kerberos5pReadWrite": {
+                        "type": "bool",
+                        "metadata": {
+                          "description": "Required. Kerberos5p Read and write access."
+                        }
+                      },
+                      "nfsv3": {
+                        "type": "bool",
+                        "metadata": {
+                          "description": "Required. Allows NFSv3 protocol. Enable only for NFSv3 type volumes."
+                        }
+                      },
+                      "nfsv41": {
+                        "type": "bool",
+                        "metadata": {
+                          "description": "Required. Allows NFSv4.1 protocol. Enable only for NFSv4.1 type volumes."
+                        }
+                      },
+                      "unixReadOnly": {
+                        "type": "bool",
+                        "metadata": {
+                          "description": "Required. Read only access."
+                        }
+                      },
+                      "unixReadWrite": {
+                        "type": "bool",
+                        "metadata": {
+                          "description": "Required. Read and write access."
+                        }
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "description": "Required. The Export policy rules."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "The type for export policy rules.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "volume/main.bicep"
+                }
+              }
+            },
             "roleAssignmentType": {
               "type": "object",
               "properties": {
@@ -606,6 +2805,28 @@
               }
             }
           },
+          "functions": [
+            {
+              "namespace": "__bicep",
+              "members": {
+                "tebibytesToBytes": {
+                  "parameters": [
+                    {
+                      "type": "int",
+                      "name": "tebibytes"
+                    }
+                  ],
+                  "output": {
+                    "type": "int",
+                    "value": "[mul(mul(mul(mul(parameters('tebibytes'), 1024), 1024), 1024), 1024)]"
+                  },
+                  "metadata": {
+                    "description": "Converts from tebibytes to bytes."
+                  }
+                }
+              }
+            }
+          ],
           "parameters": {
             "netAppAccountName": {
               "type": "string",
@@ -648,8 +2869,10 @@
             },
             "size": {
               "type": "int",
+              "minValue": 1,
+              "maxValue": 2048,
               "metadata": {
-                "description": "Required. Provisioned size of the pool (in bytes). Allowed values are in 4TiB chunks (value must be multiply of 4398046511104)."
+                "description": "Required. Provisioned size of the pool in Tebibytes (TiB)."
               }
             },
             "qosType": {
@@ -665,9 +2888,12 @@
             },
             "volumes": {
               "type": "array",
-              "defaultValue": [],
+              "items": {
+                "$ref": "#/definitions/volumeType"
+              },
+              "nullable": true,
               "metadata": {
-                "description": "Optional. List of volumnes to create in the capacity pool."
+                "description": "Optional. List of volumes to create in the capacity pool."
               }
             },
             "coolAccess": {
@@ -719,18 +2945,18 @@
             "netAppAccount": {
               "existing": true,
               "type": "Microsoft.NetApp/netAppAccounts",
-              "apiVersion": "2024-03-01",
+              "apiVersion": "2024-07-01",
               "name": "[parameters('netAppAccountName')]"
             },
             "capacityPool": {
               "type": "Microsoft.NetApp/netAppAccounts/capacityPools",
-              "apiVersion": "2024-03-01",
+              "apiVersion": "2024-07-01",
               "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
               "properties": {
                 "serviceLevel": "[parameters('serviceLevel')]",
-                "size": "[parameters('size')]",
+                "size": "[__bicep.tebibytesToBytes(parameters('size'))]",
                 "qosType": "[parameters('qosType')]",
                 "coolAccess": "[parameters('coolAccess')]",
                 "encryptionType": "[parameters('encryptionType')]"
@@ -761,7 +2987,7 @@
             "capacityPool_volumes": {
               "copy": {
                 "name": "capacityPool_volumes",
-                "count": "[length(parameters('volumes'))]",
+                "count": "[length(coalesce(parameters('volumes'), createArray()))]",
                 "mode": "serial",
                 "batchSize": 1
               },
@@ -781,7 +3007,7 @@
                     "value": "[parameters('name')]"
                   },
                   "name": {
-                    "value": "[parameters('volumes')[copyIndex()].name]"
+                    "value": "[coalesce(parameters('volumes'), createArray())[copyIndex()].name]"
                   },
                   "location": {
                     "value": "[parameters('location')]"
@@ -790,163 +3016,61 @@
                     "value": "[parameters('serviceLevel')]"
                   },
                   "creationToken": {
-                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'creationToken'), parameters('volumes')[copyIndex()].name)]"
+                    "value": "[coalesce(tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'creationToken'), coalesce(parameters('volumes'), createArray())[copyIndex()].name)]"
                   },
                   "usageThreshold": {
-                    "value": "[parameters('volumes')[copyIndex()].usageThreshold]"
+                    "value": "[coalesce(parameters('volumes'), createArray())[copyIndex()].usageThreshold]"
                   },
                   "protocolTypes": {
-                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'protocolTypes'), createArray())]"
+                    "value": "[coalesce(parameters('volumes'), createArray())[copyIndex()].protocolTypes]"
                   },
                   "subnetResourceId": {
-                    "value": "[parameters('volumes')[copyIndex()].subnetResourceId]"
+                    "value": "[coalesce(parameters('volumes'), createArray())[copyIndex()].subnetResourceId]"
                   },
-                  "exportPolicyRules": {
-                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'exportPolicyRules'), createArray())]"
+                  "exportPolicy": {
+                    "value": "[tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'exportPolicy')]"
                   },
                   "roleAssignments": {
-                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'roleAssignments'), createArray())]"
+                    "value": "[tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'roleAssignments')]"
                   },
                   "networkFeatures": {
-                    "value": "[tryGet(parameters('volumes')[copyIndex()], 'networkFeatures')]"
+                    "value": "[tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'networkFeatures')]"
                   },
-                  "zones": {
-                    "value": "[tryGet(parameters('volumes')[copyIndex()], 'zones')]"
+                  "zone": {
+                    "value": "[tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'zone')]"
                   },
                   "coolAccess": {
-                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'coolAccess'), false())]"
+                    "value": "[coalesce(tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'coolAccess'), false())]"
                   },
                   "coolAccessRetrievalPolicy": {
-                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'coolAccessRetrievalPolicy'), 'Default')]"
+                    "value": "[tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'coolAccessRetrievalPolicy')]"
                   },
                   "coolnessPeriod": {
-                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'coolnessPeriod'), 0)]"
+                    "value": "[tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'coolnessPeriod')]"
                   },
                   "encryptionKeySource": {
-                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'encryptionKeySource'), 'Microsoft.NetApp')]"
+                    "value": "[coalesce(tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'encryptionKeySource'), 'Microsoft.NetApp')]"
                   },
                   "keyVaultPrivateEndpointResourceId": {
-                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'keyVaultPrivateEndpointResourceId'), '')]"
+                    "value": "[tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'keyVaultPrivateEndpointResourceId')]"
                   },
-                  "endpointType": {
-                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'endpointType'), '')]"
+                  "dataProtection": {
+                    "value": "[tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'dataProtection')]"
                   },
-                  "remoteVolumeRegion": {
-                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'remoteVolumeRegion'), '')]"
+                  "kerberosEnabled": {
+                    "value": "[tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'kerberosEnabled')]"
                   },
-                  "remoteVolumeResourceId": {
-                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'remoteVolumeResourceId'), '')]"
+                  "smbContinuouslyAvailable": {
+                    "value": "[tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'smbContinuouslyAvailable')]"
                   },
-                  "replicationSchedule": {
-                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'replicationSchedule'), '')]"
+                  "smbEncryption": {
+                    "value": "[tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'smbEncryption')]"
                   },
-                  "snapshotPolicyName": {
-                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'snapshotPolicyName'), 'snapshotPolicy')]"
-                  },
-                  "snapshotPolicyLocation": {
-                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'snapshotPolicyLocation'), '')]"
-                  },
-                  "snapEnabled": {
-                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'snapEnabled'), false())]"
-                  },
-                  "dailyHour": {
-                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'dailyHour'), 0)]"
-                  },
-                  "dailyMinute": {
-                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'dailyMinute'), 0)]"
-                  },
-                  "dailySnapshotsToKeep": {
-                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'dailySnapshotsToKeep'), 0)]"
-                  },
-                  "dailyUsedBytes": {
-                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'dailyUsedBytes'), 0)]"
-                  },
-                  "hourlyMinute": {
-                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'hourlyMinute'), 0)]"
-                  },
-                  "hourlySnapshotsToKeep": {
-                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'hourlySnapshotsToKeep'), 0)]"
-                  },
-                  "hourlyUsedBytes": {
-                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'hourlyUsedBytes'), 0)]"
-                  },
-                  "daysOfMonth": {
-                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'daysOfMonth'), '')]"
-                  },
-                  "monthlyHour": {
-                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'monthlyHour'), 0)]"
-                  },
-                  "monthlyMinute": {
-                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'monthlyMinute'), 0)]"
-                  },
-                  "monthlySnapshotsToKeep": {
-                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'monthlySnapshotsToKeep'), 0)]"
-                  },
-                  "monthlyUsedBytes": {
-                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'monthlyUsedBytes'), 0)]"
-                  },
-                  "weeklyDay": {
-                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'weeklyDay'), '')]"
-                  },
-                  "weeklyHour": {
-                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'weeklyHour'), 0)]"
-                  },
-                  "weeklyMinute": {
-                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'weeklyMinute'), 0)]"
-                  },
-                  "weeklySnapshotsToKeep": {
-                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'weeklySnapshotsToKeep'), 0)]"
-                  },
-                  "weeklyUsedBytes": {
-                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'weeklyUsedBytes'), 0)]"
-                  },
-                  "backupPolicyName": {
-                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'backupPolicyName'), 'backupPolicy')]"
-                  },
-                  "backupPolicyLocation": {
-                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'backupPolicyLocation'), '')]"
-                  },
-                  "dailyBackupsToKeep": {
-                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'dailyBackupsToKeep'), 0)]"
-                  },
-                  "backupEnabled": {
-                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'backupEnabled'), false())]"
-                  },
-                  "monthlyBackupsToKeep": {
-                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'monthlyBackupsToKeep'), 0)]"
-                  },
-                  "weeklyBackupsToKeep": {
-                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'weeklyBackupsToKeep'), 0)]"
-                  },
-                  "backupVaultName": {
-                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'backupVaultName'), 'vault')]"
-                  },
-                  "backupVaultLocation": {
-                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'backupVaultLocation'), '')]"
-                  },
-                  "backupName": {
-                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'backupName'), 'backup')]"
-                  },
-                  "backupLabel": {
-                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'backupLabel'), '')]"
-                  },
-                  "snapshotName": {
-                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'snapshotName'), 'snapshot')]"
-                  },
-                  "useExistingSnapshot": {
-                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'useExistingSnapshot'), false())]"
-                  },
-                  "volumeResourceId": {
-                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'volumeResourceId'), '')]"
+                  "smbNonBrowsable": {
+                    "value": "[tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'smbNonBrowsable')]"
                   },
                   "volumeType": {
-                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'volumeType'), '')]"
-                  },
-                  "backupVaultResourceId": {
-                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'backupVaultResourceId'), '')]"
-                  },
-                  "replicationEnabled": {
-                    "value": "[coalesce(tryGet(parameters('volumes')[copyIndex()], 'replicationEnabled'), false())]"
+                    "value": "[tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'volumeType')]"
                   }
                 },
                 "template": {
@@ -956,13 +3080,271 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "15336007196805099128"
+                      "version": "0.33.93.31351",
+                      "templateHash": "9908729682088720878"
                     },
                     "name": "Azure NetApp Files Capacity Pool Volumes",
                     "description": "This module deploys an Azure NetApp Files Capacity Pool Volume."
                   },
                   "definitions": {
+                    "dataProtectionType": {
+                      "type": "object",
+                      "properties": {
+                        "replication": {
+                          "$ref": "#/definitions/replicationType",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Replication properties."
+                          }
+                        },
+                        "backup": {
+                          "$ref": "#/definitions/backupType",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Backup properties."
+                          }
+                        },
+                        "snapshot": {
+                          "$ref": "#/definitions/snapshotType",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Snapshot properties."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "__bicep_export!": true,
+                        "description": "The type for the data protection properties."
+                      }
+                    },
+                    "replicationType": {
+                      "type": "object",
+                      "properties": {
+                        "endpointType": {
+                          "type": "string",
+                          "allowedValues": [
+                            "dst",
+                            "src"
+                          ],
+                          "metadata": {
+                            "description": "Required. Indicates whether the local volume is the source or destination for the Volume Replication."
+                          }
+                        },
+                        "remoteVolumeRegion": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The remote region for the other end of the Volume Replication.Required for Data Protection volumes."
+                          }
+                        },
+                        "remoteVolumeResourceId": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The resource ID of the remote volume. Required for Data Protection volumes."
+                          }
+                        },
+                        "replicationSchedule": {
+                          "type": "string",
+                          "allowedValues": [
+                            "_10minutely",
+                            "daily",
+                            "hourly"
+                          ],
+                          "metadata": {
+                            "description": "Required. The replication schedule for the volume."
+                          }
+                        },
+                        "remotePath": {
+                          "type": "object",
+                          "properties": {
+                            "externalHostName": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Required. The Path to a ONTAP Host."
+                              }
+                            },
+                            "serverName": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Required. The name of a server on the ONTAP Host."
+                              }
+                            },
+                            "volumeName": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Required. The name of a volume on the server."
+                              }
+                            }
+                          },
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The full path to a volume that is to be migrated into ANF. Required for Migration volumes."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "description": "The type for the replication properties."
+                      }
+                    },
+                    "backupType": {
+                      "type": "object",
+                      "properties": {
+                        "backupPolicyName": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. The name of the backup policy to link."
+                          }
+                        },
+                        "policyEnforced": {
+                          "type": "bool",
+                          "metadata": {
+                            "description": "Required. Enable to enforce the policy."
+                          }
+                        },
+                        "backupVaultName": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. The name of the Backup Vault."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "description": "The type for the backup properties."
+                      }
+                    },
+                    "snapshotType": {
+                      "type": "object",
+                      "properties": {
+                        "snapshotPolicyName": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. The name of the snapshot policy to link."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "description": "The type for the snapshot properties."
+                      }
+                    },
+                    "exportPolicyType": {
+                      "type": "object",
+                      "properties": {
+                        "rules": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "ruleIndex": {
+                                "type": "int",
+                                "metadata": {
+                                  "description": "Required. Order index."
+                                }
+                              },
+                              "allowedClients": {
+                                "type": "string",
+                                "nullable": true,
+                                "metadata": {
+                                  "description": "Optional. Client ingress specification as comma separated string with IPv4 CIDRs, IPv4 host addresses and host names."
+                                }
+                              },
+                              "chownMode": {
+                                "type": "string",
+                                "allowedValues": [
+                                  "Restricted",
+                                  "Unrestricted"
+                                ],
+                                "nullable": true,
+                                "metadata": {
+                                  "description": "Optional. This parameter specifies who is authorized to change the ownership of a file. restricted - Only root user can change the ownership of the file. unrestricted - Non-root users can change ownership of files that they own."
+                                }
+                              },
+                              "cifs": {
+                                "type": "bool",
+                                "nullable": true,
+                                "metadata": {
+                                  "description": "Optional. Allows CIFS protocol."
+                                }
+                              },
+                              "hasRootAccess": {
+                                "type": "bool",
+                                "nullable": true,
+                                "metadata": {
+                                  "description": "Optional. Has root access to volume."
+                                }
+                              },
+                              "kerberos5ReadOnly": {
+                                "type": "bool",
+                                "metadata": {
+                                  "description": "Required. Kerberos5 Read only access."
+                                }
+                              },
+                              "kerberos5ReadWrite": {
+                                "type": "bool",
+                                "metadata": {
+                                  "description": "Required. Kerberos5 Read and write access."
+                                }
+                              },
+                              "kerberos5iReadOnly": {
+                                "type": "bool",
+                                "metadata": {
+                                  "description": "Required. Kerberos5i Read only access."
+                                }
+                              },
+                              "kerberos5iReadWrite": {
+                                "type": "bool",
+                                "metadata": {
+                                  "description": "Required. Kerberos5i Read and write access."
+                                }
+                              },
+                              "kerberos5pReadOnly": {
+                                "type": "bool",
+                                "metadata": {
+                                  "description": "Required. Kerberos5p Read only access."
+                                }
+                              },
+                              "kerberos5pReadWrite": {
+                                "type": "bool",
+                                "metadata": {
+                                  "description": "Required. Kerberos5p Read and write access."
+                                }
+                              },
+                              "nfsv3": {
+                                "type": "bool",
+                                "metadata": {
+                                  "description": "Required. Allows NFSv3 protocol. Enable only for NFSv3 type volumes."
+                                }
+                              },
+                              "nfsv41": {
+                                "type": "bool",
+                                "metadata": {
+                                  "description": "Required. Allows NFSv4.1 protocol. Enable only for NFSv4.1 type volumes."
+                                }
+                              },
+                              "unixReadOnly": {
+                                "type": "bool",
+                                "metadata": {
+                                  "description": "Required. Read only access."
+                                }
+                              },
+                              "unixReadWrite": {
+                                "type": "bool",
+                                "metadata": {
+                                  "description": "Required. Read and write access."
+                                }
+                              }
+                            }
+                          },
+                          "metadata": {
+                            "description": "Required. The Export policy rules."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "__bicep_export!": true,
+                        "description": "The type for export policy rules."
+                      }
+                    },
                     "roleAssignmentType": {
                       "type": "object",
                       "properties": {
@@ -1052,258 +3434,6 @@
                         "description": "Conditional. The name of the parent capacity pool. Required if the template is used in a standalone deployment."
                       }
                     },
-                    "coolAccess": {
-                      "type": "bool",
-                      "metadata": {
-                        "description": "Required. If enabled (true) the pool can contain cool Access enabled volumes."
-                      }
-                    },
-                    "coolnessPeriod": {
-                      "type": "int",
-                      "metadata": {
-                        "description": "Required. Specifies the number of days after which data that is not accessed by clients will be tiered."
-                      }
-                    },
-                    "coolAccessRetrievalPolicy": {
-                      "type": "string",
-                      "defaultValue": "Default",
-                      "metadata": {
-                        "description": "Optional. determines the data retrieval behavior from the cool tier to standard storage based on the read pattern for cool access enabled volumes (Default/Never/Read)."
-                      }
-                    },
-                    "encryptionKeySource": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The source of the encryption key."
-                      }
-                    },
-                    "keyVaultPrivateEndpointResourceId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The resource ID of the key vault private endpoint."
-                      }
-                    },
-                    "endpointType": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. Indicates whether the local volume is the source or destination for the Volume Replication (src/dst)."
-                      }
-                    },
-                    "remoteVolumeRegion": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The remote region for the other end of the Volume Replication."
-                      }
-                    },
-                    "remoteVolumeResourceId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The resource ID of the remote volume."
-                      }
-                    },
-                    "replicationSchedule": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The replication schedule for the volume."
-                      }
-                    },
-                    "backupEnabled": {
-                      "type": "bool",
-                      "defaultValue": false,
-                      "metadata": {
-                        "description": "Optional. Indicates whether the backup policy is enabled."
-                      }
-                    },
-                    "backupPolicyName": {
-                      "type": "string",
-                      "defaultValue": "backupPolicy",
-                      "metadata": {
-                        "description": "Optional. The name of the backup policy."
-                      }
-                    },
-                    "dailyHour": {
-                      "type": "int",
-                      "metadata": {
-                        "description": "Required. The daily snapshot hour."
-                      }
-                    },
-                    "dailyMinute": {
-                      "type": "int",
-                      "metadata": {
-                        "description": "Required. The daily snapshot minute."
-                      }
-                    },
-                    "dailySnapshotsToKeep": {
-                      "type": "int",
-                      "metadata": {
-                        "description": "Required. Daily snapshot count to keep."
-                      }
-                    },
-                    "dailyUsedBytes": {
-                      "type": "int",
-                      "metadata": {
-                        "description": "Required. Daily snapshot used bytes."
-                      }
-                    },
-                    "hourlyMinute": {
-                      "type": "int",
-                      "metadata": {
-                        "description": "Required. The hourly snapshot minute."
-                      }
-                    },
-                    "hourlySnapshotsToKeep": {
-                      "type": "int",
-                      "metadata": {
-                        "description": "Required. Hourly snapshot count to keep."
-                      }
-                    },
-                    "hourlyUsedBytes": {
-                      "type": "int",
-                      "metadata": {
-                        "description": "Required. Hourly snapshot used bytes."
-                      }
-                    },
-                    "daysOfMonth": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The monthly snapshot day."
-                      }
-                    },
-                    "monthlyHour": {
-                      "type": "int",
-                      "metadata": {
-                        "description": "Required. The monthly snapshot hour."
-                      }
-                    },
-                    "monthlyMinute": {
-                      "type": "int",
-                      "metadata": {
-                        "description": "Required. The monthly snapshot minute."
-                      }
-                    },
-                    "monthlySnapshotsToKeep": {
-                      "type": "int",
-                      "metadata": {
-                        "description": "Required. Monthly snapshot count to keep."
-                      }
-                    },
-                    "monthlyUsedBytes": {
-                      "type": "int",
-                      "metadata": {
-                        "description": "Required. Monthly snapshot used bytes."
-                      }
-                    },
-                    "weeklyDay": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The weekly snapshot day."
-                      }
-                    },
-                    "weeklyHour": {
-                      "type": "int",
-                      "metadata": {
-                        "description": "Required. The weekly snapshot hour."
-                      }
-                    },
-                    "weeklyMinute": {
-                      "type": "int",
-                      "metadata": {
-                        "description": "Required. The weekly snapshot minute."
-                      }
-                    },
-                    "weeklySnapshotsToKeep": {
-                      "type": "int",
-                      "metadata": {
-                        "description": "Required. Weekly snapshot count to keep."
-                      }
-                    },
-                    "weeklyUsedBytes": {
-                      "type": "int",
-                      "metadata": {
-                        "description": "Required. Weekly snapshot used bytes."
-                      }
-                    },
-                    "snapEnabled": {
-                      "type": "bool",
-                      "defaultValue": true,
-                      "metadata": {
-                        "description": "Optional. Indicates whether the snapshot policy is enabled."
-                      }
-                    },
-                    "snapshotPolicyName": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The name of the snapshot policy."
-                      }
-                    },
-                    "dailyBackupsToKeep": {
-                      "type": "int",
-                      "metadata": {
-                        "description": "Required. The daily backups to keep."
-                      }
-                    },
-                    "monthlyBackupsToKeep": {
-                      "type": "int",
-                      "metadata": {
-                        "description": "Required. The monthly backups to keep."
-                      }
-                    },
-                    "weeklyBackupsToKeep": {
-                      "type": "int",
-                      "metadata": {
-                        "description": "Required. The weekly backups to keep."
-                      }
-                    },
-                    "backupVaultName": {
-                      "type": "string",
-                      "defaultValue": "vault",
-                      "metadata": {
-                        "description": "Optional. The name of the backup vault."
-                      }
-                    },
-                    "backupVaultLocation": {
-                      "type": "string",
-                      "defaultValue": "[resourceGroup().location]",
-                      "metadata": {
-                        "description": "Optional. The location of the backup vault."
-                      }
-                    },
-                    "backupName": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The name of the backup."
-                      }
-                    },
-                    "backupLabel": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The label of the backup."
-                      }
-                    },
-                    "useExistingSnapshot": {
-                      "type": "bool",
-                      "metadata": {
-                        "description": "Required. Indicates whether to use an existing snapshot."
-                      }
-                    },
-                    "snapshotName": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The name of the snapshot."
-                      }
-                    },
-                    "volumeResourceId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The resource ID of the volume."
-                      }
-                    },
-                    "volumeType": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The type of the volume. DataProtection volumes are used for replication."
-                      }
-                    },
                     "name": {
                       "type": "string",
                       "metadata": {
@@ -1317,32 +3447,56 @@
                         "description": "Optional. Location of the pool volume."
                       }
                     },
-                    "zones": {
-                      "type": "array",
-                      "defaultValue": [
-                        "1"
+                    "coolAccess": {
+                      "type": "bool",
+                      "metadata": {
+                        "description": "Required. If enabled (true) the pool can contain cool Access enabled volumes."
+                      }
+                    },
+                    "coolnessPeriod": {
+                      "type": "int",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Specifies the number of days after which data that is not accessed by clients will be tiered."
+                      }
+                    },
+                    "coolAccessRetrievalPolicy": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Determines the data retrieval behavior from the cool tier to standard storage based on the read pattern for cool access enabled volumes (Default/Never/Read)."
+                      }
+                    },
+                    "encryptionKeySource": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The source of the encryption key."
+                      }
+                    },
+                    "keyVaultPrivateEndpointResourceId": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The resource ID of the key vault private endpoint."
+                      }
+                    },
+                    "volumeType": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The type of the volume. DataProtection volumes are used for replication."
+                      }
+                    },
+                    "zone": {
+                      "type": "int",
+                      "allowedValues": [
+                        0,
+                        1,
+                        2,
+                        3
                       ],
                       "metadata": {
-                        "description": "Optional. Zone where the volume will be placed."
-                      }
-                    },
-                    "policyEnforced": {
-                      "type": "bool",
-                      "defaultValue": false,
-                      "metadata": {
-                        "description": "Optional. If Backup policy is enforced."
-                      }
-                    },
-                    "backupPolicyLocation": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The backup policy location."
-                      }
-                    },
-                    "snapshotPolicyLocation": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The location of snashot policies."
+                        "description": "Required. The Availability Zone to place the resource in. If set to 0, then Availability Zone is not set."
                       }
                     },
                     "serviceLevel": {
@@ -1386,9 +3540,19 @@
                     },
                     "protocolTypes": {
                       "type": "array",
-                      "defaultValue": [],
+                      "items": {
+                        "type": "string"
+                      },
+                      "defaultValue": [
+                        "NFSv3"
+                      ],
+                      "allowedValues": [
+                        "NFSv3",
+                        "NFSv4.1",
+                        "CIFS"
+                      ],
                       "metadata": {
-                        "description": "Optional. Set of protocol types."
+                        "description": "Optional. Set of protocol types. Default value is `['NFSv3']`. If you are creating a dual-stack volume, set either `['NFSv3','CIFS']` or `['NFSv4.1','CIFS']`."
                       }
                     },
                     "subnetResourceId": {
@@ -1397,11 +3561,11 @@
                         "description": "Required. The Azure Resource URI for a delegated subnet. Must have the delegation Microsoft.NetApp/volumes."
                       }
                     },
-                    "exportPolicyRules": {
-                      "type": "array",
-                      "defaultValue": [],
+                    "exportPolicy": {
+                      "$ref": "#/definitions/exportPolicyType",
+                      "nullable": true,
                       "metadata": {
-                        "description": "Optional. Export policy rules."
+                        "description": "Optional. The export policy rules."
                       }
                     },
                     "roleAssignments": {
@@ -1414,17 +3578,11 @@
                         "description": "Optional. Array of role assignments to create."
                       }
                     },
-                    "backupVaultResourceId": {
-                      "type": "string",
+                    "dataProtection": {
+                      "$ref": "#/definitions/dataProtectionType",
+                      "nullable": true,
                       "metadata": {
-                        "description": "Required. The Id of the Backup Vault."
-                      }
-                    },
-                    "replicationEnabled": {
-                      "type": "bool",
-                      "defaultValue": true,
-                      "metadata": {
-                        "description": "Optional. Enables replication."
+                        "description": "Optional. DataProtection type volumes include an object containing details of the replication."
                       }
                     },
                     "smbEncryption": {
@@ -1451,6 +3609,13 @@
                       "metadata": {
                         "description": "Optional. Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProtocol volume."
                       }
+                    },
+                    "kerberosEnabled": {
+                      "type": "bool",
+                      "defaultValue": false,
+                      "metadata": {
+                        "description": "Optional. Define if a volume is KerberosEnabled."
+                      }
                     }
                   },
                   "variables": {
@@ -1461,6 +3626,8 @@
                         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
                       }
                     ],
+                    "remoteCapacityPoolName": "[if(not(empty(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'))), split(coalesce(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '//'), '/')[10], '')]",
+                    "remoteNetAppName": "[if(not(empty(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'))), split(coalesce(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '//'), '/')[8], '')]",
                     "builtInRoleNames": {
                       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
                       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
@@ -1473,46 +3640,95 @@
                     "netAppAccount::capacityPool": {
                       "existing": true,
                       "type": "Microsoft.NetApp/netAppAccounts/capacityPools",
-                      "apiVersion": "2024-03-01",
+                      "apiVersion": "2024-07-01",
                       "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('capacityPoolName'))]"
+                    },
+                    "netAppAccount::backupVault": {
+                      "condition": "[not(empty(tryGet(parameters('dataProtection'), 'backup')))]",
+                      "existing": true,
+                      "type": "Microsoft.NetApp/netAppAccounts/backupVaults",
+                      "apiVersion": "2024-07-01",
+                      "name": "[format('{0}/{1}', parameters('netAppAccountName'), tryGet(parameters('dataProtection'), 'backup', 'backupVaultName'))]"
+                    },
+                    "netAppAccount::backupPolicy": {
+                      "condition": "[not(empty(tryGet(parameters('dataProtection'), 'backup')))]",
+                      "existing": true,
+                      "type": "Microsoft.NetApp/netAppAccounts/backupPolicies",
+                      "apiVersion": "2024-07-01",
+                      "name": "[format('{0}/{1}', parameters('netAppAccountName'), tryGet(parameters('dataProtection'), 'backup', 'backupPolicyName'))]"
+                    },
+                    "netAppAccount::snapshotPolicy": {
+                      "condition": "[not(empty(tryGet(parameters('dataProtection'), 'snapshot')))]",
+                      "existing": true,
+                      "type": "Microsoft.NetApp/netAppAccounts/snapshotPolicies",
+                      "apiVersion": "2024-07-01",
+                      "name": "[format('{0}/{1}', parameters('netAppAccountName'), tryGet(parameters('dataProtection'), 'snapshot', 'snapshotPolicyName'))]"
+                    },
+                    "remoteNetAppAccount::remoteCapacityPool::remoteVolume": {
+                      "condition": "[and(and(and(not(empty(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'))), not(equals(variables('remoteNetAppName'), parameters('netAppAccountName')))), and(not(empty(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'))), not(equals(variables('remoteCapacityPoolName'), parameters('capacityPoolName'))))), not(empty(tryGet(parameters('dataProtection'), 'replication'))))]",
+                      "existing": true,
+                      "type": "Microsoft.NetApp/netAppAccounts/capacityPools/volumes",
+                      "apiVersion": "2024-07-01",
+                      "subscriptionId": "[split(coalesce(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '//'), '/')[2]]",
+                      "resourceGroup": "[split(coalesce(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '////'), '/')[4]]",
+                      "name": "[format('{0}/{1}/{2}', split(coalesce(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '//'), '/')[8], split(coalesce(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '//'), '/')[10], last(split(coalesce(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), 'dummyvolume'), '/')))]"
+                    },
+                    "remoteNetAppAccount::remoteCapacityPool": {
+                      "condition": "[and(and(not(empty(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'))), not(equals(variables('remoteNetAppName'), parameters('netAppAccountName')))), and(not(empty(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'))), not(equals(variables('remoteCapacityPoolName'), parameters('capacityPoolName')))))]",
+                      "existing": true,
+                      "type": "Microsoft.NetApp/netAppAccounts/capacityPools",
+                      "apiVersion": "2024-07-01",
+                      "subscriptionId": "[split(coalesce(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '//'), '/')[2]]",
+                      "resourceGroup": "[split(coalesce(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '////'), '/')[4]]",
+                      "name": "[format('{0}/{1}', split(coalesce(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '//'), '/')[8], split(coalesce(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '//'), '/')[10])]"
+                    },
+                    "vnet::subnet": {
+                      "existing": true,
+                      "type": "Microsoft.Network/virtualNetworks/subnets",
+                      "apiVersion": "2024-03-01",
+                      "subscriptionId": "[split(parameters('subnetResourceId'), '/')[2]]",
+                      "resourceGroup": "[split(parameters('subnetResourceId'), '/')[4]]",
+                      "name": "[format('{0}/{1}', split(parameters('subnetResourceId'), '/')[8], last(split(parameters('subnetResourceId'), '/')))]"
                     },
                     "netAppAccount": {
                       "existing": true,
                       "type": "Microsoft.NetApp/netAppAccounts",
-                      "apiVersion": "2024-03-01",
+                      "apiVersion": "2024-07-01",
                       "name": "[parameters('netAppAccountName')]"
+                    },
+                    "keyVaultPrivateEndpoint": {
+                      "condition": "[not(equals(parameters('encryptionKeySource'), 'Microsoft.NetApp'))]",
+                      "existing": true,
+                      "type": "Microsoft.Network/privateEndpoints",
+                      "apiVersion": "2024-03-01",
+                      "subscriptionId": "[split(coalesce(parameters('keyVaultPrivateEndpointResourceId'), '//'), '/')[2]]",
+                      "resourceGroup": "[split(coalesce(parameters('keyVaultPrivateEndpointResourceId'), '////'), '/')[4]]",
+                      "name": "[last(split(coalesce(parameters('keyVaultPrivateEndpointResourceId'), 'dummyVault'), '/'))]"
+                    },
+                    "remoteNetAppAccount": {
+                      "condition": "[and(not(empty(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'))), not(equals(variables('remoteNetAppName'), parameters('netAppAccountName'))))]",
+                      "existing": true,
+                      "type": "Microsoft.NetApp/netAppAccounts",
+                      "apiVersion": "2024-07-01",
+                      "subscriptionId": "[split(coalesce(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '//'), '/')[2]]",
+                      "resourceGroup": "[split(coalesce(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '////'), '/')[4]]",
+                      "name": "[split(coalesce(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '//'), '/')[8]]"
+                    },
+                    "vnet": {
+                      "existing": true,
+                      "type": "Microsoft.Network/virtualNetworks",
+                      "apiVersion": "2024-03-01",
+                      "subscriptionId": "[split(parameters('subnetResourceId'), '/')[2]]",
+                      "resourceGroup": "[split(parameters('subnetResourceId'), '/')[4]]",
+                      "name": "[split(parameters('subnetResourceId'), '/')[8]]"
                     },
                     "volume": {
                       "type": "Microsoft.NetApp/netAppAccounts/capacityPools/volumes",
-                      "apiVersion": "2024-03-01",
+                      "apiVersion": "2024-07-01",
                       "name": "[format('{0}/{1}/{2}', parameters('netAppAccountName'), parameters('capacityPoolName'), parameters('name'))]",
                       "location": "[parameters('location')]",
-                      "properties": "[shallowMerge(createArray(createObject('coolAccess', parameters('coolAccess'), 'coolAccessRetrievalPolicy', parameters('coolAccessRetrievalPolicy'), 'coolnessPeriod', parameters('coolnessPeriod'), 'encryptionKeySource', parameters('encryptionKeySource')), if(not(equals(parameters('encryptionKeySource'), 'Microsoft.NetApp')), createObject('keyVaultPrivateEndpointResourceId', parameters('keyVaultPrivateEndpointResourceId')), createObject()), if(not(equals(parameters('volumeType'), '')), createObject('volumeType', parameters('volumeType'), 'dataProtection', createObject('replication', if(parameters('replicationEnabled'), createObject('endpointType', parameters('endpointType'), 'remoteVolumeRegion', parameters('remoteVolumeRegion'), 'remoteVolumeResourceId', parameters('remoteVolumeResourceId'), 'replicationSchedule', parameters('replicationSchedule')), createObject()), 'backup', if(parameters('backupEnabled'), createObject('backupPolicyId', reference('backupPolicies').outputs.resourceId.value, 'policyEnforced', parameters('policyEnforced'), 'backupVaultId', parameters('backupVaultResourceId')), createObject()), 'snapshot', if(parameters('snapEnabled'), createObject('snapshotPolicyId', reference('snapshotPolicies').outputs.resourceId.value), createObject()))), createObject()), createObject('networkFeatures', parameters('networkFeatures'), 'serviceLevel', parameters('serviceLevel'), 'creationToken', parameters('creationToken'), 'usageThreshold', parameters('usageThreshold'), 'protocolTypes', parameters('protocolTypes'), 'subnetId', parameters('subnetResourceId'), 'exportPolicy', if(not(empty(parameters('exportPolicyRules'))), createObject('rules', parameters('exportPolicyRules')), null()), 'smbContinuouslyAvailable', parameters('smbContinuouslyAvailable'), 'smbEncryption', parameters('smbEncryption'), 'smbNonBrowsable', parameters('smbNonBrowsable'))))]",
-                      "zones": "[parameters('zones')]",
-                      "dependsOn": [
-                        "backupPolicies",
-                        "backupVaults",
-                        "snapshotPolicies"
-                      ]
-                    },
-                    "backupVaults": {
-                      "condition": "[parameters('backupEnabled')]",
-                      "type": "Microsoft.NetApp/netAppAccounts/backupVaults",
-                      "apiVersion": "2024-03-01",
-                      "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('backupVaultName'))]",
-                      "location": "[parameters('backupVaultLocation')]",
-                      "properties": {}
-                    },
-                    "backups": {
-                      "condition": "[parameters('backupEnabled')]",
-                      "type": "Microsoft.NetApp/netAppAccounts/backupVaults/backups",
-                      "apiVersion": "2024-03-01",
-                      "name": "[format('{0}/{1}/{2}', parameters('netAppAccountName'), parameters('backupVaultName'), parameters('backupName'))]",
-                      "properties": "[if(parameters('backupEnabled'), createObject('label', parameters('backupLabel'), 'snapshotName', parameters('snapshotName'), 'useExistingSnapshot', parameters('useExistingSnapshot'), 'volumeResourceId', parameters('volumeResourceId')), createObject())]",
-                      "dependsOn": [
-                        "backupVaults",
-                        "volume"
-                      ]
+                      "properties": "[shallowMerge(createArray(createObject('coolAccess', parameters('coolAccess'), 'coolAccessRetrievalPolicy', parameters('coolAccessRetrievalPolicy'), 'coolnessPeriod', parameters('coolnessPeriod'), 'encryptionKeySource', parameters('encryptionKeySource')), if(not(equals(parameters('encryptionKeySource'), 'Microsoft.NetApp')), createObject('keyVaultPrivateEndpointResourceId', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(parameters('keyVaultPrivateEndpointResourceId'), '//'), '/')[2], split(coalesce(parameters('keyVaultPrivateEndpointResourceId'), '////'), '/')[4]), 'Microsoft.Network/privateEndpoints', last(split(coalesce(parameters('keyVaultPrivateEndpointResourceId'), 'dummyVault'), '/')))), createObject()), if(not(empty(parameters('volumeType'))), createObject('volumeType', parameters('volumeType')), createObject()), createObject('dataProtection', if(not(empty(parameters('dataProtection'))), createObject('replication', if(not(empty(tryGet(parameters('dataProtection'), 'replication'))), createObject('endpointType', tryGet(parameters('dataProtection'), 'replication', 'endpointType'), 'remoteVolumeRegion', if(not(empty(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'))), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '//'), '/')[2], split(coalesce(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '////'), '/')[4]), 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes', split(coalesce(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '//'), '/')[8], split(coalesce(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '//'), '/')[10], last(split(coalesce(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), 'dummyvolume'), '/'))), null()), 'remoteVolumeResourceId', tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), 'replicationSchedule', tryGet(parameters('dataProtection'), 'replication', 'replicationSchedule'), 'remotePath', tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remotePath')), createObject()), 'backup', if(not(empty(tryGet(parameters('dataProtection'), 'backup'))), createObject('backupPolicyId', resourceId('Microsoft.NetApp/netAppAccounts/backupPolicies', parameters('netAppAccountName'), tryGet(parameters('dataProtection'), 'backup', 'backupPolicyName')), 'policyEnforced', coalesce(tryGet(parameters('dataProtection'), 'backup', 'policyEnforced'), false()), 'backupVaultId', resourceId('Microsoft.NetApp/netAppAccounts/backupVaults', parameters('netAppAccountName'), tryGet(parameters('dataProtection'), 'backup', 'backupVaultName'))), createObject()), 'snapshot', if(not(empty(tryGet(parameters('dataProtection'), 'snapshot'))), createObject('snapshotPolicyId', resourceId('Microsoft.NetApp/netAppAccounts/snapshotPolicies', parameters('netAppAccountName'), tryGet(parameters('dataProtection'), 'snapshot', 'snapshotPolicyName'))), createObject())), null()), 'networkFeatures', parameters('networkFeatures'), 'serviceLevel', parameters('serviceLevel'), 'creationToken', parameters('creationToken'), 'usageThreshold', parameters('usageThreshold'), 'protocolTypes', parameters('protocolTypes'), 'subnetId', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('subnetResourceId'), '/')[2], split(parameters('subnetResourceId'), '/')[4]), 'Microsoft.Network/virtualNetworks/subnets', split(parameters('subnetResourceId'), '/')[8], last(split(parameters('subnetResourceId'), '/'))), 'exportPolicy', parameters('exportPolicy'), 'smbContinuouslyAvailable', parameters('smbContinuouslyAvailable'), 'smbEncryption', parameters('smbEncryption'), 'smbNonBrowsable', parameters('smbNonBrowsable'), 'kerberosEnabled', parameters('kerberosEnabled'))))]",
+                      "zones": "[if(not(equals(parameters('zone'), 0)), createArray(string(parameters('zone'))), null())]"
                     },
                     "volume_roleAssignments": {
                       "copy": {
@@ -1535,411 +3751,6 @@
                       "dependsOn": [
                         "volume"
                       ]
-                    },
-                    "backupPolicies": {
-                      "condition": "[parameters('backupEnabled')]",
-                      "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
-                      "name": "[parameters('backupPolicyName')]",
-                      "properties": {
-                        "expressionEvaluationOptions": {
-                          "scope": "inner"
-                        },
-                        "mode": "Incremental",
-                        "parameters": {
-                          "dailyBackupsToKeep": {
-                            "value": "[parameters('dailyBackupsToKeep')]"
-                          },
-                          "monthlyBackupsToKeep": {
-                            "value": "[parameters('monthlyBackupsToKeep')]"
-                          },
-                          "netAppAccountName": {
-                            "value": "[parameters('netAppAccountName')]"
-                          },
-                          "weeklyBackupsToKeep": {
-                            "value": "[parameters('weeklyBackupsToKeep')]"
-                          },
-                          "backupEnabled": {
-                            "value": "[parameters('backupEnabled')]"
-                          },
-                          "backupPolicyLocation": {
-                            "value": "[parameters('backupPolicyLocation')]"
-                          }
-                        },
-                        "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                          "contentVersion": "1.0.0.0",
-                          "metadata": {
-                            "_generator": {
-                              "name": "bicep",
-                              "version": "0.32.4.45862",
-                              "templateHash": "2321320275404095362"
-                            },
-                            "name": "Azure NetApp Files Backup Policy",
-                            "description": "This module deploys a Backup Policy for Azure NetApp File."
-                          },
-                          "parameters": {
-                            "netAppAccountName": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "Conditional. The name of the parent NetApp account. Required if the template is used in a standalone deployment."
-                              }
-                            },
-                            "backupPolicyName": {
-                              "type": "string",
-                              "defaultValue": "backupPolicy",
-                              "metadata": {
-                                "description": "Optional. The name of the backup policy."
-                              }
-                            },
-                            "backupPolicyLocation": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "Required. The location of the backup policy. Required if the template is used in a standalone deployment."
-                              }
-                            },
-                            "dailyBackupsToKeep": {
-                              "type": "int",
-                              "metadata": {
-                                "description": "Required. The daily backups to keep."
-                              }
-                            },
-                            "monthlyBackupsToKeep": {
-                              "type": "int",
-                              "metadata": {
-                                "description": "Required. The monthly backups to keep."
-                              }
-                            },
-                            "weeklyBackupsToKeep": {
-                              "type": "int",
-                              "metadata": {
-                                "description": "Required. The weekly backups to keep."
-                              }
-                            },
-                            "backupEnabled": {
-                              "type": "bool",
-                              "defaultValue": false,
-                              "metadata": {
-                                "description": "Optional. Indicates whether the backup policy is enabled."
-                              }
-                            }
-                          },
-                          "resources": [
-                            {
-                              "type": "Microsoft.NetApp/netAppAccounts/backupPolicies",
-                              "apiVersion": "2024-03-01",
-                              "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('backupPolicyName'))]",
-                              "location": "[parameters('backupPolicyLocation')]",
-                              "properties": {
-                                "dailyBackupsToKeep": "[parameters('dailyBackupsToKeep')]",
-                                "enabled": "[parameters('backupEnabled')]",
-                                "monthlyBackupsToKeep": "[parameters('monthlyBackupsToKeep')]",
-                                "weeklyBackupsToKeep": "[parameters('weeklyBackupsToKeep')]"
-                              }
-                            }
-                          ],
-                          "outputs": {
-                            "resourceId": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "The resource IDs of the backup Policy created within volume."
-                              },
-                              "value": "[resourceId('Microsoft.NetApp/netAppAccounts/backupPolicies', parameters('netAppAccountName'), parameters('backupPolicyName'))]"
-                            },
-                            "name": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "The name of the Backup Policy."
-                              },
-                              "value": "[parameters('backupPolicyName')]"
-                            },
-                            "resourceGroupName": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "The name of the Resource Group the Backup Policy was created in."
-                              },
-                              "value": "[resourceGroup().name]"
-                            }
-                          }
-                        }
-                      }
-                    },
-                    "snapshotPolicies": {
-                      "condition": "[parameters('snapEnabled')]",
-                      "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
-                      "name": "[uniqueString(parameters('snapshotPolicyName'))]",
-                      "properties": {
-                        "expressionEvaluationOptions": {
-                          "scope": "inner"
-                        },
-                        "mode": "Incremental",
-                        "parameters": {
-                          "dailyHour": {
-                            "value": "[parameters('dailyHour')]"
-                          },
-                          "dailyMinute": {
-                            "value": "[parameters('dailyMinute')]"
-                          },
-                          "dailySnapshotsToKeep": {
-                            "value": "[parameters('dailySnapshotsToKeep')]"
-                          },
-                          "dailyUsedBytes": {
-                            "value": "[parameters('dailyUsedBytes')]"
-                          },
-                          "daysOfMonth": {
-                            "value": "[parameters('daysOfMonth')]"
-                          },
-                          "hourlyMinute": {
-                            "value": "[parameters('hourlyMinute')]"
-                          },
-                          "hourlySnapshotsToKeep": {
-                            "value": "[parameters('hourlySnapshotsToKeep')]"
-                          },
-                          "hourlyUsedBytes": {
-                            "value": "[parameters('hourlyUsedBytes')]"
-                          },
-                          "monthlyHour": {
-                            "value": "[parameters('monthlyHour')]"
-                          },
-                          "monthlyMinute": {
-                            "value": "[parameters('monthlyMinute')]"
-                          },
-                          "monthlySnapshotsToKeep": {
-                            "value": "[parameters('monthlySnapshotsToKeep')]"
-                          },
-                          "monthlyUsedBytes": {
-                            "value": "[parameters('monthlyUsedBytes')]"
-                          },
-                          "netAppAccountName": {
-                            "value": "[parameters('netAppAccountName')]"
-                          },
-                          "snapshotPolicyName": {
-                            "value": "[parameters('snapshotPolicyName')]"
-                          },
-                          "weeklyDay": {
-                            "value": "[parameters('weeklyDay')]"
-                          },
-                          "weeklyHour": {
-                            "value": "[parameters('weeklyHour')]"
-                          },
-                          "weeklyMinute": {
-                            "value": "[parameters('weeklyMinute')]"
-                          },
-                          "weeklySnapshotsToKeep": {
-                            "value": "[parameters('weeklySnapshotsToKeep')]"
-                          },
-                          "weeklyUsedBytes": {
-                            "value": "[parameters('weeklyUsedBytes')]"
-                          },
-                          "snapshotPolicyLocation": {
-                            "value": "[parameters('snapshotPolicyLocation')]"
-                          }
-                        },
-                        "template": {
-                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                          "contentVersion": "1.0.0.0",
-                          "metadata": {
-                            "_generator": {
-                              "name": "bicep",
-                              "version": "0.32.4.45862",
-                              "templateHash": "17538391796648994915"
-                            },
-                            "name": "Azure NetApp Files Snapshot Policy",
-                            "description": "This module deploys a Snapshot Policy for an Azure NetApp File."
-                          },
-                          "parameters": {
-                            "netAppAccountName": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "Conditional. The name of the parent NetApp account. Required if the template is used in a standalone deployment."
-                              }
-                            },
-                            "snapshotPolicyName": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "Required. The name of the snapshot policy."
-                              }
-                            },
-                            "snapshotPolicyLocation": {
-                              "type": "string",
-                              "defaultValue": "[resourceGroup().location]",
-                              "metadata": {
-                                "description": "Optional. The location of the snapshot policy."
-                              }
-                            },
-                            "dailyHour": {
-                              "type": "int",
-                              "metadata": {
-                                "description": "Required. The daily snapshot hour."
-                              }
-                            },
-                            "dailyMinute": {
-                              "type": "int",
-                              "metadata": {
-                                "description": "Required. The daily snapshot minute."
-                              }
-                            },
-                            "dailySnapshotsToKeep": {
-                              "type": "int",
-                              "metadata": {
-                                "description": "Required. Daily snapshot count to keep."
-                              }
-                            },
-                            "dailyUsedBytes": {
-                              "type": "int",
-                              "metadata": {
-                                "description": "Required. Daily snapshot used bytes."
-                              }
-                            },
-                            "hourlyMinute": {
-                              "type": "int",
-                              "metadata": {
-                                "description": "Required. The hourly snapshot minute."
-                              }
-                            },
-                            "hourlySnapshotsToKeep": {
-                              "type": "int",
-                              "metadata": {
-                                "description": "Required. Hourly snapshot count to keep."
-                              }
-                            },
-                            "hourlyUsedBytes": {
-                              "type": "int",
-                              "metadata": {
-                                "description": "Required. Hourly snapshot used bytes."
-                              }
-                            },
-                            "daysOfMonth": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "Required. The monthly snapshot day."
-                              }
-                            },
-                            "monthlyHour": {
-                              "type": "int",
-                              "metadata": {
-                                "description": "Required. The monthly snapshot hour."
-                              }
-                            },
-                            "monthlyMinute": {
-                              "type": "int",
-                              "metadata": {
-                                "description": "Required. The monthly snapshot minute."
-                              }
-                            },
-                            "monthlySnapshotsToKeep": {
-                              "type": "int",
-                              "metadata": {
-                                "description": "Required. Monthly snapshot count to keep."
-                              }
-                            },
-                            "monthlyUsedBytes": {
-                              "type": "int",
-                              "metadata": {
-                                "description": "Required. Monthly snapshot used bytes."
-                              }
-                            },
-                            "weeklyDay": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "Required. The weekly snapshot day."
-                              }
-                            },
-                            "weeklyHour": {
-                              "type": "int",
-                              "metadata": {
-                                "description": "Required. The weekly snapshot hour."
-                              }
-                            },
-                            "weeklyMinute": {
-                              "type": "int",
-                              "metadata": {
-                                "description": "Required. The weekly snapshot minute."
-                              }
-                            },
-                            "weeklySnapshotsToKeep": {
-                              "type": "int",
-                              "metadata": {
-                                "description": "Required. Weekly snapshot count to keep."
-                              }
-                            },
-                            "weeklyUsedBytes": {
-                              "type": "int",
-                              "metadata": {
-                                "description": "Required. Weekly snapshot used bytes."
-                              }
-                            },
-                            "snapEnabled": {
-                              "type": "bool",
-                              "defaultValue": true,
-                              "metadata": {
-                                "description": "Optional. Indicates whether the snapshot policy is enabled."
-                              }
-                            }
-                          },
-                          "resources": [
-                            {
-                              "condition": "[parameters('snapEnabled')]",
-                              "type": "Microsoft.NetApp/netAppAccounts/snapshotPolicies",
-                              "apiVersion": "2024-03-01",
-                              "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('snapshotPolicyName'))]",
-                              "location": "[parameters('snapshotPolicyLocation')]",
-                              "properties": {
-                                "enabled": "[parameters('snapEnabled')]",
-                                "dailySchedule": {
-                                  "hour": "[parameters('dailyHour')]",
-                                  "minute": "[parameters('dailyMinute')]",
-                                  "snapshotsToKeep": "[parameters('dailySnapshotsToKeep')]",
-                                  "usedBytes": "[parameters('dailyUsedBytes')]"
-                                },
-                                "hourlySchedule": {
-                                  "minute": "[parameters('hourlyMinute')]",
-                                  "snapshotsToKeep": "[parameters('hourlySnapshotsToKeep')]",
-                                  "usedBytes": "[parameters('hourlyUsedBytes')]"
-                                },
-                                "monthlySchedule": {
-                                  "daysOfMonth": "[parameters('daysOfMonth')]",
-                                  "hour": "[parameters('monthlyHour')]",
-                                  "minute": "[parameters('monthlyMinute')]",
-                                  "snapshotsToKeep": "[parameters('monthlySnapshotsToKeep')]",
-                                  "usedBytes": "[parameters('monthlyUsedBytes')]"
-                                },
-                                "weeklySchedule": {
-                                  "day": "[parameters('weeklyDay')]",
-                                  "hour": "[parameters('weeklyHour')]",
-                                  "minute": "[parameters('weeklyMinute')]",
-                                  "snapshotsToKeep": "[parameters('weeklySnapshotsToKeep')]",
-                                  "usedBytes": "[parameters('weeklyUsedBytes')]"
-                                }
-                              }
-                            }
-                          ],
-                          "outputs": {
-                            "resourceId": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "The resource IDs of the snapshot Policy created within volume."
-                              },
-                              "value": "[resourceId('Microsoft.NetApp/netAppAccounts/snapshotPolicies', parameters('netAppAccountName'), parameters('snapshotPolicyName'))]"
-                            },
-                            "name": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "The name of the Backup Policy."
-                              },
-                              "value": "[parameters('snapshotPolicyName')]"
-                            },
-                            "resourceGroupName": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "The name of the Resource Group the Snapshot was created in."
-                              },
-                              "value": "[resourceGroup().name]"
-                            }
-                          }
-                        }
-                      }
                     }
                   },
                   "outputs": {
@@ -1969,7 +3780,7 @@
                       "metadata": {
                         "description": "The location the resource was deployed into."
                       },
-                      "value": "[reference('volume', '2024-03-01', 'full').location]"
+                      "value": "[reference('volume', '2024-07-01', 'full').location]"
                     }
                   }
                 }
@@ -2006,20 +3817,355 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('capacityPool', '2024-03-01', 'full').location]"
+              "value": "[reference('capacityPool', '2024-07-01', 'full').location]"
             },
-            "volumeResourceId": {
-              "type": "string",
+            "volumeResourceIds": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
               "metadata": {
                 "description": "The resource IDs of the volume created in the capacity pool."
               },
-              "value": "[if(not(equals(parameters('volumes'), createArray())), reference(format('capacityPool_volumes[{0}]', 0)).outputs.resourceId.value, '')]"
+              "copy": {
+                "count": "[length(coalesce(parameters('volumes'), createArray()))]",
+                "input": "[reference(format('capacityPool_volumes[{0}]', copyIndex())).outputs.resourceId.value]"
+              }
             }
           }
         }
       },
       "dependsOn": [
-        "netAppAccount"
+        "netAppAccount",
+        "netAppAccount_backupPolicies",
+        "netAppAccount_backupVault",
+        "netAppAccount_snapshotPolicies"
+      ]
+    },
+    "netAppAccount_backupVaultBackups": {
+      "condition": "[not(empty(tryGet(parameters('backupVault'), 'backups')))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-ANFAccount-BackupVault-Backups', uniqueString(deployment().name, parameters('location')))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "netAppAccountName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[tryGet(parameters('backupVault'), 'name')]"
+          },
+          "backups": {
+            "value": "[tryGet(parameters('backupVault'), 'backups')]"
+          },
+          "location": {
+            "value": "[coalesce(tryGet(parameters('backupVault'), 'location'), parameters('location'))]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.33.93.31351",
+              "templateHash": "6704781490326075849"
+            },
+            "name": "Azure NetApp Files Volume Backup Vault",
+            "description": "This module deploys a NetApp Files Backup Vault."
+          },
+          "definitions": {
+            "backupType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name of the backup."
+                  }
+                },
+                "label": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Label for backup."
+                  }
+                },
+                "snapshotName": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name of the snapshot."
+                  }
+                },
+                "volumeName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the volume to backup."
+                  }
+                },
+                "capacityPoolName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the capacity pool containing the volume."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for a backup."
+              }
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "defaultValue": "vault",
+              "metadata": {
+                "description": "Optional. The name of the backup vault."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Optional. Location of the backup vault."
+              }
+            },
+            "netAppAccountName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent NetApp account. Required if the template is used in a standalone deployment."
+              }
+            },
+            "backups": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/backupType"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The list of backups to create."
+              }
+            }
+          },
+          "resources": {
+            "netAppAccount": {
+              "existing": true,
+              "type": "Microsoft.NetApp/netAppAccounts",
+              "apiVersion": "2024-07-01",
+              "name": "[parameters('netAppAccountName')]"
+            },
+            "backupVault": {
+              "type": "Microsoft.NetApp/netAppAccounts/backupVaults",
+              "apiVersion": "2024-07-01",
+              "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('name'))]",
+              "location": "[parameters('location')]",
+              "properties": {}
+            },
+            "backupVault_backups": {
+              "copy": {
+                "name": "backupVault_backups",
+                "count": "[length(coalesce(parameters('backups'), createArray()))]"
+              },
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}-ANF-Backup-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "netAppAccountName": {
+                    "value": "[parameters('netAppAccountName')]"
+                  },
+                  "backupVaultName": {
+                    "value": "[parameters('name')]"
+                  },
+                  "name": {
+                    "value": "[tryGet(coalesce(parameters('backups'), createArray())[copyIndex()], 'name')]"
+                  },
+                  "label": {
+                    "value": "[tryGet(coalesce(parameters('backups'), createArray())[copyIndex()], 'label')]"
+                  },
+                  "snapshotName": {
+                    "value": "[tryGet(coalesce(parameters('backups'), createArray())[copyIndex()], 'snapshotName')]"
+                  },
+                  "volumeName": {
+                    "value": "[coalesce(parameters('backups'), createArray())[copyIndex()].volumeName]"
+                  },
+                  "capacityPoolName": {
+                    "value": "[coalesce(parameters('backups'), createArray())[copyIndex()].capacityPoolName]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "languageVersion": "2.0",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.33.93.31351",
+                      "templateHash": "17452697444375969559"
+                    },
+                    "name": "Azure NetApp Files Volume Backup",
+                    "description": "This module deploys a backup of a NetApp Files Volume."
+                  },
+                  "parameters": {
+                    "name": {
+                      "type": "string",
+                      "defaultValue": "backup",
+                      "metadata": {
+                        "description": "Optional. The name of the backup."
+                      }
+                    },
+                    "backupVaultName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent backup vault. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "netAppAccountName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent NetApp account. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "label": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Label for backup."
+                      }
+                    },
+                    "snapshotName": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The name of the snapshot."
+                      }
+                    },
+                    "volumeName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The name of the volume to backup."
+                      }
+                    },
+                    "capacityPoolName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The name of the capacity pool containing the volume."
+                      }
+                    }
+                  },
+                  "resources": {
+                    "netAppAccount::remoteCapacityPool::volume": {
+                      "existing": true,
+                      "type": "Microsoft.NetApp/netAppAccounts/capacityPools/volumes",
+                      "apiVersion": "2024-07-01",
+                      "name": "[format('{0}/{1}/{2}', parameters('netAppAccountName'), parameters('capacityPoolName'), parameters('volumeName'))]"
+                    },
+                    "netAppAccount::backupVault": {
+                      "existing": true,
+                      "type": "Microsoft.NetApp/netAppAccounts/backupVaults",
+                      "apiVersion": "2024-07-01",
+                      "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('backupVaultName'))]"
+                    },
+                    "netAppAccount::remoteCapacityPool": {
+                      "existing": true,
+                      "type": "Microsoft.NetApp/netAppAccounts/capacityPools",
+                      "apiVersion": "2024-07-01",
+                      "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('capacityPoolName'))]"
+                    },
+                    "netAppAccount": {
+                      "existing": true,
+                      "type": "Microsoft.NetApp/netAppAccounts",
+                      "apiVersion": "2024-07-01",
+                      "name": "[parameters('netAppAccountName')]"
+                    },
+                    "backup": {
+                      "type": "Microsoft.NetApp/netAppAccounts/backupVaults/backups",
+                      "apiVersion": "2024-07-01",
+                      "name": "[format('{0}/{1}/{2}', parameters('netAppAccountName'), parameters('backupVaultName'), parameters('name'))]",
+                      "properties": {
+                        "label": "[parameters('label')]",
+                        "snapshotName": "[parameters('snapshotName')]",
+                        "volumeResourceId": "[resourceId('Microsoft.NetApp/netAppAccounts/capacityPools/volumes', parameters('netAppAccountName'), parameters('capacityPoolName'), parameters('volumeName'))]"
+                      }
+                    }
+                  },
+                  "outputs": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the backup."
+                      },
+                      "value": "[parameters('name')]"
+                    },
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The Resource ID of the backup."
+                      },
+                      "value": "[resourceId('Microsoft.NetApp/netAppAccounts/backupVaults/backups', parameters('netAppAccountName'), parameters('backupVaultName'), parameters('name'))]"
+                    },
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the Resource Group the backup was created in."
+                      },
+                      "value": "[resourceGroup().name]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "backupVault"
+              ]
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the backup vault."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The Resource ID of the backup vault."
+              },
+              "value": "[resourceId('Microsoft.NetApp/netAppAccounts/backupVaults', parameters('netAppAccountName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the Resource Group the backup vault was created in."
+              },
+              "value": "[resourceGroup().name]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location the resource was deployed into."
+              },
+              "value": "[reference('backupVault', '2024-07-01', 'full').location]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "netAppAccount",
+        "netAppAccount_capacityPools"
       ]
     }
   },
@@ -2050,14 +4196,34 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('netAppAccount', '2024-03-01', 'full').location]"
+      "value": "[reference('netAppAccount', '2024-07-01', 'full').location]"
     },
-    "volumeResourceId": {
-      "type": "string",
-      "metadata": {
-        "description": "The resource IDs of the volume created in the capacity pool."
+    "capacityPoolResourceIds": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "resourceId": {
+            "type": "string"
+          },
+          "volumeResourceIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
       },
-      "value": "[if(not(equals(parameters('capacityPools'), createArray())), reference(format('netAppAccount_capacityPools[{0}]', 0)).outputs.volumeResourceId.value, '')]"
+      "metadata": {
+        "description": "The resource IDs of the created capacity pools & their volumes."
+      },
+      "copy": {
+        "count": "[length(coalesce(parameters('capacityPools'), createArray()))]",
+        "input": {
+          "resourceId": "[reference(format('netAppAccount_capacityPools[{0}]', copyIndex())).outputs.resourceId.value]",
+          "volumeResourceIds": "[reference(format('netAppAccount_capacityPools[{0}]', copyIndex())).outputs.volumeResourceIds.value]"
+        }
+      }
     }
   }
 }

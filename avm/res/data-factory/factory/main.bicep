@@ -93,6 +93,8 @@ param tags object?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+var enableReferencedModulesTelemetry = false
+
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
@@ -360,7 +362,7 @@ module dataFactory_privateEndpoints 'br/public:avm/res/network/private-endpoint:
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
-      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',
@@ -388,7 +390,7 @@ output resourceId string = dataFactory.id
 output resourceGroupName string = resourceGroup().name
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = dataFactory.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = dataFactory.?identity.?principalId
 
 @description('The location the resource was deployed into.')
 output location string = dataFactory.location

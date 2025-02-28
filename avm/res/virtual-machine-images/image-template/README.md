@@ -18,7 +18,7 @@ This module deploys a Virtual Machine Image Template that can be consumed by Azu
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.VirtualMachineImages/imageTemplates` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.VirtualMachineImages/2023-07-01/imageTemplates) |
+| `Microsoft.VirtualMachineImages/imageTemplates` | [2024-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.VirtualMachineImages/2024-02-01/imageTemplates) |
 
 ## Usage examples
 
@@ -202,6 +202,7 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
     }
     name: 'vmiitmax001'
     // Non-required parameters
+    autoRunState: 'Enabled'
     buildTimeoutInMinutes: 60
     customizationSteps: [
       {
@@ -223,10 +224,16 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
         type: 'Shell'
       }
     ]
+    errorHandlingOnCustomizerError: 'cleanup'
+    errorHandlingOnValidationError: 'abort'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
+    }
+    managedResourceTags: {
+      testKey1: 'testValue1'
+      testKey2: 'testValue2'
     }
     optimizeVmBoot: 'Enabled'
     osDiskSizeGB: 127
@@ -330,6 +337,9 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
       "value": "vmiitmax001"
     },
     // Non-required parameters
+    "autoRunState": {
+      "value": "Enabled"
+    },
     "buildTimeoutInMinutes": {
       "value": 60
     },
@@ -355,6 +365,12 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
         }
       ]
     },
+    "errorHandlingOnCustomizerError": {
+      "value": "cleanup"
+    },
+    "errorHandlingOnValidationError": {
+      "value": "abort"
+    },
     "location": {
       "value": "<location>"
     },
@@ -362,6 +378,12 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
       "value": {
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
+      }
+    },
+    "managedResourceTags": {
+      "value": {
+        "testKey1": "testValue1",
+        "testKey2": "testValue2"
       }
     },
     "optimizeVmBoot": {
@@ -474,6 +496,7 @@ param managedIdentities = {
 }
 param name = 'vmiitmax001'
 // Non-required parameters
+param autoRunState = 'Enabled'
 param buildTimeoutInMinutes = 60
 param customizationSteps = [
   {
@@ -495,10 +518,16 @@ param customizationSteps = [
     type: 'Shell'
   }
 ]
+param errorHandlingOnCustomizerError = 'cleanup'
+param errorHandlingOnValidationError = 'abort'
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
+}
+param managedResourceTags = {
+  testKey1: 'testValue1'
+  testKey2: 'testValue2'
 }
 param optimizeVmBoot = 'Enabled'
 param osDiskSizeGB = 127
@@ -731,11 +760,15 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`autoRunState`](#parameter-autorunstate) | string | Indicates whether or not to automatically run the image template build on template creation or update. |
 | [`buildTimeoutInMinutes`](#parameter-buildtimeoutinminutes) | int | The image build timeout in minutes. 0 means the default 240 minutes. |
 | [`customizationSteps`](#parameter-customizationsteps) | array | Customization steps to be run when building the VM image. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`errorHandlingOnCustomizerError`](#parameter-errorhandlingoncustomizererror) | string | If there is a customizer error and this field is set to 'cleanup', the build VM and associated network resources will be cleaned up. This is the default behavior. If there is a customizer error and this field is set to 'abort', the build VM will be preserved. |
+| [`errorHandlingOnValidationError`](#parameter-errorhandlingonvalidationerror) | string | If there is a validation error and this field is set to 'cleanup', the build VM and associated network resources will be cleaned up. If there is a validation error and this field is set to 'abort', the build VM will be preserved. This is the default behavior. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
+| [`managedResourceTags`](#parameter-managedresourcetags) | object | Tags that will be applied to the resource group and/or resources created by the service. |
 | [`optimizeVmBoot`](#parameter-optimizevmboot) | string | The optimize property can be enabled while creating a VM image and allows VM optimization to improve image creation time. |
 | [`osDiskSizeGB`](#parameter-osdisksizegb) | int | Specifies the size of OS disk. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
@@ -1031,6 +1064,21 @@ The name prefix of the Image Template to be built by the Azure Image Builder ser
 - Required: Yes
 - Type: string
 
+### Parameter: `autoRunState`
+
+Indicates whether or not to automatically run the image template build on template creation or update.
+
+- Required: No
+- Type: string
+- Default: `'Disabled'`
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
 ### Parameter: `buildTimeoutInMinutes`
 
 The image build timeout in minutes. 0 means the default 240 minutes.
@@ -1057,6 +1105,40 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
+- MinValue: 0
+- MaxValue: 960
+
+### Parameter: `errorHandlingOnCustomizerError`
+
+If there is a customizer error and this field is set to 'cleanup', the build VM and associated network resources will be cleaned up. This is the default behavior. If there is a customizer error and this field is set to 'abort', the build VM will be preserved.
+
+- Required: No
+- Type: string
+- Default: `'cleanup'`
+- Allowed:
+  ```Bicep
+  [
+    'abort'
+    'cleanup'
+  ]
+  ```
+- MinValue: 0
+- MaxValue: 960
+
+### Parameter: `errorHandlingOnValidationError`
+
+If there is a validation error and this field is set to 'cleanup', the build VM and associated network resources will be cleaned up. If there is a validation error and this field is set to 'abort', the build VM will be preserved. This is the default behavior.
+
+- Required: No
+- Type: string
+- Default: `'cleanup'`
+- Allowed:
+  ```Bicep
+  [
+    'abort'
+    'cleanup'
+  ]
+  ```
 - MinValue: 0
 - MaxValue: 960
 
@@ -1109,6 +1191,15 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+- MinValue: 0
+- MaxValue: 960
+
+### Parameter: `managedResourceTags`
+
+Tags that will be applied to the resource group and/or resources created by the service.
+
+- Required: No
+- Type: object
 - MinValue: 0
 - MaxValue: 960
 
@@ -1495,7 +1586,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Notes
 

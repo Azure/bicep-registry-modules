@@ -132,6 +132,13 @@ module testDeployment '../../../main.bicep' = {
     vmUserAssignedIdentities: [
       nestedDependencies.outputs.managedIdentityResourceId
     ]
+    autoRunState: 'Enabled'
+    errorHandlingOnCustomizerError: 'cleanup'
+    errorHandlingOnValidationError: 'abort'
+    managedResourceTags: {
+      testKey1: 'testValue1'
+      testKey2: 'testValue2'
+    }
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'

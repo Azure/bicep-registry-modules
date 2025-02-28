@@ -68,6 +68,8 @@ param networkAcls object?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+var enableReferencedModulesTelemetry = false
+
 var resourceLogConfiguration = [
   for configuration in resourceLogConfigurationsToEnable: {
     name: configuration
@@ -226,7 +228,7 @@ module webPubSub_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
-      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',
@@ -293,7 +295,7 @@ output publicPort int = webPubSub.properties.publicPort
 output serverPort int = webPubSub.properties.serverPort
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = webPubSub.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = webPubSub.?identity.?principalId
 
 @description('The location the resource was deployed into.')
 output location string = webPubSub.location

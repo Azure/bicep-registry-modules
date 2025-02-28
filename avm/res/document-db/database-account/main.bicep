@@ -170,6 +170,8 @@ param networkRestrictions networkRestrictionsType = {
 @description('Optional. Default to TLS 1.2. Enum to indicate the minimum allowed TLS version. Azure Cosmos DB for MongoDB RU and Apache Cassandra only work with TLS 1.2 or later.')
 param minimumTlsVersion string = 'Tls12'
 
+var enableReferencedModulesTelemetry = false
+
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
@@ -535,7 +537,7 @@ module databaseAccount_privateEndpoints 'br/public:avm/res/network/private-endpo
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
-      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',
@@ -646,7 +648,7 @@ output resourceId string = databaseAccount.id
 output resourceGroupName string = resourceGroup().name
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = databaseAccount.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = databaseAccount.?identity.?principalId
 
 @description('The location the resource was deployed into.')
 output location string = databaseAccount.location

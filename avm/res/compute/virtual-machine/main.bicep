@@ -306,6 +306,8 @@ param winRM array = []
 @description('Optional. The configuration profile of automanage. Either \'/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction\', \'providers/Microsoft.Automanage/bestPractices/AzureBestPracticesDevTest\' or the resource Id of custom profile.')
 param configurationProfile string = ''
 
+var enableReferencedModulesTelemetry = false
+
 var publicKeysFormatted = [
   for publicKey in publicKeys: {
     path: publicKey.path
@@ -496,7 +498,7 @@ module vm_nic 'modules/nic-configuration.bicep' = [
       tags: nicConfiguration.?tags ?? tags
       diagnosticSettings: nicConfiguration.?diagnosticSettings
       roleAssignments: nicConfiguration.?roleAssignments
-      enableTelemetry: nicConfiguration.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -1039,7 +1041,7 @@ output resourceId string = vm.id
 output resourceGroupName string = resourceGroup().name
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = vm.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = vm.?identity.?principalId
 
 @description('The location the resource was deployed into.')
 output location string = vm.location

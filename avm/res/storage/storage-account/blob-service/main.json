@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "13530138849873868007"
+      "version": "0.33.93.31351",
+      "templateHash": "11461945096578509088"
     },
     "name": "Storage Account blob Services",
     "description": "This module deploys a Storage Account Blob Service."
@@ -190,7 +190,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     }
@@ -312,7 +312,7 @@
     },
     "restorePolicyDays": {
       "type": "int",
-      "defaultValue": 6,
+      "defaultValue": 7,
       "minValue": 1,
       "metadata": {
         "description": "Optional. How long this blob can be restored. It should be less than DeleteRetentionPolicy days."
@@ -472,8 +472,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "15541609729265841595"
+              "version": "0.33.93.31351",
+              "templateHash": "11560675453246401508"
             },
             "name": "Storage Account Blob Containers",
             "description": "This module deploys a Storage Account Blob Container."
@@ -550,7 +550,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a role assignment.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
                 }
               }
             }
@@ -585,7 +585,7 @@
             },
             "denyEncryptionScopeOverride": {
               "type": "bool",
-              "defaultValue": false,
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Block override of encryption scope from the container default."
               }
@@ -698,7 +698,7 @@
               "name": "[format('{0}/{1}/{2}', parameters('storageAccountName'), parameters('blobServiceName'), parameters('name'))]",
               "properties": {
                 "defaultEncryptionScope": "[if(not(empty(parameters('defaultEncryptionScope'))), parameters('defaultEncryptionScope'), null())]",
-                "denyEncryptionScopeOverride": "[if(equals(parameters('denyEncryptionScopeOverride'), true()), parameters('denyEncryptionScopeOverride'), null())]",
+                "denyEncryptionScopeOverride": "[parameters('denyEncryptionScopeOverride')]",
                 "enableNfsV3AllSquash": "[if(equals(parameters('enableNfsV3AllSquash'), true()), parameters('enableNfsV3AllSquash'), null())]",
                 "enableNfsV3RootSquash": "[if(equals(parameters('enableNfsV3RootSquash'), true()), parameters('enableNfsV3RootSquash'), null())]",
                 "immutableStorageWithVersioning": "[if(equals(parameters('immutableStorageWithVersioningEnabled'), true()), createObject('enabled', parameters('immutableStorageWithVersioningEnabled')), null())]",
@@ -761,8 +761,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "12930903258566593173"
+                      "version": "0.33.93.31351",
+                      "templateHash": "8061556339565534458"
                     },
                     "name": "Storage Account Blob Container Immutability Policies",
                     "description": "This module deploys a Storage Account Blob Container Immutability Policy."

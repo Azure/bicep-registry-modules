@@ -137,6 +137,8 @@ param vpnClientAadConfiguration object = {}
 // Variables       //
 // ================//
 
+var enableReferencedModulesTelemetry = false
+
 // Other Variables
 var gatewayPipAllocationMethod = skuName == 'Basic' ? 'Dynamic' : 'Static'
 
@@ -355,6 +357,7 @@ module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.5.1' = [
           : virtualGatewayPublicIpName
         domainNameLabelScope: ''
       }
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]

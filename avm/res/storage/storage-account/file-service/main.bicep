@@ -20,7 +20,7 @@ param shareDeleteRetentionPolicy object = {
 @description('Optional. The List of CORS rules. You can include up to five CorsRule elements in the request.')
 param corsRules corsRuleType[]?
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 

@@ -55,12 +55,12 @@ param restorePolicyEnabled bool = false
 
 @minValue(1)
 @description('Optional. How long this blob can be restored. It should be less than DeleteRetentionPolicy days.')
-param restorePolicyDays int = 6
+param restorePolicyDays int = 7
 
 @description('Optional. Blob containers to create.')
 param containers array?
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 

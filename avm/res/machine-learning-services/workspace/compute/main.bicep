@@ -141,7 +141,7 @@ output resourceId string = compute.id
 output resourceGroupName string = resourceGroup().name
 
 @sys.description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = compute.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = compute.?identity.?principalId
 
 @sys.description('The location the resource was deployed into.')
 output location string = compute.location

@@ -103,6 +103,8 @@ param customerManagedKey customerManagedKeyWithAutoRotateType?
 @description('Optional. Enable infrastructure encryption (double encryption). Note, this setting requires the configuration of Customer-Managed-Keys (CMK) via the corresponding module parameters.')
 param requireInfrastructureEncryption bool = true
 
+var enableReferencedModulesTelemetry = false
+
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
@@ -225,7 +227,7 @@ resource serviceBusNamespace 'Microsoft.ServiceBus/namespaces@2022-10-01-preview
               keyName: customerManagedKey!.keyName
               keyVaultUri: cMKKeyVault.properties.vaultUri
               keyVersion: !empty(customerManagedKey.?keyVersion ?? '')
-                ? customerManagedKey!.keyVersion
+                ? customerManagedKey!.?keyVersion
                 : (customerManagedKey.?autoRotationEnabled ?? true)
                     ? null
                     : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
@@ -375,18 +377,13 @@ resource serviceBusNamespace_diagnosticSettings 'Microsoft.Insights/diagnosticSe
   }
 ]
 
-module serviceBusNamespace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
+module serviceBusNamespace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-serviceBusNamespace-PrivateEndpoint-${index}'
-    scope: !empty(privateEndpoint.?resourceGroupResourceId)
-      ? resourceGroup(
-          split((privateEndpoint.?resourceGroupResourceId ?? '//'), '/')[2],
-          split((privateEndpoint.?resourceGroupResourceId ?? '////'), '/')[4]
-        )
-      : resourceGroup(
-          split((privateEndpoint.?subnetResourceId ?? '//'), '/')[2],
-          split((privateEndpoint.?subnetResourceId ?? '////'), '/')[4]
-        )
+    scope: resourceGroup(
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
+    )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(serviceBusNamespace.id, '/'))}-${privateEndpoint.?service ?? 'namespace'}-${index}'
       privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
@@ -417,7 +414,7 @@ module serviceBusNamespace_privateEndpoints 'br/public:avm/res/network/private-e
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
-      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',
@@ -471,13 +468,13 @@ output systemAssignedMIPrincipalId string? = serviceBusNamespace.?identity.?prin
 output location string = serviceBusNamespace.location
 
 @description('The private endpoints of the service bus namespace.')
-output privateEndpoints array = [
-  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
-    name: serviceBusNamespace_privateEndpoints[i].outputs.name
-    resourceId: serviceBusNamespace_privateEndpoints[i].outputs.resourceId
-    groupId: serviceBusNamespace_privateEndpoints[i].outputs.groupId
-    customDnsConfig: serviceBusNamespace_privateEndpoints[i].outputs.customDnsConfig
-    networkInterfaceIds: serviceBusNamespace_privateEndpoints[i].outputs.networkInterfaceIds
+output privateEndpoints privateEndpointOutputType[] = [
+  for (pe, index) in (privateEndpoints ?? []): {
+    name: serviceBusNamespace_privateEndpoints[index].outputs.name
+    resourceId: serviceBusNamespace_privateEndpoints[index].outputs.resourceId
+    groupId: serviceBusNamespace_privateEndpoints[index].outputs.?groupId!
+    customDnsConfigs: serviceBusNamespace_privateEndpoints[index].outputs.customDnsConfigs
+    networkInterfaceResourceIds: serviceBusNamespace_privateEndpoints[index].outputs.networkInterfaceResourceIds
   }
 ]
 
@@ -487,6 +484,30 @@ output serviceBusEndpoint string = serviceBusNamespace.properties.serviceBusEndp
 // =============== //
 //   Definitions   //
 // =============== //
+
+@export()
+type privateEndpointOutputType = {
+  @description('The name of the private endpoint.')
+  name: string
+
+  @description('The resource ID of the private endpoint.')
+  resourceId: string
+
+  @description('The group Id for the private endpoint Group.')
+  groupId: string?
+
+  @description('The custom DNS configurations of the private endpoint.')
+  customDnsConfigs: {
+    @description('FQDN that resolves to private endpoint IP address.')
+    fqdn: string?
+
+    @description('A list of private IP addresses of the private endpoint.')
+    ipAddresses: string[]
+  }[]
+
+  @description('The IDs of the network interfaces associated with the private endpoint.')
+  networkInterfaceResourceIds: string[]
+}
 
 @export()
 @description('The type for a SKU.')

@@ -1236,7 +1236,7 @@ function ConvertTo-FormattedJSONParameterObject {
             $isLineWithStringValue = $lineValue -match '^".+"$' # e.g. "value"
             $isLineWithFunction = $lineValue -match '^[a-zA-Z0-9]+\(.+' # e.g., split(something) or loadFileAsBase64("./test.pfx")
             $isLineWithPlainValue = $lineValue -match '^\w+$' # e.g. adminPassword: password
-            $isLineWithPrimitiveValue = $lineValue -match '^\s*true|false|[0-9]+$' # e.g., isSecure: true
+            $isLineWithPrimitiveValue = $lineValue -match '^\s*(true|false|[0-9])+$' # e.g., isSecure: true
             $isLineContainingCondition = $lineValue -match '^\w+ [=!?|&]{2} .+\?.+\:.+$' # e.g., iteration == "init" ? "A" : "B"
 
             # Special case: Multi-line function
