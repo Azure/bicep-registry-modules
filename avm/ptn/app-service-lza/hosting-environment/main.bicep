@@ -102,7 +102,7 @@ param autoApproveAfdPrivateEndpoint bool = true
 var resourceSuffix = '${workloadName}-${environmentName}-${location}'
 var resourceGroupName = 'rg-spoke-${resourceSuffix}'
 
-module resourceGroup 'br/public:avm/res/resources/resource-group:0.4.0' = {
+module resourceGroup 'br/public:avm/res/resources/resource-group:0.4.1' = {
   name: '${uniqueString(deployment().name, location, resourceGroupName)}-deployment'
   params: {
     name: resourceGroupName
@@ -128,6 +128,7 @@ module spoke './modules/spoke/deploy.spoke.bicep' = {
   name: '${uniqueString(deployment().name, location)}-spokedeployment'
   params: {
     naming: naming.outputs.names
+    workload: workloadName
     enableTelemetry: enableTelemetry
     resourceGroupName: resourceGroup.outputs.name
     location: location

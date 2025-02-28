@@ -10,7 +10,7 @@ param resourceGroupName string
 
 param tags object = {}
 
-module resourceGroup 'br/public:avm/res/resources/resource-group:0.4.0' = {
+module resourceGroup 'br/public:avm/res/resources/resource-group:0.4.1' = {
   name: '${uniqueString(deployment().name, resourceGroupName)}-deployment'
   params: {
     name: resourceGroupName
@@ -18,7 +18,7 @@ module resourceGroup 'br/public:avm/res/resources/resource-group:0.4.0' = {
   }
 }
 
-module hubNetworking 'br/public:avm/res/network/virtual-network:0.5.2' = {
+module hubNetworking 'br/public:avm/res/network/virtual-network:0.5.4' = {
   scope: az.resourceGroup(resourceGroupName)
   dependsOn: [
     resourceGroup

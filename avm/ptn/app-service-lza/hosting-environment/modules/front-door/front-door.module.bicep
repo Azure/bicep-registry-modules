@@ -30,10 +30,6 @@ param originGroupName string
 @description('Origin List')
 param origins array
 
-@description('Name of the WAF policy to create.')
-@maxLength(128)
-param wafPolicyName string
-
 @allowed([
   'Block'
   'Log'
@@ -111,8 +107,8 @@ param logAnalyticsWorkspaceId string
 //   'text/x-java-source'
 // ]
 
-module waf 'br/public:avm/res/network/front-door-web-application-firewall-policy:0.3.0' = {
-  name: wafPolicyName
+module waf 'br/public:avm/res/network/front-door-web-application-firewall-policy:0.3.1' = {
+  name: 'wafPolicy-${uniqueString(resourceGroup().id)}'
   params: {
     name: 'waffrontdoor'
     location: 'Global'
@@ -167,8 +163,8 @@ module waf 'br/public:avm/res/network/front-door-web-application-firewall-policy
   }
 }
 
-module frontDoor 'br/public:avm/res/cdn/profile:0.11.1' = {
-  name: afdName
+module frontDoor 'br/public:avm/res/cdn/profile:0.12.1' = {
+  name: 'frontDoorDeployment-${uniqueString(resourceGroup().id)}'
   params: {
     name: afdName
     sku: skuName

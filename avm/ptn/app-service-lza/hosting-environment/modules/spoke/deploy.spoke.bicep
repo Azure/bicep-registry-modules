@@ -7,6 +7,9 @@ param naming NamingOutput
 @description('Required. Azure region where the resources will be deployed in')
 param location string
 
+@description('Required. The name of the workload')
+param workload string
+
 @description('Required. Whether to enable deployment telemetry.')
 param enableTelemetry bool
 
@@ -154,7 +157,7 @@ module networking '../networking/network.module.bicep' = {
   }
 }
 
-module logAnalyticsWs 'br/public:avm/res/operational-insights/workspace:0.7.1' = {
+module logAnalyticsWs 'br/public:avm/res/operational-insights/workspace:0.11.1' = {
   name: '${uniqueString(deployment().name, location)}-logAnalyticsWs'
   scope: resourceGroup(resourceGroupName)
   params: {
@@ -189,7 +192,7 @@ module afd '../front-door/front-door.module.bicep' = {
   name: '${uniqueString(deployment().name, location)}-afd'
   scope: resourceGroup(resourceGroupName)
   params: {
-    afdName: resourceNames.frontDoor
+    afdName: '${resourceNames.frontDoor}${workload}'
     endpointName: resourceNames.frontDoorEndPoint
     originGroupName: resourceNames.frontDoorOriginGroup
     origins: [
@@ -205,7 +208,6 @@ module afd '../front-door/front-door.module.bicep' = {
       }
     ]
     skuName: 'Premium_AzureFrontDoor'
-    wafPolicyName: resourceNames.frontDoorWaf
     logAnalyticsWorkspaceId: logAnalyticsWs.outputs.resourceId
     tags: tags
   }

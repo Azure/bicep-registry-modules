@@ -106,7 +106,7 @@ var diagnosticsLogs = contains(diagnosticLogCategoriesToEnable, 'allLogs')
     ]
   : contains(diagnosticLogCategoriesToEnable, '') ? [] : diagnosticsLogsSpecified
 
-module ase 'br/public:avm/res/web/hosting-environment:0.1.1' = {
+module ase 'br/public:avm/res/web/hosting-environment:0.3.0' = {
   name: '${uniqueString(deployment().name, location)}-ase-avm'
   params: {
     name: name
@@ -118,10 +118,12 @@ module ase 'br/public:avm/res/web/hosting-environment:0.1.1' = {
     frontEndScaleFactor: frontEndScaleFactor
     internalLoadBalancingMode: internalLoadBalancingMode
     zoneRedundant: zoneRedundant
-    allowNewPrivateEndpointConnections: allowNewPrivateEndpointConnections
-    ftpEnabled: ftpEnabled
-    inboundIpAddressOverride: inboundIpAddressOverride
-    remoteDebugEnabled: remoteDebugEnabled
+    networkConfiguration: {
+      allowNewPrivateEndpointConnections: allowNewPrivateEndpointConnections
+      ftpEnabled: ftpEnabled
+      inboundIpAddressOverride: inboundIpAddressOverride
+      remoteDebugEnabled: remoteDebugEnabled
+    }
     customDnsSuffixCertificateUrl: customDnsSuffixCertificateUrl
     customDnsSuffixKeyVaultReferenceIdentity: customDnsSuffixKeyVaultReferenceIdentity
     dnsSuffix: !empty(dnsSuffix) ? dnsSuffix : null
@@ -136,7 +138,7 @@ module ase 'br/public:avm/res/web/hosting-environment:0.1.1' = {
   }
 }
 
-module asePrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.6.0' = {
+module asePrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.0' = {
   name: '${uniqueString(deployment().name, location)}-ase-dnszone'
   params: {
     name: '${ase.outputs.name}.appserviceenvironment.net'

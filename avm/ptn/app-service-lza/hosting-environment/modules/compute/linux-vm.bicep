@@ -55,7 +55,7 @@ var uami = resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', sshKey
 // RESOURCES
 // ------------------
 
-module vmNetworkSecurityGroup 'br/public:avm/res/network/network-security-group:0.2.0' = {
+module vmNetworkSecurityGroup 'br/public:avm/res/network/network-security-group:0.5.0' = {
   name: '${uniqueString(deployment().name, location)}-vm-nsg'
   params: {
     name: vmNetworkSecurityGroupName
@@ -202,7 +202,7 @@ resource sshKey 'Microsoft.Compute/sshPublicKeys@2022-03-01' = {
   }
 }
 
-module vm 'br/public:avm/res/compute/virtual-machine:0.11.0' = {
+module vm 'br/public:avm/res/compute/virtual-machine:0.12.1' = {
   name: '${uniqueString(deployment().name, location)}-linux-vm'
   params: {
     name: vmName

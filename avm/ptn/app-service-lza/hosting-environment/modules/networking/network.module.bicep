@@ -72,7 +72,7 @@ var subnets = [
   }
 ]
 
-module vnetSpoke 'br/public:avm/res/network/virtual-network:0.5.1' = {
+module vnetSpoke 'br/public:avm/res/network/virtual-network:0.5.4' = {
   name: '${uniqueString(deployment().name, location)}-spokevnet'
   params: {
     name: resourceNames.vnetSpoke

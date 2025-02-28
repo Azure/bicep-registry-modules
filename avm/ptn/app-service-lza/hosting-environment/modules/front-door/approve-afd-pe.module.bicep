@@ -73,7 +73,7 @@ resource runAfdApproval 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
 }
 
 @description('The logs of the deployment script that will be used to auto-approve the Private Endpoint Connection of the AFD.')
-resource log 'Microsoft.Resources/deploymentScripts/logs@2020-10-01' existing = {
+resource log 'Microsoft.Resources/deploymentScripts/logs@2023-08-01' existing = {
   parent: runAfdApproval
   name: 'default'
 }
