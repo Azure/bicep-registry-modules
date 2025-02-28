@@ -73,7 +73,7 @@ var subnets = [
 ]
 
 module vnetSpoke 'br/public:avm/res/network/virtual-network:0.5.1' = {
-  name: 'vnetSpoke-Deployment'
+  name: '${uniqueString(deployment().name, location)}-spokevnet'
   params: {
     name: resourceNames.vnetSpoke
     location: location
@@ -97,7 +97,7 @@ module vnetSpoke 'br/public:avm/res/network/virtual-network:0.5.1' = {
 }
 
 module routeTableToFirewall 'br/public:avm/res/network/route-table:0.4.0' = if (!empty(firewallInternalIp) && (enableEgressLockdown)) {
-  name: 'routeTableToFirewall-Deployment'
+  name: '${uniqueString(deployment().name, location)}-rt'
   params: {
     name: resourceNames.routeTable
     location: location
@@ -108,7 +108,7 @@ module routeTableToFirewall 'br/public:avm/res/network/route-table:0.4.0' = if (
 
 @description('NSG for the private endpoint subnet.')
 module nsgPep 'br/public:avm/res/network/network-security-group:0.5.0' = {
-  name: take('nsgPep-${deployment().name}', 64)
+  name: '${uniqueString(deployment().name, location)}-nsgpep'
   params: {
     name: resourceNames.pepNsg
     location: location
@@ -141,7 +141,7 @@ module nsgPep 'br/public:avm/res/network/network-security-group:0.5.0' = {
 
 @description('NSG for ASE subnet')
 module nsgAse 'br/public:avm/res/network/network-security-group:0.5.0' = if (deployAseV3) {
-  name: take('nsgAse-${deployment().name}', 64)
+  name: '${uniqueString(deployment().name, location)}-nsgase'
   params: {
     name: resourceNames.aseNsg
     location: location

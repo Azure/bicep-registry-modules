@@ -66,6 +66,7 @@ module vmNetworkSecurityGroup 'br/public:avm/res/network/network-security-group:
               access: 'Deny'
               protocol: 'Tcp'
               direction: 'Outbound'
+              sourcePortRange: '*'
               sourceAddressPrefix: 'VirtualNetwork'
               destinationAddressPrefix: '*'
               destinationPortRanges: [
@@ -83,6 +84,7 @@ module vmNetworkSecurityGroup 'br/public:avm/res/network/network-security-group:
               access: 'Deny'
               protocol: 'Tcp'
               direction: 'Outbound'
+              sourcePortRange: '*'
               sourceAddressPrefix: 'VirtualNetwork'
               destinationAddressPrefix: '*'
               destinationPortRanges: [

@@ -24,17 +24,6 @@ param password string = newGuid()
 // Test Execution //
 // ============== //
 
-module firewall 'deploy.hub.bicep' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-firewall'
-  params: {
-    location: resourceLocation
-    resourceGroupName: 'rg-firewall-${serviceShort}-${resourceLocation}'
-    tags: {
-      environment: 'test'
-    }
-  }
-}
-
 module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
   params: {
@@ -50,7 +39,6 @@ module testDeployment '../../../main.bicep' = {
     adminPassword: password
     vmAuthenticationType: 'sshPublicKey'
     enableEgressLockdown: true
-    firewallInternalIp: firewall.outputs.firewallInternalIp
     autoApproveAfdPrivateEndpoint: true
     vnetSpokeAddressSpace: '10.240.0.0/20'
     subnetSpokeAppSvcAddressSpace: '10.240.0.0/26'

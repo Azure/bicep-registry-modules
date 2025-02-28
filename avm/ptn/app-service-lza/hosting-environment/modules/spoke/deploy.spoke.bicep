@@ -139,7 +139,7 @@ var virtualNetworkLinks = [
 ]
 
 module networking '../networking/network.module.bicep' = {
-  name: 'networkingModule-Deployment'
+  name: '${uniqueString(deployment().name, location)}-networking'
   scope: resourceGroup(resourceGroupName)
   params: {
     naming: naming
@@ -155,7 +155,7 @@ module networking '../networking/network.module.bicep' = {
 }
 
 module logAnalyticsWs 'br/public:avm/res/operational-insights/workspace:0.7.1' = {
-  name: 'logAnalyticsWs-Deployment'
+  name: '${uniqueString(deployment().name, location)}-logAnalyticsWs'
   scope: resourceGroup(resourceGroupName)
   params: {
     name: resourceNames.logAnalyticsWs
@@ -165,7 +165,7 @@ module logAnalyticsWs 'br/public:avm/res/operational-insights/workspace:0.7.1' =
 }
 
 module webApp '../app-service/app-service.module.bicep' = {
-  name: 'webAppModule-Deployment'
+  name: '${uniqueString(deployment().name, location)}-webApp'
   scope: resourceGroup(resourceGroupName)
   params: {
     deployAseV3: deployAseV3
@@ -186,7 +186,7 @@ module webApp '../app-service/app-service.module.bicep' = {
 }
 
 module afd '../front-door/front-door.module.bicep' = {
-  name: take('AzureFrontDoor-${resourceNames.frontDoor}-deployment', 64)
+  name: '${uniqueString(deployment().name, location)}-afd'
   scope: resourceGroup(resourceGroupName)
   params: {
     afdName: resourceNames.frontDoor
@@ -212,7 +212,7 @@ module afd '../front-door/front-door.module.bicep' = {
 }
 
 module autoApproveAfdPe '../front-door/approve-afd-pe.module.bicep' = if (autoApproveAfdPrivateEndpoint) {
-  name: take('autoApproveAfdPe-${resourceNames.frontDoor}-deployment', 64)
+  name: '${uniqueString(deployment().name, location)}-autoApproveAfdPe'
   scope: resourceGroup(resourceGroupName)
   params: {
     location: location
@@ -226,7 +226,7 @@ module autoApproveAfdPe '../front-door/approve-afd-pe.module.bicep' = if (autoAp
 
 @description('An optional Linux virtual machine deployment to act as a jump box.')
 module jumpboxLinuxVM '../compute/linux-vm.bicep' = if (deployJumpHost && vmJumpboxOSType == 'linux') {
-  name: take('vm-linux-${deployment().name}', 64)
+  name: '${uniqueString(deployment().name, location)}-jumpboxLinuxVM'
   scope: resourceGroup(resourceGroupName)
   params: {
     location: location
@@ -250,7 +250,7 @@ module jumpboxLinuxVM '../compute/linux-vm.bicep' = if (deployJumpHost && vmJump
 
 @description('An optional Windows virtual machine deployment to act as a jump box.')
 module jumpboxWindowsVM '../compute/windows-vm.bicep' = if (deployJumpHost && vmJumpboxOSType == 'windows') {
-  name: take('vm-windows-${deployment().name}', 64)
+  name: '${uniqueString(deployment().name, location)}-jumpboxWindowsVM'
   scope: resourceGroup(resourceGroupName)
   params: {
     location: location

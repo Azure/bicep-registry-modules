@@ -21,7 +21,7 @@ var uami = resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', idAfdP
 
 @description('The User Assigned Managed Identity that will be given Contributor role on the Resource Group in order to auto-approve the Private Endpoint Connection of the AFD.')
 module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0' = {
-  name: '${idAfdPeAutoApproverName}-deployment'
+  name: '${uniqueString(deployment().name, location)}-uami'
   params: {
     name: idAfdPeAutoApproverName
     location: location

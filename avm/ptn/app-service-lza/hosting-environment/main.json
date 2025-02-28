@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "14213070333322867703"
+      "templateHash": "15852906503828982481"
     },
     "name": "App Service Landing Zone Accelerator",
     "description": "This Azure App Service pattern module represents an Azure App Service deployment aligned with the cloud adoption framework",
@@ -2749,7 +2749,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "8950639453347198627"
+              "templateHash": "11286008840431150376"
             }
           },
           "definitions": {
@@ -3666,7 +3666,7 @@
             "networking": {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "networkingModule-Deployment",
+              "name": "[format('{0}-networking', uniqueString(deployment().name, parameters('location')))]",
               "resourceGroup": "[parameters('resourceGroupName')]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -3709,7 +3709,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "16350409884527249970"
+                      "templateHash": "13234830217906973068"
                     }
                   },
                   "parameters": {
@@ -3801,7 +3801,7 @@
                     {
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
-                      "name": "vnetSpoke-Deployment",
+                      "name": "[format('{0}-spokevnet', uniqueString(deployment().name, parameters('location')))]",
                       "properties": {
                         "expressionEvaluationOptions": {
                           "scope": "inner"
@@ -3829,14 +3829,14 @@
                                 "addressPrefix": "[parameters('subnetSpokeAppSvcAddressSpace')]",
                                 "privateEndpointNetworkPolicies": "[if(not(parameters('deployAseV3')), 'Enabled', 'Disabled')]",
                                 "delegation": "[if(not(parameters('deployAseV3')), 'Microsoft.Web/serverfarms', 'Microsoft.Web/hostingEnvironments')]",
-                                "networkSecurityGroupResourceId": "[if(not(parameters('deployAseV3')), reference(resourceId('Microsoft.Resources/deployments', take(format('nsgPep-{0}', deployment().name), 64)), '2022-09-01').outputs.resourceId.value, reference(resourceId('Microsoft.Resources/deployments', take(format('nsgAse-{0}', deployment().name), 64)), '2022-09-01').outputs.resourceId.value)]",
-                                "routeTableResourceId": "[if(and(not(empty(parameters('firewallInternalIp'))), parameters('enableEgressLockdown')), reference(resourceId('Microsoft.Resources/deployments', 'routeTableToFirewall-Deployment'), '2022-09-01').outputs.resourceId.value, null())]"
+                                "networkSecurityGroupResourceId": "[if(not(parameters('deployAseV3')), reference(resourceId('Microsoft.Resources/deployments', format('{0}-nsgpep', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.resourceId.value, reference(resourceId('Microsoft.Resources/deployments', format('{0}-nsgase', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.resourceId.value)]",
+                                "routeTableResourceId": "[if(and(not(empty(parameters('firewallInternalIp'))), parameters('enableEgressLockdown')), reference(resourceId('Microsoft.Resources/deployments', format('{0}-rt', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.resourceId.value, null())]"
                               },
                               {
                                 "name": "[variables('resourceNames').snetPe]",
                                 "addressPrefix": "[parameters('subnetSpokePrivateEndpointAddressSpace')]",
                                 "privateEndpointNetworkPolicies": "Disabled",
-                                "networkSecurityGroupResourceId": "[reference(resourceId('Microsoft.Resources/deployments', take(format('nsgPep-{0}', deployment().name), 64)), '2022-09-01').outputs.resourceId.value]"
+                                "networkSecurityGroupResourceId": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-nsgpep', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.resourceId.value]"
                               }
                             ]
                           },
@@ -5377,16 +5377,16 @@
                         }
                       },
                       "dependsOn": [
-                        "[resourceId('Microsoft.Resources/deployments', take(format('nsgAse-{0}', deployment().name), 64))]",
-                        "[resourceId('Microsoft.Resources/deployments', take(format('nsgPep-{0}', deployment().name), 64))]",
-                        "[resourceId('Microsoft.Resources/deployments', 'routeTableToFirewall-Deployment')]"
+                        "[resourceId('Microsoft.Resources/deployments', format('{0}-nsgase', uniqueString(deployment().name, parameters('location'))))]",
+                        "[resourceId('Microsoft.Resources/deployments', format('{0}-nsgpep', uniqueString(deployment().name, parameters('location'))))]",
+                        "[resourceId('Microsoft.Resources/deployments', format('{0}-rt', uniqueString(deployment().name, parameters('location'))))]"
                       ]
                     },
                     {
                       "condition": "[and(not(empty(parameters('firewallInternalIp'))), parameters('enableEgressLockdown'))]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
-                      "name": "routeTableToFirewall-Deployment",
+                      "name": "[format('{0}-rt', uniqueString(deployment().name, parameters('location')))]",
                       "properties": {
                         "expressionEvaluationOptions": {
                           "scope": "inner"
@@ -5753,7 +5753,7 @@
                     {
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
-                      "name": "[take(format('nsgPep-{0}', deployment().name), 64)]",
+                      "name": "[format('{0}-nsgpep', uniqueString(deployment().name, parameters('location')))]",
                       "properties": {
                         "expressionEvaluationOptions": {
                           "scope": "inner"
@@ -6409,7 +6409,7 @@
                       "condition": "[parameters('deployAseV3')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
-                      "name": "[take(format('nsgAse-{0}', deployment().name), 64)]",
+                      "name": "[format('{0}-nsgase', uniqueString(deployment().name, parameters('location')))]",
                       "properties": {
                         "expressionEvaluationOptions": {
                           "scope": "inner"
@@ -7062,23 +7062,23 @@
                   "outputs": {
                     "vnetSpokeId": {
                       "type": "string",
-                      "value": "[reference(resourceId('Microsoft.Resources/deployments', 'vnetSpoke-Deployment'), '2022-09-01').outputs.resourceId.value]"
+                      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-spokevnet', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.resourceId.value]"
                     },
                     "vnetSpokeName": {
                       "type": "string",
-                      "value": "[reference(resourceId('Microsoft.Resources/deployments', 'vnetSpoke-Deployment'), '2022-09-01').outputs.name.value]"
+                      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-spokevnet', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.name.value]"
                     },
                     "snetAppSvcId": {
                       "type": "string",
-                      "value": "[reference(resourceId('Microsoft.Resources/deployments', 'vnetSpoke-Deployment'), '2022-09-01').outputs.subnetResourceIds.value[0]]"
+                      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-spokevnet', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.subnetResourceIds.value[0]]"
                     },
                     "snetPeId": {
                       "type": "string",
-                      "value": "[reference(resourceId('Microsoft.Resources/deployments', 'vnetSpoke-Deployment'), '2022-09-01').outputs.subnetResourceIds.value[1]]"
+                      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-spokevnet', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.subnetResourceIds.value[1]]"
                     },
                     "snetPeName": {
                       "type": "string",
-                      "value": "[reference(resourceId('Microsoft.Resources/deployments', 'vnetSpoke-Deployment'), '2022-09-01').outputs.subnetNames.value[1]]"
+                      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-spokevnet', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.subnetNames.value[1]]"
                     }
                   }
                 }
@@ -7090,7 +7090,7 @@
             "logAnalyticsWs": {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "logAnalyticsWs-Deployment",
+              "name": "[format('{0}-logAnalyticsWs', uniqueString(deployment().name, parameters('location')))]",
               "resourceGroup": "[parameters('resourceGroupName')]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -9140,7 +9140,7 @@
             "webApp": {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "webAppModule-Deployment",
+              "name": "[format('{0}-webApp', uniqueString(deployment().name, parameters('location')))]",
               "resourceGroup": "[parameters('resourceGroupName')]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -24424,7 +24424,7 @@
             "afd": {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[take(format('AzureFrontDoor-{0}-deployment', variables('resourceNames').frontDoor), 64)]",
+              "name": "[format('{0}-afd', uniqueString(deployment().name, parameters('location')))]",
               "resourceGroup": "[parameters('resourceGroupName')]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -29425,7 +29425,7 @@
               "condition": "[parameters('autoApproveAfdPrivateEndpoint')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[take(format('autoApproveAfdPe-{0}-deployment', variables('resourceNames').frontDoor), 64)]",
+              "name": "[format('{0}-autoApproveAfdPe', uniqueString(deployment().name, parameters('location')))]",
               "resourceGroup": "[parameters('resourceGroupName')]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -29450,7 +29450,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "18329992088702442963"
+                      "templateHash": "12994030627619742256"
                     }
                   },
                   "parameters": {
@@ -29495,11 +29495,11 @@
                       "name": "[variables('roleAssignmentName')]",
                       "properties": {
                         "roleDefinitionId": "[variables('contributorRoleDefinitionId')]",
-                        "principalId": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-deployment', parameters('idAfdPeAutoApproverName'))), '2022-09-01').outputs.principalId.value]",
+                        "principalId": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-uami', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.principalId.value]",
                         "principalType": "ServicePrincipal"
                       },
                       "dependsOn": [
-                        "[resourceId('Microsoft.Resources/deployments', format('{0}-deployment', parameters('idAfdPeAutoApproverName')))]"
+                        "[resourceId('Microsoft.Resources/deployments', format('{0}-uami', uniqueString(deployment().name, parameters('location'))))]"
                       ],
                       "metadata": {
                         "description": "The role assignment that will be created to give the User Assigned Managed Identity Contributor role on the Resource Group in order to auto-approve the Private Endpoint Connection of the AFD."
@@ -29542,7 +29542,7 @@
                     {
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
-                      "name": "[format('{0}-deployment', parameters('idAfdPeAutoApproverName'))]",
+                      "name": "[format('{0}-uami', uniqueString(deployment().name, parameters('location')))]",
                       "properties": {
                         "expressionEvaluationOptions": {
                           "scope": "inner"
@@ -30027,7 +30027,7 @@
               "condition": "[and(parameters('deployJumpHost'), equals(parameters('vmJumpboxOSType'), 'linux'))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[take(format('vm-linux-{0}', deployment().name), 64)]",
+              "name": "[format('{0}-jumpboxLinuxVM', uniqueString(deployment().name, parameters('location')))]",
               "resourceGroup": "[parameters('resourceGroupName')]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -30091,7 +30091,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "5244615369210695338"
+                      "templateHash": "1162517588303584498"
                     }
                   },
                   "parameters": {
@@ -30385,7 +30385,7 @@
                           "enableTelemetry": {
                             "value": "[parameters('enableTelemetry')]"
                           },
-                          "securityRules": "[if(not(empty(parameters('bastionResourceId'))), createObject('value', createArray(createObject('name', 'allow-bastion-inbound', 'properties', createObject('description', 'Allow inbound traffic from Bastion to the JumpBox', 'protocol', '*', 'sourceAddressPrefix', 'Bastion', 'sourcePortRange', '*', 'destinationAddressPrefix', '*', 'destinationPortRange', '*', 'access', 'Allow', 'priority', 100, 'direction', 'Inbound')), createObject('name', 'deny-hop-outbound', 'properties', createObject('priority', 200, 'access', 'Deny', 'protocol', 'Tcp', 'direction', 'Outbound', 'sourceAddressPrefix', 'VirtualNetwork', 'destinationAddressPrefix', '*', 'destinationPortRanges', createArray('3389', '22'))))), createObject('value', createArray(createObject('name', 'deny-hop-outbound', 'properties', createObject('priority', 200, 'access', 'Deny', 'protocol', 'Tcp', 'direction', 'Outbound', 'sourceAddressPrefix', 'VirtualNetwork', 'destinationAddressPrefix', '*', 'destinationPortRanges', createArray('3389', '22'))))))]"
+                          "securityRules": "[if(not(empty(parameters('bastionResourceId'))), createObject('value', createArray(createObject('name', 'allow-bastion-inbound', 'properties', createObject('description', 'Allow inbound traffic from Bastion to the JumpBox', 'protocol', '*', 'sourceAddressPrefix', 'Bastion', 'sourcePortRange', '*', 'destinationAddressPrefix', '*', 'destinationPortRange', '*', 'access', 'Allow', 'priority', 100, 'direction', 'Inbound')), createObject('name', 'deny-hop-outbound', 'properties', createObject('priority', 200, 'access', 'Deny', 'protocol', 'Tcp', 'direction', 'Outbound', 'sourcePortRange', '*', 'sourceAddressPrefix', 'VirtualNetwork', 'destinationAddressPrefix', '*', 'destinationPortRanges', createArray('3389', '22'))))), createObject('value', createArray(createObject('name', 'deny-hop-outbound', 'properties', createObject('priority', 200, 'access', 'Deny', 'protocol', 'Tcp', 'direction', 'Outbound', 'sourcePortRange', '*', 'sourceAddressPrefix', 'VirtualNetwork', 'destinationAddressPrefix', '*', 'destinationPortRanges', createArray('3389', '22'))))))]"
                         },
                         "template": {
                           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -37200,7 +37200,7 @@
               "condition": "[and(parameters('deployJumpHost'), equals(parameters('vmJumpboxOSType'), 'windows'))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[take(format('vm-windows-{0}', deployment().name), 64)]",
+              "name": "[format('{0}-jumpboxWindowsVM', uniqueString(deployment().name, parameters('location')))]",
               "resourceGroup": "[parameters('resourceGroupName')]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -37261,7 +37261,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "12105621756119008381"
+                      "templateHash": "16187377704767202990"
                     }
                   },
                   "parameters": {
@@ -37478,7 +37478,7 @@
                           "enableTelemetry": {
                             "value": "[parameters('enableTelemetry')]"
                           },
-                          "securityRules": "[if(not(empty(parameters('bastionResourceId'))), createObject('value', createArray(createObject('name', 'allow-bastion-inbound', 'properties', createObject('description', 'Allow inbound traffic from Bastion to the JumpBox', 'protocol', '*', 'sourceAddressPrefix', 'Bastion', 'sourcePortRange', '*', 'destinationAddressPrefix', '*', 'destinationPortRange', '*', 'access', 'Allow', 'priority', 100, 'direction', 'Inbound')), createObject('name', 'deny-hop-outbound', 'properties', createObject('priority', 200, 'access', 'Deny', 'protocol', 'Tcp', 'direction', 'Outbound', 'sourceAddressPrefix', 'VirtualNetwork', 'destinationAddressPrefix', '*', 'destinationPortRanges', createArray('3389', '22'))))), createObject('value', createArray(createObject('name', 'deny-hop-outbound', 'properties', createObject('priority', 200, 'access', 'Deny', 'protocol', 'Tcp', 'direction', 'Outbound', 'sourceAddressPrefix', 'VirtualNetwork', 'destinationAddressPrefix', '*', 'destinationPortRanges', createArray('3389', '22'))))))]"
+                          "securityRules": "[if(not(empty(parameters('bastionResourceId'))), createObject('value', createArray(createObject('name', 'allow-bastion-inbound', 'properties', createObject('description', 'Allow inbound traffic from Bastion to the JumpBox', 'protocol', '*', 'sourceAddressPrefix', 'Bastion', 'sourcePortRange', '*', 'destinationAddressPrefix', '*', 'destinationPortRange', '*', 'access', 'Allow', 'priority', 100, 'direction', 'Inbound')), createObject('name', 'deny-hop-outbound', 'properties', createObject('priority', 200, 'access', 'Deny', 'protocol', 'Tcp', 'direction', 'Outbound', 'sourcePortRange', '*', 'sourceAddressPrefix', 'VirtualNetwork', 'destinationAddressPrefix', '*', 'destinationPortRanges', createArray('3389', '22'))))), createObject('value', createArray(createObject('name', 'deny-hop-outbound', 'properties', createObject('priority', 200, 'access', 'Deny', 'protocol', 'Tcp', 'direction', 'Outbound', 'sourcePortRange', '*', 'sourceAddressPrefix', 'VirtualNetwork', 'destinationAddressPrefix', '*', 'destinationPortRanges', createArray('3389', '22'))))))]"
                         },
                         "template": {
                           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",

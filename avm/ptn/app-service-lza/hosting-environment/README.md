@@ -405,7 +405,6 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
     deployAseV3: false
     deployJumpHost: true
     enableEgressLockdown: true
-    firewallInternalIp: '<firewallInternalIp>'
     location: '<location>'
     subnetSpokeAppSvcAddressSpace: '10.240.0.0/26'
     subnetSpokeDevOpsAddressSpace: '10.240.10.128/26'
@@ -453,9 +452,6 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
     },
     "enableEgressLockdown": {
       "value": true
-    },
-    "firewallInternalIp": {
-      "value": "<firewallInternalIp>"
     },
     "location": {
       "value": "<location>"
@@ -515,7 +511,6 @@ param autoApproveAfdPrivateEndpoint = true
 deployAseV3: false
 param deployJumpHost = true
 param enableEgressLockdown = true
-param firewallInternalIp = '<firewallInternalIp>'
 param location = '<location>'
 param subnetSpokeAppSvcAddressSpace = '10.240.0.0/26'
 param subnetSpokeDevOpsAddressSpace = '10.240.10.128/26'
