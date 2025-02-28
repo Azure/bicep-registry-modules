@@ -120,7 +120,7 @@ resource volumeGroup 'Microsoft.ElasticSan/elasticSans/volumegroups@2023-01-01' 
                 keyName: customerManagedKey!.keyName
                 keyVaultUri: cMKKeyVault.properties.vaultUri
                 keyVersion: !empty(customerManagedKey.?keyVersion ?? '')
-                  ? customerManagedKey!.keyVersion
+                  ? customerManagedKey!.?keyVersion
                   : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
               }
             : null
@@ -237,7 +237,7 @@ output privateEndpoints array = [
     name: volumeGroup_privateEndpoints[i].outputs.name
     location: volumeGroup_privateEndpoints[i].outputs.location
     resourceId: volumeGroup_privateEndpoints[i].outputs.resourceId
-    groupId: volumeGroup_privateEndpoints[i].outputs.groupId
+    groupId: volumeGroup_privateEndpoints[i].outputs.?groupId
     customDnsConfig: volumeGroup_privateEndpoints[i].outputs.customDnsConfig
     networkInterfaceResourceIds: volumeGroup_privateEndpoints[i].outputs.networkInterfaceResourceIds
   }

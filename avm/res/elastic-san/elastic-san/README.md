@@ -2251,6 +2251,7 @@ The name of the Elastic SAN Volume Snapshot. The name can only contain lowercase
 | `name` | string | The name of the deployed Elastic SAN. |
 | `resourceGroupName` | string | The resource group of the deployed Elastic SAN. |
 | `resourceId` | string | The resource ID of the deployed Elastic SAN. |
+| `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 | `volumeGroups` | array | Details on the deployed Elastic SAN Volume Groups. |
 
 ## Cross-referenced modules

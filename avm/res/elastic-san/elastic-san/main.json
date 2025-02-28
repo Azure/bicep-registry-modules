@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "17730994242644626467"
+      "templateHash": "17181272843392709683"
     },
     "name": "Elastic SANs",
     "description": "This module deploys an Elastic SAN."
@@ -937,7 +937,6 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
-    "enableReferencedModulesTelemetry": false,
     "calculatedSku": "[if(equals(parameters('sku'), 'Premium_LRS'), if(not(equals(parameters('availabilityZone'), null())), 'Premium_LRS', 'Premium_ZRS'), 'Premium_ZRS')]",
     "calculatedZone": "[if(equals(parameters('sku'), 'Premium_LRS'), if(not(equals(parameters('availabilityZone'), null())), createArray(format('{0}', parameters('availabilityZone'))), null()), null())]",
     "totalVirtualNetworkRules": "[reduce(map(coalesce(parameters('volumeGroups'), createArray()), lambda('volumeGroup', length(coalesce(tryGet(lambdaVariables('volumeGroup'), 'virtualNetworkRules'), createArray())))), 0, lambda('cur', 'next', add(lambdaVariables('cur'), lambdaVariables('next'))))]",
@@ -1100,7 +1099,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "10002384107919856685"
+              "templateHash": "1900871994989460547"
             },
             "name": "Elastic SAN Volume Groups",
             "description": "This module deploys an Elastic SAN Volume Group."
@@ -1834,7 +1833,7 @@
               "identity": "[variables('identity')]",
               "properties": {
                 "encryption": "[if(not(empty(parameters('customerManagedKey'))), 'EncryptionAtRestWithCustomerManagedKey', 'EncryptionAtRestWithPlatformKey')]",
-                "encryptionProperties": "[if(not(empty(parameters('customerManagedKey'))), createObject('identity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), createObject('userAssignedIdentity', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '//'), '/')[2], split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '////'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), 'dummyMsi'), '/')))), null()), 'keyVaultProperties', if(not(empty(parameters('customerManagedKey'))), createObject('keyName', parameters('customerManagedKey').keyName, 'keyVaultUri', reference('cMKKeyVault').vaultUri, 'keyVersion', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'keyVersion'), ''))), parameters('customerManagedKey').keyVersion, last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/')))), null())), null())]",
+                "encryptionProperties": "[if(not(empty(parameters('customerManagedKey'))), createObject('identity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), createObject('userAssignedIdentity', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '//'), '/')[2], split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '////'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), 'dummyMsi'), '/')))), null()), 'keyVaultProperties', if(not(empty(parameters('customerManagedKey'))), createObject('keyName', parameters('customerManagedKey').keyName, 'keyVaultUri', reference('cMKKeyVault').vaultUri, 'keyVersion', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'keyVersion'), ''))), tryGet(parameters('customerManagedKey'), 'keyVersion'), last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/')))), null())), null())]",
                 "networkAcls": "[if(not(empty(variables('networkRules'))), createObject('virtualNetworkRules', variables('networkRules')), null())]",
                 "protocolType": "Iscsi"
               },
@@ -3104,7 +3103,7 @@
                   "name": "[reference(format('volumeGroup_privateEndpoints[{0}]', copyIndex())).outputs.name.value]",
                   "location": "[reference(format('volumeGroup_privateEndpoints[{0}]', copyIndex())).outputs.location.value]",
                   "resourceId": "[reference(format('volumeGroup_privateEndpoints[{0}]', copyIndex())).outputs.resourceId.value]",
-                  "groupId": "[reference(format('volumeGroup_privateEndpoints[{0}]', copyIndex())).outputs.groupId.value]",
+                  "groupId": "[tryGet(tryGet(reference(format('volumeGroup_privateEndpoints[{0}]', copyIndex())).outputs, 'groupId'), 'value')]",
                   "customDnsConfig": "[reference(format('volumeGroup_privateEndpoints[{0}]', copyIndex())).outputs.customDnsConfig.value]",
                   "networkInterfaceResourceIds": "[reference(format('volumeGroup_privateEndpoints[{0}]', copyIndex())).outputs.networkInterfaceResourceIds.value]"
                 }
@@ -3162,11 +3161,19 @@
           "name": "[reference(format('elasticSan_volumeGroups[{0}]', copyIndex())).outputs.name.value]",
           "location": "[reference(format('elasticSan_volumeGroups[{0}]', copyIndex())).outputs.location.value]",
           "resourceGroupName": "[reference(format('elasticSan_volumeGroups[{0}]', copyIndex())).outputs.resourceGroupName.value]",
-          "systemAssignedMIPrincipalId": "[reference(format('elasticSan_volumeGroups[{0}]', copyIndex())).outputs.systemAssignedMIPrincipalId.value]",
+          "systemAssignedMIPrincipalId": "[tryGet(tryGet(reference(format('elasticSan_volumeGroups[{0}]', copyIndex())).outputs, 'systemAssignedMIPrincipalId'), 'value')]",
           "volumes": "[reference(format('elasticSan_volumeGroups[{0}]', copyIndex())).outputs.volumes.value]",
           "privateEndpoints": "[reference(format('elasticSan_volumeGroups[{0}]', copyIndex())).outputs.privateEndpoints.value]"
         }
       }
+    },
+    "systemAssignedMIPrincipalId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "The principal ID of the system assigned identity."
+      },
+      "value": null
     }
   }
 }
