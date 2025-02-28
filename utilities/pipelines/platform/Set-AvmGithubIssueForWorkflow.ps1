@@ -106,9 +106,9 @@ function Set-AvmGithubIssueForWorkflow {
 
                     if ($workflowRun.workflowName -match 'avm.(?:res|ptn|utl)') {
                         switch ($matches[0]) {
-                            'avm.ptn' { $module = $knownPatterns | Where-Object { $_.ModuleName -eq $moduleName } }
-                            'avm.res' { $module = $knownResources | Where-Object { $_.ModuleName -eq $moduleName } }
-                            'avm.utl' { $module = $knownUtilities | Where-Object { $_.ModuleName -eq $moduleName } }
+                            'avm.ptn' { $module = $knownPatterns | Where-Object { $_.ModuleName -eq $moduleName }; break }
+                            'avm.res' { $module = $knownResources | Where-Object { $_.ModuleName -eq $moduleName }; break }
+                            'avm.utl' { $module = $knownUtilities | Where-Object { $_.ModuleName -eq $moduleName }; break }
                             Default {
                                 throw 'Impossible regex condition.'
                             }
