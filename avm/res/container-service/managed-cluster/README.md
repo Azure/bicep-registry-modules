@@ -17,12 +17,12 @@ This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.ContainerService/managedClusters` | [2024-03-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerService/2024-03-02-preview/managedClusters) |
-| `Microsoft.ContainerService/managedClusters/agentPools` | [2024-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerService/2024-08-01/managedClusters/agentPools) |
+| `Microsoft.ContainerService/managedClusters` | [2024-09-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerService/2024-09-02-preview/managedClusters) |
+| `Microsoft.ContainerService/managedClusters/agentPools` | [2024-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerService/2024-09-01/managedClusters/agentPools) |
 | `Microsoft.ContainerService/managedClusters/maintenanceConfigurations` | [2023-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerService/2023-10-01/managedClusters/maintenanceConfigurations) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.KubernetesConfiguration/extensions` | [2022-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KubernetesConfiguration/2022-03-01/extensions) |
-| `Microsoft.KubernetesConfiguration/fluxConfigurations` | [2022-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KubernetesConfiguration/2022-03-01/fluxConfigurations) |
+| `Microsoft.KubernetesConfiguration/fluxConfigurations` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KubernetesConfiguration/2023-05-01/fluxConfigurations) |
 
 ## Usage examples
 
@@ -76,11 +76,11 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
       aadProfileManaged: true
     }
     autoNodeOsUpgradeProfileUpgradeChannel: 'NodeImage'
+    defaultIngressControllerType: 'Internal'
     disableLocalAccounts: true
     enableKeyvaultSecretsProvider: true
     enableSecretRotation: true
     kedaAddon: true
-    kubernetesVersion: '1.28'
     maintenanceConfigurations: [
       {
         maintenanceWindow: {
@@ -153,6 +153,9 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     "autoNodeOsUpgradeProfileUpgradeChannel": {
       "value": "NodeImage"
     },
+    "defaultIngressControllerType": {
+      "value": "Internal"
+    },
     "disableLocalAccounts": {
       "value": true
     },
@@ -164,9 +167,6 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     },
     "kedaAddon": {
       "value": true
-    },
-    "kubernetesVersion": {
-      "value": "1.28"
     },
     "maintenanceConfigurations": {
       "value": [
@@ -248,11 +248,11 @@ param aadProfile = {
   aadProfileManaged: true
 }
 param autoNodeOsUpgradeProfileUpgradeChannel = 'NodeImage'
+param defaultIngressControllerType = 'Internal'
 param disableLocalAccounts = true
 param enableKeyvaultSecretsProvider = true
 param enableSecretRotation = true
 param kedaAddon = true
-param kubernetesVersion = '1.28'
 param maintenanceConfigurations = [
   {
     maintenanceWindow: {
@@ -415,6 +415,11 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
             syncIntervalInSeconds: 300
             timeoutInSeconds: 180
             url: 'https://github.com/mspnp/aks-baseline'
+          }
+          kustomizations: {
+            unified: {
+              path: './cluster-manifests'
+            }
           }
           namespace: 'flux-system'
           scope: 'cluster'
@@ -705,6 +710,11 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
               "timeoutInSeconds": 180,
               "url": "https://github.com/mspnp/aks-baseline"
             },
+            "kustomizations": {
+              "unified": {
+                "path": "./cluster-manifests"
+              }
+            },
             "namespace": "flux-system",
             "scope": "cluster"
           },
@@ -981,6 +991,11 @@ param fluxExtension = {
         syncIntervalInSeconds: 300
         timeoutInSeconds: 180
         url: 'https://github.com/mspnp/aks-baseline'
+      }
+      kustomizations: {
+        unified: {
+          path: './cluster-manifests'
+        }
       }
       namespace: 'flux-system'
       scope: 'cluster'
@@ -2711,6 +2726,7 @@ param tags = {
 | [`azurePolicyVersion`](#parameter-azurepolicyversion) | string | Specifies the azure policy version to use. |
 | [`backendPoolType`](#parameter-backendpooltype) | string | The type of the managed inbound Load Balancer BackendPool. |
 | [`costAnalysisEnabled`](#parameter-costanalysisenabled) | bool | Specifies whether the cost analysis add-on is enabled or not. If Enabled `enableStorageProfileDiskCSIDriver` is set to true as it is needed. |
+| [`defaultIngressControllerType`](#parameter-defaultingresscontrollertype) | string | Ingress type for the default NginxIngressController custom resource. It will be ignored if `webApplicationRoutingEnabled` is set to `false`. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`disableCustomMetrics`](#parameter-disablecustommetrics) | bool | Indicates whether custom metrics collection has to be disabled or not. If not specified the default is false. No custom metrics will be emitted if this field is false but the container insights enabled field is false. |
 | [`disableLocalAccounts`](#parameter-disablelocalaccounts) | bool | If set to true, getting static credentials will be disabled for this cluster. This must only be used on Managed Clusters that are AAD enabled. |
@@ -2769,6 +2785,7 @@ param tags = {
 | [`nodeResourceGroup`](#parameter-noderesourcegroup) | string | Name of the resource group containing agent pool nodes. |
 | [`nodeResourceGroupProfile`](#parameter-noderesourcegroupprofile) | object | The node resource group configuration profile. |
 | [`omsAgentEnabled`](#parameter-omsagentenabled) | bool | Specifies whether the OMS agent is enabled. |
+| [`omsAgentUseAADAuth`](#parameter-omsagentuseaadauth) | bool | Specifies whether the OMS agent is using managed identity authentication. |
 | [`openServiceMeshEnabled`](#parameter-openservicemeshenabled) | bool | Specifies whether the openServiceMesh add-on is enabled or not. |
 | [`outboundType`](#parameter-outboundtype) | string | Specifies outbound (egress) routing method. |
 | [`podCidr`](#parameter-podcidr) | string | Specifies the CIDR notation IP range from which to assign pod IPs when kubenet is used. |
@@ -2820,7 +2837,9 @@ Properties of the primary agent pool.
 | [`enableEncryptionAtHost`](#parameter-primaryagentpoolprofilesenableencryptionathost) | bool | Whether to enable encryption at host for the agent pool. |
 | [`enableFIPS`](#parameter-primaryagentpoolprofilesenablefips) | bool | Whether to enable FIPS for the agent pool. |
 | [`enableNodePublicIP`](#parameter-primaryagentpoolprofilesenablenodepublicip) | bool | Whether to enable node public IP for the agent pool. |
+| [`enableSecureBoot`](#parameter-primaryagentpoolprofilesenablesecureboot) | bool | Secure Boot is a feature of Trusted Launch which ensures that only signed operating systems and drivers can boot. For more details, see aka.ms/aks/trustedlaunch. |
 | [`enableUltraSSD`](#parameter-primaryagentpoolprofilesenableultrassd) | bool | Whether to enable Ultra SSD for the agent pool. |
+| [`enableVTPM`](#parameter-primaryagentpoolprofilesenablevtpm) | bool | vTPM is a Trusted Launch feature for configuring a dedicated secure vault for keys and measurements held locally on the node. For more details, see aka.ms/aks/trustedlaunch. |
 | [`gpuInstanceProfile`](#parameter-primaryagentpoolprofilesgpuinstanceprofile) | string | The GPU instance profile of the agent pool. |
 | [`kubeletDiskType`](#parameter-primaryagentpoolprofileskubeletdisktype) | string | The kubelet disk type of the agent pool. |
 | [`maxCount`](#parameter-primaryagentpoolprofilesmaxcount) | int | The maximum number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive). |
@@ -2906,9 +2925,23 @@ Whether to enable node public IP for the agent pool.
 - Required: No
 - Type: bool
 
+### Parameter: `primaryAgentPoolProfiles.enableSecureBoot`
+
+Secure Boot is a feature of Trusted Launch which ensures that only signed operating systems and drivers can boot. For more details, see aka.ms/aks/trustedlaunch.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `primaryAgentPoolProfiles.enableUltraSSD`
 
 Whether to enable Ultra SSD for the agent pool.
+
+- Required: No
+- Type: bool
+
+### Parameter: `primaryAgentPoolProfiles.enableVTPM`
+
+vTPM is a Trusted Launch feature for configuring a dedicated secure vault for keys and measurements held locally on the node. For more details, see aka.ms/aks/trustedlaunch.
 
 - Required: No
 - Type: bool
@@ -3289,7 +3322,9 @@ Define one or more secondary/additional agent pools.
 | [`enableEncryptionAtHost`](#parameter-agentpoolsenableencryptionathost) | bool | Whether to enable encryption at host for the agent pool. |
 | [`enableFIPS`](#parameter-agentpoolsenablefips) | bool | Whether to enable FIPS for the agent pool. |
 | [`enableNodePublicIP`](#parameter-agentpoolsenablenodepublicip) | bool | Whether to enable node public IP for the agent pool. |
+| [`enableSecureBoot`](#parameter-agentpoolsenablesecureboot) | bool | Secure Boot is a feature of Trusted Launch which ensures that only signed operating systems and drivers can boot. For more details, see aka.ms/aks/trustedlaunch. |
 | [`enableUltraSSD`](#parameter-agentpoolsenableultrassd) | bool | Whether to enable Ultra SSD for the agent pool. |
+| [`enableVTPM`](#parameter-agentpoolsenablevtpm) | bool | vTPM is a Trusted Launch feature for configuring a dedicated secure vault for keys and measurements held locally on the node. For more details, see aka.ms/aks/trustedlaunch. |
 | [`gpuInstanceProfile`](#parameter-agentpoolsgpuinstanceprofile) | string | The GPU instance profile of the agent pool. |
 | [`kubeletDiskType`](#parameter-agentpoolskubeletdisktype) | string | The kubelet disk type of the agent pool. |
 | [`maxCount`](#parameter-agentpoolsmaxcount) | int | The maximum number of agents (VMs) to host docker containers. Allowed values must be in the range of 1 to 100 (inclusive). |
@@ -3375,9 +3410,23 @@ Whether to enable node public IP for the agent pool.
 - Required: No
 - Type: bool
 
+### Parameter: `agentPools.enableSecureBoot`
+
+Secure Boot is a feature of Trusted Launch which ensures that only signed operating systems and drivers can boot. For more details, see aka.ms/aks/trustedlaunch.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `agentPools.enableUltraSSD`
 
 Whether to enable Ultra SSD for the agent pool.
+
+- Required: No
+- Type: bool
+
+### Parameter: `agentPools.enableVTPM`
+
+vTPM is a Trusted Launch feature for configuring a dedicated secure vault for keys and measurements held locally on the node. For more details, see aka.ms/aks/trustedlaunch.
 
 - Required: No
 - Type: bool
@@ -3856,6 +3905,22 @@ Specifies whether the cost analysis add-on is enabled or not. If Enabled `enable
 - Required: No
 - Type: bool
 - Default: `False`
+
+### Parameter: `defaultIngressControllerType`
+
+Ingress type for the default NginxIngressController custom resource. It will be ignored if `webApplicationRoutingEnabled` is set to `false`.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AnnotationControlled'
+    'External'
+    'Internal'
+    'None'
+  ]
+  ```
 
 ### Parameter: `diagnosticSettings`
 
@@ -4725,6 +4790,15 @@ Specifies whether the OMS agent is enabled.
 - Default: `True`
 - MinValue: 24
 
+### Parameter: `omsAgentUseAADAuth`
+
+Specifies whether the OMS agent is using managed identity authentication.
+
+- Required: No
+- Type: bool
+- Default: `False`
+- MinValue: 24
+
 ### Parameter: `openServiceMeshEnabled`
 
 Specifies whether the openServiceMesh add-on is enabled or not.
@@ -5072,8 +5146,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/kubernetes-configuration/extension:0.2.0` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.4.1` | Remote reference |
+| `br/public:avm/res/kubernetes-configuration/extension:0.3.5` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

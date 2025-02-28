@@ -56,7 +56,14 @@ module testDeployment '../../../main.bicep' = [
       bandwidthInGbps: 10
       billingType: 'MeteredData'
       encapsulation: 'Dot1Q'
-      links: []
+      links: [
+        {
+          name: 'link1'
+          properties: {
+            adminState: 'Disabled'
+          }
+        }
+      ]
       lock: {
         kind: 'CanNotDelete'
         name: 'myCustomLockName'

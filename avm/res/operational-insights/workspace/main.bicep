@@ -79,8 +79,8 @@ import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types
 @description('Optional. The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both.')
 param managedIdentities managedIdentityAllType?
 
-@description('Optional. Set to \'true\' to use resource or workspace permissions and \'false\' (or leave empty) to require workspace permissions.')
-param useResourcePermissions bool = false
+@description('Optional. The workspace features.')
+param features workspaceFeaturesType?
 
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingType[]?
@@ -101,6 +101,8 @@ param tags object?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
+
+var enableReferencedModulesTelemetry = false
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -185,14 +187,17 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09-01' = {
   location: location
   name: name
   tags: tags
   properties: {
     features: {
       searchVersion: 1
-      enableLogAccessUsingOnlyResourcePermissions: useResourcePermissions
+      enableLogAccessUsingOnlyResourcePermissions: features.?enableLogAccessUsingOnlyResourcePermissions ?? false
+      disableLocalAuth: features.?disableLocalAuth ?? true
+      enableDataExport: features.?enableDataExport
+      immediatePurgeDataOn30Days: features.?immediatePurgeDataOn30Days
     }
     sku: {
       name: skuName
@@ -357,7 +362,7 @@ module logAnalyticsWorkspace_solutions 'br/public:avm/res/operations-management/
       location: location
       logAnalyticsWorkspaceName: logAnalyticsWorkspace.name
       plan: gallerySolution.plan
-      enableTelemetry: gallerySolution.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -647,4 +652,20 @@ type tableType = {
 
   @description('Optional. The role assignments for the table.')
   roleAssignments: roleAssignmentType[]?
+}
+
+@export()
+@description('Features of the workspace.')
+type workspaceFeaturesType = {
+  @description('Optional. Disable Non-EntraID based Auth. Default is true.')
+  disableLocalAuth: bool?
+
+  @description('Optional. Flag that indicate if data should be exported.')
+  enableDataExport: bool?
+
+  @description('Optional. Enable log access using only resource permissions. Default is false.')
+  enableLogAccessUsingOnlyResourcePermissions: bool?
+
+  @description('Optional. Flag that describes if we want to remove the data after 30 days.')
+  immediatePurgeDataOn30Days: bool?
 }

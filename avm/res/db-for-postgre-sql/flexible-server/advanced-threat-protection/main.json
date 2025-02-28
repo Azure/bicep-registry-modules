@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "6141187485193116497"
+      "version": "0.33.93.31351",
+      "templateHash": "7080936927606489698"
     },
     "name": "DBforPostgreSQL Flexible Server Advanced Threat Protection",
     "description": "This module deploys a DBforPostgreSQL Advanced Threat Protection."
