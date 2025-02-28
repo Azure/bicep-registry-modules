@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "11308400284539702696"
+      "templateHash": "6988243528298159368"
     },
     "name": "ExpressRoute Circuits",
     "description": "This module deploys an Express Route Circuit."
@@ -372,14 +372,14 @@
       "type": "int",
       "defaultValue": 0,
       "metadata": {
-        "description": "Conditional. The bandwidth of the circuit when the circuit is provisioned on an ExpressRoutePort resource. Available when configuring Express Route Direct. Default value of 0 will set the property to null."
+        "description": "Conditional. Required if 'serviceProviderName', 'peeringLocation', and 'bandwidthInMbps' are not set. The bandwidth of the circuit when the circuit is provisioned on an ExpressRoutePort resource. Available when configuring Express Route Direct. Default value of 0 will set the property to null."
       }
     },
     "expressRoutePortResourceId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Conditional. The reference to the ExpressRoutePort resource when the circuit is provisioned on an ExpressRoutePort resource. Available when configuring Express Route Direct."
+        "description": "Conditional. Required if 'serviceProviderName', 'peeringLocation', and 'bandwidthInMbps' are not set. The reference to the ExpressRoutePort resource when the circuit is provisioned on an ExpressRoutePort resource. Available when configuring Express Route Direct."
       }
     },
     "enableDirectPortRateLimit": {
