@@ -180,7 +180,7 @@
     }
   },
   "resources": {
-    "profile::secrect": {
+    "profile::secret": {
       "condition": "[not(empty(parameters('secretName')))]",
       "existing": true,
       "type": "Microsoft.Cdn/profiles/secrets",

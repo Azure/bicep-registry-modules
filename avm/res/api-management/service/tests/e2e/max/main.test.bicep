@@ -33,7 +33,7 @@ param customSecret string = newGuid()
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-11-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -82,7 +82,7 @@ module testDeployment '../../../main.bicep' = [
       publisherName: '${namePrefix}-az-amorg-x-001'
       additionalLocations: [
         {
-          location: '${locationRegion2}' // Required for readme generation
+          location: locationRegion2
           sku: {
             name: 'Premium'
             capacity: 1
@@ -111,6 +111,10 @@ module testDeployment '../../../main.bicep' = [
           name: 'echo-api'
           path: 'echo'
           serviceUrl: 'http://echoapi.cloudapp.net/api'
+          protocols: [
+            'http'
+            'https'
+          ]
         }
       ]
       authorizationServers: [

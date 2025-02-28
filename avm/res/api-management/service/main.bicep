@@ -279,7 +279,7 @@ module service_apis 'api/main.bicep' = [
       apiVersionDescription: api.?apiVersionDescription
       apiVersionSetId: api.?apiVersionSetId
       authenticationSettings: api.?authenticationSettings
-      format: api.?format ?? 'openapi'
+      format: api.?format
       isCurrent: api.?isCurrent
       protocols: api.?protocols
       policies: api.?policies
@@ -348,7 +348,7 @@ module service_backends 'backend/main.bicep' = [
       resourceId: backend.?resourceId
       serviceFabricCluster: backend.?serviceFabricCluster
       title: backend.?title
-      tls: backend.?tls
+      tls: backend.?tls ?? { validateCertificateChain: true, validateCertificateName: true }
     }
   }
 ]

@@ -77,6 +77,8 @@ param enableTelemetry bool = true
 ])
 param zones int[] = [] // Availability Zones are currently in preview and only available in certain regions, therefore the default is an empty array.
 
+var enableReferencedModulesTelemetry = false
+
 // ----------------------------------------------------------------------------
 // Prep ipConfigurations object AzureBastionSubnet for different uses cases:
 // 1. Use existing Public IP
@@ -157,7 +159,7 @@ module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.8.0' = if 
   name: '${uniqueString(deployment().name, location)}-Bastion-PIP'
   params: {
     name: publicIPAddressObject.name
-    enableTelemetry: enableTelemetry
+    enableTelemetry: enableReferencedModulesTelemetry
     location: location
     lock: lock
     diagnosticSettings: publicIPAddressObject.?diagnosticSettings

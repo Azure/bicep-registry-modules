@@ -114,6 +114,9 @@ module testDeployment '../../../main.bicep' = [
           name: 'echo-api'
           path: 'echo'
           serviceUrl: 'https://echoapi.cloudapp.net/api'
+          protocols: [
+            'https'
+          ]
         }
       ]
       authorizationServers: [
@@ -134,8 +137,8 @@ module testDeployment '../../../main.bicep' = [
         {
           name: 'backend'
           tls: {
-            validateCertificateChain: false
-            validateCertificateName: false
+            validateCertificateChain: true
+            validateCertificateName: true
           }
           url: 'https://echoapi.cloudapp.net/api'
         }

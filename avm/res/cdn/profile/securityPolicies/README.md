@@ -96,6 +96,6 @@ The name of the parent CDN profile. Required if the template is used in a standa
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `name` | string | The name of the secrect. |
+| `name` | string | The name of the secret. |
 | `resourceGroupName` | string | The name of the resource group the secret was created in. |
-| `resourceId` | string | The resource ID of the secrect. |
+| `resourceId` | string | The resource ID of the secret. |

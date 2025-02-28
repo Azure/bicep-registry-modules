@@ -14,7 +14,7 @@ This module deploys an Azure NetApp Files Capacity Pool.
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.NetApp/netAppAccounts/capacityPools` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-03-01/netAppAccounts/capacityPools) |
+| `Microsoft.NetApp/netAppAccounts/capacityPools` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-07-01/netAppAccounts/capacityPools) |
 | `Microsoft.NetApp/netAppAccounts/capacityPools/volumes` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-07-01/netAppAccounts/capacityPools/volumes) |
 
 ## Parameters
@@ -24,7 +24,7 @@ This module deploys an Azure NetApp Files Capacity Pool.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | The name of the capacity pool. |
-| [`size`](#parameter-size) | int | Provisioned size of the pool (in bytes). Allowed values are in 4TiB chunks (value must be multiply of 4398046511104). |
+| [`size`](#parameter-size) | int | Provisioned size of the pool in Tebibytes (TiB). |
 
 **Conditional parameters**
 
@@ -54,10 +54,12 @@ The name of the capacity pool.
 
 ### Parameter: `size`
 
-Provisioned size of the pool (in bytes). Allowed values are in 4TiB chunks (value must be multiply of 4398046511104).
+Provisioned size of the pool in Tebibytes (TiB).
 
 - Required: Yes
 - Type: int
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `netAppAccountName`
 
@@ -65,6 +67,8 @@ The name of the parent NetApp account. Required if the template is used in a sta
 
 - Required: Yes
 - Type: string
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `coolAccess`
 
@@ -73,6 +77,8 @@ If enabled (true) the pool can contain cool Access enabled volumes.
 - Required: No
 - Type: bool
 - Default: `False`
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `encryptionType`
 
@@ -88,6 +94,8 @@ Encryption type of the capacity pool, set encryption type for data at rest for t
     'Single'
   ]
   ```
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `location`
 
@@ -96,6 +104,8 @@ Location of the pool volume.
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `qosType`
 
@@ -111,6 +121,8 @@ The qos type of the pool.
     'Manual'
   ]
   ```
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `roleAssignments`
 
@@ -118,6 +130,8 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- MinValue: 1
+- MaxValue: 2048
 - Roles configurable by name:
   - `'Contributor'`
   - `'Owner'`
@@ -149,6 +163,8 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -156,6 +172,8 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `roleAssignments.condition`
 
@@ -163,6 +181,8 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -176,6 +196,8 @@ Version of the condition.
     '2.0'
   ]
   ```
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `roleAssignments.delegatedManagedIdentityResourceId`
 
@@ -183,6 +205,8 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `roleAssignments.description`
 
@@ -190,6 +214,8 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `roleAssignments.name`
 
@@ -197,6 +223,8 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -214,6 +242,8 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `serviceLevel`
 
@@ -231,6 +261,8 @@ The pool service level.
     'Ultra'
   ]
   ```
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `tags`
 
@@ -238,6 +270,8 @@ Tags for all resources.
 
 - Required: No
 - Type: object
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `volumes`
 
@@ -245,6 +279,8 @@ List of volumes to create in the capacity pool.
 
 - Required: No
 - Type: array
+- MinValue: 1
+- MaxValue: 2048
 
 **Required parameters**
 
@@ -253,6 +289,7 @@ List of volumes to create in the capacity pool.
 | [`name`](#parameter-volumesname) | string | The name of the pool volume. |
 | [`subnetResourceId`](#parameter-volumessubnetresourceid) | string | The Azure Resource URI for a delegated subnet. Must have the delegation Microsoft.NetApp/volumes. |
 | [`usageThreshold`](#parameter-volumesusagethreshold) | int | Maximum storage quota allowed for a file system in bytes. |
+| [`zone`](#parameter-volumeszone) | int | The Availability Zone to place the resource in. If set to 0, then Availability Zone is not set. |
 
 **Optional parameters**
 
@@ -269,14 +306,13 @@ List of volumes to create in the capacity pool.
 | [`keyVaultPrivateEndpointResourceId`](#parameter-volumeskeyvaultprivateendpointresourceid) | string | The resource ID of the key vault private endpoint. |
 | [`location`](#parameter-volumeslocation) | string | Location of the pool volume. |
 | [`networkFeatures`](#parameter-volumesnetworkfeatures) | string | Network feature for the volume. |
-| [`protocolTypes`](#parameter-volumesprotocoltypes) | array | Set of protocol types. |
+| [`protocolTypes`](#parameter-volumesprotocoltypes) | array | Set of protocol types. Default value is `['NFSv3']`. If you are creating a dual-stack volume, set either `['NFSv3','CIFS']` or `['NFSv4.1','CIFS']`. |
 | [`roleAssignments`](#parameter-volumesroleassignments) | array | Array of role assignments to create. |
 | [`serviceLevel`](#parameter-volumesservicelevel) | string | The pool service level. Must match the one of the parent capacity pool. |
 | [`smbContinuouslyAvailable`](#parameter-volumessmbcontinuouslyavailable) | bool | Enables continuously available share property for SMB volume. Only applicable for SMB volume. |
 | [`smbEncryption`](#parameter-volumessmbencryption) | bool | Enables SMB encryption. Only applicable for SMB/DualProtocol volume. |
 | [`smbNonBrowsable`](#parameter-volumessmbnonbrowsable) | string | Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProtocol volume. |
 | [`volumeType`](#parameter-volumesvolumetype) | string | The type of the volume. DataProtection volumes are used for replication. |
-| [`zones`](#parameter-volumeszones) | array | Zone where the volume will be placed. |
 
 ### Parameter: `volumes.name`
 
@@ -284,6 +320,8 @@ The name of the pool volume.
 
 - Required: Yes
 - Type: string
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `volumes.subnetResourceId`
 
@@ -291,6 +329,8 @@ The Azure Resource URI for a delegated subnet. Must have the delegation Microsof
 
 - Required: Yes
 - Type: string
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `volumes.usageThreshold`
 
@@ -298,6 +338,17 @@ Maximum storage quota allowed for a file system in bytes.
 
 - Required: Yes
 - Type: int
+- MinValue: 1
+- MaxValue: 2048
+
+### Parameter: `volumes.zone`
+
+The Availability Zone to place the resource in. If set to 0, then Availability Zone is not set.
+
+- Required: Yes
+- Type: int
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `volumes.coolAccess`
 
@@ -305,6 +356,8 @@ If enabled (true) the pool can contain cool Access enabled volumes.
 
 - Required: No
 - Type: bool
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `volumes.coolAccessRetrievalPolicy`
 
@@ -312,6 +365,8 @@ Determines the data retrieval behavior from the cool tier to standard storage ba
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `volumes.coolnessPeriod`
 
@@ -319,6 +374,8 @@ Specifies the number of days after which data that is not accessed by clients wi
 
 - Required: No
 - Type: int
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `volumes.creationToken`
 
@@ -326,6 +383,8 @@ A unique file path for the volume. This is the name of the volume export. A volu
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `volumes.dataProtection`
 
@@ -333,6 +392,8 @@ DataProtection type volumes include an object containing details of the replicat
 
 - Required: No
 - Type: object
+- MinValue: 1
+- MaxValue: 2048
 
 **Optional parameters**
 
@@ -348,6 +409,8 @@ Backup properties.
 
 - Required: No
 - Type: object
+- MinValue: 1
+- MaxValue: 2048
 
 **Required parameters**
 
@@ -363,6 +426,8 @@ The name of the backup policy to link.
 
 - Required: Yes
 - Type: string
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `volumes.dataProtection.backup.backupVaultName`
 
@@ -370,6 +435,8 @@ The name of the Backup Vault.
 
 - Required: Yes
 - Type: string
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `volumes.dataProtection.backup.policyEnforced`
 
@@ -377,6 +444,8 @@ Enable to enforce the policy.
 
 - Required: Yes
 - Type: bool
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `volumes.dataProtection.replication`
 
@@ -384,14 +453,14 @@ Replication properties.
 
 - Required: No
 - Type: object
+- MinValue: 1
+- MaxValue: 2048
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`endpointType`](#parameter-volumesdataprotectionreplicationendpointtype) | string | Indicates whether the local volume is the source or destination for the Volume Replication. |
-| [`remoteVolumeRegion`](#parameter-volumesdataprotectionreplicationremotevolumeregion) | string | The remote region for the other end of the Volume Replication. |
-| [`remoteVolumeResourceId`](#parameter-volumesdataprotectionreplicationremotevolumeresourceid) | string | The resource ID of the remote volume. |
 | [`replicationSchedule`](#parameter-volumesdataprotectionreplicationreplicationschedule) | string | The replication schedule for the volume. |
 
 **Optional parameters**
@@ -399,6 +468,8 @@ Replication properties.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`remotePath`](#parameter-volumesdataprotectionreplicationremotepath) | object | The full path to a volume that is to be migrated into ANF. Required for Migration volumes. |
+| [`remoteVolumeRegion`](#parameter-volumesdataprotectionreplicationremotevolumeregion) | string | The remote region for the other end of the Volume Replication.Required for Data Protection volumes. |
+| [`remoteVolumeResourceId`](#parameter-volumesdataprotectionreplicationremotevolumeresourceid) | string | The resource ID of the remote volume. Required for Data Protection volumes. |
 
 ### Parameter: `volumes.dataProtection.replication.endpointType`
 
@@ -413,20 +484,8 @@ Indicates whether the local volume is the source or destination for the Volume R
     'src'
   ]
   ```
-
-### Parameter: `volumes.dataProtection.replication.remoteVolumeRegion`
-
-The remote region for the other end of the Volume Replication.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `volumes.dataProtection.replication.remoteVolumeResourceId`
-
-The resource ID of the remote volume.
-
-- Required: Yes
-- Type: string
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `volumes.dataProtection.replication.replicationSchedule`
 
@@ -442,6 +501,8 @@ The replication schedule for the volume.
     'hourly'
   ]
   ```
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `volumes.dataProtection.replication.remotePath`
 
@@ -449,6 +510,8 @@ The full path to a volume that is to be migrated into ANF. Required for Migratio
 
 - Required: No
 - Type: object
+- MinValue: 1
+- MaxValue: 2048
 
 **Required parameters**
 
@@ -464,6 +527,8 @@ The Path to a ONTAP Host.
 
 - Required: Yes
 - Type: string
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `volumes.dataProtection.replication.remotePath.serverName`
 
@@ -471,6 +536,8 @@ The name of a server on the ONTAP Host.
 
 - Required: Yes
 - Type: string
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `volumes.dataProtection.replication.remotePath.volumeName`
 
@@ -478,6 +545,26 @@ The name of a volume on the server.
 
 - Required: Yes
 - Type: string
+- MinValue: 1
+- MaxValue: 2048
+
+### Parameter: `volumes.dataProtection.replication.remoteVolumeRegion`
+
+The remote region for the other end of the Volume Replication.Required for Data Protection volumes.
+
+- Required: No
+- Type: string
+- MinValue: 1
+- MaxValue: 2048
+
+### Parameter: `volumes.dataProtection.replication.remoteVolumeResourceId`
+
+The resource ID of the remote volume. Required for Data Protection volumes.
+
+- Required: No
+- Type: string
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `volumes.dataProtection.snapshot`
 
@@ -485,6 +572,8 @@ Snapshot properties.
 
 - Required: No
 - Type: object
+- MinValue: 1
+- MaxValue: 2048
 
 **Required parameters**
 
@@ -498,6 +587,8 @@ The name of the snapshot policy to link.
 
 - Required: Yes
 - Type: string
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `volumes.encryptionKeySource`
 
@@ -505,6 +596,8 @@ The source of the encryption key.
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `volumes.exportPolicy`
 
@@ -512,6 +605,8 @@ Export policy rules.
 
 - Required: No
 - Type: object
+- MinValue: 1
+- MaxValue: 2048
 
 **Required parameters**
 
@@ -525,6 +620,8 @@ The Export policy rules.
 
 - Required: Yes
 - Type: array
+- MinValue: 1
+- MaxValue: 2048
 
 **Required parameters**
 
@@ -557,6 +654,8 @@ Kerberos5i Read only access.
 
 - Required: Yes
 - Type: bool
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `volumes.exportPolicy.rules.kerberos5iReadWrite`
 
@@ -564,6 +663,8 @@ Kerberos5i Read and write access.
 
 - Required: Yes
 - Type: bool
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `volumes.exportPolicy.rules.kerberos5pReadOnly`
 
@@ -571,6 +672,8 @@ Kerberos5p Read only access.
 
 - Required: Yes
 - Type: bool
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `volumes.exportPolicy.rules.kerberos5pReadWrite`
 
@@ -578,6 +681,8 @@ Kerberos5p Read and write access.
 
 - Required: Yes
 - Type: bool
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `volumes.exportPolicy.rules.kerberos5ReadOnly`
 
@@ -585,6 +690,8 @@ Kerberos5 Read only access.
 
 - Required: Yes
 - Type: bool
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `volumes.exportPolicy.rules.kerberos5ReadWrite`
 
@@ -592,6 +699,8 @@ Kerberos5 Read and write access.
 
 - Required: Yes
 - Type: bool
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `volumes.exportPolicy.rules.nfsv3`
 
@@ -599,6 +708,8 @@ Allows NFSv3 protocol. Enable only for NFSv3 type volumes.
 
 - Required: Yes
 - Type: bool
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `volumes.exportPolicy.rules.nfsv41`
 
@@ -606,6 +717,8 @@ Allows NFSv4.1 protocol. Enable only for NFSv4.1 type volumes.
 
 - Required: Yes
 - Type: bool
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `volumes.exportPolicy.rules.ruleIndex`
 
@@ -613,6 +726,8 @@ Order index.
 
 - Required: Yes
 - Type: int
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `volumes.exportPolicy.rules.unixReadOnly`
 
@@ -620,6 +735,8 @@ Read only access.
 
 - Required: Yes
 - Type: bool
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `volumes.exportPolicy.rules.unixReadWrite`
 
@@ -627,6 +744,8 @@ Read and write access.
 
 - Required: Yes
 - Type: bool
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `volumes.exportPolicy.rules.allowedClients`
 
@@ -634,6 +753,8 @@ Client ingress specification as comma separated string with IPv4 CIDRs, IPv4 hos
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `volumes.exportPolicy.rules.chownMode`
 
@@ -648,6 +769,8 @@ This parameter specifies who is authorized to change the ownership of a file. re
     'Unrestricted'
   ]
   ```
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `volumes.exportPolicy.rules.cifs`
 
@@ -655,6 +778,8 @@ Allows CIFS protocol.
 
 - Required: No
 - Type: bool
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `volumes.exportPolicy.rules.hasRootAccess`
 
@@ -662,6 +787,8 @@ Has root access to volume.
 
 - Required: No
 - Type: bool
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `volumes.kerberosEnabled`
 
@@ -669,6 +796,8 @@ Define if a volume is KerberosEnabled.
 
 - Required: No
 - Type: bool
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `volumes.keyVaultPrivateEndpointResourceId`
 
@@ -676,6 +805,8 @@ The resource ID of the key vault private endpoint.
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `volumes.location`
 
@@ -683,6 +814,8 @@ Location of the pool volume.
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `volumes.networkFeatures`
 
@@ -699,13 +832,25 @@ Network feature for the volume.
     'Standard_Basic'
   ]
   ```
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `volumes.protocolTypes`
 
-Set of protocol types.
+Set of protocol types. Default value is `['NFSv3']`. If you are creating a dual-stack volume, set either `['NFSv3','CIFS']` or `['NFSv4.1','CIFS']`.
 
 - Required: No
 - Type: array
+- Allowed:
+  ```Bicep
+  [
+    'CIFS'
+    'NFSv3'
+    'NFSv4.1'
+  ]
+  ```
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `volumes.roleAssignments`
 
@@ -713,6 +858,8 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- MinValue: 1
+- MaxValue: 2048
 - Roles configurable by name:
   - `'Contributor'`
   - `'Owner'`
@@ -744,6 +891,8 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `volumes.roleAssignments.roleDefinitionIdOrName`
 
@@ -751,6 +900,8 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `volumes.roleAssignments.condition`
 
@@ -758,6 +909,8 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `volumes.roleAssignments.conditionVersion`
 
@@ -771,6 +924,8 @@ Version of the condition.
     '2.0'
   ]
   ```
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `volumes.roleAssignments.delegatedManagedIdentityResourceId`
 
@@ -778,6 +933,8 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `volumes.roleAssignments.description`
 
@@ -785,6 +942,8 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `volumes.roleAssignments.name`
 
@@ -792,6 +951,8 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `volumes.roleAssignments.principalType`
 
@@ -809,6 +970,8 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `volumes.serviceLevel`
 
@@ -825,6 +988,8 @@ The pool service level. Must match the one of the parent capacity pool.
     'Ultra'
   ]
   ```
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `volumes.smbContinuouslyAvailable`
 
@@ -832,6 +997,8 @@ Enables continuously available share property for SMB volume. Only applicable fo
 
 - Required: No
 - Type: bool
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `volumes.smbEncryption`
 
@@ -839,6 +1006,8 @@ Enables SMB encryption. Only applicable for SMB/DualProtocol volume.
 
 - Required: No
 - Type: bool
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `volumes.smbNonBrowsable`
 
@@ -853,6 +1022,8 @@ Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProto
     'Enabled'
   ]
   ```
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `volumes.volumeType`
 
@@ -860,13 +1031,8 @@ The type of the volume. DataProtection volumes are used for replication.
 
 - Required: No
 - Type: string
-
-### Parameter: `volumes.zones`
-
-Zone where the volume will be placed.
-
-- Required: No
-- Type: array
+- MinValue: 1
+- MaxValue: 2048
 
 ## Outputs
 

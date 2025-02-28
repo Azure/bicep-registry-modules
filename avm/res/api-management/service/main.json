@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "7612109634373846286"
+      "templateHash": "3992066665524837803"
     },
     "name": "API Management Services",
     "description": "This module deploys an API Management Service. The default deployment is set to use a Premium SKU to align with Microsoft WAF-aligned best practices. In most cases, non-prod deployments should use a lower-tier SKU."
@@ -948,7 +948,7 @@
             "value": "[tryGet(parameters('apis')[copyIndex()], 'authenticationSettings')]"
           },
           "format": {
-            "value": "[coalesce(tryGet(parameters('apis')[copyIndex()], 'format'), 'openapi')]"
+            "value": "[tryGet(parameters('apis')[copyIndex()], 'format')]"
           },
           "isCurrent": {
             "value": "[tryGet(parameters('apis')[copyIndex()], 'isCurrent')]"
@@ -2056,7 +2056,7 @@
             "value": "[tryGet(parameters('backends')[copyIndex()], 'title')]"
           },
           "tls": {
-            "value": "[tryGet(parameters('backends')[copyIndex()], 'tls')]"
+            "value": "[coalesce(tryGet(parameters('backends')[copyIndex()], 'tls'), createObject('validateCertificateChain', true(), 'validateCertificateName', true()))]"
           }
         },
         "template": {

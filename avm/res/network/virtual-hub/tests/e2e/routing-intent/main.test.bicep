@@ -50,34 +50,23 @@ module nestedDependencies 'dependencies.bicep' = {
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
-    dependsOn: [nestedDependencies]
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      location: resourceLocation
       name: '${namePrefix}-${serviceShort}'
-      lock: {
-        kind: 'CanNotDelete'
-        name: 'myCustomLockName'
-      }
       addressPrefix: '10.10.0.0/23'
-      virtualWanId: nestedDependencies.outputs.virtualWANResourceId
-      hubRouteTables: []
+      virtualWanResourceId: nestedDependencies.outputs.virtualWANResourceId
       hubVirtualNetworkConnections: [
         {
           name: 'connection1'
-          remoteVirtualNetworkId: nestedDependencies.outputs.virtualNetworkResourceId
-          routingConfiguration: {}
+          remoteVirtualNetworkResourceId: nestedDependencies.outputs.virtualNetworkResourceId
         }
       ]
       hubRoutingPreference: 'ASPath'
       azureFirewallResourceId: nestedDependencies.outputs.azureFirewallResourceId
-      internetToFirewall: false
-      privateToFirewall: true
-      tags: {
-        'hidden-title': 'This is visible in the resource name'
-        Environment: 'Non-Prod'
-        Role: 'DeploymentValidation'
+      routingIntent: {
+        internetToFirewall: false
+        privateToFirewall: true
       }
     }
   }
