@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "14231897538103218394"
+      "version": "0.33.93.31351",
+      "templateHash": "18193643807269591015"
     },
     "name": "Azure SQL Server Audit Settings",
-    "description": "This module deploys an Azure SQL Server Audit Settings.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Azure SQL Server Audit Settings."
   },
   "parameters": {
     "name": {
@@ -147,8 +146,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "6533631702047528762"
+              "version": "0.33.93.31351",
+              "templateHash": "3456585740193014655"
             }
           },
           "parameters": {

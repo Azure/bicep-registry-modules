@@ -1,6 +1,5 @@
 metadata name = 'Container App Jobs'
 metadata description = 'This module deploys a Container App Job.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the Container App.')
 param name string

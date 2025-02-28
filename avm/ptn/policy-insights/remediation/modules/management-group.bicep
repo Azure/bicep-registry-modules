@@ -1,6 +1,5 @@
 metadata name = 'Policy Insights Remediations (Management Group scope)'
 metadata description = 'This module starts a Policy Remediation task at a Management Group scope.'
-metadata owner = 'Azure/module-maintainers'
 
 targetScope = 'managementGroup'
 

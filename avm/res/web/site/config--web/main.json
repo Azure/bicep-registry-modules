@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "7421483198699979599"
+      "version": "0.33.93.31351",
+      "templateHash": "15058680643544097487"
     },
     "name": "Site Web Config",
-    "description": "This module deploys web settings configuration available under sites/config name: web.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys web settings configuration available under sites/config name: web."
   },
   "parameters": {
     "appName": {

@@ -1,6 +1,5 @@
 metadata name = 'App Configuration Stores'
 metadata description = 'This module deploys an App Configuration Store.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the Azure App Configuration.')
 param name string
@@ -78,6 +77,8 @@ param enableTelemetry bool = true
 import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointSingleServiceType[]?
+
+var enableReferencedModulesTelemetry = false
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -331,7 +332,7 @@ module configurationStore_privateEndpoints 'br/public:avm/res/network/private-en
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
-      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',

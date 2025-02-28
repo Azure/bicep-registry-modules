@@ -4,12 +4,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "2988995240332079717"
+      "version": "0.33.93.31351",
+      "templateHash": "226082505863315224"
     },
     "name": "DocumentDB Database Account SQL Role Definitions.",
-    "description": "This module deploys a SQL Role Definision in a CosmosDB Account.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a SQL Role Definision in a CosmosDB Account."
   },
   "parameters": {
     "databaseAccountName": {

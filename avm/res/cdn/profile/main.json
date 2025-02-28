@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "12837041705717919191"
+      "version": "0.33.13.18514",
+      "templateHash": "17701317715444968473"
     },
     "name": "CDN Profiles",
-    "description": "This module deploys a CDN Profile.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a CDN Profile."
   },
   "definitions": {
     "managedIdentitiesType": {
@@ -1332,12 +1331,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "12158435617192568330"
+              "version": "0.33.13.18514",
+              "templateHash": "9667828946590224838"
             },
             "name": "CDN Profiles Endpoints",
-            "description": "This module deploys a CDN Profile Endpoint.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a CDN Profile Endpoint."
           },
           "parameters": {
             "profileName": {
@@ -1449,12 +1447,11 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "1967881427631941882"
+                      "version": "0.33.13.18514",
+                      "templateHash": "14207274905612158052"
                     },
                     "name": "CDN Profiles Endpoints Origins",
-                    "description": "This module deploys a CDN Profile Endpoint Origin.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a CDN Profile Endpoint Origin."
                   },
                   "parameters": {
                     "endpointName": {
@@ -1695,18 +1692,17 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "6471061278844735033"
+              "version": "0.33.13.18514",
+              "templateHash": "14557033028846709449"
             },
             "name": "CDN Profiles Secret",
-            "description": "This module deploys a CDN Profile Secret.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a CDN Profile Secret."
           },
           "parameters": {
             "name": {
               "type": "string",
               "metadata": {
-                "description": "Required. The name of the secrect."
+                "description": "Required. The name of the secret."
               }
             },
             "profileName": {
@@ -1725,7 +1721,7 @@
                 "UrlSigningKey"
               ],
               "metadata": {
-                "description": "Optional. The type of the secrect."
+                "description": "Optional. The type of the secret."
               }
             },
             "secretSourceResourceId": {
@@ -1746,14 +1742,14 @@
               "type": "array",
               "defaultValue": [],
               "metadata": {
-                "description": "Optional. The subject alternative names of the secrect."
+                "description": "Optional. The subject alternative names of the secret."
               }
             },
             "useLatestVersion": {
               "type": "bool",
               "defaultValue": false,
               "metadata": {
-                "description": "Optional. Indicates whether to use the latest version of the secrect."
+                "description": "Optional. Indicates whether to use the latest version of the secret."
               }
             }
           },
@@ -1771,14 +1767,14 @@
             "name": {
               "type": "string",
               "metadata": {
-                "description": "The name of the secrect."
+                "description": "The name of the secret."
               },
               "value": "[parameters('name')]"
             },
             "resourceId": {
               "type": "string",
               "metadata": {
-                "description": "The resource ID of the secrect."
+                "description": "The resource ID of the secret."
               },
               "value": "[resourceId('Microsoft.Cdn/profiles/secrets', parameters('profileName'), parameters('name'))]"
             },
@@ -1845,12 +1841,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "12647886167890211057"
+              "version": "0.33.13.18514",
+              "templateHash": "10369216656034565871"
             },
             "name": "CDN Profiles Custom Domains",
-            "description": "This module deploys a CDN Profile Custom Domains.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a CDN Profile Custom Domains."
           },
           "definitions": {
             "customDomainType": {
@@ -2021,7 +2016,7 @@
             }
           },
           "resources": {
-            "profile::secrect": {
+            "profile::secret": {
               "condition": "[not(empty(parameters('secretName')))]",
               "existing": true,
               "type": "Microsoft.Cdn/profiles/secrets",
@@ -2135,12 +2130,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "3450465162010752754"
+              "version": "0.33.13.18514",
+              "templateHash": "2309166106272805364"
             },
             "name": "CDN Profiles Origin Group",
-            "description": "This module deploys a CDN Profile Origin Group.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a CDN Profile Origin Group."
           },
           "definitions": {
             "originGroupType": {
@@ -2479,12 +2473,11 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "5172201899085933507"
+                      "version": "0.33.13.18514",
+                      "templateHash": "4615820934914726240"
                     },
                     "name": "CDN Profiles Origin",
-                    "description": "This module deploys a CDN Profile Origin.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a CDN Profile Origin."
                   },
                   "definitions": {
                     "originType": {
@@ -2771,7 +2764,7 @@
             "value": "[parameters('name')]"
           },
           "rules": {
-            "value": "[parameters('ruleSets')[copyIndex()].rules]"
+            "value": "[tryGet(parameters('ruleSets')[copyIndex()], 'rules')]"
           }
         },
         "template": {
@@ -2781,12 +2774,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "8263137294746797692"
+              "version": "0.33.13.18514",
+              "templateHash": "832720268679200418"
             },
             "name": "CDN Profiles Rule Sets",
-            "description": "This module deploys a CDN Profile rule set.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a CDN Profile rule set."
           },
           "definitions": {
             "ruleSetType": {
@@ -2940,12 +2932,11 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "14540406126609060699"
+                      "version": "0.33.13.18514",
+                      "templateHash": "4778641008462766741"
                     },
                     "name": "CDN Profiles Rules",
-                    "description": "This module deploys a CDN Profile rule.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a CDN Profile rule."
                   },
                   "definitions": {
                     "ruleType": {
@@ -3169,12 +3160,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "5418845183779263042"
+              "version": "0.33.13.18514",
+              "templateHash": "8177824551774407436"
             },
             "name": "CDN Profiles AFD Endpoints",
-            "description": "This module deploys a CDN Profile AFD Endpoint.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a CDN Profile AFD Endpoint."
           },
           "definitions": {
             "afdEndpointType": {
@@ -3544,12 +3534,11 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "11233659924871585320"
+                      "version": "0.33.13.18514",
+                      "templateHash": "5263422487313973220"
                     },
                     "name": "CDN Profiles AFD Endpoint Route",
-                    "description": "This module deploys a CDN Profile AFD Endpoint route.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a CDN Profile AFD Endpoint route."
                   },
                   "definitions": {
                     "routeType": {
@@ -3842,7 +3831,7 @@
                     },
                     "profile::customDomains": {
                       "copy": {
-                        "name": "customDomains",
+                        "name": "profile::customDomains",
                         "count": "[length(coalesce(parameters('customDomainNames'), createArray()))]"
                       },
                       "existing": true,
@@ -3858,7 +3847,7 @@
                     },
                     "profile::ruleSet": {
                       "copy": {
-                        "name": "ruleSet",
+                        "name": "profile::ruleSet",
                         "count": "[length(parameters('ruleSets'))]"
                       },
                       "existing": true,
@@ -4024,12 +4013,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "13846745009559493983"
+              "version": "0.33.13.18514",
+              "templateHash": "6987560302604046970"
             },
             "name": "CDN Profiles Security Policy",
-            "description": "This module deploys a CDN Profile Security Policy.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a CDN Profile Security Policy."
           },
           "definitions": {
             "associationsType": {
@@ -4122,14 +4110,14 @@
             "name": {
               "type": "string",
               "metadata": {
-                "description": "The name of the secrect."
+                "description": "The name of the secret."
               },
               "value": "[parameters('name')]"
             },
             "resourceId": {
               "type": "string",
               "metadata": {
-                "description": "The resource ID of the secrect."
+                "description": "The resource ID of the secret."
               },
               "value": "[resourceId('Microsoft.Cdn/profiles/securityPolicies', parameters('profileName'), parameters('name'))]"
             },
@@ -4209,10 +4197,11 @@
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",
+      "nullable": true,
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[coalesce(tryGet(tryGet(reference('profile', '2023-05-01', 'full'), 'identity'), 'principalId'), '')]"
+      "value": "[tryGet(tryGet(reference('profile', '2023-05-01', 'full'), 'identity'), 'principalId')]"
     },
     "dnsValidation": {
       "type": "array",

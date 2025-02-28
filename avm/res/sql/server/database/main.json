@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "8657415553449823149"
+      "version": "0.33.93.31351",
+      "templateHash": "16881410177731489630"
     },
     "name": "SQL Server Database",
-    "description": "This module deploys an Azure SQL Server Database.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Azure SQL Server Database."
   },
   "definitions": {
     "databaseSkuType": {
@@ -252,7 +251,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     }
@@ -718,12 +717,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "2726045612900421237"
+              "version": "0.33.93.31351",
+              "templateHash": "8340051145755870485"
             },
             "name": "Azure SQL Server Database Short Term Backup Retention Policies",
-            "description": "This module deploys an Azure SQL Server Database Short-Term Backup Retention Policy.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Azure SQL Server Database Short-Term Backup Retention Policy."
           },
           "parameters": {
             "serverName": {
@@ -836,12 +834,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "1446282995445489550"
+              "version": "0.33.93.31351",
+              "templateHash": "3863560552324183850"
             },
             "name": "SQL Server Database Long Term Backup Retention Policies",
-            "description": "This module deploys an Azure SQL Server Database Long-Term Backup Retention Policy.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Azure SQL Server Database Long-Term Backup Retention Policy."
           },
           "parameters": {
             "serverName": {

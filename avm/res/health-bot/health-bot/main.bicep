@@ -1,6 +1,5 @@
 metadata name = 'Azure Health Bots'
 metadata description = 'This module deploys an Azure Health Bot.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the resource.')
 param name string

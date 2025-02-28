@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "13923156882372448729"
+      "version": "0.33.93.31351",
+      "templateHash": "10933228893871694752"
     },
     "name": "Digital Twins Instance EventHub Endpoint",
-    "description": "This module deploys a Digital Twins Instance EventHub Endpoint.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Digital Twins Instance EventHub Endpoint."
   },
   "definitions": {
     "managedIdentitiesType": {
@@ -159,10 +158,11 @@
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",
+      "nullable": true,
       "metadata": {
         "description": "The principal ID of the system assigned identity. Note: As of 2024-03 is not exported by API."
       },
-      "value": "[coalesce(tryGet(tryGet(reference('endpoint', '2023-01-31', 'full'), 'identity'), 'principalId'), '')]"
+      "value": "[tryGet(tryGet(reference('endpoint', '2023-01-31', 'full'), 'identity'), 'principalId')]"
     }
   }
 }

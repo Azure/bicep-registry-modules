@@ -1,6 +1,5 @@
 metadata name = 'Compute Galleries Image Definitions'
 metadata description = 'This module deploys an Azure Compute Gallery Image Definition.'
-metadata owner = 'Azure/module-maintainers'
 
 @sys.description('Required. Name of the image definition.')
 @minLength(1)
@@ -48,10 +47,13 @@ param securityType (
   | 'ConfidentialVMSupported')?
 
 @sys.description('Optional. Specify if the image supports accelerated networking.')
-param isAcceleratedNetworkSupported bool = true
+param isAcceleratedNetworkSupported bool?
 
 @sys.description('Optional. Specifiy if the image supports hibernation.')
 param isHibernateSupported bool?
+
+@sys.description('Optional. Must be set to true if the gallery image features are being updated.')
+param allowUpdateImage bool?
 
 @sys.description('Optional. The architecture of the image. Applicable to OS disks only.')
 param architecture ('x64' | 'Arm64')?
@@ -70,6 +72,9 @@ param eula string?
 
 @sys.description('Optional. The hypervisor generation of the Virtual Machine. If this value is not specified, then it is determined by the securityType parameter. If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1.')
 param hyperVGeneration ('V1' | 'V2')?
+
+@sys.description('Optional. The disk controllers that an OS disk supports.')
+param diskControllerType ('SCSI' | 'SCSI, NVMe' | 'NVMe, SCSI')?
 
 @sys.description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType
@@ -114,16 +119,17 @@ var formattedRoleAssignments = [
   })
 ]
 
-resource gallery 'Microsoft.Compute/galleries@2023-07-03' existing = {
+resource gallery 'Microsoft.Compute/galleries@2024-03-03' existing = {
   name: galleryName
 }
 
-resource image 'Microsoft.Compute/galleries/images@2023-07-03' = {
+resource image 'Microsoft.Compute/galleries/images@2024-03-03' = {
   name: name
   parent: gallery
   location: location
   tags: tags
   properties: {
+    allowUpdateImage: allowUpdateImage != null ? allowUpdateImage : null
     architecture: architecture
     description: description
     disallowed: {
@@ -132,12 +138,14 @@ resource image 'Microsoft.Compute/galleries/images@2023-07-03' = {
     endOfLifeDate: endOfLifeDate
     eula: eula
     features: union(
-      [
-        {
-          name: 'IsAcceleratedNetworkSupported'
-          value: '${isAcceleratedNetworkSupported}'
-        }
-      ],
+      (isAcceleratedNetworkSupported != null // Accelerated network is not set by default and must not be set for unsupported skus
+        ? [
+            {
+              name: 'IsAcceleratedNetworkSupported'
+              value: '${isAcceleratedNetworkSupported}'
+            }
+          ]
+        : []),
       (securityType != null && securityType != 'Standard' // Standard is the default and is not set
         ? [
             {
@@ -151,6 +159,14 @@ resource image 'Microsoft.Compute/galleries/images@2023-07-03' = {
             {
               name: 'IsHibernateSupported'
               value: '${isHibernateSupported}'
+            }
+          ]
+        : []),
+      (diskControllerType != null
+        ? [
+            {
+              name: 'DiskControllerTypes'
+              value: '${diskControllerType}'
             }
           ]
         : [])

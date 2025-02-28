@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "14945501514189789066"
+      "version": "0.32.4.45862",
+      "templateHash": "17750063055261509378"
     },
     "name": "Maintenance Configurations",
-    "description": "This module deploys a Maintenance Configuration.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Maintenance Configuration."
   },
   "definitions": {
     "lockType": {

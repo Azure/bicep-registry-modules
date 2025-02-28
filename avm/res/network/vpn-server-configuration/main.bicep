@@ -1,6 +1,5 @@
 metadata name = 'VPN Server Configuration'
 metadata description = 'This module deploys a VPN Server Configuration for a Virtual Hub P2S Gateway.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the user VPN configuration.')
 param name string
@@ -63,8 +62,9 @@ param vpnProtocols array = []
 @description('Optional. Tags of the resource.')
 param tags object?
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
-param lock lockType
+param lock lockType?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -148,7 +148,7 @@ resource vpnServerConfig 'Microsoft.Network/vpnServerConfigurations@2023-11-01' 
     vpnClientRevokedCertificates: [
       for cert in (vpnClientRevokedCertificates) ?? []: {
         name: cert.name
-        thumbprint:cert.thumbprint
+        thumbprint: cert.thumbprint
       }
     ]
     vpnClientRootCertificates: [
@@ -187,14 +187,6 @@ output location string = vpnServerConfig.location
 // =============== //
 //   Definitions   //
 // =============== //
-
-type lockType = {
-  @description('Optional. Specify the name of lock.')
-  name: string?
-
-  @description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?
 
 @export()
 type vpnClientIpsecPoliciesType = {

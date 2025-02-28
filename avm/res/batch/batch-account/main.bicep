@@ -1,6 +1,5 @@
 metadata name = 'Batch Accounts'
 metadata description = 'This module deploys a Batch Account.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the Azure Batch.')
 param name string
@@ -79,6 +78,8 @@ param customerManagedKey customerManagedKeyWithAutoRotateType?
 import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
+
+var enableReferencedModulesTelemetry = false
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -303,7 +304,7 @@ module batchAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
-      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',

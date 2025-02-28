@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "15700504938596502383"
+      "version": "0.33.93.31351",
+      "templateHash": "16868169528574127897"
     },
     "name": "Search Services Private Link Resources",
-    "description": "This module deploys a Search Service Private Link Resource.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Search Service Private Link Resource."
   },
   "parameters": {
     "searchServiceName": {

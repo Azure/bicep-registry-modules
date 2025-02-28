@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "4983644790291723565"
+      "version": "0.33.93.31351",
+      "templateHash": "2069097510556451782"
     },
     "name": "Kubernetes Configuration Extensions",
-    "description": "This module deploys a Kubernetes Configuration Extension.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Kubernetes Configuration Extension."
   },
   "parameters": {
     "name": {
@@ -95,6 +94,9 @@
       }
     }
   },
+  "variables": {
+    "enableReferencedModulesTelemetry": false
+  },
   "resources": {
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
@@ -155,7 +157,7 @@
         "mode": "Incremental",
         "parameters": {
           "enableTelemetry": {
-            "value": "[coalesce(tryGet(coalesce(parameters('fluxConfigurations'), createArray())[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           },
           "clusterName": {
             "value": "[parameters('clusterName')]"

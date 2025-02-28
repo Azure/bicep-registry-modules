@@ -1,6 +1,5 @@
 metadata name = 'Azure Firewalls'
 metadata description = 'This module deploys an Azure Firewall.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the Azure Firewall.')
 param name string
@@ -87,6 +86,7 @@ param tags object?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+var enableReferencedModulesTelemetry = false
 var azureSkuName = empty(virtualNetworkResourceId) ? 'AZFW_Hub' : 'AZFW_VNet'
 var requiresManagementIp = (azureSkuTier == 'Basic' || enableForcedTunneling) ? true : false
 var isCreateDefaultManagementIP = empty(managementIPResourceID) && requiresManagementIp
@@ -222,7 +222,7 @@ module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.6.0' = if 
     lock: lock
     tags: publicIPAddressObject.?tags ?? tags
     zones: zones
-    enableTelemetry: publicIPAddressObject.?enableTelemetry ?? enableTelemetry
+    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 
@@ -256,7 +256,7 @@ module managementIPAddress 'br/public:avm/res/network/public-ip-address:0.6.0' =
     location: location
     tags: managementIPAddressObject.?tags ?? tags
     zones: zones
-    enableTelemetry: managementIPAddressObject.?enableTelemetry ?? enableTelemetry
+    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 

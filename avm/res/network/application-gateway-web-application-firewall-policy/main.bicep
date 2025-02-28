@@ -1,6 +1,5 @@
 metadata name = 'Application Gateway Web Application Firewall (WAF) Policies'
 metadata description = 'This module deploys an Application Gateway Web Application Firewall (WAF) Policy.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the Application Gateway WAF policy.')
 param name string

@@ -26,7 +26,7 @@ This module deploys a Recovery Services Vault Replication Alert Settings.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`customEmailAddresses`](#parameter-customemailaddresses) | array | Comma separated list of custom email address for sending alert emails. |
+| [`customEmailAddresses`](#parameter-customemailaddresses) | array | The custom email address for sending emails. |
 | [`locale`](#parameter-locale) | string | The locale for the email notification. |
 | [`name`](#parameter-name) | string | The name of the replication Alert Setting. |
 | [`sendToOwners`](#parameter-sendtoowners) | string | The value indicating whether to send email to subscription administrator. |
@@ -40,11 +40,10 @@ The name of the parent Azure Recovery Service Vault. Required if the template is
 
 ### Parameter: `customEmailAddresses`
 
-Comma separated list of custom email address for sending alert emails.
+The custom email address for sending emails.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `locale`
 

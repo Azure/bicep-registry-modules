@@ -1,6 +1,5 @@
 metadata name = 'CDN Profiles Security Policy'
 metadata description = 'This module deploys a CDN Profile Security Policy.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The resource name.')
 param name string
@@ -44,10 +43,10 @@ type associationsType = {
   patternsToMatch: string[]
 }[]
 
-@description('The name of the secrect.')
+@description('The name of the secret.')
 output name string = securityPolicies.name
 
-@description('The resource ID of the secrect.')
+@description('The resource ID of the secret.')
 output resourceId string = securityPolicies.id
 
 @description('The name of the resource group the secret was created in.')

@@ -1,6 +1,5 @@
 metadata name = 'Web/Function Apps'
 metadata description = 'This module deploys a Web or Function App.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the site.')
 param name string
@@ -186,6 +185,8 @@ param publicNetworkAccess string?
 
 @description('Optional. End to End Encryption Setting.')
 param e2eEncryptionEnabled bool?
+
+var enableReferencedModulesTelemetry = false
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -388,7 +389,6 @@ module app_slots 'slot/main.bicep' = [
       customDomainVerificationId: slot.?customDomainVerificationId
       dailyMemoryTimeQuota: slot.?dailyMemoryTimeQuota
       enabled: slot.?enabled
-      enableTelemetry: slot.?enableTelemetry ?? enableTelemetry
       hostNameSslStates: slot.?hostNameSslStates
       hyperV: slot.?hyperV
       publicNetworkAccess: slot.?publicNetworkAccess ?? ((!empty(slot.?privateEndpoints) || !empty(privateEndpoints))
@@ -482,18 +482,13 @@ resource app_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01
   }
 ]
 
-module app_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
+module app_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-app-PrivateEndpoint-${index}'
-    scope: !empty(privateEndpoint.?resourceGroupResourceId)
-      ? resourceGroup(
-          split((privateEndpoint.?resourceGroupResourceId ?? '//'), '/')[2],
-          split((privateEndpoint.?resourceGroupResourceId ?? '////'), '/')[4]
-        )
-      : resourceGroup(
-          split((privateEndpoint.?subnetResourceId ?? '//'), '/')[2],
-          split((privateEndpoint.?subnetResourceId ?? '////'), '/')[4]
-        )
+    scope: resourceGroup(
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
+    )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(app.id, '/'))}-${privateEndpoint.?service ?? 'sites'}-${index}'
       privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
@@ -524,7 +519,7 @@ module app_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' =
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
-      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',
@@ -562,7 +557,7 @@ output systemAssignedMIPrincipalId string? = app.?identity.?principalId
 
 @description('The principal ID of the system assigned identity of slots.')
 output slotSystemAssignedMIPrincipalIds string[] = [
-  for (slot, index) in (slots ?? []): app_slots[index].outputs.systemAssignedMIPrincipalId ?? ''
+  for (slot, index) in (slots ?? []): app_slots[index].outputs.?systemAssignedMIPrincipalId ?? ''
 ]
 
 @description('The location the resource was deployed into.')
@@ -575,13 +570,13 @@ output defaultHostname string = app.properties.defaultHostName
 output customDomainVerificationId string = app.properties.customDomainVerificationId
 
 @description('The private endpoints of the site.')
-output privateEndpoints array = [
-  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
-    name: app_privateEndpoints[i].outputs.name
-    resourceId: app_privateEndpoints[i].outputs.resourceId
-    groupId: app_privateEndpoints[i].outputs.groupId
-    customDnsConfig: app_privateEndpoints[i].outputs.customDnsConfig
-    networkInterfaceIds: app_privateEndpoints[i].outputs.networkInterfaceIds
+output privateEndpoints privateEndpointOutputType[] = [
+  for (item, index) in (privateEndpoints ?? []): {
+    name: app_privateEndpoints[index].outputs.name
+    resourceId: app_privateEndpoints[index].outputs.resourceId
+    groupId: app_privateEndpoints[index].outputs.?groupId!
+    customDnsConfigs: app_privateEndpoints[index].outputs.customDnsConfigs
+    networkInterfaceResourceIds: app_privateEndpoints[index].outputs.networkInterfaceResourceIds
   }
 ]
 
@@ -590,3 +585,30 @@ output slotPrivateEndpoints array = [for (slot, index) in (slots ?? []): app_slo
 
 @description('The outbound IP addresses of the app.')
 output outboundIpAddresses string = app.properties.outboundIpAddresses
+
+// ================ //
+// Definitions      //
+// ================ //
+@export()
+type privateEndpointOutputType = {
+  @description('The name of the private endpoint.')
+  name: string
+
+  @description('The resource ID of the private endpoint.')
+  resourceId: string
+
+  @description('The group Id for the private endpoint Group.')
+  groupId: string?
+
+  @description('The custom DNS configurations of the private endpoint.')
+  customDnsConfigs: {
+    @description('FQDN that resolves to private endpoint IP address.')
+    fqdn: string?
+
+    @description('A list of private IP addresses of the private endpoint.')
+    ipAddresses: string[]
+  }[]
+
+  @description('The IDs of the network interfaces associated with the private endpoint.')
+  networkInterfaceResourceIds: string[]
+}

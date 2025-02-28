@@ -1,6 +1,5 @@
 metadata name = 'Kusto Cluster'
 metadata description = 'This module deploys a Kusto Cluster.'
-metadata owner = 'Azure/module-maintainers'
 
 @minLength(4)
 @maxLength(22)
@@ -132,6 +131,8 @@ param principalAssignments principalAssignmentType[]?
 
 @description('Optional. The Kusto Cluster databases.')
 param databases databaseType[]?
+
+var enableReferencedModulesTelemetry = false
 
 // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
 var formattedUserAssignedIdentities = reduce(
@@ -371,7 +372,7 @@ module kustoCluster_privateEndpoints 'br/public:avm/res/network/private-endpoint
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
-      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',

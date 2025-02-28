@@ -5,29 +5,13 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "8101726979251102257"
+      "version": "0.33.93.31351",
+      "templateHash": "3876724901187679748"
     },
     "name": "Firewall Policies",
-    "description": "This module deploys a Firewall Policy.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Firewall Policy."
   },
   "definitions": {
-    "managedIdentitiesType": {
-      "type": "object",
-      "properties": {
-        "userAssignedResourceIds": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "metadata": {
-            "description": "Optional. The resource ID(s) to assign to the resource."
-          }
-        }
-      },
-      "nullable": true
-    },
     "roleAssignmentType": {
       "type": "array",
       "items": {
@@ -125,6 +109,27 @@
         }
       },
       "nullable": true
+    },
+    "managedIdentityOnlyUserAssignedType": {
+      "type": "object",
+      "properties": {
+        "userAssignedResourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a managed identity configuration. To be used if only user-assigned identities are supported by the resource provider.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
     }
   },
   "parameters": {
@@ -149,7 +154,8 @@
       }
     },
     "managedIdentities": {
-      "$ref": "#/definitions/managedIdentitiesType",
+      "$ref": "#/definitions/managedIdentityOnlyUserAssignedType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The managed identity definition for this resource."
       }
@@ -471,12 +477,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "16690847140692561221"
+              "version": "0.33.93.31351",
+              "templateHash": "16872244979902179380"
             },
             "name": "Firewall Policy Rule Collection Groups",
-            "description": "This module deploys a Firewall Policy Rule Collection Group.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Firewall Policy Rule Collection Group."
           },
           "parameters": {
             "firewallPolicyName": {

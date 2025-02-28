@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "5881171536836718740"
+      "version": "0.33.93.31351",
+      "templateHash": "1489251440210164837"
     },
     "name": "Log Analytics Workspace Linked Storage Accounts",
-    "description": "This module deploys a Log Analytics Workspace Linked Storage Account.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Log Analytics Workspace Linked Storage Account."
   },
   "parameters": {
     "logAnalyticsWorkspaceName": {
@@ -46,12 +45,12 @@
     "workspace": {
       "existing": true,
       "type": "Microsoft.OperationalInsights/workspaces",
-      "apiVersion": "2022-10-01",
+      "apiVersion": "2023-09-01",
       "name": "[parameters('logAnalyticsWorkspaceName')]"
     },
     "linkedStorageAccount": {
       "type": "Microsoft.OperationalInsights/workspaces/linkedStorageAccounts",
-      "apiVersion": "2020-08-01",
+      "apiVersion": "2023-09-01",
       "name": "[format('{0}/{1}', parameters('logAnalyticsWorkspaceName'), parameters('name'))]",
       "properties": {
         "storageAccountIds": "[parameters('storageAccountIds')]"

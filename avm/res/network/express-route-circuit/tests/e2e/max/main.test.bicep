@@ -82,6 +82,7 @@ module testDeployment '../../../main.bicep' = [
           workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
         }
       ]
+      enableDirectPortRateLimit: true
       lock: {
         kind: 'CanNotDelete'
         name: 'myCustomLockName'

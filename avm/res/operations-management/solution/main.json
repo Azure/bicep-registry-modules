@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "6921717581640555251"
+      "templateHash": "9594268678000013640"
     },
     "name": "Operations Management Solutions",
-    "description": "This module deploys an Operations Management Solution.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Operations Management Solution."
   },
   "definitions": {
     "solutionPlanType": {

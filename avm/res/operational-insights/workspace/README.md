@@ -18,14 +18,14 @@ This module deploys a Log Analytics Workspace.
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.OperationalInsights/workspaces` | [2022-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2022-10-01/workspaces) |
-| `Microsoft.OperationalInsights/workspaces/dataExports` | [2020-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2020-08-01/workspaces/dataExports) |
-| `Microsoft.OperationalInsights/workspaces/dataSources` | [2020-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2020-08-01/workspaces/dataSources) |
-| `Microsoft.OperationalInsights/workspaces/linkedServices` | [2020-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2020-08-01/workspaces/linkedServices) |
-| `Microsoft.OperationalInsights/workspaces/linkedStorageAccounts` | [2020-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2020-08-01/workspaces/linkedStorageAccounts) |
-| `Microsoft.OperationalInsights/workspaces/savedSearches` | [2020-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2020-08-01/workspaces/savedSearches) |
-| `Microsoft.OperationalInsights/workspaces/storageInsightConfigs` | [2020-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2020-08-01/workspaces/storageInsightConfigs) |
-| `Microsoft.OperationalInsights/workspaces/tables` | [2022-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2022-10-01/workspaces/tables) |
+| `Microsoft.OperationalInsights/workspaces` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces) |
+| `Microsoft.OperationalInsights/workspaces/dataExports` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces/dataExports) |
+| `Microsoft.OperationalInsights/workspaces/dataSources` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces/dataSources) |
+| `Microsoft.OperationalInsights/workspaces/linkedServices` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces/linkedServices) |
+| `Microsoft.OperationalInsights/workspaces/linkedStorageAccounts` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces/linkedStorageAccounts) |
+| `Microsoft.OperationalInsights/workspaces/savedSearches` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces/savedSearches) |
+| `Microsoft.OperationalInsights/workspaces/storageInsightConfigs` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces/storageInsightConfigs) |
+| `Microsoft.OperationalInsights/workspaces/tables` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces/tables) |
 | `Microsoft.OperationsManagement/solutions` | [2015-11-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationsManagement/2015-11-01-preview/solutions) |
 | `Microsoft.SecurityInsights/onboardingStates` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.SecurityInsights/2024-03-01/onboardingStates) |
 
@@ -198,6 +198,9 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
         useThisWorkspace: true
       }
     ]
+    features: {
+      enableLogAccessUsingOnlyResourcePermissions: true
+    }
     gallerySolutions: [
       {
         name: 'AzureAutomation(oiwadv001)'
@@ -338,7 +341,6 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    useResourcePermissions: true
   }
 }
 ```
@@ -508,6 +510,11 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
         }
       ]
     },
+    "features": {
+      "value": {
+        "enableLogAccessUsingOnlyResourcePermissions": true
+      }
+    },
     "gallerySolutions": {
       "value": [
         {
@@ -669,9 +676,6 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
-    },
-    "useResourcePermissions": {
-      "value": true
     }
   }
 }
@@ -830,6 +834,9 @@ param diagnosticSettings = [
     useThisWorkspace: true
   }
 ]
+param features = {
+  enableLogAccessUsingOnlyResourcePermissions: true
+}
 param gallerySolutions = [
   {
     name: 'AzureAutomation(oiwadv001)'
@@ -970,7 +977,6 @@ param tags = {
   'hidden-title': 'This is visible in the resource name'
   Role: 'DeploymentValidation'
 }
-param useResourcePermissions = true
 ```
 
 </details>
@@ -1161,6 +1167,12 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
+    features: {
+      disableLocalAuth: true
+      enableDataExport: true
+      enableLogAccessUsingOnlyResourcePermissions: true
+      immediatePurgeDataOn30Days: true
+    }
     gallerySolutions: [
       {
         name: 'AzureAutomation(oiwmax001)'
@@ -1348,7 +1360,6 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    useResourcePermissions: true
   }
 }
 ```
@@ -1480,6 +1491,14 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
           "workspaceResourceId": "<workspaceResourceId>"
         }
       ]
+    },
+    "features": {
+      "value": {
+        "disableLocalAuth": true,
+        "enableDataExport": true,
+        "enableLogAccessUsingOnlyResourcePermissions": true,
+        "immediatePurgeDataOn30Days": true
+      }
     },
     "gallerySolutions": {
       "value": [
@@ -1695,9 +1714,6 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
-    },
-    "useResourcePermissions": {
-      "value": true
     }
   }
 }
@@ -1821,6 +1837,12 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
+param features = {
+  disableLocalAuth: true
+  enableDataExport: true
+  enableLogAccessUsingOnlyResourcePermissions: true
+  immediatePurgeDataOn30Days: true
+}
 param gallerySolutions = [
   {
     name: 'AzureAutomation(oiwmax001)'
@@ -2008,7 +2030,6 @@ param tags = {
   'hidden-title': 'This is visible in the resource name'
   Role: 'DeploymentValidation'
 }
-param useResourcePermissions = true
 ```
 
 </details>
@@ -2129,6 +2150,9 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
+    features: {
+      enableLogAccessUsingOnlyResourcePermissions: true
+    }
     gallerySolutions: [
       {
         name: 'AzureAutomation(oiwwaf001)'
@@ -2173,7 +2197,6 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    useResourcePermissions: true
   }
 }
 ```
@@ -2300,6 +2323,11 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
         }
       ]
     },
+    "features": {
+      "value": {
+        "enableLogAccessUsingOnlyResourcePermissions": true
+      }
+    },
     "gallerySolutions": {
       "value": [
         {
@@ -2361,9 +2389,6 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
-    },
-    "useResourcePermissions": {
-      "value": true
     }
   }
 }
@@ -2481,6 +2506,9 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
+param features = {
+  enableLogAccessUsingOnlyResourcePermissions: true
+}
 param gallerySolutions = [
   {
     name: 'AzureAutomation(oiwwaf001)'
@@ -2525,7 +2553,6 @@ param tags = {
   'hidden-title': 'This is visible in the resource name'
   Role: 'DeploymentValidation'
 }
-param useResourcePermissions = true
 ```
 
 </details>
@@ -2555,6 +2582,7 @@ param useResourcePermissions = true
 | [`dataSources`](#parameter-datasources) | array | LAW data sources to configure. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`features`](#parameter-features) | object | The workspace features. |
 | [`forceCmkForQuery`](#parameter-forcecmkforquery) | bool | Indicates whether customer managed storage is mandatory for query management. |
 | [`gallerySolutions`](#parameter-gallerysolutions) | array | List of gallerySolutions to be created in the log analytics workspace. |
 | [`linkedServices`](#parameter-linkedservices) | array | List of services to be linked. |
@@ -2571,7 +2599,6 @@ param useResourcePermissions = true
 | [`storageInsightsConfigs`](#parameter-storageinsightsconfigs) | array | List of storage accounts to be read by the workspace. |
 | [`tables`](#parameter-tables) | array | LAW custom tables to be deployed. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
-| [`useResourcePermissions`](#parameter-useresourcepermissions) | bool | Set to 'true' to use resource or workspace permissions and 'false' (or leave empty) to require workspace permissions. |
 
 ### Parameter: `name`
 
@@ -3075,6 +3102,60 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
+- MinValue: 0
+- MaxValue: 730
+
+### Parameter: `features`
+
+The workspace features.
+
+- Required: No
+- Type: object
+- MinValue: 0
+- MaxValue: 730
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`disableLocalAuth`](#parameter-featuresdisablelocalauth) | bool | Disable Non-EntraID based Auth. Default is true. |
+| [`enableDataExport`](#parameter-featuresenabledataexport) | bool | Flag that indicate if data should be exported. |
+| [`enableLogAccessUsingOnlyResourcePermissions`](#parameter-featuresenablelogaccessusingonlyresourcepermissions) | bool | Enable log access using only resource permissions. Default is false. |
+| [`immediatePurgeDataOn30Days`](#parameter-featuresimmediatepurgedataon30days) | bool | Flag that describes if we want to remove the data after 30 days. |
+
+### Parameter: `features.disableLocalAuth`
+
+Disable Non-EntraID based Auth. Default is true.
+
+- Required: No
+- Type: bool
+- MinValue: 0
+- MaxValue: 730
+
+### Parameter: `features.enableDataExport`
+
+Flag that indicate if data should be exported.
+
+- Required: No
+- Type: bool
+- MinValue: 0
+- MaxValue: 730
+
+### Parameter: `features.enableLogAccessUsingOnlyResourcePermissions`
+
+Enable log access using only resource permissions. Default is false.
+
+- Required: No
+- Type: bool
+- MinValue: 0
+- MaxValue: 730
+
+### Parameter: `features.immediatePurgeDataOn30Days`
+
+Flag that describes if we want to remove the data after 30 days.
+
+- Required: No
+- Type: bool
 - MinValue: 0
 - MaxValue: 730
 
@@ -4107,16 +4188,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-- MinValue: 100
-- MaxValue: 5000
-
-### Parameter: `useResourcePermissions`
-
-Set to 'true' to use resource or workspace permissions and 'false' (or leave empty) to require workspace permissions.
-
-- Required: No
-- Type: bool
-- Default: `False`
 - MinValue: 100
 - MaxValue: 5000
 

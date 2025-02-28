@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "16690847140692561221"
+      "version": "0.33.93.31351",
+      "templateHash": "16872244979902179380"
     },
     "name": "Firewall Policy Rule Collection Groups",
-    "description": "This module deploys a Firewall Policy Rule Collection Group.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Firewall Policy Rule Collection Group."
   },
   "parameters": {
     "firewallPolicyName": {

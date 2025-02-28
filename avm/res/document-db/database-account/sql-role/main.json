@@ -4,12 +4,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "5835214316063453536"
+      "version": "0.33.93.31351",
+      "templateHash": "10702362485253818591"
     },
     "name": "DocumentDB Database Account SQL Role.",
-    "description": "This module deploys SQL Role Definision and Assignment in a CosmosDB Account.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys SQL Role Definision and Assignment in a CosmosDB Account."
   },
   "parameters": {
     "databaseAccountName": {
@@ -91,12 +90,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "2988995240332079717"
+              "version": "0.33.93.31351",
+              "templateHash": "226082505863315224"
             },
             "name": "DocumentDB Database Account SQL Role Definitions.",
-            "description": "This module deploys a SQL Role Definision in a CosmosDB Account.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a SQL Role Definision in a CosmosDB Account."
           },
           "parameters": {
             "databaseAccountName": {
@@ -212,12 +210,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "14595063605642768334"
+              "version": "0.33.93.31351",
+              "templateHash": "4459562534723287578"
             },
             "name": "DocumentDB Database Account SQL Role Assignments.",
-            "description": "This module deploys a SQL Role Assignment in a CosmosDB Account.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a SQL Role Assignment in a CosmosDB Account."
           },
           "parameters": {
             "databaseAccountName": {

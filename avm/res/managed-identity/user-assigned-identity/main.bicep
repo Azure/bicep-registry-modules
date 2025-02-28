@@ -1,6 +1,5 @@
 metadata name = 'User Assigned Identities'
 metadata description = 'This module deploys a User Assigned Identity.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the User Assigned Identity.')
 param name string
