@@ -66,7 +66,7 @@ module testDeployment '../../../main.bicep' = {
           }
         ]
         serviceLevel: 'Premium'
-        size: 4398046511104
+        size: 1
         volumes: [
           {
             exportPolicy: {
@@ -88,7 +88,7 @@ module testDeployment '../../../main.bicep' = {
               ]
             }
             name: '${namePrefix}-${serviceShort}-vol-001'
-            zones: [1]
+            zone: 1
             networkFeatures: 'Standard'
             encryptionKeySource: encryptionKeySource
             protocolTypes: [
@@ -106,7 +106,7 @@ module testDeployment '../../../main.bicep' = {
           }
           {
             name: '${namePrefix}-${serviceShort}-vol-002'
-            zones: [1]
+            zone: 1
             networkFeatures: 'Standard'
             encryptionKeySource: encryptionKeySource
             protocolTypes: [
@@ -127,7 +127,7 @@ module testDeployment '../../../main.bicep' = {
           }
         ]
         serviceLevel: 'Premium'
-        size: 4398046511104
+        size: 1
         volumes: []
       }
     ]
