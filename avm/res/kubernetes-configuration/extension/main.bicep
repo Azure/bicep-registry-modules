@@ -38,6 +38,8 @@ param version string?
 @description('Optional. A list of flux configuraitons.')
 param fluxConfigurations array?
 
+var enableReferencedModulesTelemetry = false
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.kubernetesconfiguration-extension.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
@@ -90,7 +92,7 @@ module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-config
   for (fluxConfiguration, index) in (fluxConfigurations ?? []): {
     name: '${uniqueString(deployment().name, location)}-ManagedCluster-FluxConfiguration${index}'
     params: {
-      enableTelemetry: fluxConfiguration.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
       clusterName: managedCluster.name
       scope: fluxConfiguration.scope
       namespace: fluxConfiguration.namespace

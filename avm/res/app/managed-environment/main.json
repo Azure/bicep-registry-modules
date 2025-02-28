@@ -587,6 +587,13 @@
         "description": "The IP address of the Managed Environment."
       },
       "value": "[reference('managedEnvironment').staticIp]"
+    },
+    "domainVerificationId": {
+      "type": "string",
+      "metadata": {
+        "description": "The domain verification id for custom domains."
+      },
+      "value": "[reference('managedEnvironment').customDomainConfiguration.customDomainVerificationId]"
     }
   }
 }
