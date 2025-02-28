@@ -70,7 +70,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
     publisherName: 'az-amorg-x-001'
     // Non-required parameters
-    location: '<location>'
     sku: 'Consumption'
   }
 }
@@ -99,9 +98,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       "value": "az-amorg-x-001"
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
     "sku": {
       "value": "Consumption"
     }
@@ -124,7 +120,6 @@ param name = 'apiscon001'
 param publisherEmail = 'apimgmt-noreply@mail.windowsazure.com'
 param publisherName = 'az-amorg-x-001'
 // Non-required parameters
-param location = '<location>'
 param sku = 'Consumption'
 ```
 
@@ -148,8 +143,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     name: 'apismin001'
     publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
     publisherName: 'az-amorg-x-001'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -175,10 +168,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     },
     "publisherName": {
       "value": "az-amorg-x-001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -198,8 +187,6 @@ using 'br/public:avm/res/api-management/service:<version>'
 param name = 'apismin001'
 param publisherEmail = 'apimgmt-noreply@mail.windowsazure.com'
 param publisherName = 'az-amorg-x-001'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -224,7 +211,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     publisherName: 'az-amorg-x-001'
     // Non-required parameters
     enableDeveloperPortal: true
-    location: '<location>'
     sku: 'Developer'
   }
 }
@@ -256,9 +242,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     "enableDeveloperPortal": {
       "value": true
     },
-    "location": {
-      "value": "<location>"
-    },
     "sku": {
       "value": "Developer"
     }
@@ -282,7 +265,6 @@ param publisherEmail = 'apimgmt-noreply@mail.windowsazure.com'
 param publisherName = 'az-amorg-x-001'
 // Non-required parameters
 param enableDeveloperPortal = true
-param location = '<location>'
 param sku = 'Developer'
 ```
 
@@ -349,22 +331,20 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         serviceUrl: 'http://echoapi.cloudapp.net/api'
       }
     ]
-    authorizationServers: {
-      secureList: [
-        {
-          authorizationEndpoint: '<authorizationEndpoint>'
-          clientId: 'apimclientid'
-          clientRegistrationEndpoint: 'http://localhost'
-          clientSecret: '<clientSecret>'
-          displayName: 'AuthServer1'
-          grantTypes: [
-            'authorizationCode'
-          ]
-          name: 'AuthServer1'
-          tokenEndpoint: '<tokenEndpoint>'
-        }
-      ]
-    }
+    authorizationServers: [
+      {
+        authorizationEndpoint: '<authorizationEndpoint>'
+        clientId: 'apimclientid'
+        clientRegistrationEndpoint: 'http://localhost'
+        clientSecret: '<clientSecret>'
+        displayName: 'AuthServer1'
+        grantTypes: [
+          'authorizationCode'
+        ]
+        name: 'AuthServer1'
+        tokenEndpoint: '<tokenEndpoint>'
+      }
+    ]
     backends: [
       {
         name: 'backend'
@@ -591,22 +571,20 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       ]
     },
     "authorizationServers": {
-      "value": {
-        "secureList": [
-          {
-            "authorizationEndpoint": "<authorizationEndpoint>",
-            "clientId": "apimclientid",
-            "clientRegistrationEndpoint": "http://localhost",
-            "clientSecret": "<clientSecret>",
-            "displayName": "AuthServer1",
-            "grantTypes": [
-              "authorizationCode"
-            ],
-            "name": "AuthServer1",
-            "tokenEndpoint": "<tokenEndpoint>"
-          }
-        ]
-      }
+      "value": [
+        {
+          "authorizationEndpoint": "<authorizationEndpoint>",
+          "clientId": "apimclientid",
+          "clientRegistrationEndpoint": "http://localhost",
+          "clientSecret": "<clientSecret>",
+          "displayName": "AuthServer1",
+          "grantTypes": [
+            "authorizationCode"
+          ],
+          "name": "AuthServer1",
+          "tokenEndpoint": "<tokenEndpoint>"
+        }
+      ]
     },
     "backends": {
       "value": [
@@ -855,22 +833,20 @@ param apis = [
     serviceUrl: 'http://echoapi.cloudapp.net/api'
   }
 ]
-param authorizationServers = {
-  secureList: [
-    {
-      authorizationEndpoint: '<authorizationEndpoint>'
-      clientId: 'apimclientid'
-      clientRegistrationEndpoint: 'http://localhost'
-      clientSecret: '<clientSecret>'
-      displayName: 'AuthServer1'
-      grantTypes: [
-        'authorizationCode'
-      ]
-      name: 'AuthServer1'
-      tokenEndpoint: '<tokenEndpoint>'
-    }
-  ]
-}
+param authorizationServers = [
+  {
+    authorizationEndpoint: '<authorizationEndpoint>'
+    clientId: 'apimclientid'
+    clientRegistrationEndpoint: 'http://localhost'
+    clientSecret: '<clientSecret>'
+    displayName: 'AuthServer1'
+    grantTypes: [
+      'authorizationCode'
+    ]
+    name: 'AuthServer1'
+    tokenEndpoint: '<tokenEndpoint>'
+  }
+]
 param backends = [
   {
     name: 'backend'
@@ -1045,7 +1021,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     publisherName: 'az-amorg-x-001'
     // Non-required parameters
     enableDeveloperPortal: true
-    location: '<location>'
     sku: 'BasicV2'
   }
 }
@@ -1077,9 +1052,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     "enableDeveloperPortal": {
       "value": true
     },
-    "location": {
-      "value": "<location>"
-    },
     "sku": {
       "value": "BasicV2"
     }
@@ -1103,7 +1075,6 @@ param publisherEmail = 'apimgmt-noreply@mail.windowsazure.com'
 param publisherName = 'az-amorg-x-001'
 // Non-required parameters
 param enableDeveloperPortal = true
-param location = '<location>'
 param sku = 'BasicV2'
 ```
 
@@ -1158,22 +1129,20 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         serviceUrl: 'https://echoapi.cloudapp.net/api'
       }
     ]
-    authorizationServers: {
-      secureList: [
-        {
-          authorizationEndpoint: '<authorizationEndpoint>'
-          clientId: 'apimClientid'
-          clientRegistrationEndpoint: 'https://localhost'
-          clientSecret: '<clientSecret>'
-          displayName: 'AuthServer1'
-          grantTypes: [
-            'authorizationCode'
-          ]
-          name: 'AuthServer1'
-          tokenEndpoint: '<tokenEndpoint>'
-        }
-      ]
-    }
+    authorizationServers: [
+      {
+        authorizationEndpoint: '<authorizationEndpoint>'
+        clientId: 'apimClientid'
+        clientRegistrationEndpoint: 'https://localhost'
+        clientSecret: '<clientSecret>'
+        displayName: 'AuthServer1'
+        grantTypes: [
+          'authorizationCode'
+        ]
+        name: 'AuthServer1'
+        tokenEndpoint: '<tokenEndpoint>'
+      }
+    ]
     backends: [
       {
         name: 'backend'
@@ -1229,7 +1198,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         signinTenant: 'mytenant.onmicrosoft.com'
       }
     ]
-    location: '<location>'
     loggers: [
       {
         credentials: {
@@ -1374,22 +1342,20 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       ]
     },
     "authorizationServers": {
-      "value": {
-        "secureList": [
-          {
-            "authorizationEndpoint": "<authorizationEndpoint>",
-            "clientId": "apimClientid",
-            "clientRegistrationEndpoint": "https://localhost",
-            "clientSecret": "<clientSecret>",
-            "displayName": "AuthServer1",
-            "grantTypes": [
-              "authorizationCode"
-            ],
-            "name": "AuthServer1",
-            "tokenEndpoint": "<tokenEndpoint>"
-          }
-        ]
-      }
+      "value": [
+        {
+          "authorizationEndpoint": "<authorizationEndpoint>",
+          "clientId": "apimClientid",
+          "clientRegistrationEndpoint": "https://localhost",
+          "clientSecret": "<clientSecret>",
+          "displayName": "AuthServer1",
+          "grantTypes": [
+            "authorizationCode"
+          ],
+          "name": "AuthServer1",
+          "tokenEndpoint": "<tokenEndpoint>"
+        }
+      ]
     },
     "backends": {
       "value": [
@@ -1455,9 +1421,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
           "signinTenant": "mytenant.onmicrosoft.com"
         }
       ]
-    },
-    "location": {
-      "value": "<location>"
     },
     "loggers": {
       "value": [
@@ -1608,22 +1571,20 @@ param apis = [
     serviceUrl: 'https://echoapi.cloudapp.net/api'
   }
 ]
-param authorizationServers = {
-  secureList: [
-    {
-      authorizationEndpoint: '<authorizationEndpoint>'
-      clientId: 'apimClientid'
-      clientRegistrationEndpoint: 'https://localhost'
-      clientSecret: '<clientSecret>'
-      displayName: 'AuthServer1'
-      grantTypes: [
-        'authorizationCode'
-      ]
-      name: 'AuthServer1'
-      tokenEndpoint: '<tokenEndpoint>'
-    }
-  ]
-}
+param authorizationServers = [
+  {
+    authorizationEndpoint: '<authorizationEndpoint>'
+    clientId: 'apimClientid'
+    clientRegistrationEndpoint: 'https://localhost'
+    clientSecret: '<clientSecret>'
+    displayName: 'AuthServer1'
+    grantTypes: [
+      'authorizationCode'
+    ]
+    name: 'AuthServer1'
+    tokenEndpoint: '<tokenEndpoint>'
+  }
+]
 param backends = [
   {
     name: 'backend'
@@ -1679,7 +1640,6 @@ param identityProviders = [
     signinTenant: 'mytenant.onmicrosoft.com'
   }
 ]
-param location = '<location>'
 param loggers = [
   {
     credentials: {
@@ -1791,7 +1751,7 @@ param tags = {
 | [`apiDiagnostics`](#parameter-apidiagnostics) | array | API Diagnostics. |
 | [`apis`](#parameter-apis) | array | APIs. |
 | [`apiVersionSets`](#parameter-apiversionsets) | array | API Version Sets. |
-| [`authorizationServers`](#parameter-authorizationservers) | secureObject | Authorization servers. |
+| [`authorizationServers`](#parameter-authorizationservers) | array | Authorization servers. |
 | [`backends`](#parameter-backends) | array | Backends. |
 | [`caches`](#parameter-caches) | array | Caches. |
 | [`certificates`](#parameter-certificates) | array | List of Certificates that need to be installed in the API Management service. Max supported certificates that can be installed is 10. |
@@ -1890,8 +1850,183 @@ API Version Sets.
 Authorization servers.
 
 - Required: No
-- Type: secureObject
-- Default: `{}`
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`authorizationEndpoint`](#parameter-authorizationserversauthorizationendpoint) | string | OAuth authorization endpoint. See <http://tools.ietf.org/html/rfc6749#section-3.2>. |
+| [`clientId`](#parameter-authorizationserversclientid) | securestring | Client or app ID registered with this authorization server. |
+| [`clientSecret`](#parameter-authorizationserversclientsecret) | securestring | Client or app secret registered with this authorization server. This property will not be filled on 'GET' operations! Use '/listSecrets' POST request to get the value. |
+| [`displayName`](#parameter-authorizationserversdisplayname) | string | API Management Service Authorization Servers name. Must be 1 to 50 characters long. |
+| [`grantTypes`](#parameter-authorizationserversgranttypes) | array | Form of an authorization grant, which the client uses to request the access token. - authorizationCode, implicit, resourceOwnerPassword, clientCredentials. |
+| [`name`](#parameter-authorizationserversname) | string | Identifier of the authorization server. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`authorizationMethods`](#parameter-authorizationserversauthorizationmethods) | array | HTTP verbs supported by the authorization endpoint. GET must be always present. POST is optional. - HEAD, OPTIONS, TRACE, GET, POST, PUT, PATCH, DELETE. |
+| [`bearerTokenSendingMethods`](#parameter-authorizationserversbearertokensendingmethods) | array | Specifies the mechanism by which access token is passed to the API. - authorizationHeader or query. |
+| [`clientAuthenticationMethod`](#parameter-authorizationserversclientauthenticationmethod) | array | Method of authentication supported by the token endpoint of this authorization server. Possible values are Basic and/or Body. When Body is specified, client credentials and other parameters are passed within the request body in the application/x-www-form-urlencoded format. - Basic or Body. |
+| [`clientRegistrationEndpoint`](#parameter-authorizationserversclientregistrationendpoint) | string | Optional reference to a page where client or app registration for this authorization server is performed. Contains absolute URL to entity being referenced. |
+| [`defaultScope`](#parameter-authorizationserversdefaultscope) | string | Access token scope that is going to be requested by default. Can be overridden at the API level. Should be provided in the form of a string containing space-delimited values. |
+| [`resourceOwnerPassword`](#parameter-authorizationserversresourceownerpassword) | securestring | Can be optionally specified when resource owner password grant type is supported by this authorization server. Default resource owner password. |
+| [`resourceOwnerUsername`](#parameter-authorizationserversresourceownerusername) | string | Can be optionally specified when resource owner password grant type is supported by this authorization server. Default resource owner username. |
+| [`serverDescription`](#parameter-authorizationserversserverdescription) | string | Description of the authorization server. Can contain HTML formatting tags. |
+| [`supportState`](#parameter-authorizationserverssupportstate) | bool | If true, authorization server will include state parameter from the authorization request to its response. Client may use state parameter to raise protocol security. |
+| [`tokenBodyParameters`](#parameter-authorizationserverstokenbodyparameters) | array | Additional parameters required by the token endpoint of this authorization server represented as an array of JSON objects with name and value string properties, i.e. {"name" : "name value", "value": "a value"}. - TokenBodyParameterContract object. |
+| [`tokenEndpoint`](#parameter-authorizationserverstokenendpoint) | string | OAuth token endpoint. Contains absolute URI to entity being referenced. |
+
+### Parameter: `authorizationServers.authorizationEndpoint`
+
+OAuth authorization endpoint. See <http://tools.ietf.org/html/rfc6749#section-3.2>.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `authorizationServers.clientId`
+
+Client or app ID registered with this authorization server.
+
+- Required: Yes
+- Type: securestring
+
+### Parameter: `authorizationServers.clientSecret`
+
+Client or app secret registered with this authorization server. This property will not be filled on 'GET' operations! Use '/listSecrets' POST request to get the value.
+
+- Required: Yes
+- Type: securestring
+
+### Parameter: `authorizationServers.displayName`
+
+API Management Service Authorization Servers name. Must be 1 to 50 characters long.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `authorizationServers.grantTypes`
+
+Form of an authorization grant, which the client uses to request the access token. - authorizationCode, implicit, resourceOwnerPassword, clientCredentials.
+
+- Required: Yes
+- Type: array
+- Allowed:
+  ```Bicep
+  [
+    'authorizationCode'
+    'clientCredentials'
+    'implicit'
+    'resourceOwnerPassword'
+  ]
+  ```
+
+### Parameter: `authorizationServers.name`
+
+Identifier of the authorization server.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `authorizationServers.authorizationMethods`
+
+HTTP verbs supported by the authorization endpoint. GET must be always present. POST is optional. - HEAD, OPTIONS, TRACE, GET, POST, PUT, PATCH, DELETE.
+
+- Required: No
+- Type: array
+
+### Parameter: `authorizationServers.bearerTokenSendingMethods`
+
+Specifies the mechanism by which access token is passed to the API. - authorizationHeader or query.
+
+- Required: No
+- Type: array
+
+### Parameter: `authorizationServers.clientAuthenticationMethod`
+
+Method of authentication supported by the token endpoint of this authorization server. Possible values are Basic and/or Body. When Body is specified, client credentials and other parameters are passed within the request body in the application/x-www-form-urlencoded format. - Basic or Body.
+
+- Required: No
+- Type: array
+
+### Parameter: `authorizationServers.clientRegistrationEndpoint`
+
+Optional reference to a page where client or app registration for this authorization server is performed. Contains absolute URL to entity being referenced.
+
+- Required: No
+- Type: string
+
+### Parameter: `authorizationServers.defaultScope`
+
+Access token scope that is going to be requested by default. Can be overridden at the API level. Should be provided in the form of a string containing space-delimited values.
+
+- Required: No
+- Type: string
+
+### Parameter: `authorizationServers.resourceOwnerPassword`
+
+Can be optionally specified when resource owner password grant type is supported by this authorization server. Default resource owner password.
+
+- Required: No
+- Type: securestring
+
+### Parameter: `authorizationServers.resourceOwnerUsername`
+
+Can be optionally specified when resource owner password grant type is supported by this authorization server. Default resource owner username.
+
+- Required: No
+- Type: string
+
+### Parameter: `authorizationServers.serverDescription`
+
+Description of the authorization server. Can contain HTML formatting tags.
+
+- Required: No
+- Type: string
+
+### Parameter: `authorizationServers.supportState`
+
+If true, authorization server will include state parameter from the authorization request to its response. Client may use state parameter to raise protocol security.
+
+- Required: No
+- Type: bool
+
+### Parameter: `authorizationServers.tokenBodyParameters`
+
+Additional parameters required by the token endpoint of this authorization server represented as an array of JSON objects with name and value string properties, i.e. {"name" : "name value", "value": "a value"}. - TokenBodyParameterContract object.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-authorizationserverstokenbodyparametersname) | string | Body parameter name. |
+| [`value`](#parameter-authorizationserverstokenbodyparametersvalue) | string | Body parameter value. |
+
+### Parameter: `authorizationServers.tokenBodyParameters.name`
+
+Body parameter name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `authorizationServers.tokenBodyParameters.value`
+
+Body parameter value.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `authorizationServers.tokenEndpoint`
+
+OAuth token endpoint. Contains absolute URI to entity being referenced.
+
+- Required: No
+- Type: string
 
 ### Parameter: `backends`
 
