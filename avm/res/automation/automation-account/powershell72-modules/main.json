@@ -6,16 +6,16 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "15236349277096310785"
+      "templateHash": "8322001051342524245"
     },
-    "name": "Automation Account Modules",
-    "description": "This module deploys an Azure Automation Account Module."
+    "name": "Automation Account Powershell72 Modules",
+    "description": "This module deploys a Powershell72 Module in the Automation Account."
   },
   "parameters": {
     "name": {
       "type": "string",
       "metadata": {
-        "description": "Required. Name of the Automation Account module."
+        "description": "Required. Name of the Powershell72 Automation Account module."
       }
     },
     "automationAccountName": {
@@ -48,7 +48,7 @@
       "type": "object",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Tags of the Automation Account resource."
+        "description": "Optional. Tags of the Powershell 72 module resource."
       }
     }
   },
@@ -59,9 +59,9 @@
       "apiVersion": "2022-08-08",
       "name": "[parameters('automationAccountName')]"
     },
-    "module": {
-      "type": "Microsoft.Automation/automationAccounts/modules",
-      "apiVersion": "2022-08-08",
+    "powershell72module": {
+      "type": "Microsoft.Automation/automationAccounts/powerShell72Modules",
+      "apiVersion": "2023-11-01",
       "name": "[format('{0}/{1}', parameters('automationAccountName'), parameters('name'))]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -86,7 +86,7 @@
       "metadata": {
         "description": "The resource ID of the deployed module."
       },
-      "value": "[resourceId('Microsoft.Automation/automationAccounts/modules', parameters('automationAccountName'), parameters('name'))]"
+      "value": "[resourceId('Microsoft.Automation/automationAccounts/powerShell72Modules', parameters('automationAccountName'), parameters('name'))]"
     },
     "resourceGroupName": {
       "type": "string",
@@ -100,7 +100,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('module', '2022-08-08', 'full').location]"
+      "value": "[reference('powershell72module', '2023-11-01', 'full').location]"
     }
   }
 }
