@@ -69,7 +69,6 @@ module testDeployment '../../../main.bicep' = [
         keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
         userAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
       }
-      enableServiceSideCMKEncryption: true
       primaryUserAssignedIdentity: nestedDependencies.outputs.managedIdentityResourceId
       managedIdentities: {
         systemAssigned: false

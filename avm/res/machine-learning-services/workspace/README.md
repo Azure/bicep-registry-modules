@@ -314,7 +314,6 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
       keyVaultResourceId: '<keyVaultResourceId>'
       userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
     }
-    enableServiceSideCMKEncryption: true
     location: '<location>'
     managedIdentities: {
       systemAssigned: false
@@ -377,9 +376,6 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
         "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
       }
     },
-    "enableServiceSideCMKEncryption": {
-      "value": true
-    },
     "location": {
       "value": "<location>"
     },
@@ -436,7 +432,6 @@ param customerManagedKey = {
   keyVaultResourceId: '<keyVaultResourceId>'
   userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
 }
-param enableServiceSideCMKEncryption = true
 param location = '<location>'
 param managedIdentities = {
   systemAssigned: false
