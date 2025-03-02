@@ -10,7 +10,6 @@ Describe 'Bicep Landing Zone (Sub) Vending Tests' {
         $namePrefix = $TestInputData.DeploymentOutputs.namePrefix.Value
         $serviceShort = $TestInputData.DeploymentOutputs.serviceShort.Value
         $location = $TestInputData.DeploymentOutputs.resourceLocation.Value
-        $secret = Get-AzKeyVaultSecret -VaultName -Name 'ExamplePassword' -AsPlainText
         Update-AzConfig -DisplayBreakingChangeWarning $false
         Select-AzSubscription -subscriptionId $subscriptionId
     }
