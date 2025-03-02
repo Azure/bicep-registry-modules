@@ -1253,15 +1253,15 @@ Describe 'Module tests' -Tag 'Module' {
                     }
                 }
                 # To be re-enabled once more modules are prepared. The code right below can then be removed.
-                # $incorrectTypes | Should -BeNullOrEmpty -Because ('no user-defined type should be declared as an array, but instead the parameter that uses the type. This makes the template and its parameters easier to understand. Found incorrect items: [{0}].' -f ($incorrectTypes -join ', '))
-                if ($incorrectTypes.Count -gt 0) {
-                    $warningMessage = ('No user-defined type should be declared as an array, but instead the parameter that uses the type. This makes the template and its parameters easier to understand. Found incorrect items: [{0}].' -f ($incorrectTypes -join ', '))
-                    Write-Warning $warningMessage
+                $incorrectTypes | Should -BeNullOrEmpty -Because ('no user-defined type should be declared as an array, but instead the parameter that uses the type. This makes the template and its parameters easier to understand. Found incorrect items: [{0}].' -f ($incorrectTypes -join ', '))
+                # if ($incorrectTypes.Count -gt 0) {
+                #     $warningMessage = ('No user-defined type should be declared as an array, but instead the parameter that uses the type. This makes the template and its parameters easier to understand. Found incorrect items: [{0}].' -f ($incorrectTypes -join ', '))
+                #     Write-Warning $warningMessage
 
-                    Write-Output @{
-                        Warning = $warningMessage
-                    }
-                }
+                #     Write-Output @{
+                #         Warning = $warningMessage
+                #     }
+                # }
             }
 
             It '[<moduleFolderName>] A UDT should not be nullable, but instead the parameter that uses it. AVM-Spec-Ref: BCPNFR18.' -TestCases $moduleFolderTestCases -Tag 'UDT' {
@@ -1283,15 +1283,15 @@ Describe 'Module tests' -Tag 'Module' {
                 }
 
                 # To be re-enabled once more modules are prepared. The code right below can then be removed.
-                # $incorrectTypes | Should -BeNullOrEmpty -Because ('no user-defined type should be declared as nullable, but instead the parameter that uses the type. This makes the template and its parameters easier to understand. Found incorrect items: [{0}].' -f ($incorrectTypes -join ', '))
-                if ($incorrectTypes.Count -gt 0) {
-                    $warningMessage = ('No user-defined type should be declared as nullable, but instead the parameter that uses the type. This makes the template and its parameters easier to understand. Found incorrect items: [{0}].' -f ($incorrectTypes -join ', '))
-                    Write-Warning $warningMessage
+                $incorrectTypes | Should -BeNullOrEmpty -Because ('no user-defined type should be declared as nullable, but instead the parameter that uses the type. This makes the template and its parameters easier to understand. Found incorrect items: [{0}].' -f ($incorrectTypes -join ', '))
+                # if ($incorrectTypes.Count -gt 0) {
+                #     $warningMessage = ('No user-defined type should be declared as nullable, but instead the parameter that uses the type. This makes the template and its parameters easier to understand. Found incorrect items: [{0}].' -f ($incorrectTypes -join ', '))
+                #     Write-Warning $warningMessage
 
-                    Write-Output @{
-                        Warning = $warningMessage
-                    }
-                }
+                #     Write-Output @{
+                #         Warning = $warningMessage
+                #     }
+                # }
             }
 
             It '[<moduleFolderName>] A UDT should always be camel-cased and end with the suffix "Type". AVM-Spec-Ref: BCPNFR19.' -TestCases $moduleFolderTestCases -Tag 'UDT' {
@@ -1319,15 +1319,15 @@ Describe 'Module tests' -Tag 'Module' {
                 }
 
                 # To be re-enabled once more modules are prepared. The code right below can then be removed.
-                # $incorrectTypes | Should -BeNullOrEmpty -Because ('every used-defined type should be camel-cased and end with the suffix "Type". Found incorrect items: [{0}].' -f ($incorrectTypes -join ', '))
-                if ($incorrectTypes.Count -gt 0) {
-                    $warningMessage = ('Every used-defined type should be camel-cased and end with the suffix "Type". Found incorrect items: [{0}].' -f ($incorrectTypes -join ', '))
-                    Write-Warning $warningMessage
+                $incorrectTypes | Should -BeNullOrEmpty -Because ('every used-defined type should be camel-cased and end with the suffix "Type". Found incorrect items: [{0}].' -f ($incorrectTypes -join ', '))
+                # if ($incorrectTypes.Count -gt 0) {
+                #     $warningMessage = ('Every used-defined type should be camel-cased and end with the suffix "Type". Found incorrect items: [{0}].' -f ($incorrectTypes -join ', '))
+                #     Write-Warning $warningMessage
 
-                    Write-Output @{
-                        Warning = $warningMessage
-                    }
-                }
+                #     Write-Output @{
+                #         Warning = $warningMessage
+                #     }
+                # }
             }
         }
     }
