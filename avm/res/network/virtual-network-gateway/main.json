@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "7603428291495557736"
+      "version": "0.33.93.31351",
+      "templateHash": "9238138996696938841"
     },
     "name": "Virtual Network Gateways",
     "description": "This module deploys a Virtual Network Gateway."
@@ -469,7 +469,7 @@
         "ErGw3AZ"
       ],
       "metadata": {
-        "description": "Required. The SKU of the Gateway."
+        "description": "Optional. The SKU of the Gateway."
       }
     },
     "vpnType": {
@@ -626,6 +626,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
+    "enableReferencedModulesTelemetry": false,
     "gatewayPipAllocationMethod": "[if(equals(parameters('skuName'), 'Basic'), 'Dynamic', 'Static')]",
     "isExpressRoute": "[equals(parameters('gatewayType'), 'ExpressRoute')]",
     "vpnTypeVar": "[if(not(variables('isExpressRoute')), parameters('vpnType'), 'PolicyBased')]",
@@ -817,6 +818,9 @@
               "domainNameLabel": "[if(equals(length(variables('arrayPipNameVar')), length(parameters('domainNameLabel'))), parameters('domainNameLabel')[copyIndex()], variables('arrayPipNameVar')[copyIndex()])]",
               "domainNameLabelScope": ""
             }
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -1481,8 +1485,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "9322793849134607569"
+              "version": "0.33.93.31351",
+              "templateHash": "10378291342967831694"
             },
             "name": "VPN Gateway NAT Rules",
             "description": "This module deploys a Virtual Network Gateway NAT Rule."

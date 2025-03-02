@@ -238,7 +238,8 @@
       "usgovtexas": "ugt",
       "usgovarizona": "uga",
       "usdodeast": "ude",
-      "usdodcentral": "udc"
+      "usdodcentral": "udc",
+      "indonesiacentral"  : "idc"
     },
     "azureRegionShortNameDisplayNameAsKey": {
       "australia southeast": "australiasoutheast",
@@ -302,7 +303,8 @@
       "usgov texas": "usgovtexas",
       "usgov arizona": "usgovarizona",
       "usdod east": "usdodeast",
-      "usdod central": "usdodcentral"
+      "usdod central": "usdodcentral",
+      "indonesia central": "indonesiacentral"
     },
     "locationLowered": "[toLower(parameters('location'))]",
     "locationLoweredAndSpacesRemoved": "[if(contains(variables('locationLowered'), ' '), variables('azureRegionShortNameDisplayNameAsKey')[variables('locationLowered')], variables('locationLowered'))]",

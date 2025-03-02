@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "2208155866464160058"
+      "version": "0.33.93.31351",
+      "templateHash": "10915453834048667608"
     },
     "name": "Static Web App Site Custom Domains",
     "description": "This module deploys a Static Web App Site Custom Domain."
