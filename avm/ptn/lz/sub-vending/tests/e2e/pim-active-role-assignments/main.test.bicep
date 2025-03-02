@@ -46,6 +46,10 @@ module testDeployment '../../../main.bicep' = {
     virtualNetworkName: 'vnet-${resourceLocation}-hs-${namePrefix}-${serviceShort}'
     virtualNetworkResourceGroupName: 'rsg-${resourceLocation}-net-hs-${namePrefix}-${serviceShort}'
     virtualNetworkLocation: resourceLocation
+    virtualNetworkAddressSpace: [
+      '10.140.0.0/16'
+    ]
+    virtualNetworkResourceGroupLockEnabled: false
     roleAssignmentEnabled: true
     pimRoleAssignments: [
       {

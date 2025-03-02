@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "11415532135795790697"
+      "templateHash": "17659622957250224234"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -1453,7 +1453,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "2538612157556197840"
+              "templateHash": "2578354069322838159"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -32099,7 +32099,7 @@
                     "value": "[coalesce(tryGet(parameters('virtualNetworkBastionConfiguration'), 'enableShareableLink'), false())]"
                   },
                   "scaleUnits": {
-                    "value": "[coalesce(tryGet(parameters('virtualNetworkBastionConfiguration'), 'scaleUnits'), 1)]"
+                    "value": "[coalesce(tryGet(parameters('virtualNetworkBastionConfiguration'), 'scaleUnits'), 2)]"
                   },
                   "enableTelemetry": {
                     "value": "[parameters('enableTelemetry')]"

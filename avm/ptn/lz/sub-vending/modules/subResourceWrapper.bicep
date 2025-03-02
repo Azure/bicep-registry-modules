@@ -1227,7 +1227,7 @@ module createBastionHost 'br/public:avm/res/network/bastion-host:0.5.0' = if (vi
     enableFileCopy: virtualNetworkBastionConfiguration.?enableFileCopy ?? false
     enableIpConnect: virtualNetworkBastionConfiguration.?enableIpConnect ?? false
     enableShareableLink: virtualNetworkBastionConfiguration.?enableShareableLink ?? false
-    scaleUnits: virtualNetworkBastionConfiguration.?scaleUnits ?? 1
+    scaleUnits: virtualNetworkBastionConfiguration.?scaleUnits ?? 2
     enableTelemetry: enableTelemetry
   }
 }

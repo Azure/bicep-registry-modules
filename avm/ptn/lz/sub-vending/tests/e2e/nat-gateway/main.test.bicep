@@ -64,10 +64,10 @@ module testDeployment '../../../main.bicep' = {
     ]
     virtualNetworkResourceGroupLockEnabled: false
     roleAssignmentEnabled: true
+    //Network contributor role
     roleAssignments: [
       {
         principalId: '896b1162-be44-4b28-888a-d01acc1b4271'
-        //Network contributor role
         definition: '/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7'
         relativeScope: '/resourceGroups/rsg-${resourceLocation}-net-hs-${namePrefix}-${serviceShort}'
       }
@@ -75,6 +75,7 @@ module testDeployment '../../../main.bicep' = {
     resourceProviders: {
       'Microsoft.Network': []
     }
+    deploymentScriptStorageAccountName: 'stg${uniqueString(resourceLocation,namePrefix,serviceShort)}lzv'
   }
 }
 
