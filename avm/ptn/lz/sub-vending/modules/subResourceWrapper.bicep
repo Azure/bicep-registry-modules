@@ -912,6 +912,7 @@ module createResourceGroupForDeploymentScript 'br/public:avm/res/resources/resou
 }
 
 module createManagedIdentityForDeploymentScript 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0' = if (!empty(resourceProviders)) {
+module createManagedIdentityForDeploymentScript 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0' = if (!empty(resourceProviders)) {
   scope: resourceGroup(subscriptionId, deploymentScriptResourceGroupName)
   name: deploymentNames.createDeploymentScriptManagedIdentity
   dependsOn: [
@@ -944,9 +945,11 @@ module createRoleAssignmentsDeploymentScriptStorageAccount 'br/public:avm/ptn/au
     subscriptionId: subscriptionId
     resourceGroupName: deploymentScriptResourceGroupName
     principalType: 'ServicePrincipal'
+    description: 'Storage File Data Privileged Contributor'
   }
 }
 
+module createDsNsg 'br/public:avm/res/network/network-security-group:0.5.0' = if (!empty(resourceProviders)) {
 module createDsNsg 'br/public:avm/res/network/network-security-group:0.5.0' = if (!empty(resourceProviders)) {
   scope: resourceGroup(subscriptionId, deploymentScriptResourceGroupName)
   dependsOn: [
@@ -998,28 +1001,31 @@ module createDsVnet 'br/public:avm/res/network/virtual-network:0.5.1' = if (!emp
       ? [
           {
             addressPrefix: !empty(resourceProviders)
-              ? cidrSubnet(virtualNetworkDeploymentScriptAddressPrefix, 24, 0)
+              ? cidrSubnet(virtualNetworkDeploymentScriptAddressPrefix, 25, 0)
               : null
-            name: 'ds-subnet-001'
+            name: 'ds-subnet'
             networkSecurityGroupResourceId: !empty(resourceProviders) ? createDsNsg.outputs.resourceId : null
-            serviceEndpoints: [
-              'Microsoft.Storage'
-            ]
             delegation: 'Microsoft.ContainerInstance/containerGroups'
+          }
+          {
+            name: 'ds-pe-subnet'
+            addressPrefix: !empty(resourceProviders)
+              ? cidrSubnet(virtualNetworkDeploymentScriptAddressPrefix, 25, 1)
+              : null
+            networkSecurityGroupResourceId: !empty(resourceProviders) ? createDsNsg.outputs.resourceId : null
           }
         ]
       : null
     enableTelemetry: enableTelemetry
   }
 }
-
 module registerResourceProviders 'br/public:avm/res/resources/deployment-script:0.2.3' = if (!empty(resourceProviders)) {
   scope: resourceGroup(subscriptionId, deploymentScriptResourceGroupName)
   name: deploymentNames.registerResourceProviders
   params: {
     name: deploymentScriptName
     kind: 'AzurePowerShell'
-    azPowerShellVersion: '3.0'
+    azPowerShellVersion: '12.3'
     cleanupPreference: 'Always'
     enableTelemetry: enableTelemetry
     location: deploymentScriptLocation
@@ -1034,7 +1040,9 @@ module registerResourceProviders 'br/public:avm/res/resources/deployment-script:
         }
       : null
     storageAccountResourceId: !(empty(resourceProviders)) ? createDsStorageAccount.outputs.resourceId : null
-    subnetResourceIds: !(empty(resourceProviders)) ? createDsVnet.outputs.subnetResourceIds : null
+    subnetResourceIds: !(empty(resourceProviders))
+      ? [filter(createDsVnet.outputs.subnetResourceIds, subnetResourceId => contains(subnetResourceId, 'ds-subnet'))[0]]
+      : null
     arguments: '-resourceProviders \'${resourceProvidersFormatted}\' -resourceProvidersFeatures -subscriptionId ${subscriptionId}'
     scriptContent: loadTextContent('../scripts/Register-SubscriptionResourceProviderList.ps1')
   }

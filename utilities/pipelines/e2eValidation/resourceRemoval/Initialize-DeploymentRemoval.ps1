@@ -78,7 +78,8 @@ function Initialize-DeploymentRemoval {
             'Microsoft.Insights/diagnosticSettings',
             'Microsoft.Network/privateEndpoints/privateDnsZoneGroups',
             'Microsoft.Network/privateEndpoints',
-            'Microsoft.Network/azureFirewalls',
+            'Microsoft.Network/virtualHubs/routingIntent', # Must be deleted before e.g., an Azure Firewall that it is referencing
+            'Microsoft.Network/azureFirewalls', # Must be deleted before e.g., a Virtual Hub that it is using.
             'Microsoft.Network/virtualHubs',
             'Microsoft.Network/virtualWans',
             'Microsoft.OperationsManagement/solutions',
@@ -101,6 +102,8 @@ function Initialize-DeploymentRemoval {
             'Microsoft.NetApp/netAppAccounts/backupVaults', # Must be deleted before netapp account because the Resource Provider does not allow deleting the account as long as it has nested resources
             'Microsoft.NetApp/netAppAccounts/snapshotPolicies', # Must be deleted before netapp account because the Resource Provider does not allow deleting the account as long as it has nested resources
             'Microsoft.NetApp/netAppAccounts/capacityPools', # Must be deleted before netapp account because the Resource Provider does not allow deleting the account as long as it has nested resources
+            'Microsoft.Network/virtualNetworkGateways', # Must be deleted before the Public IP that is associated with it
+            'Microsoft.Network/loadBalancers', # Must be deleted before e.g. a GatewaySubnet that is associated with it
             'Microsoft.Resources/resourceGroups'
         )
 

@@ -2183,7 +2183,6 @@ The number of shards to be created on a Premium Cluster Cache.
 
 - Required: No
 - Type: int
-- Default: `1`
 - MinValue: 1
 
 ### Parameter: `skuName`

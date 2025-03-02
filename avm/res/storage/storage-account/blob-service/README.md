@@ -440,7 +440,7 @@ How long this blob can be restored. It should be less than DeleteRetentionPolicy
 
 - Required: No
 - Type: int
-- Default: `6`
+- Default: `7`
 - MinValue: 1
 - MaxValue: 365
 

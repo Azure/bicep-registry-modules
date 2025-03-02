@@ -176,7 +176,7 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
   )
 }
 
-resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2024-03-01' = {
+resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2024-07-01' = {
   name: name
   tags: tags
   identity: identity
@@ -362,7 +362,9 @@ type capacityPoolType = {
   @description('Optional. The pool service level.')
   serviceLevel: ('Premium' | 'Standard' | 'StandardZRS' | 'Ultra')?
 
-  @description('Required. Provisioned size of the pool (in bytes). Allowed values are in 4TiB chunks (value must be multiply of 4398046511104).')
+  @description('Required. Provisioned size of the pool in Tebibytes (TiB).')
+  @minValue(1)
+  @maxValue(2048)
   size: int
 
   @description('Optional. The qos type of the pool.')
