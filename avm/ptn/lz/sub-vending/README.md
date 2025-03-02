@@ -16,9 +16,9 @@ This module deploys a subscription to accelerate deployment of landing zones. Fo
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
+| `Microsoft.Authorization/roleAssignmentScheduleRequests` | [2022-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01-preview/roleAssignmentScheduleRequests) |
 | `Microsoft.Authorization/roleEligibilityScheduleRequests` | [2022-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01-preview/roleEligibilityScheduleRequests) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
 | `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
 | `Microsoft.ManagedIdentity/userAssignedIdentities` | [2023-01-31](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-01-31/userAssignedIdentities) |
 | `Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials` | [2023-01-31](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-01-31/userAssignedIdentities/federatedIdentityCredentials) |
@@ -37,7 +37,6 @@ This module deploys a subscription to accelerate deployment of landing zones. Fo
 | `Microsoft.Resources/deploymentScripts` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2023-08-01/deploymentScripts) |
 | `Microsoft.Resources/resourceGroups` | [2021-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2021-04-01/resourceGroups) |
 | `Microsoft.Resources/tags` | [2019-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2019-10-01/tags) |
-| `Microsoft.Storage/storageAccounts` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-05-01/storageAccounts) |
 | `Microsoft.Storage/storageAccounts` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-05-01/storageAccounts) |
 | `Microsoft.Storage/storageAccounts/blobServices` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts/blobServices) |
 | `Microsoft.Storage/storageAccounts/blobServices/containers` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts/blobServices/containers) |
@@ -64,9 +63,10 @@ The following section provides usage examples for the module, which were used to
 - [Using only defaults.](#example-2-using-only-defaults)
 - [Hub and spoke topology.](#example-3-hub-and-spoke-topology)
 - [Hub and spoke topology with NAT gateway.](#example-4-hub-and-spoke-topology-with-nat-gateway)
-- [Using PIM Role assignments.](#example-5-using-pim-role-assignments)
-- [Using RBAC conditions.](#example-6-using-rbac-conditions)
-- [Vwan topology.](#example-7-vwan-topology)
+- [Using PIM Active Role assignments.](#example-5-using-pim-active-role-assignments)
+- [Using PIM Eligible Role assignments.](#example-6-using-pim-eligible-role-assignments)
+- [Using RBAC conditions.](#example-7-using-rbac-conditions)
+- [Vwan topology.](#example-8-vwan-topology)
 
 ### Example 1: _Deploy subscription with Bastion._
 
@@ -860,9 +860,9 @@ param virtualNetworkSubnets = [
 </details>
 <p>
 
-### Example 5: _Using PIM Role assignments._
+### Example 5: _Using PIM Active Role assignments._
 
-This instance deploys the module with PIM Role assignments.
+This instance deploys the module with PIM Active Role assignments.
 
 
 <details>
@@ -875,15 +875,14 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
   params: {
     pimRoleAssignments: [
       {
-        definition: '/providers/Microsoft.Authorization/roleDefinitions/18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
-        principalId: '896b1162-be44-4b28-888a-d01acc1b4271'
+        principalId: '<principalId>'
         relativeScope: '<relativeScope>'
+        roleAssignmentType: 'Active'
+        roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168'
         scheduleInfo: {
-          expiration: {
-            duration: 'P10D'
-            type: 'AfterDuration'
-          }
-          startDateTime: '<startDateTime>'
+          duration: 'PT4H'
+          durationType: 'AfterDuration'
+          startTime: '<startTime>'
         }
       }
     ]
@@ -923,15 +922,14 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     "pimRoleAssignments": {
       "value": [
         {
-          "definition": "/providers/Microsoft.Authorization/roleDefinitions/18d7d88d-d35e-4fb5-a5c3-7773c20a72d9",
-          "principalId": "896b1162-be44-4b28-888a-d01acc1b4271",
+          "principalId": "<principalId>",
           "relativeScope": "<relativeScope>",
+          "roleAssignmentType": "Active",
+          "roleDefinitionIdOrName": "/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168",
           "scheduleInfo": {
-            "expiration": {
-              "duration": "P10D",
-              "type": "AfterDuration"
-            },
-            "startDateTime": "<startDateTime>"
+            "duration": "PT4H",
+            "durationType": "AfterDuration",
+            "startTime": "<startTime>"
           }
         }
       ]
@@ -997,15 +995,14 @@ using 'br/public:avm/ptn/lz/sub-vending:<version>'
 
 param pimRoleAssignments = [
   {
-    definition: '/providers/Microsoft.Authorization/roleDefinitions/18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
-    principalId: '896b1162-be44-4b28-888a-d01acc1b4271'
+    principalId: '<principalId>'
     relativeScope: '<relativeScope>'
+    roleAssignmentType: 'Active'
+    roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168'
     scheduleInfo: {
-      expiration: {
-        duration: 'P10D'
-        type: 'AfterDuration'
-      }
-      startDateTime: '<startDateTime>'
+      duration: 'PT4H'
+      durationType: 'AfterDuration'
+      startTime: '<startTime>'
     }
   }
 ]
@@ -1031,7 +1028,175 @@ param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 </details>
 <p>
 
-### Example 6: _Using RBAC conditions._
+### Example 6: _Using PIM Eligible Role assignments._
+
+This instance deploys the module with PIM Eligible Role assignments.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
+  name: 'subVendingDeployment'
+  params: {
+    pimRoleAssignments: [
+      {
+        principalId: '<principalId>'
+        relativeScope: ''
+        roleAssignmentType: 'Eligible'
+        roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168'
+        scheduleInfo: {
+          duration: 'PT4H'
+          durationType: 'AfterDuration'
+          startTime: '<startTime>'
+        }
+      }
+    ]
+    resourceProviders: {}
+    roleAssignmentEnabled: true
+    subscriptionAliasEnabled: true
+    subscriptionAliasName: '<subscriptionAliasName>'
+    subscriptionBillingScope: '<subscriptionBillingScope>'
+    subscriptionDisplayName: '<subscriptionDisplayName>'
+    subscriptionManagementGroupAssociationEnabled: true
+    subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
+    subscriptionTags: {
+      namePrefix: '<namePrefix>'
+      serviceShort: '<serviceShort>'
+    }
+    subscriptionWorkload: 'Production'
+    virtualNetworkEnabled: true
+    virtualNetworkLocation: '<virtualNetworkLocation>'
+    virtualNetworkName: '<virtualNetworkName>'
+    virtualNetworkResourceGroupName: '<virtualNetworkResourceGroupName>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "pimRoleAssignments": {
+      "value": [
+        {
+          "principalId": "<principalId>",
+          "relativeScope": "",
+          "roleAssignmentType": "Eligible",
+          "roleDefinitionIdOrName": "/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168",
+          "scheduleInfo": {
+            "duration": "PT4H",
+            "durationType": "AfterDuration",
+            "startTime": "<startTime>"
+          }
+        }
+      ]
+    },
+    "resourceProviders": {
+      "value": {}
+    },
+    "roleAssignmentEnabled": {
+      "value": true
+    },
+    "subscriptionAliasEnabled": {
+      "value": true
+    },
+    "subscriptionAliasName": {
+      "value": "<subscriptionAliasName>"
+    },
+    "subscriptionBillingScope": {
+      "value": "<subscriptionBillingScope>"
+    },
+    "subscriptionDisplayName": {
+      "value": "<subscriptionDisplayName>"
+    },
+    "subscriptionManagementGroupAssociationEnabled": {
+      "value": true
+    },
+    "subscriptionManagementGroupId": {
+      "value": "bicep-lz-vending-automation-child"
+    },
+    "subscriptionTags": {
+      "value": {
+        "namePrefix": "<namePrefix>",
+        "serviceShort": "<serviceShort>"
+      }
+    },
+    "subscriptionWorkload": {
+      "value": "Production"
+    },
+    "virtualNetworkEnabled": {
+      "value": true
+    },
+    "virtualNetworkLocation": {
+      "value": "<virtualNetworkLocation>"
+    },
+    "virtualNetworkName": {
+      "value": "<virtualNetworkName>"
+    },
+    "virtualNetworkResourceGroupName": {
+      "value": "<virtualNetworkResourceGroupName>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/lz/sub-vending:<version>'
+
+param pimRoleAssignments = [
+  {
+    principalId: '<principalId>'
+    relativeScope: ''
+    roleAssignmentType: 'Eligible'
+    roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168'
+    scheduleInfo: {
+      duration: 'PT4H'
+      durationType: 'AfterDuration'
+      startTime: '<startTime>'
+    }
+  }
+]
+param resourceProviders = {}
+param roleAssignmentEnabled = true
+param subscriptionAliasEnabled = true
+param subscriptionAliasName = '<subscriptionAliasName>'
+param subscriptionBillingScope = '<subscriptionBillingScope>'
+param subscriptionDisplayName = '<subscriptionDisplayName>'
+param subscriptionManagementGroupAssociationEnabled = true
+param subscriptionManagementGroupId = 'bicep-lz-vending-automation-child'
+param subscriptionTags = {
+  namePrefix: '<namePrefix>'
+  serviceShort: '<serviceShort>'
+}
+param subscriptionWorkload = 'Production'
+param virtualNetworkEnabled = true
+param virtualNetworkLocation = '<virtualNetworkLocation>'
+param virtualNetworkName = '<virtualNetworkName>'
+param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
+```
+
+</details>
+<p>
+
+### Example 7: _Using RBAC conditions._
 
 This instance deploys the module with RBAC conditions for the role assignments.
 
@@ -1197,7 +1362,7 @@ param subscriptionWorkload = 'Production'
 </details>
 <p>
 
-### Example 7: _Vwan topology._
+### Example 8: _Vwan topology._
 
 This instance deploys a subscription with a vwan network topology.
 
@@ -1510,7 +1675,6 @@ The name of the storage account for the deployment script.
 - Required: No
 - Type: string
 - Default: `[format('stgds{0}', substring(uniqueString(deployment().name, parameters('existingSubscriptionId'), parameters('subscriptionAliasName'), parameters('subscriptionDisplayName'), parameters('virtualNetworkLocation')), 0, 10))]`
-- Default: `[format('stgds{0}', substring(uniqueString(deployment().name, parameters('existingSubscriptionId'), parameters('subscriptionAliasName'), parameters('subscriptionDisplayName'), parameters('virtualNetworkLocation')), 0, 10))]`
 
 ### Parameter: `deploymentScriptVirtualNetworkName`
 
@@ -1518,7 +1682,6 @@ The name of the private virtual network for the deployment script. The string mu
 
 - Required: No
 - Type: string
-- Default: `[format('vnet-ds-{0}', deployment().location)]`
 - Default: `[format('vnet-ds-{0}', deployment().location)]`
 
 ### Parameter: `enableTelemetry`
@@ -1582,25 +1745,17 @@ Supply an array of objects containing the details of the PIM role assignments to
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`definition`](#parameter-pimroleassignmentsdefinition) | string | The role definition ID. |
 | [`principalId`](#parameter-pimroleassignmentsprincipalid) | string | The principal ID of the user, group, or service principal. |
 | [`relativeScope`](#parameter-pimroleassignmentsrelativescope) | string | The relative scope of the role assignment. |
+| [`roleAssignmentType`](#parameter-pimroleassignmentsroleassignmenttype) | string | The type of the role assignment. |
+| [`roleDefinitionIdOrName`](#parameter-pimroleassignmentsroledefinitionidorname) | string | The role definition ID or name. |
 | [`scheduleInfo`](#parameter-pimroleassignmentsscheduleinfo) | object | The schedule information for the role assignment. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`justification`](#parameter-pimroleassignmentsjustification) | string | The justification for the role eligibility. |
-| [`roleAssignmentCondition`](#parameter-pimroleassignmentsroleassignmentcondition) | object | The condition for the role assignment. |
 | [`ticketInfo`](#parameter-pimroleassignmentsticketinfo) | object | The ticket information for the role assignment. |
-
-### Parameter: `pimRoleAssignments.definition`
-
-The role definition ID.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `pimRoleAssignments.principalId`
 
@@ -1616,123 +1771,32 @@ The relative scope of the role assignment.
 - Required: Yes
 - Type: string
 
+### Parameter: `pimRoleAssignments.roleAssignmentType`
+
+The type of the role assignment.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Active'
+    'Eligible'
+  ]
+  ```
+
+### Parameter: `pimRoleAssignments.roleDefinitionIdOrName`
+
+The role definition ID or name.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `pimRoleAssignments.scheduleInfo`
 
 The schedule information for the role assignment.
 
 - Required: Yes
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`startDateTime`](#parameter-pimroleassignmentsscheduleinfostartdatetime) | string | Start DateTime of the role eligibility assignment. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`expiration`](#parameter-pimroleassignmentsscheduleinfoexpiration) | object | The expiry information for the role eligibility. |
-
-### Parameter: `pimRoleAssignments.scheduleInfo.startDateTime`
-
-Start DateTime of the role eligibility assignment.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `pimRoleAssignments.scheduleInfo.expiration`
-
-The expiry information for the role eligibility.
-
-- Required: No
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`duration`](#parameter-pimroleassignmentsscheduleinfoexpirationduration) | string | Duration of the role eligibility assignment in TimeSpan format. Example: P365D, P2H. |
-| [`endDateTime`](#parameter-pimroleassignmentsscheduleinfoexpirationenddatetime) | string | End DateTime of the role eligibility assignment. |
-| [`type`](#parameter-pimroleassignmentsscheduleinfoexpirationtype) | string | Type of the role eligibility assignment expiration. |
-
-### Parameter: `pimRoleAssignments.scheduleInfo.expiration.duration`
-
-Duration of the role eligibility assignment in TimeSpan format. Example: P365D, P2H.
-
-- Required: No
-- Type: string
-
-### Parameter: `pimRoleAssignments.scheduleInfo.expiration.endDateTime`
-
-End DateTime of the role eligibility assignment.
-
-- Required: No
-- Type: string
-
-### Parameter: `pimRoleAssignments.scheduleInfo.expiration.type`
-
-Type of the role eligibility assignment expiration.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'AfterDateTime'
-    'AfterDuration'
-    'NoExpiration'
-  ]
-  ```
-
-### Parameter: `pimRoleAssignments.justification`
-
-The justification for the role eligibility.
-
-- Required: No
-- Type: string
-
-### Parameter: `pimRoleAssignments.roleAssignmentCondition`
-
-The condition for the role assignment.
-
-- Required: No
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`conditionVersion`](#parameter-pimroleassignmentsroleassignmentconditionconditionversion) | string | The version of the condition template. |
-| [`delegationCode`](#parameter-pimroleassignmentsroleassignmentconditiondelegationcode) | string | The code for a custom condition if no template is used. The user should supply their own custom code if the available templates are not matching their requirements. If a value is provided, this will overwrite any added template. All single quotes needs to be skipped using '. |
-| [`roleConditionType`](#parameter-pimroleassignmentsroleassignmentconditionroleconditiontype) | object | The type of template for the role assignment condition. |
-
-### Parameter: `pimRoleAssignments.roleAssignmentCondition.conditionVersion`
-
-The version of the condition template.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    '2.0'
-  ]
-  ```
-
-### Parameter: `pimRoleAssignments.roleAssignmentCondition.delegationCode`
-
-The code for a custom condition if no template is used. The user should supply their own custom code if the available templates are not matching their requirements. If a value is provided, this will overwrite any added template. All single quotes needs to be skipped using '.
-
-- Required: No
-- Type: string
-
-### Parameter: `pimRoleAssignments.roleAssignmentCondition.roleConditionType`
-
-The type of template for the role assignment condition.
-
-- Required: No
 - Type: object
 
 ### Parameter: `pimRoleAssignments.ticketInfo`
@@ -2080,7 +2144,12 @@ The configuration object for the Bastion host. Do not provide this object or kee
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`bastionSku`](#parameter-virtualnetworkbastionconfigurationbastionsku) | string | The SKU of the bastion host. |
+| [`disableCopyPaste`](#parameter-virtualnetworkbastionconfigurationdisablecopypaste) | bool | The option to allow copy and paste. |
+| [`enableFileCopy`](#parameter-virtualnetworkbastionconfigurationenablefilecopy) | bool | The option to allow file copy. |
+| [`enableIpConnect`](#parameter-virtualnetworkbastionconfigurationenableipconnect) | bool | The option to allow IP connect. |
+| [`enableShareableLink`](#parameter-virtualnetworkbastionconfigurationenableshareablelink) | bool | The option to allow shareable link. |
 | [`name`](#parameter-virtualnetworkbastionconfigurationname) | string | The name of the bastion host. |
+| [`scaleUnits`](#parameter-virtualnetworkbastionconfigurationscaleunits) | int | The number of scale units. The Basic SKU only supports 2 scale units. |
 
 ### Parameter: `virtualNetworkBastionConfiguration.bastionSku`
 
@@ -2097,12 +2166,47 @@ The SKU of the bastion host.
   ]
   ```
 
+### Parameter: `virtualNetworkBastionConfiguration.disableCopyPaste`
+
+The option to allow copy and paste.
+
+- Required: No
+- Type: bool
+
+### Parameter: `virtualNetworkBastionConfiguration.enableFileCopy`
+
+The option to allow file copy.
+
+- Required: No
+- Type: bool
+
+### Parameter: `virtualNetworkBastionConfiguration.enableIpConnect`
+
+The option to allow IP connect.
+
+- Required: No
+- Type: bool
+
+### Parameter: `virtualNetworkBastionConfiguration.enableShareableLink`
+
+The option to allow shareable link.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `virtualNetworkBastionConfiguration.name`
 
 The name of the bastion host.
 
 - Required: No
 - Type: string
+
+### Parameter: `virtualNetworkBastionConfiguration.scaleUnits`
+
+The number of scale units. The Basic SKU only supports 2 scale units.
+
+- Required: No
+- Type: int
 
 ### Parameter: `virtualNetworkDdosPlanResourceId`
 
@@ -2181,7 +2285,7 @@ The NAT Gateway configuration object. Do not provide this object or keep it empt
 | [`name`](#parameter-virtualnetworknatgatewayconfigurationname) | string | The name of the NAT gateway. |
 | [`publicIPAddressPrefixesProperties`](#parameter-virtualnetworknatgatewayconfigurationpublicipaddressprefixesproperties) | array | The Public IP address(es) prefixes properties to be attached to the NAT gateway. |
 | [`publicIPAddressProperties`](#parameter-virtualnetworknatgatewayconfigurationpublicipaddressproperties) | array | The Public IP address(es) properties to be attached to the NAT gateway. |
-| [`zones`](#parameter-virtualnetworknatgatewayconfigurationzones) | int | The availability zones of the NAT gateway. |
+| [`zones`](#parameter-virtualnetworknatgatewayconfigurationzones) | int | The availability zones of the NAT gateway. Check the availability zone guidance for NAT gateway to understand how to map NAT gateway zone to the associated Public IP address zones (https://learn.microsoft.com/azure/nat-gateway/nat-availability-zones). |
 
 ### Parameter: `virtualNetworkNatGatewayConfiguration.name`
 
@@ -2264,7 +2368,7 @@ The SKU of the Public IP address.
 
 ### Parameter: `virtualNetworkNatGatewayConfiguration.zones`
 
-The availability zones of the NAT gateway.
+The availability zones of the NAT gateway. Check the availability zone guidance for NAT gateway to understand how to map NAT gateway zone to the associated Public IP address zones (https://learn.microsoft.com/azure/nat-gateway/nat-availability-zones).
 
 - Required: No
 - Type: int
@@ -2326,7 +2430,7 @@ The subnets of the Virtual Network that will be created by this module.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`applicationGatewayIPConfigurations`](#parameter-virtualnetworksubnetsapplicationgatewayipconfigurations) | array | Application gateway IP configurations of virtual network resource. |
-| [`associateWithNatGateway`](#parameter-virtualnetworksubnetsassociatewithnatgateway) | bool | Option to assosciate with NAT gatway. |
+| [`associateWithNatGateway`](#parameter-virtualnetworksubnetsassociatewithnatgateway) | bool | Option to associate the subnet with the NAT gatway deployed by this module. |
 | [`defaultOutboundAccess`](#parameter-virtualnetworksubnetsdefaultoutboundaccess) | bool | Set this property to false to disable default outbound connectivity for all VMs in the subnet. This property can only be set at the time of subnet creation and cannot be updated for an existing subnet. |
 | [`delegation`](#parameter-virtualnetworksubnetsdelegation) | string | The delegation to enable on the subnet. |
 | [`natGatewayResourceId`](#parameter-virtualnetworksubnetsnatgatewayresourceid) | string | The resource ID of the NAT Gateway to use for the subnet. |
@@ -2368,7 +2472,7 @@ Application gateway IP configurations of virtual network resource.
 
 ### Parameter: `virtualNetworkSubnets.associateWithNatGateway`
 
-Option to assosciate with NAT gatway.
+Option to associate the subnet with the NAT gatway deployed by this module.
 
 - Required: No
 - Type: bool

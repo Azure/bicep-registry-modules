@@ -1,5 +1,5 @@
-metadata name = 'Using RBAC conditions.'
-metadata description = 'This instance deploys the module with RBAC conditions for the role assignments.'
+metadata name = 'Using PIM Active Role assignments.'
+metadata description = 'This instance deploys the module with PIM Active Role assignments.'
 
 targetScope = 'managementGroup'
 
@@ -15,10 +15,13 @@ param subscriptionBillingScope string = ''
 param namePrefix string = '#_namePrefix_#'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'ssarb'
+param serviceShort string = 'ssapima'
 
 @description('Optional. A short guid for the subscription name.')
 param subscriptionGuid string = toLower(substring(newGuid(), 0, 4))
+
+@description('Optional. The start time of the the PIM role assignment.')
+param pimAssignmentStartDateTime string = utcNow()
 
 @description('Required. Principle ID of the user. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-testUserObjectId\'.')
 @secure()
@@ -39,23 +42,21 @@ module testDeployment '../../../main.bicep' = {
     subscriptionManagementGroupAssociationEnabled: true
     subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
     resourceProviders: {}
+    virtualNetworkEnabled: true
+    virtualNetworkName: 'vnet-${resourceLocation}-hs-${namePrefix}-${serviceShort}'
+    virtualNetworkResourceGroupName: 'rsg-${resourceLocation}-net-hs-${namePrefix}-${serviceShort}'
+    virtualNetworkLocation: resourceLocation
     roleAssignmentEnabled: true
-    roleAssignments: [
+    pimRoleAssignments: [
       {
         principalId: testUserObjectId
-        definition: '/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168'
-        relativeScope: ''
-        roleAssignmentCondition: {
-          roleConditionType: {
-            principleTypesToAssign: [
-              'Group'
-              'ServicePrincipal'
-            ]
-            rolesToAssign: [
-              'b24988ac-6180-42a0-ab88-20f7382dd24c'
-            ]
-            templateName: 'constrainRolesAndPrincipalTypes'
-          }
+        relativeScope: '/resourceGroups/rsg-${resourceLocation}-net-hs-${namePrefix}-${serviceShort}'
+        roleAssignmentType: 'Active'
+        roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168'
+        scheduleInfo: {
+          duration: 'PT4H'
+          durationType: 'AfterDuration'
+          startTime: pimAssignmentStartDateTime
         }
       }
     ]

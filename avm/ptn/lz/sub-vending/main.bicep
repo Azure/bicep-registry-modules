@@ -13,7 +13,7 @@ import { roleAssignmentType } from 'modules/subResourceWrapper.bicep'
 import { subnetType } from 'modules/subResourceWrapper.bicep'
 import { natGatewayType } from 'modules/subResourceWrapper.bicep'
 import { bastionType } from 'modules/subResourceWrapper.bicep'
-import { pimRoleAssignmentType } from 'modules/subResourceWrapper.bicep'
+import { pimRoleAssignmentTypeType } from 'modules/subResourceWrapper.bicep'
 
 // PARAMETERS
 
@@ -267,7 +267,7 @@ Each object must contain the following `keys`:
   ]
   '''
 })
-param pimRoleAssignments pimRoleAssignmentType = []
+param pimRoleAssignments pimRoleAssignmentTypeType = []
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true

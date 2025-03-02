@@ -104,7 +104,7 @@ param roleAssignmentEnabled bool = false
 param roleAssignments roleAssignmentType = []
 
 @description('Supply an array of objects containing the details of the PIM role assignments to create.')
-param pimRoleAssignments pimRoleAssignmentType = []
+param pimRoleAssignments pimRoleAssignmentTypeType = []
 
 @sys.description('Disable telemetry collection by this module. For more information on the telemetry collected by this module, that is controlled by this parameter, see this page in the wiki: [Telemetry Tracking Using Customer Usage Attribution (PID)](https://github.com/Azure/bicep-lz-vending/wiki/Telemetry)')
 param enableTelemetry bool = true
@@ -787,23 +787,24 @@ module createLzRoleAssignmentsRsgsNotSelf 'br/public:avm/ptn/authorization/role-
   }
 ]
 
-module createLzPimRoleAssignmentsSub 'pimRoleAssignmentsSub.bicep' = [
-  for assignment in pimRoleAssignmentsSubscription: if (roleAssignmentEnabled && !empty(pimRoleAssignmentsSubscription)) {
+module createLzPimActiveRoleAssignmentsSub 'br/public:avm/ptn/authorization/pim-role-assignment:0.1.0' = [
+  for assignment in pimRoleAssignmentsSubscription: if (roleAssignmentEnabled && !empty(pimRoleAssignmentsSubscription) && assignment.roleAssignmentType == 'Active') {
     name: take(
-      '${deploymentNames.createLzPimRoleAssignmentsSub}-${uniqueString(assignment.principalId, assignment.definition, assignment.relativeScope)}',
+      '${deploymentNames.createLzPimRoleAssignmentsSub}-${uniqueString(assignment.principalId, assignment.roleDefinitionIdOrName, assignment.relativeScope)}',
       64
     )
-    scope: subscription(subscriptionId)
     params: {
+      pimRoleAssignmentType: {
+        roleAssignmentType: 'Active'
+        scheduleInfo: assignment.scheduleInfo
+      }
       principalId: assignment.principalId
-      roleDefinitionIdOrName: assignment.definition
+      requestType: assignment.?requestType ?? 'AdminAssign'
+      roleDefinitionIdOrName: assignment.roleDefinitionIdOrName
       justification: assignment.?justification ?? null
-      duration: assignment.scheduleInfo.?duration ?? null
-      endDateTime: assignment.scheduleInfo.?endDateTime ?? null
-      startDateTime: assignment.scheduleInfo.startDateTime
-      ticketNumber: assignment.?ticketInfo.?ticketNumber ?? null
-      ticketSystem: assignment.?ticketInfo.?ticketSystem ?? null
-      expirationType: assignment.scheduleInfo.?expirationType
+      enableTelemetry: enableTelemetry
+      ticketInfo: assignment.?ticketInfo ?? null
+      subscriptionId: subscriptionId
       conditionVersion: !(empty(assignment.?roleAssignmentCondition ?? {}))
         ? (assignment.?roleAssignmentCondition.?conditionVersion ?? '2.0')
         : null
@@ -824,26 +825,65 @@ module createLzPimRoleAssignmentsSub 'pimRoleAssignmentsSub.bicep' = [
   }
 ]
 
-module createLzPimRoleAssignmentsRsgsSelf 'pimRoleAssignmentsRg.bicep' = [
-  for assignment in pimRoleAssignmentsResourceGroupSelf: if (roleAssignmentEnabled && !empty(pimRoleAssignmentsResourceGroupSelf)) {
+module createLzPimEligibleRoleAssignmentsSub 'br/public:avm/ptn/authorization/pim-role-assignment:0.1.0' = [
+  for assignment in pimRoleAssignmentsSubscription: if (roleAssignmentEnabled && !empty(pimRoleAssignmentsSubscription) && assignment.roleAssignmentType == 'Eligible') {
+    name: take(
+      '${deploymentNames.createLzPimRoleAssignmentsSub}-${uniqueString(assignment.principalId, assignment.roleDefinitionIdOrName, assignment.relativeScope)}',
+      64
+    )
+    params: {
+      pimRoleAssignmentType: {
+        roleAssignmentType: 'Eligible'
+        scheduleInfo: assignment.scheduleInfo
+      }
+      subscriptionId: subscriptionId
+      principalId: assignment.principalId
+      requestType: assignment.?requestType ?? 'AdminAssign'
+      roleDefinitionIdOrName: assignment.roleDefinitionIdOrName
+      justification: assignment.?justification ?? null
+      enableTelemetry: enableTelemetry
+      ticketInfo: assignment.?ticketInfo ?? null
+      conditionVersion: !(empty(assignment.?roleAssignmentCondition ?? {}))
+        ? (assignment.?roleAssignmentCondition.?conditionVersion ?? '2.0')
+        : null
+      condition: (empty(assignment.?roleAssignmentCondition ?? {}))
+        ? null
+        : assignment.?roleAssignmentCondition.?roleConditionType.templateName == 'constrainRoles' && (empty(assignment.?roleAssignmentCondition.?delegationCode))
+            ? generateCodeRolesType(any(assignment.?roleAssignmentCondition.?roleConditionType))
+            : assignment.?roleAssignmentCondition.?roleConditionType.templateName == 'constrainRolesAndPrincipalTypes' && (empty(assignment.?roleAssignmentCondition.?delegationCode))
+                ? generateCodeRolesAndPrincipalsTypes(any(assignment.?roleAssignmentCondition.?roleConditionType))
+                : assignment.?roleAssignmentCondition.?roleConditionType.templateName == 'constrainRolesAndPrincipals' && (empty(assignment.?roleAssignmentCondition.?delegationCode))
+                    ? generateCodeRolesAndPrincipals(any(assignment.?roleAssignmentCondition.?roleConditionType))
+                    : assignment.?roleAssignmentCondition.?roleConditionType.templateName == 'excludeRoles' && (empty(assignment.?roleAssignmentCondition.?delegationCode))
+                        ? generateCodeExcludeRoles(any(assignment.?roleAssignmentCondition.?roleConditionType))
+                        : !(empty(assignment.?roleAssignmentCondition.?delegationCode))
+                            ? assignment.?roleAssignmentCondition.?delegationCode
+                            : null
+    }
+  }
+]
+
+module createLzPimEligibleRoleAssignmentsRsgsSelf 'br/public:avm/ptn/authorization/pim-role-assignment:0.1.0' = [
+  for assignment in pimRoleAssignmentsResourceGroupSelf: if (roleAssignmentEnabled && !empty(pimRoleAssignmentsResourceGroupSelf) && assignment.roleAssignmentType == 'Eligible') {
     dependsOn: [
       createResourceGroupForLzNetworking
     ]
     name: take(
-      '${deploymentNames.createLzPimRoleAssignmentsRsgsSelf}-${uniqueString(assignment.principalId, assignment.definition, assignment.relativeScope)}',
+      '${deploymentNames.createLzPimRoleAssignmentsRsgsSelf}-${uniqueString(assignment.principalId, assignment.roleDefinitionIdOrName, assignment.relativeScope)}',
       64
     )
-    scope: resourceGroup(subscriptionId, virtualNetworkResourceGroupName)
     params: {
+      pimRoleAssignmentType: {
+        roleAssignmentType: 'Eligible'
+        scheduleInfo: assignment.scheduleInfo
+      }
+      requestType: assignment.?requestType ?? 'AdminAssign'
+      resourceGroupName: split(assignment.relativeScope, '/')[2]
       principalId: assignment.principalId
-      roleDefinitionIdOrName: assignment.definition
+      roleDefinitionIdOrName: assignment.roleDefinitionIdOrName
       justification: assignment.?justification ?? null
-      duration: assignment.scheduleInfo.?duration ?? null
-      endDateTime: assignment.scheduleInfo.?endDateTime ?? null
-      startDateTime: assignment.scheduleInfo.startDateTime
-      ticketNumber: assignment.?ticketInfo.?ticketNumber ?? null
-      ticketSystem: assignment.?ticketInfo.?ticketSystem ?? null
-      expirationType: assignment.scheduleInfo.?expirationType
+      enableTelemetry: enableTelemetry
+      ticketInfo: assignment.?ticketInfo ?? null
       conditionVersion: !(empty(assignment.?roleAssignmentCondition ?? {}))
         ? (assignment.?roleAssignmentCondition.?conditionVersion ?? '2.0')
         : null
@@ -864,23 +904,101 @@ module createLzPimRoleAssignmentsRsgsSelf 'pimRoleAssignmentsRg.bicep' = [
   }
 ]
 
-module createLzPimRoleAssignmentsRsgsNotSelf 'pimRoleAssignmentsRg.bicep' = [
-  for assignment in pimRoleAssignmentsResourceGroupNotSelf: if (roleAssignmentEnabled && !empty(pimRoleAssignmentsResourceGroupNotSelf)) {
+module createLzPimActiveRoleAssignmentsRsgsSelf 'br/public:avm/ptn/authorization/pim-role-assignment:0.1.0' = [
+  for assignment in pimRoleAssignmentsResourceGroupSelf: if (roleAssignmentEnabled && !empty(pimRoleAssignmentsResourceGroupSelf) && assignment.roleAssignmentType == 'Active') {
+    dependsOn: [
+      createResourceGroupForLzNetworking
+    ]
     name: take(
-      '${deploymentNames.createLzPimRoleAssignmentsRsgsNotSelf}-${uniqueString(assignment.principalId, assignment.definition, assignment.relativeScope)}',
+      '${deploymentNames.createLzPimRoleAssignmentsRsgsSelf}-${uniqueString(assignment.principalId, assignment.roleDefinitionIdOrName, assignment.relativeScope)}',
       64
     )
-    scope: resourceGroup(subscriptionId, split(assignment.relativeScope, '/')[2])
     params: {
+      pimRoleAssignmentType: {
+        roleAssignmentType: 'Active'
+        scheduleInfo: assignment.scheduleInfo
+      }
+      requestType: assignment.?requestType ?? 'AdminAssign'
+      resourceGroupName: split(assignment.relativeScope, '/')[2]
       principalId: assignment.principalId
-      roleDefinitionIdOrName: assignment.definition
+      roleDefinitionIdOrName: assignment.roleDefinitionIdOrName
       justification: assignment.?justification ?? null
-      duration: assignment.scheduleInfo.?duration ?? null
-      endDateTime: assignment.scheduleInfo.?endDateTime ?? null
-      startDateTime: assignment.scheduleInfo.startDateTime
-      ticketNumber: assignment.?ticketInfo.?ticketNumber ?? null
-      ticketSystem: assignment.?ticketInfo.?ticketSystem ?? null
-      expirationType: assignment.scheduleInfo.?expirationType
+      enableTelemetry: enableTelemetry
+      ticketInfo: assignment.?ticketInfo ?? null
+      conditionVersion: !(empty(assignment.?roleAssignmentCondition ?? {}))
+        ? (assignment.?roleAssignmentCondition.?conditionVersion ?? '2.0')
+        : null
+      condition: (empty(assignment.?roleAssignmentCondition ?? {}))
+        ? null
+        : assignment.?roleAssignmentCondition.?roleConditionType.templateName == 'constrainRoles' && (empty(assignment.?roleAssignmentCondition.?delegationCode))
+            ? generateCodeRolesType(any(assignment.?roleAssignmentCondition.?roleConditionType))
+            : assignment.?roleAssignmentCondition.?roleConditionType.templateName == 'constrainRolesAndPrincipalTypes' && (empty(assignment.?roleAssignmentCondition.?delegationCode))
+                ? generateCodeRolesAndPrincipalsTypes(any(assignment.?roleAssignmentCondition.?roleConditionType))
+                : assignment.?roleAssignmentCondition.?roleConditionType.templateName == 'constrainRolesAndPrincipals' && (empty(assignment.?roleAssignmentCondition.?delegationCode))
+                    ? generateCodeRolesAndPrincipals(any(assignment.?roleAssignmentCondition.?roleConditionType))
+                    : assignment.?roleAssignmentCondition.?roleConditionType.templateName == 'excludeRoles' && (empty(assignment.?roleAssignmentCondition.?delegationCode))
+                        ? generateCodeExcludeRoles(any(assignment.?roleAssignmentCondition.?roleConditionType))
+                        : !(empty(assignment.?roleAssignmentCondition.?delegationCode))
+                            ? assignment.?roleAssignmentCondition.?delegationCode
+                            : null
+    }
+  }
+]
+
+module createLzEliglblePimRoleAssignmentsRsgsNotSelf 'br/public:avm/ptn/authorization/pim-role-assignment:0.1.0' = [
+  for assignment in pimRoleAssignmentsResourceGroupNotSelf: if (roleAssignmentEnabled && !empty(pimRoleAssignmentsResourceGroupNotSelf) && assignment.roleAssignmentType == 'Eligible') {
+    name: take(
+      '${deploymentNames.createLzPimRoleAssignmentsRsgsNotSelf}-${uniqueString(assignment.principalId, assignment.roleDefinitionIdOrName, assignment.relativeScope)}',
+      64
+    )
+    params: {
+      pimRoleAssignmentType: {
+        roleAssignmentType: 'Eligible'
+        scheduleInfo: assignment.scheduleInfo
+      }
+      principalId: assignment.principalId
+      requestType: assignment.?requestType ?? 'AdminAssign'
+      roleDefinitionIdOrName: assignment.roleDefinitionIdOrName
+      justification: assignment.?justification ?? null
+      enableTelemetry: enableTelemetry
+      ticketInfo: assignment.?ticketInfo ?? null
+      conditionVersion: !(empty(assignment.?roleAssignmentCondition ?? {}))
+        ? (assignment.?roleAssignmentCondition.?conditionVersion ?? '2.0')
+        : null
+      condition: (empty(assignment.?roleAssignmentCondition ?? {}))
+        ? null
+        : assignment.?roleAssignmentCondition.?roleConditionType.templateName == 'constrainRoles' && (empty(assignment.?roleAssignmentCondition.?delegationCode))
+            ? generateCodeRolesType(any(assignment.?roleAssignmentCondition.?roleConditionType))
+            : assignment.?roleAssignmentCondition.?roleConditionType.templateName == 'constrainRolesAndPrincipalTypes' && (empty(assignment.?roleAssignmentCondition.?delegationCode))
+                ? generateCodeRolesAndPrincipalsTypes(any(assignment.?roleAssignmentCondition.?roleConditionType))
+                : assignment.?roleAssignmentCondition.?roleConditionType.templateName == 'constrainRolesAndPrincipals' && (empty(assignment.?roleAssignmentCondition.?delegationCode))
+                    ? generateCodeRolesAndPrincipals(any(assignment.?roleAssignmentCondition.?roleConditionType))
+                    : assignment.?roleAssignmentCondition.?roleConditionType.templateName == 'excludeRoles' && (empty(assignment.?roleAssignmentCondition.?delegationCode))
+                        ? generateCodeExcludeRoles(any(assignment.?roleAssignmentCondition.?roleConditionType))
+                        : !(empty(assignment.?roleAssignmentCondition.?delegationCode))
+                            ? assignment.?roleAssignmentCondition.?delegationCode
+                            : null
+    }
+  }
+]
+
+module createLzActivePimRoleAssignmentsRsgsNotSelf 'br/public:avm/ptn/authorization/pim-role-assignment:0.1.0' = [
+  for assignment in pimRoleAssignmentsResourceGroupNotSelf: if (roleAssignmentEnabled && !empty(pimRoleAssignmentsResourceGroupNotSelf) && assignment.roleAssignmentType == 'Active') {
+    name: take(
+      '${deploymentNames.createLzPimRoleAssignmentsRsgsNotSelf}-${uniqueString(assignment.principalId, assignment.roleDefinitionIdOrName, assignment.relativeScope)}',
+      64
+    )
+    params: {
+      pimRoleAssignmentType: {
+        roleAssignmentType: 'Active'
+        scheduleInfo: assignment.scheduleInfo
+      }
+      principalId: assignment.principalId
+      requestType: assignment.?requestType ?? 'AdminAssign'
+      roleDefinitionIdOrName: assignment.roleDefinitionIdOrName
+      justification: assignment.?justification ?? null
+      enableTelemetry: enableTelemetry
+      ticketInfo: assignment.?ticketInfo ?? null
       conditionVersion: !(empty(assignment.?roleAssignmentCondition ?? {}))
         ? (assignment.?roleAssignmentCondition.?conditionVersion ?? '2.0')
         : null
@@ -911,7 +1029,6 @@ module createResourceGroupForDeploymentScript 'br/public:avm/res/resources/resou
   }
 }
 
-module createManagedIdentityForDeploymentScript 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0' = if (!empty(resourceProviders)) {
 module createManagedIdentityForDeploymentScript 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0' = if (!empty(resourceProviders)) {
   scope: resourceGroup(subscriptionId, deploymentScriptResourceGroupName)
   name: deploymentNames.createDeploymentScriptManagedIdentity
@@ -949,7 +1066,6 @@ module createRoleAssignmentsDeploymentScriptStorageAccount 'br/public:avm/ptn/au
   }
 }
 
-module createDsNsg 'br/public:avm/res/network/network-security-group:0.5.0' = if (!empty(resourceProviders)) {
 module createDsNsg 'br/public:avm/res/network/network-security-group:0.5.0' = if (!empty(resourceProviders)) {
   scope: resourceGroup(subscriptionId, deploymentScriptResourceGroupName)
   dependsOn: [
@@ -1351,56 +1467,79 @@ type bastionType = {
 }?
 
 @export()
-@description('Optional. PIM role assignment type.')
-type pimRoleAssignmentType = {
-  @description('Required. The principal ID of the user, group, or service principal.')
-  principalId: string
+@sys.description('Optional. The request type of the role assignment.')
+type requestTypeType =
+  | 'AdminAssign'
+  | 'AdminExtend'
+  | 'AdminRemove'
+  | 'AdminRenew'
+  | 'AdminUpdate'
+  | 'SelfActivate'
+  | 'SelfDeactivate'
+  | 'SelfExtend'
+  | 'SelfRenew'
 
-  @description('Required. The role definition ID.')
-  definition: string
+@export()
+type ticketInfoType = {
+  @sys.description('Optional. The ticket number for the role eligibility assignment.')
+  ticketNumber: string?
+
+  @sys.description('Optional. The ticket system name for the role eligibility assignment.')
+  ticketSystem: string?
+}?
+
+@export()
+@description('Optional. The type of the PIM role assignment whether its active or eligible.')
+type pimRoleAssignmentTypeType = {
+  @description('Required. The type of the role assignment.')
+  roleAssignmentType: 'Active' | 'Eligible'
+
+  @description('Required. The schedule information for the role assignment.')
+  scheduleInfo: roleAssignmentScheduleType
+
+  @description('Optional. The ticket information for the role assignment.')
+  ticketInfo: ticketInfoType?
 
   @description('Required. The relative scope of the role assignment.')
   relativeScope: string
 
-  @description('Optional. The justification for the role eligibility.')
-  justification: string?
+  @description('Required. The principal ID of the user, group, or service principal.')
+  principalId: string
 
-  @description('Optional. The condition for the role assignment.')
-  roleAssignmentCondition: roleAssignmentConditionType?
-
-  @description('Required. The schedule information for the role assignment.')
-  scheduleInfo: scheduleInfoType
-
-  @description('Optional. The ticket information for the role assignment.')
-  ticketInfo: ticketInfoType?
+  @description('Required. The role definition ID or name.')
+  roleDefinitionIdOrName: string
 }[]
 
-@description('Optional. PIM role assignment schedule Information.')
-type scheduleInfoType = {
-  @description('Required. The expiry information for the role eligibility.')
-  expiration: scheduleInfoExpirationType
+@discriminator('durationType')
+@description('Optional. The schedule information for the role assignment.')
+type roleAssignmentScheduleType =
+  | permenantRoleAssignmentScheduleType
+  | timeBoundDurationRoleAssignmentScheduleType
+  | timeBoundDateTimeRoleAssignmentScheduleType
 
-  @description('Required. Start DateTime of the role eligibility assignment.')
-  startDateTime: string
+type permenantRoleAssignmentScheduleType = {
+  @description('Required. The type of the duration.')
+  durationType: 'NoExpiration'
 }
 
-@description('Optional. PIM role assignment schedule expiration information.')
-type scheduleInfoExpirationType = {
-  @description('Optional. Duration of the role eligibility assignment in TimeSpan format. Example: P365D, P2H.')
-  duration: string?
+type timeBoundDurationRoleAssignmentScheduleType = {
+  @description('Required. The type of the duration.')
+  durationType: 'AfterDuration'
 
-  @description('Optional. End DateTime of the role eligibility assignment.')
-  endDateTime: string?
+  @description('Required. The duration for the role assignment.')
+  duration: string
 
-  @description('Optional. Type of the role eligibility assignment expiration.')
-  type: 'AfterDateTime' | 'AfterDuration' | 'NoExpiration'?
+  @description('Required. The start time for the role assignment.')
+  startTime: string
 }
 
-@description('Optional. PIM role assignment ticketing information.')
-type ticketInfoType = {
-  @description('Optional. The ticket number for the role eligibility assignment.')
-  ticketNumber: string?
+type timeBoundDateTimeRoleAssignmentScheduleType = {
+  @description('Required. The type of the duration.')
+  durationType: 'AfterDateTime'
 
-  @description('Optional. The ticket system name for the role eligibility assignment.')
-  ticketSystem: string?
-}?
+  @description('Required. The end date and time for the role assignment.')
+  endDateTime: string
+
+  @description('Required. The start date and time for the role assignment.')
+  startTime: string
+}

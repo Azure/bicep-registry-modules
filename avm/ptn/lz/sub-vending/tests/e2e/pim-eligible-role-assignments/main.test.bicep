@@ -1,5 +1,5 @@
-metadata name = 'Using PIM Role assignments.'
-metadata description = 'This instance deploys the module with PIM Role assignments.'
+metadata name = 'Using PIM Eligible Role assignments.'
+metadata description = 'This instance deploys the module with PIM Eligible Role assignments.'
 
 targetScope = 'managementGroup'
 
@@ -15,13 +15,17 @@ param subscriptionBillingScope string = ''
 param namePrefix string = '#_namePrefix_#'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'ssapim'
+param serviceShort string = 'sspime'
 
 @description('Optional. A short guid for the subscription name.')
 param subscriptionGuid string = toLower(substring(newGuid(), 0, 4))
 
 @description('Optional. The start time of the the PIM role assignment.')
 param pimAssignmentStartDateTime string = utcNow()
+
+@description('Required. Principle ID of the user. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-testUserObjectId\'.')
+@secure()
+param testUserObjectId string = ''
 
 module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${subscriptionGuid}'
@@ -45,15 +49,14 @@ module testDeployment '../../../main.bicep' = {
     roleAssignmentEnabled: true
     pimRoleAssignments: [
       {
-        definition: '/providers/Microsoft.Authorization/roleDefinitions/18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
-        principalId: '896b1162-be44-4b28-888a-d01acc1b4271'
-        relativeScope: '/resourceGroups/rsg-${resourceLocation}-net-hs-${namePrefix}-${serviceShort}'
+        principalId: testUserObjectId
+        relativeScope: ''
+        roleAssignmentType: 'Eligible'
+        roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168'
         scheduleInfo: {
-          expiration: {
-            duration: 'P10D'
-            type: 'AfterDuration'
-          }
-          startDateTime: pimAssignmentStartDateTime
+          duration: 'PT4H'
+          durationType: 'AfterDuration'
+          startTime: pimAssignmentStartDateTime
         }
       }
     ]
