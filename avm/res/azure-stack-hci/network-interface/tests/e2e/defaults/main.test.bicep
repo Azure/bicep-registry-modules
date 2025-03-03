@@ -207,7 +207,6 @@ module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   params: {
     name: '${namePrefix}${serviceShort}networkinterface'
-    location: enforcedLocation
     customLocationResourceId: customLocation.id
     ipConfigurations: [
       {

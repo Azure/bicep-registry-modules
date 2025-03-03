@@ -54,8 +54,6 @@ module networkInterface 'br/public:avm/res/azure-stack-hci/network-interface:<ve
       }
     ]
     name: 'ashniminnetworkinterface'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -89,10 +87,6 @@ module networkInterface 'br/public:avm/res/azure-stack-hci/network-interface:<ve
     },
     "name": {
       "value": "ashniminnetworkinterface"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -120,8 +114,6 @@ param ipConfigurations = [
   }
 ]
 param name = 'ashniminnetworkinterface'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -153,6 +145,10 @@ module networkInterface 'br/public:avm/res/azure-stack-hci/network-interface:<ve
     ]
     name: 'ashniwafnetworkinterface'
     // Non-required parameters
+    dnsServers: [
+      '172.20.0.1'
+    ]
+    enableTelemetry: true
     location: '<location>'
     tags: {
       Environment: 'Non-Prod'
@@ -194,6 +190,14 @@ module networkInterface 'br/public:avm/res/azure-stack-hci/network-interface:<ve
       "value": "ashniwafnetworkinterface"
     },
     // Non-required parameters
+    "dnsServers": {
+      "value": [
+        "172.20.0.1"
+      ]
+    },
+    "enableTelemetry": {
+      "value": true
+    },
     "location": {
       "value": "<location>"
     },
@@ -231,6 +235,10 @@ param ipConfigurations = [
 ]
 param name = 'ashniwafnetworkinterface'
 // Non-required parameters
+param dnsServers = [
+  '172.20.0.1'
+]
+param enableTelemetry = true
 param location = '<location>'
 param tags = {
   Environment: 'Non-Prod'
