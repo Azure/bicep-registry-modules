@@ -16,8 +16,9 @@ param roleAssignments roleAssignmentType
 @description('Optional. The lock settings of the service.')
 param lock lockType
 
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The managed identity definition for this resource.')
-param managedIdentities managedIdentitiesType
+param managedIdentities managedIdentityAllType?
 
 @description('Optional. Tags of the Recovery Service Vault resource.')
 param tags object?
@@ -54,9 +55,18 @@ param securitySettings object = {}
 @description('Optional. Feature settings for the backup vault.')
 param featureSettings object = {}
 
+var formattedUserAssignedIdentities = reduce(
+  map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
+  {},
+  (cur, next) => union(cur, next)
+) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
+
 var identity = !empty(managedIdentities)
   ? {
-      type: (managedIdentities.?systemAssigned ?? false) ? 'SystemAssigned' : null
+      type: (managedIdentities.?systemAssigned ?? false)
+        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
+        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
+      userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
   : null
 
