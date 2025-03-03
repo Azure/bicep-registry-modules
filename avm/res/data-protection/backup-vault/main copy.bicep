@@ -1,5 +1,6 @@
 metadata name = 'Data Protection Backup Vaults'
 metadata description = 'This module deploys a Data Protection Backup Vault.'
+metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the Backup Vault.')
 param name string
@@ -16,10 +17,33 @@ param roleAssignments roleAssignmentType
 @description('Optional. The lock settings of the service.')
 param lock lockType
 
+import { managedIdentityAllType } from '../../.types/avm-common-types/main.bicep'
 @description('Optional. The managed identity definition for this resource.')
-param managedIdentities managedIdentitiesType
+param managedIdentities managedIdentityAllType?
 
-@description('Optional. Tags of the Recovery Service Vault resource.')
+@description('Optional. Whether or not the service applies a secondary layer of encryption. For security reasons, it is recommended to set it to Enabled.')
+@allowed([
+  'Enabled'
+  'Disabled'
+])
+param infrastructureEncryption string = 'Enabled'
+
+import { customerManagedKeyType } from '../../.types/avm-common-types/main.bicep'
+@description('Optional. The customer managed key definition.')
+param customerManagedKey customerManagedKeyType?
+
+@description('Optional. The soft delete related settings.')
+param softDeleteSettings softDeleteSettingType?
+
+@description('Optional. The immmutability setting state of the backup vault resource.')
+@allowed([
+  'Disabled'
+  'Locked'
+  'Unlocked'
+])
+param immutabilitySettingState string?
+
+@description('Optional. Tags of the backup vault resource.')
 param tags object?
 
 @description('Optional. The datastore type to use. ArchiveStore does not support ZoneRedundancy.')
@@ -48,15 +72,24 @@ param azureMonitorAlertSettingsAlertsForAllJobFailures string = 'Enabled'
 @description('Optional. List of all backup policies.')
 param backupPolicies array = []
 
-@description('Optional. Security settings for the backup vault.')
-param securitySettings object = {}
+// @description('Optional. Security settings for the backup vault.')
+// param securitySettings object = {}
 
 @description('Optional. Feature settings for the backup vault.')
 param featureSettings object = {}
 
+var formattedUserAssignedIdentities = reduce(
+  map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
+  {},
+  (cur, next) => union(cur, next)
+) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
+
 var identity = !empty(managedIdentities)
   ? {
-      type: (managedIdentities.?systemAssigned ?? false) ? 'SystemAssigned' : null
+      type: (managedIdentities.?systemAssigned ?? false)
+        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
+        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
+      userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
   : null
 
@@ -116,7 +149,44 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource backupVault 'Microsoft.DataProtection/backupVaults@2023-05-01' = {
+var keyVaultType = !empty(customerManagedKey.?keyVaultResourceId)
+  ? split(customerManagedKey.?keyVaultResourceId!, '/')[7]
+  : ''
+var isHSMKeyVault = contains(keyVaultType, 'managedHSMs')
+
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!isHSMKeyVault && !empty(customerManagedKey.?keyVaultResourceId)) {
+  name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
+  scope: resourceGroup(
+    split(customerManagedKey.?keyVaultResourceId!, '/')[2],
+    split(customerManagedKey.?keyVaultResourceId!, '/')[4]
+  )
+
+  resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+    name: customerManagedKey.?keyName!
+  }
+}
+
+resource hSMCMKKeyVault 'Microsoft.KeyVault/managedHSMs@2022-07-01' existing = if (isHSMKeyVault && !empty(customerManagedKey.?keyVaultResourceId)) {
+  name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
+  scope: resourceGroup(
+    split(customerManagedKey.?keyVaultResourceId!, '/')[2],
+    split(customerManagedKey.?keyVaultResourceId!, '/')[4]
+  )
+
+  resource hSMCMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+    name: customerManagedKey.?keyName!
+  }
+}
+
+resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
+  name: last(split(customerManagedKey.?userAssignedIdentityResourceId!, '/'))
+  scope: resourceGroup(
+    split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[2],
+    split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[4]
+  )
+}
+
+resource backupVault 'Microsoft.DataProtection/backupVaults@2024-04-01' = {
   name: name
   location: location
   tags: tags
@@ -134,7 +204,27 @@ resource backupVault 'Microsoft.DataProtection/backupVaults@2023-05-01' = {
       }
     ]
     featureSettings: featureSettings
-    securitySettings: securitySettings
+    securitySettings: {
+      encryptionSettings: !empty(customerManagedKey)
+        ? {
+            infrastructureEncryption: infrastructureEncryption
+            kekIdentity: {
+              identityId: !empty(customerManagedKey.?userAssignedIdentityResourceId ?? '')
+                ? cMKUserAssignedIdentity.properties.clientId
+                : null
+              // identityType: 'string'
+            }
+            keyVaultProperties: {
+              keyUri: 'https://sec-hsm01.managedhsm.azure.net/keys/bicep-backupvault-hsm-001/ae9bbf79f3d64514980cabc7ed20eaef'
+              // keyUri: !isHSMKeyVault ? cMKKeyVault.properties.vaultUri : hSMCMKKeyVault.properties.hsmUri
+            }
+          }
+        : null
+      immutabilitySettings: {
+        state: immutabilitySettingState
+      }
+      softDeleteSettings: softDeleteSettings
+    }
   }
 }
 
@@ -186,7 +276,7 @@ output resourceGroupName string = resourceGroup().name
 output name string = backupVault.name
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string? = backupVault.?identity.?principalId
+output systemAssignedMIPrincipalId string = backupVault.?identity.?principalId ?? ''
 
 @description('The location the resource was deployed into.')
 output location string = backupVault.location
@@ -194,11 +284,6 @@ output location string = backupVault.location
 // =============== //
 //   Definitions   //
 // =============== //
-
-type managedIdentitiesType = {
-  @description('Optional. Enables system assigned managed identity on the resource.')
-  systemAssigned: bool?
-}?
 
 type lockType = {
   @description('Optional. Specify the name of lock.')
@@ -233,3 +318,13 @@ type roleAssignmentType = {
   @description('Optional. The Resource Id of the delegated managed identity resource.')
   delegatedManagedIdentityResourceId: string?
 }[]?
+
+@export()
+@description('The type for soft delete settings.')
+type softDeleteSettingType = {
+  @description('Required. The soft delete retention period in days.')
+  retentionDurationInDays: int
+
+  @description('Required. The soft delete state.')
+  state: ('AlwaysON' | 'On' | 'Off')
+}
