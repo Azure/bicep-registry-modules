@@ -75,7 +75,6 @@ module testDeployment '../../../main.bicep' = {
     resourceProviders: {
       'Microsoft.Network': []
     }
-    deploymentScriptStorageAccountName: 'stgds${namePrefix}${serviceShort}${substring(uniqueString(deployment().name), 0, 4)}'
   }
 }
 

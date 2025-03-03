@@ -303,6 +303,10 @@ var deploymentNames = {
     'lz-vend-nat-gw-create-${uniqueString(subscriptionId, virtualNetworkResourceGroupName, virtualNetworkName, deployment().name)}',
     64
   )
+  createDsFilePrivateDnsZone: take(
+    'lz-vend-ds-pdns-create-${uniqueString(subscriptionId, deploymentScriptResourceGroupName,deploymentScriptLocation,deploymentScriptStorageAccountName, deploymentScriptVirtualNetworkName, deployment().name)}',
+    64
+  )
 }
 
 // Role Assignments filtering and splitting
@@ -877,6 +881,7 @@ module createLzPimEligibleRoleAssignmentsRsgsSelf 'br/public:avm/ptn/authorizati
         roleAssignmentType: 'Eligible'
         scheduleInfo: assignment.scheduleInfo
       }
+      subscriptionId: subscriptionId
       requestType: assignment.?requestType ?? 'AdminAssign'
       resourceGroupName: split(assignment.relativeScope, '/')[2]
       principalId: assignment.principalId
@@ -918,6 +923,7 @@ module createLzPimActiveRoleAssignmentsRsgsSelf 'br/public:avm/ptn/authorization
         roleAssignmentType: 'Active'
         scheduleInfo: assignment.scheduleInfo
       }
+      subscriptionId: subscriptionId
       requestType: assignment.?requestType ?? 'AdminAssign'
       resourceGroupName: split(assignment.relativeScope, '/')[2]
       principalId: assignment.principalId
@@ -956,6 +962,7 @@ module createLzEliglblePimRoleAssignmentsRsgsNotSelf 'br/public:avm/ptn/authoriz
         roleAssignmentType: 'Eligible'
         scheduleInfo: assignment.scheduleInfo
       }
+      subscriptionId: subscriptionId
       principalId: assignment.principalId
       requestType: assignment.?requestType ?? 'AdminAssign'
       roleDefinitionIdOrName: assignment.roleDefinitionIdOrName
@@ -993,6 +1000,7 @@ module createLzActivePimRoleAssignmentsRsgsNotSelf 'br/public:avm/ptn/authorizat
         roleAssignmentType: 'Active'
         scheduleInfo: assignment.scheduleInfo
       }
+      subscriptionId: subscriptionId
       principalId: assignment.principalId
       requestType: assignment.?requestType ?? 'AdminAssign'
       roleDefinitionIdOrName: assignment.roleDefinitionIdOrName
@@ -1053,7 +1061,7 @@ module createRoleAssignmentsDeploymentScript 'br/public:avm/ptn/authorization/ro
   }
 }
 
-module createRoleAssignmentsDeploymentScriptStorageAccount 'br/public:avm/ptn/authorization/role-assignment:0.2.0' = if (!empty(resourceProviders)) {
+module createRoleAssignmentsDeploymentScriptStorageAccount 'br/public:avm/ptn/authorization/role-assignment:0.2.1' = if (!empty(resourceProviders)) {
   name: take('${deploymentNames.createRoleAssignmentsDeploymentScriptStorageAccount}', 64)
   params: {
     location: deploymentScriptLocation
@@ -1079,7 +1087,22 @@ module createDsNsg 'br/public:avm/res/network/network-security-group:0.5.0' = if
   }
 }
 
-module createDsStorageAccount 'br/public:avm/res/storage/storage-account:0.14.3' = if (!empty(resourceProviders)) {
+module dsFilePrivateDNSZone 'br/public:avm/res/network/private-dns-zone:0.7.0' = if (!empty(resourceProviders)) {
+  name: deploymentNames.createDsFilePrivateDnsZone
+  scope: resourceGroup(subscriptionId, deploymentScriptResourceGroupName)
+  params: {
+    name: 'privatelink.file.${environment().suffixes.storage}'
+    location: 'global'
+    virtualNetworkLinks: [
+      {
+        registrationEnabled: false
+        virtualNetworkResourceId: createDsVnet.outputs.resourceId
+      }
+    ]
+  }
+}
+
+module createDsStorageAccount 'br/public:avm/res/storage/storage-account:0.15.0' = if (!empty(resourceProviders)) {
   dependsOn: [
     createRoleAssignmentsDeploymentScriptStorageAccount
   ]
@@ -1090,15 +1113,28 @@ module createDsStorageAccount 'br/public:avm/res/storage/storage-account:0.14.3'
     name: deploymentScriptStorageAccountName
     kind: 'StorageV2'
     skuName: 'Standard_LRS'
+    publicNetworkAccess: 'Disabled'
+    allowSharedKeyAccess: true
+    privateEndpoints: [
+      {
+        service: 'file'
+        subnetResourceId: filter(
+          createDsVnet.outputs.subnetResourceIds,
+          subnetResourceId => contains(subnetResourceId, 'ds-pe-subnet')
+        )[0]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: dsFilePrivateDNSZone.outputs.resourceId
+            }
+          ]
+        }
+        name: 'ds-file-pe'
+      }
+    ]
     networkAcls: {
       bypass: 'AzureServices'
       defaultAction: 'Deny'
-      virtualNetworkRules: [
-        {
-          action: 'Allow'
-          id: !empty(resourceProviders) ? createDsVnet.outputs.subnetResourceIds[0] : null
-        }
-      ]
     }
     enableTelemetry: enableTelemetry
   }
