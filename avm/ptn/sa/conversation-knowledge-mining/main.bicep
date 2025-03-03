@@ -108,7 +108,7 @@ var varCosmosDBAccountName = format(workloadNameFormat, 'cmdb')
 var varCosmosDBAccountLocation = secondaryLocation
 var varSQLServerName = format(workloadNameFormat, 'sqls')
 var varSQLServerLocation = secondaryLocation
-var varFunctionsManagedEnvironment = format(workloadNameFormat, 'ftme')
+var varFunctionsManagedEnvironmentName = format(workloadNameFormat, 'ftme')
 //var varChartsManagedEnviornmentName = format(workloadNameFormat, 'fchr-ftme')
 var varChartsFunctionName = format(workloadNameFormat, 'fchr-azfct')
 var varChartsStorageAccountName = replace(format(workloadNameFormat, 'fchr-strg'), '-', '')
@@ -289,30 +289,13 @@ module avmManagedIdentity 'br/public:avm/res/managed-identity/user-assigned-iden
   }
 }
 
-resource existingManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = {
-  name: varManagedIdentityName
-  dependsOn: [
-    avmManagedIdentity
-  ]
-}
-
-// NOTE: This is a role assignment at RG level and requires Owner permissions at subscription level
-// It is important to fine grain permissions
-
-@description('This is the built-in owner role. See https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#owner')
-resource resOwnerRoleDefinition 'Microsoft.Authorization/roleDefinitions@2018-01-01-preview' existing = {
-  scope: resourceGroup()
-  name: '8e3af657-a8ff-443c-a75c-2fe8c4bcb635' //NOTE: Built-in role 'Owner'
-}
-
-// Assign Owner role to the managed identity in the resource group
-resource resRoleAssignmentOwnerManagedIdResourceGroup 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(resourceGroup().id, existingManagedIdentity.id, resOwnerRoleDefinition.id)
-  scope: resourceGroup()
-  properties: {
-    principalId: avmManagedIdentity.outputs.principalId
-    roleDefinitionId: resOwnerRoleDefinition.id
-    principalType: 'ServicePrincipal'
+// NOTE: This assignment should leverage AVM module [avm/res/resources/resource-group](https://azure.github.io/Azure-Verified-Modules/indexes/bicep/bicep-resource-modules/), but current target scope is resourceGroup
+// TODO: Owner permissions to RG is a bad practice, fine grain permissions
+module assignResourceGroupOwner 'modules/rbac-rg-owner.bicep' = {
+  name: 'module-assign-rg-owner'
+  params: {
+    managedIdentityResourceId: avmManagedIdentity.outputs.resourceId
+    managedIdentityPrincipalId: avmManagedIdentity.outputs.principalId
   }
 }
 
@@ -361,10 +344,6 @@ module avmKeyVault 'br/public:avm/res/key-vault/vault:0.11.2' = {
     // ]
   }
 }
-
-// resource existing_ckm_key_vault 'Microsoft.KeyVault/vaults@2024-04-01-preview' existing = {
-//   name: avmKeyVault.outputs.name
-// }
 
 //NOTE: Check if this is required
 
@@ -516,13 +495,6 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.17.0' = {
 //   }
 // }
 
-// resource existingStorageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' existing = {
-//   name: varStorageAccountName
-//   dependsOn: [
-//     avmStorageAccount
-//   ]
-// }
-
 resource kvSecretADLSAccountName 'Microsoft.KeyVault/vaults/secrets@2021-11-01-preview' = {
   name: '${varKeyVaultName}/ADLS-ACCOUNT-NAME'
   properties: {
@@ -590,13 +562,6 @@ module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.11.0' = {
     }
   }
 }
-
-// resource existingCosmosDB 'Microsoft.DocumentDB/databaseAccounts@2022-05-15' existing = {
-//   name: varCosmosDBAccountName
-//   dependsOn: [
-//     avmCosmosDB
-//   ]
-// }
 
 resource kvSecretAzureCosmosDBAccount 'Microsoft.KeyVault/vaults/secrets@2021-11-01-preview' = {
   name: '${varKeyVaultName}/AZURE-COSMOSDB-ACCOUNT'
@@ -775,9 +740,9 @@ module avmDeploymentScritptIndexData 'br/public:avm/res/resources/deployment-scr
 //========== Azure function: Managed Environment ========== //
 
 module avmFunctionsManagedEnvironment 'br/public:avm/res/app/managed-environment:0.9.0' = {
-  name: format(deploymentNameFormat, varFunctionsManagedEnvironment)
+  name: format(deploymentNameFormat, varFunctionsManagedEnvironmentName)
   params: {
-    name: varFunctionsManagedEnvironment
+    name: varFunctionsManagedEnvironmentName
     tags: tags
     location: solutionLocation
     zoneRedundant: false
@@ -925,106 +890,26 @@ module avmStorageAccountCharts 'br/public:avm/res/storage/storage-account:0.17.3
 //   }
 // }
 
-resource existingAIFoundryAIServices 'Microsoft.CognitiveServices/accounts@2024-10-01' existing = {
-  name: varAIFoundryAIServicesName
-  dependsOn: [
-    moduleAIFoundry
-  ]
-}
-
-resource existingAIFoundrySearchServices 'Microsoft.Search/searchServices@2024-06-01-preview' existing = {
-  name: varAIFoundrySearchServiceName
-  dependsOn: [
-    moduleAIFoundry
-  ]
-}
-
-resource resFunctionRAG 'Microsoft.Web/sites@2023-12-01' = {
-  name: varRAGFunctionName
-  location: solutionLocation
-  kind: 'functionapp,linux,container,azurecontainerapps'
-  identity: {
-    type: 'SystemAssigned'
-  }
-  properties: {
-    siteConfig: {
-      appSettings: [
-        {
-          name: 'AzureWebJobsStorage'
-          value: 'DefaultEndpointsProtocol=https;AccountName=${varRAGStorageAccountName};EndpointSuffix=core.windows.net'
-        }
-        {
-          name: 'PYTHON_ENABLE_INIT_INDEXING'
-          value: '1'
-        }
-        {
-          name: 'PYTHON_ISOLATE_WORKER_DEPENDENCIES'
-          value: '1'
-        }
-        {
-          name: 'SQLDB_DATABASE'
-          value: varSQLDatabaseName
-        }
-        {
-          name: 'SQLDB_PASSWORD'
-          value: varSQLServerAdministratorPassword
-        }
-        {
-          name: 'SQLDB_SERVER'
-          value: avmSQLServer.outputs.fullyQualifiedDomainName //'${varSQLServerName}.database.windows.net'
-        }
-        {
-          name: 'SQLDB_USERNAME'
-          value: varSQLServerAdministratorLogin
-        }
-        {
-          name: 'AZURE_OPEN_AI_ENDPOINT'
-          value: moduleAIFoundry.outputs.aiServices_endpoint
-        }
-        {
-          name: 'AZURE_OPEN_AI_API_KEY'
-          value: existingAIFoundryAIServices.listKeys().key1
-        }
-        {
-          name: 'AZURE_AI_PROJECT_CONN_STRING'
-          value: moduleAIFoundry.outputs.aiHub_project_connectionString
-        }
-        {
-          name: 'OPENAI_API_VERSION'
-          value: varGPTModelVersionPreview
-        }
-        {
-          name: 'AZURE_OPEN_AI_DEPLOYMENT_MODEL'
-          value: gptModelName
-        }
-        {
-          name: 'AZURE_AI_SEARCH_ENDPOINT'
-          value: moduleAIFoundry.outputs.aiSearch_connectionString
-        }
-        {
-          name: 'AZURE_AI_SEARCH_API_KEY'
-          value: existingAIFoundrySearchServices.listAdminKeys().primaryKey
-        }
-        {
-          name: 'AZURE_AI_SEARCH_INDEX'
-          value: 'call_transcripts_index'
-        }
-      ]
-      linuxFxVersion: varRAGDockerImageName
-      functionAppScaleLimit: 10
-      minimumElasticInstanceCount: 0
-      // use32BitWorkerProcess: false
-      // ftpsState: 'FtpsOnly'
-    }
-    managedEnvironmentId: avmFunctionsManagedEnvironment.outputs.resourceId
-    workloadProfileName: 'Consumption'
-    // virtualNetworkSubnetId: null
-    // clientAffinityEnabled: false
-    resourceConfig: {
-      cpu: 1
-      memory: '2Gi'
-    }
-    storageAccountRequired: false
+module moduleFunctionRAG 'modules/function-rag.bicep' = {
+  name: 'module-function-rag'
+  params: {
+    ragFunctionName: varRAGFunctionName
+    solutionLocation: solutionLocation
+    tags: tags
+    ragStorageAccountName: varRAGStorageAccountName
+    aiFoundryAIHubProjectConnectionString: moduleAIFoundry.outputs.aiHub_project_connectionString
+    AIFoundryAISearchServiceConnectionString: moduleAIFoundry.outputs.aiSearch_connectionString
+    aiFoundryAIServicesName: moduleAIFoundry.outputs.aiServices_name
+    aiFoundryOpenAIServicesEndpoint: moduleAIFoundry.outputs.aiServices_endpoint
+    aiFoundrySearchServicesName: moduleAIFoundry.outputs.aiSearch_name
+    functionsManagedEnvironmentResourceId: avmFunctionsManagedEnvironment.outputs.resourceId
+    gptModelName: gptModelName
+    gptModelVersionPreview: varGPTModelVersionPreview
+    ragDockerImageName: varRAGDockerImageName
+    sqlDatabaseName: varSQLDatabaseName
+    sqlServerAdministratorLogin: varSQLServerAdministratorLogin
+    sqlServerAdministratorPassword: varSQLServerAdministratorPassword
+    sqlServerFullyQualifiedDomainName: avmSQLServer.outputs.fullyQualifiedDomainName
   }
 }
 
@@ -1039,27 +924,20 @@ module avmStorageAccountRAG 'br/public:avm/res/storage/storage-account:0.17.3' =
     accessTier: 'Hot'
     roleAssignments: [
       {
-        principalId: resFunctionRAG.identity.principalId
+        principalId: moduleFunctionRAG.outputs.principalId
         roleDefinitionIdOrName: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe' //NOTE: Built-in role 'Storage Blob Data Contributor'
       }
     ]
   }
 }
 
-resource resRoleDefinitionAIDeveloper 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {
-  name: '64702f94-c441-49e6-a78b-ef80e0188fee' //NOTE: Built-in role 'AI Developer'
-}
-
-resource existingAIFoundryAIServicesProject 'Microsoft.MachineLearningServices/workspaces@2024-01-01-preview' existing = {
-  name: varAIFoundryMachineLearningServicesProjectName
-}
-
-resource resRoleAssignmentAIDeveloperManagedIDAIWorkspaceProject 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(resFunctionRAG.id, existingAIFoundryAIServicesProject.id, resRoleDefinitionAIDeveloper.id)
-  scope: existingAIFoundryAIServicesProject
-  properties: {
-    roleDefinitionId: resRoleDefinitionAIDeveloper.id
-    principalId: resFunctionRAG.identity.principalId
+module rbacAiprojectAideveloper 'modules/rbac-aiproject-aideveloper.bicep' = {
+  name: 'module-rbac-aiproject-aideveloper'
+  params: {
+    aiServicesProjectResourceName: moduleAIFoundry.outputs.aiServices_name
+    identityPrincipalId: moduleFunctionRAG.outputs.principalId
+    aiServicesProjectResourceId: moduleAIFoundry.outputs.aiHub_project_resourceId
+    ragFunctionResourceId: moduleFunctionRAG.outputs.resourceId
   }
 }
 
@@ -1077,68 +955,38 @@ module avmServerFarmWebapp 'br/public:avm/res/web/serverfarm:0.4.1' = {
   }
 }
 
-module avmWebsiteWebapp 'br/public:avm/res/web/site:0.13.3' = {
-  name: format(deploymentNameFormat, varWebAppName)
+module moduleWebsiteWebapp 'modules/webapp.bicep' = {
+  name: 'module-webapp'
   params: {
-    name: varWebAppName
+    deploymentName: format(deploymentNameFormat, varWebAppName)
+    webAppName: varWebAppName
+    location: solutionLocation
     tags: tags
-    kind: 'app,linux,container'
-    location: varWebAppServerFarmLocation
     serverFarmResourceId: avmServerFarmWebapp.outputs.resourceId
-    appInsightResourceId: moduleAIFoundry.outputs.appInsights_resourceId
-    managedIdentities: {
-      systemAssigned: true
-    }
-    siteConfig: {
-      linuxFxVersion: varWebAppImageName
-    }
-    appSettingsKeyValuePairs: {
-      APPINSIGHTS_INSTRUMENTATIONKEY: moduleAIFoundry.outputs.appInsights_instrumentationKey
-      AZURE_OPENAI_API_VERSION: varGPTModelVersionPreview
-      AZURE_OPENAI_DEPLOYMENT_NAME: gptModelName
-      AZURE_OPENAI_ENDPOINT: moduleAIFoundry.outputs.aiServices_endpoint
-      AZURE_OPENAI_API_KEY: existingAIFoundryAIServices.listKeys().key1
-      AZURE_OPENAI_RESOURCE: moduleAIFoundry.outputs.aiServices_name
-      AZURE_OPENAI_PREVIEW_API_VERSION: varGPTModelVersionPreview
-      USE_CHAT_HISTORY_ENABLED: 'True'
-      USE_GRAPHRAG: 'False'
-      CHART_DASHBOARD_URL: 'https://${resManagedIdentity.properties.defaultHostName}/api/${varChartsFunctionFunctionName}?data_type=charts'
-      CHART_DASHBOARD_FILTERS_URL: 'https://${resManagedIdentity.properties.defaultHostName}/api/${varChartsFunctionFunctionName}?data_type=filters'
-      GRAPHRAG_URL: 'TBD'
-      RAG_URL: 'https://${resFunctionRAG.properties.defaultHostName}/api/${varRAGFunctionFunctionName}'
-      REACT_APP_LAYOUT_CONFIG: varWebAppAppConfigReact
-      AzureCosmosDB_ACCOUNT: avmCosmosDB.outputs.name
-      //AzureCosmosDB_ACCOUNT_KEY: existingCosmosDB.listKeys().primaryMasterKey //AzureCosmosDB_ACCOUNT_KEY
-      AzureCosmosDB_CONVERSATIONS_CONTAINER: varCosdbSqlDbNameCollName
-      AzureCosmosDB_DATABASE: varCosdbSqlDbName
-      AzureCosmosDB_ENABLE_FEEDBACK: 'True'
-      SCM_DO_BUILD_DURING_DEPLOYMENT: 'true'
-      UWSGI_PROCESSES: '2'
-      UWSGI_THREADS: '2'
-    }
+    appInsightsResourceId: moduleAIFoundry.outputs.appInsights_resourceId
+    aiFoundryAIServicesName: moduleAIFoundry.outputs.aiServices_name
+    webAppImageName: varWebAppImageName
+    appInsightsInstrumentationKey: moduleAIFoundry.outputs.appInsights_instrumentationKey
+    aiServicesEndpoint: moduleAIFoundry.outputs.aiServices_endpoint
+    gptModelName: gptModelName
+    gptModelVersionPreview: varGPTModelVersionPreview
+    aiServicesResourceName: moduleAIFoundry.outputs.aiServices_name
+    managedIdentityDefaultHostName: resManagedIdentity.properties.defaultHostName
+    chartsFunctionFunctionName: varChartsFunctionFunctionName
+    webAppAppConfigReact: varWebAppAppConfigReact
+    cosmosDbSqlDbName: varCosdbSqlDbName
+    cosmosDbSqlDbNameCollectionName: varCosdbSqlDbNameCollName
+    ragFunctionDefaultHostName: moduleFunctionRAG.outputs.defaultHostName
+    ragFunctionFunctionName: varRAGFunctionFunctionName
+    avmCosmosDbResourceName: avmCosmosDB.outputs.name
   }
 }
 
-resource existingCosmosDB 'Microsoft.DocumentDB/databaseAccounts@2024-05-15' existing = {
-  name: varCosmosDBAccountName
-  dependsOn: [
-    avmCosmosDB
-    avmWebsiteWebapp
-  ]
-}
-
-resource resContributorRoleDefinition 'Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions@2024-05-15' existing = {
-  parent: existingCosmosDB
-  name: '00000000-0000-0000-0000-000000000002'
-}
-
-resource resRoleAssignmentContributorWebappCosomosDB 'Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments@2024-12-01-preview' = {
-  parent: existingCosmosDB
-  name: guid(resContributorRoleDefinition.id, existingCosmosDB.id)
-  properties: {
-    principalId: avmWebsiteWebapp.outputs.?systemAssignedMIPrincipalId
-    roleDefinitionId: resContributorRoleDefinition.id
-    scope: existingCosmosDB.id
+module rbac 'modules/rbac-cosmosdb-contributor.bicep' = {
+  name: 'module-rbac-cosmosdb-contributor'
+  params: {
+    cosmosDBAccountName: avmCosmosDB.outputs.name
+    principalId: moduleWebsiteWebapp.outputs.webAppSystemAssignedPrincipalId
   }
 }
 
