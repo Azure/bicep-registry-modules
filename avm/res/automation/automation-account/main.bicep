@@ -656,7 +656,7 @@ type pwsh72ModuleType = {
   uri: string
 
   @description('Optional. Module version or specify latest to get the latest version.')
-  version: 'latest'?
+  version: string?
 }
 
 @export()
@@ -672,5 +672,5 @@ type python23PackageType = {
   uri: string
 
   @description('Optional. Module version or specify latest to get the latest version.')
-  version: 'latest'?
+  version: string?
 }
