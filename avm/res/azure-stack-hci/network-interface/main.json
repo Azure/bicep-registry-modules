@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "13781947369687823904"
+      "templateHash": "3488423607769183314"
     },
     "name": "Azure Stack HCI Network Interface",
     "description": "This module deploys an Azure Stack HCI network interface."
@@ -17,31 +17,44 @@
       "properties": {
         "name": {
           "type": "string",
-          "nullable": true
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the resource that is unique within a resource group. This name can be used to access the resource."
+          }
         },
         "properties": {
           "type": "object",
           "properties": {
             "privateIPAddress": {
               "type": "string",
-              "nullable": true
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Private IP address of the IP configuration."
+              }
             },
             "subnet": {
               "type": "object",
               "properties": {
                 "id": {
-                  "type": "string"
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The ARM ID for a Logical Network."
+                  }
                 }
+              },
+              "metadata": {
+                "description": "Required. Name of Subnet bound to the IP configuration."
               }
             }
+          },
+          "metadata": {
+            "description": "Required. InterfaceIPConfigurationPropertiesFormat properties of IP configuration."
           }
         }
-      }
-    },
-    "ipConfigurationsType": {
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/ipConfigurationType"
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for an IP configuration."
       }
     },
     "roleAssignmentType": {
@@ -141,16 +154,19 @@
         "description": "Optional. Tags of the resource."
       }
     },
-    "customLocationId": {
+    "customLocationResourceId": {
       "type": "string",
       "metadata": {
         "description": "Required. Resource ID of the associated custom location."
       }
     },
     "ipConfigurations": {
-      "$ref": "#/definitions/ipConfigurationsType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ipConfigurationType"
+      },
       "metadata": {
-        "description": "Required. IP configuration object array."
+        "description": "Required. A list of IPConfigurations of the network interface."
       }
     },
     "dnsServers": {
@@ -227,7 +243,7 @@
       "tags": "[parameters('tags')]",
       "extendedLocation": {
         "type": "CustomLocation",
-        "name": "[parameters('customLocationId')]"
+        "name": "[parameters('customLocationResourceId')]"
       },
       "properties": {
         "ipConfigurations": "[parameters('ipConfigurations')]",

@@ -181,7 +181,7 @@ module logicalNetwork '../../../../logical-network/main.bicep' = {
   params: {
     name: '${namePrefix}${serviceShort}logicalnetwork'
     location: enforcedLocation
-    customLocationId: customLocation.id
+    customLocationResourceId: customLocation.id
     vmSwitchName: 'ConvergedSwitch(management)'
     ipAllocationMethod: 'Static'
     addressPrefix: '172.20.0.1/24'
@@ -208,7 +208,7 @@ module testDeployment '../../../main.bicep' = {
   params: {
     name: '${namePrefix}${serviceShort}networkinterface'
     location: enforcedLocation
-    customLocationId: customLocation.id
+    customLocationResourceId: customLocation.id
     ipConfigurations: [
       {
         properties: {

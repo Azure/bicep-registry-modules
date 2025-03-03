@@ -43,7 +43,7 @@ module networkInterface 'br/public:avm/res/azure-stack-hci/network-interface:<ve
   name: 'networkInterfaceDeployment'
   params: {
     // Required parameters
-    customLocationId: '<customLocationId>'
+    customLocationResourceId: '<customLocationResourceId>'
     ipConfigurations: [
       {
         properties: {
@@ -73,8 +73,8 @@ module networkInterface 'br/public:avm/res/azure-stack-hci/network-interface:<ve
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "customLocationId": {
-      "value": "<customLocationId>"
+    "customLocationResourceId": {
+      "value": "<customLocationResourceId>"
     },
     "ipConfigurations": {
       "value": [
@@ -109,7 +109,7 @@ module networkInterface 'br/public:avm/res/azure-stack-hci/network-interface:<ve
 using 'br/public:avm/res/azure-stack-hci/network-interface:<version>'
 
 // Required parameters
-param customLocationId = '<customLocationId>'
+param customLocationResourceId = '<customLocationResourceId>'
 param ipConfigurations = [
   {
     properties: {
@@ -141,7 +141,7 @@ module networkInterface 'br/public:avm/res/azure-stack-hci/network-interface:<ve
   name: 'networkInterfaceDeployment'
   params: {
     // Required parameters
-    customLocationId: '<customLocationId>'
+    customLocationResourceId: '<customLocationResourceId>'
     ipConfigurations: [
       {
         properties: {
@@ -176,8 +176,8 @@ module networkInterface 'br/public:avm/res/azure-stack-hci/network-interface:<ve
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "customLocationId": {
-      "value": "<customLocationId>"
+    "customLocationResourceId": {
+      "value": "<customLocationResourceId>"
     },
     "ipConfigurations": {
       "value": [
@@ -219,7 +219,7 @@ module networkInterface 'br/public:avm/res/azure-stack-hci/network-interface:<ve
 using 'br/public:avm/res/azure-stack-hci/network-interface:<version>'
 
 // Required parameters
-param customLocationId = '<customLocationId>'
+param customLocationResourceId = '<customLocationResourceId>'
 param ipConfigurations = [
   {
     properties: {
@@ -248,8 +248,8 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`customLocationId`](#parameter-customlocationid) | string | Resource ID of the associated custom location. |
-| [`ipConfigurations`](#parameter-ipconfigurations) | array | IP configuration object array. |
+| [`customLocationResourceId`](#parameter-customlocationresourceid) | string | Resource ID of the associated custom location. |
+| [`ipConfigurations`](#parameter-ipconfigurations) | array | A list of IPConfigurations of the network interface. |
 | [`name`](#parameter-name) | string | Name of the resource to create. |
 
 **Optional parameters**
@@ -262,7 +262,7 @@ param tags = {
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 
-### Parameter: `customLocationId`
+### Parameter: `customLocationResourceId`
 
 Resource ID of the associated custom location.
 
@@ -271,10 +271,75 @@ Resource ID of the associated custom location.
 
 ### Parameter: `ipConfigurations`
 
-IP configuration object array.
+A list of IPConfigurations of the network interface.
 
 - Required: Yes
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`properties`](#parameter-ipconfigurationsproperties) | object | InterfaceIPConfigurationPropertiesFormat properties of IP configuration. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-ipconfigurationsname) | string | The name of the resource that is unique within a resource group. This name can be used to access the resource. |
+
+### Parameter: `ipConfigurations.properties`
+
+InterfaceIPConfigurationPropertiesFormat properties of IP configuration.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`subnet`](#parameter-ipconfigurationspropertiessubnet) | object | Name of Subnet bound to the IP configuration. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`privateIPAddress`](#parameter-ipconfigurationspropertiesprivateipaddress) | string | Private IP address of the IP configuration. |
+
+### Parameter: `ipConfigurations.properties.subnet`
+
+Name of Subnet bound to the IP configuration.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`id`](#parameter-ipconfigurationspropertiessubnetid) | string | The ARM ID for a Logical Network. |
+
+### Parameter: `ipConfigurations.properties.subnet.id`
+
+The ARM ID for a Logical Network.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `ipConfigurations.properties.privateIPAddress`
+
+Private IP address of the IP configuration.
+
+- Required: No
+- Type: string
+
+### Parameter: `ipConfigurations.name`
+
+The name of the resource that is unique within a resource group. This name can be used to access the resource.
+
+- Required: No
+- Type: string
 
 ### Parameter: `name`
 

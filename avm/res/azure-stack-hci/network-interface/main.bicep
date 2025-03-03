@@ -11,10 +11,10 @@ param location string = resourceGroup().location
 param tags object?
 
 @description('Required. Resource ID of the associated custom location.')
-param customLocationId string
+param customLocationResourceId string
 
-@description('Required. IP configuration object array.')
-param ipConfigurations ipConfigurationsType
+@description('Required. A list of IPConfigurations of the network interface.')
+param ipConfigurations ipConfigurationType[]
 
 @description('Optional. DNS servers array for NIC. These are only applied during NIC creation.')
 param dnsServers string[]?
@@ -85,7 +85,7 @@ resource networkInterface 'Microsoft.AzureStackHCI/networkInterfaces@2024-01-01'
   tags: tags
   extendedLocation: {
     type: 'CustomLocation'
-    name: customLocationId
+    name: customLocationResourceId
   }
   properties: {
     ipConfigurations: ipConfigurations
@@ -130,13 +130,19 @@ output location string = networkInterface.location
 // ================ //
 //
 
+@export()
+@description('The type for an IP configuration.')
 type ipConfigurationType = {
+  @description('Optional. The name of the resource that is unique within a resource group. This name can be used to access the resource.')
   name: string?
+  @description('Required. InterfaceIPConfigurationPropertiesFormat properties of IP configuration.')
   properties: {
+    @description('Optional. Private IP address of the IP configuration.')
     privateIPAddress: string?
+    @description('Required. Name of Subnet bound to the IP configuration.')
     subnet: {
+      @description('Required. The ARM ID for a Logical Network.')
       id: string
     }
   }
 }
-type ipConfigurationsType = ipConfigurationType[]
