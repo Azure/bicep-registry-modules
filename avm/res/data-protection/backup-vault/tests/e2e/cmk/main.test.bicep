@@ -58,11 +58,11 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
       azureMonitorAlertSettingsAlertsForAllJobFailures: 'Disabled'
-      customerManagedKey: {
-        keyName: nestedDependencies.outputs.keyVaultEncryptionKeyName
-        keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
-        userAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
-      }
+      // customerManagedKey: {
+      //   keyName: nestedDependencies.outputs.keyVaultEncryptionKeyName
+      //   keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
+      //   userAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
+      // }
       managedIdentities: {
         userAssignedResourceIds: [
           nestedDependencies.outputs.managedIdentityResourceId
