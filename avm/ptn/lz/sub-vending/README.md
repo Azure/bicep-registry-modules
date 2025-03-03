@@ -888,7 +888,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
         definition: '/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168'
         principalId: '896b1162-be44-4b28-888a-d01acc1b4271'
         relativeScope: '<relativeScope>'
-        roleAssignmentType: 'Eligible'
+        roleAssignmentType: 'Active'
         scheduleInfo: {
           duration: 'PT4H'
           durationType: 'AfterDuration'
@@ -939,7 +939,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
           "definition": "/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168",
           "principalId": "896b1162-be44-4b28-888a-d01acc1b4271",
           "relativeScope": "<relativeScope>",
-          "roleAssignmentType": "Eligible",
+          "roleAssignmentType": "Active",
           "scheduleInfo": {
             "duration": "PT4H",
             "durationType": "AfterDuration",
@@ -1020,7 +1020,7 @@ param pimRoleAssignments = [
     definition: '/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168'
     principalId: '896b1162-be44-4b28-888a-d01acc1b4271'
     relativeScope: '<relativeScope>'
-    roleAssignmentType: 'Eligible'
+    roleAssignmentType: 'Active'
     scheduleInfo: {
       duration: 'PT4H'
       durationType: 'AfterDuration'
