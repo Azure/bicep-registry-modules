@@ -68,6 +68,7 @@ module testDeployment '../../../main.bicep' = [
           nestedDependencies.outputs.managedIdentityResourceId
         ]
       }
+      immutabilitySettingState: 'Disabled'
       // backupPolicies: [
       //   {
       //     name: 'DefaultPolicy'
@@ -131,5 +132,8 @@ module testDeployment '../../../main.bicep' = [
       //   }
       // ]
     }
+    dependsOn: [
+      nestedDependencies
+    ]
   }
 ]

@@ -20,7 +20,15 @@ import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
-@description('Optional. Tags of the Recovery Service Vault resource.')
+@description('Optional. The immmutability setting state of the backup vault resource.')
+@allowed([
+  'Disabled'
+  'Locked'
+  'Unlocked'
+])
+param immutabilitySettingState string?
+
+@description('Optional. Tags of the backup vault resource.')
 param tags object?
 
 @description('Optional. The datastore type to use. ArchiveStore does not support ZoneRedundancy.')
@@ -144,7 +152,11 @@ resource backupVault 'Microsoft.DataProtection/backupVaults@2024-04-01' = {
       }
     ]
     featureSettings: featureSettings
-    securitySettings: securitySettings
+    securitySettings: {
+      immutabilitySettings: {
+        state: immutabilitySettingState
+      }
+    }
   }
 }
 
