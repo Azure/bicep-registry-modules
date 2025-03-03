@@ -880,7 +880,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
   params: {
     pimRoleAssignments: [
       {
-        principalId: '<principalId>'
+        principalId: '896b1162-be44-4b28-888a-d01acc1b4271'
         relativeScope: '<relativeScope>'
         roleAssignmentType: 'Active'
         roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168'
@@ -931,7 +931,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     "pimRoleAssignments": {
       "value": [
         {
-          "principalId": "<principalId>",
+          "principalId": "896b1162-be44-4b28-888a-d01acc1b4271",
           "relativeScope": "<relativeScope>",
           "roleAssignmentType": "Active",
           "roleDefinitionIdOrName": "/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168",
@@ -1012,7 +1012,7 @@ using 'br/public:avm/ptn/lz/sub-vending:<version>'
 
 param pimRoleAssignments = [
   {
-    principalId: '<principalId>'
+    principalId: '896b1162-be44-4b28-888a-d01acc1b4271'
     relativeScope: '<relativeScope>'
     roleAssignmentType: 'Active'
     roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168'
@@ -1064,7 +1064,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
   params: {
     pimRoleAssignments: [
       {
-        principalId: '<principalId>'
+        principalId: '896b1162-be44-4b28-888a-d01acc1b4271'
         relativeScope: ''
         roleAssignmentType: 'Eligible'
         roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168'
@@ -1111,7 +1111,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     "pimRoleAssignments": {
       "value": [
         {
-          "principalId": "<principalId>",
+          "principalId": "896b1162-be44-4b28-888a-d01acc1b4271",
           "relativeScope": "",
           "roleAssignmentType": "Eligible",
           "roleDefinitionIdOrName": "/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168",
@@ -1184,7 +1184,7 @@ using 'br/public:avm/ptn/lz/sub-vending:<version>'
 
 param pimRoleAssignments = [
   {
-    principalId: '<principalId>'
+    principalId: '896b1162-be44-4b28-888a-d01acc1b4271'
     relativeScope: ''
     roleAssignmentType: 'Eligible'
     roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168'

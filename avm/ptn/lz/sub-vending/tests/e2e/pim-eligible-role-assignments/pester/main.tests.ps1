@@ -40,4 +40,24 @@ Describe 'Bicep Landing Zone (Sub) Vending Tests' {
             $mgAssociation.Id | Should -Be "/providers/Microsoft.Management/managementGroups/bicep-lz-vending-automation-child/subscriptions/$subscriptionId"
         }
     }
+
+    Context 'PIM Role-Based Access Control Assignment Tests' {
+        It 'Should Have a PIM Role Assignment for an known AAD Group with an Eligible Role-Based Access Control Administrator role directly upon the subscription' {
+            $iterationCount = 0
+            do {
+                $roleAssignment = Get-AzRoleEligibilityScheduleRequest -Scope "/subscriptions/$subscriptionId" -ErrorAction SilentlyContinue
+                if ($null -eq $roleAssignment) {
+                    Write-Host "Waiting for Subscription Role Assignments to be eventually consistent... Iteration: $($iterationCount)" -ForegroundColor Yellow
+                    Start-Sleep -Seconds 40
+                    $iterationCount++
+                }
+            } until (
+                $roleAssignment -ne $null -or $iterationCount -ge 10
+            )
+
+            $roleAssignment.PrincipalId | Should -Be '896b1162-be44-4b28-888a-d01acc1b4271'
+            $roleAssignment.RoleDefinitionId | Should -Be "/subscriptions/$subscriptionId/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168"
+            $roleAssignment.scope | Should -Be "/subscriptions/$subscriptionId"
+        }
+    }
 }
