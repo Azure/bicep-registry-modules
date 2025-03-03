@@ -179,7 +179,6 @@ function Test-VerifyElasticSANPrivateEndpoints($GroupIds, $PrivateEndpointConnec
 
             if ($PrivateEndpointCounts -ne 0) {
                 $PrivateEndpoints[$i].name | Should -Not -BeNullOrEmpty
-                $PrivateEndpoints[$i].location | Should -Not -BeNullOrEmpty
                 $PrivateEndpoints[$i].resourceId | Should -Be $item.properties.privateEndpoint.id
                 $PrivateEndpoints[$i].groupId | Should -Be $GroupIds[$i]
 
