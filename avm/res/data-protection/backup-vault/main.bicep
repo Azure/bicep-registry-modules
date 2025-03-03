@@ -193,7 +193,7 @@ resource backupVault 'Microsoft.DataProtection/backupVaults@2024-04-01' = {
               identityId: !empty(customerManagedKey.?userAssignedIdentityResourceId ?? '')
                 ? cMKUserAssignedIdentity.properties.clientId
                 : null
-              // identityType: 'string'
+              identityType: 'UserAssigned'
             }
             keyVaultProperties: {
               keyUri: !empty(customerManagedKey.?keyVersion)
