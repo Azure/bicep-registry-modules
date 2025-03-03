@@ -166,6 +166,7 @@ module imageImport 'br/public:avm/res/resources/deployment-script:0.5.0' = {
     name: name
     location: location
     tags: tags
+    enableTelemetry: enableTelemetry
     managedIdentities: useExistingManagedIdentity
       ? managedIdentities
       : { userAssignedResourceIds: [newManagedIdentity.id] }

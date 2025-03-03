@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "13578022486694565821"
+      "version": "0.33.13.18514",
+      "templateHash": "17496676315853900773"
     },
     "name": "Hub Networking",
     "description": "This module is designed to simplify the creation of multi-region hub networks in Azure. It will create a number of virtual networks and subnets, and optionally peer them together in a mesh topology with routing."
@@ -320,13 +320,6 @@
               "description": "Optional. The Azure Bastion config."
             }
           },
-          "enableTelemetry": {
-            "type": "bool",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Enable/Disable usage telemetry for module."
-            }
-          },
           "enableBastion": {
             "type": "bool",
             "nullable": true,
@@ -552,13 +545,6 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. Diagnostic settings."
-          }
-        },
-        "enableTelemetry": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Enable/Disable usage telemetry for module."
           }
         },
         "firewallPolicyId": {
@@ -793,7 +779,7 @@
             "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'dnsServers'), createArray())]"
           },
           "enableTelemetry": {
-            "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'enableTelemetry'), true())]"
+            "value": "[parameters('enableTelemetry')]"
           },
           "flowTimeoutInMinutes": {
             "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'flowTimeoutInMinutes'), 0)]"
@@ -2379,8 +2365,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "6971888757750761810"
+              "version": "0.33.13.18514",
+              "templateHash": "12612748349298357066"
             },
             "name": "Virtual Networks",
             "description": "This module deploys a Virtual Network."
@@ -2454,7 +2440,7 @@
             "value": true
           },
           "enableTelemetry": {
-            "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'enableTelemetry'), true())]"
+            "value": "[parameters('enableTelemetry')]"
           },
           "roleAssignments": {
             "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'roleAssignments'), createArray())]"
@@ -2856,7 +2842,7 @@
             "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'location'), parameters('location'))]"
           },
           "enableTelemetry": {
-            "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'enableTelemetry'), true())]"
+            "value": "[parameters('enableTelemetry')]"
           },
           "roleAssignments": {
             "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'roleAssignments'), createArray())]"
@@ -4082,7 +4068,7 @@
             "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'diagnosticSettings'), createArray())]"
           },
           "enableTelemetry": {
-            "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'enableTelemetry'), true())]"
+            "value": "[parameters('enableTelemetry')]"
           },
           "firewallPolicyId": {
             "value": "[coalesce(tryGet(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'azureFirewallSettings'), 'firewallPolicyId'), '')]"
@@ -6515,8 +6501,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "4695558034353162860"
+              "version": "0.33.13.18514",
+              "templateHash": "6387445984480361380"
             },
             "name": "Existing Virtual Network Subnets",
             "description": "This module retrieves an existing Virtual Network Subnet."
@@ -6597,8 +6583,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "3980815084200627301"
+              "version": "0.33.13.18514",
+              "templateHash": "16777522152108792567"
             },
             "name": "Virtual Network Subnets",
             "description": "This module deploys a Virtual Network Subnet."

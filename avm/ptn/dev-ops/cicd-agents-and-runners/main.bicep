@@ -208,6 +208,7 @@ module logAnalyticsWokrspace 'br/public:avm/res/operational-insights/workspace:0
   name: 'logAnalyticsWokrspace'
   params: {
     name: 'law-${namingPrefix}-${uniqueString(resourceGroup().id)}-law'
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -216,6 +217,7 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
   params: {
     name: 'msi-${namingPrefix}-${uniqueString(resourceGroup().id)}'
     location: location
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -230,6 +232,7 @@ module acrPrivateDNSZone 'br/public:avm/res/network/private-dns-zone:0.5.0' = if
           : networkingConfiguration.virtualNetworkResourceId
       }
     ]
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -239,6 +242,7 @@ module acr 'br/public:avm/res/container-registry/registry:0.4.0' = {
     name: 'acr${namingPrefix}${uniqueString(resourceGroup().id)}'
     acrSku: privateNetworking ? 'Premium' : 'Standard'
     acrAdminUserEnabled: false
+    enableTelemetry: enableTelemetry
     // Assigning AcrPull and AcrPush roles to the user assigned identity
     roleAssignments: [
       {
@@ -286,6 +290,7 @@ module newVnet 'br/public:avm/res/network/virtual-network:0.2.0' = if (networkin
   params: {
     name: 'vnet-${namingPrefix}-${uniqueString(resourceGroup().id)}'
     location: location
+    enableTelemetry: enableTelemetry
     addressPrefixes: [
       networkingConfiguration.addressSpace
     ]
@@ -360,6 +365,7 @@ module appEnvironment 'br/public:avm/res/app/managed-environment:0.6.2' = if (co
     name: 'appEnv${namingPrefix}${uniqueString(resourceGroup().id)}'
     logAnalyticsWorkspaceResourceId: logAnalyticsWokrspace.outputs.resourceId
     location: location
+    enableTelemetry: enableTelemetry
     infrastructureSubnetId: networkingConfiguration.networkType == 'createNew'
       ? filter(
           newVnet.outputs.subnetResourceIds,
@@ -384,6 +390,7 @@ module natGatewayPublicIp 'br/public:avm/res/network/public-ip-address:0.5.1' = 
   params: {
     name: 'natGatewayPublicIp-${uniqueString(resourceGroup().id)}'
     skuName: 'Standard'
+    enableTelemetry: enableTelemetry
     publicIPAddressVersion: 'IPv4'
     publicIPAllocationMethod: 'Static'
   }
@@ -395,6 +402,7 @@ module natGateway 'br/public:avm/res/network/nat-gateway:1.1.0' = if (privateNet
     name: 'natGateway-${namingPrefix}-${uniqueString(resourceGroup().id)}'
     zone: 0
     location: location
+    enableTelemetry: enableTelemetry
     publicIpResourceIds: [
       networkingConfiguration.?natGatewayPublicIpAddressResourceId ?? natGatewayPublicIp.outputs.resourceId
     ]
@@ -445,6 +453,7 @@ module buildImagesRoleAssignment 'br/public:avm/ptn/authorization/resource-role-
       resourceId: acr.outputs.resourceId
       roleDefinitionId: '8311e382-0749-4cb8-b61a-304f252e45ec'
       principalType: 'ServicePrincipal'
+      enableTelemetry: enableTelemetry
     }
   }
 ]
@@ -481,6 +490,7 @@ module aciJob 'br/public:avm/res/container-instance/container-group:0.2.0' = [
           userAssignedIdentity.outputs.resourceId
         ]
       }
+      enableTelemetry: enableTelemetry
       imageRegistryCredentials: [
         {
           identity: userAssignedIdentity.outputs.resourceId
@@ -582,6 +592,7 @@ module acaJob 'br/public:avm/res/app/job:0.4.0' = if (contains(computeTypes, 'az
         userAssignedIdentity.outputs.resourceId
       ]
     }
+    enableTelemetry: enableTelemetry
     roleAssignments: [
       {
         principalId: userAssignedIdentity.outputs.principalId
@@ -634,6 +645,7 @@ module acaPlaceholderJob 'br/public:avm/res/app/job:0.4.0' = if (contains(comput
   params: {
     name: '${namingPrefix}-${uniqueString(resourceGroup().id)}-placeholder'
     location: location
+    enableTelemetry: enableTelemetry
     managedIdentities: {
       userAssignedResourceIds: [
         userAssignedIdentity.outputs.resourceId
@@ -710,6 +722,7 @@ module deploymentScriptPrivateDNSZone 'br/public:avm/res/network/private-dns-zon
           : newVnet.outputs.resourceId
       }
     ]
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -732,6 +745,7 @@ module deploymentScriptStg 'br/public:avm/res/storage/storage-account:0.13.0' = 
         principalType: 'ServicePrincipal'
       }
     ]
+    enableTelemetry: enableTelemetry
     privateEndpoints: [
       {
         service: 'file'
@@ -771,6 +785,7 @@ module runPlaceHolderAgent 'br/public:avm/res/resources/deployment-script:0.3.1'
         userAssignedIdentity.outputs.resourceId
       ]
     }
+    enableTelemetry: enableTelemetry
     storageAccountResourceId: privateNetworking ? deploymentScriptStg.outputs.resourceId : null
     subnetResourceIds: privateNetworking && networkingConfiguration.networkType == 'createNew'
       ? [

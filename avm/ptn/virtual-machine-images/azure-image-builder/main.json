@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "7944054550680645095"
+      "version": "0.33.13.18514",
+      "templateHash": "2381096696170314473"
     },
     "name": "Custom Images using Azure Image Builder",
     "description": "This module provides you with a packaged solution to create custom images using the Azure Image Builder service publishing to an Azure Compute Gallery."
@@ -1517,8 +1517,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "3372394731458682071"
+              "version": "0.33.13.18514",
+              "templateHash": "9803013385396750657"
             }
           },
           "parameters": {
@@ -18496,6 +18496,9 @@
             "value": [
               "[resourceId(subscription().subscriptionId, parameters('resourceGroupName'), 'Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('deploymentScriptSubnetName'))]"
             ]
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           }
         },
         "template": {

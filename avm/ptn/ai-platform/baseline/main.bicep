@@ -100,6 +100,7 @@ module storageAccount_privateDnsZones 'br/public:avm/res/network/private-dns-zon
     name: '${uniqueString(deployment().name, location, zone)}-storage-private-dns-zones'
     params: {
       name: zone
+      enableTelemetry: enableTelemetry
       virtualNetworkLinks: [
         {
           virtualNetworkResourceId: virtualNetwork.outputs.resourceId
@@ -114,6 +115,7 @@ module workspaceHub_privateDnsZones 'br/public:avm/res/network/private-dns-zone:
     name: '${uniqueString(deployment().name, location, zone)}-workspace-private-dns-zones'
     params: {
       name: zone
+      enableTelemetry: enableTelemetry
       virtualNetworkLinks: [
         {
           virtualNetworkResourceId: virtualNetwork.outputs.resourceId
@@ -137,6 +139,7 @@ module defaultNetworkSecurityGroup 'br/public:avm/res/network/network-security-g
   params: {
     name: 'nsg-${name}'
     location: location
+    enableTelemetry: enableTelemetry
     securityRules: [
       {
         name: 'DenySshRdpOutbound'

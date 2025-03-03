@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "5382537109905181094"
+      "version": "0.33.13.18514",
+      "templateHash": "6336613758758535382"
     },
     "name": "CI CD Agents and Runners",
     "description": "This module deploys self-hosted agents and runners for Azure DevOps and GitHub on Azure Container Instances and/or Azure Container Apps."
@@ -787,6 +787,9 @@
         "parameters": {
           "name": {
             "value": "[format('law-{0}-{1}-law', parameters('namingPrefix'), uniqueString(resourceGroup().id))]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           }
         },
         "template": {
@@ -2833,6 +2836,9 @@
           },
           "location": {
             "value": "[parameters('location')]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           }
         },
         "template": {
@@ -3300,6 +3306,9 @@
                 "virtualNetworkResourceId": "[if(equals(parameters('networkingConfiguration').networkType, 'createNew'), reference('newVnet').outputs.resourceId.value, parameters('networkingConfiguration').virtualNetworkResourceId)]"
               }
             ]
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           }
         },
         "template": {
@@ -6345,6 +6354,9 @@
           "acrAdminUserEnabled": {
             "value": false
           },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
+          },
           "roleAssignments": {
             "value": [
               {
@@ -8865,6 +8877,9 @@
           "location": {
             "value": "[parameters('location')]"
           },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
+          },
           "addressPrefixes": {
             "value": [
               "[parameters('networkingConfiguration').addressSpace]"
@@ -10086,6 +10101,9 @@
           "location": {
             "value": "[parameters('location')]"
           },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
+          },
           "infrastructureSubnetId": "[if(equals(parameters('networkingConfiguration').networkType, 'createNew'), createObject('value', filter(reference('newVnet').outputs.subnetResourceIds.value, lambda('subnetId', contains(lambdaVariables('subnetId'), coalesce(tryGet(parameters('networkingConfiguration'), 'containerAppSubnetName'), 'app-subnet'))))[0]), if(equals(parameters('networkingConfiguration').networkType, 'useExisting'), createObject('value', format('{0}/subnets/{1}', parameters('networkingConfiguration').virtualNetworkResourceId, parameters('networkingConfiguration').computeNetworking.containerAppSubnetName)), createObject('value', null())))]",
           "zoneRedundant": {
             "value": true
@@ -10665,6 +10683,9 @@
           },
           "skuName": {
             "value": "Standard"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           },
           "publicIPAddressVersion": {
             "value": "IPv4"
@@ -11312,6 +11333,9 @@
           },
           "location": {
             "value": "[parameters('location')]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           },
           "publicIpResourceIds": {
             "value": [
@@ -12831,6 +12855,9 @@
           },
           "principalType": {
             "value": "ServicePrincipal"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           }
         },
         "template": {
@@ -13082,6 +13109,9 @@
                 "[reference('userAssignedIdentity').outputs.resourceId.value]"
               ]
             }
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           },
           "imageRegistryCredentials": {
             "value": [
@@ -13859,6 +13889,9 @@
                 "[reference('userAssignedIdentity').outputs.resourceId.value]"
               ]
             }
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           },
           "roleAssignments": {
             "value": [
@@ -15029,6 +15062,9 @@
           },
           "location": {
             "value": "[parameters('location')]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           },
           "managedIdentities": {
             "value": {
@@ -16228,6 +16264,9 @@
                 "virtualNetworkResourceId": "[if(equals(parameters('networkingConfiguration').networkType, 'useExisting'), parameters('networkingConfiguration').virtualNetworkResourceId, reference('newVnet').outputs.resourceId.value)]"
               }
             ]
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           }
         },
         "template": {
@@ -19290,6 +19329,9 @@
                 "principalType": "ServicePrincipal"
               }
             ]
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           },
           "privateEndpoints": {
             "value": [
@@ -24320,6 +24362,9 @@
                 "[reference('userAssignedIdentity').outputs.resourceId.value]"
               ]
             }
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           },
           "storageAccountResourceId": "[if(parameters('privateNetworking'), createObject('value', reference('deploymentScriptStg').outputs.resourceId.value), createObject('value', null()))]",
           "subnetResourceIds": "[if(and(parameters('privateNetworking'), equals(parameters('networkingConfiguration').networkType, 'createNew')), createObject('value', createArray(filter(reference('newVnet').outputs.subnetResourceIds.value, lambda('subnetId', contains(lambdaVariables('subnetId'), coalesce(tryGet(parameters('networkingConfiguration'), 'containerInstanceSubnetName'), 'aci-subnet'))))[0])), if(and(parameters('privateNetworking'), equals(parameters('networkingConfiguration').networkType, 'useExisting')), createObject('value', createArray(format('{0}/subnets/{1}', parameters('networkingConfiguration').virtualNetworkResourceId, parameters('networkingConfiguration').computeNetworking.containerInstanceSubnetName))), createObject('value', null())))]",
