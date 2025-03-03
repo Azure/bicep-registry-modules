@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "17517868551569081276"
+      "templateHash": "15152556071592649783"
     },
     "name": "Automation Accounts",
     "description": "This module deploys an Azure Automation Account."
@@ -159,9 +159,6 @@
         },
         "version": {
           "type": "string",
-          "allowedValues": [
-            "latest"
-          ],
           "nullable": true,
           "metadata": {
             "description": "Optional. Module version or specify latest to get the latest version."
@@ -197,9 +194,6 @@
         },
         "version": {
           "type": "string",
-          "allowedValues": [
-            "latest"
-          ],
           "nullable": true,
           "metadata": {
             "description": "Optional. Module version or specify latest to get the latest version."

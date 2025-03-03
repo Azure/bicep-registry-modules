@@ -199,7 +199,7 @@ module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   params: {
     name: '${namePrefix}${serviceShort}logicalnetwork'
-    customLocationId: customLocation.id
+    customLocationResourceId: customLocation.id
     vmSwitchName: 'ConvergedSwitch(management)'
     ipAllocationMethod: 'Static'
     addressPrefix: '172.20.0.1/24'
