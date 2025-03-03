@@ -158,9 +158,11 @@ resource backupVault 'Microsoft.DataProtection/backupVaults@2024-04-01' = {
     ]
     featureSettings: featureSettings
     securitySettings: {
-      immutabilitySettings: {
-        state: immutabilitySettingState
-      }
+      immutabilitySettings: !empty(immutabilitySettingState)
+        ? {
+            state: immutabilitySettingState
+          }
+        : null
       softDeleteSettings: softDeleteSettings
     }
   }
