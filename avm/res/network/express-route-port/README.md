@@ -117,7 +117,14 @@ module expressRoutePort 'br/public:avm/res/network/express-route-port:<version>'
     // Non-required parameters
     billingType: 'MeteredData'
     encapsulation: 'Dot1Q'
-    links: []
+    links: [
+      {
+        name: 'link1'
+        properties: {
+          adminState: 'Disabled'
+        }
+      }
+    ]
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -176,7 +183,14 @@ module expressRoutePort 'br/public:avm/res/network/express-route-port:<version>'
       "value": "Dot1Q"
     },
     "links": {
-      "value": []
+      "value": [
+        {
+          "name": "link1",
+          "properties": {
+            "adminState": "Disabled"
+          }
+        }
+      ]
     },
     "location": {
       "value": "<location>"
@@ -229,7 +243,14 @@ param peeringLocation = 'Airtel-Chennai2-CLS'
 // Non-required parameters
 param billingType = 'MeteredData'
 param encapsulation = 'Dot1Q'
-param links = []
+param links = [
+  {
+    name: 'link1'
+    properties: {
+      adminState: 'Disabled'
+    }
+  }
+]
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
@@ -346,6 +367,7 @@ param peeringLocation = 'Airtel-Chennai2-CLS'
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`tags`](#parameter-tags) | object | Tags of the resource. |
 
 ### Parameter: `bandwidthInGbps`
 
@@ -432,12 +454,6 @@ The name of the link to be created.
 
 - Required: Yes
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'string'
-  ]
-  ```
 
 ### Parameter: `links.id`
 
@@ -445,12 +461,6 @@ Resource Id of the existing Link.
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'string'
-  ]
-  ```
 
 ### Parameter: `links.properties`
 
@@ -463,7 +473,7 @@ Properties of the Link.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`adminState`](#parameter-linkspropertiesadminstate) | string | Administrative state of the physical port. |
+| [`adminState`](#parameter-linkspropertiesadminstate) | string | Administrative state of the physical port. Must be set to 'Disabled' for initial deployment. |
 
 **Optional parameters**
 
@@ -473,16 +483,10 @@ Properties of the Link.
 
 ### Parameter: `links.properties.adminState`
 
-Administrative state of the physical port.
+Administrative state of the physical port. Must be set to 'Disabled' for initial deployment.
 
 - Required: Yes
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'string'
-  ]
-  ```
 
 ### Parameter: `links.properties.macSecConfig`
 
@@ -506,12 +510,6 @@ Keyvault Secret Identifier URL containing Mac security CAK key.
 
 - Required: Yes
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'string'
-  ]
-  ```
 
 ### Parameter: `links.properties.macSecConfig.cipher`
 
@@ -535,12 +533,6 @@ Keyvault Secret Identifier URL containing Mac security CKN key.
 
 - Required: Yes
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'string'
-  ]
-  ```
 
 ### Parameter: `links.properties.macSecConfig.sciState`
 
@@ -703,6 +695,13 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
+
+### Parameter: `tags`
+
+Tags of the resource.
+
+- Required: No
+- Type: object
 
 ## Outputs
 

@@ -77,6 +77,8 @@ import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/av
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyWithAutoRotateType?
 
+var enableReferencedModulesTelemetry = false
+
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
@@ -370,8 +372,8 @@ module rsv_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' 
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-rsv-PrivateEndpoint-${index}'
     scope: resourceGroup(
-      split(privateEndpoint.?resourceGroupResourceId ?? privateEndpoint.?subnetResourceId, '/')[2],
-      split(privateEndpoint.?resourceGroupResourceId ?? privateEndpoint.?subnetResourceId, '/')[4]
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
     )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(rsv.id, '/'))}-${privateEndpoint.?service ?? 'AzureSiteRecovery'}-${index}'
@@ -403,7 +405,7 @@ module rsv_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' 
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
-      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',
@@ -454,15 +456,14 @@ output location string = rsv.location
 
 @description('The private endpoints of the recovery services vault.')
 output privateEndpoints privateEndpointOutputType[] = [
-  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
-    name: rsv_privateEndpoints[i].outputs.name
-    resourceId: rsv_privateEndpoints[i].outputs.resourceId
-    groupId: rsv_privateEndpoints[i].outputs.?groupId!
-    customDnsConfigs: rsv_privateEndpoints[i].outputs.customDnsConfigs
-    networkInterfaceResourceIds: rsv_privateEndpoints[i].outputs.networkInterfaceResourceIds
+  for (item, index) in (privateEndpoints ?? []): {
+    name: rsv_privateEndpoints[index].outputs.name
+    resourceId: rsv_privateEndpoints[index].outputs.resourceId
+    groupId: rsv_privateEndpoints[index].outputs.?groupId!
+    customDnsConfigs: rsv_privateEndpoints[index].outputs.customDnsConfigs
+    networkInterfaceResourceIds: rsv_privateEndpoints[index].outputs.networkInterfaceResourceIds
   }
 ]
-
 // =============== //
 //   Definitions   //
 // =============== //
