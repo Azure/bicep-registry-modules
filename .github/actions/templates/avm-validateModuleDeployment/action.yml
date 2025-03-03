@@ -76,7 +76,7 @@ runs:
           $moduleTestFilePath = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.templateFilePath }}'
 
           # Check if the deployment test should be bypassed
-          if (-not [String]::IsNullOrEmpty('${{ inputs.e2eignore }}') -and '${{ inputs.e2eignore }}' -eq 'true') {
+          if ('${{ inputs.e2eIgnore }}' -eq 'true') {
             Write-Warning -Message "File '.e2eignore' exists in the folder: $moduleTestFilePath"
             Write-Output 'skip_deployment_ci=true' >> $env:GITHUB_ENV
 
