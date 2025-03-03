@@ -124,6 +124,8 @@ param accessPolicyAssignments accessPolicyAssignmentType[] = []
 @description('Optional. Key vault reference and secret settings for the module\'s secrets export.')
 param secretsExportConfiguration secretsExportConfigurationType?
 
+var enableReferencedModulesTelemetry = false
+
 var availabilityZones = skuName == 'Premium'
   ? zoneRedundant ? !empty(zones) ? zones : pickZones('Microsoft.Cache', 'redis', location, 3) : []
   : []
@@ -305,8 +307,8 @@ module redis_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-redis-PrivateEndpoint-${index}'
     scope: resourceGroup(
-      split(privateEndpoint.?resourceGroupResourceId ?? privateEndpoint.?subnetResourceId, '/')[2],
-      split(privateEndpoint.?resourceGroupResourceId ?? privateEndpoint.?subnetResourceId, '/')[4]
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
     )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(redis.id, '/'))}-${privateEndpoint.?service ?? 'redisCache'}-${index}'
@@ -338,7 +340,7 @@ module redis_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
-      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',
@@ -455,12 +457,12 @@ output location string = redis.location
 
 @description('The private endpoints of the Redis Cache.')
 output privateEndpoints privateEndpointOutputType[] = [
-  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
-    name: redis_privateEndpoints[i].outputs.name
-    resourceId: redis_privateEndpoints[i].outputs.resourceId
-    groupId: redis_privateEndpoints[i].outputs.?groupId!
-    customDnsConfigs: redis_privateEndpoints[i].outputs.customDnsConfigs
-    networkInterfaceResourceIds: redis_privateEndpoints[i].outputs.networkInterfaceResourceIds
+  for (item, index) in (privateEndpoints ?? []): {
+    name: redis_privateEndpoints[index].outputs.name
+    resourceId: redis_privateEndpoints[index].outputs.resourceId
+    groupId: redis_privateEndpoints[index].outputs.?groupId!
+    customDnsConfigs: redis_privateEndpoints[index].outputs.customDnsConfigs
+    networkInterfaceResourceIds: redis_privateEndpoints[index].outputs.networkInterfaceResourceIds
   }
 ]
 

@@ -78,6 +78,8 @@ param lock lockType?
 // Variables   //
 // =========== //
 
+var enableReferencedModulesTelemetry = false
+
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
@@ -191,8 +193,8 @@ module account_accountPrivateEndpoints 'br/public:avm/res/network/private-endpoi
   for (privateEndpoint, index) in (accountPrivateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-account-PrivateEndpoint-${index}'
     scope: resourceGroup(
-      split(privateEndpoint.?resourceGroupResourceId ?? privateEndpoint.?subnetResourceId, '/')[2],
-      split(privateEndpoint.?resourceGroupResourceId ?? privateEndpoint.?subnetResourceId, '/')[4]
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
     )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'account'}-${index}'
@@ -224,7 +226,7 @@ module account_accountPrivateEndpoints 'br/public:avm/res/network/private-endpoi
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
-      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',
@@ -246,8 +248,8 @@ module account_portalPrivateEndpoints 'br/public:avm/res/network/private-endpoin
   for (privateEndpoint, index) in (portalPrivateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-portal-PrivateEndpoint-${index}'
     scope: resourceGroup(
-      split(privateEndpoint.?resourceGroupResourceId ?? privateEndpoint.?subnetResourceId, '/')[2],
-      split(privateEndpoint.?resourceGroupResourceId ?? privateEndpoint.?subnetResourceId, '/')[4]
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
     )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'portal'}-${index}'
@@ -279,7 +281,7 @@ module account_portalPrivateEndpoints 'br/public:avm/res/network/private-endpoin
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
-      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',
@@ -301,8 +303,8 @@ module account_storageBlobPrivateEndpoints 'br/public:avm/res/network/private-en
   for (privateEndpoint, index) in (storageBlobPrivateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-blob-PrivateEndpoint-${index}'
     scope: resourceGroup(
-      split(privateEndpoint.?resourceGroupResourceId ?? privateEndpoint.?subnetResourceId, '/')[2],
-      split(privateEndpoint.?resourceGroupResourceId ?? privateEndpoint.?subnetResourceId, '/')[4]
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
     )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'blob'}-${index}'
@@ -334,7 +336,7 @@ module account_storageBlobPrivateEndpoints 'br/public:avm/res/network/private-en
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
-      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',
@@ -356,8 +358,8 @@ module account_storageQueuePrivateEndpoints 'br/public:avm/res/network/private-e
   for (privateEndpoint, index) in (storageQueuePrivateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-queue-PrivateEndpoint-${index}'
     scope: resourceGroup(
-      split(privateEndpoint.?resourceGroupResourceId ?? privateEndpoint.?subnetResourceId, '/')[2],
-      split(privateEndpoint.?resourceGroupResourceId ?? privateEndpoint.?subnetResourceId, '/')[4]
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
     )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'queue'}-${index}'
@@ -389,7 +391,7 @@ module account_storageQueuePrivateEndpoints 'br/public:avm/res/network/private-e
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
-      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',
@@ -411,8 +413,8 @@ module account_eventHubPrivateEndpoints 'br/public:avm/res/network/private-endpo
   for (privateEndpoint, index) in (eventHubPrivateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-eventHub-PrivateEndpoint-${index}'
     scope: resourceGroup(
-      split(privateEndpoint.?resourceGroupResourceId ?? privateEndpoint.?subnetResourceId, '/')[2],
-      split(privateEndpoint.?resourceGroupResourceId ?? privateEndpoint.?subnetResourceId, '/')[4]
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
     )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'namespace'}-${index}'
@@ -444,7 +446,7 @@ module account_eventHubPrivateEndpoints 'br/public:avm/res/network/private-endpo
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
-      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',
@@ -507,56 +509,56 @@ output systemAssignedMIPrincipalId string? = account.?identity.?principalId
 
 @description('The private endpoints of the Purview Account.')
 output accountPrivateEndpoints privateEndpointOutputType[] = [
-  for (pe, i) in (!empty(accountPrivateEndpoints) ? array(accountPrivateEndpoints) : []): {
-    name: account_accountPrivateEndpoints[i].outputs.name
-    resourceId: account_accountPrivateEndpoints[i].outputs.resourceId
-    groupId: account_accountPrivateEndpoints[i].outputs.?groupId!
-    customDnsConfigs: account_accountPrivateEndpoints[i].outputs.customDnsConfigs
-    networkInterfaceResourceIds: account_accountPrivateEndpoints[i].outputs.networkInterfaceResourceIds
+  for (item, index) in (accountPrivateEndpoints ?? []): {
+    name: account_accountPrivateEndpoints[index].outputs.name
+    resourceId: account_accountPrivateEndpoints[index].outputs.resourceId
+    groupId: account_accountPrivateEndpoints[index].outputs.?groupId!
+    customDnsConfigs: account_accountPrivateEndpoints[index].outputs.customDnsConfigs
+    networkInterfaceResourceIds: account_accountPrivateEndpoints[index].outputs.networkInterfaceResourceIds
   }
 ]
 
 @description('The private endpoints of the Purview Account Portal.')
 output portalPrivateEndpoints privateEndpointOutputType[] = [
-  for (pe, i) in (!empty(portalPrivateEndpoints) ? array(portalPrivateEndpoints) : []): {
-    name: account_portalPrivateEndpoints[i].outputs.name
-    resourceId: account_portalPrivateEndpoints[i].outputs.resourceId
-    groupId: account_portalPrivateEndpoints[i].outputs.?groupId!
-    customDnsConfigs: account_portalPrivateEndpoints[i].outputs.customDnsConfigs
-    networkInterfaceResourceIds: account_portalPrivateEndpoints[i].outputs.networkInterfaceResourceIds
+  for (item, index) in (portalPrivateEndpoints ?? []): {
+    name: account_portalPrivateEndpoints[index].outputs.name
+    resourceId: account_portalPrivateEndpoints[index].outputs.resourceId
+    groupId: account_portalPrivateEndpoints[index].outputs.?groupId!
+    customDnsConfigs: account_portalPrivateEndpoints[index].outputs.customDnsConfigs
+    networkInterfaceResourceIds: account_portalPrivateEndpoints[index].outputs.networkInterfaceResourceIds
   }
 ]
 
 @description('The private endpoints of the managed storage account blob service.')
 output storageBlobPrivateEndpoints privateEndpointOutputType[] = [
-  for (pe, i) in (!empty(storageBlobPrivateEndpoints) ? array(storageBlobPrivateEndpoints) : []): {
-    name: account_storageBlobPrivateEndpoints[i].outputs.name
-    resourceId: account_storageBlobPrivateEndpoints[i].outputs.resourceId
-    groupId: account_storageBlobPrivateEndpoints[i].outputs.?groupId!
-    customDnsConfigs: account_storageBlobPrivateEndpoints[i].outputs.customDnsConfigs
-    networkInterfaceResourceIds: account_storageBlobPrivateEndpoints[i].outputs.networkInterfaceResourceIds
+  for (item, index) in (storageBlobPrivateEndpoints ?? []): {
+    name: account_storageBlobPrivateEndpoints[index].outputs.name
+    resourceId: account_storageBlobPrivateEndpoints[index].outputs.resourceId
+    groupId: account_storageBlobPrivateEndpoints[index].outputs.?groupId!
+    customDnsConfigs: account_storageBlobPrivateEndpoints[index].outputs.customDnsConfigs
+    networkInterfaceResourceIds: account_storageBlobPrivateEndpoints[index].outputs.networkInterfaceResourceIds
   }
 ]
 
 @description('The private endpoints of the managed storage account queue service.')
 output storageQueuePrivateEndpoints privateEndpointOutputType[] = [
-  for (pe, i) in (!empty(storageQueuePrivateEndpoints) ? array(storageQueuePrivateEndpoints) : []): {
-    name: account_storageQueuePrivateEndpoints[i].outputs.name
-    resourceId: account_storageQueuePrivateEndpoints[i].outputs.resourceId
-    groupId: account_storageQueuePrivateEndpoints[i].outputs.?groupId!
-    customDnsConfigs: account_storageQueuePrivateEndpoints[i].outputs.customDnsConfigs
-    networkInterfaceResourceIds: account_storageQueuePrivateEndpoints[i].outputs.networkInterfaceResourceIds
+  for (item, index) in (storageQueuePrivateEndpoints ?? []): {
+    name: account_storageQueuePrivateEndpoints[index].outputs.name
+    resourceId: account_storageQueuePrivateEndpoints[index].outputs.resourceId
+    groupId: account_storageQueuePrivateEndpoints[index].outputs.?groupId!
+    customDnsConfigs: account_storageQueuePrivateEndpoints[index].outputs.customDnsConfigs
+    networkInterfaceResourceIds: account_storageQueuePrivateEndpoints[index].outputs.networkInterfaceResourceIds
   }
 ]
 
 @description('The private endpoints of the managed Event Hub Namespace.')
 output eventHubPrivateEndpoints privateEndpointOutputType[] = [
-  for (pe, i) in (!empty(eventHubPrivateEndpoints) ? array(eventHubPrivateEndpoints) : []): {
-    name: account_eventHubPrivateEndpoints[i].outputs.name
-    resourceId: account_eventHubPrivateEndpoints[i].outputs.resourceId
-    groupId: account_eventHubPrivateEndpoints[i].outputs.?groupId!
-    customDnsConfigs: account_eventHubPrivateEndpoints[i].outputs.customDnsConfigs
-    networkInterfaceResourceIds: account_eventHubPrivateEndpoints[i].outputs.networkInterfaceResourceIds
+  for (item, index) in (eventHubPrivateEndpoints ?? []): {
+    name: account_eventHubPrivateEndpoints[index].outputs.name
+    resourceId: account_eventHubPrivateEndpoints[index].outputs.resourceId
+    groupId: account_eventHubPrivateEndpoints[index].outputs.?groupId!
+    customDnsConfigs: account_eventHubPrivateEndpoints[index].outputs.customDnsConfigs
+    networkInterfaceResourceIds: account_eventHubPrivateEndpoints[index].outputs.networkInterfaceResourceIds
   }
 ]
 
