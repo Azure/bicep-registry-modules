@@ -116,7 +116,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource backupVault 'Microsoft.DataProtection/backupVaults@2023-05-01' = {
+resource backupVault 'Microsoft.DataProtection/backupVaults@2024-04-01' = {
   name: name
   location: location
   tags: tags
