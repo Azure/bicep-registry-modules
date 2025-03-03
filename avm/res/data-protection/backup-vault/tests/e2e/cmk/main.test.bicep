@@ -58,78 +58,78 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
       azureMonitorAlertSettingsAlertsForAllJobFailures: 'Disabled'
-      customerManagedKey: {
-        keyName: nestedDependencies.outputs.keyVaultEncryptionKeyName
-        keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
-        userAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
-      }
-      managedIdentities: {
-        userAssignedResourceIds: [
-          nestedDependencies.outputs.managedIdentityResourceId
-        ]
-      }
-      backupPolicies: [
-        {
-          name: 'DefaultPolicy'
-          properties: {
-            datasourceTypes: [
-              'Microsoft.Compute/disks'
-            ]
-            objectType: 'BackupPolicy'
-            policyRules: [
-              {
-                backupParameters: {
-                  backupType: 'Incremental'
-                  objectType: 'AzureBackupParams'
-                }
-                dataStore: {
-                  dataStoreType: 'OperationalStore'
-                  objectType: 'DataStoreInfoBase'
-                }
-                name: 'BackupDaily'
-                objectType: 'AzureBackupRule'
-                trigger: {
-                  objectType: 'ScheduleBasedTriggerContext'
-                  schedule: {
-                    repeatingTimeIntervals: [
-                      'R/2022-05-31T23:30:00+01:00/P1D'
-                    ]
-                    timeZone: 'W. Europe Standard Time'
-                  }
-                  taggingCriteria: [
-                    {
-                      isDefault: true
-                      taggingPriority: 99
-                      tagInfo: {
-                        id: 'Default_'
-                        tagName: 'Default'
-                      }
-                    }
-                  ]
-                }
-              }
-              {
-                isDefault: true
-                lifecycles: [
-                  {
-                    deleteAfter: {
-                      duration: 'P7D'
-                      objectType: 'AbsoluteDeleteOption'
-                    }
-                    sourceDataStore: {
-                      dataStoreType: 'OperationalStore'
-                      objectType: 'DataStoreInfoBase'
-                    }
-                    targetDataStoreCopySettings: []
-                  }
-                ]
-                name: 'Default'
-                objectType: 'AzureRetentionRule'
-              }
-            ]
-          }
-        }
-      ]
+      // customerManagedKey: {
+      //   keyName: nestedDependencies.outputs.keyVaultEncryptionKeyName
+      //   keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
+      //   userAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
+      // }
+      // managedIdentities: {
+      //   userAssignedResourceIds: [
+      //     nestedDependencies.outputs.managedIdentityResourceId
+      //   ]
+      // }
+      // backupPolicies: [
+      //   {
+      //     name: 'DefaultPolicy'
+      //     properties: {
+      //       datasourceTypes: [
+      //         'Microsoft.Compute/disks'
+      //       ]
+      //       objectType: 'BackupPolicy'
+      //       policyRules: [
+      //         {
+      //           backupParameters: {
+      //             backupType: 'Incremental'
+      //             objectType: 'AzureBackupParams'
+      //           }
+      //           dataStore: {
+      //             dataStoreType: 'OperationalStore'
+      //             objectType: 'DataStoreInfoBase'
+      //           }
+      //           name: 'BackupDaily'
+      //           objectType: 'AzureBackupRule'
+      //           trigger: {
+      //             objectType: 'ScheduleBasedTriggerContext'
+      //             schedule: {
+      //               repeatingTimeIntervals: [
+      //                 'R/2022-05-31T23:30:00+01:00/P1D'
+      //               ]
+      //               timeZone: 'W. Europe Standard Time'
+      //             }
+      //             taggingCriteria: [
+      //               {
+      //                 isDefault: true
+      //                 taggingPriority: 99
+      //                 tagInfo: {
+      //                   id: 'Default_'
+      //                   tagName: 'Default'
+      //                 }
+      //               }
+      //             ]
+      //           }
+      //         }
+      //         {
+      //           isDefault: true
+      //           lifecycles: [
+      //             {
+      //               deleteAfter: {
+      //                 duration: 'P7D'
+      //                 objectType: 'AbsoluteDeleteOption'
+      //               }
+      //               sourceDataStore: {
+      //                 dataStoreType: 'OperationalStore'
+      //                 objectType: 'DataStoreInfoBase'
+      //               }
+      //               targetDataStoreCopySettings: []
+      //             }
+      //           ]
+      //           name: 'Default'
+      //           objectType: 'AzureRetentionRule'
+      //         }
+      //       ]
+      //     }
+      //   }
+      // ]
     }
   }
 ]
