@@ -395,10 +395,14 @@ Describe 'Module tests' -Tag 'Module' {
             . (Join-Path $repoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Set-ModuleReadMe.ps1')
 
             # Apply update with already compiled template content
-            Set-ModuleReadMe -TemplateFilePath $templateFilePath -PreLoadedContent @{
-                TemplateFileContent       = $templateFileContent
-                CrossReferencedModuleList = $crossReferencedModuleList
-                TelemetryFileContent      = $telemetryFileContent
+            try {
+                Set-ModuleReadMe -TemplateFilePath $templateFilePath -PreLoadedContent @{
+                    TemplateFileContent       = $templateFileContent
+                    CrossReferencedModuleList = $crossReferencedModuleList
+                    TelemetryFileContent      = $telemetryFileContent
+                } -ErrorAction 'Stop' -ErrorVariable 'InvocationError'
+            } catch {
+                $InvocationError[-1] | Should -BeNullOrEmpty -Because "Failed to apply the `Set-ModuleReadMe` function due to an error during the function's execution. Please review the inner error(s)."
             }
 
             # Get hash after 'update'
