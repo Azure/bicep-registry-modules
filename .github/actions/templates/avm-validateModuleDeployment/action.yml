@@ -85,7 +85,7 @@ runs:
             excludeMessage = "Skipping deployment for ${{ inputs.templateFilePath }}: $excludeReason"
 
             Write-Output "Skipping deployment for ${{ inputs.templateFilePath }}: $excludeMessage" >> $env:VALIDATE_TEST_EXECUTION_RESULT
-            Write-Error "Skipping deployment for ${{ inputs.templateFilePath }}: $excludeMessage"
+            Write-Warning "Skipping deployment for ${{ inputs.templateFilePath }}: $excludeMessage"
           } else {
             Write-Output "File '.e2eignore' does not exist in the folder: $moduleTestFilePath" -Verbose
             Write-Output "skip_deployment_ci=false" >> $env:GITHUB_ENV
