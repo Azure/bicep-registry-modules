@@ -90,9 +90,6 @@ module testDeployment '../../../main.bicep' = [
         defaultWorkspaceResourceGroup: resourceGroup.id
       }
     }
-    dependsOn: [
-      nestedDependencies
-    ]
   }
 ]
 

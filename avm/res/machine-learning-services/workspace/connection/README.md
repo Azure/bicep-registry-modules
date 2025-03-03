@@ -12,7 +12,7 @@ This module creates a connection in a Machine Learning Services workspace.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.MachineLearningServices/workspaces/connections` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2024-04-01/workspaces/connections) |
+| `Microsoft.MachineLearningServices/workspaces/connections` | [2024-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2024-10-01/workspaces/connections) |
 
 ## Parameters
 
@@ -80,6 +80,7 @@ Category of the connection.
     'Dynamics'
     'DynamicsAx'
     'DynamicsCrm'
+    'Elasticsearch'
     'Eloqua'
     'FileServer'
     'FtpServer'
@@ -99,6 +100,7 @@ Category of the connection.
     'Informix'
     'Jira'
     'Magento'
+    'ManagedOnlineEndpoint'
     'MariaDb'
     'Marketo'
     'MicrosoftAccess'
@@ -115,6 +117,7 @@ Category of the connection.
     'OracleServiceCloud'
     'PayPal'
     'Phoenix'
+    'Pinecone'
     'PostgreSql'
     'Presto'
     'PythonFeed'
