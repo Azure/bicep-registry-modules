@@ -22,6 +22,17 @@ import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
+@description('Optional. Whether or not the service applies a secondary layer of encryption. For security reasons, it is recommended to set it to Enabled.')
+@allowed([
+  'Enabled'
+  'Disabled'
+])
+param infrastructureEncryption string = 'Enabled'
+
+import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+@description('Optional. The customer managed key definition.')
+param customerManagedKey customerManagedKeyType?
+
 @description('Optional. The soft delete related settings.')
 param softDeleteSettings softDeleteSettingType?
 
@@ -61,9 +72,6 @@ param azureMonitorAlertSettingsAlertsForAllJobFailures string = 'Enabled'
 
 @description('Optional. List of all backup policies.')
 param backupPolicies array = []
-
-@description('Optional. Security settings for the backup vault.')
-param securitySettings object = {}
 
 @description('Optional. Feature settings for the backup vault.')
 param featureSettings object = {}
@@ -139,6 +147,26 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+  name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
+  scope: resourceGroup(
+    split(customerManagedKey.?keyVaultResourceId!, '/')[2],
+    split(customerManagedKey.?keyVaultResourceId!, '/')[4]
+  )
+
+  resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+    name: customerManagedKey.?keyName!
+  }
+}
+
+resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
+  name: last(split(customerManagedKey.?userAssignedIdentityResourceId!, '/'))
+  scope: resourceGroup(
+    split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[2],
+    split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[4]
+  )
+}
+
 resource backupVault 'Microsoft.DataProtection/backupVaults@2024-04-01' = {
   name: name
   location: location
@@ -158,6 +186,20 @@ resource backupVault 'Microsoft.DataProtection/backupVaults@2024-04-01' = {
     ]
     featureSettings: featureSettings
     securitySettings: {
+      encryptionSettings: !empty(customerManagedKey)
+        ? {
+            infrastructureEncryption: infrastructureEncryption
+            kekIdentity: {
+              identityId: !empty(customerManagedKey.?userAssignedIdentityResourceId ?? '')
+                ? cMKUserAssignedIdentity.properties.clientId
+                : null
+              // identityType: 'string'
+            }
+            keyVaultProperties: {
+              keyUri: cMKKeyVault.properties.vaultUri
+            }
+          }
+        : null
       immutabilitySettings: !empty(immutabilitySettingState)
         ? {
             state: immutabilitySettingState
