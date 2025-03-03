@@ -196,10 +196,43 @@ resource backupVault 'Microsoft.DataProtection/backupVaults@2024-04-01' = {
               // identityType: 'string'
             }
             keyVaultProperties: {
-              keyUri: cMKKeyVault.properties.vaultUri
+              keyUri: !empty(customerManagedKey.?keyVersion)
+                ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.?keyVersion}'
+                : cMKKeyVault::cMKKey.properties.keyUriWithVersion
             }
           }
         : null
+      // encryptionSettings: !empty(customerManagedKey)
+      //   ? {
+      //       infrastructureEncryption: infrastructureEncryption
+      //       kekIdentity: {
+      //         identityId: !empty(customerManagedKey.?userAssignedIdentityResourceId ?? '')
+      //           ? cMKUserAssignedIdentity.properties.clientId
+      //           : null
+      //         // identityType: 'string'
+      //       }
+      //       keyVaultProperties: {
+      //         keyUri: cMKKeyVault.properties.vaultUri
+      //       }
+      //     }
+      //   : null
+      // encryptionSettings: !empty(customerManagedKey)
+      //   ? {
+      //       infrastructureEncryption: infrastructureEncryption
+      //       kekIdentity: !empty(customerManagedKey.?userAssignedIdentityResourceId)
+      //         ? {
+      //           identityId: cMKUserAssignedIdentity.id
+      //           }
+      //         : {
+      //           identityId: empty(customerManagedKey.?userAssignedIdentityResourceId)
+      //           }
+      //       keyVaultProperties: {
+      //         keyUri: !empty(customerManagedKey.?keyVersion)
+      //           ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.?keyVersion}'
+      //           : cMKKeyVault::cMKKey.properties.keyUriWithVersion
+      //       }
+      //     }
+      //   : null
       immutabilitySettings: !empty(immutabilitySettingState)
         ? {
             state: immutabilitySettingState
