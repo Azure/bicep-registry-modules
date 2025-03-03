@@ -55,7 +55,7 @@ inputs:
   customLocation:
     description: "Custom location overwrite, if needed"
     required: false
-  e2eignore:
+  e2eIgnore:
     description: "A test case will not be deployed if an .e2eignore file exists"
     required: false
 
