@@ -54,6 +54,7 @@ module testDeployment '../../../main.bicep' = {
           durationType: 'AfterDuration'
           startTime: pimAssignmentStartDateTime
         }
+        justification: 'AVM test.'
       }
     ]
   }

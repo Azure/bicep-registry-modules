@@ -1544,6 +1544,9 @@ type pimRoleAssignmentTypeType = {
 
   @description('Required. The role definition ID or name.')
   definition: string
+
+  @description('Optional. The justification for the role assignment.')
+  justification: string?
 }[]
 
 @discriminator('durationType')
