@@ -26,6 +26,16 @@ This module deploys a subscription to accelerate deployment of landing zones. Fo
 | `Microsoft.Network/bastionHosts` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/bastionHosts) |
 | `Microsoft.Network/natGateways` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/natGateways) |
 | `Microsoft.Network/networkSecurityGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/networkSecurityGroups) |
+| `Microsoft.Network/privateDnsZones` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones) |
+| `Microsoft.Network/privateDnsZones/A` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/A) |
+| `Microsoft.Network/privateDnsZones/AAAA` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/AAAA) |
+| `Microsoft.Network/privateDnsZones/CNAME` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/CNAME) |
+| `Microsoft.Network/privateDnsZones/MX` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/MX) |
+| `Microsoft.Network/privateDnsZones/PTR` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/PTR) |
+| `Microsoft.Network/privateDnsZones/SOA` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/SOA) |
+| `Microsoft.Network/privateDnsZones/SRV` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/SRV) |
+| `Microsoft.Network/privateDnsZones/TXT` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/TXT) |
+| `Microsoft.Network/privateDnsZones/virtualNetworkLinks` | [2024-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-06-01/privateDnsZones/virtualNetworkLinks) |
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
 | `Microsoft.Network/publicIPAddresses` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-09-01/publicIPAddresses) |
@@ -632,7 +642,6 @@ This instance deploys a subscription with a hub-spoke network topology with NAT 
 module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
   name: 'subVendingDeployment'
   params: {
-    deploymentScriptStorageAccountName: '<deploymentScriptStorageAccountName>'
     resourceProviders: {
       'Microsoft.Network': []
     }
@@ -700,9 +709,6 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "deploymentScriptStorageAccountName": {
-      "value": "<deploymentScriptStorageAccountName>"
-    },
     "resourceProviders": {
       "value": {
         "Microsoft.Network": []
@@ -808,7 +814,6 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
 ```bicep-params
 using 'br/public:avm/ptn/lz/sub-vending:<version>'
 
-param deploymentScriptStorageAccountName = '<deploymentScriptStorageAccountName>'
 param resourceProviders = {
   'Microsoft.Network': []
 }
@@ -882,7 +887,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       {
         principalId: '896b1162-be44-4b28-888a-d01acc1b4271'
         relativeScope: '<relativeScope>'
-        roleAssignmentType: 'Active'
+        roleAssignmentType: 'Eligible'
         roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168'
         scheduleInfo: {
           duration: 'PT4H'
@@ -933,7 +938,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
         {
           "principalId": "896b1162-be44-4b28-888a-d01acc1b4271",
           "relativeScope": "<relativeScope>",
-          "roleAssignmentType": "Active",
+          "roleAssignmentType": "Eligible",
           "roleDefinitionIdOrName": "/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168",
           "scheduleInfo": {
             "duration": "PT4H",
@@ -1014,7 +1019,7 @@ param pimRoleAssignments = [
   {
     principalId: '896b1162-be44-4b28-888a-d01acc1b4271'
     relativeScope: '<relativeScope>'
-    roleAssignmentType: 'Active'
+    roleAssignmentType: 'Eligible'
     roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168'
     scheduleInfo: {
       duration: 'PT4H'
