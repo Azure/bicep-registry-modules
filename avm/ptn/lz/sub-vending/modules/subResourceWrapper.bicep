@@ -794,7 +794,7 @@ module createLzRoleAssignmentsRsgsNotSelf 'br/public:avm/ptn/authorization/role-
 module createLzPimActiveRoleAssignmentsSub 'br/public:avm/ptn/authorization/pim-role-assignment:0.1.0' = [
   for assignment in pimRoleAssignmentsSubscription: if (roleAssignmentEnabled && !empty(pimRoleAssignmentsSubscription) && assignment.roleAssignmentType == 'Active') {
     name: take(
-      '${deploymentNames.createLzPimRoleAssignmentsSub}-${uniqueString(assignment.principalId, assignment.roleDefinitionIdOrName, assignment.relativeScope)}',
+      '${deploymentNames.createLzPimRoleAssignmentsSub}-${uniqueString(assignment.principalId, assignment.definition, assignment.relativeScope)}',
       64
     )
     params: {
@@ -804,7 +804,7 @@ module createLzPimActiveRoleAssignmentsSub 'br/public:avm/ptn/authorization/pim-
       }
       principalId: assignment.principalId
       requestType: assignment.?requestType ?? 'AdminAssign'
-      roleDefinitionIdOrName: assignment.roleDefinitionIdOrName
+      roleDefinitionIdOrName: assignment.definition
       justification: assignment.?justification ?? null
       enableTelemetry: enableTelemetry
       ticketInfo: assignment.?ticketInfo ?? null
@@ -832,7 +832,7 @@ module createLzPimActiveRoleAssignmentsSub 'br/public:avm/ptn/authorization/pim-
 module createLzPimEligibleRoleAssignmentsSub 'br/public:avm/ptn/authorization/pim-role-assignment:0.1.0' = [
   for assignment in pimRoleAssignmentsSubscription: if (roleAssignmentEnabled && !empty(pimRoleAssignmentsSubscription) && assignment.roleAssignmentType == 'Eligible') {
     name: take(
-      '${deploymentNames.createLzPimRoleAssignmentsSub}-${uniqueString(assignment.principalId, assignment.roleDefinitionIdOrName, assignment.relativeScope)}',
+      '${deploymentNames.createLzPimRoleAssignmentsSub}-${uniqueString(assignment.principalId, assignment.definition, assignment.relativeScope)}',
       64
     )
     params: {
@@ -843,7 +843,7 @@ module createLzPimEligibleRoleAssignmentsSub 'br/public:avm/ptn/authorization/pi
       subscriptionId: subscriptionId
       principalId: assignment.principalId
       requestType: assignment.?requestType ?? 'AdminAssign'
-      roleDefinitionIdOrName: assignment.roleDefinitionIdOrName
+      roleDefinitionIdOrName: assignment.definition
       justification: assignment.?justification ?? null
       enableTelemetry: enableTelemetry
       ticketInfo: assignment.?ticketInfo ?? null
@@ -873,7 +873,7 @@ module createLzPimEligibleRoleAssignmentsRsgsSelf 'br/public:avm/ptn/authorizati
       createResourceGroupForLzNetworking
     ]
     name: take(
-      '${deploymentNames.createLzPimRoleAssignmentsRsgsSelf}-${uniqueString(assignment.principalId, assignment.roleDefinitionIdOrName, assignment.relativeScope)}',
+      '${deploymentNames.createLzPimRoleAssignmentsRsgsSelf}-${uniqueString(assignment.principalId, assignment.definition, assignment.relativeScope)}',
       64
     )
     params: {
@@ -885,7 +885,7 @@ module createLzPimEligibleRoleAssignmentsRsgsSelf 'br/public:avm/ptn/authorizati
       requestType: assignment.?requestType ?? 'AdminAssign'
       resourceGroupName: split(assignment.relativeScope, '/')[2]
       principalId: assignment.principalId
-      roleDefinitionIdOrName: assignment.roleDefinitionIdOrName
+      roleDefinitionIdOrName: assignment.definition
       justification: assignment.?justification ?? null
       enableTelemetry: enableTelemetry
       ticketInfo: assignment.?ticketInfo ?? null
@@ -915,7 +915,7 @@ module createLzPimActiveRoleAssignmentsRsgsSelf 'br/public:avm/ptn/authorization
       createResourceGroupForLzNetworking
     ]
     name: take(
-      '${deploymentNames.createLzPimRoleAssignmentsRsgsSelf}-${uniqueString(assignment.principalId, assignment.roleDefinitionIdOrName, assignment.relativeScope)}',
+      '${deploymentNames.createLzPimRoleAssignmentsRsgsSelf}-${uniqueString(assignment.principalId, assignment.definition, assignment.relativeScope)}',
       64
     )
     params: {
@@ -927,7 +927,7 @@ module createLzPimActiveRoleAssignmentsRsgsSelf 'br/public:avm/ptn/authorization
       requestType: assignment.?requestType ?? 'AdminAssign'
       resourceGroupName: split(assignment.relativeScope, '/')[2]
       principalId: assignment.principalId
-      roleDefinitionIdOrName: assignment.roleDefinitionIdOrName
+      roleDefinitionIdOrName: assignment.definition
       justification: assignment.?justification ?? null
       enableTelemetry: enableTelemetry
       ticketInfo: assignment.?ticketInfo ?? null
@@ -954,7 +954,7 @@ module createLzPimActiveRoleAssignmentsRsgsSelf 'br/public:avm/ptn/authorization
 module createLzEliglblePimRoleAssignmentsRsgsNotSelf 'br/public:avm/ptn/authorization/pim-role-assignment:0.1.0' = [
   for assignment in pimRoleAssignmentsResourceGroupNotSelf: if (roleAssignmentEnabled && !empty(pimRoleAssignmentsResourceGroupNotSelf) && assignment.roleAssignmentType == 'Eligible') {
     name: take(
-      '${deploymentNames.createLzPimRoleAssignmentsRsgsNotSelf}-${uniqueString(assignment.principalId, assignment.roleDefinitionIdOrName, assignment.relativeScope)}',
+      '${deploymentNames.createLzPimRoleAssignmentsRsgsNotSelf}-${uniqueString(assignment.principalId, assignment.definition, assignment.relativeScope)}',
       64
     )
     params: {
@@ -965,7 +965,7 @@ module createLzEliglblePimRoleAssignmentsRsgsNotSelf 'br/public:avm/ptn/authoriz
       subscriptionId: subscriptionId
       principalId: assignment.principalId
       requestType: assignment.?requestType ?? 'AdminAssign'
-      roleDefinitionIdOrName: assignment.roleDefinitionIdOrName
+      roleDefinitionIdOrName: assignment.definition
       justification: assignment.?justification ?? null
       enableTelemetry: enableTelemetry
       ticketInfo: assignment.?ticketInfo ?? null
@@ -992,7 +992,7 @@ module createLzEliglblePimRoleAssignmentsRsgsNotSelf 'br/public:avm/ptn/authoriz
 module createLzActivePimRoleAssignmentsRsgsNotSelf 'br/public:avm/ptn/authorization/pim-role-assignment:0.1.0' = [
   for assignment in pimRoleAssignmentsResourceGroupNotSelf: if (roleAssignmentEnabled && !empty(pimRoleAssignmentsResourceGroupNotSelf) && assignment.roleAssignmentType == 'Active') {
     name: take(
-      '${deploymentNames.createLzPimRoleAssignmentsRsgsNotSelf}-${uniqueString(assignment.principalId, assignment.roleDefinitionIdOrName, assignment.relativeScope)}',
+      '${deploymentNames.createLzPimRoleAssignmentsRsgsNotSelf}-${uniqueString(assignment.principalId, assignment.definition, assignment.relativeScope)}',
       64
     )
     params: {
@@ -1003,7 +1003,7 @@ module createLzActivePimRoleAssignmentsRsgsNotSelf 'br/public:avm/ptn/authorizat
       subscriptionId: subscriptionId
       principalId: assignment.principalId
       requestType: assignment.?requestType ?? 'AdminAssign'
-      roleDefinitionIdOrName: assignment.roleDefinitionIdOrName
+      roleDefinitionIdOrName: assignment.definition
       justification: assignment.?justification ?? null
       enableTelemetry: enableTelemetry
       ticketInfo: assignment.?ticketInfo ?? null
@@ -1543,7 +1543,7 @@ type pimRoleAssignmentTypeType = {
   principalId: string
 
   @description('Required. The role definition ID or name.')
-  roleDefinitionIdOrName: string
+  definition: string
 }[]
 
 @discriminator('durationType')

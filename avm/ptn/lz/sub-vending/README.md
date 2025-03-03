@@ -885,10 +885,10 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
   params: {
     pimRoleAssignments: [
       {
+        definition: '/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168'
         principalId: '896b1162-be44-4b28-888a-d01acc1b4271'
         relativeScope: '<relativeScope>'
         roleAssignmentType: 'Eligible'
-        roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168'
         scheduleInfo: {
           duration: 'PT4H'
           durationType: 'AfterDuration'
@@ -936,10 +936,10 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     "pimRoleAssignments": {
       "value": [
         {
+          "definition": "/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168",
           "principalId": "896b1162-be44-4b28-888a-d01acc1b4271",
           "relativeScope": "<relativeScope>",
           "roleAssignmentType": "Eligible",
-          "roleDefinitionIdOrName": "/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168",
           "scheduleInfo": {
             "duration": "PT4H",
             "durationType": "AfterDuration",
@@ -1017,10 +1017,10 @@ using 'br/public:avm/ptn/lz/sub-vending:<version>'
 
 param pimRoleAssignments = [
   {
+    definition: '/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168'
     principalId: '896b1162-be44-4b28-888a-d01acc1b4271'
     relativeScope: '<relativeScope>'
     roleAssignmentType: 'Eligible'
-    roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168'
     scheduleInfo: {
       duration: 'PT4H'
       durationType: 'AfterDuration'
@@ -1069,10 +1069,10 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
   params: {
     pimRoleAssignments: [
       {
+        definition: '/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168'
         principalId: '896b1162-be44-4b28-888a-d01acc1b4271'
         relativeScope: ''
         roleAssignmentType: 'Eligible'
-        roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168'
         scheduleInfo: {
           duration: 'PT4H'
           durationType: 'AfterDuration'
@@ -1116,10 +1116,10 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     "pimRoleAssignments": {
       "value": [
         {
+          "definition": "/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168",
           "principalId": "896b1162-be44-4b28-888a-d01acc1b4271",
           "relativeScope": "",
           "roleAssignmentType": "Eligible",
-          "roleDefinitionIdOrName": "/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168",
           "scheduleInfo": {
             "duration": "PT4H",
             "durationType": "AfterDuration",
@@ -1189,10 +1189,10 @@ using 'br/public:avm/ptn/lz/sub-vending:<version>'
 
 param pimRoleAssignments = [
   {
+    definition: '/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168'
     principalId: '896b1162-be44-4b28-888a-d01acc1b4271'
     relativeScope: ''
     roleAssignmentType: 'Eligible'
-    roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168'
     scheduleInfo: {
       duration: 'PT4H'
       durationType: 'AfterDuration'
@@ -1771,10 +1771,10 @@ Supply an array of objects containing the details of the PIM role assignments to
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`definition`](#parameter-pimroleassignmentsdefinition) | string | The role definition ID or name. |
 | [`principalId`](#parameter-pimroleassignmentsprincipalid) | string | The principal ID of the user, group, or service principal. |
 | [`relativeScope`](#parameter-pimroleassignmentsrelativescope) | string | The relative scope of the role assignment. |
 | [`roleAssignmentType`](#parameter-pimroleassignmentsroleassignmenttype) | string | The type of the role assignment. |
-| [`roleDefinitionIdOrName`](#parameter-pimroleassignmentsroledefinitionidorname) | string | The role definition ID or name. |
 | [`scheduleInfo`](#parameter-pimroleassignmentsscheduleinfo) | object | The schedule information for the role assignment. |
 
 **Optional parameters**
@@ -1782,6 +1782,13 @@ Supply an array of objects containing the details of the PIM role assignments to
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`ticketInfo`](#parameter-pimroleassignmentsticketinfo) | object | The ticket information for the role assignment. |
+
+### Parameter: `pimRoleAssignments.definition`
+
+The role definition ID or name.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `pimRoleAssignments.principalId`
 
@@ -1810,13 +1817,6 @@ The type of the role assignment.
     'Eligible'
   ]
   ```
-
-### Parameter: `pimRoleAssignments.roleDefinitionIdOrName`
-
-The role definition ID or name.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `pimRoleAssignments.scheduleInfo`
 

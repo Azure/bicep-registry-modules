@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "14174725469895027393"
+      "templateHash": "9839079918254111835"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -530,7 +530,7 @@
               "description": "Required. The principal ID of the user, group, or service principal."
             }
           },
-          "roleDefinitionIdOrName": {
+          "definition": {
             "type": "string",
             "metadata": {
               "description": "Required. The role definition ID or name."
@@ -1453,7 +1453,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "12485980328983676912"
+              "templateHash": "9536271220540128579"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -2049,7 +2049,7 @@
                       "description": "Required. The principal ID of the user, group, or service principal."
                     }
                   },
-                  "roleDefinitionIdOrName": {
+                  "definition": {
                     "type": "string",
                     "metadata": {
                       "description": "Required. The role definition ID or name."
@@ -9181,7 +9181,7 @@
               "condition": "[and(and(parameters('roleAssignmentEnabled'), not(empty(variables('pimRoleAssignmentsSubscription')))), equals(variables('pimRoleAssignmentsSubscription')[copyIndex()].roleAssignmentType, 'Active'))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[take(format('{0}-{1}', variables('deploymentNames').createLzPimRoleAssignmentsSub, uniqueString(variables('pimRoleAssignmentsSubscription')[copyIndex()].principalId, variables('pimRoleAssignmentsSubscription')[copyIndex()].roleDefinitionIdOrName, variables('pimRoleAssignmentsSubscription')[copyIndex()].relativeScope)), 64)]",
+              "name": "[take(format('{0}-{1}', variables('deploymentNames').createLzPimRoleAssignmentsSub, uniqueString(variables('pimRoleAssignmentsSubscription')[copyIndex()].principalId, variables('pimRoleAssignmentsSubscription')[copyIndex()].definition, variables('pimRoleAssignmentsSubscription')[copyIndex()].relativeScope)), 64)]",
               "location": "[deployment().location]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -9202,7 +9202,7 @@
                     "value": "[coalesce(tryGet(variables('pimRoleAssignmentsSubscription')[copyIndex()], 'requestType'), 'AdminAssign')]"
                   },
                   "roleDefinitionIdOrName": {
-                    "value": "[variables('pimRoleAssignmentsSubscription')[copyIndex()].roleDefinitionIdOrName]"
+                    "value": "[variables('pimRoleAssignmentsSubscription')[copyIndex()].definition]"
                   },
                   "justification": {
                     "value": "[coalesce(tryGet(variables('pimRoleAssignmentsSubscription')[copyIndex()], 'justification'), null())]"
@@ -11001,7 +11001,7 @@
               "condition": "[and(and(parameters('roleAssignmentEnabled'), not(empty(variables('pimRoleAssignmentsSubscription')))), equals(variables('pimRoleAssignmentsSubscription')[copyIndex()].roleAssignmentType, 'Eligible'))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[take(format('{0}-{1}', variables('deploymentNames').createLzPimRoleAssignmentsSub, uniqueString(variables('pimRoleAssignmentsSubscription')[copyIndex()].principalId, variables('pimRoleAssignmentsSubscription')[copyIndex()].roleDefinitionIdOrName, variables('pimRoleAssignmentsSubscription')[copyIndex()].relativeScope)), 64)]",
+              "name": "[take(format('{0}-{1}', variables('deploymentNames').createLzPimRoleAssignmentsSub, uniqueString(variables('pimRoleAssignmentsSubscription')[copyIndex()].principalId, variables('pimRoleAssignmentsSubscription')[copyIndex()].definition, variables('pimRoleAssignmentsSubscription')[copyIndex()].relativeScope)), 64)]",
               "location": "[deployment().location]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -11025,7 +11025,7 @@
                     "value": "[coalesce(tryGet(variables('pimRoleAssignmentsSubscription')[copyIndex()], 'requestType'), 'AdminAssign')]"
                   },
                   "roleDefinitionIdOrName": {
-                    "value": "[variables('pimRoleAssignmentsSubscription')[copyIndex()].roleDefinitionIdOrName]"
+                    "value": "[variables('pimRoleAssignmentsSubscription')[copyIndex()].definition]"
                   },
                   "justification": {
                     "value": "[coalesce(tryGet(variables('pimRoleAssignmentsSubscription')[copyIndex()], 'justification'), null())]"
@@ -12821,7 +12821,7 @@
               "condition": "[and(and(parameters('roleAssignmentEnabled'), not(empty(variables('pimRoleAssignmentsResourceGroupSelf')))), equals(variables('pimRoleAssignmentsResourceGroupSelf')[copyIndex()].roleAssignmentType, 'Eligible'))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[take(format('{0}-{1}', variables('deploymentNames').createLzPimRoleAssignmentsRsgsSelf, uniqueString(variables('pimRoleAssignmentsResourceGroupSelf')[copyIndex()].principalId, variables('pimRoleAssignmentsResourceGroupSelf')[copyIndex()].roleDefinitionIdOrName, variables('pimRoleAssignmentsResourceGroupSelf')[copyIndex()].relativeScope)), 64)]",
+              "name": "[take(format('{0}-{1}', variables('deploymentNames').createLzPimRoleAssignmentsRsgsSelf, uniqueString(variables('pimRoleAssignmentsResourceGroupSelf')[copyIndex()].principalId, variables('pimRoleAssignmentsResourceGroupSelf')[copyIndex()].definition, variables('pimRoleAssignmentsResourceGroupSelf')[copyIndex()].relativeScope)), 64)]",
               "location": "[deployment().location]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -12848,7 +12848,7 @@
                     "value": "[variables('pimRoleAssignmentsResourceGroupSelf')[copyIndex()].principalId]"
                   },
                   "roleDefinitionIdOrName": {
-                    "value": "[variables('pimRoleAssignmentsResourceGroupSelf')[copyIndex()].roleDefinitionIdOrName]"
+                    "value": "[variables('pimRoleAssignmentsResourceGroupSelf')[copyIndex()].definition]"
                   },
                   "justification": {
                     "value": "[coalesce(tryGet(variables('pimRoleAssignmentsResourceGroupSelf')[copyIndex()], 'justification'), null())]"
@@ -14647,7 +14647,7 @@
               "condition": "[and(and(parameters('roleAssignmentEnabled'), not(empty(variables('pimRoleAssignmentsResourceGroupSelf')))), equals(variables('pimRoleAssignmentsResourceGroupSelf')[copyIndex()].roleAssignmentType, 'Active'))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[take(format('{0}-{1}', variables('deploymentNames').createLzPimRoleAssignmentsRsgsSelf, uniqueString(variables('pimRoleAssignmentsResourceGroupSelf')[copyIndex()].principalId, variables('pimRoleAssignmentsResourceGroupSelf')[copyIndex()].roleDefinitionIdOrName, variables('pimRoleAssignmentsResourceGroupSelf')[copyIndex()].relativeScope)), 64)]",
+              "name": "[take(format('{0}-{1}', variables('deploymentNames').createLzPimRoleAssignmentsRsgsSelf, uniqueString(variables('pimRoleAssignmentsResourceGroupSelf')[copyIndex()].principalId, variables('pimRoleAssignmentsResourceGroupSelf')[copyIndex()].definition, variables('pimRoleAssignmentsResourceGroupSelf')[copyIndex()].relativeScope)), 64)]",
               "location": "[deployment().location]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -14674,7 +14674,7 @@
                     "value": "[variables('pimRoleAssignmentsResourceGroupSelf')[copyIndex()].principalId]"
                   },
                   "roleDefinitionIdOrName": {
-                    "value": "[variables('pimRoleAssignmentsResourceGroupSelf')[copyIndex()].roleDefinitionIdOrName]"
+                    "value": "[variables('pimRoleAssignmentsResourceGroupSelf')[copyIndex()].definition]"
                   },
                   "justification": {
                     "value": "[coalesce(tryGet(variables('pimRoleAssignmentsResourceGroupSelf')[copyIndex()], 'justification'), null())]"
@@ -16473,7 +16473,7 @@
               "condition": "[and(and(parameters('roleAssignmentEnabled'), not(empty(variables('pimRoleAssignmentsResourceGroupNotSelf')))), equals(variables('pimRoleAssignmentsResourceGroupNotSelf')[copyIndex()].roleAssignmentType, 'Eligible'))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[take(format('{0}-{1}', variables('deploymentNames').createLzPimRoleAssignmentsRsgsNotSelf, uniqueString(variables('pimRoleAssignmentsResourceGroupNotSelf')[copyIndex()].principalId, variables('pimRoleAssignmentsResourceGroupNotSelf')[copyIndex()].roleDefinitionIdOrName, variables('pimRoleAssignmentsResourceGroupNotSelf')[copyIndex()].relativeScope)), 64)]",
+              "name": "[take(format('{0}-{1}', variables('deploymentNames').createLzPimRoleAssignmentsRsgsNotSelf, uniqueString(variables('pimRoleAssignmentsResourceGroupNotSelf')[copyIndex()].principalId, variables('pimRoleAssignmentsResourceGroupNotSelf')[copyIndex()].definition, variables('pimRoleAssignmentsResourceGroupNotSelf')[copyIndex()].relativeScope)), 64)]",
               "location": "[deployment().location]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -16497,7 +16497,7 @@
                     "value": "[coalesce(tryGet(variables('pimRoleAssignmentsResourceGroupNotSelf')[copyIndex()], 'requestType'), 'AdminAssign')]"
                   },
                   "roleDefinitionIdOrName": {
-                    "value": "[variables('pimRoleAssignmentsResourceGroupNotSelf')[copyIndex()].roleDefinitionIdOrName]"
+                    "value": "[variables('pimRoleAssignmentsResourceGroupNotSelf')[copyIndex()].definition]"
                   },
                   "justification": {
                     "value": "[coalesce(tryGet(variables('pimRoleAssignmentsResourceGroupNotSelf')[copyIndex()], 'justification'), null())]"
@@ -18293,7 +18293,7 @@
               "condition": "[and(and(parameters('roleAssignmentEnabled'), not(empty(variables('pimRoleAssignmentsResourceGroupNotSelf')))), equals(variables('pimRoleAssignmentsResourceGroupNotSelf')[copyIndex()].roleAssignmentType, 'Active'))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[take(format('{0}-{1}', variables('deploymentNames').createLzPimRoleAssignmentsRsgsNotSelf, uniqueString(variables('pimRoleAssignmentsResourceGroupNotSelf')[copyIndex()].principalId, variables('pimRoleAssignmentsResourceGroupNotSelf')[copyIndex()].roleDefinitionIdOrName, variables('pimRoleAssignmentsResourceGroupNotSelf')[copyIndex()].relativeScope)), 64)]",
+              "name": "[take(format('{0}-{1}', variables('deploymentNames').createLzPimRoleAssignmentsRsgsNotSelf, uniqueString(variables('pimRoleAssignmentsResourceGroupNotSelf')[copyIndex()].principalId, variables('pimRoleAssignmentsResourceGroupNotSelf')[copyIndex()].definition, variables('pimRoleAssignmentsResourceGroupNotSelf')[copyIndex()].relativeScope)), 64)]",
               "location": "[deployment().location]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -18317,7 +18317,7 @@
                     "value": "[coalesce(tryGet(variables('pimRoleAssignmentsResourceGroupNotSelf')[copyIndex()], 'requestType'), 'AdminAssign')]"
                   },
                   "roleDefinitionIdOrName": {
-                    "value": "[variables('pimRoleAssignmentsResourceGroupNotSelf')[copyIndex()].roleDefinitionIdOrName]"
+                    "value": "[variables('pimRoleAssignmentsResourceGroupNotSelf')[copyIndex()].definition]"
                   },
                   "justification": {
                     "value": "[coalesce(tryGet(variables('pimRoleAssignmentsResourceGroupNotSelf')[copyIndex()], 'justification'), null())]"
