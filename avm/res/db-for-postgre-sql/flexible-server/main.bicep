@@ -183,6 +183,8 @@ import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-co
 @description('Optional. Configuration details for private endpoints. Used when the desired connectivity mode is \'Public Access\' and \'delegatedSubnetResourceId\' is NOT used.')
 param privateEndpoints privateEndpointSingleServiceType[]?
 
+var enableReferencedModulesTelemetry = false
+
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
@@ -487,7 +489,7 @@ module server_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
-      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',
