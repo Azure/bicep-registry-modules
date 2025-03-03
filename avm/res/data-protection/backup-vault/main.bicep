@@ -20,6 +20,9 @@ import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
+@description('Optional. The soft delete related settings.')
+param softDeleteSettings softDeleteSettingType?
+
 @description('Optional. The immmutability setting state of the backup vault resource.')
 @allowed([
   'Disabled'
@@ -156,6 +159,7 @@ resource backupVault 'Microsoft.DataProtection/backupVaults@2024-04-01' = {
       immutabilitySettings: {
         state: immutabilitySettingState
       }
+      softDeleteSettings: softDeleteSettings
     }
   }
 }
@@ -255,3 +259,13 @@ type roleAssignmentType = {
   @description('Optional. The Resource Id of the delegated managed identity resource.')
   delegatedManagedIdentityResourceId: string?
 }[]?
+
+@export()
+@description('The type for soft delete settings.')
+type softDeleteSettingType = {
+  @description('Required. The soft delete retention period in days.')
+  retentionDurationInDays: int
+
+  @description('Required. The soft delete state.')
+  state: ('AlwaysON' | 'On' | 'Off')
+}
