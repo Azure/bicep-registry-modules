@@ -43,7 +43,7 @@ module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:<versio
   name: 'logicalNetworkDeployment'
   params: {
     // Required parameters
-    customLocationId: '<customLocationId>'
+    customLocationResourceId: '<customLocationResourceId>'
     name: 'ashlnminlogicalnetwork'
     vmSwitchName: 'ConvergedSwitch(management)'
     // Non-required parameters
@@ -66,8 +66,8 @@ module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:<versio
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "customLocationId": {
-      "value": "<customLocationId>"
+    "customLocationResourceId": {
+      "value": "<customLocationResourceId>"
     },
     "name": {
       "value": "ashlnminlogicalnetwork"
@@ -97,7 +97,7 @@ module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:<versio
 using 'br/public:avm/res/azure-stack-hci/logical-network:<version>'
 
 // Required parameters
-param customLocationId = '<customLocationId>'
+param customLocationResourceId = '<customLocationResourceId>'
 param name = 'ashlnminlogicalnetwork'
 param vmSwitchName = 'ConvergedSwitch(management)'
 // Non-required parameters
@@ -122,7 +122,7 @@ module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:<versio
   name: 'logicalNetworkDeployment'
   params: {
     // Required parameters
-    customLocationId: '<customLocationId>'
+    customLocationResourceId: '<customLocationResourceId>'
     name: 'ashlnwaflogicalnetwork'
     vmSwitchName: 'ConvergedSwitch(management)'
     // Non-required parameters
@@ -158,8 +158,8 @@ module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:<versio
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "customLocationId": {
-      "value": "<customLocationId>"
+    "customLocationResourceId": {
+      "value": "<customLocationResourceId>"
     },
     "name": {
       "value": "ashlnwaflogicalnetwork"
@@ -216,7 +216,7 @@ module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:<versio
 using 'br/public:avm/res/azure-stack-hci/logical-network:<version>'
 
 // Required parameters
-param customLocationId = '<customLocationId>'
+param customLocationResourceId = '<customLocationResourceId>'
 param name = 'ashlnwaflogicalnetwork'
 param vmSwitchName = 'ConvergedSwitch(management)'
 // Non-required parameters
@@ -246,7 +246,7 @@ param vlanId = '<vlanId>'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`customLocationId`](#parameter-customlocationid) | string | The custom location ID. |
+| [`customLocationResourceId`](#parameter-customlocationresourceid) | string | The custom location ID. |
 | [`name`](#parameter-name) | string | Name of the resource to create. |
 | [`vmSwitchName`](#parameter-vmswitchname) | string | The VM switch name. |
 
@@ -274,7 +274,7 @@ param vlanId = '<vlanId>'
 | [`tags`](#parameter-tags) | object | Tags for the logical network. |
 | [`vlanId`](#parameter-vlanid) | int | VLan Id for the logical network. |
 
-### Parameter: `customLocationId`
+### Parameter: `customLocationResourceId`
 
 The custom location ID.
 
