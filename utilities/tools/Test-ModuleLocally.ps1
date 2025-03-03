@@ -19,7 +19,7 @@ Optional. A string array that can be specified to run only Pester tests with the
 Optional. A switch parameter that triggers a Pester test for the module
 
 .PARAMETER ValidateOrDeployParameters
-Optional. An object consisting of the components that are required when using the Validate test or DeploymentTest switch parameter.  Mandatory if the DeploymentTest/ValidationTest switches are set.
+Optional. An object consisting of the components that are required when using the Validate test or DeploymentTest switch parameter. Mandatory if the DeploymentTest/ValidationTest switches are set. The e2eIgnore file in test cases will not execute a deployment. With the "IgnoreE2eIgnore" set to $true, the deployment tasks will be executed.
 
 .PARAMETER DeploymentTest
 Optional. A switch parameter that triggers the deployment of the module
@@ -111,6 +111,7 @@ $TestModuleLocallyInput = @{
         SubscriptionId    = '00000000-0000-0000-0000-000000000000'
         ManagementGroupId = '00000000-0000-0000-0000-000000000000'
         RemoveDeployment  = $false
+        IgnoreE2eIgnore   = $true
     }
     AdditionalTokens           = @{
         tenantId = '00000000-0000-0000-0000-000000000000'
@@ -242,7 +243,7 @@ function Test-ModuleLocally {
 
             # Check if the deployment test should be bypassed
             $passCiFilePath = Join-Path $moduleTestFolderPath '.e2eignore'
-            if (Test-Path $passCiFilePath) {
+            if ((Test-Path $passCiFilePath) -and (-not $ValidateOrDeployParameters.IgnoreE2eIgnore -eq $true)) {
                 Write-Output "File '.e2eignore' exists in the folder: $moduleTestFolderPath"
                 # end here, as the test should be bypassed
                 return
