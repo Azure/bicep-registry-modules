@@ -194,13 +194,13 @@ resource customLocation 'Microsoft.ExtendedLocation/customLocations@2021-08-31-p
   ]
 }
 
-module logicalNetwork '../../../../logical-network/main.bicep' = {
+module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:0.1.0' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-logicalNetwork-${serviceShort}'
   scope: resourceGroup
   params: {
     name: '${namePrefix}${serviceShort}logicalnetwork'
     location: enforcedLocation
-    customLocationResourceId: customLocation.id
+    customLocationId: customLocation.id
     vmSwitchName: 'ConvergedSwitch(management)'
     ipAllocationMethod: 'Static'
     addressPrefix: '172.20.0.1/24'
@@ -210,11 +210,6 @@ module logicalNetwork '../../../../logical-network/main.bicep' = {
     dnsServers: ['172.20.0.1']
     routeName: 'default'
     vlanId: null
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
-    }
   }
 }
 

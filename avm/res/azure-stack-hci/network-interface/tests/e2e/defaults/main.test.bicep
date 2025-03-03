@@ -175,13 +175,13 @@ module azlocal 'br/public:avm/res/azure-stack-hci/cluster:0.1.0' = {
   }
 }
 
-module logicalNetwork '../../../../logical-network/main.bicep' = {
+module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:0.1.0' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-logicalNetwork-${serviceShort}'
   scope: resourceGroup
   params: {
     name: '${namePrefix}${serviceShort}logicalnetwork'
     location: enforcedLocation
-    customLocationResourceId: customLocation.id
+    customLocationId: customLocation.id
     vmSwitchName: 'ConvergedSwitch(management)'
     ipAllocationMethod: 'Static'
     addressPrefix: '172.20.0.1/24'
