@@ -886,7 +886,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     pimRoleAssignments: [
       {
         definition: '/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168'
-        justification: 'AVM test.'
+        justification: 'This is a justification from an AVM test.'
         principalId: '896b1162-be44-4b28-888a-d01acc1b4271'
         relativeScope: '<relativeScope>'
         roleAssignmentType: 'Active'
@@ -938,7 +938,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       "value": [
         {
           "definition": "/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168",
-          "justification": "AVM test.",
+          "justification": "This is a justification from an AVM test.",
           "principalId": "896b1162-be44-4b28-888a-d01acc1b4271",
           "relativeScope": "<relativeScope>",
           "roleAssignmentType": "Active",
@@ -1020,7 +1020,7 @@ using 'br/public:avm/ptn/lz/sub-vending:<version>'
 param pimRoleAssignments = [
   {
     definition: '/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168'
-    justification: 'AVM test.'
+    justification: 'This is a justification from an AVM test.'
     principalId: '896b1162-be44-4b28-888a-d01acc1b4271'
     relativeScope: '<relativeScope>'
     roleAssignmentType: 'Active'
@@ -1073,7 +1073,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     pimRoleAssignments: [
       {
         definition: '/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168'
-        justification: 'AVM test.'
+        justification: 'This is a justification from an AVM test.'
         principalId: '896b1162-be44-4b28-888a-d01acc1b4271'
         relativeScope: ''
         roleAssignmentType: 'Eligible'
@@ -1121,7 +1121,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       "value": [
         {
           "definition": "/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168",
-          "justification": "AVM test.",
+          "justification": "This is a justification from an AVM test.",
           "principalId": "896b1162-be44-4b28-888a-d01acc1b4271",
           "relativeScope": "",
           "roleAssignmentType": "Eligible",
@@ -1195,7 +1195,7 @@ using 'br/public:avm/ptn/lz/sub-vending:<version>'
 param pimRoleAssignments = [
   {
     definition: '/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168'
-    justification: 'AVM test.'
+    justification: 'This is a justification from an AVM test.'
     principalId: '896b1162-be44-4b28-888a-d01acc1b4271'
     relativeScope: ''
     roleAssignmentType: 'Eligible'
