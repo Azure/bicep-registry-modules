@@ -1,6 +1,5 @@
 name: "avm.res.azure-stack-hci.virtual-hard-disk"
 
-
 on:
   workflow_dispatch:
     inputs:
@@ -35,15 +34,12 @@ on:
       - "!avm/utilities/pipelines/platform/**"
       - "!*/**/README.md"
 
-
 env:
   modulePath: "avm/res/azure-stack-hci/virtual-hard-disk"
   workflowPath: ".github/workflows/avm.res.azure-stack-hci.virtual-hard-disk.yml"
 
-
 concurrency:
   group: ${{ github.workflow }}
-
 
 jobs:
   ###########################
@@ -72,7 +68,6 @@ jobs:
       moduleTestFilePaths: ${{ steps.get-module-test-file-paths.outputs.moduleTestFilePaths }}
       psRuleModuleTestFilePaths: ${{ steps.get-module-test-file-paths.outputs.psRuleModuleTestFilePaths }}
       modulePath: "${{ env.modulePath }}"
-
 
   ##############################
   #   Call reusable workflow   #
