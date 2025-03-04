@@ -190,14 +190,16 @@ resource backupVault 'Microsoft.DataProtection/backupVaults@2024-04-01' = {
         ? {
             // infrastructureEncryption: infrastructureEncryption
             kekIdentity: {
-              identityId: customerManagedKey.?userAssignedIdentityResourceId
+              // identityId: cMKUserAssignedIdentity.id
               // identityId: !empty(customerManagedKey.?userAssignedIdentityResourceId ?? '')
               // ? cMKUserAssignedIdentity.properties.clientId
               // : null
-              identityType: 'UserAssigned'
+              // identityType: 'UserAssigned'
+              identityType: 'SystemAssigned'
             }
             keyVaultProperties: {
-              keyUri: 'https://dep-avma-kv-dpbvcmk-ou5.vault.azure.net/keys/keyEncryptionKey'
+              keyUri: cMKKeyVault::cMKKey.properties.keyUri
+              // keyUri: 'https://dep-avma-kv-dpbvcmk-ou5.vault.azure.net/keys/keyEncryptionKey'
               // keyUri: !empty(customerManagedKey.?keyVersion)
               //   ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.?keyVersion}'
               //   : cMKKeyVault::cMKKey.properties.keyUriWithVersion
