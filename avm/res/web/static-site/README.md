@@ -19,7 +19,7 @@ This module deploys a Static Web App.
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
-| `Microsoft.Web/staticSites` | [2021-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2021-03-01/staticSites) |
+| `Microsoft.Web/staticSites` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/staticSites) |
 | `Microsoft.Web/staticSites/config` | [2022-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2022-03-01/staticSites/config) |
 | `Microsoft.Web/staticSites/customDomains` | [2022-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2022-03-01/staticSites/customDomains) |
 | `Microsoft.Web/staticSites/linkedBackends` | [2022-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2022-03-01/staticSites/linkedBackends) |
@@ -156,6 +156,7 @@ module staticSite 'br/public:avm/res/web/static-site:<version>' = {
         subnetResourceId: '<subnetResourceId>'
       }
     ]
+    publicNetworkAccess: 'Enabled'
     roleAssignments: [
       {
         name: 'ba1328f0-c7ab-47bf-afbf-0637b9c02bbe'
@@ -272,6 +273,9 @@ module staticSite 'br/public:avm/res/web/static-site:<version>' = {
         }
       ]
     },
+    "publicNetworkAccess": {
+      "value": "Enabled"
+    },
     "roleAssignments": {
       "value": [
         {
@@ -374,6 +378,7 @@ param privateEndpoints = [
     subnetResourceId: '<subnetResourceId>'
   }
 ]
+param publicNetworkAccess = 'Enabled'
 param roleAssignments = [
   {
     name: 'ba1328f0-c7ab-47bf-afbf-0637b9c02bbe'
@@ -619,6 +624,7 @@ param tags = {
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Note, requires the 'sku' to be 'Standard'. |
 | [`provider`](#parameter-provider) | string | The provider that submitted the last deployment to the primary environment of the static site. |
+| [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set. |
 | [`repositoryToken`](#parameter-repositorytoken) | securestring | The Personal Access Token for accessing the GitHub repository. |
 | [`repositoryUrl`](#parameter-repositoryurl) | string | The name of the GitHub repository. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
@@ -1203,6 +1209,22 @@ The provider that submitted the last deployment to the primary environment of th
 - Required: No
 - Type: string
 - Default: `'None'`
+
+### Parameter: `publicNetworkAccess`
+
+Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set.
+
+- Required: No
+- Type: string
+- Default: `''`
+- Allowed:
+  ```Bicep
+  [
+    ''
+    'Disabled'
+    'Enabled'
+  ]
+  ```
 
 ### Parameter: `repositoryToken`
 

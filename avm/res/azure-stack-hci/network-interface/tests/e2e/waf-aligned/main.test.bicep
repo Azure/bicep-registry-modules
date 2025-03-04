@@ -5,10 +5,10 @@ metadata description = 'This instance deploys the module in alignment with the b
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-azurestackhci.logicalnetwork-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-azurestackhci.networkinterface-${serviceShort}-rg'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'ashlnwaf'
+param serviceShort string = 'ashniwaf'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
@@ -22,7 +22,7 @@ param localAdminAndDeploymentUserPass string = newGuid()
 #disable-next-line secure-parameter-default
 param arbDeploymentAppId string = ''
 
-@description('Required. The service principal ID of the service principal used for the Azure Stack HCI Resource Bridge deployment. The service principal must have Contributor role assigned.')
+@description('Required. The service principal ID of the service principal used for the Azure Stack HCI Resource Bridge deployment.')
 @secure()
 #disable-next-line secure-parameter-default
 param arbDeploymentSPObjectId string = ''
@@ -194,12 +194,13 @@ resource customLocation 'Microsoft.ExtendedLocation/customLocations@2021-08-31-p
   ]
 }
 
-module testDeployment '../../../main.bicep' = {
+module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:0.1.0' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-logicalNetwork-${serviceShort}'
   scope: resourceGroup
   params: {
     name: '${namePrefix}${serviceShort}logicalnetwork'
-    customLocationResourceId: customLocation.id
+    location: enforcedLocation
+    customLocationId: customLocation.id
     vmSwitchName: 'ConvergedSwitch(management)'
     ipAllocationMethod: 'Static'
     addressPrefix: '172.20.0.1/24'
@@ -209,6 +210,27 @@ module testDeployment '../../../main.bicep' = {
     dnsServers: ['172.20.0.1']
     routeName: 'default'
     vlanId: null
+  }
+}
+
+module testDeployment '../../../main.bicep' = {
+  name: '${uniqueString(deployment().name, enforcedLocation)}-networkinterface-${serviceShort}'
+  scope: resourceGroup
+  params: {
+    name: '${namePrefix}${serviceShort}networkinterface'
+    location: enforcedLocation
+    customLocationResourceId: customLocation.id
+    ipConfigurations: [
+      {
+        properties: {
+          subnet: {
+            id: logicalNetwork.outputs.resourceId
+          }
+        }
+      }
+    ]
+    dnsServers: ['172.20.0.1']
+    enableTelemetry: true
     tags: {
       'hidden-title': 'This is visible in the resource name'
       Environment: 'Non-Prod'
