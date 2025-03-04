@@ -70,6 +70,13 @@ module testDeployment '../../../main.bicep' = [
       ]
       internal: true
       dnsSuffix: 'contoso.com'
+      certificateObject: {
+        name: 'dep-${namePrefix}-cert-${serviceShort}'
+        certificateKeyVaultProperties: {
+          identityResourceId: nestedDependencies.outputs.managedIdentityResourceId
+          keyVaultUrl: '${nestedDependencies.outputs.keyVaultUri}secrets/${split(nestedDependencies.outputs.certificateSecretUrl, '/')[4]}'
+        }
+      }
       certificateKeyVaultProperties: {
         identityResourceId: nestedDependencies.outputs.managedIdentityResourceId
         keyVaultUrl: '${nestedDependencies.outputs.keyVaultUri}secrets/${split(nestedDependencies.outputs.certificateSecretUrl, '/')[4]}'

@@ -87,6 +87,9 @@ param infrastructureResourceGroupName string = take('ME_${name}', 63)
 @description('Optional. The list of storages to mount on the environment.')
 param storages storageType
 
+@description('Optional. A Managed Environment Certificate.')
+param certificateObject certificateObjectType
+
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
@@ -151,7 +154,7 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09
   scope: resourceGroup(split(logAnalyticsWorkspaceResourceId, '/')[2], split(logAnalyticsWorkspaceResourceId, '/')[4])
 }
 
-resource managedEnvironment 'Microsoft.App/managedEnvironments@2024-02-02-preview' = {
+resource managedEnvironment 'Microsoft.App/managedEnvironments@2024-10-02-preview' = {
   name: name
   location: location
   tags: tags
@@ -256,6 +259,18 @@ resource managedEnvironment_lock 'Microsoft.Authorization/locks@2020-05-01' = if
   scope: managedEnvironment
 }
 
+module managedEnvironment_certificate 'certificates/main.bicep' = if (!empty(certificateObject)) {
+  name: '${uniqueString(deployment().name)}-Managed-Environment-Certificate'
+  params: {
+    name: certificateObject.?name ?? 'cert-${name}'
+    managedEnvironmentName: managedEnvironment.name
+    certificateKeyVaultProperties: certificateKeyVaultProperties
+    certificateType: certificateObject.?certificateType
+    certificateValue: certificateObject.?certificateValue
+    certificatePassword: certificateObject.?certificatePassword
+  }
+}
+
 @description('The name of the resource group the Managed Environment was deployed into.')
 output resourceGroupName string = resourceGroup().name
 
@@ -332,6 +347,23 @@ type certificateKeyVaultPropertiesType = {
 
   @description('Required. A key vault URL referencing the wildcard certificate that will be used for the custom domain.')
   keyVaultUrl: string
+}?
+
+type certificateObjectType = {
+  @description('Optional. The name of the certificate.')
+  name: string?
+
+  @description('Optional. The type of the certificate.')
+  certificateType: ('ServerSSLCertificate' | 'ImagePullTrustedCA')?
+
+  @description('Optional. The value of the certificate. PFX or PEM blob.')
+  certificateValue: string?
+
+  @description('Optional. The password of the certificate.')
+  certificatePassword: string?
+
+  @description('Optional. A key vault reference.')
+  certificateKeyVaultProperties: certificateKeyVaultPropertiesType
 }?
 
 type storageType = {
