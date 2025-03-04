@@ -15,47 +15,45 @@ This Azure Container Apps pattern module represents an Azure Container Apps depl
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.App/containerApps` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2023-05-01/containerApps) |
-| `Microsoft.App/managedEnvironments` | [2023-11-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2023-11-02-preview/managedEnvironments) |
+| `Microsoft.App/containerApps` | [2024-10-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-10-02-preview/containerApps) |
+| `Microsoft.App/managedEnvironments` | [2024-02-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-02-02-preview/managedEnvironments) |
+| `Microsoft.App/managedEnvironments/storages` | [2024-02-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-02-02-preview/managedEnvironments/storages) |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Automanage/configurationProfileAssignments` | [2022-05-04](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automanage/2022-05-04/configurationProfileAssignments) |
-| `Microsoft.Cdn/profiles` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2023-05-01/profiles) |
-| `Microsoft.Cdn/profiles/afdEndpoints` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2023-05-01/profiles/afdEndpoints) |
-| `Microsoft.Cdn/profiles/afdEndpoints/routes` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2023-05-01/profiles/afdEndpoints/routes) |
-| `Microsoft.Cdn/profiles/customDomains` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2023-05-01/profiles/customDomains) |
-| `Microsoft.Cdn/profiles/endpoints` | [2021-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2021-06-01/profiles/endpoints) |
-| `Microsoft.Cdn/profiles/endpoints/origins` | [2021-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2021-06-01/profiles/endpoints/origins) |
-| `Microsoft.Cdn/profiles/originGroups` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2023-05-01/profiles/originGroups) |
-| `Microsoft.Cdn/profiles/originGroups/origins` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2023-05-01/profiles/originGroups/origins) |
-| `Microsoft.Cdn/profiles/ruleSets` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2023-05-01/profiles/ruleSets) |
-| `Microsoft.Cdn/profiles/ruleSets/rules` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2023-05-01/profiles/ruleSets/rules) |
-| `Microsoft.Cdn/profiles/secrets` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2023-05-01/profiles/secrets) |
-| `Microsoft.Compute/virtualMachines` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2023-09-01/virtualMachines) |
+| `Microsoft.Compute/disks` | [2024-03-02](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-03-02/disks) |
+| `Microsoft.Compute/sshPublicKeys` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-07-01/sshPublicKeys) |
+| `Microsoft.Compute/virtualMachines` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-07-01/virtualMachines) |
 | `Microsoft.Compute/virtualMachines/extensions` | [2022-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2022-11-01/virtualMachines/extensions) |
 | `Microsoft.ContainerRegistry/registries` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries) |
+| `Microsoft.ContainerRegistry/registries/agentPools` | [2019-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2019-06-01-preview/registries/agentPools) |
 | `Microsoft.ContainerRegistry/registries/cacheRules` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries/cacheRules) |
+| `Microsoft.ContainerRegistry/registries/credentialSets` | [2023-11-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-11-01-preview/registries/credentialSets) |
 | `Microsoft.ContainerRegistry/registries/replications` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries/replications) |
+| `Microsoft.ContainerRegistry/registries/scopeMaps` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries/scopeMaps) |
 | `Microsoft.ContainerRegistry/registries/webhooks` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries/webhooks) |
 | `Microsoft.DevTestLab/schedules` | [2018-09-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevTestLab/2018-09-15/schedules) |
 | `Microsoft.GuestConfiguration/guestConfigurationAssignments` | [2020-06-25](https://learn.microsoft.com/en-us/azure/templates/Microsoft.GuestConfiguration/2020-06-25/guestConfigurationAssignments) |
 | `Microsoft.Insights/components` | [2020-02-02](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2020-02-02/components) |
 | `microsoft.insights/components/linkedStorageAccounts` | [2020-03-01-preview](https://learn.microsoft.com/en-us/azure/templates/microsoft.insights/2020-03-01-preview/components/linkedStorageAccounts) |
+| `Microsoft.Insights/dataCollectionRuleAssociations` | [2023-03-11](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2023-03-11/dataCollectionRuleAssociations) |
+| `Microsoft.Insights/dataCollectionRules` | [2023-03-11](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2023-03-11/dataCollectionRules) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.KeyVault/vaults` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults) |
 | `Microsoft.KeyVault/vaults/accessPolicies` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/accessPolicies) |
 | `Microsoft.KeyVault/vaults/keys` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/keys) |
-| `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
 | `Microsoft.KeyVault/vaults/secrets` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/secrets) |
+| `Microsoft.KeyVault/vaults/secrets` | [2024-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-04-01-preview/vaults/secrets) |
+| `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
 | `Microsoft.Maintenance/configurationAssignments` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Maintenance/2023-04-01/configurationAssignments) |
 | `Microsoft.Maintenance/maintenanceConfigurations` | [2023-10-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Maintenance/2023-10-01-preview/maintenanceConfigurations) |
+| `Microsoft.ManagedIdentity/userAssignedIdentities` | [2023-07-31-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-07-31-preview/userAssignedIdentities) |
 | `Microsoft.ManagedIdentity/userAssignedIdentities` | [2023-01-31](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-01-31/userAssignedIdentities) |
 | `Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials` | [2023-01-31](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-01-31/userAssignedIdentities/federatedIdentityCredentials) |
-| `Microsoft.Network/applicationGateways` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/applicationGateways) |
-| `Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies` | [2022-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2022-11-01/ApplicationGatewayWebApplicationFirewallPolicies) |
+| `Microsoft.Network/applicationGateways` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/applicationGateways) |
+| `Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-03-01/ApplicationGatewayWebApplicationFirewallPolicies) |
 | `Microsoft.Network/networkInterfaces` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/networkInterfaces) |
 | `Microsoft.Network/networkSecurityGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/networkSecurityGroups) |
-| `Microsoft.Network/networkSecurityGroups/securityRules` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/networkSecurityGroups/securityRules) |
 | `Microsoft.Network/privateDnsZones` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones) |
 | `Microsoft.Network/privateDnsZones/A` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/A) |
 | `Microsoft.Network/privateDnsZones/AAAA` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/AAAA) |
@@ -65,16 +63,15 @@ This Azure Container Apps pattern module represents an Azure Container Apps depl
 | `Microsoft.Network/privateDnsZones/SOA` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/SOA) |
 | `Microsoft.Network/privateDnsZones/SRV` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/SRV) |
 | `Microsoft.Network/privateDnsZones/TXT` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/TXT) |
-| `Microsoft.Network/privateDnsZones/virtualNetworkLinks` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/virtualNetworkLinks) |
-| `Microsoft.Network/privateEndpoints` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups) |
-| `Microsoft.Network/privateLinkServices` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateLinkServices) |
+| `Microsoft.Network/privateDnsZones/virtualNetworkLinks` | [2024-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-06-01/privateDnsZones/virtualNetworkLinks) |
+| `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
 | `Microsoft.Network/publicIPAddresses` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-09-01/publicIPAddresses) |
 | `Microsoft.Network/routeTables` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/routeTables) |
-| `Microsoft.Network/virtualNetworks` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/virtualNetworks) |
-| `Microsoft.Network/virtualNetworks/subnets` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/virtualNetworks/subnets) |
-| `Microsoft.Network/virtualNetworks/subnets` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/virtualNetworks/subnets) |
-| `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/virtualNetworks/virtualNetworkPeerings) |
+| `Microsoft.Network/virtualNetworks` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks) |
+| `Microsoft.Network/virtualNetworks/subnets` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks/subnets) |
+| `Microsoft.Network/virtualNetworks/subnets` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualNetworks/subnets) |
+| `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks/virtualNetworkPeerings) |
 | `Microsoft.OperationalInsights/workspaces` | [2022-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2022-10-01/workspaces) |
 | `Microsoft.OperationalInsights/workspaces/dataExports` | [2020-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2020-08-01/workspaces/dataExports) |
 | `Microsoft.OperationalInsights/workspaces/dataSources` | [2020-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2020-08-01/workspaces/dataSources) |
@@ -85,7 +82,21 @@ This Azure Container Apps pattern module represents an Azure Container Apps depl
 | `Microsoft.OperationalInsights/workspaces/tables` | [2022-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2022-10-01/workspaces/tables) |
 | `Microsoft.OperationsManagement/solutions` | [2015-11-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationsManagement/2015-11-01-preview/solutions) |
 | `Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2023-01-01/vaults/backupFabrics/protectionContainers/protectedItems) |
+| `Microsoft.Resources/deploymentScripts` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2023-08-01/deploymentScripts) |
 | `Microsoft.Resources/resourceGroups` | [2021-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2021-04-01/resourceGroups) |
+| `Microsoft.SecurityInsights/onboardingStates` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.SecurityInsights/2024-03-01/onboardingStates) |
+| `Microsoft.Storage/storageAccounts` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-05-01/storageAccounts) |
+| `Microsoft.Storage/storageAccounts/blobServices` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts/blobServices) |
+| `Microsoft.Storage/storageAccounts/blobServices/containers` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts/blobServices/containers) |
+| `Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts/blobServices/containers/immutabilityPolicies) |
+| `Microsoft.Storage/storageAccounts/fileServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/fileServices) |
+| `Microsoft.Storage/storageAccounts/fileServices/shares` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-01-01/storageAccounts/fileServices/shares) |
+| `Microsoft.Storage/storageAccounts/localUsers` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/localUsers) |
+| `Microsoft.Storage/storageAccounts/managementPolicies` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-01-01/storageAccounts/managementPolicies) |
+| `Microsoft.Storage/storageAccounts/queueServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/queueServices) |
+| `Microsoft.Storage/storageAccounts/queueServices/queues` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/queueServices/queues) |
+| `Microsoft.Storage/storageAccounts/tableServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/tableServices) |
+| `Microsoft.Storage/storageAccounts/tableServices/tables` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/tableServices/tables) |
 
 ## Usage examples
 
@@ -113,19 +124,18 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
   name: 'hostingEnvironmentDeployment'
   params: {
     // Required parameters
-    applicationGatewayCertificateKeyName: 'appgwcert'
+    applicationGatewayCertificateKeyName: '<applicationGatewayCertificateKeyName>'
+    deploymentSubnetAddressPrefix: '10.1.4.0/24'
     enableApplicationInsights: true
     enableDaprInstrumentation: false
     spokeApplicationGatewaySubnetAddressPrefix: '10.1.3.0/24'
     spokeInfraSubnetAddressPrefix: '10.1.0.0/23'
     spokePrivateEndpointsSubnetAddressPrefix: '10.1.2.0/27'
     spokeVNetAddressPrefixes: [
-      '10.1.0.0/22'
+      '10.1.0.0/21'
     ]
     vmAdminPassword: '<vmAdminPassword>'
-    vmAdminUsername: 'vmadmin'
     vmJumpBoxSubnetAddressPrefix: '10.1.2.32/27'
-    vmLinuxSshAuthorizedKey: 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC9QWdPia7CYYWWX/+eRrLKzGtQ+tjelZfDlbHy/Dg98 konstantinospantos@KonstaninossMBP.localdomain'
     vmSize: 'Standard_B1s'
     // Non-required parameters
     location: '<location>'
@@ -153,7 +163,10 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
   "parameters": {
     // Required parameters
     "applicationGatewayCertificateKeyName": {
-      "value": "appgwcert"
+      "value": "<applicationGatewayCertificateKeyName>"
+    },
+    "deploymentSubnetAddressPrefix": {
+      "value": "10.1.4.0/24"
     },
     "enableApplicationInsights": {
       "value": true
@@ -172,20 +185,14 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
     },
     "spokeVNetAddressPrefixes": {
       "value": [
-        "10.1.0.0/22"
+        "10.1.0.0/21"
       ]
     },
     "vmAdminPassword": {
       "value": "<vmAdminPassword>"
     },
-    "vmAdminUsername": {
-      "value": "vmadmin"
-    },
     "vmJumpBoxSubnetAddressPrefix": {
       "value": "10.1.2.32/27"
-    },
-    "vmLinuxSshAuthorizedKey": {
-      "value": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC9QWdPia7CYYWWX/+eRrLKzGtQ+tjelZfDlbHy/Dg98 konstantinospantos@KonstaninossMBP.localdomain"
     },
     "vmSize": {
       "value": "Standard_B1s"
@@ -223,19 +230,18 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
 using 'br/public:avm/ptn/aca-lza/hosting-environment:<version>'
 
 // Required parameters
-param applicationGatewayCertificateKeyName = 'appgwcert'
+param applicationGatewayCertificateKeyName = '<applicationGatewayCertificateKeyName>'
+param deploymentSubnetAddressPrefix = '10.1.4.0/24'
 param enableApplicationInsights = true
 param enableDaprInstrumentation = false
 param spokeApplicationGatewaySubnetAddressPrefix = '10.1.3.0/24'
 param spokeInfraSubnetAddressPrefix = '10.1.0.0/23'
 param spokePrivateEndpointsSubnetAddressPrefix = '10.1.2.0/27'
 param spokeVNetAddressPrefixes = [
-  '10.1.0.0/22'
+  '10.1.0.0/21'
 ]
 param vmAdminPassword = '<vmAdminPassword>'
-param vmAdminUsername = 'vmadmin'
 param vmJumpBoxSubnetAddressPrefix = '10.1.2.32/27'
-param vmLinuxSshAuthorizedKey = 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC9QWdPia7CYYWWX/+eRrLKzGtQ+tjelZfDlbHy/Dg98 konstantinospantos@KonstaninossMBP.localdomain'
 param vmSize = 'Standard_B1s'
 // Non-required parameters
 param location = '<location>'
@@ -264,19 +270,18 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
   name: 'hostingEnvironmentDeployment'
   params: {
     // Required parameters
-    applicationGatewayCertificateKeyName: 'appgwcert'
+    applicationGatewayCertificateKeyName: '<applicationGatewayCertificateKeyName>'
+    deploymentSubnetAddressPrefix: '10.1.4.0/24'
     enableApplicationInsights: true
     enableDaprInstrumentation: false
     spokeApplicationGatewaySubnetAddressPrefix: '10.1.3.0/24'
     spokeInfraSubnetAddressPrefix: '10.1.0.0/23'
     spokePrivateEndpointsSubnetAddressPrefix: '10.1.2.0/27'
     spokeVNetAddressPrefixes: [
-      '10.1.0.0/22'
+      '10.1.0.0/21'
     ]
     vmAdminPassword: '<vmAdminPassword>'
-    vmAdminUsername: 'vmadmin'
     vmJumpBoxSubnetAddressPrefix: '10.1.2.32/27'
-    vmLinuxSshAuthorizedKey: 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC9QWdPia7CYYWWX/+eRrLKzGtQ+tjelZfDlbHy/Dg98 konstantinospantos@KonstaninossMBP.localdomain'
     vmSize: 'Standard_B1s'
     // Non-required parameters
     deployZoneRedundantResources: true
@@ -311,7 +316,10 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
   "parameters": {
     // Required parameters
     "applicationGatewayCertificateKeyName": {
-      "value": "appgwcert"
+      "value": "<applicationGatewayCertificateKeyName>"
+    },
+    "deploymentSubnetAddressPrefix": {
+      "value": "10.1.4.0/24"
     },
     "enableApplicationInsights": {
       "value": true
@@ -330,20 +338,14 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
     },
     "spokeVNetAddressPrefixes": {
       "value": [
-        "10.1.0.0/22"
+        "10.1.0.0/21"
       ]
     },
     "vmAdminPassword": {
       "value": "<vmAdminPassword>"
     },
-    "vmAdminUsername": {
-      "value": "vmadmin"
-    },
     "vmJumpBoxSubnetAddressPrefix": {
       "value": "10.1.2.32/27"
-    },
-    "vmLinuxSshAuthorizedKey": {
-      "value": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC9QWdPia7CYYWWX/+eRrLKzGtQ+tjelZfDlbHy/Dg98 konstantinospantos@KonstaninossMBP.localdomain"
     },
     "vmSize": {
       "value": "Standard_B1s"
@@ -402,19 +404,18 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
 using 'br/public:avm/ptn/aca-lza/hosting-environment:<version>'
 
 // Required parameters
-param applicationGatewayCertificateKeyName = 'appgwcert'
+param applicationGatewayCertificateKeyName = '<applicationGatewayCertificateKeyName>'
+param deploymentSubnetAddressPrefix = '10.1.4.0/24'
 param enableApplicationInsights = true
 param enableDaprInstrumentation = false
 param spokeApplicationGatewaySubnetAddressPrefix = '10.1.3.0/24'
 param spokeInfraSubnetAddressPrefix = '10.1.0.0/23'
 param spokePrivateEndpointsSubnetAddressPrefix = '10.1.2.0/27'
 param spokeVNetAddressPrefixes = [
-  '10.1.0.0/22'
+  '10.1.0.0/21'
 ]
 param vmAdminPassword = '<vmAdminPassword>'
-param vmAdminUsername = 'vmadmin'
 param vmJumpBoxSubnetAddressPrefix = '10.1.2.32/27'
-param vmLinuxSshAuthorizedKey = 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC9QWdPia7CYYWWX/+eRrLKzGtQ+tjelZfDlbHy/Dg98 konstantinospantos@KonstaninossMBP.localdomain'
 param vmSize = 'Standard_B1s'
 // Non-required parameters
 param deployZoneRedundantResources = true
@@ -451,18 +452,17 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
   params: {
     // Required parameters
     applicationGatewayCertificateKeyName: 'appgwcert'
+    deploymentSubnetAddressPrefix: '10.1.4.0/24'
     enableApplicationInsights: true
     enableDaprInstrumentation: false
     spokeApplicationGatewaySubnetAddressPrefix: '10.1.3.0/24'
     spokeInfraSubnetAddressPrefix: '10.1.0.0/23'
     spokePrivateEndpointsSubnetAddressPrefix: '10.1.2.0/27'
     spokeVNetAddressPrefixes: [
-      '10.1.0.0/22'
+      '10.1.0.0/21'
     ]
     vmAdminPassword: '<vmAdminPassword>'
-    vmAdminUsername: 'vmadmin'
     vmJumpBoxSubnetAddressPrefix: '10.1.2.32/27'
-    vmLinuxSshAuthorizedKey: 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC9QWdPia7CYYWWX/+eRrLKzGtQ+tjelZfDlbHy/Dg98 konstantinospantos@KonstaninossMBP.localdomain'
     vmSize: 'Standard_B1s'
     // Non-required parameters
     deployZoneRedundantResources: true
@@ -497,6 +497,9 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
     "applicationGatewayCertificateKeyName": {
       "value": "appgwcert"
     },
+    "deploymentSubnetAddressPrefix": {
+      "value": "10.1.4.0/24"
+    },
     "enableApplicationInsights": {
       "value": true
     },
@@ -514,20 +517,14 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
     },
     "spokeVNetAddressPrefixes": {
       "value": [
-        "10.1.0.0/22"
+        "10.1.0.0/21"
       ]
     },
     "vmAdminPassword": {
       "value": "<vmAdminPassword>"
     },
-    "vmAdminUsername": {
-      "value": "vmadmin"
-    },
     "vmJumpBoxSubnetAddressPrefix": {
       "value": "10.1.2.32/27"
-    },
-    "vmLinuxSshAuthorizedKey": {
-      "value": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC9QWdPia7CYYWWX/+eRrLKzGtQ+tjelZfDlbHy/Dg98 konstantinospantos@KonstaninossMBP.localdomain"
     },
     "vmSize": {
       "value": "Standard_B1s"
@@ -581,18 +578,17 @@ using 'br/public:avm/ptn/aca-lza/hosting-environment:<version>'
 
 // Required parameters
 param applicationGatewayCertificateKeyName = 'appgwcert'
+param deploymentSubnetAddressPrefix = '10.1.4.0/24'
 param enableApplicationInsights = true
 param enableDaprInstrumentation = false
 param spokeApplicationGatewaySubnetAddressPrefix = '10.1.3.0/24'
 param spokeInfraSubnetAddressPrefix = '10.1.0.0/23'
 param spokePrivateEndpointsSubnetAddressPrefix = '10.1.2.0/27'
 param spokeVNetAddressPrefixes = [
-  '10.1.0.0/22'
+  '10.1.0.0/21'
 ]
 param vmAdminPassword = '<vmAdminPassword>'
-param vmAdminUsername = 'vmadmin'
 param vmJumpBoxSubnetAddressPrefix = '10.1.2.32/27'
-param vmLinuxSshAuthorizedKey = 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC9QWdPia7CYYWWX/+eRrLKzGtQ+tjelZfDlbHy/Dg98 konstantinospantos@KonstaninossMBP.localdomain'
 param vmSize = 'Standard_B1s'
 // Non-required parameters
 param deployZoneRedundantResources = true
@@ -619,6 +615,7 @@ param workloadName = '<workloadName>'
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`applicationGatewayCertificateKeyName`](#parameter-applicationgatewaycertificatekeyname) | string | The name of the certificate key to use for Application Gateway certificate. |
+| [`deploymentSubnetAddressPrefix`](#parameter-deploymentsubnetaddressprefix) | string | The CIDR to use for Deployment scripts subnet. |
 | [`enableApplicationInsights`](#parameter-enableapplicationinsights) | bool | Enable or disable the createion of Application Insights. |
 | [`enableDaprInstrumentation`](#parameter-enabledaprinstrumentation) | bool | Enable or disable Dapr Application Instrumentation Key used for Dapr telemetry. If Application Insights is not enabled, this parameter is ignored. |
 | [`spokeApplicationGatewaySubnetAddressPrefix`](#parameter-spokeapplicationgatewaysubnetaddressprefix) | string | CIDR of the Spoke Application Gateway Subnet. |
@@ -626,17 +623,16 @@ param workloadName = '<workloadName>'
 | [`spokePrivateEndpointsSubnetAddressPrefix`](#parameter-spokeprivateendpointssubnetaddressprefix) | string | CIDR of the Spoke Private Endpoints Subnet. |
 | [`spokeVNetAddressPrefixes`](#parameter-spokevnetaddressprefixes) | array | CIDR of the Spoke Virtual Network. |
 | [`vmAdminPassword`](#parameter-vmadminpassword) | securestring | The password to use for the virtual machine. |
-| [`vmAdminUsername`](#parameter-vmadminusername) | string | The username to use for the virtual machine. |
 | [`vmJumpBoxSubnetAddressPrefix`](#parameter-vmjumpboxsubnetaddressprefix) | string | CIDR to use for the virtual machine subnet. |
-| [`vmLinuxSshAuthorizedKey`](#parameter-vmlinuxsshauthorizedkey) | securestring | The SSH public key to use for the virtual machine. |
 | [`vmSize`](#parameter-vmsize) | string | The size of the virtual machine to create. See https://learn.microsoft.com/azure/virtual-machines/sizes for more information. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`applicationGatewayBackendFqdn`](#parameter-applicationgatewaybackendfqdn) | string | The FQDN of the backend to use for the Application Gateway. Default is empty. |
 | [`applicationGatewayFqdn`](#parameter-applicationgatewayfqdn) | string | The FQDN of the Application Gateway. Required and must match if the TLS Certificate is provided. Default is empty. |
-| [`base64Certificate`](#parameter-base64certificate) | string | The base64 encoded certificate to use for Application Gateway certificate. If this is provided, the certificate will be added to the Key Vault and assigned to the Application Gateway listener. Default is empty. |
+| [`base64Certificate`](#parameter-base64certificate) | securestring | The base64 encoded certificate to use for Application Gateway certificate. When not provided a self signed one will be generated, the certificate will be added to the Key Vault and assigned to the Application Gateway listener. |
 | [`bastionResourceId`](#parameter-bastionresourceid) | string | The resource ID of the bastion host. If set, the spoke virtual network will be peered with the hub virtual network and the bastion host will be allowed to connect to the jump box. Default is empty. |
 | [`deploySampleApplication`](#parameter-deploysampleapplication) | bool | Deploy sample application to the container apps environment. Default is false. |
 | [`deployZoneRedundantResources`](#parameter-deployzoneredundantresources) | bool | Default value is true. If true, any resources that support AZ will be deployed in all three AZ. However if the selected region is not supporting AZ, this parameter needs to be set to false. Default is true. |
@@ -647,16 +643,25 @@ param workloadName = '<workloadName>'
 | [`hubVirtualNetworkResourceId`](#parameter-hubvirtualnetworkresourceid) | string | The resource ID of the hub virtual network. If set, the spoke virtual network will be peered with the hub virtual network. Default is empty. |
 | [`location`](#parameter-location) | string | The location of the Azure Container Apps deployment. Default is the location of the deployment location. |
 | [`networkApplianceIpAddress`](#parameter-networkapplianceipaddress) | string | If set, the spoke virtual network will be peered with the hub virtual network and egres traffic will be routed through the network appliance. Default is empty. |
+| [`routeSpokeTrafficInternally`](#parameter-routespoketrafficinternally) | bool | Define whether to route spoke-internal traffic within the spoke network. If false, traffic will be sent to the hub network. Default is false. |
 | [`spokeResourceGroupName`](#parameter-spokeresourcegroupname) | string | The name of the resource group to create the resources in. If set, it overrides the name generated by the template. Default is empty. |
-| [`storageAccountType`](#parameter-storageaccounttype) | string | The storage account type to use for the jump box. Defaults to Standard_LRS. |
+| [`storageAccountType`](#parameter-storageaccounttype) | string | The storage account type to use for the jump box. Defaults to `Standard_LRS`. |
 | [`tags`](#parameter-tags) | object | Tags related to the Azure Container Apps deployment. Default is empty. |
 | [`vmAuthenticationType`](#parameter-vmauthenticationtype) | string | Type of authentication to use on the Virtual Machine. SSH key is recommended. Default is "password". |
 | [`vmJumpboxOSType`](#parameter-vmjumpboxostype) | string | The operating system type of the virtual machine. Default is "none" which results in no VM deployment. Default is "none". |
+| [`vmLinuxSshAuthorizedKey`](#parameter-vmlinuxsshauthorizedkey) | securestring | The SSH public key to use for the virtual machine. If not provided one will be generated. Default is empty. |
 | [`workloadName`](#parameter-workloadname) | string | The name of the workload that is being deployed. Up to 10 characters long. |
 
 ### Parameter: `applicationGatewayCertificateKeyName`
 
 The name of the certificate key to use for Application Gateway certificate.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `deploymentSubnetAddressPrefix`
+
+The CIDR to use for Deployment scripts subnet.
 
 - Required: Yes
 - Type: string
@@ -710,13 +715,6 @@ The password to use for the virtual machine.
 - Required: Yes
 - Type: securestring
 
-### Parameter: `vmAdminUsername`
-
-The username to use for the virtual machine.
-
-- Required: Yes
-- Type: string
-
 ### Parameter: `vmJumpBoxSubnetAddressPrefix`
 
 CIDR to use for the virtual machine subnet.
@@ -724,19 +722,20 @@ CIDR to use for the virtual machine subnet.
 - Required: Yes
 - Type: string
 
-### Parameter: `vmLinuxSshAuthorizedKey`
-
-The SSH public key to use for the virtual machine.
-
-- Required: Yes
-- Type: securestring
-
 ### Parameter: `vmSize`
 
 The size of the virtual machine to create. See https://learn.microsoft.com/azure/virtual-machines/sizes for more information.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `applicationGatewayBackendFqdn`
+
+The FQDN of the backend to use for the Application Gateway. Default is empty.
+
+- Required: No
+- Type: string
+- Default: `''`
 
 ### Parameter: `applicationGatewayFqdn`
 
@@ -748,10 +747,10 @@ The FQDN of the Application Gateway. Required and must match if the TLS Certific
 
 ### Parameter: `base64Certificate`
 
-The base64 encoded certificate to use for Application Gateway certificate. If this is provided, the certificate will be added to the Key Vault and assigned to the Application Gateway listener. Default is empty.
+The base64 encoded certificate to use for Application Gateway certificate. When not provided a self signed one will be generated, the certificate will be added to the Key Vault and assigned to the Application Gateway listener.
 
 - Required: No
-- Type: string
+- Type: securestring
 - Default: `''`
 
 ### Parameter: `bastionResourceId`
@@ -814,6 +813,7 @@ Specify the way container apps is going to be exposed. Options are applicationGa
   [
     'applicationGateway'
     'frontDoor'
+    'none'
   ]
   ```
 
@@ -841,6 +841,14 @@ If set, the spoke virtual network will be peered with the hub virtual network an
 - Type: string
 - Default: `''`
 
+### Parameter: `routeSpokeTrafficInternally`
+
+Define whether to route spoke-internal traffic within the spoke network. If false, traffic will be sent to the hub network. Default is false.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
 ### Parameter: `spokeResourceGroupName`
 
 The name of the resource group to create the resources in. If set, it overrides the name generated by the template. Default is empty.
@@ -851,7 +859,7 @@ The name of the resource group to create the resources in. If set, it overrides 
 
 ### Parameter: `storageAccountType`
 
-The storage account type to use for the jump box. Defaults to Standard_LRS.
+The storage account type to use for the jump box. Defaults to `Standard_LRS`.
 
 - Required: No
 - Type: string
@@ -896,6 +904,14 @@ The operating system type of the virtual machine. Default is "none" which result
   ]
   ```
 
+### Parameter: `vmLinuxSshAuthorizedKey`
+
+The SSH public key to use for the virtual machine. If not provided one will be generated. Default is empty.
+
+- Required: No
+- Type: securestring
+- Default: `''`
+
 ### Parameter: `workloadName`
 
 The name of the workload that is being deployed. Up to 10 characters long.
@@ -914,19 +930,22 @@ The name of the workload that is being deployed. Up to 10 characters long.
 | `applicationInsightsName` | string | The name of application Insights instance. |
 | `containerAppsEnvironmentName` | string | The name of the container apps environment. |
 | `containerAppsEnvironmentResourceId` | string | The resource ID of the container apps environment. |
+| `containerAppsEnvironmentWorkloadProfileNames` | array | The available workload profile names of the container apps environment. |
+| `containerRegistryAgentPoolName` | string | The name of the internal agent pool for the container registry. |
 | `containerRegistryLoginServer` | string | The name of the container registry login server. |
 | `containerRegistryName` | string | The name of the container registry. |
 | `containerRegistryResourceId` | string | The resource ID of the container registry. |
 | `containerRegistryUserAssignedIdentityResourceId` | string | The resource ID of the user assigned managed identity for the container registry to be able to pull images from it. |
 | `keyVaultName` | string | The name of the Azure key vault. |
 | `keyVaultResourceId` | string | The resource ID of the key vault. |
+| `keyVaultUri` | string | The keyvault URI endpoint. |
 | `logAnalyticsWorkspaceResourceId` | string | The resource ID of the Log Analytics workspace created in the spoke vnet. |
+| `resourceGroupName` | string | The name of the created resource group. |
 | `spokeApplicationGatewaySubnetName` | string | The name of the Spoke Application Gateway Subnet.  If "spokeApplicationGatewaySubnetAddressPrefix" is empty, the subnet will not be created and the value returned is empty. |
 | `spokeApplicationGatewaySubnetResourceId` | string | The resource ID of the Spoke Application Gateway Subnet. If "spokeApplicationGatewaySubnetAddressPrefix" is empty, the subnet will not be created and the value returned is empty. |
 | `spokeInfraSubnetName` | string | The name of the Spoke Infrastructure Subnet. |
 | `spokeInfraSubnetResourceId` | string | The resource ID of the Spoke Infrastructure Subnet. |
 | `spokePrivateEndpointsSubnetName` | string | The name of the Spoke Private Endpoints Subnet. |
-| `spokeResourceGroupName` | string | The name of the Spoke resource group. |
 | `spokeVnetName` | string | The name of the Spoke Virtual Network. |
 | `spokeVNetResourceId` | string | The  resource ID of the Spoke Virtual Network. |
 | `vmJumpBoxName` | string | The name of the jump box virtual machine. |
@@ -937,23 +956,22 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/app/container-app:0.4.0` | Remote reference |
-| `br/public:avm/res/app/managed-environment:0.5.1` | Remote reference |
-| `br/public:avm/res/cdn/profile:0.3.0` | Remote reference |
-| `br/public:avm/res/compute/virtual-machine:0.5.1` | Remote reference |
-| `br/public:avm/res/container-registry/registry:0.3.0` | Remote reference |
-| `br/public:avm/res/insights/component:0.3.1` | Remote reference |
-| `br/public:avm/res/key-vault/vault:0.6.1` | Remote reference |
-| `br/public:avm/res/managed-identity/user-assigned-identity:0.2.1` | Remote reference |
-| `br/public:avm/res/network/application-gateway-web-application-firewall-policy:0.1.0` | Remote reference |
-| `br/public:avm/res/network/application-gateway:0.1.0` | Remote reference |
-| `br/public:avm/res/network/network-security-group:0.2.0` | Remote reference |
-| `br/public:avm/res/network/private-dns-zone:0.3.0` | Remote reference |
-| `br/public:avm/res/network/public-ip-address:0.4.1` | Remote reference |
-| `br/public:avm/res/network/route-table:0.2.2` | Remote reference |
-| `br/public:avm/res/network/virtual-network:0.1.6` | Remote reference |
-| `br/public:avm/res/operational-insights/workspace:0.3.4` | Remote reference |
-| `br/public:avm/res/resources/resource-group:0.2.3` | Remote reference |
+| `br/public:avm/res/app/container-app:0.12.0` | Remote reference |
+| `br/public:avm/res/app/managed-environment:0.8.1` | Remote reference |
+| `br/public:avm/res/compute/virtual-machine:0.11.0` | Remote reference |
+| `br/public:avm/res/container-registry/registry:0.6.0` | Remote reference |
+| `br/public:avm/res/insights/component:0.4.2` | Remote reference |
+| `br/public:avm/res/key-vault/vault:0.11.1` | Remote reference |
+| `br/public:avm/res/managed-identity/user-assigned-identity:0.4.0` | Remote reference |
+| `br/public:avm/res/network/application-gateway-web-application-firewall-policy:0.2.0` | Remote reference |
+| `br/public:avm/res/network/network-security-group:0.5.0` | Remote reference |
+| `br/public:avm/res/network/private-dns-zone:0.7.0` | Remote reference |
+| `br/public:avm/res/network/public-ip-address:0.7.1` | Remote reference |
+| `br/public:avm/res/network/route-table:0.4.0` | Remote reference |
+| `br/public:avm/res/network/virtual-network:0.5.2` | Remote reference |
+| `br/public:avm/res/operational-insights/workspace:0.9.1` | Remote reference |
+| `br/public:avm/res/resources/resource-group:0.4.0` | Remote reference |
+| `br/public:avm/res/storage/storage-account:0.15.0` | Remote reference |
 
 ## Data Collection
 

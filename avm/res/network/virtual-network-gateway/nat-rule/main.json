@@ -4,12 +4,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "15500017864202979057"
+      "version": "0.33.93.31351",
+      "templateHash": "10378291342967831694"
     },
     "name": "VPN Gateway NAT Rules",
-    "description": "This module deploys a Virtual Network Gateway NAT Rule.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Virtual Network Gateway NAT Rule."
   },
   "parameters": {
     "name": {

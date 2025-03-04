@@ -1,6 +1,5 @@
 metadata name = '<Add module name>'
 metadata description = '<Add description>'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the resource to create.')
 param name string

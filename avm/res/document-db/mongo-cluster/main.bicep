@@ -2,7 +2,6 @@ metadata name = 'Azure Cosmos DB MongoDB vCore cluster'
 metadata description = '''This module deploys a Azure Cosmos DB MongoDB vCore cluster.
 
 **Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case.'''
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the Azure Cosmos DB MongoDB vCore cluster.')
 param name string
@@ -60,6 +59,8 @@ param sku string
 
 @description('Required. Disk storage size for the node group in GB.')
 param storage int
+
+var enableReferencedModulesTelemetry = false
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
@@ -264,7 +265,7 @@ module mongoCluster_privateEndpoints 'br/public:avm/res/network/private-endpoint
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
-      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',

@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "12209511562816440708"
+      "templateHash": "18011765298164773624"
     },
     "name": "AI Platform Baseline",
-    "description": "This module provides a secure and scalable environment for deploying AI applications on Azure.\nThe module encompasses all essential components required for building, managing, and observing AI solutions, including a machine learning workspace, observability tools, and necessary data management services.\nBy integrating with Microsoft Entra ID for secure identity management and utilizing private endpoints for services like Key Vault and Blob Storage, the module ensures secure communication and data access.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module provides a secure and scalable environment for deploying AI applications on Azure.\nThe module encompasses all essential components required for building, managing, and observing AI solutions, including a machine learning workspace, observability tools, and necessary data management services.\nBy integrating with Microsoft Entra ID for secure identity management and utilizing private endpoints for services like Key Vault and Blob Storage, the module ensures secure communication and data access."
   },
   "definitions": {
     "logAnalyticsConfigurationType": {
@@ -25,7 +24,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for a log analytics configuration."
       }
     },
     "keyVaultConfigurationType": {
@@ -47,7 +47,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for a key vault configuration."
       }
     },
     "storageAccountConfigurationType": {
@@ -86,7 +87,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for a storage account configuration."
       }
     },
     "containerRegistryConfigurationType": {
@@ -112,7 +114,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for a container registry configuration."
       }
     },
     "applicationInsightsConfigurationType": {
@@ -127,7 +130,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for an application insights configuration."
       }
     },
     "workspaceConfigurationType": {
@@ -174,7 +178,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for a workspace configuration."
       }
     },
     "virtualNetworkSubnetConfigurationType": {
@@ -201,6 +206,9 @@
             "description": "Optional. The resource ID of an existing network security group to associate with the subnet."
           }
         }
+      },
+      "metadata": {
+        "description": "The type for a virtual network subnet configuration."
       }
     },
     "virtualNetworkConfigurationType": {
@@ -236,7 +244,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for a virtual network configuration."
       }
     },
     "bastionConfigurationType": {
@@ -325,10 +334,11 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for a bastion configuration."
       }
     },
-    "nicConfigurationConfigurationType": {
+    "nicConfigurationType": {
       "type": "object",
       "properties": {
         "name": {
@@ -363,6 +373,9 @@
             "description": "Optional. The resource ID of an existing network security group to associate with the network interface."
           }
         }
+      },
+      "metadata": {
+        "description": "The type for a NIC configuration."
       }
     },
     "osDiskType": {
@@ -448,6 +461,9 @@
             "description": "Required. The managed disk parameters."
           }
         }
+      },
+      "metadata": {
+        "description": "The type for an OS disk."
       }
     },
     "virtualMachineConfigurationType": {
@@ -503,7 +519,7 @@
           }
         },
         "nicConfigurationConfiguration": {
-          "$ref": "#/definitions/nicConfigurationConfigurationType",
+          "$ref": "#/definitions/nicConfigurationType",
           "nullable": true,
           "metadata": {
             "description": "Optional. Configuration for the virtual machine network interface."
@@ -565,27 +581,31 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for a virtual machine configuration."
       }
     },
-    "OutboundRuleType": {
+    "outboundRuleType": {
       "type": "object",
       "discriminator": {
         "propertyName": "type",
         "mapping": {
           "FQDN": {
-            "$ref": "#/definitions/FqdnOutboundRuleType"
+            "$ref": "#/definitions/fqdnOutboundRuleType"
           },
           "PrivateEndpoint": {
-            "$ref": "#/definitions/PrivateEndpointOutboundRule"
+            "$ref": "#/definitions/privateEndpointOutboundRuleType"
           },
           "ServiceTag": {
-            "$ref": "#/definitions/ServiceTagOutboundRule"
+            "$ref": "#/definitions/serviceTagOutboundRuleType"
           }
         }
+      },
+      "metadata": {
+        "description": "The type for an outbound rule."
       }
     },
-    "FqdnOutboundRuleType": {
+    "fqdnOutboundRuleType": {
       "type": "object",
       "properties": {
         "type": {
@@ -616,9 +636,12 @@
             "description": "Optional. Category of a managed network Outbound Rule of the workspace hub."
           }
         }
+      },
+      "metadata": {
+        "description": "The type for a FQDN outbound rule."
       }
     },
-    "PrivateEndpointOutboundRule": {
+    "privateEndpointOutboundRuleType": {
       "type": "object",
       "properties": {
         "type": {
@@ -670,9 +693,12 @@
             "description": "Optional. Category of a managed network Outbound Rule of the workspace hub."
           }
         }
+      },
+      "metadata": {
+        "description": "The type for a private endpoint outbound rule."
       }
     },
-    "ServiceTagOutboundRule": {
+    "serviceTagOutboundRuleType": {
       "type": "object",
       "properties": {
         "type": {
@@ -729,19 +755,22 @@
             "description": "Optional. Category of a managed network Outbound Rule of the workspace hub."
           }
         }
+      },
+      "metadata": {
+        "description": "The type for an service tag outbound rule."
       }
     },
     "networkOutboundRuleType": {
       "type": "object",
       "properties": {},
       "additionalProperties": {
-        "$ref": "#/definitions/OutboundRuleType",
+        "$ref": "#/definitions/outboundRuleType",
         "metadata": {
           "description": "Required. The outbound rule. The name of the rule is the object key."
         }
       },
       "metadata": {
-        "description": "Optional. Outbound rules for the managed network of the workspace hub."
+        "description": "The type for outbound rules for the managed network of the workspace hub."
       }
     }
   },

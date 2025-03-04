@@ -1,6 +1,5 @@
 metadata name = 'Azure Front Doors'
 metadata description = 'This module deploys an Azure Front Door.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the frontDoor.')
 @minLength(5)

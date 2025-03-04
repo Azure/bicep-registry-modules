@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "17701323057909267930"
+      "version": "0.33.93.31351",
+      "templateHash": "3570971471911757368"
     },
     "name": "Healthcare API Workspaces",
-    "description": "This module deploys a Healthcare API Workspace.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Healthcare API Workspace."
   },
   "definitions": {
     "lockType": {
@@ -394,12 +393,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "14455646643849754189"
+              "version": "0.33.93.31351",
+              "templateHash": "14990235238154710931"
             },
             "name": "Healthcare API Workspace FHIR Services",
-            "description": "This module deploys a Healthcare API Workspace FHIR Service.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Healthcare API Workspace FHIR Service."
           },
           "definitions": {
             "managedIdentitiesType": {
@@ -934,10 +932,7 @@
                   "loginServers": "[parameters('acrLoginServers')]",
                   "ociArtifacts": "[parameters('acrOciArtifacts')]"
                 }
-              },
-              "dependsOn": [
-                "workspace"
-              ]
+              }
             },
             "fhir_lock": {
               "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
@@ -1128,12 +1123,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "8075255504556528583"
+              "version": "0.33.93.31351",
+              "templateHash": "7209455646454855037"
             },
             "name": "Healthcare API Workspace DICOM Services",
-            "description": "This module deploys a Healthcare API Workspace DICOM Service.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Healthcare API Workspace DICOM Service."
           },
           "definitions": {
             "managedIdentitiesType": {
@@ -1433,10 +1427,7 @@
                   "origins": "[parameters('corsOrigins')]"
                 },
                 "publicNetworkAccess": "[parameters('publicNetworkAccess')]"
-              },
-              "dependsOn": [
-                "workspace"
-              ]
+              }
             },
             "dicom_lock": {
               "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
@@ -1518,10 +1509,11 @@
             },
             "systemAssignedMIPrincipalId": {
               "type": "string",
+              "nullable": true,
               "metadata": {
                 "description": "The principal ID of the system assigned identity."
               },
-              "value": "[coalesce(tryGet(tryGet(reference('dicom', '2022-06-01', 'full'), 'identity'), 'principalId'), '')]"
+              "value": "[tryGet(tryGet(reference('dicom', '2022-06-01', 'full'), 'identity'), 'principalId')]"
             },
             "location": {
               "type": "string",
@@ -1595,12 +1587,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "960125802721112117"
+              "version": "0.33.93.31351",
+              "templateHash": "3567118249768131683"
             },
             "name": "Healthcare API Workspace IoT Connectors",
-            "description": "This module deploys a Healthcare API Workspace IoT Connector.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Healthcare API Workspace IoT Connector."
           },
           "definitions": {
             "managedIdentitiesType": {
@@ -1883,10 +1874,7 @@
                 "deviceMapping": {
                   "content": "[parameters('deviceMapping')]"
                 }
-              },
-              "dependsOn": [
-                "workspace"
-              ]
+              }
             },
             "iotConnector_lock": {
               "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
@@ -1982,12 +1970,11 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.30.23.60470",
-                      "templateHash": "9211958556323045062"
+                      "version": "0.33.93.31351",
+                      "templateHash": "5934704896298273681"
                     },
                     "name": "Healthcare API Workspace IoT Connector FHIR Destinations",
-                    "description": "This module deploys a Healthcare API Workspace IoT Connector FHIR Destination.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a Healthcare API Workspace IoT Connector FHIR Destination."
                   },
                   "parameters": {
                     "name": {
@@ -2127,10 +2114,11 @@
             },
             "systemAssignedMIPrincipalId": {
               "type": "string",
+              "nullable": true,
               "metadata": {
                 "description": "The principal ID of the system assigned identity."
               },
-              "value": "[coalesce(tryGet(tryGet(reference('iotConnector', '2022-06-01', 'full'), 'identity'), 'principalId'), '')]"
+              "value": "[tryGet(tryGet(reference('iotConnector', '2022-06-01', 'full'), 'identity'), 'principalId')]"
             },
             "location": {
               "type": "string",

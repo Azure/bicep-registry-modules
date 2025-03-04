@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "13500839064429348540"
+      "version": "0.33.93.31351",
+      "templateHash": "17730994242644626467"
     },
     "name": "Elastic SANs",
-    "description": "This module deploys an Elastic SAN.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Elastic SAN."
   },
   "definitions": {
     "volumeGroupType": {
@@ -938,6 +937,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
+    "enableReferencedModulesTelemetry": false,
     "calculatedSku": "[if(equals(parameters('sku'), 'Premium_LRS'), if(not(equals(parameters('availabilityZone'), null())), 'Premium_LRS', 'Premium_ZRS'), 'Premium_ZRS')]",
     "calculatedZone": "[if(equals(parameters('sku'), 'Premium_LRS'), if(not(equals(parameters('availabilityZone'), null())), createArray(format('{0}', parameters('availabilityZone'))), null()), null())]",
     "totalVirtualNetworkRules": "[reduce(map(coalesce(parameters('volumeGroups'), createArray()), lambda('volumeGroup', length(coalesce(tryGet(lambdaVariables('volumeGroup'), 'virtualNetworkRules'), createArray())))), 0, lambda('cur', 'next', add(lambdaVariables('cur'), lambdaVariables('next'))))]",
@@ -1088,9 +1088,6 @@
           "tags": {
             "value": "[parameters('tags')]"
           },
-          "enableTelemetry": {
-            "value": "[parameters('enableTelemetry')]"
-          },
           "lock": {
             "value": "[parameters('lock')]"
           }
@@ -1102,12 +1099,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "14826437696199531275"
+              "version": "0.33.93.31351",
+              "templateHash": "10002384107919856685"
             },
             "name": "Elastic SAN Volume Groups",
-            "description": "This module deploys an Elastic SAN Volume Group.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Elastic SAN Volume Group."
           },
           "definitions": {
             "volumeType": {
@@ -1774,13 +1770,6 @@
                 "description": "Optional. Tags of the Elastic SAN Volume Group resource."
               }
             },
-            "enableTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable/Disable usage telemetry for module."
-              }
-            },
             "lock": {
               "$ref": "#/definitions/lockType",
               "nullable": true,
@@ -1800,6 +1789,7 @@
                 }
               }
             ],
+            "enableReferencedModulesTelemetry": false,
             "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
             "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned, UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]"
           },
@@ -1811,10 +1801,7 @@
               "apiVersion": "2023-07-01",
               "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '//'), '/')[2]]",
               "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '////'), '/')[4]]",
-              "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]",
-              "dependsOn": [
-                "cMKKeyVault"
-              ]
+              "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]"
             },
             "elasticSan": {
               "existing": true,
@@ -1852,9 +1839,8 @@
                 "protocolType": "Iscsi"
               },
               "dependsOn": [
-                "cMKKeyVault",
-                "cMKUserAssignedIdentity",
-                "elasticSan"
+                "cMKKeyVault::cMKKey",
+                "cMKKeyVault"
               ]
             },
             "volumeGroup_volumes": {
@@ -1897,12 +1883,11 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.31.92.45157",
-                      "templateHash": "7294045171019589380"
+                      "version": "0.33.93.31351",
+                      "templateHash": "11635704021988875359"
                     },
                     "name": "Elastic SAN Volumes",
-                    "description": "This module deploys an Elastic SAN Volume.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys an Elastic SAN Volume."
                   },
                   "definitions": {
                     "volumeSnapshotType": {
@@ -2011,10 +1996,7 @@
                       "existing": true,
                       "type": "Microsoft.ElasticSan/elasticSans/volumegroups",
                       "apiVersion": "2023-01-01",
-                      "name": "[format('{0}/{1}', parameters('elasticSanName'), parameters('volumeGroupName'))]",
-                      "dependsOn": [
-                        "elasticSan"
-                      ]
+                      "name": "[format('{0}/{1}', parameters('elasticSanName'), parameters('volumeGroupName'))]"
                     },
                     "elasticSan": {
                       "existing": true,
@@ -2028,10 +2010,7 @@
                       "name": "[format('{0}/{1}/{2}', parameters('elasticSanName'), parameters('volumeGroupName'), parameters('name'))]",
                       "properties": {
                         "sizeGiB": "[parameters('sizeGiB')]"
-                      },
-                      "dependsOn": [
-                        "elasticSan::volumeGroup"
-                      ]
+                      }
                     },
                     "volume_snapshots": {
                       "copy": {
@@ -2069,12 +2048,11 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.31.92.45157",
-                              "templateHash": "12385278995369535477"
+                              "version": "0.33.93.31351",
+                              "templateHash": "6701978252436416407"
                             },
                             "name": "Elastic SAN Volume Snapshots",
-                            "description": "This module deploys an Elastic SAN Volume Snapshot.",
-                            "owner": "Azure/module-maintainers"
+                            "description": "This module deploys an Elastic SAN Volume Snapshot."
                           },
                           "parameters": {
                             "elasticSanName": {
@@ -2163,7 +2141,6 @@
                         }
                       },
                       "dependsOn": [
-                        "elasticSan",
                         "volume"
                       ]
                     }
@@ -2247,7 +2224,6 @@
                 }
               },
               "dependsOn": [
-                "elasticSan",
                 "volumeGroup"
               ]
             },
@@ -2275,7 +2251,7 @@
                     "value": "[coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId]"
                   },
                   "enableTelemetry": {
-                    "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   },
                   "location": {
                     "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'location'), reference(split(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location)]"
@@ -3053,7 +3029,6 @@
                 }
               },
               "dependsOn": [
-                "elasticSan",
                 "volumeGroup"
               ]
             }
@@ -3089,10 +3064,11 @@
             },
             "systemAssignedMIPrincipalId": {
               "type": "string",
+              "nullable": true,
               "metadata": {
                 "description": "The principal ID of the system assigned identity of the deployed Elastic SAN Volume Group."
               },
-              "value": "[coalesce(tryGet(tryGet(reference('volumeGroup', '2023-01-01', 'full'), 'identity'), 'principalId'), '')]"
+              "value": "[tryGet(tryGet(reference('volumeGroup', '2023-01-01', 'full'), 'identity'), 'principalId')]"
             },
             "volumes": {
               "type": "array",

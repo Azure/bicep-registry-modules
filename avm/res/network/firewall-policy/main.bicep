@@ -1,6 +1,5 @@
 metadata name = 'Firewall Policies'
 metadata description = 'This module deploys a Firewall Policy.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the Firewall Policy.')
 param name string
@@ -11,8 +10,9 @@ param location string = resourceGroup().location
 @description('Optional. Tags of the Firewall policy resource.')
 param tags object?
 
+import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The managed identity definition for this resource.')
-param managedIdentities managedIdentitiesType
+param managedIdentities managedIdentityOnlyUserAssignedType?
 
 @description('Optional. Resource ID of the base policy.')
 param basePolicyResourceId string?
@@ -285,11 +285,6 @@ output location string = firewallPolicy.location
 // =============== //
 //   Definitions   //
 // =============== //
-
-type managedIdentitiesType = {
-  @description('Optional. The resource ID(s) to assign to the resource.')
-  userAssignedResourceIds: string[]
-}?
 
 type roleAssignmentType = {
   @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')

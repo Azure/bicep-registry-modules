@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "81380678032212878"
+      "version": "0.33.93.31351",
+      "templateHash": "6400587070695625658"
     },
     "name": "Machine Learning Services Workspaces Computes",
-    "description": "This module deploys a Machine Learning Services Workspaces Compute.\n\nAttaching a compute is not idempotent and will fail in case you try to redeploy over an existing compute in AML (see parameter `deployCompute`).",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Machine Learning Services Workspaces Compute.\n\nAttaching a compute is not idempotent and will fail in case you try to redeploy over an existing compute in AML (see parameter `deployCompute`)."
   },
   "definitions": {
     "managedIdentityAllType": {
@@ -199,10 +198,11 @@
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",
+      "nullable": true,
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[coalesce(tryGet(tryGet(reference('compute', '2022-10-01', 'full'), 'identity'), 'principalId'), '')]"
+      "value": "[tryGet(tryGet(reference('compute', '2022-10-01', 'full'), 'identity'), 'principalId')]"
     },
     "location": {
       "type": "string",

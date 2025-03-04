@@ -13,8 +13,8 @@ A security admin configuration contains a set of rule collections. Each rule col
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/networkManagers/securityAdminConfigurations/ruleCollections) |
-| `Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections/rules` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/networkManagers/securityAdminConfigurations/ruleCollections/rules) |
+| `Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/networkManagers/securityAdminConfigurations/ruleCollections) |
+| `Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections/rules` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/networkManagers/securityAdminConfigurations/ruleCollections/rules) |
 
 ## Parameters
 
@@ -86,6 +86,7 @@ A description of the admin rule collection.
 
 - Required: No
 - Type: string
+- Default: `''`
 
 ### Parameter: `rules`
 

@@ -2,7 +2,6 @@ targetScope = 'subscription'
 
 metadata name = 'Custom Images using Azure Image Builder'
 metadata description = 'This module provides you with a packaged solution to create custom images using the Azure Image Builder service publishing to an Azure Compute Gallery.'
-metadata owner = 'AlexanderSehr'
 
 // ================ //
 // Input Parameters //
@@ -35,8 +34,9 @@ param imageManagedIdentityName string = 'msi-aib'
 @description('Required. The name of the Azure Compute Gallery.')
 param computeGalleryName string
 
+import { imageType } from 'br/public:avm/res/compute/gallery:0.8.0'
 @description('Required. The Image Definitions in the Azure Compute Gallery.')
-param computeGalleryImageDefinitions array
+param computeGalleryImageDefinitions imageType[]
 
 // Storage Account Parameters
 @description('Optional. The name of the storage account. Only needed if you want to upload scripts to be used during image baking.')
@@ -98,7 +98,7 @@ param computeGalleryImageDefinitionName string
 param waitForImageBuild bool = true
 
 @description('Optional. A parameter to control the timeout of the deployment script waiting for the image build.')
-param waitForImageBuildTimeout string = 'PT1H'
+param waitForImageBuildTimeout string = 'PT3H'
 
 // Shared Parameters
 @description('Optional. The location to deploy into.')
@@ -111,16 +111,6 @@ param enableTelemetry bool = true
 param baseTime string = utcNow()
 
 var formattedTime = replace(replace(replace(baseTime, ':', ''), '-', ''), ' ', '')
-
-// Role required for deployment script to be able to use a storage account via private networking
-resource storageFileDataPrivilegedContributorRole 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {
-  name: '69566ab7-960f-475b-8e7c-b3118f30c6bd' // Storage File Data Priveleged Contributor
-  scope: tenant()
-}
-resource contributorRole 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {
-  name: 'b24988ac-6180-42a0-ab88-20f7382dd24c' // Contributor
-  scope: tenant()
-}
 
 // =========== //
 // Deployments //
@@ -151,15 +141,9 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
 //   START: ONLY BASE   //
 // ==================== //
 
-// Resource Groups
+// Primary Resource Group
 resource rg 'Microsoft.Resources/resourceGroups@2024-03-01' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
   name: resourceGroupName
-  location: location
-}
-
-// Always deployed as both an infra element & needed as a staging resource group for image building
-resource imageTemplateRg 'Microsoft.Resources/resourceGroups@2024-03-01' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
-  name: imageTemplateResourceGroupName
   location: location
 }
 
@@ -184,25 +168,44 @@ module imageMSI 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0
   }
 }
 
-// MSI Subscription contributor assignment
-resource imageMSI_rbac 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
-  name: guid(
-    subscription().id,
-    '${subscription().id}/resourceGroups/${resourceGroupName}/providers/Microsoft.ManagedIdentity/userAssignedIdentities/${imageManagedIdentityName}',
-    contributorRole.id
-  )
-  properties: {
+// MSI RG contributor assignment
+resource contributorRole 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {
+  name: 'b24988ac-6180-42a0-ab88-20f7382dd24c' // Contributor
+  scope: tenant()
+}
+module imageMSI_rg_rbac 'modules/msi_rbac.bicep' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
+  scope: rg
+  name: '${deployment().name}-image-msi-rbac-main-rg'
+  params: {
     // TODO: Requries conditions. Tracked issue: https://github.com/Azure/bicep/issues/2371
-    principalId: (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base')
-      ? imageMSI.outputs.principalId
+    msiResourceId: (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base')
+      ? imageMSI.outputs.resourceId
       : ''
     roleDefinitionId: contributorRole.id
-    principalType: 'ServicePrincipal'
+  }
+}
+
+// Optional Image Staging RG
+module imageTemplateRg 'br/public:avm/res/resources/resource-group:0.4.0' = if ((deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') && !empty(imageTemplateResourceGroupName)) {
+  name: '${deployment().name}-image-rg'
+  params: {
+    name: imageTemplateResourceGroupName
+    location: location
+    enableTelemetry: enableTelemetry
+    roleAssignments: [
+      {
+        principalId: (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base')
+          ? imageMSI.outputs.principalId
+          : ''
+        roleDefinitionIdOrName: contributorRole.id
+        principalType: 'ServicePrincipal'
+      }
+    ]
   }
 }
 
 // Azure Compute Gallery
-module azureComputeGallery 'br/public:avm/res/compute/gallery:0.7.0' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
+module azureComputeGallery 'br/public:avm/res/compute/gallery:0.8.0' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
   name: '${deployment().name}-acg'
   scope: rg
   params: {
@@ -214,7 +217,7 @@ module azureComputeGallery 'br/public:avm/res/compute/gallery:0.7.0' = if (deplo
 }
 
 // Image Template Virtual Network
-module vnet 'br/public:avm/res/network/virtual-network:0.4.0' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
+module vnet 'br/public:avm/res/network/virtual-network:0.5.1' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
   name: '${deployment().name}-vnet'
   scope: rg
   params: {
@@ -247,7 +250,7 @@ module vnet 'br/public:avm/res/network/virtual-network:0.4.0' = if (deploymentsT
 }
 
 // Assets Storage Account
-module assetsStorageAccount 'br/public:avm/res/storage/storage-account:0.9.1' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
+module assetsStorageAccount 'br/public:avm/res/storage/storage-account:0.15.0' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
   name: '${deployment().name}-files-sa'
   scope: rg
   params: {
@@ -303,8 +306,14 @@ module assetsStorageAccount 'br/public:avm/res/storage/storage-account:0.9.1' = 
   }
 }
 
+// Role required for deployment script to be able to use a storage account via private networking
+resource storageFileDataPrivilegedContributorRole 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {
+  name: '69566ab7-960f-475b-8e7c-b3118f30c6bd' // Storage File Data Privileged Contributor
+  scope: tenant()
+}
+
 // Deployment scripts & their storage account
-module dsStorageAccount 'br/public:avm/res/storage/storage-account:0.9.1' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
+module dsStorageAccount 'br/public:avm/res/storage/storage-account:0.15.0' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
   name: '${deployment().name}-ds-sa'
   scope: rg
   params: {
@@ -315,7 +324,7 @@ module dsStorageAccount 'br/public:avm/res/storage/storage-account:0.9.1' = if (
       {
         // Allow MSI to leverage the storage account for private networking of container instance
         // ref: https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/deployment-script-bicep#access-private-virtual-network
-        roleDefinitionIdOrName: storageFileDataPrivilegedContributorRole.id // Storage File Data Priveleged Contributor
+        roleDefinitionIdOrName: storageFileDataPrivilegedContributorRole.id // Storage File Data Privileged Contributor
         principalId: (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base')
           ? dsMsi.outputs.principalId
           : '' // Requires condition als Bicep will otherwise try to resolve the null reference
@@ -351,7 +360,7 @@ module dsStorageAccount 'br/public:avm/res/storage/storage-account:0.9.1' = if (
 // ============================== //
 
 // Upload storage account files
-module storageAccount_upload 'br/public:avm/res/resources/deployment-script:0.4.0' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base' || deploymentsToPerform == 'Only assets & image') {
+module storageAccount_upload 'br/public:avm/res/resources/deployment-script:0.5.0' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base' || deploymentsToPerform == 'Only assets & image') {
   name: '${deployment().name}-storage-upload-ds'
   scope: resourceGroup(resourceGroupName)
   params: {
@@ -360,7 +369,7 @@ module storageAccount_upload 'br/public:avm/res/resources/deployment-script:0.4.
     azPowerShellVersion: '12.0'
     enableTelemetry: enableTelemetry
     managedIdentities: {
-      userAssignedResourcesIds: [
+      userAssignedResourceIds: [
         resourceId(
           subscription().subscriptionId,
           resourceGroupName,
@@ -419,7 +428,7 @@ resource dsMsi_existing 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-0
   scope: resourceGroup(resourceGroupName)
 }
 
-module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:0.4.0' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only assets & image' || deploymentsToPerform == 'Only image') {
+module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:0.4.2' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only assets & image' || deploymentsToPerform == 'Only image') {
   name: '${deployment().name}-it'
   scope: resourceGroup(resourceGroupName)
   params: {
@@ -449,8 +458,6 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:0.
         )
       }
     ]
-
-    // subnetResourceId: vnet.outputs.subnetResourceIds[0] // Image Subnet
     subnetResourceId: resourceId(
       subscription().subscriptionId,
       resourceGroupName,
@@ -459,7 +466,13 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:0.
       imageSubnetName
     )
     location: location
-    stagingResourceGroupResourceId: imageTemplateRg.id
+    stagingResourceGroupResourceId: !empty(imageTemplateResourceGroupName)
+      ? subscriptionResourceId(
+          subscription().subscriptionId,
+          'Microsoft.Resources/resourceGroups',
+          imageTemplateResourceGroupName
+        )
+      : null
     roleAssignments: [
       {
         roleDefinitionIdOrName: 'Contributor'
@@ -473,7 +486,7 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:0.
   }
   dependsOn: [
     storageAccount_upload
-    imageMSI_rbac
+    imageMSI_rg_rbac
     rg
     imageMSI
     azureComputeGallery
@@ -482,7 +495,7 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:0.
 }
 
 // Deployment script to trigger image build
-module imageTemplate_trigger 'br/public:avm/res/resources/deployment-script:0.4.0' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only assets & image' || deploymentsToPerform == 'Only image') {
+module imageTemplate_trigger 'br/public:avm/res/resources/deployment-script:0.5.0' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only assets & image' || deploymentsToPerform == 'Only image') {
   name: '${deployment().name}-imageTemplate-trigger-ds'
   scope: resourceGroup(resourceGroupName)
   params: {
@@ -490,7 +503,7 @@ module imageTemplate_trigger 'br/public:avm/res/resources/deployment-script:0.4.
     kind: 'AzurePowerShell'
     azPowerShellVersion: '12.0'
     managedIdentities: {
-      userAssignedResourcesIds: [
+      userAssignedResourceIds: [
         resourceId(
           subscription().subscriptionId,
           resourceGroupName,
@@ -536,7 +549,7 @@ module imageTemplate_trigger 'br/public:avm/res/resources/deployment-script:0.4.
   ]
 }
 
-module imageTemplate_wait 'br/public:avm/res/resources/deployment-script:0.4.0' = if (waitForImageBuild && (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only assets & image' || deploymentsToPerform == 'Only image')) {
+module imageTemplate_wait 'br/public:avm/res/resources/deployment-script:0.5.0' = if (waitForImageBuild && (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only assets & image' || deploymentsToPerform == 'Only image')) {
   name: '${deployment().name}-imageTemplate-wait-ds'
   scope: resourceGroup(resourceGroupName)
   params: {
@@ -544,7 +557,7 @@ module imageTemplate_wait 'br/public:avm/res/resources/deployment-script:0.4.0' 
     kind: 'AzurePowerShell'
     azPowerShellVersion: '12.0'
     managedIdentities: {
-      userAssignedResourcesIds: [
+      userAssignedResourceIds: [
         resourceId(
           subscription().subscriptionId,
           resourceGroupName,

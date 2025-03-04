@@ -2,7 +2,6 @@ metadata name = 'Registration Definitions'
 metadata description = '''This module deploys a `Registration Definition` and a `Registration Assignment` (often referred to as 'Lighthouse' or 'resource delegation') on a subscription or resource group scope.
 This type of delegation is very similar to role assignments but here the principal that is assigned a role is in a remote/managing Azure Active Directory tenant.
 The templates are run towards the tenant where the Azure resources you want to delegate access to are, providing 'authorizations' (aka. access delegation) to principals in a remote/managing tenant.'''
-metadata owner = 'Azure/module-maintainers'
 
 targetScope = 'subscription'
 

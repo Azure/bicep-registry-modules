@@ -4,12 +4,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "3131107829194392661"
+      "version": "0.33.93.31351",
+      "templateHash": "14545194761901704803"
     },
     "name": "Synapse Workspaces Administrators",
-    "description": "This module deploys Synapse Workspaces Administrators.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys Synapse Workspaces Administrators."
   },
   "parameters": {
     "workspaceName": {

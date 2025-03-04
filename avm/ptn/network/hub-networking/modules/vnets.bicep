@@ -1,6 +1,5 @@
 metadata name = 'Virtual Networks'
 metadata description = 'This module deploys a Virtual Network.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the parent virtual network. Required if the template is used in a standalone deployment.')
 param name string

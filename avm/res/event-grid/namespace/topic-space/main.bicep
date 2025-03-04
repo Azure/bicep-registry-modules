@@ -1,6 +1,5 @@
 metadata name = 'Eventgrid Namespace Topic Spaces'
 metadata description = 'This module deploys an Eventgrid Namespace Topic Space.'
-metadata owner = 'Azure/module-maintainers'
 
 @sys.description('Conditional. The name of the parent EventGrid namespace. Required if the template is used in a standalone deployment.')
 param namespaceName string
@@ -15,8 +14,9 @@ param description string?
 @sys.description('Required. The topic filters in the Topic Space.')
 param topicTemplates array
 
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @sys.description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+param roleAssignments roleAssignmentType[]?
 
 var builtInRoleNames = {
   'Azure Resource Notifications System Topics Subscriber': subscriptionResourceId(
@@ -120,33 +120,3 @@ output name string = topicSpace.name
 
 @sys.description('The name of the resource group the Topic Space was created in.')
 output resourceGroupName string = resourceGroup().name
-
-// ================ //
-// Definitions      //
-// ================ //
-
-type roleAssignmentType = {
-  @sys.description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
-  name: string?
-
-  @sys.description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
-
-  @sys.description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
-
-  @sys.description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
-
-  @sys.description('Optional. The description of the role assignment.')
-  description: string?
-
-  @sys.description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
-
-  @sys.description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
-
-  @sys.description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?

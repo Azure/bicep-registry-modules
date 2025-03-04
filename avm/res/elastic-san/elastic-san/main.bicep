@@ -1,6 +1,5 @@
 metadata name = 'Elastic SANs'
 metadata description = 'This module deploys an Elastic SAN.'
-metadata owner = 'Azure/module-maintainers'
 
 @sys.minLength(3)
 @sys.maxLength(24)
@@ -66,6 +65,8 @@ param roleAssignments roleAssignmentType[]?
 // ============== //
 // Variables      //
 // ============== //
+
+var enableReferencedModulesTelemetry = false
 
 // Default to Premium_ZRS unless the user specifically chooses Premium_LRS and specifies an availability zone number.
 var calculatedSku = sku == 'Premium_LRS' ? (availabilityZone != null ? 'Premium_LRS' : 'Premium_ZRS') : 'Premium_ZRS'
@@ -204,7 +205,6 @@ module elasticSan_volumeGroups 'volume-group/main.bicep' = [
       customerManagedKey: volumeGroup.?customerManagedKey
       privateEndpoints: volumeGroup.?privateEndpoints
       tags: tags
-      enableTelemetry: enableTelemetry
       lock: lock
     }
   }

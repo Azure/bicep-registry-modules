@@ -104,6 +104,16 @@ Describe 'File/folder tests' -Tag 'Modules' {
             $file.Name | Should -BeExactly 'README.md'
         }
 
+        It '[<moduleFolderName>] A [` version.json `] file must only have a major & minor version.' -TestCases ($moduleFolderTestCases | Where-Object { Test-Path (Join-Path $_.moduleFolderPath 'version.json') }) {
+
+            param (
+                [string] $moduleFolderPath
+            )
+
+            $versionFileContent = Get-Content (Join-Path -Path $moduleFolderPath 'version.json') | ConvertFrom-Json -AsHashtable
+            $versionFileContent.version | Should -Match '^[0-9]+\.[0-9]+$' -Because 'only the major.minor version may be specified in the version.json file.'
+        }
+
         # only avm/res/network/virtual-network/subnet is allowed to have a version.json file (PoC for child module publishing)
         It '[<moduleFolderName>] Child module should not contain a [` version.json `] file.' -TestCases ($moduleFolderTestCases | Where-Object { (-Not $_.isTopLevelModule) -And ($_.moduleFolderName -ne 'network/virtual-network/subnet') }) {
 
@@ -116,7 +126,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
         }
 
         # if the child modules version has been increased, the main modules version should be increased as well
-        It '[<moduleFolderName>] main module version should be increased if the child version number has been increased.' -TestCases ($moduleFolderTestCases | Where-Object { (-Not $_.isTopLevelModule) }) {
+        It '[<moduleFolderName>] main module version should be increased if the child version number has been increased.' -TestCases ($moduleFolderTestCases | Where-Object { -Not $_.isTopLevelModule }) {
 
             param (
                 [string] $moduleFolderPath
@@ -128,7 +138,8 @@ Describe 'File/folder tests' -Tag 'Modules' {
                 $parentFolderPath = Split-Path -Path $moduleFolderPath -Parent
                 $moduleVersion = Get-ModuleTargetVersion -ModuleFolderPath $parentFolderPath
 
-                ($childModuleVersion.EndsWith('.0') -and -not $moduleVersion.EndsWith('.0')) | Should -Be $false
+                # the first release of a child module does not require the parent module to be updated
+                ($childModuleVersion -ne '0.1.0' -and $childModuleVersion.EndsWith('.0') -and -not $moduleVersion.EndsWith('.0')) | Should -Be $false
             }
         }
 
@@ -396,14 +407,14 @@ Describe 'Module tests' -Tag 'Module' {
             # Compare
             $filesAreTheSame = $fileHashBefore -eq $fileHashAfter
             if (-not $filesAreTheSame) {
-                $diffReponse = git diff $readMeFilePath
-                Write-Warning ($diffReponse | Out-String) -Verbose
+                $diffResponse = git diff $readMeFilePath
+                Write-Warning ($diffResponse | Out-String) -Verbose
 
                 # Reset readme file to original state
                 git checkout HEAD -- $readMeFilePath
             }
 
-            $mdFormattedDiff = ($diffReponse -join '</br>') -replace '\|', '\|'
+            $mdFormattedDiff = ($diffResponse -join '</br>') -replace '\|', '\|'
             $filesAreTheSame | Should -Be $true -Because ('The file hashes before and after applying the `/utilities/tools/Set-AVMModule.ps1` and more precisely the `/utilities/pipelines/sharedScripts/Set-ModuleReadMe.ps1` function should be identical and should not have diff </br><pre>{0}</pre>. Please re-run the `Set-AVMModule` function for this module.' -f $mdFormattedDiff)
         }
     }
@@ -487,6 +498,7 @@ Describe 'Module tests' -Tag 'Module' {
                     readMeFilePath         = Join-Path (Split-Path $templateFilePath) 'README.md'
                     isTopLevelModule       = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
                     moduleType             = $moduleType
+                    versionFileExists      = Test-Path (Join-Path -Path $moduleFolderPath 'version.json')
                 }
             }
         }
@@ -561,15 +573,6 @@ Describe 'Module tests' -Tag 'Module' {
 
                 $templateFileContent.metadata.description | Should -Not -BeNullOrEmpty
             }
-
-            It '[<moduleFolderName>] template file should have a module owner specified.' -TestCases $moduleFolderTestCases {
-
-                param(
-                    [hashtable] $templateFileContent
-                )
-
-                $templateFileContent.metadata.owner | Should -Not -BeNullOrEmpty
-            }
         }
 
         Context 'Parameters' {
@@ -588,7 +591,7 @@ Describe 'Module tests' -Tag 'Module' {
             }
 
             # If any resources in the module are deployed, a telemetry deployment should be carried out as well
-            It '[<moduleFolderName>] The telemetry parameter should be present & have the expected type, default value & metadata description.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule -and $_.templateFileContent.resources.count -gt 0 }) {
+            It '[<moduleFolderName>] The telemetry parameter should be present & have the expected type, default value & metadata description.' -TestCases ($moduleFolderTestCases | Where-Object { $_.versionFileExists -and $_.templateFileContent.resources.count -gt 0 }) {
 
                 param(
                     [hashtable] $templateFileParameters
@@ -630,7 +633,6 @@ Describe 'Module tests' -Tag 'Module' {
                 }
                 $incorrectParameters | Should -BeNullOrEmpty -Because ('parameters in the template file should be camel-cased. Found incorrect items: [{0}].' -f ($incorrectParameters -join ', '))
             }
-
 
             It "[<moduleFolderName>] Each parameters' & UDT's description should start with a one word category starting with a capital letter, followed by a dot, a space and the actual description text ending with a dot." -TestCases $moduleFolderTestCases {
 
@@ -682,7 +684,6 @@ Describe 'Module tests' -Tag 'Module' {
                 }
                 $incorrectParameters | Should -BeNullOrEmpty -Because ('conditional parameters in the template file should lack a description that starts with "Required.". Found incorrect items: [{0}].' -f ($incorrectParameters -join ', '))
             }
-
 
             It '[<moduleFolderName>] All non-required parameters & UDTs in template file should not have description that start with "Required.".' -TestCases $moduleFolderTestCases {
                 param (
@@ -822,8 +823,13 @@ Describe 'Module tests' -Tag 'Module' {
                         [hashtable] $templateFileContent
                     )
 
-                    if ($templateFileContent.definitions.Keys -contains 'managedIdentitiesType' -and $templateFileContent.definitions.managedIdentitiesType.properties.keys -contains 'systemAssigned') {
-                        $templateFileContent.outputs.Keys | Should -Contain 'systemAssignedMIPrincipalId' -Because 'The AVM specs require a this output. For information please review the [AVM Specs](https://aka.ms/avm/interfaces/managed-identities).'
+                    $matchingTypeKey = $templateFileContent.definitions.Keys | Where-Object { $_ -match 'managedIdentity' }
+                    if ($matchingTypeKey -and $templateFileContent.definitions.$matchingTypeKey.properties.keys -contains 'systemAssigned') {
+                        $templateFileContent.outputs.Keys | Should -Contain 'systemAssignedMIPrincipalId' -Because 'The AVM specs require a this output. For information please review the [AVM Specs](https://azure.github.io/Azure-Verified-Modules/specs/bcp/res/interfaces/#managed-identities).'
+
+                        $templateFileContent.outputs.systemAssignedMIPrincipalId.type | Should -Be 'string' -Because 'it should match the AVM spec for managed identities. For information please review the [AVM Specs](https://azure.github.io/Azure-Verified-Modules/specs/bcp/res/interfaces/#managed-identities).'
+                        $templateFileContent.outputs.systemAssignedMIPrincipalId.nullable | Should -Be $true -Because 'the API actually returns null, not an empty string as we should pass it through as such. For information please review the [AVM Specs](https://azure.github.io/Azure-Verified-Modules/specs/bcp/res/interfaces/#managed-identities).'
+                        $templateFileContent.outputs.systemAssignedMIPrincipalId.value | Should -Not -Match "coalesce\(.+, ''\)" -Because 'as the [systemAssignedMIPrincipalId] output is nullable, it should not have an empty string as a default value. For information please review the [AVM Specs](https://azure.github.io/Azure-Verified-Modules/specs/bcp/res/interfaces/#managed-identities).'
                     } else {
                         Set-ItResult -Skipped -Because 'the module template has no [managedIdentitiesType] UDT definition or does not support system-assigned-identities.'
                     }
@@ -868,11 +874,32 @@ Describe 'Module tests' -Tag 'Module' {
                 }
                 $incorrectVariables | Should -BeNullOrEmpty
             }
+
+            It '[<moduleFolderName>] Variable "enableReferencedModulesTelemetry" should exist and set to "false" if module references other modules with dedicated telemetry.' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleType -eq 'res' }) {
+
+                param(
+                    [hashtable] $templateFileContent
+                )
+
+                # get all referenced modules, that offer a telemetry parameter
+                $referencesWithTelemetry = $templateFileContent.resources.Values | Where-Object {
+                    $_.type -eq 'Microsoft.Resources/deployments' -and
+                    $_.properties.template.parameters.Keys -contains 'enableTelemetry'
+                }
+
+                if ($referencesWithTelemetry.Count -eq 0) {
+                    Set-ItResult -Skipped -Because 'no modules with dedicated telemetry are deployed.'
+                    return
+                }
+
+                $templateFileContent.variables.Keys | Should -Contain 'enableReferencedModulesTelemetry'
+                $templateFileContent.variables.enableReferencedModulesTelemetry | Should -Be $false
+            }
         }
 
         Context 'Resources' {
-            # If any resources in the module are deployed, a telemetry deployment should be carried out as well
-            It '[<moduleFolderName>] Telemetry deployment should be present in the template.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule -and $_.templateFileContent.resources.count -gt 0 }) {
+            # If any resources in the module are deployed, a telemetry deployment should be carried out as well.
+            It '[<moduleFolderName>] Telemetry deployment should be present in the template.' -TestCases ($moduleFolderTestCases | Where-Object { $_.versionFileExists -and $_.templateFileContent.resources.count -gt 0 }) {
 
                 param(
                     [hashtable] $templateFileContent
@@ -889,7 +916,7 @@ Describe 'Module tests' -Tag 'Module' {
                 $telemetryDeployment | Should -Not -BeNullOrEmpty -Because 'A telemetry resource with name prefix [46d3xbcp] should be present in the template'
             }
 
-            It '[<moduleFolderName>] Telemetry deployment should have correct condition in the template.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule }) {
+            It '[<moduleFolderName>] Telemetry deployment should have correct condition in the template.' -TestCases ($moduleFolderTestCases | Where-Object { $_.versionFileExists }) {
 
                 param(
                     [hashtable] $templateFileContent
@@ -912,7 +939,7 @@ Describe 'Module tests' -Tag 'Module' {
                 $telemetryDeployment.condition | Should -Be "[parameters('enableTelemetry')]"
             }
 
-            It '[<moduleFolderName>] Telemetry deployment should have expected inner output for verbosity.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule }) {
+            It '[<moduleFolderName>] Telemetry deployment should have expected inner output for verbosity.' -TestCases ($moduleFolderTestCases | Where-Object { $_.versionFileExists }) {
 
                 param(
                     [hashtable] $templateFileContent
@@ -936,7 +963,7 @@ Describe 'Module tests' -Tag 'Module' {
                 $telemetryDeployment.properties.template.outputs['telemetry'].value | Should -Be 'For more information, see https://aka.ms/avm/TelemetryInfo'
             }
 
-            It '[<moduleFolderName>] Telemetry deployment should have expected telemetry identifier.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule }) {
+            It '[<moduleFolderName>] Telemetry deployment should have expected telemetry identifier.' -TestCases ($moduleFolderTestCases | Where-Object { $_.versionFileExists }) {
 
                 param(
                     [string] $templateFilePath,
@@ -996,6 +1023,37 @@ Describe 'Module tests' -Tag 'Module' {
 
                 $telemetryDeploymentName = $telemetryDeployment.name # The AVM telemetry prefix
                 $telemetryDeploymentName | Should -Match "$expectedTelemetryIdentifier"
+            }
+
+            It '[<moduleFolderName>] Telemetry should be disabled for referenced modules with dedicated telemetry.' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleType -eq 'res' }) {
+
+                param(
+                    [hashtable] $templateFileContent,
+                    [string] $templateFilePath
+                )
+
+                # get all referenced modules, that offer a telemetry parameter
+                $referencesWithTelemetry = $templateFileContent.resources.Values | Where-Object {
+                    $_.type -eq 'Microsoft.Resources/deployments' -and
+                    $_.properties.template.parameters.Keys -contains 'enableTelemetry'
+                }
+
+                if ($referencesWithTelemetry.Count -eq 0) {
+                    Set-ItResult -Skipped -Because 'no modules with dedicated telemetry are deployed.'
+                    return
+                }
+
+                # telemetry should be disabled for the referenced module
+                $incorrectCrossReferences = [System.Collections.ArrayList]@()
+                foreach ($referencedModule in $referencesWithTelemetry) {
+                    if ($referencedModule.properties.parameters.Keys -notcontains 'enableTelemetry' -or
+                        $referencedModule.properties.parameters.enableTelemetry.value -ne "[variables('enableReferencedModulesTelemetry')]") {
+                        # remember the names (e.g. 'virtualNetwork_subnets') to provide a better error message
+                        $incorrectCrossReferences.Add($referencedModule.identifier)
+                    }
+                }
+
+                $incorrectCrossReferences | Should -BeNullOrEmpty -Because ('cross reference modules must be referenced with the enableTelemetry parameter set to the "enableReferencedModulesTelemetry" variable. Found incorrect items: [{0}].' -f ($incorrectCrossReferences -join ', '))
             }
         }
 
@@ -1172,6 +1230,104 @@ Describe 'Module tests' -Tag 'Module' {
                 # Otherwise test for standard outputs
                 $outputs = $templateFileContent.outputs.Keys
                 $outputs | Should -Contain 'systemAssignedMIPrincipalId'
+            }
+        }
+
+        Context 'UDT-spcific' {
+
+            It '[<moduleFolderName>] A UDT should not be of type array, but instead the parameter that uses it. AVM-Spec-Ref: BCPNFR18.' -TestCases $moduleFolderTestCases -Tag 'UDT' {
+
+                param(
+                    [hashtable] $templateFileContent
+                )
+
+                if (-not $templateFileContent.definitions) {
+                    Set-ItResult -Skipped -Because 'the module template has no user-defined types.'
+                    return
+                }
+
+                $incorrectTypes = [System.Collections.ArrayList]@()
+                foreach ($type in $templateFileContent.definitions.Keys) {
+                    if ($templateFileContent.definitions.$type.type -eq 'array') {
+                        $incorrectTypes += $type
+                    }
+                }
+                # To be re-enabled once more modules are prepared. The code right below can then be removed.
+                # $incorrectTypes | Should -BeNullOrEmpty -Because ('no user-defined type should be declared as an array, but instead the parameter that uses the type. This makes the template and its parameters easier to understand. Found incorrect items: [{0}].' -f ($incorrectTypes -join ', '))
+                if ($incorrectTypes.Count -gt 0) {
+                    $warningMessage = ('No user-defined type should be declared as an array, but instead the parameter that uses the type. This makes the template and its parameters easier to understand. Found incorrect items: [{0}].' -f ($incorrectTypes -join ', '))
+                    Write-Warning $warningMessage
+
+                    Write-Output @{
+                        Warning = $warningMessage
+                    }
+                }
+            }
+
+            It '[<moduleFolderName>] A UDT should not be nullable, but instead the parameter that uses it. AVM-Spec-Ref: BCPNFR18.' -TestCases $moduleFolderTestCases -Tag 'UDT' {
+
+                param(
+                    [hashtable] $templateFileContent
+                )
+
+                if (-not $templateFileContent.definitions) {
+                    Set-ItResult -Skipped -Because 'the module template has no user-defined types.'
+                    return
+                }
+
+                $incorrectTypes = [System.Collections.ArrayList]@()
+                foreach ($type in $templateFileContent.definitions.Keys) {
+                    if ($templateFileContent.definitions.$type.nullable -eq $true) {
+                        $incorrectTypes += $type
+                    }
+                }
+
+                # To be re-enabled once more modules are prepared. The code right below can then be removed.
+                # $incorrectTypes | Should -BeNullOrEmpty -Because ('no user-defined type should be declared as nullable, but instead the parameter that uses the type. This makes the template and its parameters easier to understand. Found incorrect items: [{0}].' -f ($incorrectTypes -join ', '))
+                if ($incorrectTypes.Count -gt 0) {
+                    $warningMessage = ('No user-defined type should be declared as nullable, but instead the parameter that uses the type. This makes the template and its parameters easier to understand. Found incorrect items: [{0}].' -f ($incorrectTypes -join ', '))
+                    Write-Warning $warningMessage
+
+                    Write-Output @{
+                        Warning = $warningMessage
+                    }
+                }
+            }
+
+            It '[<moduleFolderName>] A UDT should always be camel-cased and end with the suffix "Type". AVM-Spec-Ref: BCPNFR19.' -TestCases $moduleFolderTestCases -Tag 'UDT' {
+
+                param(
+                    [hashtable] $templateFileContent
+                )
+
+                if (-not $templateFileContent.definitions) {
+                    Set-ItResult -Skipped -Because 'the module template has no user-defined types.'
+                    return
+                }
+
+                $incorrectTypes = [System.Collections.ArrayList]@()
+                foreach ($typeName in $templateFileContent.definitions.Keys) {
+                    if ($typeName -cnotmatch '^(.+\.)?[a-z].*Type$') {
+                        # Passes
+                        # - testType
+                        # - _1.testType
+                        # NOT passes
+                        # - test
+                        # - _1.TestType
+                        $incorrectTypes += $typeName
+                    }
+                }
+
+                # To be re-enabled once more modules are prepared. The code right below can then be removed.
+                # $incorrectTypes | Should -BeNullOrEmpty -Because ('every used-defined type should be camel-cased and end with the suffix "Type". Found incorrect items: [{0}].' -f ($incorrectTypes -join ', '))
+                if ($incorrectTypes.Count -gt 0) {
+                    $warningMessage = ('Every used-defined type should be camel-cased and end with the suffix "Type". Found incorrect items: [{0}].' -f ($incorrectTypes -join ', '))
+                    Write-Warning $warningMessage
+
+                    Write-Output @{
+                        Warning = $warningMessage
+                    }
+                }
             }
         }
     }
@@ -1546,8 +1702,12 @@ Describe 'API version tests' -Tag 'ApiCheck' {
 
         if ($approvedApiVersions -notcontains $TargetApi) {
             # Using a warning now instead of an error, as we don't want to block PRs for this.
-            Write-Warning ("The used API version [$TargetApi] is not one of the most recent 5 versions. Please consider upgrading to one of the following: {0}" -f $approvedApiVersions -join ', ')
+            $warningMessage = "The used API version [$TargetApi] is not one of the most recent 5 versions. Please consider upgrading to one of the following: {0}" -f ($approvedApiVersions -join ', ')
+            Write-Warning $warningMessage
 
+            Write-Output @{
+                Warning = $warningMessage
+            }
             # The original failed test was
             # $approvedApiVersions | Should -Contain $TargetApi
         } else {
@@ -1564,7 +1724,13 @@ Describe 'API version tests' -Tag 'ApiCheck' {
 
             if ($indexOfVersion -gt ($approvedApiVersions.Count - 2)) {
                 $newerAPIVersions = $approvedApiVersions[0..($indexOfVersion - 1)]
-                Write-Warning ("The used API version [$TargetApi] for Resource Type [$ProviderNamespace/$ResourceType] will soon expire. Please consider updating it. Consider using one of the newer API versions [{0}]" -f ($newerAPIVersions -join ', '))
+
+                $warningMessage = "The used API version [$TargetApi] for Resource Type [$ProviderNamespace/$ResourceType] will soon expire. Please consider updating it. Consider using one of the newer API versions [{0}]" -f ($newerAPIVersions -join ', ')
+                Write-Warning $warningMessage
+
+                Write-Output @{
+                    Warning = $warningMessage
+                }
             }
         }
     }

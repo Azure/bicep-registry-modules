@@ -1,6 +1,5 @@
 metadata name = 'Compute Disks'
 metadata description = 'This module deploys a Compute Disk'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the disk that is being created.')
 param name string

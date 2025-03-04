@@ -18,7 +18,7 @@ This module deploys a Public IP Address.
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Network/publicIPAddresses` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-09-01/publicIPAddresses) |
+| `Microsoft.Network/publicIPAddresses` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/publicIPAddresses) |
 
 ## Usage examples
 
@@ -29,8 +29,8 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/public-ip-address:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Max](#example-2-max)
-- [Waf-Aligned](#example-3-waf-aligned)
+- [Using large parameter set](#example-2-using-large-parameter-set)
+- [WAF-aligned](#example-3-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -96,7 +96,10 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 2: _Max_
+### Example 2: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
 
 <details>
 
@@ -348,7 +351,10 @@ param zones = [
 </details>
 <p>
 
-### Example 3: _Waf-Aligned_
+### Example 3: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
 
 <details>
 
@@ -820,12 +826,12 @@ The DNS settings of the public IP address.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`domainNameLabel`](#parameter-dnssettingsdomainnamelabel) | string | The domain name label. The concatenation of the domain name label and the regionalized DNS zone make up the fully qualified domain name associated with the public IP address. If a domain name label is specified, an A DNS record is created for the public IP in the Microsoft Azure DNS system. |
-| [`domainNameLabelScope`](#parameter-dnssettingsdomainnamelabelscope) | string | The domain name label scope. If a domain name label and a domain name label scope are specified, an A DNS record is created for the public IP in the Microsoft Azure DNS system with a hashed value includes in FQDN. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`domainNameLabelScope`](#parameter-dnssettingsdomainnamelabelscope) | string | The domain name label scope. If a domain name label and a domain name label scope are specified, an A DNS record is created for the public IP in the Microsoft Azure DNS system with a hashed value includes in FQDN. |
 | [`fqdn`](#parameter-dnssettingsfqdn) | string | The Fully Qualified Domain Name of the A DNS record associated with the public IP. This is the concatenation of the domainNameLabel and the regionalized DNS zone. |
 | [`reverseFqdn`](#parameter-dnssettingsreversefqdn) | string | The reverse FQDN. A user-visible, fully qualified domain name that resolves to this public IP address. If the reverseFqdn is specified, then a PTR DNS record is created pointing from the IP address in the in-addr.arpa domain to the reverse FQDN. |
 
@@ -840,12 +846,11 @@ The domain name label. The concatenation of the domain name label and the region
 
 The domain name label scope. If a domain name label and a domain name label scope are specified, an A DNS record is created for the public IP in the Microsoft Azure DNS system with a hashed value includes in FQDN.
 
-- Required: Yes
+- Required: No
 - Type: string
 - Allowed:
   ```Bicep
   [
-    ''
     'NoReuse'
     'ResourceGroupReuse'
     'SubscriptionReuse'

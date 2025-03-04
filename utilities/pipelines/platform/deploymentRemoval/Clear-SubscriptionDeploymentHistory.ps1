@@ -43,7 +43,7 @@ function Clear-SubscriptionDeploymentHistory {
     # Load helper functions
     . (Join-Path (Split-Path $PSScriptRoot) 'helper' 'Split-Array.ps1')
 
-    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12 # Enables web reponse
+    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12 # Enables web response
     $deploymentThreshold = (Get-Date).AddDays(-1 * $maxDeploymentRetentionInDays)
 
     # Setting context explicitely in case the principal has permissions on multiple
@@ -60,7 +60,7 @@ function Clear-SubscriptionDeploymentHistory {
     $response = Invoke-RestMethod @getInputObject
 
     if (($response | Get-Member -MemberType 'NoteProperty').Name -notcontains 'value') {
-        throw ('Fetching deployments failed with error [{0}]' -f ($reponse | Out-String))
+        throw ('Fetching deployments failed with error [{0}]' -f ($response | Out-String))
     }
 
     Write-Verbose ('Found [{0}] deployments in subscription [{1}]' -f $response.value.Count, $subscriptionId) -Verbose

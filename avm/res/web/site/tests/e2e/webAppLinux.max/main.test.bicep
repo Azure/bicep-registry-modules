@@ -1,6 +1,6 @@
 targetScope = 'subscription'
 
-metadata name = 'Web App, using large parameter set'
+metadata name = 'Linux Web App, using large parameter set'
 metadata description = 'This instance deploys the module asa Linux Web App with most of its features enabled.'
 
 // ========== //
@@ -265,9 +265,5 @@ module testDeployment '../../../main.bicep' = [
       vnetRouteAllEnabled: true
       publicNetworkAccess: 'Disabled'
     }
-    dependsOn: [
-      nestedDependencies
-      diagnosticDependencies
-    ]
   }
 ]

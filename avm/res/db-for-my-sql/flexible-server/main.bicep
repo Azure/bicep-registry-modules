@@ -1,6 +1,5 @@
 metadata name = 'DBforMySQL Flexible Servers'
 metadata description = 'This module deploys a DBforMySQL Flexible Server.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the MySQL flexible server.')
 param name string

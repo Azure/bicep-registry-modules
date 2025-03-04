@@ -1,6 +1,5 @@
 metadata name = 'Search Services'
 metadata description = 'This module deploys a Search Service.'
-metadata owner = 'Azure/module-maintainers'
 
 // ============== //
 //   Parameters   //
@@ -108,6 +107,8 @@ param tags object?
 // ============= //
 //   Variables   //
 // ============= //
+
+var enableReferencedModulesTelemetry = false
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -296,7 +297,7 @@ module searchService_privateEndpoints 'br/public:avm/res/network/private-endpoin
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
-      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',
@@ -376,7 +377,7 @@ output resourceId string = searchService.id
 output resourceGroupName string = resourceGroup().name
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = searchService.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = searchService.?identity.?principalId
 
 @description('The location the resource was deployed into.')
 output location string = searchService.location

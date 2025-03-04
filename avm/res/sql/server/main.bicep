@@ -1,6 +1,5 @@
 metadata name = 'Azure SQL Servers'
 metadata description = 'This module deploys an Azure SQL Server.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The administrator username for the server. Required if no `administrators` object for AAD authentication is provided.')
 param administratorLogin string = ''
@@ -15,18 +14,18 @@ param location string = resourceGroup().location
 @description('Required. The name of the server.')
 param name string
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
 @description('Conditional. The resource ID of a user assigned identity to be used by default. Required if "userAssignedIdentities" is not empty.')
 param primaryUserAssignedIdentityId string = ''
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -81,7 +80,7 @@ param minimalTlsVersion string = '1.2'
 @description('Optional. Whether or not to enable IPv6 support for this server.')
 param isIPv6Enabled string = 'Disabled'
 
-import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointSingleServiceType[]?
 
@@ -133,6 +132,8 @@ param secretsExportConfiguration secretsExportConfigurationType?
 
 @description('Optional. The failover groups configuration.')
 param failoverGroups failoverGroupType[] = []
+
+var enableReferencedModulesTelemetry = false
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
@@ -341,10 +342,13 @@ module server_elasticPools 'elastic-pool/main.bicep' = [
   }
 ]
 
-module server_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
+module server_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-server-PrivateEndpoint-${index}'
-    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
+    scope: resourceGroup(
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
+    )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(server.id, '/'))}-${privateEndpoint.?service ?? 'sqlServer'}-${index}'
       privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
@@ -375,7 +379,7 @@ module server_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
-      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',
@@ -504,7 +508,7 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
       contains(secretsExportConfiguration!, 'sqlAdminPasswordSecretName')
         ? [
             {
-              name: secretsExportConfiguration!.sqlAdminPasswordSecretName
+              name: secretsExportConfiguration!.?sqlAdminPasswordSecretName
               value: administratorLoginPassword
             }
           ]
@@ -512,7 +516,7 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
       contains(secretsExportConfiguration!, 'sqlAzureConnectionStringSercretName')
         ? [
             {
-              name: secretsExportConfiguration!.sqlAzureConnectionStringSercretName
+              name: secretsExportConfiguration!.?sqlAzureConnectionStringSercretName
               value: 'Server=${server.properties.fullyQualifiedDomainName}; Database=${!empty(databases) ? databases[0].name : ''}; User=${administratorLogin}; Password=${administratorLoginPassword}'
             }
           ]
@@ -552,25 +556,25 @@ output fullyQualifiedDomainName string = server.properties.fullyQualifiedDomainN
 output resourceGroupName string = resourceGroup().name
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = server.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = server.?identity.?principalId
 
 @description('The location the resource was deployed into.')
 output location string = server.location
 
-import { secretsOutputType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { secretsOutputType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret\'s name.')
 output exportedSecrets secretsOutputType = (secretsExportConfiguration != null)
   ? toObject(secretsExport.outputs.secretsSet, secret => last(split(secret.secretResourceId, '/')), secret => secret)
   : {}
 
 @description('The private endpoints of the SQL server.')
-output privateEndpoints array = [
-  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
-    name: server_privateEndpoints[i].outputs.name
-    resourceId: server_privateEndpoints[i].outputs.resourceId
-    groupId: server_privateEndpoints[i].outputs.groupId
-    customDnsConfig: server_privateEndpoints[i].outputs.customDnsConfig
-    networkInterfaceIds: server_privateEndpoints[i].outputs.networkInterfaceIds
+output privateEndpoints privateEndpointOutputType[] = [
+  for (pe, index) in (privateEndpoints ?? []): {
+    name: server_privateEndpoints[index].outputs.name
+    resourceId: server_privateEndpoints[index].outputs.resourceId
+    groupId: server_privateEndpoints[index].outputs.?groupId!
+    customDnsConfigs: server_privateEndpoints[index].outputs.customDnsConfigs
+    networkInterfaceResourceIds: server_privateEndpoints[index].outputs.networkInterfaceResourceIds
   }
 ]
 
@@ -578,11 +582,36 @@ output privateEndpoints array = [
 //   Definitions   //
 // =============== //
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 import { elasticPoolPerDatabaseSettingsType, elasticPoolSkuType } from 'elastic-pool/main.bicep'
 import { databaseSkuType, shortTermBackupRetentionPolicyType, longTermBackupRetentionPolicyType } from 'database/main.bicep'
 import { recurringScansType } from 'vulnerability-assessment/main.bicep'
 import { failoverGroupReadOnlyEndpointType, failoverGroupReadWriteEndpointType } from 'failover-group/main.bicep'
+
+@export()
+@description('The type for a private endpoint output.')
+type privateEndpointOutputType = {
+  @description('The name of the private endpoint.')
+  name: string
+
+  @description('The resource ID of the private endpoint.')
+  resourceId: string
+
+  @description('The group Id for the private endpoint Group.')
+  groupId: string?
+
+  @description('The custom DNS configurations of the private endpoint.')
+  customDnsConfigs: {
+    @description('FQDN that resolves to private endpoint IP address.')
+    fqdn: string?
+
+    @description('A list of private IP addresses of the private endpoint.')
+    ipAddresses: string[]
+  }[]
+
+  @description('The IDs of the network interfaces associated with the private endpoint.')
+  networkInterfaceResourceIds: string[]
+}
 
 @export()
 type auditSettingsType = {

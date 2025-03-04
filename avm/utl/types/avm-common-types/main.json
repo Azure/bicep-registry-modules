@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "16194187221754358819"
+      "version": "0.32.4.45862",
+      "templateHash": "4367990689166386037"
     },
     "name": "Default interface types for AVM modules",
-    "description": "This module provides you with all common variants for AVM interfaces to be used in AVM modules.\n\nDetails for how to implement these interfaces can be found in the AVM documentation [here](https://azure.github.io/Azure-Verified-Modules/specs/bcp/res/interfaces/).\n",
-    "owner": "Azure/module-maintainers"
+    "description": "This module provides you with all common variants for AVM interfaces to be used in AVM modules.\n\nDetails for how to implement these interfaces can be found in the AVM documentation [here](https://azure.github.io/Azure-Verified-Modules/specs/bcp/res/interfaces/).\n"
   },
   "definitions": {
     "diagnosticSettingFullType": {
@@ -608,6 +607,13 @@
             "description": "Required. Resource ID of the subnet where the endpoint needs to be created."
           }
         },
+        "resourceGroupResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used."
+          }
+        },
         "privateDnsZoneGroup": {
           "$ref": "#/definitions/privateEndpointPrivateDnsZoneGroupType",
           "nullable": true,
@@ -697,13 +703,6 @@
           "metadata": {
             "description": "Optional. Enable/Disable usage telemetry for module."
           }
-        },
-        "resourceGroupName": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Specify if you want to deploy the Private Endpoint into a different Resource Group than the main resource."
-          }
         }
       },
       "metadata": {
@@ -745,6 +744,13 @@
           "type": "string",
           "metadata": {
             "description": "Required. Resource ID of the subnet where the endpoint needs to be created."
+          }
+        },
+        "resourceGroupResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used."
           }
         },
         "privateDnsZoneGroup": {
@@ -835,13 +841,6 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. Enable/Disable usage telemetry for module."
-          }
-        },
-        "resourceGroupName": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Specify if you want to deploy the Private Endpoint into a different resource group than the main resource."
           }
         }
       },

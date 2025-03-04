@@ -22,7 +22,6 @@ param serviceShort string = 'vscmax'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
-
 // ============ //
 // Dependencies //
 // ============ //
@@ -57,21 +56,21 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}VPNConfig'
       aadAudience: '11111111-1234-4321-1234-111111111111'
       aadIssuer: 'https://sts.windows.net/11111111-1111-1111-1111-111111111111/'
-      aadTenant: 'https://login.microsoftonline.com/11111111-1111-1111-1111-111111111111'
+      aadTenant: '${environment().authentication.loginEndpoint}11111111-1111-1111-1111-111111111111'
       p2sConfigurationPolicyGroups: [
         {
           userVPNPolicyGroupName: 'DefaultGroup'
           policymembers: [
             {
-            name: 'UserGroup1'
-            attributeType: 'AADGroupId'
-            attributeValue: '11111111-1111-2222-3333-111111111111'
+              name: 'UserGroup1'
+              attributeType: 'AADGroupId'
+              attributeValue: '11111111-1111-2222-3333-111111111111'
             }
             {
               name: 'UserGroup2'
               attributeType: 'AADGroupId'
               attributeValue: '11111111-1111-3333-4444-111111111111'
-              }
+            }
           ]
           priority: '0'
           isDefault: 'true'
@@ -80,15 +79,15 @@ module testDeployment '../../../main.bicep' = [
           userVPNPolicyGroupName: 'AdditionalGroup'
           policymembers: [
             {
-            name: 'UserGroup3'
-            attributeType: 'AADGroupId'
-            attributeValue: '11111111-1111-4444-5555-111111111111'
+              name: 'UserGroup3'
+              attributeType: 'AADGroupId'
+              attributeValue: '11111111-1111-4444-5555-111111111111'
             }
             {
               name: 'UserGroup4'
               attributeType: 'AADGroupId'
               attributeValue: '11111111-1111-5555-6666-111111111111'
-              }
+            }
           ]
           priority: '1'
           isDefault: 'false'

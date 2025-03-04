@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "5520853908432842946"
+      "version": "0.32.4.45862",
+      "templateHash": "2116868468266307630"
     },
     "name": "Service-Endpoint-Policy",
-    "description": "This module deploys a Service Endpoint Policy.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Service Endpoint Policy."
   },
   "definitions": {
     "lockType": {
