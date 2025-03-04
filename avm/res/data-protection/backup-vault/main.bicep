@@ -185,63 +185,63 @@ resource backupVault 'Microsoft.DataProtection/backupVaults@2024-04-01' = {
       }
     ]
     featureSettings: featureSettings
-    // securitySettings: {
-    //   encryptionSettings: !empty(customerManagedKey)
-    //     ? {
-    //         infrastructureEncryption: infrastructureEncryption
-    //         kekIdentity: {
-    //           identityId: customerManagedKey.?userAssignedIdentityResourceId
-    //           // identityId: !empty(customerManagedKey.?userAssignedIdentityResourceId ?? '')
-    //           // ? cMKUserAssignedIdentity.properties.clientId
-    //           // : null
-    //           identityType: 'UserAssigned'
-    //         }
-    //         keyVaultProperties: {
-    //           keyUri: 'https://dep-avma-kv-dpbvcmk-ou5.vault.azure.net/keys/keyEncryptionKey'
-    //           // keyUri: !empty(customerManagedKey.?keyVersion)
-    //           //   ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.?keyVersion}'
-    //           //   : cMKKeyVault::cMKKey.properties.keyUriWithVersion
-    //         }
-    //       }
-    //     : null
-    //   // encryptionSettings: !empty(customerManagedKey)
-    //   //   ? {
-    //   //       infrastructureEncryption: infrastructureEncryption
-    //   //       kekIdentity: {
-    //   //         identityId: !empty(customerManagedKey.?userAssignedIdentityResourceId ?? '')
-    //   //           ? cMKUserAssignedIdentity.properties.clientId
-    //   //           : null
-    //   //         // identityType: 'string'
-    //   //       }
-    //   //       keyVaultProperties: {
-    //   //         keyUri: cMKKeyVault.properties.vaultUri
-    //   //       }
-    //   //     }
-    //   //   : null
-    //   // encryptionSettings: !empty(customerManagedKey)
-    //   //   ? {
-    //   //       infrastructureEncryption: infrastructureEncryption
-    //   //       kekIdentity: !empty(customerManagedKey.?userAssignedIdentityResourceId)
-    //   //         ? {
-    //   //           identityId: cMKUserAssignedIdentity.id
-    //   //           }
-    //   //         : {
-    //   //           identityId: empty(customerManagedKey.?userAssignedIdentityResourceId)
-    //   //           }
-    //   //       keyVaultProperties: {
-    //   //         keyUri: !empty(customerManagedKey.?keyVersion)
-    //   //           ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.?keyVersion}'
-    //   //           : cMKKeyVault::cMKKey.properties.keyUriWithVersion
-    //   //       }
-    //   //     }
-    //   //   : null
-    //   // immutabilitySettings: !empty(immutabilitySettingState)
-    //   //   ? {
-    //   //       state: immutabilitySettingState
-    //   //     }
-    //   //   : null
-    //   // softDeleteSettings: softDeleteSettings
-    // }
+    securitySettings: {
+      encryptionSettings: !empty(customerManagedKey)
+        ? {
+            // infrastructureEncryption: infrastructureEncryption
+            kekIdentity: {
+              identityId: customerManagedKey.?userAssignedIdentityResourceId
+              // identityId: !empty(customerManagedKey.?userAssignedIdentityResourceId ?? '')
+              // ? cMKUserAssignedIdentity.properties.clientId
+              // : null
+              identityType: 'UserAssigned'
+            }
+            keyVaultProperties: {
+              keyUri: 'https://dep-avma-kv-dpbvcmk-ou5.vault.azure.net/keys/keyEncryptionKey'
+              // keyUri: !empty(customerManagedKey.?keyVersion)
+              //   ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.?keyVersion}'
+              //   : cMKKeyVault::cMKKey.properties.keyUriWithVersion
+            }
+          }
+        : null
+      // encryptionSettings: !empty(customerManagedKey)
+      //   ? {
+      //       infrastructureEncryption: infrastructureEncryption
+      //       kekIdentity: {
+      //         identityId: !empty(customerManagedKey.?userAssignedIdentityResourceId ?? '')
+      //           ? cMKUserAssignedIdentity.properties.clientId
+      //           : null
+      //         // identityType: 'string'
+      //       }
+      //       keyVaultProperties: {
+      //         keyUri: cMKKeyVault.properties.vaultUri
+      //       }
+      //     }
+      //   : null
+      // encryptionSettings: !empty(customerManagedKey)
+      //   ? {
+      //       infrastructureEncryption: infrastructureEncryption
+      //       kekIdentity: !empty(customerManagedKey.?userAssignedIdentityResourceId)
+      //         ? {
+      //           identityId: cMKUserAssignedIdentity.id
+      //           }
+      //         : {
+      //           identityId: empty(customerManagedKey.?userAssignedIdentityResourceId)
+      //           }
+      //       keyVaultProperties: {
+      //         keyUri: !empty(customerManagedKey.?keyVersion)
+      //           ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.?keyVersion}'
+      //           : cMKKeyVault::cMKKey.properties.keyUriWithVersion
+      //       }
+      //     }
+      //   : null
+      // immutabilitySettings: !empty(immutabilitySettingState)
+      //   ? {
+      //       state: immutabilitySettingState
+      //     }
+      //   : null
+      // softDeleteSettings: softDeleteSettings
+    }
   }
 }
 
