@@ -39,7 +39,7 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-
 // }
 
 resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
-  name: keyVaultName
+  name: 'dep-avma-kv-dpbvcmk-ou5'
 }
 
 resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
@@ -56,7 +56,7 @@ resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
     roleDefinitionId: subscriptionResourceId(
       'Microsoft.Authorization/roleDefinitions',
       'e147488a-f6f5-4113-8e2d-b22465e65bf6'
-    ) // Key Vault Crypto User
+    ) // Key Vault Crypto Service Encryption User
     principalType: 'ServicePrincipal'
   }
 }
