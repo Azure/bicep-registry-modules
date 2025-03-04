@@ -71,10 +71,10 @@ param type string = 'GeoRedundant'
 param azureMonitorAlertSettingsAlertsForAllJobFailures string = 'Enabled'
 
 @description('Optional. List of all backup policies.')
-param backupPolicies array = []
+param backupPolicies array?
 
 @description('Optional. Feature settings for the backup vault.')
-param featureSettings object = {}
+param featureSettings object?
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -190,15 +190,17 @@ resource backupVault 'Microsoft.DataProtection/backupVaults@2024-04-01' = {
         ? {
             infrastructureEncryption: infrastructureEncryption
             kekIdentity: {
-              identityId: !empty(customerManagedKey.?userAssignedIdentityResourceId ?? '')
-                ? cMKUserAssignedIdentity.properties.clientId
-                : null
+              identityId: customerManagedKey.?userAssignedIdentityResourceId
+              // identityId: !empty(customerManagedKey.?userAssignedIdentityResourceId ?? '')
+              // ? cMKUserAssignedIdentity.properties.clientId
+              // : null
               identityType: 'UserAssigned'
             }
             keyVaultProperties: {
-              keyUri: !empty(customerManagedKey.?keyVersion)
-                ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.?keyVersion}'
-                : cMKKeyVault::cMKKey.properties.keyUriWithVersion
+              keyUri: 'https://dep-avma-kv-dpbvcmk-ou5.vault.azure.net/keys/keyEncryptionKey'
+              // keyUri: !empty(customerManagedKey.?keyVersion)
+              //   ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.?keyVersion}'
+              //   : cMKKeyVault::cMKKey.properties.keyUriWithVersion
             }
           }
         : null
@@ -233,18 +235,18 @@ resource backupVault 'Microsoft.DataProtection/backupVaults@2024-04-01' = {
       //       }
       //     }
       //   : null
-      immutabilitySettings: !empty(immutabilitySettingState)
-        ? {
-            state: immutabilitySettingState
-          }
-        : null
-      softDeleteSettings: softDeleteSettings
+      // immutabilitySettings: !empty(immutabilitySettingState)
+      //   ? {
+      //       state: immutabilitySettingState
+      //     }
+      //   : null
+      // softDeleteSettings: softDeleteSettings
     }
   }
 }
 
 module backupVault_backupPolicies 'backup-policy/main.bicep' = [
-  for (backupPolicy, index) in backupPolicies: {
+  for (backupPolicy, index) in (backupPolicies ?? []): {
     name: '${uniqueString(deployment().name, location)}-BV-BackupPolicy-${index}'
     params: {
       backupVaultName: backupVault.name
