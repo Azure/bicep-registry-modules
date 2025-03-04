@@ -289,15 +289,15 @@ Describe 'File/folder tests' -Tag 'Modules' {
                 [string] $moduleFolderPath
             )
 
-            $incorrectParameters = @()
+            $incorrectFolders = @()
             $e2eTestFolderPathList = Get-ChildItem -Directory (Join-Path -Path $moduleFolderPath 'tests' 'e2e') | Where-Object { $_.Name -like '*defaults' -or $_.Name -eq 'waf-aligned' }
             foreach ($e2eTestFolderPath in $e2eTestFolderPathList) {
                 $filePath = Join-Path -Path $e2eTestFolderPath '.e2eignore'
                 if (Test-Path $filePath) {
-                    $incorrectParameters += $e2eTestFolderPath.Name
+                    $incorrectFolders += $e2eTestFolderPath.Name
                 }
             }
-            $incorrectParameters | Should -BeNullOrEmpty -Because ('skipping this test is not allowed. Found incorrect items: [{0}].' -f ($incorrectParameters -join ', '))
+            $incorrectFolders | Should -BeNullOrEmpty -Because ('skipping this test is not allowed. Found incorrect items: [{0}].' -f ($incorrectFolders -join ', '))
         }
 
         It '[<moduleFolderName>] a [` .e2eignore `] file must contain text, which states the exception reason for not executing the deployment test.' -TestCases $topLevelModuleTestCases {
@@ -307,7 +307,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
                 [string] $moduleFolderPath
             )
 
-            $incorrectParameters = @()
+            $incorrectFolders = @()
             $e2eTestFolderPathList = Get-ChildItem -Directory (Join-Path -Path $moduleFolderPath 'tests' 'e2e')
             foreach ($e2eTestFolderPath in $e2eTestFolderPathList) {
                 $filePath = Join-Path -Path $e2eTestFolderPath '.e2eignore'
@@ -315,11 +315,11 @@ Describe 'File/folder tests' -Tag 'Modules' {
                 if ($pathExisting) {
                     $fileContent = Get-Content -Path $filePath
                     if (-not $fileContent) {
-                        $incorrectParameters += $e2eTestFolderPath.Name + '\.e2eignore'
+                        $incorrectFolders += $e2eTestFolderPath.Name + '\.e2eignore'
                     }
                 }
             }
-            $incorrectParameters | Should -BeNullOrEmpty -Because ('the file should contain a reason for skipping the test. Found incorrect items: [{0}].' -f ($incorrectParameters -join ', '))
+            $incorrectFolders | Should -BeNullOrEmpty -Because ('the file should contain a reason for skipping the test. Found incorrect items: [{0}].' -f ($incorrectFolders -join ', '))
         }
     }
 }
