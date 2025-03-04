@@ -97,8 +97,5 @@ module testDeployment '../../../main.bicep' = [
         Env: 'test'
       }
     }
-    dependsOn: [
-      nestedDependencies
-    ]
   }
 ]
