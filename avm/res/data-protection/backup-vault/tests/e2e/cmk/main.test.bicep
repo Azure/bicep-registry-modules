@@ -64,6 +64,7 @@ module testDeployment '../../../main.bicep' = [
         keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
         userAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
       }
+      infrastructureEncryption: 'Disabled'
       managedIdentities: {
         systemAssigned: true
         userAssignedResourceIds: [

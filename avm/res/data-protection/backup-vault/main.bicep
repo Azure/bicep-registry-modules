@@ -188,7 +188,7 @@ resource backupVault 'Microsoft.DataProtection/backupVaults@2024-04-01' = {
     securitySettings: {
       encryptionSettings: !empty(customerManagedKey)
         ? {
-            infrastructureEncryption: 'Disabled'
+            infrastructureEncryption: infrastructureEncryption
             kekIdentity: !empty(customerManagedKey.?userAssignedIdentityResourceId)
               ? {
                   identityId: cMKUserAssignedIdentity.id
@@ -205,8 +205,10 @@ resource backupVault 'Microsoft.DataProtection/backupVaults@2024-04-01' = {
             // // identityType: 'SystemAssigned'
 
             keyVaultProperties: {
-              keyUri: cMKKeyVault::cMKKey.properties.keyUri
-              // keyUri: 'https://dep-avma-kv-dpbvcmk-ou5.vault.azure.net/keys/keyEncryptionKey'
+              // keyUri: cMKKeyVault::cMKKey.properties.keyUri
+              keyUri: !empty(customerManagedKey.?keyVersion)
+                ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.?keyVersion}'
+                : cMKKeyVault::cMKKey.properties.keyUriWithVersion
               // keyUri: !empty(customerManagedKey.?keyVersion)
               //   ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.?keyVersion}'
               //   : cMKKeyVault::cMKKey.properties.keyUriWithVersion
