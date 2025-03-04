@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "17064342852788020380"
+      "templateHash": "9116046860964746358"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -174,7 +174,6 @@
               2,
               3
             ],
-            "nullable": true,
             "metadata": {
               "description": "Optional. The SKU of the Public IP address."
             }
@@ -477,14 +476,12 @@
         },
         "publicIPAddressProperties": {
           "$ref": "#/definitions/_1.natGatewayPublicIpAddressPropertiesType",
-          "nullable": true,
           "metadata": {
             "description": "Optional. The Public IP address(es) properties to be attached to the NAT gateway."
           }
         },
         "publicIPAddressPrefixesProperties": {
           "$ref": "#/definitions/_1.publicIPAddressPrefixesPropertiesType",
-          "nullable": true,
           "metadata": {
             "description": "Optional. The Public IP address(es) prefixes properties to be attached to the NAT gateway."
           }
@@ -891,6 +888,9 @@
     },
     "virtualNetworkAddressSpace": {
       "type": "array",
+      "items": {
+        "type": "string"
+      },
       "defaultValue": [],
       "metadata": {
         "description": "Optional. The address space of the Virtual Network that will be created by this module, supplied as multiple CIDR blocks in an array, e.g. `[\"10.0.0.0/16\",\"172.16.0.0/12\"]`."
@@ -1467,7 +1467,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "16042373921872429945"
+              "templateHash": "2925533542873520822"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -1493,14 +1493,12 @@
                 },
                 "publicIPAddressProperties": {
                   "$ref": "#/definitions/natGatewayPublicIpAddressPropertiesType",
-                  "nullable": true,
                   "metadata": {
                     "description": "Optional. The Public IP address(es) properties to be attached to the NAT gateway."
                   }
                 },
                 "publicIPAddressPrefixesProperties": {
                   "$ref": "#/definitions/publicIPAddressPrefixesPropertiesType",
-                  "nullable": true,
                   "metadata": {
                     "description": "Optional. The Public IP address(es) prefixes properties to be attached to the NAT gateway."
                   }
@@ -1530,7 +1528,6 @@
                       2,
                       3
                     ],
-                    "nullable": true,
                     "metadata": {
                       "description": "Optional. The SKU of the Public IP address."
                     }
@@ -2357,6 +2354,9 @@
             },
             "virtualNetworkAddressSpace": {
               "type": "array",
+              "items": {
+                "type": "string"
+              },
               "defaultValue": [],
               "metadata": {
                 "description": "The address space of the virtual network, supplied as multiple CIDR blocks, e.g. `[\"10.0.0.0/16\",\"172.16.0.0/12\"]`"

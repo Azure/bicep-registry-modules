@@ -1247,7 +1247,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     roleAssignments: [
       {
         definition: '/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168'
-        principalId: '<principalId>'
+        principalId: '896b1162-be44-4b28-888a-d01acc1b4271'
         relativeScope: ''
         roleAssignmentCondition: {
           roleConditionType: {
@@ -1300,7 +1300,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       "value": [
         {
           "definition": "/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168",
-          "principalId": "<principalId>",
+          "principalId": "896b1162-be44-4b28-888a-d01acc1b4271",
           "relativeScope": "",
           "roleAssignmentCondition": {
             "roleConditionType": {
@@ -1363,7 +1363,7 @@ param roleAssignmentEnabled = true
 param roleAssignments = [
   {
     definition: '/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168'
-    principalId: '<principalId>'
+    principalId: '896b1162-be44-4b28-888a-d01acc1b4271'
     relativeScope: ''
     roleAssignmentCondition: {
       roleConditionType: {
@@ -2404,7 +2404,7 @@ The name of the Public IP address.
 
 The SKU of the Public IP address.
 
-- Required: No
+- Required: Yes
 - Type: array
 - Allowed:
   ```Bicep

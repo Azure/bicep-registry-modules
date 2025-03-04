@@ -138,7 +138,7 @@ param virtualNetworkName string?
 param virtualNetworkTags object = {}
 
 @description('''Optional. The address space of the Virtual Network that will be created by this module, supplied as multiple CIDR blocks in an array, e.g. `["10.0.0.0/16","172.16.0.0/12"]`.''')
-param virtualNetworkAddressSpace array = []
+param virtualNetworkAddressSpace string[] = []
 
 @description('''Optional. The subnets of the Virtual Network that will be created by this module.''')
 param virtualNetworkSubnets subnetType[]?

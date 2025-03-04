@@ -50,7 +50,7 @@ param virtualNetworkName string = ''
 param virtualNetworkTags object = {}
 
 @sys.description('The address space of the virtual network, supplied as multiple CIDR blocks, e.g. `["10.0.0.0/16","172.16.0.0/12"]`')
-param virtualNetworkAddressSpace array = []
+param virtualNetworkAddressSpace string[] = []
 
 @sys.description('The subnets of the Virtual Network that will be created by this module.')
 param virtualNetworkSubnets subnetType[] = []
@@ -1292,10 +1292,10 @@ type natGatewayType = {
   zones: int?
 
   @description('Optional. The Public IP address(es) properties to be attached to the NAT gateway.')
-  publicIPAddressProperties: natGatewayPublicIpAddressPropertiesType?
+  publicIPAddressProperties: natGatewayPublicIpAddressPropertiesType
 
   @description('Optional. The Public IP address(es) prefixes properties to be attached to the NAT gateway.')
-  publicIPAddressPrefixesProperties: publicIPAddressPrefixesPropertiesType?
+  publicIPAddressPrefixesProperties: publicIPAddressPrefixesPropertiesType
 }?
 
 type natGatewayPublicIpAddressPropertiesType = {
@@ -1303,7 +1303,7 @@ type natGatewayPublicIpAddressPropertiesType = {
   name: string?
 
   @description('Optional. The SKU of the Public IP address.')
-  zones: (1 | 2 | 3)[]?
+  zones: (1 | 2 | 3)[]
 }[]?
 
 type publicIPAddressPrefixesPropertiesType = {
