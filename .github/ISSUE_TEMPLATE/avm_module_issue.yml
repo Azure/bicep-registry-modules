@@ -146,6 +146,7 @@ body:
         - "avm/res/key-vault/vault"
         - "avm/res/kubernetes-configuration/extension"
         - "avm/res/kubernetes-configuration/flux-configuration"
+        - "avm/res/kubernetes/connected-cluster"
         - "avm/res/kusto/cluster"
         - "avm/res/load-test-service/load-test"
         - "avm/res/logic/workflow"
