@@ -8,6 +8,7 @@ This module deploys a subscription to accelerate deployment of landing zones. Fo
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -2187,6 +2188,7 @@ The configuration object for the Bastion host. Do not provide this object or kee
 | [`disableCopyPaste`](#parameter-virtualnetworkbastionconfigurationdisablecopypaste) | bool | The option to allow copy and paste. |
 | [`enableFileCopy`](#parameter-virtualnetworkbastionconfigurationenablefilecopy) | bool | The option to allow file copy. |
 | [`enableIpConnect`](#parameter-virtualnetworkbastionconfigurationenableipconnect) | bool | The option to allow IP connect. |
+| [`enablePrivateOnlyBastion`](#parameter-virtualnetworkbastionconfigurationenableprivateonlybastion) | bool | Option to deploy a private Bastion host with no public IP address. |
 | [`enableShareableLink`](#parameter-virtualnetworkbastionconfigurationenableshareablelink) | bool | The option to allow shareable link. |
 | [`name`](#parameter-virtualnetworkbastionconfigurationname) | string | The name of the bastion host. |
 | [`scaleUnits`](#parameter-virtualnetworkbastionconfigurationscaleunits) | int | The number of scale units. The Basic SKU only supports 2 scale units. |
@@ -2223,6 +2225,13 @@ The option to allow file copy.
 ### Parameter: `virtualNetworkBastionConfiguration.enableIpConnect`
 
 The option to allow IP connect.
+
+- Required: No
+- Type: bool
+
+### Parameter: `virtualNetworkBastionConfiguration.enablePrivateOnlyBastion`
+
+Option to deploy a private Bastion host with no public IP address.
 
 - Required: No
 - Type: bool
@@ -2668,6 +2677,25 @@ An array of of objects of virtual hub route table resource IDs to propagate rout
 | `subscriptionAcceptOwnershipUrl` | string | The Subscription Ownership URL. Only used when creating MCA Subscriptions across tenants. |
 | `subscriptionId` | string | The Subscription ID that has been created or provided. |
 | `subscriptionResourceId` | string | The Subscription Resource ID that has been created or provided. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/ptn/authorization/pim-role-assignment:0.1.0` | Remote reference |
+| `br/public:avm/ptn/authorization/role-assignment:0.2.0` | Remote reference |
+| `br/public:avm/ptn/authorization/role-assignment:0.2.1` | Remote reference |
+| `br/public:avm/res/managed-identity/user-assigned-identity:0.4.0` | Remote reference |
+| `br/public:avm/res/network/bastion-host:0.5.0` | Remote reference |
+| `br/public:avm/res/network/nat-gateway:1.2.1` | Remote reference |
+| `br/public:avm/res/network/network-security-group:0.5.0` | Remote reference |
+| `br/public:avm/res/network/private-dns-zone:0.7.0` | Remote reference |
+| `br/public:avm/res/network/virtual-network:0.5.1` | Remote reference |
+| `br/public:avm/res/resources/deployment-script:0.2.3` | Remote reference |
+| `br/public:avm/res/resources/resource-group:0.4.0` | Remote reference |
+| `br/public:avm/res/storage/storage-account:0.15.0` | Remote reference |
 
 ## Data Collection
 

@@ -1264,6 +1264,9 @@ module createBastionHost 'br/public:avm/res/network/bastion-host:0.5.0' = if (vi
     enableIpConnect: virtualNetworkBastionConfiguration.?enableIpConnect ?? false
     enableShareableLink: virtualNetworkBastionConfiguration.?enableShareableLink ?? false
     scaleUnits: virtualNetworkBastionConfiguration.?scaleUnits ?? 2
+    enablePrivateOnlyBastion: ((virtualNetworkBastionConfiguration.?bastionSku ?? 'Standard') == 'Premium')
+      ? virtualNetworkBastionConfiguration.?enablePrivateOnlyBastion ?? false
+      : false
     enableTelemetry: enableTelemetry
   }
 }
@@ -1500,6 +1503,9 @@ type bastionType = {
 
   @description('Optional. The number of scale units. The Basic SKU only supports 2 scale units.')
   scaleUnits: int?
+
+  @description('Optional. Option to deploy a private Bastion host with no public IP address.')
+  enablePrivateOnlyBastion: bool?
 }?
 
 @export()

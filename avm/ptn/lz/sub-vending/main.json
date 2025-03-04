@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "14150265050296280587"
+      "templateHash": "17064342852788020380"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -441,6 +441,13 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. The number of scale units. The Basic SKU only supports 2 scale units."
+          }
+        },
+        "enablePrivateOnlyBastion": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Option to deploy a private Bastion host with no public IP address."
           }
         }
       },
@@ -1460,7 +1467,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "5771927540258536451"
+              "templateHash": "16042373921872429945"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -1967,6 +1974,13 @@
                   "nullable": true,
                   "metadata": {
                     "description": "Optional. The number of scale units. The Basic SKU only supports 2 scale units."
+                  }
+                },
+                "enablePrivateOnlyBastion": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Option to deploy a private Bastion host with no public IP address."
                   }
                 }
               },
@@ -35395,6 +35409,7 @@
                   "scaleUnits": {
                     "value": "[coalesce(tryGet(parameters('virtualNetworkBastionConfiguration'), 'scaleUnits'), 2)]"
                   },
+                  "enablePrivateOnlyBastion": "[if(equals(coalesce(tryGet(parameters('virtualNetworkBastionConfiguration'), 'bastionSku'), 'Standard'), 'Premium'), createObject('value', coalesce(tryGet(parameters('virtualNetworkBastionConfiguration'), 'enablePrivateOnlyBastion'), false())), createObject('value', false()))]",
                   "enableTelemetry": {
                     "value": "[parameters('enableTelemetry')]"
                   }
