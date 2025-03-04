@@ -1292,10 +1292,10 @@ type natGatewayType = {
   zones: int?
 
   @description('Optional. The Public IP address(es) properties to be attached to the NAT gateway.')
-  publicIPAddressProperties: natGatewayPublicIpAddressPropertiesType
+  publicIPAddressProperties: natGatewayPublicIpAddressPropertiesType?
 
   @description('Optional. The Public IP address(es) prefixes properties to be attached to the NAT gateway.')
-  publicIPAddressPrefixesProperties: publicIPAddressPrefixesPropertiesType
+  publicIPAddressPrefixesProperties: publicIPAddressPrefixesPropertiesType?
 }?
 
 type natGatewayPublicIpAddressPropertiesType = {
@@ -1303,8 +1303,8 @@ type natGatewayPublicIpAddressPropertiesType = {
   name: string?
 
   @description('Optional. The SKU of the Public IP address.')
-  zones: (1 | 2 | 3)[]
-}[]?
+  zones: (1 | 2 | 3)[]?
+}[]
 
 type publicIPAddressPrefixesPropertiesType = {
   @description('Optional. The name of the Public IP address prefix.')
@@ -1315,7 +1315,7 @@ type publicIPAddressPrefixesPropertiesType = {
 
   @description('Optional. The custom IP prefix of the public IP address prefix.')
   customIPPrefix: string?
-}[]?
+}[]
 
 @export()
 type roleAssignmentType = {
@@ -1506,7 +1506,7 @@ type bastionType = {
 
   @description('Optional. Option to deploy a private Bastion host with no public IP address.')
   enablePrivateOnlyBastion: bool?
-}?
+}
 
 @export()
 @sys.description('Optional. The request type of the role assignment.')
@@ -1528,7 +1528,7 @@ type ticketInfoType = {
 
   @sys.description('Optional. The ticket system name for the role eligibility assignment.')
   ticketSystem: string?
-}?
+}
 
 @export()
 @description('Optional. The type of the PIM role assignment whether its active or eligible.')
