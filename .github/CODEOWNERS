@@ -50,6 +50,7 @@
 /avm/res/automation/automation-account/ @Azure/avm-res-automation-automationaccount-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/azure-stack-hci/cluster/ @Azure/avm-res-azurestackhci-cluster-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/azure-stack-hci/logical-network/ @Azure/avm-res-azurestackhci-logicalnetwork-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/res/azure-stack-hci/network-interface/ @Azure/avm-res-azurestackhci-networkinterface-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/azure-stack-hci/virtual-hard-disk/ @Azure/avm-res-azurestackhci-virtualharddisk-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/batch/batch-account/ @Azure/avm-res-batch-batchaccount-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/cache/redis/ @Azure/avm-res-cache-redis-module-owners-bicep @Azure/avm-module-reviewers-bicep

@@ -1,14 +1,14 @@
 targetScope = 'subscription'
 
-metadata name = 'WAF-aligned'
-metadata description = 'This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.'
+metadata name = 'Using only defaults'
+metadata description = 'This instance deploys the module with the minimum set of required parameters.'
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-azurestackhci.logicalnetwork-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-azurestackhci.networkinterface-${serviceShort}-rg'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'ashlnwaf'
+param serviceShort string = 'ashnimin'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
@@ -22,7 +22,7 @@ param localAdminAndDeploymentUserPass string = newGuid()
 #disable-next-line secure-parameter-default
 param arbDeploymentAppId string = ''
 
-@description('Required. The service principal ID of the service principal used for the Azure Stack HCI Resource Bridge deployment. The service principal must have Contributor role assigned.')
+@description('Required. The service principal ID of the service principal used for the Azure Stack HCI Resource Bridge deployment.')
 @secure()
 #disable-next-line secure-parameter-default
 param arbDeploymentSPObjectId string = ''
@@ -45,7 +45,7 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   location: enforcedLocation
 }
 
-module nestedDependencies '../../../../../../../utilities/e2e-template-assets/module-specific/azure-stack-hci/dependencies/waf-dependencies.bicep' = {
+module nestedDependencies '../../../../../../../utilities/e2e-template-assets/module-specific/azure-stack-hci/dependencies/defaults-dependencies.bicep' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-nestedDependencies-${serviceShort}'
   scope: resourceGroup
   params: {
@@ -171,18 +171,26 @@ module azlocal 'br/public:avm/res/azure-stack-hci/cluster:0.1.0' = {
         }
       ]
       subnetMask: '255.255.255.0'
-      driftControlEnforced: true
-      smbSigningEnforced: true
-      smbClusterEncryption: true
-      sideChannelMitigationEnforced: true
-      bitlockerBootVolume: true
-      bitlockerDataVolumes: true
     }
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
-    }
+  }
+}
+
+module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:0.1.0' = {
+  name: '${uniqueString(deployment().name, enforcedLocation)}-logicalNetwork-${serviceShort}'
+  scope: resourceGroup
+  params: {
+    name: '${namePrefix}${serviceShort}logicalnetwork'
+    location: enforcedLocation
+    customLocationId: customLocation.id
+    vmSwitchName: 'ConvergedSwitch(management)'
+    ipAllocationMethod: 'Static'
+    addressPrefix: '172.20.0.1/24'
+    startingAddress: '172.20.0.171'
+    endingAddress: '172.20.0.190'
+    defaultGateway: '172.20.0.1'
+    dnsServers: ['172.20.0.1']
+    routeName: 'default'
+    vlanId: null
   }
 }
 
@@ -195,24 +203,19 @@ resource customLocation 'Microsoft.ExtendedLocation/customLocations@2021-08-31-p
 }
 
 module testDeployment '../../../main.bicep' = {
-  name: '${uniqueString(deployment().name, enforcedLocation)}-logicalNetwork-${serviceShort}'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-networkinterface-${serviceShort}'
   scope: resourceGroup
   params: {
-    name: '${namePrefix}${serviceShort}logicalnetwork'
+    name: '${namePrefix}${serviceShort}networkinterface'
     customLocationResourceId: customLocation.id
-    vmSwitchName: 'ConvergedSwitch(management)'
-    ipAllocationMethod: 'Static'
-    addressPrefix: '172.20.0.1/24'
-    startingAddress: '172.20.0.171'
-    endingAddress: '172.20.0.190'
-    defaultGateway: '172.20.0.1'
-    dnsServers: ['172.20.0.1']
-    routeName: 'default'
-    vlanId: null
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
-    }
+    ipConfigurations: [
+      {
+        properties: {
+          subnet: {
+            id: logicalNetwork.outputs.resourceId
+          }
+        }
+      }
+    ]
   }
 }

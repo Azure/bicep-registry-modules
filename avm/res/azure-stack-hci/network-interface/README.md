@@ -1,6 +1,6 @@
-# Azure Stack HCI Logical Network `[Microsoft.AzureStackHCI/logicalNetworks]`
+# Azure Stack HCI Network Interface `[Microsoft.AzureStackHCI/networkInterfaces]`
 
-This module deploys an Azure Stack HCI Logical Network.
+This module deploys an Azure Stack HCI network interface.
 
 ## Navigation
 
@@ -16,7 +16,7 @@ This module deploys an Azure Stack HCI Logical Network.
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.AzureStackHCI/logicalNetworks` | [2024-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AzureStackHCI/2024-05-01-preview/logicalNetworks) |
+| `Microsoft.AzureStackHCI/networkInterfaces` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AzureStackHCI/2024-01-01/networkInterfaces) |
 
 ## Usage examples
 
@@ -24,7 +24,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm/res/azure-stack-hci/logical-network:<version>`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/azure-stack-hci/network-interface:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [WAF-aligned](#example-2-waf-aligned)
@@ -39,16 +39,21 @@ This instance deploys the module with the minimum set of required parameters.
 <summary>via Bicep module</summary>
 
 ```bicep
-module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:<version>' = {
-  name: 'logicalNetworkDeployment'
+module networkInterface 'br/public:avm/res/azure-stack-hci/network-interface:<version>' = {
+  name: 'networkInterfaceDeployment'
   params: {
     // Required parameters
     customLocationResourceId: '<customLocationResourceId>'
-    name: 'ashlnminlogicalnetwork'
-    vmSwitchName: 'ConvergedSwitch(management)'
-    // Non-required parameters
-    routeName: 'default'
-    vlanId: '<vlanId>'
+    ipConfigurations: [
+      {
+        properties: {
+          subnet: {
+            id: '<id>'
+          }
+        }
+      }
+    ]
+    name: 'ashniminnetworkinterface'
   }
 }
 ```
@@ -69,18 +74,19 @@ module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:<versio
     "customLocationResourceId": {
       "value": "<customLocationResourceId>"
     },
+    "ipConfigurations": {
+      "value": [
+        {
+          "properties": {
+            "subnet": {
+              "id": "<id>"
+            }
+          }
+        }
+      ]
+    },
     "name": {
-      "value": "ashlnminlogicalnetwork"
-    },
-    "vmSwitchName": {
-      "value": "ConvergedSwitch(management)"
-    },
-    // Non-required parameters
-    "routeName": {
-      "value": "default"
-    },
-    "vlanId": {
-      "value": "<vlanId>"
+      "value": "ashniminnetworkinterface"
     }
   }
 }
@@ -94,15 +100,20 @@ module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:<versio
 <summary>via Bicep parameters file</summary>
 
 ```bicep-params
-using 'br/public:avm/res/azure-stack-hci/logical-network:<version>'
+using 'br/public:avm/res/azure-stack-hci/network-interface:<version>'
 
 // Required parameters
 param customLocationResourceId = '<customLocationResourceId>'
-param name = 'ashlnminlogicalnetwork'
-param vmSwitchName = 'ConvergedSwitch(management)'
-// Non-required parameters
-param routeName = 'default'
-param vlanId = '<vlanId>'
+param ipConfigurations = [
+  {
+    properties: {
+      subnet: {
+        id: '<id>'
+      }
+    }
+  }
+]
+param name = 'ashniminnetworkinterface'
 ```
 
 </details>
@@ -118,29 +129,32 @@ This instance deploys the module in alignment with the best-practices of the Azu
 <summary>via Bicep module</summary>
 
 ```bicep
-module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:<version>' = {
-  name: 'logicalNetworkDeployment'
+module networkInterface 'br/public:avm/res/azure-stack-hci/network-interface:<version>' = {
+  name: 'networkInterfaceDeployment'
   params: {
     // Required parameters
     customLocationResourceId: '<customLocationResourceId>'
-    name: 'ashlnwaflogicalnetwork'
-    vmSwitchName: 'ConvergedSwitch(management)'
+    ipConfigurations: [
+      {
+        properties: {
+          subnet: {
+            id: '<id>'
+          }
+        }
+      }
+    ]
+    name: 'ashniwafnetworkinterface'
     // Non-required parameters
-    addressPrefix: '172.20.0.1/24'
-    defaultGateway: '172.20.0.1'
     dnsServers: [
       '172.20.0.1'
     ]
-    endingAddress: '172.20.0.190'
-    ipAllocationMethod: 'Static'
-    routeName: 'default'
-    startingAddress: '172.20.0.171'
+    enableTelemetry: true
+    location: '<location>'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    vlanId: '<vlanId>'
   }
 }
 ```
@@ -161,35 +175,31 @@ module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:<versio
     "customLocationResourceId": {
       "value": "<customLocationResourceId>"
     },
-    "name": {
-      "value": "ashlnwaflogicalnetwork"
+    "ipConfigurations": {
+      "value": [
+        {
+          "properties": {
+            "subnet": {
+              "id": "<id>"
+            }
+          }
+        }
+      ]
     },
-    "vmSwitchName": {
-      "value": "ConvergedSwitch(management)"
+    "name": {
+      "value": "ashniwafnetworkinterface"
     },
     // Non-required parameters
-    "addressPrefix": {
-      "value": "172.20.0.1/24"
-    },
-    "defaultGateway": {
-      "value": "172.20.0.1"
-    },
     "dnsServers": {
       "value": [
         "172.20.0.1"
       ]
     },
-    "endingAddress": {
-      "value": "172.20.0.190"
+    "enableTelemetry": {
+      "value": true
     },
-    "ipAllocationMethod": {
-      "value": "Static"
-    },
-    "routeName": {
-      "value": "default"
-    },
-    "startingAddress": {
-      "value": "172.20.0.171"
+    "location": {
+      "value": "<location>"
     },
     "tags": {
       "value": {
@@ -197,9 +207,6 @@ module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:<versio
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
-    },
-    "vlanId": {
-      "value": "<vlanId>"
     }
   }
 }
@@ -213,28 +220,31 @@ module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:<versio
 <summary>via Bicep parameters file</summary>
 
 ```bicep-params
-using 'br/public:avm/res/azure-stack-hci/logical-network:<version>'
+using 'br/public:avm/res/azure-stack-hci/network-interface:<version>'
 
 // Required parameters
 param customLocationResourceId = '<customLocationResourceId>'
-param name = 'ashlnwaflogicalnetwork'
-param vmSwitchName = 'ConvergedSwitch(management)'
+param ipConfigurations = [
+  {
+    properties: {
+      subnet: {
+        id: '<id>'
+      }
+    }
+  }
+]
+param name = 'ashniwafnetworkinterface'
 // Non-required parameters
-param addressPrefix = '172.20.0.1/24'
-param defaultGateway = '172.20.0.1'
 param dnsServers = [
   '172.20.0.1'
 ]
-param endingAddress = '172.20.0.190'
-param ipAllocationMethod = 'Static'
-param routeName = 'default'
-param startingAddress = '172.20.0.171'
+param enableTelemetry = true
+param location = '<location>'
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
   Role: 'DeploymentValidation'
 }
-param vlanId = '<vlanId>'
 ```
 
 </details>
@@ -246,39 +256,97 @@ param vlanId = '<vlanId>'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`customLocationResourceId`](#parameter-customlocationresourceid) | string | The custom location ID. |
+| [`customLocationResourceId`](#parameter-customlocationresourceid) | string | Resource ID of the associated custom location. |
+| [`ipConfigurations`](#parameter-ipconfigurations) | array | A list of IPConfigurations of the network interface. |
 | [`name`](#parameter-name) | string | Name of the resource to create. |
-| [`vmSwitchName`](#parameter-vmswitchname) | string | The VM switch name. |
-
-**Conditional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`addressPrefix`](#parameter-addressprefix) | string | Address prefix for the logical network. Required if ipAllocationMethod is Static. |
-| [`defaultGateway`](#parameter-defaultgateway) | string | The default gateway for the network. Required if ipAllocationMethod is Static. |
-| [`dnsServers`](#parameter-dnsservers) | array | The DNS servers list. Required if ipAllocationMethod is Static. |
-| [`endingAddress`](#parameter-endingaddress) | string | The ending IP address of the IP address range. Required if ipAllocationMethod is Static. |
-| [`routeName`](#parameter-routename) | string | The route name. Required if ipAllocationMethod is Static. |
-| [`startingAddress`](#parameter-startingaddress) | string | The starting IP address of the IP address range. Required if ipAllocationMethod is Static. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`dnsServers`](#parameter-dnsservers) | array | DNS servers array for NIC. These are only applied during NIC creation. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`ipAllocationMethod`](#parameter-ipallocationmethod) | string | The IP allocation method. |
-| [`ipConfigurationReferences`](#parameter-ipconfigurationreferences) | array | A list of IP configuration references. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`subnet0Name`](#parameter-subnet0name) | string | The subnet name. |
-| [`tags`](#parameter-tags) | object | Tags for the logical network. |
-| [`vlanId`](#parameter-vlanid) | int | VLan Id for the logical network. |
+| [`tags`](#parameter-tags) | object | Tags of the resource. |
 
 ### Parameter: `customLocationResourceId`
 
-The custom location ID.
+Resource ID of the associated custom location.
 
 - Required: Yes
+- Type: string
+
+### Parameter: `ipConfigurations`
+
+A list of IPConfigurations of the network interface.
+
+- Required: Yes
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`properties`](#parameter-ipconfigurationsproperties) | object | InterfaceIPConfigurationPropertiesFormat properties of IP configuration. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-ipconfigurationsname) | string | The name of the resource that is unique within a resource group. This name can be used to access the resource. |
+
+### Parameter: `ipConfigurations.properties`
+
+InterfaceIPConfigurationPropertiesFormat properties of IP configuration.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`subnet`](#parameter-ipconfigurationspropertiessubnet) | object | Name of Subnet bound to the IP configuration. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`privateIPAddress`](#parameter-ipconfigurationspropertiesprivateipaddress) | string | Private IP address of the IP configuration. |
+
+### Parameter: `ipConfigurations.properties.subnet`
+
+Name of Subnet bound to the IP configuration.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`id`](#parameter-ipconfigurationspropertiessubnetid) | string | The ARM ID for a Logical Network. |
+
+### Parameter: `ipConfigurations.properties.subnet.id`
+
+The ARM ID for a Logical Network.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `ipConfigurations.properties.privateIPAddress`
+
+Private IP address of the IP configuration.
+
+- Required: No
+- Type: string
+
+### Parameter: `ipConfigurations.name`
+
+The name of the resource that is unique within a resource group. This name can be used to access the resource.
+
+- Required: No
 - Type: string
 
 ### Parameter: `name`
@@ -288,55 +356,12 @@ Name of the resource to create.
 - Required: Yes
 - Type: string
 
-### Parameter: `vmSwitchName`
-
-The VM switch name.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `addressPrefix`
-
-Address prefix for the logical network. Required if ipAllocationMethod is Static.
-
-- Required: No
-- Type: string
-
-### Parameter: `defaultGateway`
-
-The default gateway for the network. Required if ipAllocationMethod is Static.
-
-- Required: No
-- Type: string
-
 ### Parameter: `dnsServers`
 
-The DNS servers list. Required if ipAllocationMethod is Static.
+DNS servers array for NIC. These are only applied during NIC creation.
 
 - Required: No
 - Type: array
-- Default: `[]`
-
-### Parameter: `endingAddress`
-
-The ending IP address of the IP address range. Required if ipAllocationMethod is Static.
-
-- Required: No
-- Type: string
-
-### Parameter: `routeName`
-
-The route name. Required if ipAllocationMethod is Static.
-
-- Required: No
-- Type: string
-
-### Parameter: `startingAddress`
-
-The starting IP address of the IP address range. Required if ipAllocationMethod is Static.
-
-- Required: No
-- Type: string
 
 ### Parameter: `enableTelemetry`
 
@@ -345,41 +370,6 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
-
-### Parameter: `ipAllocationMethod`
-
-The IP allocation method.
-
-- Required: No
-- Type: string
-- Default: `'Dynamic'`
-- Allowed:
-  ```Bicep
-  [
-    'Dynamic'
-    'Static'
-  ]
-  ```
-
-### Parameter: `ipConfigurationReferences`
-
-A list of IP configuration references.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`id`](#parameter-ipconfigurationreferencesid) | string | The ARM ID for a Network Interface. |
-
-### Parameter: `ipConfigurationReferences.id`
-
-The ARM ID for a Network Interface.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `location`
 
@@ -399,8 +389,9 @@ Array of role assignments to create.
   - `'Contributor'`
   - `'Owner'`
   - `'Reader'`
-  - `'User Access Administrator'`
-  - `'Role Based Access Control Administrator'`
+  - `'Azure Stack HCI VM Contributor'`
+  - `'Azure Stack HCI VM Reader'`
+  - `'Azure Stack HCI Administrator'`
 
 **Required parameters**
 
@@ -492,36 +483,21 @@ The principal type of the assigned principal ID.
   ]
   ```
 
-### Parameter: `subnet0Name`
-
-The subnet name.
-
-- Required: No
-- Type: string
-- Default: `'default'`
-
 ### Parameter: `tags`
 
-Tags for the logical network.
+Tags of the resource.
 
 - Required: No
 - Type: object
-
-### Parameter: `vlanId`
-
-VLan Id for the logical network.
-
-- Required: No
-- Type: int
 
 ## Outputs
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `location` | string | The location of the logical network. |
-| `name` | string | The name of the logical network. |
-| `resourceGroupName` | string | The resource group of the logical network. |
-| `resourceId` | string | The resource ID of the logical network. |
+| `location` | string | The location the resource was deployed into. |
+| `name` | string | The name of the resource. |
+| `resourceGroupName` | string | The resource group name of the resource. |
+| `resourceId` | string | The resource ID of the resource. |
 
 ## Cross-referenced modules
 

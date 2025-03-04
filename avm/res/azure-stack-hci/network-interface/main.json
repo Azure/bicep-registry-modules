@@ -6,25 +6,55 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "882640149062350351"
+      "templateHash": "3488423607769183314"
     },
-    "name": "Azure Stack HCI Logical Network",
-    "description": "This module deploys an Azure Stack HCI Logical Network."
+    "name": "Azure Stack HCI Network Interface",
+    "description": "This module deploys an Azure Stack HCI network interface."
   },
   "definitions": {
-    "subnetIpConfigurationReferenceType": {
+    "ipConfigurationType": {
       "type": "object",
       "properties": {
-        "id": {
+        "name": {
           "type": "string",
+          "nullable": true,
           "metadata": {
-            "description": "Required. The ARM ID for a Network Interface."
+            "description": "Optional. The name of the resource that is unique within a resource group. This name can be used to access the resource."
+          }
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "privateIPAddress": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Private IP address of the IP configuration."
+              }
+            },
+            "subnet": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The ARM ID for a Logical Network."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "Required. Name of Subnet bound to the IP configuration."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. InterfaceIPConfigurationPropertiesFormat properties of IP configuration."
           }
         }
       },
       "metadata": {
         "__bicep_export!": true,
-        "description": "The type for an IP configuration reference."
+        "description": "The type for an IP configuration."
       }
     },
     "roleAssignmentType": {
@@ -117,107 +147,43 @@
         "description": "Optional. Location for all Resources."
       }
     },
-    "enableTelemetry": {
-      "type": "bool",
-      "defaultValue": true,
+    "tags": {
+      "type": "object",
+      "nullable": true,
       "metadata": {
-        "description": "Optional. Enable/Disable usage telemetry for module."
+        "description": "Optional. Tags of the resource."
       }
     },
     "customLocationResourceId": {
       "type": "string",
       "metadata": {
-        "description": "Required. The custom location ID."
+        "description": "Required. Resource ID of the associated custom location."
       }
     },
-    "vmSwitchName": {
-      "type": "string",
+    "ipConfigurations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ipConfigurationType"
+      },
       "metadata": {
-        "description": "Required. The VM switch name."
-      }
-    },
-    "subnet0Name": {
-      "type": "string",
-      "defaultValue": "default",
-      "metadata": {
-        "description": "Optional. The subnet name."
-      }
-    },
-    "ipAllocationMethod": {
-      "type": "string",
-      "defaultValue": "Dynamic",
-      "allowedValues": [
-        "Static",
-        "Dynamic"
-      ],
-      "metadata": {
-        "description": "Optional. The IP allocation method."
+        "description": "Required. A list of IPConfigurations of the network interface."
       }
     },
     "dnsServers": {
       "type": "array",
-      "defaultValue": [],
-      "metadata": {
-        "description": "Conditional. The DNS servers list. Required if ipAllocationMethod is Static."
-      }
-    },
-    "tags": {
-      "type": "object",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. Tags for the logical network."
-      }
-    },
-    "addressPrefix": {
-      "type": "string",
-      "nullable": true,
-      "metadata": {
-        "description": "Conditional. Address prefix for the logical network. Required if ipAllocationMethod is Static."
-      }
-    },
-    "vlanId": {
-      "type": "int",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. VLan Id for the logical network."
-      }
-    },
-    "ipConfigurationReferences": {
-      "type": "array",
       "items": {
-        "$ref": "#/definitions/subnetIpConfigurationReferenceType"
+        "type": "string"
       },
       "nullable": true,
       "metadata": {
-        "description": "Optional. A list of IP configuration references."
+        "description": "Optional. DNS servers array for NIC. These are only applied during NIC creation."
       }
     },
-    "startingAddress": {
-      "type": "string",
-      "nullable": true,
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
       "metadata": {
-        "description": "Conditional. The starting IP address of the IP address range. Required if ipAllocationMethod is Static."
-      }
-    },
-    "endingAddress": {
-      "type": "string",
-      "nullable": true,
-      "metadata": {
-        "description": "Conditional. The ending IP address of the IP address range. Required if ipAllocationMethod is Static."
-      }
-    },
-    "routeName": {
-      "type": "string",
-      "nullable": true,
-      "metadata": {
-        "description": "Conditional. The route name. Required if ipAllocationMethod is Static."
-      }
-    },
-    "defaultGateway": {
-      "type": "string",
-      "nullable": true,
-      "metadata": {
-        "description": "Conditional. The default gateway for the network. Required if ipAllocationMethod is Static."
+        "description": "Optional. Enable/Disable usage telemetry for module."
       }
     },
     "roleAssignments": {
@@ -243,41 +209,22 @@
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-      "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]",
-      "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]"
-    },
-    "subnet1Pools": [
-      {
-        "start": "[parameters('startingAddress')]",
-        "end": "[parameters('endingAddress')]",
-        "info": {}
-      }
-    ],
-    "routeTable": {
-      "properties": {
-        "routes": [
-          {
-            "name": "[parameters('routeName')]",
-            "properties": {
-              "addressPrefix": "0.0.0.0/0",
-              "nextHopIpAddress": "[parameters('defaultGateway')]"
-            }
-          }
-        ]
-      }
+      "Azure Stack HCI VM Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '874d1c73-6003-4e60-a13a-cb31ea190a85')]",
+      "Azure Stack HCI VM Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4b3fe76c-f777-4d24-a2d7-b027b0f7b273')]",
+      "Azure Stack HCI Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'bda0d508-adf1-4af0-9c28-88919fc3ae06')]"
     }
   },
   "resources": {
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
-      "name": "[take(format('46d3xbcp.res.azurestackhci-logicalnetwork.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
+      "apiVersion": "2023-07-01",
+      "name": "[format('46d3xbcp.res.azurestackhci-networkinterface.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
+          "contentVersion": "#_moduleVersion_#.0",
           "resources": [],
           "outputs": {
             "telemetry": {
@@ -288,45 +235,30 @@
         }
       }
     },
-    "logicalNetwork": {
-      "type": "Microsoft.AzureStackHCI/logicalNetworks",
-      "apiVersion": "2024-05-01-preview",
+    "networkInterface": {
+      "type": "Microsoft.AzureStackHCI/networkInterfaces",
+      "apiVersion": "2024-01-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "extendedLocation": {
-        "name": "[parameters('customLocationResourceId')]",
-        "type": "CustomLocation"
+        "type": "CustomLocation",
+        "name": "[parameters('customLocationResourceId')]"
       },
       "properties": {
-        "dhcpOptions": {
-          "dnsServers": "[if(equals(parameters('ipAllocationMethod'), 'Dynamic'), null(), parameters('dnsServers'))]"
-        },
-        "subnets": [
-          {
-            "name": "[parameters('subnet0Name')]",
-            "properties": {
-              "addressPrefix": "[parameters('addressPrefix')]",
-              "ipAllocationMethod": "[parameters('ipAllocationMethod')]",
-              "ipConfigurationReferences": "[map(coalesce(parameters('ipConfigurationReferences'), createArray()), lambda('ipConfigurationReference', createObject('ID', lambdaVariables('ipConfigurationReference').id)))]",
-              "vlan": "[parameters('vlanId')]",
-              "ipPools": "[if(equals(parameters('ipAllocationMethod'), 'Dynamic'), null(), variables('subnet1Pools'))]",
-              "routeTable": "[if(equals(parameters('ipAllocationMethod'), 'Dynamic'), null(), variables('routeTable'))]"
-            }
-          }
-        ],
-        "vmSwitchName": "[parameters('vmSwitchName')]"
+        "ipConfigurations": "[parameters('ipConfigurations')]",
+        "dnsSettings": "[if(not(empty(parameters('dnsServers'))), createObject('dnsServers', parameters('dnsServers')), null())]"
       }
     },
-    "logicalNetwork_roleAssignments": {
+    "networkinterface_roleAssignments": {
       "copy": {
-        "name": "logicalNetwork_roleAssignments",
+        "name": "networkinterface_roleAssignments",
         "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.AzureStackHCI/logicalNetworks/{0}', parameters('name'))]",
-      "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.AzureStackHCI/logicalNetworks', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
+      "scope": "[format('Microsoft.AzureStackHCI/networkInterfaces/{0}', parameters('name'))]",
+      "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.AzureStackHCI/networkInterfaces', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
         "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
@@ -337,38 +269,38 @@
         "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
       },
       "dependsOn": [
-        "logicalNetwork"
+        "networkInterface"
       ]
     }
   },
   "outputs": {
-    "name": {
-      "type": "string",
-      "metadata": {
-        "description": "The name of the logical network."
-      },
-      "value": "[parameters('name')]"
-    },
     "resourceId": {
       "type": "string",
       "metadata": {
-        "description": "The resource ID of the logical network."
+        "description": "The resource ID of the resource."
       },
-      "value": "[resourceId('Microsoft.AzureStackHCI/logicalNetworks', parameters('name'))]"
+      "value": "[resourceId('Microsoft.AzureStackHCI/networkInterfaces', parameters('name'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource."
+      },
+      "value": "[parameters('name')]"
     },
     "resourceGroupName": {
       "type": "string",
       "metadata": {
-        "description": "The resource group of the logical network."
+        "description": "The resource group name of the resource."
       },
       "value": "[resourceGroup().name]"
     },
     "location": {
       "type": "string",
       "metadata": {
-        "description": "The location of the logical network."
+        "description": "The location the resource was deployed into."
       },
-      "value": "[reference('logicalNetwork', '2024-05-01-preview', 'full').location]"
+      "value": "[reference('networkInterface', '2024-01-01', 'full').location]"
     }
   }
 }
