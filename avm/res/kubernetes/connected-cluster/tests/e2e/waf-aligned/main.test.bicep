@@ -29,5 +29,10 @@ module testDeployment '../../../main.bicep' = {
     location: enforcedLocation
     oidcIssuerEnabled: true
     workloadIdentityEnabled: true
+    tags: {
+      'hidden-title': 'This is visible in the resource name'
+      Environment: 'Non-Prod'
+      Role: 'DeploymentValidation'
+    }
   }
 }

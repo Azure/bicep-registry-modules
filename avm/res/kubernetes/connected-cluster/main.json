@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "7551101804629042655"
+      "templateHash": "16906079045079707230"
     },
     "name": "Kubernetes Connected Cluster",
     "description": "This module deploys an Azure Arc connected cluster."
@@ -129,14 +129,14 @@
     },
     "aadTenantId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
-        "description": "Optional. Optional. The Azure AD tenant ID."
+        "description": "Optional. The Azure AD tenant ID."
       }
     },
     "aadAdminGroupObjectIds": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. The Azure AD admin group object IDs."
       }
@@ -197,7 +197,7 @@
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]",
-      "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]"
+      "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]"
     }
   },
   "resources": {
@@ -232,7 +232,7 @@
       },
       "tags": "[parameters('tags')]",
       "properties": {
-        "aadProfile": "[if(not(empty(parameters('aadTenantId'))), createObject('tenantID', parameters('aadTenantId'), 'adminGroupObjectIDs', parameters('aadAdminGroupObjectIds'), 'enableAzureRBAC', parameters('enableAzureRBAC')), null())]",
+        "aadProfile": "[if(not(empty(parameters('aadTenantId'))), createObject('tenantID', parameters('aadTenantId'), 'adminGroupObjectIDs', coalesce(parameters('aadAdminGroupObjectIds'), createArray()), 'enableAzureRBAC', parameters('enableAzureRBAC')), null())]",
         "agentPublicKeyCertificate": "",
         "arcAgentProfile": {
           "agentAutoUpgrade": "[parameters('agentAutoUpgrade')]"
@@ -301,6 +301,13 @@
         "description": "The location of the connected cluster."
       },
       "value": "[reference('connectedCluster', '2024-07-15-preview', 'full').location]"
+    },
+    "systemAssignedMIPrincipalId": {
+      "type": "string",
+      "metadata": {
+        "description": "The principalId of the connected cluster identity."
+      },
+      "value": "[reference('connectedCluster', '2024-07-15-preview', 'full').identity.principalId]"
     }
   }
 }

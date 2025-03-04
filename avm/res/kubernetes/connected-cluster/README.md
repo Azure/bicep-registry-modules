@@ -111,6 +111,11 @@ module connectedCluster 'br/public:avm/res/kubernetes/connected-cluster:<version
     // Non-required parameters
     location: '<location>'
     oidcIssuerEnabled: true
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
     workloadIdentityEnabled: true
   }
 }
@@ -139,6 +144,13 @@ module connectedCluster 'br/public:avm/res/kubernetes/connected-cluster:<version
     "oidcIssuerEnabled": {
       "value": true
     },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    },
     "workloadIdentityEnabled": {
       "value": true
     }
@@ -161,6 +173,11 @@ param name = 'kccwaf001'
 // Non-required parameters
 param location = '<location>'
 param oidcIssuerEnabled = true
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
 param workloadIdentityEnabled = true
 ```
 
@@ -180,7 +197,7 @@ param workloadIdentityEnabled = true
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`aadAdminGroupObjectIds`](#parameter-aadadmingroupobjectids) | array | The Azure AD admin group object IDs. |
-| [`aadTenantId`](#parameter-aadtenantid) | string | Optional. The Azure AD tenant ID. |
+| [`aadTenantId`](#parameter-aadtenantid) | string | The Azure AD tenant ID. |
 | [`agentAutoUpgrade`](#parameter-agentautoupgrade) | string | Enable automatic agent upgrades. |
 | [`enableAzureRBAC`](#parameter-enableazurerbac) | bool | Enable Azure RBAC. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
@@ -204,15 +221,13 @@ The Azure AD admin group object IDs.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `aadTenantId`
 
-Optional. The Azure AD tenant ID.
+The Azure AD tenant ID.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `agentAutoUpgrade`
 
@@ -287,7 +302,7 @@ Array of role assignments to create.
   - `'Owner'`
   - `'Reader'`
   - `'User Access Administrator'`
-  - `'Role Based Access Control Administrator (Preview)'`
+  - `'Role Based Access Control Administrator'`
 
 **Required parameters**
 
@@ -402,6 +417,7 @@ Enable workload identity.
 | `name` | string | The name of the connected cluster. |
 | `resourceGroupName` | string | The resource group of the connected cluster. |
 | `resourceId` | string | The resource ID of the connected cluster. |
+| `systemAssignedMIPrincipalId` | string | The principalId of the connected cluster identity. |
 
 ## Cross-referenced modules
 
