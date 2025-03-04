@@ -189,14 +189,21 @@ resource backupVault 'Microsoft.DataProtection/backupVaults@2024-04-01' = {
       encryptionSettings: !empty(customerManagedKey)
         ? {
             infrastructureEncryption: 'Disabled'
-            kekIdentity: {
-              identityId: cMKUserAssignedIdentity.id
-              // identityId: !empty(customerManagedKey.?userAssignedIdentityResourceId ?? '')
-              // ? cMKUserAssignedIdentity.properties.clientId
-              // : null
-              identityType: 'UserAssigned'
-              // identityType: 'SystemAssigned'
-            }
+            kekIdentity: !empty(customerManagedKey.?userAssignedIdentityResourceId)
+              ? {
+                  identityId: cMKUserAssignedIdentity.id
+                  identityType: 'UserAssigned'
+                }
+              : {
+                  identityType: 'SystemAssigned'
+                }
+            // // identityId: cMKUserAssignedIdentity.id
+            // identityId: !empty(customerManagedKey.?userAssignedIdentityResourceId)
+            // ? cMKUserAssignedIdentity.id
+            // : null
+            // identityType: 'UserAssigned'
+            // // identityType: 'SystemAssigned'
+
             keyVaultProperties: {
               keyUri: cMKKeyVault::cMKKey.properties.keyUri
               // keyUri: 'https://dep-avma-kv-dpbvcmk-ou5.vault.azure.net/keys/keyEncryptionKey'
@@ -238,12 +245,12 @@ resource backupVault 'Microsoft.DataProtection/backupVaults@2024-04-01' = {
       //       }
       //     }
       //   : null
-      // immutabilitySettings: !empty(immutabilitySettingState)
-      //   ? {
-      //       state: immutabilitySettingState
-      //     }
-      //   : null
-      // softDeleteSettings: softDeleteSettings
+      immutabilitySettings: !empty(immutabilitySettingState)
+        ? {
+            state: immutabilitySettingState
+          }
+        : null
+      softDeleteSettings: softDeleteSettings
     }
   }
 }
