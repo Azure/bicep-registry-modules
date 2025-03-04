@@ -62,6 +62,8 @@ output resourceGroupName string = resourceGroup().name
 //   Definitions   //
 // =============== //
 
+@export()
+@description('The type for the certificate\'s key vault properties.')
 type certificateKeyVaultPropertiesType = {
   @description('Required. The resource ID of the identity. This is the identity that will be used to access the key vault.')
   identityResourceId: string

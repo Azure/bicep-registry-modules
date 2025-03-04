@@ -88,7 +88,7 @@ param infrastructureResourceGroupName string = take('ME_${name}', 63)
 param storages storageType
 
 @description('Optional. A Managed Environment Certificate.')
-param certificateObject certificateObjectType
+param certificateObject certificateObjectType?
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -349,6 +349,8 @@ type certificateKeyVaultPropertiesType = {
   keyVaultUrl: string
 }?
 
+@export()
+@description('The type for a certificate.')
 type certificateObjectType = {
   @description('Optional. The name of the certificate.')
   name: string?
@@ -364,7 +366,7 @@ type certificateObjectType = {
 
   @description('Optional. A key vault reference.')
   certificateKeyVaultProperties: certificateKeyVaultPropertiesType
-}?
+}
 
 type storageType = {
   @description('Required. Access mode for storage: "ReadOnly" or "ReadWrite".')

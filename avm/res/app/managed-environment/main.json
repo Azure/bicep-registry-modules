@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "925445714343765021"
+      "templateHash": "728208245608740875"
     },
     "name": "App ManagedEnvironments",
     "description": "This module deploys an App Managed Environment (also known as a Container App Environment)."
@@ -193,7 +193,10 @@
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a certificate."
+      }
     },
     "storageType": {
       "type": "array",
@@ -422,6 +425,7 @@
     },
     "certificateObject": {
       "$ref": "#/definitions/certificateObjectType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. A Managed Environment Certificate."
       }
@@ -612,7 +616,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "17230629012196749712"
+              "templateHash": "10404997262108850284"
             },
             "name": "App ManagedEnvironments Certificates",
             "description": "This module deploys a App Managed Environment Certificate."
@@ -634,7 +638,11 @@
                   }
                 }
               },
-              "nullable": true
+              "nullable": true,
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for the certificate's key vault properties."
+              }
             }
           },
           "parameters": {

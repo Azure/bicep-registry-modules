@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "17230629012196749712"
+      "templateHash": "10404997262108850284"
     },
     "name": "App ManagedEnvironments Certificates",
     "description": "This module deploys a App Managed Environment Certificate."
@@ -28,7 +28,11 @@
           }
         }
       },
-      "nullable": true
+      "nullable": true,
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for the certificate's key vault properties."
+      }
     }
   },
   "parameters": {
