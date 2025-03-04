@@ -100,9 +100,6 @@ module connectedCluster 'br/public:avm/res/kubernetes/connected-cluster:<version
     // Non-required parameters
     enableAzureRBAC: true
     location: '<location>'
-    managedIdentities: {
-      systemAssigned: true
-    }
     oidcIssuerEnabled: true
     tags: {
       Environment: 'Non-Prod'
@@ -137,11 +134,6 @@ module connectedCluster 'br/public:avm/res/kubernetes/connected-cluster:<version
     },
     "location": {
       "value": "<location>"
-    },
-    "managedIdentities": {
-      "value": {
-        "systemAssigned": true
-      }
     },
     "oidcIssuerEnabled": {
       "value": true
@@ -178,9 +170,6 @@ param name = 'kccwaf001'
 // Non-required parameters
 param enableAzureRBAC = true
 param location = '<location>'
-param managedIdentities = {
-  systemAssigned: true
-}
 param oidcIssuerEnabled = true
 param tags = {
   Environment: 'Non-Prod'
@@ -211,7 +200,6 @@ param workloadIdentityEnabled = true
 | [`enableAzureRBAC`](#parameter-enableazurerbac) | bool | Enable Azure RBAC. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
-| [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`oidcIssuerEnabled`](#parameter-oidcissuerenabled) | bool | Enable OIDC issuer. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags for the cluster resource. |
@@ -270,26 +258,6 @@ Location for all Resources.
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
-
-### Parameter: `managedIdentities`
-
-The managed identity definition for this resource.
-
-- Required: No
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
-
-### Parameter: `managedIdentities.systemAssigned`
-
-Enables system assigned managed identity on the resource.
-
-- Required: No
-- Type: bool
 
 ### Parameter: `oidcIssuerEnabled`
 
@@ -440,7 +408,6 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.4.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection

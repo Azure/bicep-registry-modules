@@ -14,10 +14,6 @@ param location string = resourceGroup().location
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-import { managedIdentityOnlySysAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
-@description('Optional. The managed identity definition for this resource.')
-param managedIdentities managedIdentityOnlySysAssignedType?
-
 @description('Optional. Tags for the cluster resource.')
 param tags object?
 
@@ -101,13 +97,9 @@ resource connectedCluster 'Microsoft.Kubernetes/connectedClusters@2024-07-15-pre
   name: name
   kind: 'ProvisionedCluster'
   location: location
-  identity: !empty(managedIdentities) && (managedIdentities.?systemAssigned == true)
-    ? {
-        type: 'SystemAssigned'
-      }
-    : {
-        type: 'None'
-      }
+  identity: {
+    type: 'SystemAssigned'
+  }
   tags: tags
   properties: {
     aadProfile: enableAzureRBAC

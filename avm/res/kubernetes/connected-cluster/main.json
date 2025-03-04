@@ -6,30 +6,12 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "4738005285378639996"
+      "templateHash": "13180712657215340322"
     },
     "name": "Kubernetes Connected Cluster",
     "description": "This module deploys an Azure Arc connected cluster."
   },
   "definitions": {
-    "managedIdentityOnlySysAssignedType": {
-      "type": "object",
-      "properties": {
-        "systemAssigned": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Enables system assigned managed identity on the resource."
-          }
-        }
-      },
-      "metadata": {
-        "description": "An AVM-aligned type for a managed identity configuration. To be used if only system-assigned identities are supported by the resource provider.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
-        }
-      }
-    },
     "roleAssignmentType": {
       "type": "object",
       "properties": {
@@ -125,13 +107,6 @@
       "defaultValue": true,
       "metadata": {
         "description": "Optional. Enable/Disable usage telemetry for module."
-      }
-    },
-    "managedIdentities": {
-      "$ref": "#/definitions/managedIdentityOnlySysAssignedType",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. The managed identity definition for this resource."
       }
     },
     "tags": {
@@ -241,7 +216,9 @@
       "name": "[parameters('name')]",
       "kind": "ProvisionedCluster",
       "location": "[parameters('location')]",
-      "identity": "[if(and(not(empty(parameters('managedIdentities'))), equals(tryGet(parameters('managedIdentities'), 'systemAssigned'), true())), createObject('type', 'SystemAssigned'), createObject('type', 'None'))]",
+      "identity": {
+        "type": "SystemAssigned"
+      },
       "tags": "[parameters('tags')]",
       "properties": {
         "aadProfile": "[if(parameters('enableAzureRBAC'), createObject('tenantID', if(not(empty(parameters('tenantId'))), parameters('tenantId'), tenant().tenantId), 'adminGroupObjectIDs', coalesce(parameters('aadAdminGroupObjectIds'), createArray()), 'enableAzureRBAC', parameters('enableAzureRBAC')), null())]",

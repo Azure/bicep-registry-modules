@@ -31,9 +31,6 @@ module testDeployment '../../../main.bicep' = {
     oidcIssuerEnabled: true
     workloadIdentityEnabled: true
     enableAzureRBAC: true
-    managedIdentities: {
-      systemAssigned: true
-    }
     tags: {
       'hidden-title': 'This is visible in the resource name'
       Environment: 'Non-Prod'
