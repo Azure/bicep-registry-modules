@@ -164,4 +164,4 @@ output resourceGroupName string = resourceGroup().name
 output location string = connectedCluster.location
 
 @description('The principalId of the connected cluster identity.')
-output systemAssignedMIPrincipalId string = connectedCluster.identity.principalId
+output systemAssignedMIPrincipalId string? = connectedCluster.identity.principalId
