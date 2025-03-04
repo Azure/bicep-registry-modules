@@ -117,7 +117,7 @@ param diagnosticSettings diagnosticSettingType
   'EnableMaterializedViews'
   'DeleteAllItemsByPartitionKey'
 ])
-@description('Optional. List of Cosmos DB capabilities for the account.')
+@description('Optional. List of Cosmos DB capabilities for the account. THE DeleteAllItemsByPartitionKey VALUE USED IN THIS PARAMETER IS USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION.')
 param capabilitiesToAdd string[] = []
 
 @allowed([
