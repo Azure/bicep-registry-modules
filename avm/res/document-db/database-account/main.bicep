@@ -115,6 +115,7 @@ param diagnosticSettings diagnosticSettingType
   'EnableNoSQLVectorSearch'
   'EnableNoSQLFullTextSearch'
   'EnableMaterializedViews'
+  'DeleteAllItemsByPartitionKey'
 ])
 @description('Optional. List of Cosmos DB capabilities for the account.')
 param capabilitiesToAdd string[] = []
