@@ -1,5 +1,5 @@
-metadata name = 'Using only defaults.'
-metadata description = 'This instance deploys the module with the minimum set of required parameters.'
+metadata name = 'Deploy subscription with Bastion.'
+metadata description = 'This instance deploys a subscription with a bastion host.'
 
 targetScope = 'managementGroup'
 
@@ -15,7 +15,7 @@ param subscriptionBillingScope string = ''
 param namePrefix string = '#_namePrefix_#'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'ssamin'
+param serviceShort string = 'ssabs'
 
 @description('Optional. A short guid for the subscription name.')
 param subscriptionGuid string = toLower(substring(newGuid(), 0, 4))
@@ -27,13 +27,36 @@ module testDeployment '../../../main.bicep' = {
     subscriptionBillingScope: subscriptionBillingScope
     subscriptionAliasName: 'dep-sub-blzv-tests-${namePrefix}-${serviceShort}-${subscriptionGuid}'
     subscriptionDisplayName: 'dep-sub-blzv-tests-${namePrefix}-${serviceShort}-${subscriptionGuid}'
+    subscriptionWorkload: 'Production'
     subscriptionTags: {
       namePrefix: namePrefix
       serviceShort: serviceShort
     }
-    subscriptionWorkload: 'Production'
     subscriptionManagementGroupAssociationEnabled: true
     subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
+    virtualNetworkEnabled: true
+    virtualNetworkLocation: resourceLocation
+    virtualNetworkResourceGroupName: 'rsg-${resourceLocation}-net-hs-${namePrefix}-${serviceShort}'
+    virtualNetworkName: 'vnet-${resourceLocation}-hs-${namePrefix}-${serviceShort}'
+    virtualNetworkAddressSpace: [
+      '10.130.0.0/16'
+    ]
+    virtualNetworkDeployBastion: true
+    virtualNetworkBastionConfiguration: {
+      bastionSku: 'Standard'
+      name: 'bastion-${resourceLocation}-hs-${namePrefix}-${serviceShort}'
+    }
+    virtualNetworkSubnets: [
+      {
+        name: 'Subnet1'
+        addressPrefix: '10.130.1.0/24'
+      }
+      {
+        name: 'AzureBastionSubnet'
+        addressPrefix: '10.130.0.0/26'
+      }
+    ]
+    virtualNetworkResourceGroupLockEnabled: false
     resourceProviders: {}
   }
 }

@@ -1,5 +1,5 @@
-metadata name = 'Using only defaults.'
-metadata description = 'This instance deploys the module with the minimum set of required parameters.'
+metadata name = 'Hub and spoke topology with NAT gateway.'
+metadata description = 'This instance deploys a subscription with a hub-spoke network topology with NAT gateway.'
 
 targetScope = 'managementGroup'
 
@@ -15,7 +15,7 @@ param subscriptionBillingScope string = ''
 param namePrefix string = '#_namePrefix_#'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'ssamin'
+param serviceShort string = 'ssanat'
 
 @description('Optional. A short guid for the subscription name.')
 param subscriptionGuid string = toLower(substring(newGuid(), 0, 4))
@@ -27,14 +27,54 @@ module testDeployment '../../../main.bicep' = {
     subscriptionBillingScope: subscriptionBillingScope
     subscriptionAliasName: 'dep-sub-blzv-tests-${namePrefix}-${serviceShort}-${subscriptionGuid}'
     subscriptionDisplayName: 'dep-sub-blzv-tests-${namePrefix}-${serviceShort}-${subscriptionGuid}'
+    subscriptionWorkload: 'Production'
     subscriptionTags: {
       namePrefix: namePrefix
       serviceShort: serviceShort
     }
-    subscriptionWorkload: 'Production'
     subscriptionManagementGroupAssociationEnabled: true
     subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
-    resourceProviders: {}
+    virtualNetworkEnabled: true
+    virtualNetworkLocation: resourceLocation
+    virtualNetworkResourceGroupName: 'rsg-${resourceLocation}-net-hs-${namePrefix}-${serviceShort}'
+    virtualNetworkName: 'vnet-${resourceLocation}-hs-${namePrefix}-${serviceShort}'
+    virtualNetworkAddressSpace: [
+      '10.120.0.0/16'
+    ]
+    virtualNetworkDeployNatGateway: true
+    virtualNetworkNatGatewayConfiguration: {
+      name: 'natgw-${resourceLocation}-hs-${namePrefix}-${serviceShort}'
+      publicIPAddressProperties: [
+        {
+          name: 'pip-natgw-${resourceLocation}-${namePrefix}-${serviceShort}'
+          zones: [
+            1
+            2
+            3
+          ]
+        }
+      ]
+    }
+    virtualNetworkSubnets: [
+      {
+        name: 'Subnet1'
+        addressPrefix: '10.120.1.0/24'
+        associateWithNatGateway: true
+      }
+    ]
+    virtualNetworkResourceGroupLockEnabled: false
+    roleAssignmentEnabled: true
+    //Network contributor role
+    roleAssignments: [
+      {
+        principalId: '896b1162-be44-4b28-888a-d01acc1b4271'
+        definition: '/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7'
+        relativeScope: '/resourceGroups/rsg-${resourceLocation}-net-hs-${namePrefix}-${serviceShort}'
+      }
+    ]
+    resourceProviders: {
+      'Microsoft.Network': []
+    }
   }
 }
 

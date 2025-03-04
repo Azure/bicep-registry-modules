@@ -6,6 +6,7 @@ targetScope = 'managementGroup'
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
 
+// This parameter needs to be updated with the billing account and the enrollment account of your environment.
 @description('Required. The scope of the subscription billing. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-SubscriptionBillingScope\'.')
 @secure()
 param subscriptionBillingScope string = ''
@@ -51,23 +52,29 @@ module testDeployment '../../../main.bicep' = {
     subscriptionManagementGroupAssociationEnabled: true
     subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
     virtualNetworkEnabled: true
+    virtualNetworkName: 'vnet-${resourceLocation}-hs-${namePrefix}-${serviceShort}'
     virtualNetworkLocation: resourceLocation
     virtualNetworkResourceGroupName: 'rsg-${resourceLocation}-net-hs-${namePrefix}-${serviceShort}'
-    deploymentScriptResourceGroupName: 'rsg-${resourceLocation}-ds-${namePrefix}-${serviceShort}'
-    deploymentScriptManagedIdentityName: 'id-${resourceLocation}-${namePrefix}-${serviceShort}'
-    deploymentScriptName: 'ds-${namePrefix}-${serviceShort}'
-    virtualNetworkName: 'vnet-${resourceLocation}-hs-${namePrefix}-${serviceShort}'
-    deploymentScriptNetworkSecurityGroupName: 'nsg-${resourceLocation}-ds-${namePrefix}-${serviceShort}'
-    deploymentScriptVirtualNetworkName: 'vnet-${resourceLocation}-ds-${namePrefix}-${serviceShort}'
-    deploymentScriptStorageAccountName: 'stgds${namePrefix}${serviceShort}${substring(uniqueString(deployment().name), 0, 4)}'
-    deploymentScriptLocation: resourceLocation
     virtualNetworkAddressSpace: [
       '10.110.0.0/16'
+    ]
+    virtualNetworkSubnets: [
+      {
+        name: 'Subnet1'
+        addressPrefix: '10.110.1.0/24'
+      }
     ]
     virtualNetworkResourceGroupLockEnabled: false
     virtualNetworkPeeringEnabled: true
     virtualNetworkUseRemoteGateways: false
     hubNetworkResourceId: nestedDependencies.outputs.hubNetworkResourceId
+    deploymentScriptResourceGroupName: 'rsg-${resourceLocation}-ds-${namePrefix}-${serviceShort}'
+    deploymentScriptManagedIdentityName: 'id-${resourceLocation}-${namePrefix}-${serviceShort}'
+    deploymentScriptName: 'ds-${namePrefix}-${serviceShort}'
+    deploymentScriptNetworkSecurityGroupName: 'nsg-${resourceLocation}-ds-${namePrefix}-${serviceShort}'
+    deploymentScriptVirtualNetworkName: 'vnet-${resourceLocation}-ds-${namePrefix}-${serviceShort}'
+    deploymentScriptStorageAccountName: 'stgds${namePrefix}${serviceShort}${substring(uniqueString(deployment().name), 0, 4)}'
+    deploymentScriptLocation: resourceLocation
     roleAssignmentEnabled: true
     roleAssignments: [
       {
@@ -80,6 +87,7 @@ module testDeployment '../../../main.bicep' = {
     resourceProviders: {
       'Microsoft.HybridCompute': ['ArcServerPrivateLinkPreview']
       'Microsoft.AVS': ['AzureServicesVm']
+      'Microsoft.Network': []
     }
   }
 }
