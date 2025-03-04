@@ -101,10 +101,10 @@ param vHubRoutingIntentEnabled bool = false
 param roleAssignmentEnabled bool = false
 
 @sys.description('Supply an array of objects containing the details of the role assignments to create.')
-param roleAssignments roleAssignmentType = []
+param roleAssignments roleAssignmentType[] = []
 
 @description('Supply an array of objects containing the details of the PIM role assignments to create.')
-param pimRoleAssignments pimRoleAssignmentTypeType = []
+param pimRoleAssignments pimRoleAssignmentTypeType[] = []
 
 @sys.description('Disable telemetry collection by this module. For more information on the telemetry collected by this module, that is controlled by this parameter, see this page in the wiki: [Telemetry Tracking Using Customer Usage Attribution (PID)](https://github.com/Azure/bicep-lz-vending/wiki/Telemetry)')
 param enableTelemetry bool = true
@@ -1292,10 +1292,10 @@ type natGatewayType = {
   zones: int?
 
   @description('Optional. The Public IP address(es) properties to be attached to the NAT gateway.')
-  publicIPAddressProperties: natGatewayPublicIpAddressPropertiesType?
+  publicIPAddressProperties: natGatewayPublicIpAddressPropertiesType[]?
 
   @description('Optional. The Public IP address(es) prefixes properties to be attached to the NAT gateway.')
-  publicIPAddressPrefixesProperties: publicIPAddressPrefixesPropertiesType?
+  publicIPAddressPrefixesProperties: publicIPAddressPrefixesPropertiesType[]?
 }?
 
 type natGatewayPublicIpAddressPropertiesType = {
@@ -1304,7 +1304,7 @@ type natGatewayPublicIpAddressPropertiesType = {
 
   @description('Optional. The SKU of the Public IP address.')
   zones: (1 | 2 | 3)[]?
-}[]
+}
 
 type publicIPAddressPrefixesPropertiesType = {
   @description('Optional. The name of the Public IP address prefix.')
@@ -1315,7 +1315,7 @@ type publicIPAddressPrefixesPropertiesType = {
 
   @description('Optional. The custom IP prefix of the public IP address prefix.')
   customIPPrefix: string?
-}[]
+}
 
 @export()
 type roleAssignmentType = {
@@ -1333,7 +1333,7 @@ type roleAssignmentType = {
 
   @description('Optional. The principal type of the user, group, or service principal.')
   principalType: 'User' | 'Group' | 'ServicePrincipal'?
-}[]
+}
 
 // "Constrain Roles" - Condition template
 @export()
@@ -1553,7 +1553,7 @@ type pimRoleAssignmentTypeType = {
 
   @description('Optional. The justification for the role assignment.')
   justification: string?
-}[]
+}
 
 @discriminator('durationType')
 @description('Optional. The schedule information for the role assignment.')

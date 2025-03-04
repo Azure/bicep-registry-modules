@@ -2404,7 +2404,7 @@ The name of the Public IP address.
 
 The SKU of the Public IP address.
 
-- Required: Yes
+- Required: No
 - Type: array
 - Allowed:
   ```Bicep

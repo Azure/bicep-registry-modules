@@ -236,7 +236,7 @@ Each object must contain the following `keys`:
   ]
   '''
 })
-param roleAssignments roleAssignmentType = []
+param roleAssignments roleAssignmentType[] = []
 
 @description('''Optional. Supply an array of objects containing the details of the PIM role assignments to create.
 
@@ -267,7 +267,7 @@ Each object must contain the following `keys`:
   ]
   '''
 })
-param pimRoleAssignments pimRoleAssignmentTypeType = []
+param pimRoleAssignments pimRoleAssignmentTypeType[] = []
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true

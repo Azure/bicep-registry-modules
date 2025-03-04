@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "9116046860964746358"
+      "templateHash": "7370996989152512203"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -156,31 +156,28 @@
       }
     },
     "_1.natGatewayPublicIpAddressPropertiesType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of the Public IP address."
-            }
-          },
-          "zones": {
-            "type": "array",
-            "allowedValues": [
-              1,
-              2,
-              3
-            ],
-            "metadata": {
-              "description": "Optional. The SKU of the Public IP address."
-            }
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the Public IP address."
+          }
+        },
+        "zones": {
+          "type": "array",
+          "allowedValues": [
+            1,
+            2,
+            3
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The SKU of the Public IP address."
           }
         }
       },
-      "nullable": true,
       "metadata": {
         "__bicep_imported_from!": {
           "sourceTemplate": "modules/subResourceWrapper.bicep"
@@ -207,34 +204,30 @@
       }
     },
     "_1.publicIPAddressPrefixesPropertiesType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of the Public IP address prefix."
-            }
-          },
-          "prefixLength": {
-            "type": "int",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The prefix length of the public IP address prefix.."
-            }
-          },
-          "customIPPrefix": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The custom IP prefix of the public IP address prefix."
-            }
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the Public IP address prefix."
+          }
+        },
+        "prefixLength": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The prefix length of the public IP address prefix.."
+          }
+        },
+        "customIPPrefix": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The custom IP prefix of the public IP address prefix."
           }
         }
       },
-      "nullable": true,
       "metadata": {
         "__bicep_imported_from!": {
           "sourceTemplate": "modules/subResourceWrapper.bicep"
@@ -316,7 +309,6 @@
           }
         }
       },
-      "nullable": true,
       "metadata": {
         "__bicep_imported_from!": {
           "sourceTemplate": "modules/subResourceWrapper.bicep"
@@ -450,7 +442,6 @@
           }
         }
       },
-      "nullable": true,
       "metadata": {
         "__bicep_imported_from!": {
           "sourceTemplate": "modules/subResourceWrapper.bicep"
@@ -475,13 +466,21 @@
           }
         },
         "publicIPAddressProperties": {
-          "$ref": "#/definitions/_1.natGatewayPublicIpAddressPropertiesType",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/_1.natGatewayPublicIpAddressPropertiesType"
+          },
+          "nullable": true,
           "metadata": {
             "description": "Optional. The Public IP address(es) properties to be attached to the NAT gateway."
           }
         },
         "publicIPAddressPrefixesProperties": {
-          "$ref": "#/definitions/_1.publicIPAddressPrefixesPropertiesType",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/_1.publicIPAddressPrefixesPropertiesType"
+          },
+          "nullable": true,
           "metadata": {
             "description": "Optional. The Public IP address(es) prefixes properties to be attached to the NAT gateway."
           }
@@ -495,57 +494,54 @@
       }
     },
     "pimRoleAssignmentTypeType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "roleAssignmentType": {
-            "type": "string",
-            "allowedValues": [
-              "Active",
-              "Eligible"
-            ],
-            "metadata": {
-              "description": "Required. The type of the role assignment."
-            }
-          },
-          "scheduleInfo": {
-            "$ref": "#/definitions/_1.roleAssignmentScheduleType",
-            "metadata": {
-              "description": "Required. The schedule information for the role assignment."
-            }
-          },
-          "ticketInfo": {
-            "$ref": "#/definitions/_1.ticketInfoType",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The ticket information for the role assignment."
-            }
-          },
-          "relativeScope": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The relative scope of the role assignment."
-            }
-          },
-          "principalId": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The principal ID of the user, group, or service principal."
-            }
-          },
-          "definition": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The role definition ID or name."
-            }
-          },
-          "justification": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The justification for the role assignment."
-            }
+      "type": "object",
+      "properties": {
+        "roleAssignmentType": {
+          "type": "string",
+          "allowedValues": [
+            "Active",
+            "Eligible"
+          ],
+          "metadata": {
+            "description": "Required. The type of the role assignment."
+          }
+        },
+        "scheduleInfo": {
+          "$ref": "#/definitions/_1.roleAssignmentScheduleType",
+          "metadata": {
+            "description": "Required. The schedule information for the role assignment."
+          }
+        },
+        "ticketInfo": {
+          "$ref": "#/definitions/_1.ticketInfoType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The ticket information for the role assignment."
+          }
+        },
+        "relativeScope": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The relative scope of the role assignment."
+          }
+        },
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The principal ID of the user, group, or service principal."
+          }
+        },
+        "definition": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The role definition ID or name."
+          }
+        },
+        "justification": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The justification for the role assignment."
           }
         }
       },
@@ -557,46 +553,43 @@
       }
     },
     "roleAssignmentType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "principalId": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The principal ID of the user, group, or service principal."
-            }
-          },
-          "definition": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The role definition ID or name."
-            }
-          },
-          "relativeScope": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The relative scope of the role assignment."
-            }
-          },
-          "roleAssignmentCondition": {
-            "$ref": "#/definitions/_1.roleAssignmentConditionType",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The condition for the role assignment."
-            }
-          },
-          "principalType": {
-            "type": "string",
-            "allowedValues": [
-              "Group",
-              "ServicePrincipal",
-              "User"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The principal type of the user, group, or service principal."
-            }
+      "type": "object",
+      "properties": {
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The principal ID of the user, group, or service principal."
+          }
+        },
+        "definition": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The role definition ID or name."
+          }
+        },
+        "relativeScope": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The relative scope of the role assignment."
+          }
+        },
+        "roleAssignmentCondition": {
+          "$ref": "#/definitions/_1.roleAssignmentConditionType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The condition for the role assignment."
+          }
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "Group",
+            "ServicePrincipal",
+            "User"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The principal type of the user, group, or service principal."
           }
         }
       },
@@ -1012,7 +1005,10 @@
       }
     },
     "roleAssignments": {
-      "$ref": "#/definitions/roleAssignmentType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/roleAssignmentType"
+      },
       "defaultValue": [],
       "metadata": {
         "example": "  [\n    {\n      // Contributor role assignment at subscription scope\n      principalId: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'\n      definition: '/Contributor'\n      relativeScope: ''\n    }\n    {\n      // Owner role assignment at resource group scope\n      principalId: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'\n      definition: '/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635'\n      relativeScope: '/resourceGroups/{resourceGroupName}'\n    }\n  ]\n  ",
@@ -1020,7 +1016,10 @@
       }
     },
     "pimRoleAssignments": {
-      "$ref": "#/definitions/pimRoleAssignmentTypeType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/pimRoleAssignmentTypeType"
+      },
       "defaultValue": [],
       "metadata": {
         "example": "  [\n    {\n      // Contributor role assignment at subscription scope\n      principalId: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'\n      definition: '/Contributor'\n      relativeScope: ''\n    }\n    {\n      // Owner role assignment at resource group scope\n      principalId: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'\n      definition: '/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635'\n      relativeScope: '/resourceGroups/{resourceGroupName}'\n    }\n  ]\n  ",
@@ -1467,7 +1466,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "2925533542873520822"
+              "templateHash": "16624422183594076524"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -1492,13 +1491,21 @@
                   }
                 },
                 "publicIPAddressProperties": {
-                  "$ref": "#/definitions/natGatewayPublicIpAddressPropertiesType",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/natGatewayPublicIpAddressPropertiesType"
+                  },
+                  "nullable": true,
                   "metadata": {
                     "description": "Optional. The Public IP address(es) properties to be attached to the NAT gateway."
                   }
                 },
                 "publicIPAddressPrefixesProperties": {
-                  "$ref": "#/definitions/publicIPAddressPrefixesPropertiesType",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/publicIPAddressPrefixesPropertiesType"
+                  },
+                  "nullable": true,
                   "metadata": {
                     "description": "Optional. The Public IP address(es) prefixes properties to be attached to the NAT gateway."
                   }
@@ -1510,103 +1517,93 @@
               }
             },
             "natGatewayPublicIpAddressPropertiesType": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The name of the Public IP address."
-                    }
-                  },
-                  "zones": {
-                    "type": "array",
-                    "allowedValues": [
-                      1,
-                      2,
-                      3
-                    ],
-                    "metadata": {
-                      "description": "Optional. The SKU of the Public IP address."
-                    }
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name of the Public IP address."
+                  }
+                },
+                "zones": {
+                  "type": "array",
+                  "allowedValues": [
+                    1,
+                    2,
+                    3
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The SKU of the Public IP address."
                   }
                 }
-              },
-              "nullable": true
+              }
             },
             "publicIPAddressPrefixesPropertiesType": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The name of the Public IP address prefix."
-                    }
-                  },
-                  "prefixLength": {
-                    "type": "int",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The prefix length of the public IP address prefix.."
-                    }
-                  },
-                  "customIPPrefix": {
-                    "type": "string",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The custom IP prefix of the public IP address prefix."
-                    }
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name of the Public IP address prefix."
+                  }
+                },
+                "prefixLength": {
+                  "type": "int",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The prefix length of the public IP address prefix.."
+                  }
+                },
+                "customIPPrefix": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The custom IP prefix of the public IP address prefix."
                   }
                 }
-              },
-              "nullable": true
+              }
             },
             "roleAssignmentType": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "principalId": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. The principal ID of the user, group, or service principal."
-                    }
-                  },
-                  "definition": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. The role definition ID or name."
-                    }
-                  },
-                  "relativeScope": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. The relative scope of the role assignment."
-                    }
-                  },
-                  "roleAssignmentCondition": {
-                    "$ref": "#/definitions/roleAssignmentConditionType",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The condition for the role assignment."
-                    }
-                  },
-                  "principalType": {
-                    "type": "string",
-                    "allowedValues": [
-                      "Group",
-                      "ServicePrincipal",
-                      "User"
-                    ],
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The principal type of the user, group, or service principal."
-                    }
+              "type": "object",
+              "properties": {
+                "principalId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The principal ID of the user, group, or service principal."
+                  }
+                },
+                "definition": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The role definition ID or name."
+                  }
+                },
+                "relativeScope": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The relative scope of the role assignment."
+                  }
+                },
+                "roleAssignmentCondition": {
+                  "$ref": "#/definitions/roleAssignmentConditionType",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The condition for the role assignment."
+                  }
+                },
+                "principalType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Group",
+                    "ServicePrincipal",
+                    "User"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The principal type of the user, group, or service principal."
                   }
                 }
               },
@@ -1981,7 +1978,6 @@
                   }
                 }
               },
-              "nullable": true,
               "metadata": {
                 "__bicep_export!": true
               }
@@ -2022,63 +2018,59 @@
                   }
                 }
               },
-              "nullable": true,
               "metadata": {
                 "__bicep_export!": true
               }
             },
             "pimRoleAssignmentTypeType": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "roleAssignmentType": {
-                    "type": "string",
-                    "allowedValues": [
-                      "Active",
-                      "Eligible"
-                    ],
-                    "metadata": {
-                      "description": "Required. The type of the role assignment."
-                    }
-                  },
-                  "scheduleInfo": {
-                    "$ref": "#/definitions/roleAssignmentScheduleType",
-                    "metadata": {
-                      "description": "Required. The schedule information for the role assignment."
-                    }
-                  },
-                  "ticketInfo": {
-                    "$ref": "#/definitions/ticketInfoType",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The ticket information for the role assignment."
-                    }
-                  },
-                  "relativeScope": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. The relative scope of the role assignment."
-                    }
-                  },
-                  "principalId": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. The principal ID of the user, group, or service principal."
-                    }
-                  },
-                  "definition": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. The role definition ID or name."
-                    }
-                  },
-                  "justification": {
-                    "type": "string",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The justification for the role assignment."
-                    }
+              "type": "object",
+              "properties": {
+                "roleAssignmentType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Active",
+                    "Eligible"
+                  ],
+                  "metadata": {
+                    "description": "Required. The type of the role assignment."
+                  }
+                },
+                "scheduleInfo": {
+                  "$ref": "#/definitions/roleAssignmentScheduleType",
+                  "metadata": {
+                    "description": "Required. The schedule information for the role assignment."
+                  }
+                },
+                "ticketInfo": {
+                  "$ref": "#/definitions/ticketInfoType",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The ticket information for the role assignment."
+                  }
+                },
+                "relativeScope": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The relative scope of the role assignment."
+                  }
+                },
+                "principalId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The principal ID of the user, group, or service principal."
+                  }
+                },
+                "definition": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The role definition ID or name."
+                  }
+                },
+                "justification": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The justification for the role assignment."
                   }
                 }
               },
@@ -2477,14 +2469,20 @@
               }
             },
             "roleAssignments": {
-              "$ref": "#/definitions/roleAssignmentType",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/roleAssignmentType"
+              },
               "defaultValue": [],
               "metadata": {
                 "description": "Supply an array of objects containing the details of the role assignments to create."
               }
             },
             "pimRoleAssignments": {
-              "$ref": "#/definitions/pimRoleAssignmentTypeType",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/pimRoleAssignmentTypeType"
+              },
               "defaultValue": [],
               "metadata": {
                 "description": "Supply an array of objects containing the details of the PIM role assignments to create."
