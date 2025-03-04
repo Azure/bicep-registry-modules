@@ -118,8 +118,11 @@ module backupVault 'br/public:avm/res/data-protection/backup-vault:<version>' = 
       keyVaultResourceId: '<keyVaultResourceId>'
       userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
     }
+    immutabilitySettingState: 'Disabled'
+    infrastructureEncryption: 'Disabled'
     location: '<location>'
     managedIdentities: {
+      systemAssigned: true
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
@@ -219,11 +222,18 @@ module backupVault 'br/public:avm/res/data-protection/backup-vault:<version>' = 
         "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
       }
     },
+    "immutabilitySettingState": {
+      "value": "Disabled"
+    },
+    "infrastructureEncryption": {
+      "value": "Disabled"
+    },
     "location": {
       "value": "<location>"
     },
     "managedIdentities": {
       "value": {
+        "systemAssigned": true,
         "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
         ]
@@ -314,8 +324,11 @@ param customerManagedKey = {
   keyVaultResourceId: '<keyVaultResourceId>'
   userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
 }
+param immutabilitySettingState = 'Disabled'
+param infrastructureEncryption = 'Disabled'
 param location = '<location>'
 param managedIdentities = {
+  systemAssigned: true
   userAssignedResourceIds: [
     '<managedIdentityResourceId>'
   ]
@@ -826,18 +839,23 @@ module backupVault 'br/public:avm/res/data-protection/backup-vault:<version>' = 
         }
       }
     ]
-    location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
     }
+    immutabilitySettingState: 'Locked'
+    infrastructureEncryption: 'Enabled'
+    location: '<location>'
     managedIdentities: {
       systemAssigned: true
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
     }
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
+    softDeleteSettings: {
+      retentionDurationInDays: 14
+      state: 'On'
     }
   }
 }
@@ -927,25 +945,34 @@ module backupVault 'br/public:avm/res/data-protection/backup-vault:<version>' = 
         }
       ]
     },
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
+      }
+    },
+    "immutabilitySettingState": {
+      "value": "Locked"
+    },
+    "infrastructureEncryption": {
+      "value": "Enabled"
+    },
     "location": {
       "value": "<location>"
     },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
     "managedIdentities": {
       "value": {
-        "systemAssigned": true
+        "systemAssigned": true,
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
       }
     },
-    "tags": {
+    "softDeleteSettings": {
       "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
+        "retentionDurationInDays": 14,
+        "state": "On"
       }
     }
   }
@@ -1028,18 +1055,23 @@ param backupPolicies = [
     }
   }
 ]
-param location = '<location>'
-param lock = {
-  kind: 'CanNotDelete'
-  name: 'myCustomLockName'
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
 }
+param immutabilitySettingState = 'Locked'
+param infrastructureEncryption = 'Enabled'
+param location = '<location>'
 param managedIdentities = {
   systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
 }
-param tags = {
-  Environment: 'Non-Prod'
-  'hidden-title': 'This is visible in the resource name'
-  Role: 'DeploymentValidation'
+param softDeleteSettings = {
+  retentionDurationInDays: 14
+  state: 'On'
 }
 ```
 
@@ -1102,7 +1134,6 @@ List of all backup policies.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `customerManagedKey`
 
@@ -1183,7 +1214,6 @@ Feature settings for the backup vault.
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `immutabilitySettingState`
 

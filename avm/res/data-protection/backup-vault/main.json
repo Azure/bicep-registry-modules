@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "17817324303474939131"
+      "templateHash": "13399246379489735595"
     },
     "name": "Data Protection Backup Vaults",
     "description": "This module deploys a Data Protection Backup Vault."
@@ -335,14 +335,14 @@
     },
     "backupPolicies": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. List of all backup policies."
       }
     },
     "featureSettings": {
       "type": "object",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
         "description": "Optional. Feature settings for the backup vault."
       }
@@ -367,24 +367,13 @@
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
       "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
-    },
-    "keyVaultType": "[if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[7], '')]",
-    "isHSMKeyVault": "[contains(variables('keyVaultType'), 'managedHSMs')]"
+    }
   },
   "resources": {
     "cMKKeyVault::cMKKey": {
-      "condition": "[and(and(not(variables('isHSMKeyVault')), not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))), and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKey'), 'keyName')))))]",
+      "condition": "[and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKey'), 'keyName')))))]",
       "existing": true,
       "type": "Microsoft.KeyVault/vaults/keys",
-      "apiVersion": "2023-02-01",
-      "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
-      "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
-      "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'))]"
-    },
-    "hSMCMKKeyVault::hSMCMKKey": {
-      "condition": "[and(and(variables('isHSMKeyVault'), not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))), and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKey'), 'keyName')))))]",
-      "existing": true,
-      "type": "Microsoft.KeyVault/managedHSMs/keys",
       "apiVersion": "2023-02-01",
       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
@@ -411,19 +400,10 @@
       }
     },
     "cMKKeyVault": {
-      "condition": "[and(not(variables('isHSMKeyVault')), not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))))]",
+      "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))]",
       "existing": true,
       "type": "Microsoft.KeyVault/vaults",
       "apiVersion": "2023-02-01",
-      "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
-      "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
-      "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
-    },
-    "hSMCMKKeyVault": {
-      "condition": "[and(variables('isHSMKeyVault'), not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))))]",
-      "existing": true,
-      "type": "Microsoft.KeyVault/managedHSMs",
-      "apiVersion": "2022-07-01",
       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
       "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
@@ -458,17 +438,13 @@
         ],
         "featureSettings": "[parameters('featureSettings')]",
         "securitySettings": {
-          "encryptionSettings": "[if(not(empty(parameters('customerManagedKey'))), createObject('infrastructureEncryption', parameters('infrastructureEncryption'), 'kekIdentity', createObject('identityId', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), ''))), reference('cMKUserAssignedIdentity').clientId, null())), 'keyVaultProperties', createObject('keyUri', if(not(variables('isHSMKeyVault')), reference('cMKKeyVault').vaultUri, reference('hSMCMKKeyVault').hsmUri))), null())]",
-          "immutabilitySettings": {
-            "state": "[parameters('immutabilitySettingState')]"
-          },
+          "encryptionSettings": "[if(not(empty(parameters('customerManagedKey'))), createObject('infrastructureEncryption', parameters('infrastructureEncryption'), 'kekIdentity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), createObject('identityId', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2], split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/'))), 'identityType', 'UserAssigned'), createObject('identityType', 'SystemAssigned')), 'keyVaultProperties', createObject('keyUri', if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, tryGet(parameters('customerManagedKey'), 'keyVersion')), reference('cMKKeyVault::cMKKey').keyUriWithVersion)), 'state', 'Enabled'), null())]",
+          "immutabilitySettings": "[if(not(empty(parameters('immutabilitySettingState'))), createObject('state', parameters('immutabilitySettingState')), null())]",
           "softDeleteSettings": "[parameters('softDeleteSettings')]"
         }
       },
       "dependsOn": [
-        "cMKKeyVault",
-        "cMKUserAssignedIdentity",
-        "hSMCMKKeyVault"
+        "cMKKeyVault::cMKKey"
       ]
     },
     "backupVault_lock": {
@@ -510,7 +486,7 @@
     "backupVault_backupPolicies": {
       "copy": {
         "name": "backupVault_backupPolicies",
-        "count": "[length(parameters('backupPolicies'))]"
+        "count": "[length(coalesce(parameters('backupPolicies'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -525,10 +501,10 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[parameters('backupPolicies')[copyIndex()].name]"
+            "value": "[coalesce(parameters('backupPolicies'), createArray())[copyIndex()].name]"
           },
           "properties": {
-            "value": "[parameters('backupPolicies')[copyIndex()].properties]"
+            "value": "[coalesce(parameters('backupPolicies'), createArray())[copyIndex()].properties]"
           }
         },
         "template": {
