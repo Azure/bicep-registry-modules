@@ -55,6 +55,13 @@ param platformReservedDnsIP string = ''
 @description('Optional. Whether or not to encrypt peer traffic.')
 param peerTrafficEncryption bool = true
 
+@allowed([
+  'Enabled'
+  'Disabled'
+])
+@description('Optional. Whether to allow or block all public traffic.')
+param publicNetworkAccess string = 'Disabled'
+
 @description('Optional. Whether or not this Managed Environment is zone-redundant.')
 param zoneRedundant bool = true
 
@@ -151,7 +158,7 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09
   scope: resourceGroup(split(logAnalyticsWorkspaceResourceId, '/')[2], split(logAnalyticsWorkspaceResourceId, '/')[4])
 }
 
-resource managedEnvironment 'Microsoft.App/managedEnvironments@2024-02-02-preview' = {
+resource managedEnvironment 'Microsoft.App/managedEnvironments@2024-10-02-preview' = {
   name: name
   location: location
   tags: tags
@@ -186,6 +193,7 @@ resource managedEnvironment 'Microsoft.App/managedEnvironments@2024-02-02-previe
         enabled: peerTrafficEncryption
       }
     }
+    publicNetworkAccess: publicNetworkAccess
     vnetConfiguration: {
       internal: internal
       infrastructureSubnetId: !empty(infrastructureSubnetId) ? infrastructureSubnetId : null
