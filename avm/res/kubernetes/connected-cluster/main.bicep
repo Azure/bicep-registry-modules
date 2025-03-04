@@ -14,18 +14,15 @@ param location string = resourceGroup().location
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-@description('Optional. The identity type for the cluster. Allowed values: "SystemAssigned", "None".')
-@allowed([
-  'SystemAssigned'
-  'None'
-])
-param identityType string = 'SystemAssigned'
+import { managedIdentityOnlySysAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
+@description('Optional. The managed identity definition for this resource.')
+param managedIdentities managedIdentityOnlySysAssignedType?
 
 @description('Optional. Tags for the cluster resource.')
 param tags object?
 
 @description('Optional. The Azure AD tenant ID.')
-param aadTenantId string?
+param tenantId string?
 
 @description('Optional. The Azure AD admin group object IDs.')
 param aadAdminGroupObjectIds array?
@@ -104,14 +101,18 @@ resource connectedCluster 'Microsoft.Kubernetes/connectedClusters@2024-07-15-pre
   name: name
   kind: 'ProvisionedCluster'
   location: location
-  identity: {
-    type: identityType
-  }
+  identity: !empty(managedIdentities) && (managedIdentities.?systemAssigned == true)
+    ? {
+        type: 'SystemAssigned'
+      }
+    : {
+        type: 'None'
+      }
   tags: tags
   properties: {
-    aadProfile: !empty(aadTenantId)
+    aadProfile: enableAzureRBAC
       ? {
-          tenantID: aadTenantId
+          tenantID: !empty(tenantId) ? tenantId : tenant().tenantId
           adminGroupObjectIDs: aadAdminGroupObjectIds ?? []
           enableAzureRBAC: enableAzureRBAC
         }

@@ -42,10 +42,7 @@ This instance deploys the module with the minimum set of required parameters.
 module connectedCluster 'br/public:avm/res/kubernetes/connected-cluster:<version>' = {
   name: 'connectedClusterDeployment'
   params: {
-    // Required parameters
     name: 'kccmin001'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -62,13 +59,8 @@ module connectedCluster 'br/public:avm/res/kubernetes/connected-cluster:<version
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
     "name": {
       "value": "kccmin001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -84,10 +76,7 @@ module connectedCluster 'br/public:avm/res/kubernetes/connected-cluster:<version
 ```bicep-params
 using 'br/public:avm/res/kubernetes/connected-cluster:<version>'
 
-// Required parameters
 param name = 'kccmin001'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -109,13 +98,18 @@ module connectedCluster 'br/public:avm/res/kubernetes/connected-cluster:<version
     // Required parameters
     name: 'kccwaf001'
     // Non-required parameters
+    enableAzureRBAC: true
     location: '<location>'
+    managedIdentities: {
+      systemAssigned: true
+    }
     oidcIssuerEnabled: true
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
+    tenantId: '<tenantId>'
     workloadIdentityEnabled: true
   }
 }
@@ -138,8 +132,16 @@ module connectedCluster 'br/public:avm/res/kubernetes/connected-cluster:<version
       "value": "kccwaf001"
     },
     // Non-required parameters
+    "enableAzureRBAC": {
+      "value": true
+    },
     "location": {
       "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
     },
     "oidcIssuerEnabled": {
       "value": true
@@ -150,6 +152,9 @@ module connectedCluster 'br/public:avm/res/kubernetes/connected-cluster:<version
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
+    },
+    "tenantId": {
+      "value": "<tenantId>"
     },
     "workloadIdentityEnabled": {
       "value": true
@@ -171,13 +176,18 @@ using 'br/public:avm/res/kubernetes/connected-cluster:<version>'
 // Required parameters
 param name = 'kccwaf001'
 // Non-required parameters
+param enableAzureRBAC = true
 param location = '<location>'
+param managedIdentities = {
+  systemAssigned: true
+}
 param oidcIssuerEnabled = true
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
   Role: 'DeploymentValidation'
 }
+param tenantId = '<tenantId>'
 param workloadIdentityEnabled = true
 ```
 
@@ -197,15 +207,15 @@ param workloadIdentityEnabled = true
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`aadAdminGroupObjectIds`](#parameter-aadadmingroupobjectids) | array | The Azure AD admin group object IDs. |
-| [`aadTenantId`](#parameter-aadtenantid) | string | The Azure AD tenant ID. |
 | [`agentAutoUpgrade`](#parameter-agentautoupgrade) | string | Enable automatic agent upgrades. |
 | [`enableAzureRBAC`](#parameter-enableazurerbac) | bool | Enable Azure RBAC. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`identityType`](#parameter-identitytype) | string | The identity type for the cluster. Allowed values: "SystemAssigned", "None". |
 | [`location`](#parameter-location) | string | Location for all Resources. |
+| [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`oidcIssuerEnabled`](#parameter-oidcissuerenabled) | bool | Enable OIDC issuer. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags for the cluster resource. |
+| [`tenantId`](#parameter-tenantid) | string | The Azure AD tenant ID. |
 | [`workloadIdentityEnabled`](#parameter-workloadidentityenabled) | bool | Enable workload identity. |
 
 ### Parameter: `name`
@@ -221,13 +231,6 @@ The Azure AD admin group object IDs.
 
 - Required: No
 - Type: array
-
-### Parameter: `aadTenantId`
-
-The Azure AD tenant ID.
-
-- Required: No
-- Type: string
 
 ### Parameter: `agentAutoUpgrade`
 
@@ -260,21 +263,6 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
-### Parameter: `identityType`
-
-The identity type for the cluster. Allowed values: "SystemAssigned", "None".
-
-- Required: No
-- Type: string
-- Default: `'SystemAssigned'`
-- Allowed:
-  ```Bicep
-  [
-    'None'
-    'SystemAssigned'
-  ]
-  ```
-
 ### Parameter: `location`
 
 Location for all Resources.
@@ -282,6 +270,26 @@ Location for all Resources.
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
+
+### Parameter: `managedIdentities`
+
+The managed identity definition for this resource.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
+
+### Parameter: `managedIdentities.systemAssigned`
+
+Enables system assigned managed identity on the resource.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `oidcIssuerEnabled`
 
@@ -401,6 +409,13 @@ Tags for the cluster resource.
 - Required: No
 - Type: object
 
+### Parameter: `tenantId`
+
+The Azure AD tenant ID.
+
+- Required: No
+- Type: string
+
 ### Parameter: `workloadIdentityEnabled`
 
 Enable workload identity.
@@ -425,6 +440,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.4.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection

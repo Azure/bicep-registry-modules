@@ -6,12 +6,30 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "16906079045079707230"
+      "templateHash": "6413307189343107673"
     },
     "name": "Kubernetes Connected Cluster",
     "description": "This module deploys an Azure Arc connected cluster."
   },
   "definitions": {
+    "managedIdentityOnlySysAssignedType": {
+      "type": "object",
+      "properties": {
+        "systemAssigned": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enables system assigned managed identity on the resource."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a managed identity configuration. To be used if only system-assigned identities are supported by the resource provider.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
+        }
+      }
+    },
     "roleAssignmentType": {
       "type": "object",
       "properties": {
@@ -109,15 +127,11 @@
         "description": "Optional. Enable/Disable usage telemetry for module."
       }
     },
-    "identityType": {
-      "type": "string",
-      "defaultValue": "SystemAssigned",
-      "allowedValues": [
-        "SystemAssigned",
-        "None"
-      ],
+    "managedIdentities": {
+      "$ref": "#/definitions/managedIdentityOnlySysAssignedType",
+      "nullable": true,
       "metadata": {
-        "description": "Optional. The identity type for the cluster. Allowed values: \"SystemAssigned\", \"None\"."
+        "description": "Optional. The managed identity definition for this resource."
       }
     },
     "tags": {
@@ -127,7 +141,7 @@
         "description": "Optional. Tags for the cluster resource."
       }
     },
-    "aadTenantId": {
+    "tenantId": {
       "type": "string",
       "nullable": true,
       "metadata": {
@@ -227,12 +241,10 @@
       "name": "[parameters('name')]",
       "kind": "ProvisionedCluster",
       "location": "[parameters('location')]",
-      "identity": {
-        "type": "[parameters('identityType')]"
-      },
+      "identity": "[if(and(not(empty(parameters('managedIdentities'))), equals(tryGet(parameters('managedIdentities'), 'systemAssigned'), true())), createObject('type', 'SystemAssigned'), createObject('type', 'None'))]",
       "tags": "[parameters('tags')]",
       "properties": {
-        "aadProfile": "[if(not(empty(parameters('aadTenantId'))), createObject('tenantID', parameters('aadTenantId'), 'adminGroupObjectIDs', coalesce(parameters('aadAdminGroupObjectIds'), createArray()), 'enableAzureRBAC', parameters('enableAzureRBAC')), null())]",
+        "aadProfile": "[if(parameters('enableAzureRBAC'), createObject('tenantID', if(not(empty(parameters('tenantId'))), parameters('tenantId'), tenant().tenantId), 'adminGroupObjectIDs', coalesce(parameters('aadAdminGroupObjectIds'), createArray()), 'enableAzureRBAC', parameters('enableAzureRBAC')), null())]",
         "agentPublicKeyCertificate": "",
         "arcAgentProfile": {
           "agentAutoUpgrade": "[parameters('agentAutoUpgrade')]"
