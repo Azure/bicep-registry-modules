@@ -174,7 +174,7 @@ var zoneRedundant = deployInVnet || (!empty(addressPrefix) && empty(workloadProf
 var secrets = [
   for secret in keyVaultSecrets ?? []: (secret.keyVaultUrl != null)
     ? {
-        name: last(split(secret.keyVaultUrl ?? 'dummy-for-deployment-validation', '/'))
+        name: last(split(secret.keyVaultUrl!, '/'))
         identity: secret.identity
         value: 'dummy' // dummy needed to pass the validation
       }
@@ -689,12 +689,9 @@ resource userIdentity_new 'Microsoft.ManagedIdentity/userAssignedIdentities@2023
 }
 
 resource userIdentity_existing 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (managedIdentityResourceId != null) {
-  name: last(split(managedIdentityResourceId! ?? 'dummyMsi', '/'))
+  name: last(split(managedIdentityResourceId!, '/'))
   // get the resource group from the managed identity, as it could be in another resource group
-  scope: resourceGroup(
-    split(managedIdentityResourceId! ?? '//', '/')[2],
-    split(managedIdentityResourceId! ?? '////', '/')[4]
-  )
+  scope: resourceGroup(split(managedIdentityResourceId!, '/')[2], split(managedIdentityResourceId!, '/')[4])
 }
 
 // supporting resources
