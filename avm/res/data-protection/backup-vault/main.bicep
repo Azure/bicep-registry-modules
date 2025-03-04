@@ -188,7 +188,7 @@ resource backupVault 'Microsoft.DataProtection/backupVaults@2024-04-01' = {
     securitySettings: {
       encryptionSettings: !empty(customerManagedKey)
         ? {
-            // infrastructureEncryption: infrastructureEncryption
+            infrastructureEncryption: 'Disabled'
             kekIdentity: {
               // identityId: cMKUserAssignedIdentity.id
               // identityId: !empty(customerManagedKey.?userAssignedIdentityResourceId ?? '')
@@ -204,6 +204,7 @@ resource backupVault 'Microsoft.DataProtection/backupVaults@2024-04-01' = {
               //   ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.?keyVersion}'
               //   : cMKKeyVault::cMKKey.properties.keyUriWithVersion
             }
+            state: 'Enabled'
           }
         : null
       // encryptionSettings: !empty(customerManagedKey)
