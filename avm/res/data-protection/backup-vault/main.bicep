@@ -190,12 +190,12 @@ resource backupVault 'Microsoft.DataProtection/backupVaults@2024-04-01' = {
         ? {
             infrastructureEncryption: 'Disabled'
             kekIdentity: {
-              // identityId: cMKUserAssignedIdentity.id
+              identityId: cMKUserAssignedIdentity.id
               // identityId: !empty(customerManagedKey.?userAssignedIdentityResourceId ?? '')
               // ? cMKUserAssignedIdentity.properties.clientId
               // : null
-              // identityType: 'UserAssigned'
-              identityType: 'SystemAssigned'
+              identityType: 'UserAssigned'
+              // identityType: 'SystemAssigned'
             }
             keyVaultProperties: {
               keyUri: cMKKeyVault::cMKKey.properties.keyUri
