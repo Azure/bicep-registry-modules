@@ -68,7 +68,7 @@ param virtualNetworkPeeringEnabled bool = false
 param virtualNetworkDeployNatGateway bool = false
 
 @sys.description('The NAT Gateway configuration object. Do not provide this object or keep it empty if you do not want to deploy a NAT Gateway.')
-param virtualNetworkNatGatewayConfiguration natGatewayType
+param virtualNetworkNatGatewayConfiguration natGatewayType?
 
 @sys.description('Whether to deploy a Bastion host to the created virtual network.')
 param virtualNetworkDeployBastion bool = false
@@ -1296,7 +1296,7 @@ type natGatewayType = {
 
   @description('Optional. The Public IP address(es) prefixes properties to be attached to the NAT gateway.')
   publicIPAddressPrefixesProperties: publicIPAddressPrefixesPropertiesType[]?
-}?
+}
 
 type natGatewayPublicIpAddressPropertiesType = {
   @description('Optional. The name of the Public IP address.')

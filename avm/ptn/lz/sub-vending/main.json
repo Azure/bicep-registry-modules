@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "7370996989152512203"
+      "templateHash": "4728679665886035782"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -486,7 +486,6 @@
           }
         }
       },
-      "nullable": true,
       "metadata": {
         "__bicep_imported_from!": {
           "sourceTemplate": "modules/subResourceWrapper.bicep"
@@ -1466,7 +1465,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "16624422183594076524"
+              "templateHash": "11709090420766635636"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -1511,7 +1510,6 @@
                   }
                 }
               },
-              "nullable": true,
               "metadata": {
                 "__bicep_export!": true
               }
@@ -2394,6 +2392,7 @@
             },
             "virtualNetworkNatGatewayConfiguration": {
               "$ref": "#/definitions/natGatewayType",
+              "nullable": true,
               "metadata": {
                 "description": "The NAT Gateway configuration object. Do not provide this object or keep it empty if you do not want to deploy a NAT Gateway."
               }
