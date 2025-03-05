@@ -12,7 +12,6 @@ resource resOwnerRoleDefinition 'Microsoft.Authorization/roleDefinitions@2018-01
 // Assign Owner role to the managed identity in the resource group
 resource resRoleAssignmentOwnerManagedIdResourceGroup 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid(resourceGroup().id, managedIdentityResourceId, resOwnerRoleDefinition.id)
-  scope: resourceGroup()
   properties: {
     principalId: managedIdentityPrincipalId
     roleDefinitionId: resOwnerRoleDefinition.id

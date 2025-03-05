@@ -99,7 +99,7 @@ var varAIFoundryAIServicesContentUnderstandingLocation = contentUnderstandingLoc
   : contentUnderstandingLocation
 // var varAIFoundryAIServicesName_m = format(workloadNameFormat, 'aiam')
 var varAIFoundrySearchServiceName = format(workloadNameFormat, 'aifd-srch')
-var varAIFoundryStorageAccountName = replace(format(workloadNameFormat, 'aifd-strg'), '-', '') //NOTE: SA name should not contain hyphens
+//var varAIFoundryStorageAccountName = replace(format(workloadNameFormat, 'aifd-strg'), '-', '') //NOTE: SA name should not contain hyphens
 var varAIFoundryMachineLearningServicesAIHubName = format(workloadNameFormat, 'aifd-aihb')
 var varAIFoundryMachineLearningServicesProjectName = format(workloadNameFormat, 'aifd-aipj')
 var varAIFoundryMachineLearningServicesModelPHIServerlessName = format(workloadNameFormat, 'aifd-sphi')
@@ -111,10 +111,11 @@ var varSQLServerLocation = secondaryLocation
 var varFunctionsManagedEnvironmentName = format(workloadNameFormat, 'ftme')
 //var varChartsManagedEnviornmentName = format(workloadNameFormat, 'fchr-ftme')
 var varChartsFunctionName = format(workloadNameFormat, 'fchr-azfct')
-var varChartsStorageAccountName = replace(format(workloadNameFormat, 'fchr-strg'), '-', '')
+//var varChartsStorageAccountName = replace(format(workloadNameFormat, 'fchr-strg'), '-', '')
 //var varRAGManagedEnviornmentName = format(workloadNameFormat, 'frag-ftme')
 var varRAGFunctionName = format(workloadNameFormat, 'frag-azfct')
-var varRAGStorageAccountName = replace(format(workloadNameFormat, 'frag-strg'), '-', '')
+//var varRAGStorageAccountName = replace(format(workloadNameFormat, 'frag-strg'), '-', '')
+var varFunctionsStorageAccountName = replace(format(workloadNameFormat, 'func-strg'), '-', '')
 var varWebAppServerFarmLocation = ckmWebAppServerFarmLocation == '' ? solutionLocation : ckmWebAppServerFarmLocation
 var varWebAppServerFarmName = format(workloadNameFormat, 'waoo-srvf')
 var varWebAppName = format(workloadNameFormat, 'wapp-wapp')
@@ -280,6 +281,12 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 
 // ========== Managed Identity ========== //
 
+// resource avmManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-07-31-preview' = {
+//   name: varManagedIdentityName
+//   location: solutionLocation
+//   tags: tags
+// }
+
 module avmManagedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0' = {
   name: format(deploymentNameFormat, varManagedIdentityName)
   params: {
@@ -292,7 +299,7 @@ module avmManagedIdentity 'br/public:avm/res/managed-identity/user-assigned-iden
 // NOTE: This assignment should leverage AVM module [avm/res/resources/resource-group](https://azure.github.io/Azure-Verified-Modules/indexes/bicep/bicep-resource-modules/), but current target scope is resourceGroup
 // TODO: Owner permissions to RG is a bad practice, fine grain permissions
 module assignResourceGroupOwner 'modules/rbac-rg-owner.bicep' = {
-  name: 'module-assign-rg-owner'
+  name: 'rbac-rg-owner'
   params: {
     managedIdentityResourceId: avmManagedIdentity.outputs.resourceId
     managedIdentityPrincipalId: avmManagedIdentity.outputs.principalId
@@ -311,7 +318,7 @@ module avmKeyVault 'br/public:avm/res/key-vault/vault:0.11.2' = {
     enableVaultForDeployment: true
     enableVaultForDiskEncryption: true
     enableVaultForTemplateDeployment: true
-    enableSoftDelete: false //NOTE: This must vary per environment
+    enableSoftDelete: true //NOTE: This must become a parameter
     softDeleteRetentionInDays: 7
     enablePurgeProtection: false //NOTE: Set to true on original
     publicNetworkAccess: 'Enabled'
@@ -336,14 +343,24 @@ module avmKeyVault 'br/public:avm/res/key-vault/vault:0.11.2' = {
         roleDefinitionIdOrName: '00482a5a-887f-4fb3-b363-3b7fe8e74483' //NOTE: Built-in role 'Key Vault Administrator'
       }
     ]
-    // secrets: [
-    //   {
-    //     name: secret_name
-    //     value: secret_value
-    //   }
-    // ]
+    secrets: [
+      {
+        name: 'ADLS-ACCOUNT-CONTAINER'
+        value: 'data'
+      }
+    ]
   }
 }
+
+// resource kvSecretADLSAccountContainer 'Microsoft.KeyVault/vaults/secrets@2021-11-01-preview' = {
+//   name: '${varKeyVaultName}/ADLS-ACCOUNT-CONTAINER'
+//   properties: {
+//     value: 'data'
+//   }
+//   dependsOn: [
+//     avmKeyVault
+//   ]
+// }
 
 //NOTE: Check if this is required
 
@@ -391,17 +408,13 @@ module moduleAIFoundry './modules/ai-foundry.bicep' = {
     aiServices_cu_location: varAIFoundryAIServicesContentUnderstandingLocation
     aiServices_deployments: varAIFoundryAIServicesModelDeployments
     searchService_name: varAIFoundrySearchServiceName
-    storageAccount_name: varAIFoundryStorageAccountName
+    storageAccount_resource_id: avmStorageAccount.outputs.resourceId
     machineLearningServicesWorkspaces_aihub_name: varAIFoundryMachineLearningServicesAIHubName
     machineLearningServicesWorkspaces_project_name: varAIFoundryMachineLearningServicesProjectName
     machineLearningServicesWorkspaces_phiServerless_name: varAIFoundryMachineLearningServicesModelPHIServerlessName
     gptModelVersionPreview: varGPTModelVersionPreview
     deploymentVersion: armDeploymentSuffix
   }
-  dependsOn: [
-    avmManagedIdentity
-    avmKeyVault
-  ]
 }
 
 // ========== Storage Account ========== //
@@ -414,19 +427,20 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.17.0' = {
     tags: tags
     skuName: 'Standard_LRS'
     kind: 'StorageV2'
+    accessTier: 'Hot'
     minimumTlsVersion: 'TLS1_2'
     allowBlobPublicAccess: false
-    //     allowCrossTenantReplication: false
-    //     allowSharedKeyAccess: false
-    //     enableNfsV3: false
-    enableHierarchicalNamespace: true //NOTE: Set to true
+    allowCrossTenantReplication: false
+    allowSharedKeyAccess: false
+    requireInfrastructureEncryption: true
+    enableHierarchicalNamespace: false //NOTE: Set to true
+    largeFileSharesState: 'Disabled'
+    enableNfsV3: false
     networkAcls: {
       bypass: 'AzureServices'
       defaultAction: 'Allow'
     }
     supportsHttpsTrafficOnly: true
-    requireInfrastructureEncryption: true
-    accessTier: 'Hot'
     blobServices: {
       name: 'default'
       cors: {
@@ -460,68 +474,12 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.17.0' = {
   }
 }
 
-// module avm_storage_storage_account 'br/public:avm/res/storage/storage-account:0.9.0' = {
-//   name: format(deploymentNameFormat, storageAccount_name)
-//   params: {
-//     name: storageAccount_name
-//     location: location
-//     tags: tags
-//     skuName: 'Standard_LRS'
-//     kind: 'StorageV2'
-//     accessTier: 'Hot'
-//     allowBlobPublicAccess: false
-//     allowCrossTenantReplication: false
-//     allowSharedKeyAccess: false
-//     requireInfrastructureEncryption: true
-//     enableHierarchicalNamespace: false
-//     enableNfsV3: false
-//     // NOTE: Missing in AVM
-//     // keyPolicy: {
-//     //   keyExpirationPeriodInDays: 7
-//     // }
-//     largeFileSharesState: 'Disabled'
-//     minimumTlsVersion: 'TLS1_2'
-//     networkAcls: {
-//       bypass: 'AzureServices'
-//       defaultAction: 'Deny'
-//     }
-//     supportsHttpsTrafficOnly: true
-//     roleAssignments: [
-//       {
-//         principalId: avm_managed_identity.properties.principalId
-//         roleDefinitionIdOrName: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe' //NOTE: Built-in role 'Storage Blob Data Contributor'
-//       }
-//     ]
-//   }
-// }
-
 resource kvSecretADLSAccountName 'Microsoft.KeyVault/vaults/secrets@2021-11-01-preview' = {
   name: '${varKeyVaultName}/ADLS-ACCOUNT-NAME'
   properties: {
     value: avmStorageAccount.outputs.name
   }
 }
-
-resource kvSecretADLSAccountContainer 'Microsoft.KeyVault/vaults/secrets@2021-11-01-preview' = {
-  name: '${varKeyVaultName}/ADLS-ACCOUNT-CONTAINER'
-  properties: {
-    value: 'data'
-  }
-  dependsOn: [
-    avmKeyVault
-  ]
-}
-
-// NOTE: Added through storage account module
-// resource kvSecretADLSAccountKey 'Microsoft.KeyVault/vaults/secrets@2021-11-01-preview' = {
-//   name: '${varKeyVaultName}/ADLS-ACCOUNT-KEY'
-//   properties: {
-//     value: existingStorageAccount.listKeys().keys[0].value
-//   }
-//   dependsOn: [
-//     avmKeyVault
-//   ]
-// }
 
 // ========== Cosmos Database ========== //
 
@@ -757,52 +715,7 @@ module avmFunctionsManagedEnvironment 'br/public:avm/res/app/managed-environment
   }
 }
 
-//========== Azure function: Chart ========== //
-
-// NOTE: AVM module deployment is not working for this Azure Function configuration
-// ERROR: VnetRouteAllEnabled cannot be configured for function app deployed on Azure Container Apps. Please try to configure from Azure Container Apps Environment resource
-
-// module ckm_functions_chart_avm_web_sites 'br/public:avm/res/web/site:0.13.3' = {
-//   name: format(deploymentNameFormat, varChartsFunctionName)
-//   params: {
-//     name: varChartsFunctionName
-//     tags: tags
-//     location: solutionLocation
-//     kind: 'functionapp,linux,container,azurecontainerapps'
-//     managedIdentities: {
-//       systemAssigned: true
-//     }
-//     appSettingsKeyValuePairs: {
-//       'AzureWebJobsStorage': 'DefaultEndpointsProtocol=https;AccountName=${varChartsStorageAccountName};EndpointSuffix=core.windows.net'
-//       'SQLDB_DATABASE': varSQLDatabaseName
-//       'SQLDB_PASSWORD': varSQLServerAdministratorPassword
-//       'SQLDB_SERVER': varSQLServerName
-//     }
-//     siteConfig: {
-//       linuxFxVersion: varChartsDockerImageName
-//       functionAppScaleLimit: 10
-//       minimumElasticInstanceCount: 0
-//     }
-//     managedEnvironmentId: avmManagedEnvironmentCharts.outputs.resourceId
-//     serverFarmResourceId: avmManagedEnvironmentCharts.outputs.resourceId
-//     // Missing configuration in AVM:
-//     // workloadProfileName: 'Consumption'
-//     // resourceConfig: {
-//     //   cpu: 1
-//     //   memory: '2Gi'
-//     // }
-//     storageAccountRequired: false
-//     vnetRouteAllEnabled: false
-//     resRoleAssignmentOwnerManagedIdResourceGroups: [
-//       {
-//         principalId: avmManagedIdentity.outputs.principalId
-//         roleDefinitionIdOrName: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe' //NOTE: Built-in role 'Storage Blob Data Contributor'
-//       }
-//     ]
-//   }
-// }
-
-resource resManagedIdentity 'Microsoft.Web/sites@2023-12-01' = {
+resource resWebapp 'Microsoft.Web/sites@2023-12-01' = {
   name: varChartsFunctionName
   location: solutionLocation
   kind: 'functionapp,linux,container,azurecontainerapps'
@@ -814,7 +727,7 @@ resource resManagedIdentity 'Microsoft.Web/sites@2023-12-01' = {
       appSettings: [
         {
           name: 'AzureWebJobsStorage'
-          value: 'DefaultEndpointsProtocol=https;AccountName=${varChartsStorageAccountName};EndpointSuffix=core.windows.net'
+          value: 'DefaultEndpointsProtocol=https;AccountName=${varFunctionsStorageAccountName};EndpointSuffix=core.windows.net'
         }
         {
           name: 'SQLDB_DATABASE'
@@ -851,44 +764,25 @@ resource resManagedIdentity 'Microsoft.Web/sites@2023-12-01' = {
   }
 }
 
-module avmStorageAccountCharts 'br/public:avm/res/storage/storage-account:0.17.3' = {
-  name: format(deploymentNameFormat, varChartsStorageAccountName)
-  params: {
-    name: varChartsStorageAccountName
-    location: solutionLocation
-    tags: tags
-    skuName: 'Standard_LRS'
-    kind: 'StorageV2'
-    accessTier: 'Hot'
-    roleAssignments: [
-      {
-        principalId: resManagedIdentity.identity.principalId
-        roleDefinitionIdOrName: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe' //NOTE: Built-in role 'Storage Blob Data Contributor'
-      }
-    ]
-  }
-}
-
-//========== Azure function: Rag ========== //
-
-// NOTE: Can we share the same managed environment for both functions?
-// module avmManagedEnvironmentRAG 'br/public:avm/res/app/managed-environment:0.9.0' = {
-//   name: format(deploymentNameFormat, varRAGManagedEnviornmentName)
+// module avmStorageAccountCharts 'br/public:avm/res/storage/storage-account:0.17.3' = {
+//   name: format(deploymentNameFormat, varChartsStorageAccountName)
 //   params: {
-//     name: varRAGManagedEnviornmentName
-//     tags: tags
+//     name: varChartsStorageAccountName
 //     location: solutionLocation
-//     zoneRedundant: false
-//     workloadProfiles: [
+//     tags: tags
+//     skuName: 'Standard_LRS'
+//     kind: 'StorageV2'
+//     accessTier: 'Hot'
+//     roleAssignments: [
 //       {
-//         workloadProfileType: 'Consumption'
-//         name: 'Consumption'
+//         principalId: resWebapp.identity.principalId
+//         roleDefinitionIdOrName: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe' //NOTE: Built-in role 'Storage Blob Data Contributor'
 //       }
 //     ]
-//     peerTrafficEncryption: false
-//     logAnalyticsWorkspaceResourceId: avmLogAnalyticsWorkspace.outputs.resourceId
 //   }
 // }
+
+//========== Azure function: Rag ========== //
 
 module moduleFunctionRAG 'modules/function-rag.bicep' = {
   name: 'module-function-rag'
@@ -896,7 +790,7 @@ module moduleFunctionRAG 'modules/function-rag.bicep' = {
     ragFunctionName: varRAGFunctionName
     solutionLocation: solutionLocation
     tags: tags
-    ragStorageAccountName: varRAGStorageAccountName
+    ragStorageAccountName: varFunctionsStorageAccountName
     aiFoundryAIHubProjectConnectionString: moduleAIFoundry.outputs.aiHub_project_connectionString
     AIFoundryAISearchServiceConnectionString: moduleAIFoundry.outputs.aiSearch_connectionString
     aiFoundryAIServicesName: moduleAIFoundry.outputs.aiServices_name
@@ -913,10 +807,10 @@ module moduleFunctionRAG 'modules/function-rag.bicep' = {
   }
 }
 
-module avmStorageAccountRAG 'br/public:avm/res/storage/storage-account:0.17.3' = {
-  name: format(deploymentNameFormat, varRAGStorageAccountName)
+module avmStorageAccountFunctions 'br/public:avm/res/storage/storage-account:0.17.3' = {
+  name: format(deploymentNameFormat, varFunctionsStorageAccountName)
   params: {
-    name: varRAGStorageAccountName
+    name: varFunctionsStorageAccountName
     location: solutionLocation
     tags: tags
     skuName: 'Standard_LRS'
@@ -927,14 +821,36 @@ module avmStorageAccountRAG 'br/public:avm/res/storage/storage-account:0.17.3' =
         principalId: moduleFunctionRAG.outputs.principalId
         roleDefinitionIdOrName: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe' //NOTE: Built-in role 'Storage Blob Data Contributor'
       }
+      {
+        principalId: resWebapp.identity.principalId
+        roleDefinitionIdOrName: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe' //NOTE: Built-in role 'Storage Blob Data Contributor'
+      }
     ]
   }
 }
 
+// module avmStorageAccountRAG 'br/public:avm/res/storage/storage-account:0.17.3' = {
+//   name: format(deploymentNameFormat, varRAGStorageAccountName)
+//   params: {
+//     name: varRAGStorageAccountName
+//     location: solutionLocation
+//     tags: tags
+//     skuName: 'Standard_LRS'
+//     kind: 'StorageV2'
+//     accessTier: 'Hot'
+//     roleAssignments: [
+//       {
+//         principalId: moduleFunctionRAG.outputs.principalId
+//         roleDefinitionIdOrName: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe' //NOTE: Built-in role 'Storage Blob Data Contributor'
+//       }
+//     ]
+//   }
+// }
+
 module rbacAiprojectAideveloper 'modules/rbac-aiproject-aideveloper.bicep' = {
   name: 'module-rbac-aiproject-aideveloper'
   params: {
-    aiServicesProjectResourceName: moduleAIFoundry.outputs.aiServices_name
+    aiServicesProjectResourceName: moduleAIFoundry.outputs.aiHub_project_name
     identityPrincipalId: moduleFunctionRAG.outputs.principalId
     aiServicesProjectResourceId: moduleAIFoundry.outputs.aiHub_project_resourceId
     ragFunctionResourceId: moduleFunctionRAG.outputs.resourceId
@@ -971,7 +887,7 @@ module moduleWebsiteWebapp 'modules/webapp.bicep' = {
     gptModelName: gptModelName
     gptModelVersionPreview: varGPTModelVersionPreview
     aiServicesResourceName: moduleAIFoundry.outputs.aiServices_name
-    managedIdentityDefaultHostName: resManagedIdentity.properties.defaultHostName
+    managedIdentityDefaultHostName: resWebapp.properties.defaultHostName
     chartsFunctionFunctionName: varChartsFunctionFunctionName
     webAppAppConfigReact: varWebAppAppConfigReact
     cosmosDbSqlDbName: varCosdbSqlDbName
