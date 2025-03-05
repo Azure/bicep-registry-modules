@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "7598337213435142521"
+      "templateHash": "15152556071592649783"
     },
     "name": "Automation Accounts",
     "description": "This module deploys an Azure Automation Account."
@@ -126,6 +126,83 @@
       },
       "metadata": {
         "__bicep_export!": true
+      }
+    },
+    "pwsh72ModuleType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Name of the Powershell72 Automation Account module."
+          }
+        },
+        "location": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The location to deploy the module to."
+          }
+        },
+        "tags": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Tags of the Powershell 72 module resource."
+          }
+        },
+        "uri": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Module package URI, e.g. https://www.powershellgallery.com/api/v2/package."
+          }
+        },
+        "version": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Module version or specify latest to get the latest version."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a PowerShell 7.2 module configuration."
+      }
+    },
+    "python23PackageType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Name of the Python3 Automation Account package."
+          }
+        },
+        "tags": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Tags of the Python3 package resource."
+          }
+        },
+        "uri": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Module package URI, e.g. https://www.powershellgallery.com/api/v2/package."
+          }
+        },
+        "version": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Module version or specify latest to get the latest version."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a Python 2 or 3 module configuration."
       }
     },
     "_1.privateEndpointCustomDnsConfigType": {
@@ -750,6 +827,36 @@
         "description": "Optional. List of modules to be created in the automation account."
       }
     },
+    "powershell72Modules": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/pwsh72ModuleType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. List of powershell72 modules to be created in the automation account."
+      }
+    },
+    "python3Packages": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/python23PackageType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. List of python 3 packages to be created in the automation account."
+      }
+    },
+    "python2Packages": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/python23PackageType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. List of python 2 packages to be created in the automation account."
+      }
+    },
     "runbooks": {
       "type": "array",
       "defaultValue": [],
@@ -1307,6 +1414,416 @@
                 "description": "The location the resource was deployed into."
               },
               "value": "[reference('module', '2022-08-08', 'full').location]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "automationAccount"
+      ]
+    },
+    "automationAccount_powershell72modules": {
+      "copy": {
+        "name": "automationAccount_powershell72modules",
+        "count": "[length(coalesce(parameters('powershell72Modules'), createArray()))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-AutoAccount-Pwsh72Module-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[coalesce(parameters('powershell72Modules'), createArray())[copyIndex()].name]"
+          },
+          "automationAccountName": {
+            "value": "[parameters('name')]"
+          },
+          "version": {
+            "value": "[coalesce(parameters('powershell72Modules'), createArray())[copyIndex()].version]"
+          },
+          "uri": {
+            "value": "[coalesce(parameters('powershell72Modules'), createArray())[copyIndex()].uri]"
+          },
+          "location": {
+            "value": "[tryGet(coalesce(parameters('powershell72Modules'), createArray())[copyIndex()], 'location')]"
+          },
+          "tags": {
+            "value": "[coalesce(tryGet(coalesce(parameters('powershell72Modules'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.33.13.18514",
+              "templateHash": "8322001051342524245"
+            },
+            "name": "Automation Account Powershell72 Modules",
+            "description": "This module deploys a Powershell72 Module in the Automation Account."
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Name of the Powershell72 Automation Account module."
+              }
+            },
+            "automationAccountName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent Automation Account. Required if the template is used in a standalone deployment."
+              }
+            },
+            "uri": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Module package URI, e.g. https://www.powershellgallery.com/api/v2/package."
+              }
+            },
+            "version": {
+              "type": "string",
+              "defaultValue": "latest",
+              "metadata": {
+                "description": "Optional. Module version or specify latest to get the latest version."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Optional. Location for all resources."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Tags of the Powershell 72 module resource."
+              }
+            }
+          },
+          "resources": {
+            "automationAccount": {
+              "existing": true,
+              "type": "Microsoft.Automation/automationAccounts",
+              "apiVersion": "2022-08-08",
+              "name": "[parameters('automationAccountName')]"
+            },
+            "powershell72module": {
+              "type": "Microsoft.Automation/automationAccounts/powerShell72Modules",
+              "apiVersion": "2023-11-01",
+              "name": "[format('{0}/{1}', parameters('automationAccountName'), parameters('name'))]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "contentLink": {
+                  "uri": "[if(not(equals(parameters('version'), 'latest')), format('{0}/{1}/{2}', parameters('uri'), parameters('name'), parameters('version')), format('{0}/{1}', parameters('uri'), parameters('name')))]",
+                  "version": "[if(not(equals(parameters('version'), 'latest')), parameters('version'), null())]"
+                }
+              }
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the deployed module."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the deployed module."
+              },
+              "value": "[resourceId('Microsoft.Automation/automationAccounts/powerShell72Modules', parameters('automationAccountName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group of the deployed module."
+              },
+              "value": "[resourceGroup().name]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location the resource was deployed into."
+              },
+              "value": "[reference('powershell72module', '2023-11-01', 'full').location]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "automationAccount"
+      ]
+    },
+    "automationAccount_python3packages": {
+      "copy": {
+        "name": "automationAccount_python3packages",
+        "count": "[length(coalesce(parameters('python3Packages'), createArray()))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-AutoAccount-Python3Package-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[coalesce(parameters('python3Packages'), createArray())[copyIndex()].name]"
+          },
+          "automationAccountName": {
+            "value": "[parameters('name')]"
+          },
+          "version": {
+            "value": "[coalesce(parameters('python3Packages'), createArray())[copyIndex()].version]"
+          },
+          "uri": {
+            "value": "[coalesce(parameters('python3Packages'), createArray())[copyIndex()].uri]"
+          },
+          "tags": {
+            "value": "[coalesce(tryGet(coalesce(parameters('python3Packages'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.33.13.18514",
+              "templateHash": "3398538921478793121"
+            },
+            "name": "Automation Account Python 3 Packages",
+            "description": "This module deploys a Python3 Package in the Automation Account."
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Name of the Python3 Automation Account package."
+              }
+            },
+            "automationAccountName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent Automation Account. Required if the template is used in a standalone deployment."
+              }
+            },
+            "uri": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Package URI, e.g. https://www.powershellgallery.com/api/v2/package."
+              }
+            },
+            "version": {
+              "type": "string",
+              "defaultValue": "latest",
+              "metadata": {
+                "description": "Optional. Package version or specify latest to get the latest version."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Tags of the Automation Account resource."
+              }
+            }
+          },
+          "resources": {
+            "automationAccount": {
+              "existing": true,
+              "type": "Microsoft.Automation/automationAccounts",
+              "apiVersion": "2022-08-08",
+              "name": "[parameters('automationAccountName')]"
+            },
+            "python3package": {
+              "type": "Microsoft.Automation/automationAccounts/python3Packages",
+              "apiVersion": "2023-11-01",
+              "name": "[format('{0}/{1}', parameters('automationAccountName'), parameters('name'))]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "contentLink": {
+                  "uri": "[if(not(equals(parameters('version'), 'latest')), format('{0}/{1}/{2}', parameters('uri'), parameters('name'), parameters('version')), format('{0}/{1}', parameters('uri'), parameters('name')))]",
+                  "version": "[if(not(equals(parameters('version'), 'latest')), parameters('version'), null())]"
+                }
+              }
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the deployed package."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the deployed package."
+              },
+              "value": "[resourceId('Microsoft.Automation/automationAccounts/python3Packages', parameters('automationAccountName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group of the deployed package."
+              },
+              "value": "[resourceGroup().name]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location the resource was deployed into."
+              },
+              "value": "[reference('python3package', '2023-11-01', 'full').location]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "automationAccount"
+      ]
+    },
+    "automationAccount_python2packages": {
+      "copy": {
+        "name": "automationAccount_python2packages",
+        "count": "[length(coalesce(parameters('python2Packages'), createArray()))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-AutoAccount-Python2Package-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[coalesce(parameters('python2Packages'), createArray())[copyIndex()].name]"
+          },
+          "automationAccountName": {
+            "value": "[parameters('name')]"
+          },
+          "version": {
+            "value": "[coalesce(parameters('python2Packages'), createArray())[copyIndex()].version]"
+          },
+          "uri": {
+            "value": "[coalesce(parameters('python2Packages'), createArray())[copyIndex()].uri]"
+          },
+          "tags": {
+            "value": "[coalesce(tryGet(coalesce(parameters('python2Packages'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.33.13.18514",
+              "templateHash": "14659338227033455504"
+            },
+            "name": "Automation Account Python 2 Packages",
+            "description": "This module deploys a Python2 Package in the Automation Account."
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Name of the Python2 Automation Account package."
+              }
+            },
+            "automationAccountName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent Automation Account. Required if the template is used in a standalone deployment."
+              }
+            },
+            "uri": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Package URI, e.g. https://www.powershellgallery.com/api/v2/package."
+              }
+            },
+            "version": {
+              "type": "string",
+              "defaultValue": "latest",
+              "metadata": {
+                "description": "Optional. Package version or specify latest to get the latest version."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Tags of the Automation Account resource."
+              }
+            }
+          },
+          "resources": {
+            "automationAccount": {
+              "existing": true,
+              "type": "Microsoft.Automation/automationAccounts",
+              "apiVersion": "2022-08-08",
+              "name": "[parameters('automationAccountName')]"
+            },
+            "python2package": {
+              "type": "Microsoft.Automation/automationAccounts/python2Packages",
+              "apiVersion": "2023-11-01",
+              "name": "[format('{0}/{1}', parameters('automationAccountName'), parameters('name'))]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "contentLink": {
+                  "uri": "[if(not(equals(parameters('version'), 'latest')), format('{0}/{1}/{2}', parameters('uri'), parameters('name'), parameters('version')), format('{0}/{1}', parameters('uri'), parameters('name')))]",
+                  "version": "[if(not(equals(parameters('version'), 'latest')), parameters('version'), null())]"
+                }
+              }
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the deployed package."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the deployed package."
+              },
+              "value": "[resourceId('Microsoft.Automation/automationAccounts/python2Packages', parameters('automationAccountName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group of the deployed package."
+              },
+              "value": "[resourceGroup().name]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location the resource was deployed into."
+              },
+              "value": "[reference('python2package', '2023-11-01', 'full').location]"
             }
           }
         }
