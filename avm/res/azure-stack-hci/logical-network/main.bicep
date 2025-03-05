@@ -15,7 +15,7 @@ param location string = resourceGroup().location
 param enableTelemetry bool = true
 
 @description('Required. The custom location ID.')
-param customLocationId string
+param customLocationResourceId string
 
 @description('Required. The VM switch name.')
 param vmSwitchName string
@@ -140,7 +140,7 @@ resource logicalNetwork 'Microsoft.AzureStackHCI/logicalNetworks@2024-05-01-prev
   location: location
   tags: tags
   extendedLocation: {
-    name: customLocationId
+    name: customLocationResourceId
     type: 'CustomLocation'
   }
   properties: {

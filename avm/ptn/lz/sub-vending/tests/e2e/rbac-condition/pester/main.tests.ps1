@@ -10,6 +10,7 @@ Describe 'Bicep Landing Zone (Sub) Vending Tests' {
         $namePrefix = $TestInputData.DeploymentOutputs.namePrefix.Value
         $serviceShort = $TestInputData.DeploymentOutputs.serviceShort.Value
         $location = $TestInputData.DeploymentOutputs.resourceLocation.Value
+        $user = Get-AzADUser -DisplayName 'AVM CI Validation User 001'
         Update-AzConfig -DisplayBreakingChangeWarning $false
         Select-AzSubscription -subscriptionId $subscriptionId
     }
@@ -45,7 +46,7 @@ Describe 'Bicep Landing Zone (Sub) Vending Tests' {
         It 'Should Have a Role Assignment for an known AAD Group with the Role based access control administrator role directly upon the Subscription' {
             $iterationCount = 0
             do {
-                $roleAssignment = Get-AzRoleAssignment -Scope "/subscriptions/$subscriptionId" -RoleDefinitionName 'Role Based Access Control Administrator' -ObjectId '896b1162-be44-4b28-888a-d01acc1b4271' -ErrorAction SilentlyContinue
+                $roleAssignment = Get-AzRoleAssignment -Scope "/subscriptions/$subscriptionId" -RoleDefinitionName 'Role Based Access Control Administrator' -ErrorAction SilentlyContinue
                 if ($null -eq $roleAssignment) {
                     Write-Host "Waiting for Resource Group Role Assignments to be eventually consistent... Iteration: $($iterationCount)" -ForegroundColor Yellow
                     Start-Sleep -Seconds 40
@@ -55,7 +56,7 @@ Describe 'Bicep Landing Zone (Sub) Vending Tests' {
                 $roleAssignment -ne $null -or $iterationCount -ge 10
             )
 
-            $roleAssignment.ObjectId | Should -Be '896b1162-be44-4b28-888a-d01acc1b4271'
+            $roleAssignment.ObjectId | Should -Be $user.Id
             $roleAssignment.RoleDefinitionName | Should -Be 'Role Based Access Control Administrator'
             $roleAssignment.scope | Should -Be "/subscriptions/$subscriptionId"
             $roleAssignment.Condition | Should -Not -BeNullOrEmpty
