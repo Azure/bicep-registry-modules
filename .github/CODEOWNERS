@@ -6,6 +6,7 @@
 /avm/ptn/aca-lza/hosting-environment/ @Azure/avm-ptn-acalza-hostingenvironment-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/ai-platform/baseline/ @Azure/avm-ptn-aiplatform-baseline-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/app/container-job-toolkit/ @Azure/avm-ptn-app-containerjobtoolkit-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/ptn/authorization/pim-role-assignment/ @Azure/avm-ptn-authorization-pimroleassignment-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/authorization/policy-assignment/ @Azure/avm-ptn-authorization-policyassignment-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/authorization/policy-exemption/ @Azure/avm-ptn-authorization-policyexemption-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/authorization/resource-role-assignment/ @Azure/avm-ptn-authorization-resourceroleassignment-module-owners-bicep @Azure/avm-module-reviewers-bicep
@@ -48,6 +49,8 @@
 /avm/res/app-configuration/configuration-store/ @Azure/avm-res-appconfiguration-configurationstore-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/automation/automation-account/ @Azure/avm-res-automation-automationaccount-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/azure-stack-hci/cluster/ @Azure/avm-res-azurestackhci-cluster-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/res/azure-stack-hci/logical-network/ @Azure/avm-res-azurestackhci-logicalnetwork-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/res/azure-stack-hci/network-interface/ @Azure/avm-res-azurestackhci-networkinterface-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/batch/batch-account/ @Azure/avm-res-batch-batchaccount-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/cache/redis/ @Azure/avm-res-cache-redis-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/cache/redis-enterprise/ @Azure/avm-res-cache-redisenterprise-module-owners-bicep @Azure/avm-module-reviewers-bicep
@@ -93,6 +96,7 @@
 /avm/res/health-bot/health-bot/ @Azure/avm-res-healthbot-healthbot-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/healthcare-apis/workspace/ @Azure/avm-res-healthcareapis-workspace-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/hybrid-compute/gateway/ @Azure/avm-res-hybridcompute-gateway-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/res/hybrid-compute/license/ @Azure/avm-res-hybridcompute-license-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/hybrid-compute/machine/ @Azure/avm-res-hybridcompute-machine-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/insights/action-group/ @Azure/avm-res-insights-actiongroup-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/insights/activity-log-alert/ @Azure/avm-res-insights-activitylogalert-module-owners-bicep @Azure/avm-module-reviewers-bicep
