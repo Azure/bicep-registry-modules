@@ -44,20 +44,6 @@ Describe 'Bicep Landing Zone (Sub) Vending Tests' {
             $mgAssociation = Get-AzManagementGroupSubscription -SubscriptionId $subscriptionId -GroupId 'bicep-lz-vending-automation-child' -ErrorAction SilentlyContinue
             $mgAssociation.Id | Should -Be "/providers/Microsoft.Management/managementGroups/bicep-lz-vending-automation-child/subscriptions/$subscriptionId"
         }
-
-        It "Should have the 'Microsoft.HybridCompute', 'Microsoft.AVS' resource providers and the 'AzureServicesVm', 'ArcServerPrivateLinkPreview' resource providers features registered" {
-            $resourceProviders = @( 'Microsoft.HybridCompute', 'Microsoft.AVS' )
-            $resourceProvidersFeatures = @( 'AzureServicesVm', 'ArcServerPrivateLinkPreview' )
-            ForEach ($provider in $resourceProviders) {
-                $providerStatus = (Get-AzResourceProvider -ListAvailable | Where-Object ProviderNamespace -EQ $provider).registrationState
-                $providerStatus | Should -BeIn @('Registered', 'Registering')
-            }
-
-            ForEach ($feature in $resourceProvidersFeatures) {
-                $providerFeatureStatus = (Get-AzProviderFeature -ListAvailable | Where-Object FeatureName -EQ $feature).registrationState
-                $providerFeatureStatus | Should -BeIn @('Registered', 'Registering', 'Pending')
-            }
-        }
     }
 
     Context 'Role-Based Access Control Assignment Tests' {
@@ -96,6 +82,7 @@ Describe 'Bicep Landing Zone (Sub) Vending Tests' {
     Context 'Networking - Hub Spoke Tests' {
         BeforeAll {
             $vnetHs = Get-AzVirtualNetwork -ResourceGroupName "rsg-$location-net-hs-$namePrefix-$serviceShort" -Name "vnet-$location-hs-$namePrefix-$serviceShort" -ErrorAction SilentlyContinue
+            $natGw = Get-AzNatGateway -ResourceGroupName "rsg-$location-net-hs-$namePrefix-$serviceShort" -ErrorAction SilentlyContinue
         }
 
         It "Should have a Virtual Network in the correct Resource Group (rsg-$location-net-hs-$namePrefix-$serviceShort)" {
@@ -110,8 +97,8 @@ Describe 'Bicep Landing Zone (Sub) Vending Tests' {
             $vnetHs.Location | Should -Be $location
         }
 
-        It 'Should have a Virtual Network with the correct address space (10.110.0.0/16)' {
-            $vnetHs.AddressSpace.AddressPrefixes | Should -Be '10.110.0.0/16'
+        It 'Should have a Virtual Network with the correct address space (10.120.0.0/16)' {
+            $vnetHs.AddressSpace.AddressPrefixes | Should -Be '10.120.0.0/16'
         }
 
         It 'Should have a Virtual Network with DDoS protection disabled' {
@@ -119,38 +106,15 @@ Describe 'Bicep Landing Zone (Sub) Vending Tests' {
             $vnetHs.ddosProtectionPlan | Should -BeNullOrEmpty
         }
 
-        It 'Should have a Virtual Network with a single Virtual Network Peer' {
-            $vnetHs.VirtualNetworkPeerings.Count | Should -Be 1
+        It 'Should have a NAT Gateway deployed with the correct name' {
+            $natGw | Should -Not -BeNullOrEmpty
+            $natGw.Name | Should -Be "natgw-$location-hs-$namePrefix-$serviceShort"
         }
 
-        It "Should have a Virtual Network with a Virtual Network Peering to the Hub Virtual Network called 'vnet-uksouth-hub-blzv'" {
-            $vnetHs.VirtualNetworkPeerings[0].RemoteVirtualNetwork.id | Should -Be $TestInputData.DeploymentOutputs.hubNetworkResourceId.Value
-        }
-
-        It "Should have a Virtual Network with a Virtual Network Peering to the Hub Virtual Network called 'vnet-uksouth-hub-blzv' that is in the Connected state and FullyInSync" {
-            $vnetHs.VirtualNetworkPeerings[0].RemoteVirtualNetwork.id | Should -Be $TestInputData.DeploymentOutputs.hubNetworkResourceId.Value
-            $vnetHs.VirtualNetworkPeerings[0].PeeringState | Should -Be 'Connected'
-            $vnetHs.VirtualNetworkPeerings[0].PeeringSyncLevel | Should -Be 'FullyInSync'
-        }
-
-        It "Should have a Virtual Network with a Virtual Network Peering to the Hub Virtual Network called 'vnet-uksouth-hub-blzv' that has AllowForwardedTraffic set to $true" {
-            $vnetHs.VirtualNetworkPeerings[0].RemoteVirtualNetwork.id | Should -Be $TestInputData.DeploymentOutputs.hubNetworkResourceId.Value
-            $vnetHs.VirtualNetworkPeerings[0].AllowForwardedTraffic | Should -Be $true
-        }
-
-        It "Should have a Virtual Network with a Virtual Network Peering to the Hub Virtual Network called 'vnet-uksouth-hub-blzv' that has AllowVirtualNetworkAccess set to $true" {
-            $vnetHs.VirtualNetworkPeerings[0].RemoteVirtualNetwork.id | Should -Be $TestInputData.DeploymentOutputs.hubNetworkResourceId.Value
-            $vnetHs.VirtualNetworkPeerings[0].AllowVirtualNetworkAccess | Should -Be $true
-        }
-
-        It "Should have a Virtual Network with a Virtual Network Peering to the Hub Virtual Network called 'vnet-uksouth-hub-blzv' that has AllowGatewayTransit set to $false" {
-            $vnetHs.VirtualNetworkPeerings[0].RemoteVirtualNetwork.id | Should -Be $TestInputData.DeploymentOutputs.hubNetworkResourceId.Value
-            $vnetHs.VirtualNetworkPeerings[0].AllowGatewayTransit | Should -Be $false
-        }
-
-        It "Should have a Virtual Network with a subnet created named 'Subnet1' with addressPrefix '10.110.1.0/24'" {
+        It "Should have a Virtual Network with a subnet with the correct name with addressPrefix '10.120.1.0/24' and a NAT gateway attached" {
             $vnetHs.Subnets[0].Name | Should -Be 'Subnet1'
-            $vnetHs.Subnets[0].AddressPrefix | Should -Be '10.110.1.0/24'
+            $vnetHs.Subnets[0].AddressPrefix | Should -Be '10.120.1.0/24'
+            $vnetHs.Subnets[0].NatGateway | Should -Not -BeNullOrEmpty
         }
     }
 }
