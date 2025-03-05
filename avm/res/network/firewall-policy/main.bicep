@@ -47,7 +47,7 @@ param signatureOverrides array?
   'Deny'
   'Off'
 ])
-param mode string = 'Off'
+param mode string = 'Alert'
 
 @description('Optional. Tier of Firewall Policy.')
 @allowed([
@@ -73,7 +73,7 @@ param autoLearnPrivateRanges string = 'Disabled'
   'Deny'
   'Off'
 ])
-param threatIntelMode string = 'Off'
+param threatIntelMode string = 'Alert'
 
 @description('Optional. A flag to indicate if SQL Redirect traffic filtering is enabled. Turning on the flag requires no rule using port 11000-11999.')
 param allowSqlRedirect bool = false

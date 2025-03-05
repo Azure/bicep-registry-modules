@@ -827,7 +827,7 @@ The configuring of intrusion detection.
 
 - Required: No
 - Type: string
-- Default: `'Off'`
+- Default: `'Alert'`
 - Allowed:
   ```Bicep
   [
@@ -990,7 +990,7 @@ The operation mode for Threat Intel.
 
 - Required: No
 - Type: string
-- Default: `'Off'`
+- Default: `'Alert'`
 - Allowed:
   ```Bicep
   [
