@@ -29,316 +29,11 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/data-protection/backup-vault:<version>`.
 
-- [Using encryption with Customer-Managed-Key](#example-1-using-encryption-with-customer-managed-key)
-- [Using only defaults](#example-2-using-only-defaults)
-- [Using large parameter set](#example-3-using-large-parameter-set)
-- [WAF-aligned](#example-4-waf-aligned)
+- [Using only defaults](#example-1-using-only-defaults)
+- [Using large parameter set](#example-2-using-large-parameter-set)
+- [WAF-aligned](#example-3-waf-aligned)
 
-### Example 1: _Using encryption with Customer-Managed-Key_
-
-This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module backupVault 'br/public:avm/res/data-protection/backup-vault:<version>' = {
-  name: 'backupVaultDeployment'
-  params: {
-    // Required parameters
-    name: 'dpbvcmk001'
-    // Non-required parameters
-    azureMonitorAlertSettingsAlertsForAllJobFailures: 'Disabled'
-    backupPolicies: [
-      {
-        name: 'DefaultPolicy'
-        properties: {
-          datasourceTypes: [
-            'Microsoft.Compute/disks'
-          ]
-          objectType: 'BackupPolicy'
-          policyRules: [
-            {
-              backupParameters: {
-                backupType: 'Incremental'
-                objectType: 'AzureBackupParams'
-              }
-              dataStore: {
-                dataStoreType: 'OperationalStore'
-                objectType: 'DataStoreInfoBase'
-              }
-              name: 'BackupDaily'
-              objectType: 'AzureBackupRule'
-              trigger: {
-                objectType: 'ScheduleBasedTriggerContext'
-                schedule: {
-                  repeatingTimeIntervals: [
-                    'R/2022-05-31T23:30:00+01:00/P1D'
-                  ]
-                  timeZone: 'W. Europe Standard Time'
-                }
-                taggingCriteria: [
-                  {
-                    isDefault: true
-                    taggingPriority: 99
-                    tagInfo: {
-                      id: 'Default_'
-                      tagName: 'Default'
-                    }
-                  }
-                ]
-              }
-            }
-            {
-              isDefault: true
-              lifecycles: [
-                {
-                  deleteAfter: {
-                    duration: 'P7D'
-                    objectType: 'AbsoluteDeleteOption'
-                  }
-                  sourceDataStore: {
-                    dataStoreType: 'OperationalStore'
-                    objectType: 'DataStoreInfoBase'
-                  }
-                  targetDataStoreCopySettings: []
-                }
-              ]
-              name: 'Default'
-              objectType: 'AzureRetentionRule'
-            }
-          ]
-        }
-      }
-    ]
-    customerManagedKey: {
-      keyName: '<keyName>'
-      keyVaultResourceId: '<keyVaultResourceId>'
-      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
-    }
-    immutabilitySettingState: 'Disabled'
-    infrastructureEncryption: 'Disabled'
-    location: '<location>'
-    managedIdentities: {
-      systemAssigned: true
-      userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
-      ]
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "dpbvcmk001"
-    },
-    // Non-required parameters
-    "azureMonitorAlertSettingsAlertsForAllJobFailures": {
-      "value": "Disabled"
-    },
-    "backupPolicies": {
-      "value": [
-        {
-          "name": "DefaultPolicy",
-          "properties": {
-            "datasourceTypes": [
-              "Microsoft.Compute/disks"
-            ],
-            "objectType": "BackupPolicy",
-            "policyRules": [
-              {
-                "backupParameters": {
-                  "backupType": "Incremental",
-                  "objectType": "AzureBackupParams"
-                },
-                "dataStore": {
-                  "dataStoreType": "OperationalStore",
-                  "objectType": "DataStoreInfoBase"
-                },
-                "name": "BackupDaily",
-                "objectType": "AzureBackupRule",
-                "trigger": {
-                  "objectType": "ScheduleBasedTriggerContext",
-                  "schedule": {
-                    "repeatingTimeIntervals": [
-                      "R/2022-05-31T23:30:00+01:00/P1D"
-                    ],
-                    "timeZone": "W. Europe Standard Time"
-                  },
-                  "taggingCriteria": [
-                    {
-                      "isDefault": true,
-                      "taggingPriority": 99,
-                      "tagInfo": {
-                        "id": "Default_",
-                        "tagName": "Default"
-                      }
-                    }
-                  ]
-                }
-              },
-              {
-                "isDefault": true,
-                "lifecycles": [
-                  {
-                    "deleteAfter": {
-                      "duration": "P7D",
-                      "objectType": "AbsoluteDeleteOption"
-                    },
-                    "sourceDataStore": {
-                      "dataStoreType": "OperationalStore",
-                      "objectType": "DataStoreInfoBase"
-                    },
-                    "targetDataStoreCopySettings": []
-                  }
-                ],
-                "name": "Default",
-                "objectType": "AzureRetentionRule"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    "customerManagedKey": {
-      "value": {
-        "keyName": "<keyName>",
-        "keyVaultResourceId": "<keyVaultResourceId>",
-        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
-      }
-    },
-    "immutabilitySettingState": {
-      "value": "Disabled"
-    },
-    "infrastructureEncryption": {
-      "value": "Disabled"
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "managedIdentities": {
-      "value": {
-        "systemAssigned": true,
-        "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
-        ]
-      }
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/data-protection/backup-vault:<version>'
-
-// Required parameters
-param name = 'dpbvcmk001'
-// Non-required parameters
-param azureMonitorAlertSettingsAlertsForAllJobFailures = 'Disabled'
-param backupPolicies = [
-  {
-    name: 'DefaultPolicy'
-    properties: {
-      datasourceTypes: [
-        'Microsoft.Compute/disks'
-      ]
-      objectType: 'BackupPolicy'
-      policyRules: [
-        {
-          backupParameters: {
-            backupType: 'Incremental'
-            objectType: 'AzureBackupParams'
-          }
-          dataStore: {
-            dataStoreType: 'OperationalStore'
-            objectType: 'DataStoreInfoBase'
-          }
-          name: 'BackupDaily'
-          objectType: 'AzureBackupRule'
-          trigger: {
-            objectType: 'ScheduleBasedTriggerContext'
-            schedule: {
-              repeatingTimeIntervals: [
-                'R/2022-05-31T23:30:00+01:00/P1D'
-              ]
-              timeZone: 'W. Europe Standard Time'
-            }
-            taggingCriteria: [
-              {
-                isDefault: true
-                taggingPriority: 99
-                tagInfo: {
-                  id: 'Default_'
-                  tagName: 'Default'
-                }
-              }
-            ]
-          }
-        }
-        {
-          isDefault: true
-          lifecycles: [
-            {
-              deleteAfter: {
-                duration: 'P7D'
-                objectType: 'AbsoluteDeleteOption'
-              }
-              sourceDataStore: {
-                dataStoreType: 'OperationalStore'
-                objectType: 'DataStoreInfoBase'
-              }
-              targetDataStoreCopySettings: []
-            }
-          ]
-          name: 'Default'
-          objectType: 'AzureRetentionRule'
-        }
-      ]
-    }
-  }
-]
-param customerManagedKey = {
-  keyName: '<keyName>'
-  keyVaultResourceId: '<keyVaultResourceId>'
-  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
-}
-param immutabilitySettingState = 'Disabled'
-param infrastructureEncryption = 'Disabled'
-param location = '<location>'
-param managedIdentities = {
-  systemAssigned: true
-  userAssignedResourceIds: [
-    '<managedIdentityResourceId>'
-  ]
-}
-```
-
-</details>
-<p>
-
-### Example 2: _Using only defaults_
+### Example 1: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -402,7 +97,7 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 3: _Using large parameter set_
+### Example 2: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -760,7 +455,7 @@ param tags = {
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
+### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -1153,7 +848,8 @@ The customer managed key definition.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`keyVersion`](#parameter-customermanagedkeykeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, the deployment will use the latest version available at deployment time. |
+| [`autoRotationEnabled`](#parameter-customermanagedkeyautorotationenabled) | bool | Enable or disable auto-rotating to the latest key version. Default is `true`. If set to `false`, the latest key version at the time of the deployment is used. |
+| [`keyVersion`](#parameter-customermanagedkeykeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationEnabled' setting. |
 | [`userAssignedIdentityResourceId`](#parameter-customermanagedkeyuserassignedidentityresourceid) | string | User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use. |
 
 ### Parameter: `customerManagedKey.keyName`
@@ -1170,9 +866,16 @@ The resource ID of a key vault to reference a customer managed key for encryptio
 - Required: Yes
 - Type: string
 
+### Parameter: `customerManagedKey.autoRotationEnabled`
+
+Enable or disable auto-rotating to the latest key version. Default is `true`. If set to `false`, the latest key version at the time of the deployment is used.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `customerManagedKey.keyVersion`
 
-The version of the customer managed key to reference for encryption. If not provided, the deployment will use the latest version available at deployment time.
+The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationEnabled' setting.
 
 - Required: No
 - Type: string

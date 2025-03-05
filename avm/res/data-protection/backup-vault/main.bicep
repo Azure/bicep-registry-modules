@@ -198,9 +198,6 @@ resource backupVault 'Microsoft.DataProtection/backupVaults@2024-04-01' = {
                   identityType: 'SystemAssigned'
                 }
             keyVaultProperties: {
-              // keyUri: !empty(customerManagedKey.?keyVersion)
-              //   ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.?keyVersion}'
-              //   : cMKKeyVault::cMKKey.properties.keyUriWithVersion
               keyUri: !empty(customerManagedKey.?keyVersion)
                 ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.?keyVersion}'
                 : (customerManagedKey.?autoRotationEnabled ?? true)
