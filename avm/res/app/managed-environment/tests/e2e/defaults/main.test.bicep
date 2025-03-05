@@ -68,8 +68,5 @@ module testDeployment '../../../main.bicep' = [
       infrastructureSubnetId: nestedDependencies.outputs.subnetResourceId
       infrastructureResourceGroupName: 'me-${resourceGroupName}'
     }
-    dependsOn: [
-      nestedDependencies
-    ]
   }
 ]
