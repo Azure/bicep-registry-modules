@@ -16,7 +16,7 @@
     },
     {
       "code": "DeploymentScriptError",
-      "message": "100 3729 100 3729 0 0 19588 0 --:--:-- --:--:-- --:--:-- 19626"
+      "message": "100 3729 100 3729 0 0 27483 0 --:--:-- --:--:-- --:--:-- 27622"
     },
     {
       "code": "DeploymentScriptError",
@@ -32,7 +32,11 @@
     },
     {
       "code": "DeploymentScriptError",
-      "message": "100 1718 100 1718 0 0 12583 0 --:--:-- --:--:-- --:--:-- 12632"
+      "message": "100 1718 100 1718 0 0 12024 0 --:--:-- --:--:-- --:--:-- 12013"
+    },
+    {
+      "code": "DeploymentScriptError",
+      "message": "100 1718 100 1718 0 0 11987 0 --:--:-- --:--:-- --:--:-- 11930"
     },
     {
       "code": "DeploymentScriptError",
@@ -48,7 +52,7 @@
     },
     {
       "code": "DeploymentScriptError",
-      "message": "100 1720 100 1720 0 0 12655 0 --:--:-- --:--:-- --:--:-- 12740"
+      "message": "100 1720 100 1720 0 0 9687 0 --:--:-- --:--:-- --:--:-- 9717"
     },
     {
       "code": "DeploymentScriptError",
@@ -64,7 +68,7 @@
     },
     {
       "code": "DeploymentScriptError",
-      "message": "100 26637 100 26637 0 0 210k 0 --:--:-- --:--:-- --:--:-- 211k"
+      "message": "100 26637 100 26637 0 0 137k 0 --:--:-- --:--:-- --:--:-- 137k"
     },
     {
       "code": "DeploymentScriptError",
@@ -80,11 +84,7 @@
     },
     {
       "code": "DeploymentScriptError",
-      "message": "100 12615 100 12615 0 0 97460 0 --:--:-- --:--:-- --:--:-- 97038"
-    },
-    {
-      "code": "DeploymentScriptError",
-      "message": "100 12615 100 12615 0 0 97107 0 --:--:-- --:--:-- --:--:-- 97038"
+      "message": "100 12615 100 12615 0 0 89544 0 --:--:-- --:--:-- --:--:-- 90107"
     },
     {
       "code": "DeploymentScriptError",
@@ -100,7 +100,7 @@
     },
     {
       "code": "DeploymentScriptError",
-      "message": "100 1931 100 1931 0 0 13278 0 --:--:-- --:--:-- --:--:-- 13317"
+      "message": "100 1931 100 1931 0 0 5340 0 --:--:-- --:--:-- --:--:-- 5349"
     },
     {
       "code": "DeploymentScriptError",
@@ -116,7 +116,11 @@
     },
     {
       "code": "DeploymentScriptError",
-      "message": "100 1954 100 1954 0 0 16357 0 --:--:-- --:--:-- --:--:-- 16559"
+      "message": "0 0 0 0 0 0 0 0 --:--:-- --:--:-- --:--:-- 0"
+    },
+    {
+      "code": "DeploymentScriptError",
+      "message": "100 1954 100 1954 0 0 13844 0 --:--:-- --:--:-- --:--:-- 13760"
     },
     {
       "code": "DeploymentScriptError",
@@ -132,7 +136,7 @@
     },
     {
       "code": "DeploymentScriptError",
-      "message": "100 2739k 100 2739k 0 0 15.9M 0 --:--:-- --:--:-- --:--:-- 15.9M"
+      "message": "100 2739k 100 2739k 0 0 13.7M 0 --:--:-- --:--:-- --:--:-- 13.7M"
     },
     {
       "code": "DeploymentScriptError",
@@ -148,7 +152,7 @@
     },
     {
       "code": "DeploymentScriptError",
-      "message": "100 1764k 100 1764k 0 0 9.8M 0 --:--:-- --:--:-- --:--:-- 9.9M"
+      "message": "100 1764k 100 1764k 0 0 9022k 0 --:--:-- --:--:-- --:--:-- 9048k"
     },
     {
       "code": "DeploymentScriptError",
@@ -164,11 +168,7 @@
     },
     {
       "code": "DeploymentScriptError",
-      "message": "3 2610k 3 81911 0 0 502k 0 0:00:05 --:--:-- 0:00:05 499k"
-    },
-    {
-      "code": "DeploymentScriptError",
-      "message": "100 2610k 100 2610k 0 0 14.1M 0 --:--:-- --:--:-- --:--:-- 14.0M"
+      "message": "100 2610k 100 2610k 0 0 11.7M 0 --:--:-- --:--:-- --:--:-- 11.8M"
     },
     {
       "code": "DeploymentScriptError",
@@ -184,7 +184,7 @@
     },
     {
       "code": "DeploymentScriptError",
-      "message": "100 227 100 227 0 0 1887 0 --:--:-- --:--:-- --:--:-- 1891"
+      "message": "100 227 100 227 0 0 1121 0 --:--:-- --:--:-- --:--:-- 1123"
     },
     {
       "code": "DeploymentScriptError",
@@ -216,19 +216,55 @@
     },
     {
       "code": "DeploymentScriptError",
-      "message": "File \"/mnt/azscripts/azscriptinput/02_create_cu_template_text.py\", line 30, in <module>"
+      "message": "File \"/mnt/azscripts/azscriptinput/03_cu_process_data_text.py\", line 228, in <module>"
     },
     {
       "code": "DeploymentScriptError",
-      "message": "AZURE_OPENAI_CU_KEY = get_secrets_from_kv(key_vault_name,\"AZURE-OPENAI-CU-KEY\")"
+      "message": "for path in paths:"
     },
     {
       "code": "DeploymentScriptError",
-      "message": "File \"/mnt/azscripts/azscriptinput/02_create_cu_template_text.py\", line 22, in get_secrets_from_kv"
+      "message": "File \"/usr/local/lib/python3.10/site-packages/azure/core/paging.py\", line 123, in __next__"
     },
     {
       "code": "DeploymentScriptError",
-      "message": "return(secret_client.get_secret(secret_name).value)"
+      "message": "return next(self._page_iterator)"
+    },
+    {
+      "code": "DeploymentScriptError",
+      "message": "File \"/usr/local/lib/python3.10/site-packages/azure/core/paging.py\", line 75, in __next__"
+    },
+    {
+      "code": "DeploymentScriptError",
+      "message": "self._response = self._get_next(self.continuation_token)"
+    },
+    {
+      "code": "DeploymentScriptError",
+      "message": "File \"/usr/local/lib/python3.10/site-packages/azure/storage/filedatalake/_list_paths_helper.py\", line 158, in _get_next_cb"
+    },
+    {
+      "code": "DeploymentScriptError",
+      "message": "process_storage_error(error)"
+    },
+    {
+      "code": "DeploymentScriptError",
+      "message": "File \"/usr/local/lib/python3.10/site-packages/azure/storage/filedatalake/_deserialize.py\", line 239, in process_storage_error"
+    },
+    {
+      "code": "DeploymentScriptError",
+      "message": "exec(\"raise error from None\") # pylint: disable=exec-used # nosec"
+    },
+    {
+      "code": "DeploymentScriptError",
+      "message": "File \"<string>\", line 1, in <module>"
+    },
+    {
+      "code": "DeploymentScriptError",
+      "message": "File \"/usr/local/lib/python3.10/site-packages/azure/storage/filedatalake/_list_paths_helper.py\", line 150, in _get_next_cb"
+    },
+    {
+      "code": "DeploymentScriptError",
+      "message": "return self._command("
     },
     {
       "code": "DeploymentScriptError",
@@ -240,31 +276,7 @@
     },
     {
       "code": "DeploymentScriptError",
-      "message": "File \"/usr/local/lib/python3.10/site-packages/azure/keyvault/secrets/_client.py\", line 72, in get_secret"
-    },
-    {
-      "code": "DeploymentScriptError",
-      "message": "bundle = self._client.get_secret("
-    },
-    {
-      "code": "DeploymentScriptError",
-      "message": "File \"/usr/local/lib/python3.10/site-packages/azure/keyvault/secrets/_generated/_operations_mixin.py\", line 1640, in get_secret"
-    },
-    {
-      "code": "DeploymentScriptError",
-      "message": "return mixin_instance.get_secret(vault_base_url, secret_name, secret_version, **kwargs)"
-    },
-    {
-      "code": "DeploymentScriptError",
-      "message": "File \"/usr/local/lib/python3.10/site-packages/azure/core/tracing/decorator.py\", line 105, in wrapper_use_tracer"
-    },
-    {
-      "code": "DeploymentScriptError",
-      "message": "return func(*args, **kwargs)"
-    },
-    {
-      "code": "DeploymentScriptError",
-      "message": "File \"/usr/local/lib/python3.10/site-packages/azure/keyvault/secrets/_generated/v7_4/operations/_key_vault_client_operations.py\", line 767, in get_secret"
+      "message": "File \"/usr/local/lib/python3.10/site-packages/azure/storage/filedatalake/_generated/operations/_file_system_operations.py\", line 753, in list_paths"
     },
     {
       "code": "DeploymentScriptError",
@@ -280,175 +292,19 @@
     },
     {
       "code": "DeploymentScriptError",
-      "message": "azure.core.exceptions.ResourceNotFoundError: (SecretNotFound) A secret with (name/id) AZURE-OPENAI-CU-KEY was not found in this key vault. If you recently deleted this secret you may be able to recover it using the correct recovery command. For help resolving this issue, please see https://go.microsoft.com/fwlink/?linkid=2125182"
+      "message": "azure.core.exceptions.ResourceExistsError: This endpoint does not support BlobStorageEvents or SoftDelete. Please disable these account features if you would like to use this endpoint."
     },
     {
       "code": "DeploymentScriptError",
-      "message": "Code: SecretNotFound"
+      "message": "RequestId:d928fee9-901f-005e-49fd-8d2705000000"
     },
     {
       "code": "DeploymentScriptError",
-      "message": "Message: A secret with (name/id) AZURE-OPENAI-CU-KEY was not found in this key vault. If you recently deleted this secret you may be able to recover it using the correct recovery command. For help resolving this issue, please see https://go.microsoft.com/fwlink/?linkid=2125182"
+      "message": "Time:2025-03-05T18:35:45.9835281Z"
     },
     {
       "code": "DeploymentScriptError",
-      "message": "Traceback (most recent call last):"
-    },
-    {
-      "code": "DeploymentScriptError",
-      "message": "File \"/mnt/azscripts/azscriptinput/02_create_cu_template_audio.py\", line 30, in <module>"
-    },
-    {
-      "code": "DeploymentScriptError",
-      "message": "AZURE_OPENAI_CU_KEY = get_secrets_from_kv(key_vault_name,\"AZURE-OPENAI-CU-KEY\")"
-    },
-    {
-      "code": "DeploymentScriptError",
-      "message": "File \"/mnt/azscripts/azscriptinput/02_create_cu_template_audio.py\", line 22, in get_secrets_from_kv"
-    },
-    {
-      "code": "DeploymentScriptError",
-      "message": "return(secret_client.get_secret(secret_name).value)"
-    },
-    {
-      "code": "DeploymentScriptError",
-      "message": "File \"/usr/local/lib/python3.10/site-packages/azure/core/tracing/decorator.py\", line 105, in wrapper_use_tracer"
-    },
-    {
-      "code": "DeploymentScriptError",
-      "message": "return func(*args, **kwargs)"
-    },
-    {
-      "code": "DeploymentScriptError",
-      "message": "File \"/usr/local/lib/python3.10/site-packages/azure/keyvault/secrets/_client.py\", line 72, in get_secret"
-    },
-    {
-      "code": "DeploymentScriptError",
-      "message": "bundle = self._client.get_secret("
-    },
-    {
-      "code": "DeploymentScriptError",
-      "message": "File \"/usr/local/lib/python3.10/site-packages/azure/keyvault/secrets/_generated/_operations_mixin.py\", line 1640, in get_secret"
-    },
-    {
-      "code": "DeploymentScriptError",
-      "message": "return mixin_instance.get_secret(vault_base_url, secret_name, secret_version, **kwargs)"
-    },
-    {
-      "code": "DeploymentScriptError",
-      "message": "File \"/usr/local/lib/python3.10/site-packages/azure/core/tracing/decorator.py\", line 105, in wrapper_use_tracer"
-    },
-    {
-      "code": "DeploymentScriptError",
-      "message": "return func(*args, **kwargs)"
-    },
-    {
-      "code": "DeploymentScriptError",
-      "message": "File \"/usr/local/lib/python3.10/site-packages/azure/keyvault/secrets/_generated/v7_4/operations/_key_vault_client_operations.py\", line 767, in get_secret"
-    },
-    {
-      "code": "DeploymentScriptError",
-      "message": "map_error(status_code=response.status_code, response=response, error_map=error_map)"
-    },
-    {
-      "code": "DeploymentScriptError",
-      "message": "File \"/usr/local/lib/python3.10/site-packages/azure/core/exceptions.py\", line 163, in map_error"
-    },
-    {
-      "code": "DeploymentScriptError",
-      "message": "raise error"
-    },
-    {
-      "code": "DeploymentScriptError",
-      "message": "azure.core.exceptions.ResourceNotFoundError: (SecretNotFound) A secret with (name/id) AZURE-OPENAI-CU-KEY was not found in this key vault. If you recently deleted this secret you may be able to recover it using the correct recovery command. For help resolving this issue, please see https://go.microsoft.com/fwlink/?linkid=2125182"
-    },
-    {
-      "code": "DeploymentScriptError",
-      "message": "Code: SecretNotFound"
-    },
-    {
-      "code": "DeploymentScriptError",
-      "message": "Message: A secret with (name/id) AZURE-OPENAI-CU-KEY was not found in this key vault. If you recently deleted this secret you may be able to recover it using the correct recovery command. For help resolving this issue, please see https://go.microsoft.com/fwlink/?linkid=2125182"
-    },
-    {
-      "code": "DeploymentScriptError",
-      "message": "Traceback (most recent call last):"
-    },
-    {
-      "code": "DeploymentScriptError",
-      "message": "File \"/mnt/azscripts/azscriptinput/03_cu_process_data_text.py\", line 105, in <module>"
-    },
-    {
-      "code": "DeploymentScriptError",
-      "message": "account_name = get_secrets_from_kv(key_vault_name, \"ADLS-ACCOUNT-NAME\")"
-    },
-    {
-      "code": "DeploymentScriptError",
-      "message": "File \"/mnt/azscripts/azscriptinput/03_cu_process_data_text.py\", line 29, in get_secrets_from_kv"
-    },
-    {
-      "code": "DeploymentScriptError",
-      "message": "return(secret_client.get_secret(secret_name).value)"
-    },
-    {
-      "code": "DeploymentScriptError",
-      "message": "File \"/usr/local/lib/python3.10/site-packages/azure/core/tracing/decorator.py\", line 105, in wrapper_use_tracer"
-    },
-    {
-      "code": "DeploymentScriptError",
-      "message": "return func(*args, **kwargs)"
-    },
-    {
-      "code": "DeploymentScriptError",
-      "message": "File \"/usr/local/lib/python3.10/site-packages/azure/keyvault/secrets/_client.py\", line 72, in get_secret"
-    },
-    {
-      "code": "DeploymentScriptError",
-      "message": "bundle = self._client.get_secret("
-    },
-    {
-      "code": "DeploymentScriptError",
-      "message": "File \"/usr/local/lib/python3.10/site-packages/azure/keyvault/secrets/_generated/_operations_mixin.py\", line 1640, in get_secret"
-    },
-    {
-      "code": "DeploymentScriptError",
-      "message": "return mixin_instance.get_secret(vault_base_url, secret_name, secret_version, **kwargs)"
-    },
-    {
-      "code": "DeploymentScriptError",
-      "message": "File \"/usr/local/lib/python3.10/site-packages/azure/core/tracing/decorator.py\", line 105, in wrapper_use_tracer"
-    },
-    {
-      "code": "DeploymentScriptError",
-      "message": "return func(*args, **kwargs)"
-    },
-    {
-      "code": "DeploymentScriptError",
-      "message": "File \"/usr/local/lib/python3.10/site-packages/azure/keyvault/secrets/_generated/v7_4/operations/_key_vault_client_operations.py\", line 767, in get_secret"
-    },
-    {
-      "code": "DeploymentScriptError",
-      "message": "map_error(status_code=response.status_code, response=response, error_map=error_map)"
-    },
-    {
-      "code": "DeploymentScriptError",
-      "message": "File \"/usr/local/lib/python3.10/site-packages/azure/core/exceptions.py\", line 163, in map_error"
-    },
-    {
-      "code": "DeploymentScriptError",
-      "message": "raise error"
-    },
-    {
-      "code": "DeploymentScriptError",
-      "message": "azure.core.exceptions.ResourceNotFoundError: (SecretNotFound) A secret with (name/id) ADLS-ACCOUNT-NAME was not found in this key vault. If you recently deleted this secret you may be able to recover it using the correct recovery command. For help resolving this issue, please see https://go.microsoft.com/fwlink/?linkid=2125182"
-    },
-    {
-      "code": "DeploymentScriptError",
-      "message": "Code: SecretNotFound"
-    },
-    {
-      "code": "DeploymentScriptError",
-      "message": "Message: A secret with (name/id) ADLS-ACCOUNT-NAME was not found in this key vault. If you recently deleted this secret you may be able to recover it using the correct recovery command. For help resolving this issue, please see https://go.microsoft.com/fwlink/?linkid=2125182"
+      "message": "ErrorCode:EndpointUnsupportedAccountFeatures"
     }
   ]
 }

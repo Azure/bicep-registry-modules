@@ -674,6 +674,10 @@ module avmDeploymentScritptCopyData 'br/public:avm/res/resources/deployment-scri
     retentionInterval: 'PT1H'
     cleanupPreference: 'OnSuccess'
   }
+  dependsOn: [
+    #disable-next-line no-unnecessary-dependson
+    moduleAIFoundry
+  ]
 }
 
 //========== Deployment script to process and index data ========== //
@@ -699,6 +703,9 @@ module avmDeploymentScritptIndexData 'br/public:avm/res/resources/deployment-scr
     retentionInterval: 'PT1H'
     cleanupPreference: 'OnSuccess'
   }
+  dependsOn: [
+    moduleAIFoundry
+  ]
 }
 
 //========== Azure function: Managed Environment ========== //
