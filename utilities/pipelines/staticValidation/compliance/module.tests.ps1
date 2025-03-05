@@ -823,7 +823,7 @@ Describe 'Module tests' -Tag 'Module' {
                         [hashtable] $templateFileContent
                     )
 
-                    # Testing for `managedIdentit` in type, to be not dependent on singular/plural in UDT name
+                    # Testing for `managedIdentit*` in type, to be not dependent on singular/plural in UDT name
                     $hasMatchingParameter = $templateFileContent.parameters.managedIdentities.'$ref' -match 'managedIdentit'
 
                     $matchingTypeKey = $templateFileContent.definitions.Keys | Where-Object { $_ -match 'managedIdentit' }
