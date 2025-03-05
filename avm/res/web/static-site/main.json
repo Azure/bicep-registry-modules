@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "15301262394636824201"
+      "templateHash": "16463208866903865966"
     },
     "name": "Static Web Apps",
     "description": "This module deploys a Static Web App."
@@ -635,6 +635,18 @@
       "metadata": {
         "description": "Optional. The custom domains associated with this static site. The deployment will fail as long as the validation records are not present."
       }
+    },
+    "publicNetworkAccess": {
+      "type": "string",
+      "defaultValue": "",
+      "allowedValues": [
+        "",
+        "Enabled",
+        "Disabled"
+      ],
+      "metadata": {
+        "description": "Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set."
+      }
     }
   },
   "variables": {
@@ -681,7 +693,7 @@
     },
     "staticSite": {
       "type": "Microsoft.Web/staticSites",
-      "apiVersion": "2021-03-01",
+      "apiVersion": "2024-04-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -699,7 +711,8 @@
         "buildProperties": "[parameters('buildProperties')]",
         "repositoryToken": "[parameters('repositoryToken')]",
         "repositoryUrl": "[parameters('repositoryUrl')]",
-        "templateProperties": "[parameters('templateProperties')]"
+        "templateProperties": "[parameters('templateProperties')]",
+        "publicNetworkAccess": "[if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(not(empty(parameters('privateEndpoints'))), 'Disabled', null()))]"
       }
     },
     "staticSite_lock": {
@@ -1907,14 +1920,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('staticSite', '2021-03-01', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('staticSite', '2024-04-01', 'full'), 'identity'), 'principalId')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('staticSite', '2021-03-01', 'full').location]"
+      "value": "[reference('staticSite', '2024-04-01', 'full').location]"
     },
     "defaultHostname": {
       "type": "string",
