@@ -43,6 +43,8 @@ param tags object?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+var enableReferencedModulesTelemetry = false
+
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   'Network Contributor': subscriptionResourceId(
@@ -110,7 +112,7 @@ module publicIPAddresses 'br/public:avm/res/network/public-ip-address:0.5.1' = [
       skuTier: publicIPAddressObject.?skuTier
       tags: publicIPAddressObject.?tags ?? tags
       zones: publicIPAddressObject.?zones ?? (zone != 0 ? [zone] : null)
-      enableTelemetry: publicIPAddressObject.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
       ddosSettings: publicIPAddressObject.?ddosSettings
       dnsSettings: publicIPAddressObject.?dnsSettings
       idleTimeoutInMinutes: publicIPAddressObject.?idleTimeoutInMinutes
@@ -139,7 +141,7 @@ module publicIPPrefixes 'br/public:avm/res/network/public-ip-prefix:0.4.1' = [
       customIPPrefix: publicIPPrefixObject.?customIPPrefix
       roleAssignments: publicIPPrefixObject.?roleAssignments
       tags: publicIPPrefixObject.?tags ?? tags
-      enableTelemetry: publicIPPrefixObject.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]

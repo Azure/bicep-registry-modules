@@ -422,6 +422,8 @@ param istioServiceMeshCertificateAuthority istioServiceMeshCertificateAuthorityT
 // Variables   //
 // =========== //
 
+var enableReferencedModulesTelemetry = false
+
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
@@ -592,6 +594,11 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-09-02-p
       scaleDownMode: profile.?scaleDownMode ?? 'Delete'
       scaleSetEvictionPolicy: profile.?scaleSetEvictionPolicy ?? 'Delete'
       scaleSetPriority: profile.?scaleSetPriority
+      securityProfile: {
+        enableSecureBoot: profile.?enableSecureBoot ?? false
+        enableVTPM: profile.?enableVTPM ?? false
+        sshAccess: skuName == 'Automatic' ? 'Disabled' : 'LocalUser'
+      }
       spotMaxPrice: profile.?spotMaxPrice
       tags: profile.?tags
       type: profile.?type
@@ -939,7 +946,7 @@ module managedCluster_extension 'br/public:avm/res/kubernetes-configuration/exte
     clusterName: managedCluster.name
     configurationProtectedSettings: fluxExtension.?configurationProtectedSettings
     configurationSettings: fluxExtension.?configurationSettings
-    enableTelemetry: enableTelemetry
+    enableTelemetry: enableReferencedModulesTelemetry
     extensionType: 'microsoft.flux'
     fluxConfigurations: fluxExtension.?configurations
     location: location
@@ -1170,6 +1177,12 @@ type agentPoolType = {
 
   @description('Optional. The scale set priority of the agent pool.')
   scaleSetPriority: ('Low' | 'Regular' | 'Spot')?
+
+  @description('Optional. Secure Boot is a feature of Trusted Launch which ensures that only signed operating systems and drivers can boot. For more details, see aka.ms/aks/trustedlaunch.')
+  enableSecureBoot: bool?
+
+  @description('Optional. vTPM is a Trusted Launch feature for configuring a dedicated secure vault for keys and measurements held locally on the node. For more details, see aka.ms/aks/trustedlaunch.')
+  enableVTPM: bool?
 
   @description('Optional. The spot max price of the agent pool.')
   spotMaxPrice: int?
