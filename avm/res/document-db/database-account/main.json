@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "154731436968185345"
+      "templateHash": "5527824210613855835"
     },
     "name": "DocumentDB Database Accounts",
     "description": "This module deploys a DocumentDB Database Account."
@@ -1269,7 +1269,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-11-01",
+      "apiVersion": "2024-07-01",
       "name": "[format('46d3xbcp.res.documentdb-databaseaccount.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -2376,7 +2376,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "3749794597202905053"
+              "templateHash": "3231224071538650170"
             },
             "name": "DocumentDB Database Account Gremlin Databases",
             "description": "This module deploys a Gremlin Database within a CosmosDB Account."
@@ -2481,7 +2481,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "1700064870992628026"
+                      "templateHash": "8946757830727306560"
                     },
                     "name": "DocumentDB Database Accounts Gremlin Databases Graphs",
                     "description": "This module deploys a DocumentDB Database Accounts Gremlin Database Graph."
@@ -2531,18 +2531,18 @@
                     "databaseAccount::gremlinDatabase": {
                       "existing": true,
                       "type": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases",
-                      "apiVersion": "2023-04-15",
+                      "apiVersion": "2024-11-15",
                       "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('gremlinDatabaseName'))]"
                     },
                     "databaseAccount": {
                       "existing": true,
                       "type": "Microsoft.DocumentDB/databaseAccounts",
-                      "apiVersion": "2023-04-15",
+                      "apiVersion": "2024-11-15",
                       "name": "[parameters('databaseAccountName')]"
                     },
                     "gremlinGraph": {
                       "type": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs",
-                      "apiVersion": "2023-04-15",
+                      "apiVersion": "2024-11-15",
                       "name": "[format('{0}/{1}/{2}', parameters('databaseAccountName'), parameters('gremlinDatabaseName'), parameters('name'))]",
                       "tags": "[parameters('tags')]",
                       "properties": {
@@ -3539,7 +3539,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "13365107869204248001"
+              "templateHash": "15763579955307670212"
             }
           },
           "definitions": {
@@ -3602,7 +3602,7 @@
             "keyVault": {
               "existing": true,
               "type": "Microsoft.KeyVault/vaults",
-              "apiVersion": "2022-07-01",
+              "apiVersion": "2023-07-01",
               "name": "[parameters('keyVaultName')]"
             },
             "secrets": {
