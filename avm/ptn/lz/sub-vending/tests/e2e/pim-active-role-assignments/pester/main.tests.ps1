@@ -42,11 +42,11 @@ Describe 'Bicep Landing Zone (Sub) Vending Tests' {
         }
     }
 
-    Context 'Role-Based Access Control Assignment Tests' {
-        It 'Should Have a Role Assignment for an known AAD Group with the Role based access control administrator role directly upon the Subscription' {
+    Context 'PIM Role-Based Access Control Assignment Tests' {
+        It 'Should Have a PIM Role Assignment for an known AAD Group with an Active Role-Based Access Control Administrator role directly upon the Resource Group' {
             $iterationCount = 0
             do {
-                $roleAssignment = Get-AzRoleAssignment -Scope "/subscriptions/$subscriptionId" -RoleDefinitionName 'Role Based Access Control Administrator' -ErrorAction SilentlyContinue
+                $roleAssignment = Get-AzRoleAssignmentScheduleRequest -Scope "/subscriptions/$subscriptionId/resourceGroups/rsg-$location-net-hs-$namePrefix-$serviceShort" -ErrorAction SilentlyContinue
                 if ($null -eq $roleAssignment) {
                     Write-Host "Waiting for Resource Group Role Assignments to be eventually consistent... Iteration: $($iterationCount)" -ForegroundColor Yellow
                     Start-Sleep -Seconds 40
@@ -56,10 +56,9 @@ Describe 'Bicep Landing Zone (Sub) Vending Tests' {
                 $roleAssignment -ne $null -or $iterationCount -ge 10
             )
 
-            $roleAssignment.ObjectId | Should -Be $user.Id
-            $roleAssignment.RoleDefinitionName | Should -Be 'Role Based Access Control Administrator'
-            $roleAssignment.scope | Should -Be "/subscriptions/$subscriptionId"
-            $roleAssignment.Condition | Should -Not -BeNullOrEmpty
+            $roleAssignment.PrincipalId | Should -Be $user.Id
+            $roleAssignment.RoleDefinitionId | Should -Be "/subscriptions/$subscriptionId/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168"
+            $roleAssignment.scope | Should -Be "/subscriptions/$subscriptionId/resourceGroups/rsg-$location-net-hs-$namePrefix-$serviceShort"
         }
     }
 }
