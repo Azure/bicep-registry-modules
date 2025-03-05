@@ -29,9 +29,9 @@ param managedIdentities managedIdentityAllType?
 ])
 param infrastructureEncryption string = 'Enabled'
 
-import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The customer managed key definition.')
-param customerManagedKey customerManagedKeyType?
+param customerManagedKey customerManagedKeyWithAutoRotateType?
 
 @description('Optional. The soft delete related settings.')
 param softDeleteSettings softDeleteSettingType?
@@ -198,9 +198,14 @@ resource backupVault 'Microsoft.DataProtection/backupVaults@2024-04-01' = {
                   identityType: 'SystemAssigned'
                 }
             keyVaultProperties: {
+              // keyUri: !empty(customerManagedKey.?keyVersion)
+              //   ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.?keyVersion}'
+              //   : cMKKeyVault::cMKKey.properties.keyUriWithVersion
               keyUri: !empty(customerManagedKey.?keyVersion)
                 ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.?keyVersion}'
-                : cMKKeyVault::cMKKey.properties.keyUriWithVersion
+                : (customerManagedKey.?autoRotationEnabled ?? true)
+                    ? cMKKeyVault::cMKKey.properties.keyUri
+                    : cMKKeyVault::cMKKey.properties.keyUriWithVersion
             }
             state: 'Enabled'
           }
