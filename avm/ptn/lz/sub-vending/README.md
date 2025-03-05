@@ -404,7 +404,8 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     roleAssignments: [
       {
         definition: '/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7'
-        principalId: '896b1162-be44-4b28-888a-d01acc1b4271'
+        principalId: '<principalId>'
+        principalType: 'User'
         relativeScope: '<relativeScope>'
       }
     ]
@@ -493,7 +494,8 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       "value": [
         {
           "definition": "/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7",
-          "principalId": "896b1162-be44-4b28-888a-d01acc1b4271",
+          "principalId": "<principalId>",
+          "principalType": "User",
           "relativeScope": "<relativeScope>"
         }
       ]
@@ -594,7 +596,8 @@ param roleAssignmentEnabled = true
 param roleAssignments = [
   {
     definition: '/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7'
-    principalId: '896b1162-be44-4b28-888a-d01acc1b4271'
+    principalId: '<principalId>'
+    principalType: 'User'
     relativeScope: '<relativeScope>'
   }
 ]
@@ -650,7 +653,8 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     roleAssignments: [
       {
         definition: '/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7'
-        principalId: '896b1162-be44-4b28-888a-d01acc1b4271'
+        principalId: '<principalId>'
+        principalType: 'User'
         relativeScope: '<relativeScope>'
       }
     ]
@@ -722,7 +726,8 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       "value": [
         {
           "definition": "/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7",
-          "principalId": "896b1162-be44-4b28-888a-d01acc1b4271",
+          "principalId": "<principalId>",
+          "principalType": "User",
           "relativeScope": "<relativeScope>"
         }
       ]
@@ -822,7 +827,8 @@ param roleAssignmentEnabled = true
 param roleAssignments = [
   {
     definition: '/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7'
-    principalId: '896b1162-be44-4b28-888a-d01acc1b4271'
+    principalId: '<principalId>'
+    principalType: 'User'
     relativeScope: '<relativeScope>'
   }
 ]
@@ -888,7 +894,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       {
         definition: '/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168'
         justification: 'This is a justification from an AVM test.'
-        principalId: '896b1162-be44-4b28-888a-d01acc1b4271'
+        principalId: '<principalId>'
         relativeScope: '<relativeScope>'
         roleAssignmentType: 'Active'
         scheduleInfo: {
@@ -940,7 +946,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
         {
           "definition": "/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168",
           "justification": "This is a justification from an AVM test.",
-          "principalId": "896b1162-be44-4b28-888a-d01acc1b4271",
+          "principalId": "<principalId>",
           "relativeScope": "<relativeScope>",
           "roleAssignmentType": "Active",
           "scheduleInfo": {
@@ -1022,7 +1028,7 @@ param pimRoleAssignments = [
   {
     definition: '/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168'
     justification: 'This is a justification from an AVM test.'
-    principalId: '896b1162-be44-4b28-888a-d01acc1b4271'
+    principalId: '<principalId>'
     relativeScope: '<relativeScope>'
     roleAssignmentType: 'Active'
     scheduleInfo: {
@@ -1075,7 +1081,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       {
         definition: '/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168'
         justification: 'This is a justification from an AVM test.'
-        principalId: '896b1162-be44-4b28-888a-d01acc1b4271'
+        principalId: '<principalId>'
         relativeScope: ''
         roleAssignmentType: 'Eligible'
         scheduleInfo: {
@@ -1123,7 +1129,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
         {
           "definition": "/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168",
           "justification": "This is a justification from an AVM test.",
-          "principalId": "896b1162-be44-4b28-888a-d01acc1b4271",
+          "principalId": "<principalId>",
           "relativeScope": "",
           "roleAssignmentType": "Eligible",
           "scheduleInfo": {
@@ -1197,7 +1203,7 @@ param pimRoleAssignments = [
   {
     definition: '/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168'
     justification: 'This is a justification from an AVM test.'
-    principalId: '896b1162-be44-4b28-888a-d01acc1b4271'
+    principalId: '<principalId>'
     relativeScope: ''
     roleAssignmentType: 'Eligible'
     scheduleInfo: {
@@ -1247,7 +1253,8 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     roleAssignments: [
       {
         definition: '/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168'
-        principalId: '896b1162-be44-4b28-888a-d01acc1b4271'
+        principalId: '<principalId>'
+        principalType: 'User'
         relativeScope: ''
         roleAssignmentCondition: {
           roleConditionType: {
@@ -1300,7 +1307,8 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       "value": [
         {
           "definition": "/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168",
-          "principalId": "896b1162-be44-4b28-888a-d01acc1b4271",
+          "principalId": "<principalId>",
+          "principalType": "User",
           "relativeScope": "",
           "roleAssignmentCondition": {
             "roleConditionType": {
@@ -1363,7 +1371,8 @@ param roleAssignmentEnabled = true
 param roleAssignments = [
   {
     definition: '/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168'
-    principalId: '896b1162-be44-4b28-888a-d01acc1b4271'
+    principalId: '<principalId>'
+    principalType: 'User'
     relativeScope: ''
     roleAssignmentCondition: {
       roleConditionType: {
@@ -1421,7 +1430,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     roleAssignments: [
       {
         definition: '/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7'
-        principalId: '896b1162-be44-4b28-888a-d01acc1b4271'
+        principalId: '<principalId>'
         relativeScope: '<relativeScope>'
       }
     ]
@@ -1495,7 +1504,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       "value": [
         {
           "definition": "/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7",
-          "principalId": "896b1162-be44-4b28-888a-d01acc1b4271",
+          "principalId": "<principalId>",
           "relativeScope": "<relativeScope>"
         }
       ]
@@ -1577,7 +1586,7 @@ param roleAssignmentEnabled = true
 param roleAssignments = [
   {
     definition: '/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7'
-    principalId: '896b1162-be44-4b28-888a-d01acc1b4271'
+    principalId: '<principalId>'
     relativeScope: '<relativeScope>'
   }
 ]

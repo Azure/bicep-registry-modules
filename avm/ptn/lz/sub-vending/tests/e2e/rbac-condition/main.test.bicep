@@ -19,6 +19,10 @@ param serviceShort string = 'ssarb'
 
 @description('Optional. A short guid for the subscription name.')
 param subscriptionGuid string = toLower(substring(newGuid(), 0, 4))
+
+@description('Required. Principle ID of the user. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-testUserObjectId\'.')
+@secure()
+param testUserObjectId string = ''
 module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${subscriptionGuid}'
   params: {
@@ -37,9 +41,10 @@ module testDeployment '../../../main.bicep' = {
     roleAssignmentEnabled: true
     roleAssignments: [
       {
-        principalId: '896b1162-be44-4b28-888a-d01acc1b4271'
+        principalId: testUserObjectId
         definition: '/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168'
         relativeScope: ''
+        principalType: 'User'
         roleAssignmentCondition: {
           roleConditionType: {
             principleTypesToAssign: [

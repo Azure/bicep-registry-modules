@@ -10,6 +10,7 @@ Describe 'Bicep Landing Zone (Sub) Vending Tests' {
         $namePrefix = $TestInputData.DeploymentOutputs.namePrefix.Value
         $serviceShort = $TestInputData.DeploymentOutputs.serviceShort.Value
         $location = $TestInputData.DeploymentOutputs.resourceLocation.Value
+        $user = Get-AzADUser -DisplayName 'AVM CI Validation User 001'
         Update-AzConfig -DisplayBreakingChangeWarning $false
         Select-AzSubscription -subscriptionId $subscriptionId
     }
@@ -55,7 +56,7 @@ Describe 'Bicep Landing Zone (Sub) Vending Tests' {
                 $roleAssignment -ne $null -or $iterationCount -ge 10
             )
 
-            $roleAssignment.PrincipalId | Should -Be '896b1162-be44-4b28-888a-d01acc1b4271'
+            $roleAssignment.PrincipalId | Should -Be $user.Id
             $roleAssignment.RoleDefinitionId | Should -Be "/subscriptions/$subscriptionId/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168"
             $roleAssignment.scope | Should -Be "/subscriptions/$subscriptionId"
         }
