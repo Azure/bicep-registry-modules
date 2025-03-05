@@ -92,14 +92,14 @@ var varLogAnalyticsWorkspaceName = format(workloadNameFormat, 'laws')
 var varAIFoundryDeploymentName = format(workloadNameFormat, 'aif')
 var varAIFoundryApplicationInsightsName = format(workloadNameFormat, 'aifd-appi')
 var varAIFoundryContainerRegistryName = replace(format(workloadNameFormat, 'aifd-creg'), '-', '') //NOTE: ACR name should not contain hyphens
-var varAIFoundryAIServicesName = format(workloadNameFormat, 'aifd-aisv')
-var varAIFoundryAIServicesContentUnderstandingName = format(workloadNameFormat, 'aifd-aisv-cu')
+var varAIFoundryAIServicesName = format(workloadNameFormat, 'aifd-aisr')
+var varAIFoundryAIServicesContentUnderstandingName = format(workloadNameFormat, 'aifd-aisr-cu')
 var varAIFoundryAIServicesContentUnderstandingLocation = contentUnderstandingLocation == ''
   ? solutionLocation
   : contentUnderstandingLocation
 // var varAIFoundryAIServicesName_m = format(workloadNameFormat, 'aiam')
 var varAIFoundrySearchServiceName = format(workloadNameFormat, 'aifd-srch')
-//var varAIFoundryStorageAccountName = replace(format(workloadNameFormat, 'aifd-strg'), '-', '') //NOTE: SA name should not contain hyphens
+var varAIFoundryStorageAccountName = replace(format(workloadNameFormat, 'aifd-strg'), '-', '') //NOTE: SA name should not contain hyphens
 var varAIFoundryMachineLearningServicesAIHubName = format(workloadNameFormat, 'aifd-aihb')
 var varAIFoundryMachineLearningServicesProjectName = format(workloadNameFormat, 'aifd-aipj')
 var varAIFoundryMachineLearningServicesModelPHIServerlessName = format(workloadNameFormat, 'aifd-sphi')
@@ -115,7 +115,7 @@ var varChartsFunctionName = format(workloadNameFormat, 'fchr-azfct')
 //var varRAGManagedEnviornmentName = format(workloadNameFormat, 'frag-ftme')
 var varRAGFunctionName = format(workloadNameFormat, 'frag-azfct')
 //var varRAGStorageAccountName = replace(format(workloadNameFormat, 'frag-strg'), '-', '')
-var varFunctionsStorageAccountName = replace(format(workloadNameFormat, 'func-strg'), '-', '')
+//var varFunctionsStorageAccountName = replace(format(workloadNameFormat, 'func-strg'), '-', '')
 var varWebAppServerFarmLocation = ckmWebAppServerFarmLocation == '' ? solutionLocation : ckmWebAppServerFarmLocation
 var varWebAppServerFarmName = format(workloadNameFormat, 'waoo-srvf')
 var varWebAppName = format(workloadNameFormat, 'wapp-wapp')
@@ -393,7 +393,8 @@ module avmLogAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspac
 // ========== AI Foundry ========== //
 
 module moduleAIFoundry './modules/ai-foundry.bicep' = {
-  name: format(deploymentNameFormat, varAIFoundryDeploymentName)
+  //name: format(deploymentNameFormat, varAIFoundryDeploymentName)
+  name: 'module-ai-foundry'
   params: {
     location: solutionLocation
     tags: tags
@@ -408,12 +409,13 @@ module moduleAIFoundry './modules/ai-foundry.bicep' = {
     aiServices_cu_location: varAIFoundryAIServicesContentUnderstandingLocation
     aiServices_deployments: varAIFoundryAIServicesModelDeployments
     searchService_name: varAIFoundrySearchServiceName
-    storageAccount_resource_id: avmStorageAccount.outputs.resourceId
+    storageAccount_name: varAIFoundryStorageAccountName
     machineLearningServicesWorkspaces_aihub_name: varAIFoundryMachineLearningServicesAIHubName
     machineLearningServicesWorkspaces_project_name: varAIFoundryMachineLearningServicesProjectName
     machineLearningServicesWorkspaces_phiServerless_name: varAIFoundryMachineLearningServicesModelPHIServerlessName
     gptModelVersionPreview: varGPTModelVersionPreview
     deploymentVersion: armDeploymentSuffix
+    managedIdentityPrincipalId: avmManagedIdentity.outputs.principalId
   }
 }
 
@@ -433,7 +435,7 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.17.0' = {
     allowCrossTenantReplication: false
     allowSharedKeyAccess: false
     requireInfrastructureEncryption: true
-    enableHierarchicalNamespace: false //NOTE: Set to true
+    enableHierarchicalNamespace: false
     largeFileSharesState: 'Disabled'
     enableNfsV3: false
     networkAcls: {
@@ -464,6 +466,10 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.17.0' = {
     roleAssignments: [
       {
         principalId: avmManagedIdentity.outputs.principalId
+        roleDefinitionIdOrName: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe' //NOTE: Built-in role 'Storage Blob Data Contributor'
+      }
+      {
+        principalId: resWebapp.identity.principalId
         roleDefinitionIdOrName: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe' //NOTE: Built-in role 'Storage Blob Data Contributor'
       }
     ]
@@ -726,8 +732,8 @@ resource resWebapp 'Microsoft.Web/sites@2023-12-01' = {
     siteConfig: {
       appSettings: [
         {
-          name: 'AzureWebJobsStorage'
-          value: 'DefaultEndpointsProtocol=https;AccountName=${varFunctionsStorageAccountName};EndpointSuffix=core.windows.net'
+          name: 'AzureWebJobsStorage_accountname'
+          value: moduleAIFoundry.outputs.storageAccount_name
         }
         {
           name: 'SQLDB_DATABASE'
@@ -790,7 +796,7 @@ module moduleFunctionRAG 'modules/function-rag.bicep' = {
     ragFunctionName: varRAGFunctionName
     solutionLocation: solutionLocation
     tags: tags
-    ragStorageAccountName: varFunctionsStorageAccountName
+    ragStorageAccountName: moduleAIFoundry.outputs.storageAccount_name
     aiFoundryAIHubProjectConnectionString: moduleAIFoundry.outputs.aiHub_project_connectionString
     AIFoundryAISearchServiceConnectionString: moduleAIFoundry.outputs.aiSearch_connectionString
     aiFoundryAIServicesName: moduleAIFoundry.outputs.aiServices_name
@@ -807,27 +813,27 @@ module moduleFunctionRAG 'modules/function-rag.bicep' = {
   }
 }
 
-module avmStorageAccountFunctions 'br/public:avm/res/storage/storage-account:0.17.3' = {
-  name: format(deploymentNameFormat, varFunctionsStorageAccountName)
-  params: {
-    name: varFunctionsStorageAccountName
-    location: solutionLocation
-    tags: tags
-    skuName: 'Standard_LRS'
-    kind: 'StorageV2'
-    accessTier: 'Hot'
-    roleAssignments: [
-      {
-        principalId: moduleFunctionRAG.outputs.principalId
-        roleDefinitionIdOrName: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe' //NOTE: Built-in role 'Storage Blob Data Contributor'
-      }
-      {
-        principalId: resWebapp.identity.principalId
-        roleDefinitionIdOrName: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe' //NOTE: Built-in role 'Storage Blob Data Contributor'
-      }
-    ]
-  }
-}
+// module avmStorageAccountFunctions 'br/public:avm/res/storage/storage-account:0.17.3' = {
+//   name: format(deploymentNameFormat, varFunctionsStorageAccountName)
+//   params: {
+//     name: varFunctionsStorageAccountName
+//     location: solutionLocation
+//     tags: tags
+//     skuName: 'Standard_LRS'
+//     kind: 'StorageV2'
+//     accessTier: 'Hot'
+//     roleAssignments: [
+//       // {
+//       //   principalId: moduleFunctionRAG.outputs.principalId
+//       //   roleDefinitionIdOrName: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe' //NOTE: Built-in role 'Storage Blob Data Contributor'
+//       // }
+//       {
+//         principalId: resWebapp.identity.principalId
+//         roleDefinitionIdOrName: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe' //NOTE: Built-in role 'Storage Blob Data Contributor'
+//       }
+//     ]
+//   }
+// }
 
 // module avmStorageAccountRAG 'br/public:avm/res/storage/storage-account:0.17.3' = {
 //   name: format(deploymentNameFormat, varRAGStorageAccountName)

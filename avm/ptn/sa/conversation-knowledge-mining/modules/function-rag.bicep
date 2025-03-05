@@ -40,8 +40,8 @@ resource resFunctionRAG 'Microsoft.Web/sites@2023-12-01' = {
     siteConfig: {
       appSettings: [
         {
-          name: 'AzureWebJobsStorage'
-          value: 'DefaultEndpointsProtocol=https;AccountName=${ragStorageAccountName};EndpointSuffix=core.windows.net'
+          name: 'AzureWebJobsStorage_accountname'
+          value: ragStorageAccountName
         }
         {
           name: 'PYTHON_ENABLE_INIT_INDEXING'

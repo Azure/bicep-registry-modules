@@ -14,12 +14,13 @@ param aiServices_cu_name string
 param aiServices_cu_location string
 //param aiServices_m_name string
 param searchService_name string
-param storageAccount_resource_id string
+param storageAccount_name string
 param machineLearningServicesWorkspaces_aihub_name string
 param machineLearningServicesWorkspaces_project_name string
 param machineLearningServicesWorkspaces_phiServerless_name string
 param gptModelVersionPreview string
 param deploymentVersion string = utcNow()
+param managedIdentityPrincipalId string
 
 // VARIABLES
 var deploymentNameFormat = '${deploymentVersion}-deploy-{0}'
@@ -47,6 +48,61 @@ var azureAiProjectConnString = '${toLower(replace(avmMLServicesWorkspacesProject
 
 resource existingKeyVaultResource 'Microsoft.keyvault/vaults@2024-04-01-preview' existing = {
   name: keyVault_name
+}
+
+// AI Foundry: storage account
+
+module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.17.0' = {
+  name: format(deploymentNameFormat, storageAccount_name)
+  params: {
+    name: storageAccount_name
+    location: location
+    tags: tags
+    skuName: 'Standard_LRS'
+    kind: 'StorageV2'
+    accessTier: 'Hot'
+    minimumTlsVersion: 'TLS1_2'
+    allowBlobPublicAccess: false
+    allowCrossTenantReplication: false
+    allowSharedKeyAccess: false
+    requireInfrastructureEncryption: true
+    enableHierarchicalNamespace: false
+    largeFileSharesState: 'Disabled'
+    enableNfsV3: false
+    networkAcls: {
+      bypass: 'AzureServices'
+      defaultAction: 'Allow'
+    }
+    supportsHttpsTrafficOnly: true
+    // encryption: {
+    //   keySource: 'Microsoft.Storage'
+    //   requireInfrastructureEncryption: false
+    //   services: {
+    //     blob: {
+    //       enabled: true
+    //       keyType: 'Account'
+    //     }
+    //     file: {
+    //       enabled: true
+    //       keyType: 'Account'
+    //     }
+    //     queue: {
+    //       enabled: true
+    //       keyType: 'Service'
+    //     }
+    //     table: {
+    //       enabled: true
+    //       keyType: 'Service'
+    //     }
+    //   }
+    // }
+    roleAssignments: [
+      {
+        principalId: managedIdentityPrincipalId
+        roleDefinitionIdOrName: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe' //NOTE: Built-in role 'Storage Blob Data Contributor'
+      }
+    ]
+  }
 }
 
 // AI Foundry: Application Insights
@@ -79,7 +135,7 @@ module avm_container_registry_registry 'br/public:avm/res/container-registry/reg
     location: location
     tags: tags
     acrSku: 'Premium'
-    acrAdminUserEnabled: true
+    acrAdminUserEnabled: false
     dataEndpointEnabled: false
     networkRuleBypassOptions: 'AzureServices'
     networkRuleSetDefaultAction: 'Deny'
@@ -93,62 +149,121 @@ module avm_container_registry_registry 'br/public:avm/res/container-registry/reg
 }
 
 // AI Foundry: AI Services
-// NOTE: Create a loop to deploy multiple accounts and models
-module avm_cognitive_services_accounts 'br/public:avm/res/cognitive-services/account:0.9.2' = {
-  name: format(deploymentNameFormat, aiServices_name)
-  params: {
-    name: aiServices_name
-    disableLocalAuth: false //Added this in order to retrieve the keys. Evaluate alternatives
-    location: location
-    tags: tags
-    sku: 'S0'
-    kind: 'AIServices'
+// NOTE: Required version 'Microsoft.CognitiveServices/accounts/deployments@2023-05-01' not available in AVM
+// module avm_cognitive_services_accounts 'br/public:avm/res/cognitive-services/account:0.10.1' = {
+//   name: format(deploymentNameFormat, aiServices_name)
+//   params: {
+//     name: aiServices_name
+//     disableLocalAuth: false //Added this in order to retrieve the keys. Evaluate alternatives
+//     location: location
+//     tags: tags
+//     sku: 'S0'
+//     kind: 'AIServices'
+//     customSubDomainName: aiServices_name
+//     apiProperties: {
+//       staticsEnabled: false
+//     }
+//     publicNetworkAccess: 'Enabled' //Not in original script, check this
+//     deployments: [
+//       for aiModelDeployment in aiServices_deployments: {
+//         name: aiModelDeployment.name
+//         model: aiModelDeployment.model
+//         sku: aiModelDeployment.sku
+//         raiPolicyName: aiModelDeployment.raiPolicyName
+//       }
+//     ]
+//     secretsExportConfiguration: {
+//       keyVaultResourceId: existingKeyVaultResource.id
+//       accessKey1Name: varKvSecretNameAzureOpenaiKey
+//     }
+//   }
+// }
+resource avm_cognitive_services_accounts 'Microsoft.CognitiveServices/accounts@2024-04-01-preview' = {
+  name: aiServices_name
+  location: location
+  sku: {
+    name: 'S0'
+  }
+  kind: 'AIServices'
+  properties: {
+    customSubDomainName: aiServices_name
     apiProperties: {
-      staticsEnabled: false
+      statisticsEnabled: false
     }
-    publicNetworkAccess: 'Enabled' //Not in original script, check this
-    deployments: [
-      for aiModelDeployment in aiServices_deployments: {
-        name: aiModelDeployment.name
-        model: aiModelDeployment.model
-        sku: aiModelDeployment.sku
-        raiPolicyName: aiModelDeployment.raiPolicyName
-      }
-    ]
-    secretsExportConfiguration: {
-      keyVaultResourceId: existingKeyVaultResource.id
-      accessKey1Name: varKvSecretNameAzureOpenaiKey
-    }
+    publicNetworkAccess: 'Enabled' // Not in original script, it failing otherwise
   }
 }
 
-// AI Foundry: AI Services. NOTE: Why this?
-module avm_cognitive_services_accounts_cu 'br/public:avm/res/cognitive-services/account:0.10.1' = {
-  name: format(deploymentNameFormat, aiServices_cu_name)
-  params: {
-    name: aiServices_cu_name
-    location: aiServices_cu_location
-    tags: tags
-    disableLocalAuth: false //Added this in order to retrieve the keys. Evaluate alternatives
-    sku: 'S0'
-    kind: 'AIServices'
+// AI Foundry: AI Services Content Understanding
+// NOTE: Required version 'Microsoft.CognitiveServices/accounts/deployments@2023-05-01' not available in AVM
+// module avm_cognitive_services_accounts_cu 'br/public:avm/res/cognitive-services/account:0.10.1' = {
+//   name: format(deploymentNameFormat, aiServices_cu_name)
+//   params: {
+//     name: aiServices_cu_name
+//     location: aiServices_cu_location
+//     tags: tags
+//     disableLocalAuth: false //Added this in order to retrieve the keys. Evaluate alternatives
+//     customSubDomainName: aiServices_cu_name
+//     sku: 'S0'
+//     kind: 'AIServices'
+//     apiProperties: {
+//       staticsEnabled: false
+//     }
+//     publicNetworkAccess: 'Enabled' // Not in original script, check this
+//     secretsExportConfiguration: {
+//       keyVaultResourceId: existingKeyVaultResource.id
+//       accessKey1Name: 'AZURE-OPENAI-CU-KEY'
+//     }
+//   }
+// }
+resource avm_cognitive_services_accounts_cu 'Microsoft.CognitiveServices/accounts@2024-04-01-preview' = {
+  name: aiServices_cu_name
+  location: aiServices_cu_location
+  sku: {
+    name: 'S0'
+  }
+  kind: 'AIServices'
+  properties: {
+    customSubDomainName: aiServices_cu_name
     apiProperties: {
-      staticsEnabled: false
+      statisticsEnabled: false
     }
-    publicNetworkAccess: 'Enabled' // Not in original script, check this
-    secretsExportConfiguration: {
-      keyVaultResourceId: existingKeyVaultResource.id
-      accessKey1Name: 'AZURE-OPENAI-CU-KEY'
-    }
+    publicNetworkAccess: 'Enabled' // Not in original script, it failing otherwise
   }
 }
+resource azureOpenAIKeyEntry 'Microsoft.KeyVault/vaults/secrets@2021-11-01-preview' = {
+  parent: existingKeyVaultResource
+  name: 'AZURE-OPENAI-CU-KEY'
+  properties: {
+    value: avm_cognitive_services_accounts_cu.listKeys().key1 //'2024-02-15-preview'
+  }
+}
+@batchSize(1)
+resource aiServicesDeployments 'Microsoft.CognitiveServices/accounts/deployments@2023-05-01' = [
+  for aiModeldeployment in aiServices_deployments: {
+    parent: avm_cognitive_services_accounts_cu //aiServices_m
+    name: aiModeldeployment.name
+    properties: {
+      model: {
+        format: 'OpenAI'
+        name: aiModeldeployment.model.name
+      }
+      raiPolicyName: aiModeldeployment.raiPolicyName
+    }
+    sku: {
+      name: aiModeldeployment.sku.name
+      capacity: aiModeldeployment.sku.capacity
+    }
+  }
+]
 
 resource azureOpenAICUEndpointEntry 'Microsoft.keyvault/vaults/secrets@2021-11-01-preview' = {
   parent: existingKeyVaultResource
   name: 'AZURE-OPENAI-CU-ENDPOINT'
   properties: {
     //value: 'https://${avm_cognitive_services_accounts_cu.outputs.name}.cognitiveservices.azure.com/'
-    value: avm_cognitive_services_accounts_cu.outputs.endpoint //deployed_avm_cognitive_services_accounts_cu.properties.endpoint
+    //value: avm_cognitive_services_accounts_cu.outputs.endpoint //deployed_avm_cognitive_services_accounts_cu.properties.endpoint
+    value: avm_cognitive_services_accounts_cu.properties.endpoint //deployed_avm_cognitive_services_accounts_cu.properties.endpoint
     //NOTE: Check if this is the correct endpoint
   }
 }
@@ -186,7 +301,8 @@ module moduleAIHub './ai-foundry-ai-hub.bicep' = {
   name: 'module-ai-foundry-ai-hub'
   params: {
     deploymentName: format(deploymentNameFormat, machineLearningServicesWorkspaces_aihub_name)
-    aiServicesName: avm_cognitive_services_accounts_cu.outputs.name
+    //aiServicesName: avm_cognitive_services_accounts.outputs.name
+    aiServicesName: avm_cognitive_services_accounts.name
     searchServiceName: avm_search_search_services.outputs.name
     aiHubName: machineLearningServicesWorkspaces_aihub_name
     location: location
@@ -194,9 +310,11 @@ module moduleAIHub './ai-foundry-ai-hub.bicep' = {
     keyVaultResourceId: existingKeyVaultResource.id
     containerRegistryResourceId: avm_container_registry_registry.outputs.resourceId
     applicationInsightsResourceId: avm_insights_component.outputs.resourceId
-    storageAccountResourceId: storageAccount_resource_id
-    cognitiveServicesEndpoint: avm_cognitive_services_accounts.outputs.endpoint
-    cognitiveServicesResourceId: avm_cognitive_services_accounts.outputs.resourceId
+    storageAccountResourceId: avmStorageAccount.outputs.resourceId
+    //cognitiveServicesEndpoint: avm_cognitive_services_accounts.outputs.endpoint
+    cognitiveServicesEndpoint: avm_cognitive_services_accounts.properties.endpoint
+    //cognitiveServicesResourceId: avm_cognitive_services_accounts.outputs.resourceId
+    cognitiveServicesResourceId: avm_cognitive_services_accounts.id
     searchServicesEndpoint: 'https://${avm_search_search_services.outputs.name}.search.windows.net'
     searchServicesResourceId: avm_search_search_services.outputs.resourceId
   }
@@ -223,29 +341,29 @@ module avmMLServicesWorkspacesProject 'br/public:avm/res/machine-learning-servic
 //Model deployment guide: https://learn.microsoft.com/en-us/azure/ai-studio/how-to/deploy-models-serverless?tabs=bicep
 //Region availability: https://learn.microsoft.com/en-us/azure/ai-studio/how-to/deploy-models-serverless-availability
 
-resource machine_learning_services_workspaces_serverless_endpoint_phiModel 'Microsoft.MachineLearningServices/workspaces/serverlessEndpoints@2024-10-01' = if (isInPhiList) {
-  //  parent: deployedMLServicesWorkspacesProject
-  location: location
-  #disable-next-line use-parent-property
-  name: '${machineLearningServicesWorkspaces_project_name}/${machineLearningServicesWorkspaces_phiServerless_name}'
-  properties: {
-    authMode: 'Key'
-    contentSafety: {
-      contentSafetyStatus: 'Enabled'
-    }
-    modelSettings: {
-      #disable-next-line use-resource-id-functions
-      modelId: varPhiModelUrl
-    }
-  }
-  sku: {
-    name: 'Consumption'
-    tier: 'Free'
-  }
-  dependsOn: [
-    avmMLServicesWorkspacesProject
-  ]
-}
+//   resource machine_learning_services_workspaces_serverless_endpoint_phiModel 'Microsoft.MachineLearningServices/workspaces/serverlessEndpoints@2024-10-01' = if (isInPhiList) {
+//   //  parent: deployedMLServicesWorkspacesProject
+//   location: location
+//   #disable-next-line use-parent-property
+//   name: '${machineLearningServicesWorkspaces_project_name}/${machineLearningServicesWorkspaces_phiServerless_name}'
+//   properties: {
+//     authMode: 'Key'
+//     contentSafety: {
+//       contentSafetyStatus: 'Enabled'
+//     }
+//     modelSettings: {
+//       #disable-next-line use-resource-id-functions
+//       modelId: varPhiModelUrl
+//     }
+//   }
+//   sku: {
+//     name: 'Consumption'
+//     tier: 'Free'
+//   }
+//   dependsOn: [
+//     avmMLServicesWorkspacesProject
+//   ]
+// }
 
 // AI FOUNDRY: exported secrets
 
@@ -265,10 +383,11 @@ resource azureOpenAIInferenceKey 'Microsoft.keyvault/vaults/secrets@2021-11-01-p
   parent: existingKeyVaultResource
   name: 'AZURE-OPENAI-INFERENCE-KEY'
   properties: {
-    value: machine_learning_services_workspaces_serverless_endpoint_phiModel != null
-      ? machine_learning_services_workspaces_serverless_endpoint_phiModel.listKeys().primaryKey
-      : ''
+    // value: machine_learning_services_workspaces_serverless_endpoint_phiModel != null
+    //   ? machine_learning_services_workspaces_serverless_endpoint_phiModel.listKeys().primaryKey
+    //   : ''
     // listKeys(phiserverless.id, '2024-10-01').primaryKey
+    value: ''
   }
 }
 
@@ -292,7 +411,8 @@ resource azureOpenAIEndpointEntry 'Microsoft.keyvault/vaults/secrets@2021-11-01-
   parent: existingKeyVaultResource
   name: 'AZURE-OPENAI-ENDPOINT'
   properties: {
-    value: avm_cognitive_services_accounts.outputs.endpoint
+    //value: avm_cognitive_services_accounts.outputs.endpoint
+    value: avm_cognitive_services_accounts.properties.endpoint
   }
 }
 
@@ -341,7 +461,8 @@ resource cogServiceEndpointEntry 'Microsoft.keyvault/vaults/secrets@2021-11-01-p
   parent: existingKeyVaultResource
   name: 'COG-SERVICES-ENDPOINT'
   properties: {
-    value: avm_cognitive_services_accounts.outputs.endpoint
+    //value: avm_cognitive_services_accounts.outputs.endpoint
+    value: avm_cognitive_services_accounts.properties.endpoint
   }
 }
 
@@ -349,7 +470,8 @@ module aiFoundryKvSecretCogServicesKey './ai-foundry-kv-secret-cog-services-key.
   name: 'module-ai-foundry-kv-secret-cog-services-key'
   params: {
     keyVaultResourceName: keyVault_name
-    cognitiveServicesAccountsResourceName: avm_cognitive_services_accounts.outputs.name
+    //cognitiveServicesAccountsResourceName: avm_cognitive_services_accounts.outputs.name
+    cognitiveServicesAccountsResourceName: avm_cognitive_services_accounts.name
   }
 }
 
@@ -357,7 +479,8 @@ resource cogServiceNameEntry 'Microsoft.keyvault/vaults/secrets@2021-11-01-previ
   parent: existingKeyVaultResource
   name: 'COG-SERVICES-NAME'
   properties: {
-    value: avm_cognitive_services_accounts.outputs.name
+    //value: avm_cognitive_services_accounts.outputs.name
+    value: avm_cognitive_services_accounts.name
   }
 }
 
@@ -388,11 +511,14 @@ resource azureLocatioEntry 'Microsoft.keyvault/vaults/secrets@2021-11-01-preview
 output keyvault_name string = existingKeyVaultResource.name
 output keyvault_id string = existingKeyVaultResource.id
 
-output aiServices_name string = avm_cognitive_services_accounts.outputs.name //aiServicesName_m
-output aiServices_endpoint string = avm_cognitive_services_accounts.outputs.endpoint //aiServices_m.properties.endpoint
-output aiServices_resourceId string = avm_cognitive_services_accounts.outputs.resourceId //aiServices_m.id
+//output aiServices_name string = avm_cognitive_services_accounts.outputs.name //aiServicesName_m
+output aiServices_name string = avm_cognitive_services_accounts.name //aiServicesName_m
+//output aiServices_endpoint string = avm_cognitive_services_accounts.outputs.endpoint //aiServices_m.properties.endpoint
+output aiServices_endpoint string = avm_cognitive_services_accounts.properties.endpoint //aiServices_m.properties.endpoint
+//output aiServices_resourceId string = avm_cognitive_services_accounts.outputs.resourceId //aiServices_m.id
+output aiServices_resourceId string = avm_cognitive_services_accounts.id //aiServices_m.id
 
-output machineLearningWorkspaces_phiInfereceEndpoint string = machine_learning_services_workspaces_serverless_endpoint_phiModel.properties.inferenceEndpoint.uri
+//output machineLearningWorkspaces_phiInfereceEndpoint string = machine_learning_services_workspaces_serverless_endpoint_phiModel.properties.inferenceEndpoint.uri
 
 output aiSearch_name string = avm_search_search_services.outputs.name
 output aiSearch_resourceId string = avm_search_search_services.outputs.resourceId
@@ -404,3 +530,5 @@ output aiHub_project_connectionString string = azureAiProjectConnString
 
 output appInsights_resourceId string = avm_insights_component.outputs.resourceId
 output appInsights_instrumentationKey string = avm_insights_component.outputs.instrumentationKey
+
+output storageAccount_name string = avmStorageAccount.outputs.name
