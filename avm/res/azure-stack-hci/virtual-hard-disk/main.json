@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "11860310236188549637"
+      "version": "0.33.93.31351",
+      "templateHash": "16528668557010509106"
     },
     "name": "Azure Stack HCI Virtual Hard Disk",
     "description": "This module deploys an Azure Stack HCI virtual hard disk."
@@ -109,7 +109,7 @@
         "description": "Optional. Tags of the resource."
       }
     },
-    "customLocationId": {
+    "customLocationResourceId": {
       "type": "string",
       "metadata": {
         "description": "Required. Resource ID of the associated custom location."
@@ -196,7 +196,7 @@
       "tags": "[parameters('tags')]",
       "extendedLocation": {
         "type": "CustomLocation",
-        "name": "[parameters('customLocationId')]"
+        "name": "[parameters('customLocationResourceId')]"
       },
       "location": "[parameters('location')]",
       "properties": {

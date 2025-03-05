@@ -11,7 +11,7 @@ param location string = resourceGroup().location
 param tags object?
 
 @description('Required. Resource ID of the associated custom location.')
-param customLocationId string
+param customLocationResourceId string
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -83,7 +83,7 @@ resource virtualHardDisk 'Microsoft.AzureStackHCI/virtualHardDisks@2024-05-01-pr
   tags: tags
   extendedLocation: {
     type: 'CustomLocation'
-    name: customLocationId
+    name: customLocationResourceId
   }
   location: location
   properties: {

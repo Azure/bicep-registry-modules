@@ -43,7 +43,7 @@ module virtualHardDisk 'br/public:avm/res/azure-stack-hci/virtual-hard-disk:<ver
   name: 'virtualHardDiskDeployment'
   params: {
     // Required parameters
-    customLocationId: '<customLocationId>'
+    customLocationResourceId: '<customLocationResourceId>'
     diskSizeGB: 4
     dynamic: false
     name: 'ashvhdminvhd'
@@ -66,8 +66,8 @@ module virtualHardDisk 'br/public:avm/res/azure-stack-hci/virtual-hard-disk:<ver
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "customLocationId": {
-      "value": "<customLocationId>"
+    "customLocationResourceId": {
+      "value": "<customLocationResourceId>"
     },
     "diskSizeGB": {
       "value": 4
@@ -97,7 +97,7 @@ module virtualHardDisk 'br/public:avm/res/azure-stack-hci/virtual-hard-disk:<ver
 using 'br/public:avm/res/azure-stack-hci/virtual-hard-disk:<version>'
 
 // Required parameters
-param customLocationId = '<customLocationId>'
+param customLocationResourceId = '<customLocationResourceId>'
 param diskSizeGB = 4
 param dynamic = false
 param name = 'ashvhdminvhd'
@@ -122,7 +122,7 @@ module virtualHardDisk 'br/public:avm/res/azure-stack-hci/virtual-hard-disk:<ver
   name: 'virtualHardDiskDeployment'
   params: {
     // Required parameters
-    customLocationId: '<customLocationId>'
+    customLocationResourceId: '<customLocationResourceId>'
     diskSizeGB: 4
     dynamic: true
     name: 'ashvhdwafvhd'
@@ -150,8 +150,8 @@ module virtualHardDisk 'br/public:avm/res/azure-stack-hci/virtual-hard-disk:<ver
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "customLocationId": {
-      "value": "<customLocationId>"
+    "customLocationResourceId": {
+      "value": "<customLocationResourceId>"
     },
     "diskSizeGB": {
       "value": 4
@@ -188,7 +188,7 @@ module virtualHardDisk 'br/public:avm/res/azure-stack-hci/virtual-hard-disk:<ver
 using 'br/public:avm/res/azure-stack-hci/virtual-hard-disk:<version>'
 
 // Required parameters
-param customLocationId = '<customLocationId>'
+param customLocationResourceId = '<customLocationResourceId>'
 param diskSizeGB = 4
 param dynamic = true
 param name = 'ashvhdwafvhd'
@@ -210,7 +210,7 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`customLocationId`](#parameter-customlocationid) | string | Resource ID of the associated custom location. |
+| [`customLocationResourceId`](#parameter-customlocationresourceid) | string | Resource ID of the associated custom location. |
 | [`diskSizeGB`](#parameter-disksizegb) | int | The size of the disk in GB. |
 | [`dynamic`](#parameter-dynamic) | bool | The disk type. |
 | [`name`](#parameter-name) | string | Name of the resource to create. |
@@ -225,7 +225,7 @@ param tags = {
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 
-### Parameter: `customLocationId`
+### Parameter: `customLocationResourceId`
 
 Resource ID of the associated custom location.
 

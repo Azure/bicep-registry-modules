@@ -200,7 +200,7 @@ module testDeployment '../../../main.bicep' = {
   params: {
     name: '${namePrefix}${serviceShort}vhd'
     location: enforcedLocation
-    customLocationId: customLocation.id
+    customLocationResourceId: customLocation.id
     diskSizeGB: 4
     dynamic: true
     tags: {

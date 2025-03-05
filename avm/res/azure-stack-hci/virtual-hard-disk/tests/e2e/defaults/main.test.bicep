@@ -191,6 +191,6 @@ module testDeployment '../../../main.bicep' = {
     location: enforcedLocation
     diskSizeGB: 4
     dynamic: false
-    customLocationId: customLocation.id
+    customLocationResourceId: customLocation.id
   }
 }
