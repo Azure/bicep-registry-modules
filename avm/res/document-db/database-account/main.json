@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "2521834011950520180"
+      "version": "0.32.4.45862",
+      "templateHash": "154731436968185345"
     },
     "name": "DocumentDB Database Accounts",
     "description": "This module deploys a DocumentDB Database Account."
@@ -1087,10 +1087,11 @@
         "EnableServerless",
         "EnableNoSQLVectorSearch",
         "EnableNoSQLFullTextSearch",
-        "EnableMaterializedViews"
+        "EnableMaterializedViews",
+        "DeleteAllItemsByPartitionKey"
       ],
       "metadata": {
-        "description": "Optional. List of Cosmos DB capabilities for the account."
+        "description": "Optional. List of Cosmos DB capabilities for the account. THE DeleteAllItemsByPartitionKey VALUE USED IN THIS PARAMETER IS USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION."
       }
     },
     "backupPolicyType": {
@@ -1268,7 +1269,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2024-11-01",
       "name": "[format('46d3xbcp.res.documentdb-databaseaccount.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -1287,7 +1288,7 @@
     },
     "databaseAccount": {
       "type": "Microsoft.DocumentDB/databaseAccounts",
-      "apiVersion": "2023-04-15",
+      "apiVersion": "2024-11-15",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -1409,8 +1410,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "1989869202015976298"
+              "version": "0.32.4.45862",
+              "templateHash": "14989801724061231700"
             },
             "name": "DocumentDB Database Account SQL Databases",
             "description": "This module deploys a SQL Database in a CosmosDB Account."
@@ -1464,12 +1465,12 @@
             "databaseAccount": {
               "existing": true,
               "type": "Microsoft.DocumentDB/databaseAccounts",
-              "apiVersion": "2023-04-15",
+              "apiVersion": "2024-11-15",
               "name": "[parameters('databaseAccountName')]"
             },
             "sqlDatabase": {
               "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases",
-              "apiVersion": "2023-04-15",
+              "apiVersion": "2024-11-15",
               "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('name'))]",
               "tags": "[parameters('tags')]",
               "properties": {
@@ -1541,8 +1542,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "12023419088114367985"
+                      "version": "0.32.4.45862",
+                      "templateHash": "13002003757659495254"
                     },
                     "name": "DocumentDB Database Account SQL Database Containers",
                     "description": "This module deploys a SQL Database Container in a CosmosDB Account."
@@ -1673,18 +1674,18 @@
                     "databaseAccount::sqlDatabase": {
                       "existing": true,
                       "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases",
-                      "apiVersion": "2023-04-15",
+                      "apiVersion": "2024-11-15",
                       "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('sqlDatabaseName'))]"
                     },
                     "databaseAccount": {
                       "existing": true,
                       "type": "Microsoft.DocumentDB/databaseAccounts",
-                      "apiVersion": "2023-04-15",
+                      "apiVersion": "2024-11-15",
                       "name": "[parameters('databaseAccountName')]"
                     },
                     "container": {
                       "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers",
-                      "apiVersion": "2023-04-15",
+                      "apiVersion": "2024-11-15",
                       "name": "[format('{0}/{1}/{2}', parameters('databaseAccountName'), parameters('sqlDatabaseName'), parameters('name'))]",
                       "tags": "[parameters('tags')]",
                       "properties": {
@@ -1794,8 +1795,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "10702362485253818591"
+              "version": "0.32.4.45862",
+              "templateHash": "18231824675403192209"
             },
             "name": "DocumentDB Database Account SQL Role.",
             "description": "This module deploys SQL Role Definision and Assignment in a CosmosDB Account."
@@ -1880,8 +1881,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "226082505863315224"
+                      "version": "0.32.4.45862",
+                      "templateHash": "5893639019626800687"
                     },
                     "name": "DocumentDB Database Account SQL Role Definitions.",
                     "description": "This module deploys a SQL Role Definision in a CosmosDB Account."
@@ -1922,7 +1923,7 @@
                   "resources": [
                     {
                       "type": "Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions",
-                      "apiVersion": "2023-04-15",
+                      "apiVersion": "2024-11-15",
                       "name": "[format('{0}/{1}', parameters('databaseAccountName'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), 'sql-role'))]",
                       "properties": {
                         "assignableScopes": [
@@ -2000,8 +2001,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "4459562534723287578"
+                      "version": "0.32.4.45862",
+                      "templateHash": "18194141979511162014"
                     },
                     "name": "DocumentDB Database Account SQL Role Assignments.",
                     "description": "This module deploys a SQL Role Assignment in a CosmosDB Account."
@@ -2036,7 +2037,7 @@
                   "resources": [
                     {
                       "type": "Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments",
-                      "apiVersion": "2023-04-15",
+                      "apiVersion": "2024-11-15",
                       "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('name'))]",
                       "properties": {
                         "principalId": "[parameters('principalId')]",
@@ -2113,8 +2114,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "8920471273670088909"
+              "version": "0.32.4.45862",
+              "templateHash": "3531784980305410451"
             },
             "name": "DocumentDB Database Account MongoDB Databases",
             "description": "This module deploys a MongoDB Database within a CosmosDB Account."
@@ -2158,12 +2159,12 @@
             "databaseAccount": {
               "existing": true,
               "type": "Microsoft.DocumentDB/databaseAccounts",
-              "apiVersion": "2023-04-15",
+              "apiVersion": "2024-11-15",
               "name": "[parameters('databaseAccountName')]"
             },
             "mongodbDatabase": {
               "type": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases",
-              "apiVersion": "2023-04-15",
+              "apiVersion": "2024-11-15",
               "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('name'))]",
               "tags": "[parameters('tags')]",
               "properties": {
@@ -2215,8 +2216,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "7171237014304841298"
+                      "version": "0.32.4.45862",
+                      "templateHash": "16358058676500655840"
                     },
                     "name": "DocumentDB Database Account MongoDB Database Collections",
                     "description": "This module deploys a MongoDB Database Collection."
@@ -2263,10 +2264,10 @@
                   "resources": [
                     {
                       "type": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections",
-                      "apiVersion": "2023-04-15",
+                      "apiVersion": "2024-11-15",
                       "name": "[format('{0}/{1}/{2}', parameters('databaseAccountName'), parameters('mongodbDatabaseName'), parameters('name'))]",
                       "properties": {
-                        "options": "[if(contains(reference(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), '2023-04-15').capabilities, createObject('name', 'EnableServerless')), null(), createObject('throughput', parameters('throughput')))]",
+                        "options": "[if(contains(reference(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), '2024-11-15').capabilities, createObject('name', 'EnableServerless')), null(), createObject('throughput', parameters('throughput')))]",
                         "resource": {
                           "id": "[parameters('name')]",
                           "indexes": "[parameters('indexes')]",
@@ -2374,8 +2375,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "2305698409425699794"
+              "version": "0.32.4.45862",
+              "templateHash": "3749794597202905053"
             },
             "name": "DocumentDB Database Account Gremlin Databases",
             "description": "This module deploys a Gremlin Database within a CosmosDB Account."
@@ -2426,12 +2427,12 @@
             "databaseAccount": {
               "existing": true,
               "type": "Microsoft.DocumentDB/databaseAccounts",
-              "apiVersion": "2023-04-15",
+              "apiVersion": "2024-11-15",
               "name": "[parameters('databaseAccountName')]"
             },
             "gremlinDatabase": {
               "type": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases",
-              "apiVersion": "2023-04-15",
+              "apiVersion": "2024-11-15",
               "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('name'))]",
               "tags": "[parameters('tags')]",
               "properties": {
@@ -2479,8 +2480,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "3717641655060686556"
+                      "version": "0.32.4.45862",
+                      "templateHash": "1700064870992628026"
                     },
                     "name": "DocumentDB Database Accounts Gremlin Databases Graphs",
                     "description": "This module deploys a DocumentDB Database Accounts Gremlin Database Graph."
@@ -2651,8 +2652,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "8861672171630913677"
+              "version": "0.32.4.45862",
+              "templateHash": "11250666362646090445"
             },
             "name": "Azure Cosmos DB account tables",
             "description": "This module deploys a table within an Azure Cosmos DB Account."
@@ -2696,12 +2697,12 @@
             "databaseAccount": {
               "existing": true,
               "type": "Microsoft.DocumentDB/databaseAccounts",
-              "apiVersion": "2023-04-15",
+              "apiVersion": "2024-11-15",
               "name": "[parameters('databaseAccountName')]"
             },
             "table": {
               "type": "Microsoft.DocumentDB/databaseAccounts/tables",
-              "apiVersion": "2023-04-15",
+              "apiVersion": "2024-11-15",
               "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('name'))]",
               "tags": "[parameters('tags')]",
               "properties": {
@@ -3527,7 +3528,7 @@
             "value": "[last(split(coalesce(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '//'), '/'))]"
           },
           "secretsToSet": {
-            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'primaryWriteKeySecretName'), createArray(createObject('name', parameters('secretsExportConfiguration').primaryWriteKeySecretName, 'value', listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2023-04-15').primaryMasterKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'primaryReadOnlyKeySecretName'), createArray(createObject('name', parameters('secretsExportConfiguration').primaryReadOnlyKeySecretName, 'value', listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2023-04-15').primaryReadonlyMasterKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'primaryWriteConnectionStringSecretName'), createArray(createObject('name', parameters('secretsExportConfiguration').primaryWriteConnectionStringSecretName, 'value', listConnectionStrings(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2023-04-15').connectionStrings[0].connectionString)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'primaryReadonlyConnectionStringSecretName'), createArray(createObject('name', parameters('secretsExportConfiguration').primaryReadonlyConnectionStringSecretName, 'value', listConnectionStrings(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2023-04-15').connectionStrings[2].connectionString)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryWriteKeySecretName'), createArray(createObject('name', parameters('secretsExportConfiguration').secondaryWriteKeySecretName, 'value', listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2023-04-15').secondaryMasterKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryReadonlyKeySecretName'), createArray(createObject('name', parameters('secretsExportConfiguration').secondaryReadonlyKeySecretName, 'value', listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2023-04-15').secondaryReadonlyMasterKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryWriteConnectionStringSecretName'), createArray(createObject('name', parameters('secretsExportConfiguration').secondaryWriteConnectionStringSecretName, 'value', listConnectionStrings(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2023-04-15').connectionStrings[1].connectionString)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryReadonlyConnectionStringSecretName'), createArray(createObject('name', parameters('secretsExportConfiguration').secondaryReadonlyConnectionStringSecretName, 'value', listConnectionStrings(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2023-04-15').connectionStrings[3].connectionString)), createArray()))]"
+            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'primaryWriteKeySecretName'), createArray(createObject('name', parameters('secretsExportConfiguration').primaryWriteKeySecretName, 'value', listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2024-11-15').primaryMasterKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'primaryReadOnlyKeySecretName'), createArray(createObject('name', parameters('secretsExportConfiguration').primaryReadOnlyKeySecretName, 'value', listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2024-11-15').primaryReadonlyMasterKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'primaryWriteConnectionStringSecretName'), createArray(createObject('name', parameters('secretsExportConfiguration').primaryWriteConnectionStringSecretName, 'value', listConnectionStrings(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2024-11-15').connectionStrings[0].connectionString)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'primaryReadonlyConnectionStringSecretName'), createArray(createObject('name', parameters('secretsExportConfiguration').primaryReadonlyConnectionStringSecretName, 'value', listConnectionStrings(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2024-11-15').connectionStrings[2].connectionString)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryWriteKeySecretName'), createArray(createObject('name', parameters('secretsExportConfiguration').secondaryWriteKeySecretName, 'value', listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2024-11-15').secondaryMasterKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryReadonlyKeySecretName'), createArray(createObject('name', parameters('secretsExportConfiguration').secondaryReadonlyKeySecretName, 'value', listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2024-11-15').secondaryReadonlyMasterKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryWriteConnectionStringSecretName'), createArray(createObject('name', parameters('secretsExportConfiguration').secondaryWriteConnectionStringSecretName, 'value', listConnectionStrings(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2024-11-15').connectionStrings[1].connectionString)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryReadonlyConnectionStringSecretName'), createArray(createObject('name', parameters('secretsExportConfiguration').secondaryReadonlyConnectionStringSecretName, 'value', listConnectionStrings(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2024-11-15').connectionStrings[3].connectionString)), createArray()))]"
           }
         },
         "template": {
@@ -3537,8 +3538,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "8130113748408624333"
+              "version": "0.32.4.45862",
+              "templateHash": "13365107869204248001"
             }
           },
           "definitions": {
@@ -3677,14 +3678,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('databaseAccount', '2023-04-15', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('databaseAccount', '2024-11-15', 'full'), 'identity'), 'principalId')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('databaseAccount', '2023-04-15', 'full').location]"
+      "value": "[reference('databaseAccount', '2024-11-15', 'full').location]"
     },
     "endpoint": {
       "type": "string",
