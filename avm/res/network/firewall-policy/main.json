@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "3876724901187679748"
+      "templateHash": "3883829348823225286"
     },
     "name": "Firewall Policies",
     "description": "This module deploys a Firewall Policy."
@@ -225,14 +225,14 @@
     },
     "mode": {
       "type": "string",
-      "defaultValue": "Off",
+      "defaultValue": "Deny",
       "allowedValues": [
         "Alert",
         "Deny",
         "Off"
       ],
       "metadata": {
-        "description": "Optional. The configuring of intrusion detection."
+        "description": "Optional. The configuring of intrusion detection. Default is `Deny`."
       }
     },
     "tier": {
@@ -267,14 +267,14 @@
     },
     "threatIntelMode": {
       "type": "string",
-      "defaultValue": "Off",
+      "defaultValue": "Deny",
       "allowedValues": [
         "Alert",
         "Deny",
         "Off"
       ],
       "metadata": {
-        "description": "Optional. The operation mode for Threat Intel."
+        "description": "Optional. The operation mode for Threat Intel. Default is `Deny`."
       }
     },
     "allowSqlRedirect": {

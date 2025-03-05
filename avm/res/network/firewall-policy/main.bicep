@@ -41,13 +41,13 @@ param bypassTrafficSettings array?
 @description('Optional. List of specific signatures states.')
 param signatureOverrides array?
 
-@description('Optional. The configuring of intrusion detection.')
+@description('Optional. The configuring of intrusion detection. Default is `Deny`.')
 @allowed([
   'Alert'
   'Deny'
   'Off'
 ])
-param mode string = 'Alert'
+param mode string = 'Deny'
 
 @description('Optional. Tier of Firewall Policy.')
 @allowed([
@@ -67,13 +67,13 @@ param privateRanges array = []
 @description('Optional. The operation mode for automatically learning private ranges to not be SNAT.')
 param autoLearnPrivateRanges string = 'Disabled'
 
-@description('Optional. The operation mode for Threat Intel.')
+@description('Optional. The operation mode for Threat Intel. Default is `Deny`.')
 @allowed([
   'Alert'
   'Deny'
   'Off'
 ])
-param threatIntelMode string = 'Alert'
+param threatIntelMode string = 'Deny'
 
 @description('Optional. A flag to indicate if SQL Redirect traffic filtering is enabled. Turning on the flag requires no rule using port 11000-11999.')
 param allowSqlRedirect bool = false
