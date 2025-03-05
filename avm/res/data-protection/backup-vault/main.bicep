@@ -30,7 +30,7 @@ param managedIdentities managedIdentityAllType?
 param infrastructureEncryption string = 'Enabled'
 
 import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
-@description('Optional. The customer managed key (CMK) definition. ENABLING CMK WITH USER ASSIGNED MANAGED IDENTITY IS A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION: https://learn.microsoft.com/en-us/azure/backup/encryption-at-rest-with-cmk-for-backup-vault. ')
+@description('Optional. The customer managed key (CMK) definition. ENABLING CMK WITH USER ASSIGNED MANAGED IDENTITY IS A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/en-us/azure/backup/encryption-at-rest-with-cmk-for-backup-vault) FOR CLARIFICATION.')
 param customerManagedKey customerManagedKeyWithAutoRotateType?
 
 @description('Optional. The soft delete related settings.')

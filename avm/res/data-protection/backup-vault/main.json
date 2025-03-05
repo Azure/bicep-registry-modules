@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "3204345898546506375"
+      "version": "0.33.93.31351",
+      "templateHash": "17983074658441556011"
     },
     "name": "Data Protection Backup Vaults",
     "description": "This module deploys a Data Protection Backup Vault."
@@ -276,7 +276,7 @@
       "$ref": "#/definitions/customerManagedKeyWithAutoRotateType",
       "nullable": true,
       "metadata": {
-        "description": "Optional. The customer managed key (CMK) definition. ENABLING CMK WITH USER ASSIGNED MANAGED IDENTITY IS A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION: https://learn.microsoft.com/en-us/azure/backup/encryption-at-rest-with-cmk-for-backup-vault. "
+        "description": "Optional. The customer managed key (CMK) definition. ENABLING CMK WITH USER ASSIGNED MANAGED IDENTITY IS A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/en-us/azure/backup/encryption-at-rest-with-cmk-for-backup-vault) FOR CLARIFICATION."
       }
     },
     "softDeleteSettings": {
@@ -520,8 +520,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "5711474521361283673"
+              "version": "0.33.93.31351",
+              "templateHash": "2595831843524944301"
             },
             "name": "Data Protection Backup Vault Backup Policies",
             "description": "This module deploys a Data Protection Backup Vault Backup Policy."

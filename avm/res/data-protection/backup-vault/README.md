@@ -1084,7 +1084,7 @@ param softDeleteSettings = {
 | :-- | :-- | :-- |
 | [`azureMonitorAlertSettingsAlertsForAllJobFailures`](#parameter-azuremonitoralertsettingsalertsforalljobfailures) | string | Settings for Azure Monitor based alerts for job failures. |
 | [`backupPolicies`](#parameter-backuppolicies) | array | List of all backup policies. |
-| [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key (CMK) definition. ENABLING CMK WITH USER ASSIGNED MANAGED IDENTITY IS A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION: https://learn.microsoft.com/en-us/azure/backup/encryption-at-rest-with-cmk-for-backup-vault.  |
+| [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key (CMK) definition. ENABLING CMK WITH USER ASSIGNED MANAGED IDENTITY IS A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/en-us/azure/backup/encryption-at-rest-with-cmk-for-backup-vault) FOR CLARIFICATION. |
 | [`dataStoreType`](#parameter-datastoretype) | string | The datastore type to use. ArchiveStore does not support ZoneRedundancy. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`featureSettings`](#parameter-featuresettings) | object | Feature settings for the backup vault. |
@@ -1129,7 +1129,7 @@ List of all backup policies.
 
 ### Parameter: `customerManagedKey`
 
-The customer managed key (CMK) definition. ENABLING CMK WITH USER ASSIGNED MANAGED IDENTITY IS A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION: https://learn.microsoft.com/en-us/azure/backup/encryption-at-rest-with-cmk-for-backup-vault. 
+The customer managed key (CMK) definition. ENABLING CMK WITH USER ASSIGNED MANAGED IDENTITY IS A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/en-us/azure/backup/encryption-at-rest-with-cmk-for-backup-vault) FOR CLARIFICATION.
 
 - Required: No
 - Type: object
