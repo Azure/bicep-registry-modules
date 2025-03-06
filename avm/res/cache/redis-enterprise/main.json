@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "11157703241699996924"
+      "templateHash": "14334908869749651566"
     },
     "name": "Redis Enterprise and Azure Managed Redis (Preview)",
     "description": "This module deploys a Redis Enterprise or Azure Managed Redis (Preview) cache.",
@@ -1336,6 +1336,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
+    "enableReferencedModulesTelemetry": false,
     "isAmr": "[or(or(or(startsWith(parameters('skuName'), 'Balanced'), startsWith(parameters('skuName'), 'ComputeOptimized')), startsWith(parameters('skuName'), 'FlashOptimized')), startsWith(parameters('skuName'), 'MemoryOptimized'))]",
     "isEnterprise": "[or(startsWith(parameters('skuName'), 'Enterprise'), startsWith(parameters('skuName'), 'EnterpriseFlash'))]",
     "availabilityZones": "[if(variables('isEnterprise'), map(parameters('zones'), lambda('zone', string(lambdaVariables('zone')))), createArray())]",
@@ -2499,7 +2500,7 @@
             "value": "[coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId]"
           },
           "enableTelemetry": {
-            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           },
           "location": {
             "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'location'), reference(split(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location)]"

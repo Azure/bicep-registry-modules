@@ -95,7 +95,7 @@ module roleAssignment_mg 'modules/management-group.bicep' = if (empty(subscripti
     targetRoleAssignmentScheduleId: targetRoleAssignmentScheduleId
     targetRoleAssignmentScheduleInstanceId: targetRoleAssignmentScheduleInstanceId
     ticketInfo: ticketInfo
-    conditionVersion: conditionVersion
+    conditionVersion: !empty(condition) ? conditionVersion : null
     condition: condition
     pimRoleAssignmentType: pimRoleAssignmentType
   }
@@ -113,7 +113,7 @@ module roleAssignment_sub 'modules/subscription.bicep' = if (!empty(subscription
     targetRoleEligibilityScheduleId: targetRoleEligibilityScheduleId
     targetRoleEligibilityScheduleInstanceId: targetRoleEligibilityScheduleInstanceId
     ticketInfo: ticketInfo
-    conditionVersion: conditionVersion
+    conditionVersion: !empty(condition) ? conditionVersion : null
     condition: condition
     pimRoleAssignmentType: pimRoleAssignmentType
   }
@@ -132,7 +132,7 @@ module roleAssignment_rg 'modules/resource-group.bicep' = if (!empty(resourceGro
     targetRoleEligibilityScheduleId: targetRoleEligibilityScheduleId
     targetRoleEligibilityScheduleInstanceId: targetRoleEligibilityScheduleInstanceId
     ticketInfo: ticketInfo
-    conditionVersion: conditionVersion
+    conditionVersion: !empty(condition) ? conditionVersion : null
     condition: condition
     pimRoleAssignmentType: pimRoleAssignmentType
   }

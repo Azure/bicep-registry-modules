@@ -84,6 +84,8 @@ body:
         - "avm/res/app/session-pool"
         - "avm/res/automation/automation-account"
         - "avm/res/azure-stack-hci/cluster"
+        - "avm/res/azure-stack-hci/logical-network"
+        - "avm/res/azure-stack-hci/network-interface"
         - "avm/res/batch/batch-account"
         - "avm/res/cache/redis"
         - "avm/res/cache/redis-enterprise"
