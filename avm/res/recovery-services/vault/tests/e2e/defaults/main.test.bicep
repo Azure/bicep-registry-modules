@@ -41,20 +41,20 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      location: resourceLocation
       name: '${namePrefix}${serviceShort}001'
-      replicationAlertSettings: {
-        customEmailAddresses: [
-          'test.user@testcompany.com'
-        ]
-        locale: 'en-US'
-        sendToOwners: 'Send'
-      }
-      securitySettings: {
-        immutabilitySettings: {
-          state: 'Unlocked'
-        }
-      }
+      // location: resourceLocation
+      // replicationAlertSettings: {
+      //   customEmailAddresses: [
+      //     'test.user@testcompany.com'
+      //   ]
+      //   locale: 'en-US'
+      //   sendToOwners: 'Send'
+      // }
+      // securitySettings: {
+      //   immutabilitySettings: {
+      //     state: 'Unlocked'
+      //   }
+      // }
     }
   }
 ]
