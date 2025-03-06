@@ -134,7 +134,7 @@ module conversationKnowledgeMining 'br/public:avm/ptn/sa/conversation-knowledge-
   params: {
     // Required parameters
     contentUnderstandingLocation: 'West US'
-    environmentName: 'avm-ckm'
+    environmentName: 'ckmghw'
   }
 }
 ```
@@ -156,7 +156,7 @@ module conversationKnowledgeMining 'br/public:avm/ptn/sa/conversation-knowledge-
       "value": "West US"
     },
     "environmentName": {
-      "value": "avm-ckm"
+      "value": "ckmghw"
     }
   }
 }
@@ -174,7 +174,7 @@ using 'br/public:avm/ptn/sa/conversation-knowledge-mining:<version>'
 
 // Required parameters
 param contentUnderstandingLocation = 'West US'
-param environmentName = 'avm-ckm'
+param environmentName = 'ckmghw'
 ```
 
 </details>
