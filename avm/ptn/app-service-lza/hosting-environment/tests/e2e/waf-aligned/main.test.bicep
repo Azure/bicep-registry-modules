@@ -32,7 +32,6 @@ module testDeployment '../../../main.bicep' = {
       environment: 'test'
     }
     location: resourceLocation
-    deployJumpHost: true
     vmSize: 'Standard_D2s_v4'
     adminUsername: 'azureuser'
     adminPassword: password

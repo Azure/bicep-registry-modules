@@ -124,79 +124,8 @@ This instance deploys the module with the minimum set of required parameters.
 module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment:<version>' = {
   name: 'hostingEnvironmentDeployment'
   params: {
-    location: '<location>'
-    tags: {
-      environment: 'test'
-    }
-    workloadName: '<workloadName>'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    "location": {
-      "value": "<location>"
-    },
-    "tags": {
-      "value": {
-        "environment": "test"
-      }
-    },
-    "workloadName": {
-      "value": "<workloadName>"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/ptn/app-service-lza/hosting-environment:<version>'
-
-param location = '<location>'
-param tags = {
-  environment: 'test'
-}
-param workloadName = '<workloadName>'
-```
-
-</details>
-<p>
-
-### Example 2: _WAF-aligned_
-
-This instance deploys the module with WAF aligned settings.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment:<version>' = {
-  name: 'hostingEnvironmentDeployment'
-  params: {
     adminPassword: '<adminPassword>'
     adminUsername: 'azureuser'
-    deployJumpHost: true
-    enableEgressLockdown: true
     location: '<location>'
     tags: {
       environment: 'test'
@@ -225,8 +154,90 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
     "adminUsername": {
       "value": "azureuser"
     },
-    "deployJumpHost": {
-      "value": true
+    "location": {
+      "value": "<location>"
+    },
+    "tags": {
+      "value": {
+        "environment": "test"
+      }
+    },
+    "vmSize": {
+      "value": "Standard_D2s_v4"
+    },
+    "workloadName": {
+      "value": "<workloadName>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/app-service-lza/hosting-environment:<version>'
+
+param adminPassword = '<adminPassword>'
+param adminUsername = 'azureuser'
+param location = '<location>'
+param tags = {
+  environment: 'test'
+}
+param vmSize = 'Standard_D2s_v4'
+param workloadName = '<workloadName>'
+```
+
+</details>
+<p>
+
+### Example 2: _WAF-aligned_
+
+This instance deploys the module with WAF aligned settings.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment:<version>' = {
+  name: 'hostingEnvironmentDeployment'
+  params: {
+    adminPassword: '<adminPassword>'
+    adminUsername: 'azureuser'
+    enableEgressLockdown: true
+    location: '<location>'
+    tags: {
+      environment: 'test'
+    }
+    vmSize: 'Standard_D2s_v4'
+    workloadName: '<workloadName>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "adminPassword": {
+      "value": "<adminPassword>"
+    },
+    "adminUsername": {
+      "value": "azureuser"
     },
     "enableEgressLockdown": {
       "value": true
@@ -261,7 +272,6 @@ using 'br/public:avm/ptn/app-service-lza/hosting-environment:<version>'
 
 param adminPassword = '<adminPassword>'
 param adminUsername = 'azureuser'
-param deployJumpHost = true
 param enableEgressLockdown = true
 param location = '<location>'
 param tags = {
