@@ -16,11 +16,7 @@
     },
     {
       "code": "DeploymentScriptError",
-      "message": "100 3729 100 3729 0 0 13076 0 --:--:-- --:--:-- --:--:-- 13038"
-    },
-    {
-      "code": "DeploymentScriptError",
-      "message": "100 3729 100 3729 0 0 13060 0 --:--:-- --:--:-- --:--:-- 13038"
+      "message": "100 3729 100 3729 0 0 17082 0 --:--:-- --:--:-- --:--:-- 17105"
     },
     {
       "code": "DeploymentScriptError",
@@ -36,7 +32,7 @@
     },
     {
       "code": "DeploymentScriptError",
-      "message": "100 1718 100 1718 0 0 7764 0 --:--:-- --:--:-- --:--:-- 7773"
+      "message": "100 1718 100 1718 0 0 12924 0 --:--:-- --:--:-- --:--:-- 13015"
     },
     {
       "code": "DeploymentScriptError",
@@ -52,7 +48,11 @@
     },
     {
       "code": "DeploymentScriptError",
-      "message": "100 1720 100 1720 0 0 12045 0 --:--:-- --:--:-- --:--:-- 12112"
+      "message": "0 0 0 0 0 0 0 0 --:--:-- --:--:-- --:--:-- 0"
+    },
+    {
+      "code": "DeploymentScriptError",
+      "message": "100 1720 100 1720 0 0 9993 0 --:--:-- --:--:-- --:--:-- 9942"
     },
     {
       "code": "DeploymentScriptError",
@@ -68,7 +68,7 @@
     },
     {
       "code": "DeploymentScriptError",
-      "message": "100 26637 100 26637 0 0 156k 0 --:--:-- --:--:-- --:--:-- 156k"
+      "message": "100 26637 100 26637 0 0 202k 0 --:--:-- --:--:-- --:--:-- 203k"
     },
     {
       "code": "DeploymentScriptError",
@@ -84,7 +84,7 @@
     },
     {
       "code": "DeploymentScriptError",
-      "message": "100 12615 100 12615 0 0 80951 0 --:--:-- --:--:-- --:--:-- 81387"
+      "message": "100 12615 100 12615 0 0 67442 0 --:--:-- --:--:-- --:--:-- 67822"
     },
     {
       "code": "DeploymentScriptError",
@@ -100,11 +100,7 @@
     },
     {
       "code": "DeploymentScriptError",
-      "message": "100 1931 100 1931 0 0 12651 0 --:--:-- --:--:-- --:--:-- 12620"
-    },
-    {
-      "code": "DeploymentScriptError",
-      "message": "100 1931 100 1931 0 0 12612 0 --:--:-- --:--:-- --:--:-- 12620"
+      "message": "100 1931 100 1931 0 0 12386 0 --:--:-- --:--:-- --:--:-- 12458"
     },
     {
       "code": "DeploymentScriptError",
@@ -120,7 +116,7 @@
     },
     {
       "code": "DeploymentScriptError",
-      "message": "100 1954 100 1954 0 0 14141 0 --:--:-- --:--:-- --:--:-- 14159"
+      "message": "100 1954 100 1954 0 0 14346 0 --:--:-- --:--:-- --:--:-- 14367"
     },
     {
       "code": "DeploymentScriptError",
@@ -136,7 +132,11 @@
     },
     {
       "code": "DeploymentScriptError",
-      "message": "100 2739k 100 2739k 0 0 12.7M 0 --:--:-- --:--:-- --:--:-- 12.8M"
+      "message": "2 2739k 2 80500 0 0 365k 0 0:00:07 --:--:-- 0:00:07 365k"
+    },
+    {
+      "code": "DeploymentScriptError",
+      "message": "100 2739k 100 2739k 0 0 11.1M 0 --:--:-- --:--:-- --:--:-- 11.1M"
     },
     {
       "code": "DeploymentScriptError",
@@ -152,7 +152,7 @@
     },
     {
       "code": "DeploymentScriptError",
-      "message": "100 1764k 100 1764k 0 0 9602k 0 --:--:-- --:--:-- --:--:-- 9641k"
+      "message": "100 1764k 100 1764k 0 0 10.9M 0 --:--:-- --:--:-- --:--:-- 10.9M"
     },
     {
       "code": "DeploymentScriptError",
@@ -168,7 +168,7 @@
     },
     {
       "code": "DeploymentScriptError",
-      "message": "100 2610k 100 2610k 0 0 13.4M 0 --:--:-- --:--:-- --:--:-- 13.4M"
+      "message": "100 2610k 100 2610k 0 0 11.4M 0 --:--:-- --:--:-- --:--:-- 11.4M"
     },
     {
       "code": "DeploymentScriptError",
@@ -184,7 +184,7 @@
     },
     {
       "code": "DeploymentScriptError",
-      "message": "100 227 100 227 0 0 1166 0 --:--:-- --:--:-- --:--:-- 1170"
+      "message": "100 227 100 227 0 0 1718 0 --:--:-- --:--:-- --:--:-- 1732"
     },
     {
       "code": "DeploymentScriptError",
@@ -240,7 +240,7 @@
     },
     {
       "code": "DeploymentScriptError",
-      "message": "requests.exceptions.HTTPError: 401 Client Error: PermissionDenied for url: https://ckmlcl01-aifd-aisr-cu.cognitiveservices.azure.com/contentunderstanding/analyzers/ckm-json?api-version=2024-12-01-preview"
+      "message": "requests.exceptions.HTTPError: 401 Client Error: PermissionDenied for url: https://ckmlcl02-aifd-aisr-cu.cognitiveservices.azure.com/contentunderstanding/analyzers/ckm-json?api-version=2024-12-01-preview"
     },
     {
       "code": "DeploymentScriptError",
@@ -272,7 +272,7 @@
     },
     {
       "code": "DeploymentScriptError",
-      "message": "requests.exceptions.HTTPError: 401 Client Error: PermissionDenied for url: https://ckmlcl01-aifd-aisr-cu.cognitiveservices.azure.com/contentunderstanding/analyzers/ckm-audio?api-version=2024-12-01-preview"
+      "message": "requests.exceptions.HTTPError: 401 Client Error: PermissionDenied for url: https://ckmlcl02-aifd-aisr-cu.cognitiveservices.azure.com/contentunderstanding/analyzers/ckm-audio?api-version=2024-12-01-preview"
     },
     {
       "code": "DeploymentScriptError",
@@ -360,11 +360,11 @@
     },
     {
       "code": "DeploymentScriptError",
-      "message": "RequestId:c82cbf61-201f-0027-4698-8ebd11000000"
+      "message": "RequestId:2f2fa0cb-a01f-0062-1fbf-8eb48f000000"
     },
     {
       "code": "DeploymentScriptError",
-      "message": "Time:2025-03-06T13:04:33.9359062Z"
+      "message": "Time:2025-03-06T17:46:42.4137013Z"
     },
     {
       "code": "DeploymentScriptError",

@@ -24,7 +24,7 @@ resource deployed_avm_search_search_services 'Microsoft.Search/searchServices@20
   name: searchServiceName
 }
 
-module avmMachineLearningServicesWorkspacesAiHub 'br/public:avm/res/machine-learning-services/workspace:0.10.0' = {
+module avmMachineLearningServicesWorkspacesAiHub 'br/public:avm/res/machine-learning-services/workspace:0.10.1' = {
   name: deploymentName
   params: {
     name: aiHubName

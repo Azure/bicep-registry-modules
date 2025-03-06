@@ -134,7 +134,7 @@ module conversationKnowledgeMining 'br/public:avm/ptn/sa/conversation-knowledge-
   params: {
     // Required parameters
     contentUnderstandingLocation: 'West US'
-    environmentName: 'ckmghw'
+    environmentName: 'ckm-gh'
   }
 }
 ```
@@ -156,7 +156,7 @@ module conversationKnowledgeMining 'br/public:avm/ptn/sa/conversation-knowledge-
       "value": "West US"
     },
     "environmentName": {
-      "value": "ckmghw"
+      "value": "ckm-gh"
     }
   }
 }
@@ -174,7 +174,7 @@ using 'br/public:avm/ptn/sa/conversation-knowledge-mining:<version>'
 
 // Required parameters
 param contentUnderstandingLocation = 'West US'
-param environmentName = 'ckmghw'
+param environmentName = 'ckm-gh'
 ```
 
 </details>
@@ -372,6 +372,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/insights/component:0.5.0` | Remote reference |
 | `br/public:avm/res/key-vault/vault:0.11.2` | Remote reference |
 | `br/public:avm/res/machine-learning-services/workspace:0.10.0` | Remote reference |
+| `br/public:avm/res/machine-learning-services/workspace:0.10.1` | Remote reference |
 | `br/public:avm/res/managed-identity/user-assigned-identity:0.4.0` | Remote reference |
 | `br/public:avm/res/operational-insights/workspace:0.9.1` | Remote reference |
 | `br/public:avm/res/resources/deployment-script:0.5.1` | Remote reference |

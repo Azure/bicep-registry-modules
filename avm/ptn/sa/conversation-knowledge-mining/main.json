@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "16511298631492072825"
+      "templateHash": "16377949754121538325"
     },
     "name": "Conversation Knowledge Mining Solution Accelerator",
     "description": "This module deploys the [Conversation Knowledge Mining Solution Accelerator](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator).\n\n**Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator product. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future.\n\nThis may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -7238,7 +7238,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "6949183411036092330"
+              "templateHash": "14858621354445665994"
             }
           },
           "parameters": {
@@ -19244,7 +19244,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.33.93.31351",
-                      "templateHash": "16111862894315196256"
+                      "templateHash": "17358983621150291347"
                     }
                   },
                   "parameters": {
@@ -19384,8 +19384,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.13.18514",
-                              "templateHash": "11040490092914638230"
+                              "version": "0.33.93.31351",
+                              "templateHash": "760529655692286424"
                             },
                             "name": "Machine Learning Services Workspaces",
                             "description": "This module deploys a Machine Learning Services Workspace."
@@ -21230,6 +21230,7 @@
                                 "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
                               }
                             ],
+                            "enableReferencedModulesTelemetry": false,
                             "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
                             "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
                             "builtInRoleNames": {
@@ -21258,7 +21259,7 @@
                               "condition": "[parameters('enableTelemetry')]",
                               "type": "Microsoft.Resources/deployments",
                               "apiVersion": "2024-03-01",
-                              "name": "[format('46d3xbcp.res.machinelearningservices-workspace.{0}.{1}', replace('0.10.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                              "name": "[format('46d3xbcp.res.machinelearningservices-workspace.{0}.{1}', replace('0.10.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                               "properties": {
                                 "mode": "Incremental",
                                 "template": {
@@ -21447,8 +21448,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.33.13.18514",
-                                      "templateHash": "7984703420037754517"
+                                      "version": "0.33.93.31351",
+                                      "templateHash": "6400587070695625658"
                                     },
                                     "name": "Machine Learning Services Workspaces Computes",
                                     "description": "This module deploys a Machine Learning Services Workspaces Compute.\n\nAttaching a compute is not idempotent and will fail in case you try to redeploy over an existing compute in AML (see parameter `deployCompute`)."
@@ -21713,8 +21714,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.33.13.18514",
-                                      "templateHash": "5713415122054029428"
+                                      "version": "0.33.93.31351",
+                                      "templateHash": "10473859406464148345"
                                     },
                                     "name": "Machine Learning Services Workspaces Connections",
                                     "description": "This module creates a connection in a Machine Learning Services workspace."
@@ -22454,7 +22455,7 @@
                                     "value": "[coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId]"
                                   },
                                   "enableTelemetry": {
-                                    "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
+                                    "value": "[variables('enableReferencedModulesTelemetry')]"
                                   },
                                   "location": {
                                     "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'location'), reference(split(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location)]"
@@ -44013,8 +44014,10 @@
         }
       },
       "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments', format(variables('deploymentNameFormat'), variables('varCopyDataScriptName')))]",
         "[resourceId('Microsoft.Resources/deployments', format(variables('deploymentNameFormat'), variables('varKeyVaultName')))]",
         "[resourceId('Microsoft.Resources/deployments', format(variables('deploymentNameFormat'), variables('varManagedIdentityName')))]",
+        "[resourceId('Microsoft.Resources/deployments', format(variables('deploymentNameFormat'), variables('varSQLServerName')))]",
         "[resourceId('Microsoft.Resources/deployments', 'module-ai-foundry')]"
       ]
     },

@@ -37,7 +37,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      environmentName: 'ckmghw'
+      environmentName: 'ckm-gh'
       contentUnderstandingLocation: 'West US'
     }
   }

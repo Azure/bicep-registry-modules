@@ -699,9 +699,7 @@ module avmDeploymentScritptIndexData 'br/public:avm/res/resources/deployment-scr
     retentionInterval: 'PT1H'
     cleanupPreference: 'OnSuccess'
   }
-  dependsOn: [
-    moduleAIFoundry
-  ]
+  dependsOn: [moduleAIFoundry, avmSQLServer, avmDeploymentScritptCopyData]
 }
 
 //========== Azure function: Managed Environment ========== //
