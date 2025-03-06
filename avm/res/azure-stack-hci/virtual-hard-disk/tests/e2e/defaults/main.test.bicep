@@ -40,6 +40,8 @@ param hciResourceProviderObjectId string = ''
 #disable-next-line no-hardcoded-location // Due to quotas and capacity challenges, this region must be used in the AVM testing subscription
 var enforcedLocation = 'southeastasia'
 
+var customLocationName = '${namePrefix}${serviceShort}-location'
+
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
   location: enforcedLocation
@@ -79,7 +81,7 @@ module azlocal 'br/public:avm/res/azure-stack-hci/cluster:0.1.0' = {
   params: {
     name: nestedDependencies.outputs.clusterName
     deploymentSettings: {
-      customLocationName: '${namePrefix}${serviceShort}-location'
+      customLocationName: customLocationName
       clusterNodeNames: nestedDependencies.outputs.clusterNodeNames
       clusterWitnessStorageAccountName: nestedDependencies.outputs.clusterWitnessStorageAccountName
       defaultGateway: '172.20.0.1'
@@ -177,7 +179,7 @@ module azlocal 'br/public:avm/res/azure-stack-hci/cluster:0.1.0' = {
 
 resource customLocation 'Microsoft.ExtendedLocation/customLocations@2021-08-31-preview' existing = {
   scope: resourceGroup
-  name: '${namePrefix}${serviceShort}-location'
+  name: customLocationName
   dependsOn: [
     azlocal
   ]
@@ -187,7 +189,7 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-virtualharddisk-${serviceShort}'
   scope: resourceGroup
   params: {
-    name: '${namePrefix}${serviceShort}vhd'
+    name: '${namePrefix}${serviceShort}001'
     location: enforcedLocation
     diskSizeGB: 4
     dynamic: false

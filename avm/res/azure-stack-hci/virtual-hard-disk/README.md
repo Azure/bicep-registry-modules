@@ -27,7 +27,8 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/azure-stack-hci/virtual-hard-disk:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [WAF-aligned](#example-2-waf-aligned)
+- [Using large parameter set](#example-2-using-large-parameter-set)
+- [WAF-aligned](#example-3-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -46,7 +47,7 @@ module virtualHardDisk 'br/public:avm/res/azure-stack-hci/virtual-hard-disk:<ver
     customLocationResourceId: '<customLocationResourceId>'
     diskSizeGB: 4
     dynamic: false
-    name: 'ashvhdminvhd'
+    name: 'ashvhdmin001'
     // Non-required parameters
     location: '<location>'
   }
@@ -76,7 +77,7 @@ module virtualHardDisk 'br/public:avm/res/azure-stack-hci/virtual-hard-disk:<ver
       "value": false
     },
     "name": {
-      "value": "ashvhdminvhd"
+      "value": "ashvhdmin001"
     },
     // Non-required parameters
     "location": {
@@ -100,7 +101,7 @@ using 'br/public:avm/res/azure-stack-hci/virtual-hard-disk:<version>'
 param customLocationResourceId = '<customLocationResourceId>'
 param diskSizeGB = 4
 param dynamic = false
-param name = 'ashvhdminvhd'
+param name = 'ashvhdmin001'
 // Non-required parameters
 param location = '<location>'
 ```
@@ -108,7 +109,172 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 2: _WAF-aligned_
+### Example 2: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module virtualHardDisk 'br/public:avm/res/azure-stack-hci/virtual-hard-disk:<version>' = {
+  name: 'virtualHardDiskDeployment'
+  params: {
+    // Required parameters
+    customLocationResourceId: '<customLocationResourceId>'
+    diskSizeGB: 4
+    dynamic: true
+    name: 'ashvhdmax001'
+    // Non-required parameters
+    containerId: '<containerId>'
+    enableTelemetry: true
+    location: '<location>'
+    roleAssignments: [
+      {
+        name: 'cbc3932a-1bee-4318-ae76-d70e1ba399c8'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        name: '<name>'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "customLocationResourceId": {
+      "value": "<customLocationResourceId>"
+    },
+    "diskSizeGB": {
+      "value": 4
+    },
+    "dynamic": {
+      "value": true
+    },
+    "name": {
+      "value": "ashvhdmax001"
+    },
+    // Non-required parameters
+    "containerId": {
+      "value": "<containerId>"
+    },
+    "enableTelemetry": {
+      "value": true
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "name": "cbc3932a-1bee-4318-ae76-d70e1ba399c8",
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "name": "<name>",
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+        }
+      ]
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/azure-stack-hci/virtual-hard-disk:<version>'
+
+// Required parameters
+param customLocationResourceId = '<customLocationResourceId>'
+param diskSizeGB = 4
+param dynamic = true
+param name = 'ashvhdmax001'
+// Non-required parameters
+param containerId = '<containerId>'
+param enableTelemetry = true
+param location = '<location>'
+param roleAssignments = [
+  {
+    name: 'cbc3932a-1bee-4318-ae76-d70e1ba399c8'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
+### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -125,7 +291,7 @@ module virtualHardDisk 'br/public:avm/res/azure-stack-hci/virtual-hard-disk:<ver
     customLocationResourceId: '<customLocationResourceId>'
     diskSizeGB: 4
     dynamic: true
-    name: 'ashvhdwafvhd'
+    name: 'ashvhdwaf001'
     // Non-required parameters
     location: '<location>'
     tags: {
@@ -160,7 +326,7 @@ module virtualHardDisk 'br/public:avm/res/azure-stack-hci/virtual-hard-disk:<ver
       "value": true
     },
     "name": {
-      "value": "ashvhdwafvhd"
+      "value": "ashvhdwaf001"
     },
     // Non-required parameters
     "location": {
@@ -191,7 +357,7 @@ using 'br/public:avm/res/azure-stack-hci/virtual-hard-disk:<version>'
 param customLocationResourceId = '<customLocationResourceId>'
 param diskSizeGB = 4
 param dynamic = true
-param name = 'ashvhdwafvhd'
+param name = 'ashvhdwaf001'
 // Non-required parameters
 param location = '<location>'
 param tags = {
@@ -219,7 +385,7 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`containerId`](#parameter-containerid) | string | The container ID. |
+| [`containerId`](#parameter-containerid) | string | Storage ContainerID of the storage container to be used for VHD. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
@@ -255,7 +421,7 @@ Name of the resource to create.
 
 ### Parameter: `containerId`
 
-The container ID.
+Storage ContainerID of the storage container to be used for VHD.
 
 - Required: No
 - Type: string

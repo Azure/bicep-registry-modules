@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "16528668557010509106"
+      "templateHash": "2087652594627682665"
     },
     "name": "Azure Stack HCI Virtual Hard Disk",
     "description": "This module deploys an Azure Stack HCI virtual hard disk."
@@ -138,7 +138,7 @@
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Optional. The container ID."
+        "description": "Optional. Storage ContainerID of the storage container to be used for VHD."
       }
     },
     "roleAssignments": {
