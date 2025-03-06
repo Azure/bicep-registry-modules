@@ -27,7 +27,8 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/kubernetes/connected-cluster:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [WAF-aligned](#example-2-waf-aligned)
+- [Using large parameter set](#example-2-using-large-parameter-set)
+- [WAF-aligned](#example-3-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -82,7 +83,183 @@ param name = 'kccmin001'
 </details>
 <p>
 
-### Example 2: _WAF-aligned_
+### Example 2: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module connectedCluster 'br/public:avm/res/kubernetes/connected-cluster:<version>' = {
+  name: 'connectedClusterDeployment'
+  params: {
+    // Required parameters
+    name: 'kccmax001'
+    // Non-required parameters
+    enableAzureRBAC: true
+    enableTelemetry: true
+    location: '<location>'
+    managedIdentities: {
+      systemAssigned: true
+    }
+    oidcIssuerEnabled: true
+    roleAssignments: [
+      {
+        name: 'cbc3932a-1bee-4318-ae76-d70e1ba399c8'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        name: '<name>'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+    tenantId: '<tenantId>'
+    workloadIdentityEnabled: true
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "kccmax001"
+    },
+    // Non-required parameters
+    "enableAzureRBAC": {
+      "value": true
+    },
+    "enableTelemetry": {
+      "value": true
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
+    },
+    "oidcIssuerEnabled": {
+      "value": true
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "name": "cbc3932a-1bee-4318-ae76-d70e1ba399c8",
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "name": "<name>",
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+        }
+      ]
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    },
+    "tenantId": {
+      "value": "<tenantId>"
+    },
+    "workloadIdentityEnabled": {
+      "value": true
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/kubernetes/connected-cluster:<version>'
+
+// Required parameters
+param name = 'kccmax001'
+// Non-required parameters
+param enableAzureRBAC = true
+param enableTelemetry = true
+param location = '<location>'
+param managedIdentities = {
+  systemAssigned: true
+}
+param oidcIssuerEnabled = true
+param roleAssignments = [
+  {
+    name: 'cbc3932a-1bee-4318-ae76-d70e1ba399c8'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param tenantId = '<tenantId>'
+param workloadIdentityEnabled = true
+```
+
+</details>
+<p>
+
+### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -100,6 +277,9 @@ module connectedCluster 'br/public:avm/res/kubernetes/connected-cluster:<version
     // Non-required parameters
     enableAzureRBAC: true
     location: '<location>'
+    managedIdentities: {
+      systemAssigned: true
+    }
     oidcIssuerEnabled: true
     tags: {
       Environment: 'Non-Prod'
@@ -134,6 +314,11 @@ module connectedCluster 'br/public:avm/res/kubernetes/connected-cluster:<version
     },
     "location": {
       "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
     },
     "oidcIssuerEnabled": {
       "value": true
@@ -170,6 +355,9 @@ param name = 'kccwaf001'
 // Non-required parameters
 param enableAzureRBAC = true
 param location = '<location>'
+param managedIdentities = {
+  systemAssigned: true
+}
 param oidcIssuerEnabled = true
 param tags = {
   Environment: 'Non-Prod'
@@ -200,6 +388,7 @@ param workloadIdentityEnabled = true
 | [`enableAzureRBAC`](#parameter-enableazurerbac) | bool | Enable Azure RBAC. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
+| [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`oidcIssuerEnabled`](#parameter-oidcissuerenabled) | bool | Enable OIDC issuer. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags for the cluster resource. |
@@ -258,6 +447,26 @@ Location for all Resources.
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
+
+### Parameter: `managedIdentities`
+
+The managed identity definition for this resource.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
+
+### Parameter: `managedIdentities.systemAssigned`
+
+Enables system assigned managed identity on the resource.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `oidcIssuerEnabled`
 
