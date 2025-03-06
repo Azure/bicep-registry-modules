@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "3064983692106362777"
+      "templateHash": "10549709991078381487"
     },
     "name": "Kubernetes Connected Cluster",
     "description": "This module deploys an Azure Arc connected cluster."
@@ -242,7 +242,7 @@
       "kind": "ProvisionedCluster",
       "location": "[parameters('location')]",
       "identity": {
-        "type": "[if(equals(tryGet(parameters('managedIdentities'), 'systemAssigned'), true()), 'SystemAssigned', 'None')]"
+        "type": "[if(equals(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), 'None', 'SystemAssigned')]"
       },
       "tags": "[parameters('tags')]",
       "properties": {

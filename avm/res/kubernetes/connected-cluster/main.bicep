@@ -102,7 +102,7 @@ resource connectedCluster 'Microsoft.Kubernetes/connectedClusters@2024-07-15-pre
   kind: 'ProvisionedCluster'
   location: location
   identity: {
-    type: managedIdentities.?systemAssigned == true ? 'SystemAssigned' : 'None'
+    type: managedIdentities.?systemAssigned == false ? 'None' : 'SystemAssigned'
   }
   tags: tags
   properties: {
