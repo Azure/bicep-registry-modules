@@ -398,7 +398,7 @@ module testDeployment '../../../main.bicep' = [
           emailNotificationsForSiteRecovery: 'Enabled'
         }
       }
-      immutabilitySettingState: 'Locked'
+      immutabilitySettingState: 'Unlocked'
       softDeleteSettings: {
         enhancedSecurityState: 'Enabled'
         softDeleteRetentionPeriodInDays: 14
