@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "728208245608740875"
+      "templateHash": "3352799626260610831"
     },
     "name": "App ManagedEnvironments",
     "description": "This module deploys an App Managed Environment (also known as a Container App Environment)."
@@ -133,24 +133,6 @@
       },
       "nullable": true
     },
-    "certificateKeyVaultPropertiesType": {
-      "type": "object",
-      "properties": {
-        "identityResourceId": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The resource ID of the identity. This is the identity that will be used to access the key vault."
-          }
-        },
-        "keyVaultUrl": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. A key vault URL referencing the wildcard certificate that will be used for the custom domain."
-          }
-        }
-      },
-      "nullable": true
-    },
     "certificateObjectType": {
       "type": "object",
       "properties": {
@@ -238,6 +220,30 @@
         }
       },
       "nullable": true
+    },
+    "certificateKeyVaultPropertiesType": {
+      "type": "object",
+      "properties": {
+        "identityResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of the identity. This is the identity that will be used to access the key vault."
+          }
+        },
+        "keyVaultUrl": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. A key vault URL referencing the wildcard certificate that will be used for the custom domain."
+          }
+        }
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "The type for the certificate's key vault properties.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "certificates/main.bicep"
+        }
+      }
     }
   },
   "parameters": {

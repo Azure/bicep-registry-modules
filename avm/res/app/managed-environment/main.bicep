@@ -341,13 +341,7 @@ type roleAssignmentType = {
   delegatedManagedIdentityResourceId: string?
 }[]?
 
-type certificateKeyVaultPropertiesType = {
-  @description('Required. The resource ID of the identity. This is the identity that will be used to access the key vault.')
-  identityResourceId: string
-
-  @description('Required. A key vault URL referencing the wildcard certificate that will be used for the custom domain.')
-  keyVaultUrl: string
-}?
+import { certificateKeyVaultPropertiesType } from 'certificates/main.bicep'
 
 @export()
 @description('The type for a certificate.')
