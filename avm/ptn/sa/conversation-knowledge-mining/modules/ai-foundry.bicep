@@ -17,31 +17,31 @@ param searchService_name string
 param storageAccount_name string
 param machineLearningServicesWorkspaces_aihub_name string
 param machineLearningServicesWorkspaces_project_name string
-param machineLearningServicesWorkspaces_phiServerless_name string
+//param machineLearningServicesWorkspaces_phiServerless_name string
 param gptModelVersionPreview string
 param deploymentVersion string = utcNow()
 param managedIdentityPrincipalId string
 
 // VARIABLES
 var deploymentNameFormat = '${deploymentVersion}-deploy-{0}'
-var phiModelRegions = [
-  'East US'
-  'East US 2'
-  'North Central US'
-  'South Central US'
-  'Sweden Central'
-  'West US'
-  'West US 3'
-  'eastus'
-  'eastus2'
-  'northcentralus'
-  'southcentralus'
-  'swedencentral'
-  'westus'
-  'westus3'
-]
-var isInPhiList = contains(phiModelRegions, location)
-var varPhiModelUrl = 'azureml://registries/azureml/models/Phi-4'
+// var phiModelRegions = [
+//   'East US'
+//   'East US 2'
+//   'North Central US'
+//   'South Central US'
+//   'Sweden Central'
+//   'West US'
+//   'West US 3'
+//   'eastus'
+//   'eastus2'
+//   'northcentralus'
+//   'southcentralus'
+//   'swedencentral'
+//   'westus'
+//   'westus3'
+// ]
+//var isInPhiList = contains(phiModelRegions, location)
+//var varPhiModelUrl = 'azureml://registries/azureml/models/Phi-4'
 var varKvSecretNameAzureOpenaiKey = 'AZURE-OPENAI-KEY'
 var varKvSecretNameAzureSearchKey = 'AZURE-SEARCH-KEY'
 var azureAiProjectConnString = '${toLower(replace(avmMLServicesWorkspacesProject.outputs.location, ' ', ''))}.api.azureml.ms;${subscription().subscriptionId};${resourceGroup().name};${avmMLServicesWorkspacesProject.outputs.name}'

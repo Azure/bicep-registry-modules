@@ -89,7 +89,7 @@ var deploymentNameFormat = 'deploy-{0}-${armDeploymentSuffix}'
 var varManagedIdentityName = format(workloadNameFormat, 'mgid')
 var varKeyVaultName = format(workloadNameFormat, 'keyv') //NOTE: KV name max length is 24
 var varLogAnalyticsWorkspaceName = format(workloadNameFormat, 'laws')
-var varAIFoundryDeploymentName = format(workloadNameFormat, 'aif')
+// var varAIFoundryDeploymentName = format(workloadNameFormat, 'aif')
 var varAIFoundryApplicationInsightsName = format(workloadNameFormat, 'aifd-appi')
 var varAIFoundryContainerRegistryName = replace(format(workloadNameFormat, 'aifd-creg'), '-', '') //NOTE: ACR name should not contain hyphens
 var varAIFoundryAIServicesName = format(workloadNameFormat, 'aifd-aisr')
@@ -102,7 +102,7 @@ var varAIFoundrySearchServiceName = format(workloadNameFormat, 'aifd-srch')
 var varAIFoundryStorageAccountName = replace(format(workloadNameFormat, 'aifd-strg'), '-', '') //NOTE: SA name should not contain hyphens
 var varAIFoundryMachineLearningServicesAIHubName = format(workloadNameFormat, 'aifd-aihb')
 var varAIFoundryMachineLearningServicesProjectName = format(workloadNameFormat, 'aifd-aipj')
-var varAIFoundryMachineLearningServicesModelPHIServerlessName = format(workloadNameFormat, 'aifd-sphi')
+// var varAIFoundryMachineLearningServicesModelPHIServerlessName = format(workloadNameFormat, 'aifd-sphi')
 var varStorageAccountName = replace(format(workloadNameFormat, 'strg'), '-', '') //NOTE: SA name should not contain hyphens
 var varCosmosDBAccountName = format(workloadNameFormat, 'cmdb')
 var varCosmosDBAccountLocation = secondaryLocation
@@ -412,7 +412,7 @@ module moduleAIFoundry './modules/ai-foundry.bicep' = {
     storageAccount_name: varAIFoundryStorageAccountName
     machineLearningServicesWorkspaces_aihub_name: varAIFoundryMachineLearningServicesAIHubName
     machineLearningServicesWorkspaces_project_name: varAIFoundryMachineLearningServicesProjectName
-    machineLearningServicesWorkspaces_phiServerless_name: varAIFoundryMachineLearningServicesModelPHIServerlessName
+    //    machineLearningServicesWorkspaces_phiServerless_name: varAIFoundryMachineLearningServicesModelPHIServerlessName
     gptModelVersionPreview: varGPTModelVersionPreview
     deploymentVersion: armDeploymentSuffix
     managedIdentityPrincipalId: avmManagedIdentity.outputs.principalId
