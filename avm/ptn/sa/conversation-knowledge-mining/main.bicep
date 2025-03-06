@@ -12,7 +12,7 @@ This may result in breaking changes in upcoming versions when these features are
 // ========== Parameters ========== //
 // PARAMETERS: names
 @description('Required. The prefix for all deployed components log analytics workspace.')
-@maxLength(7)
+@maxLength(8)
 param environmentName string
 
 // PARAMETERS: locations
@@ -421,7 +421,7 @@ module moduleAIFoundry './modules/ai-foundry.bicep' = {
 
 // ========== Storage Account ========== //
 
-module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.17.0' = {
+module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.18.1' = {
   name: format(deploymentNameFormat, varStorageAccountName)
   params: {
     name: varStorageAccountName
@@ -444,22 +444,20 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.17.0' = {
     }
     supportsHttpsTrafficOnly: true
     blobServices: {
-      name: 'default'
-      cors: {
-        corsRules: []
-      }
-      deleteRetentionPolicy: {
-        enabled: false
-        allowPermanentDelete: false
-      }
+      corsRules: []
+      automaticSnapshotPolicyEnabled: false
+      deleteRetentionPolicyAllowPermanentDelete: false
+      deleteRetentionPolicyDays: 7
+      deleteRetentionPolicyEnabled: false
+      containerDeleteRetentionPolicyAllowPermanentDelete: false
+      containerDeleteRetentionPolicyDays: 7
+      containerDeleteRetentionPolicyEnabled: false
       containers: [
         {
           name: 'data'
-          properties: {
-            defaultEncryptionScope: '$account-encryption-key'
-            denyEncryptionScopeOverride: false
-            publicAccess: 'None'
-          }
+          publicAccess: 'None'
+          defaultEncryptionScope: '$account-encryption-key'
+          denyEncryptionScopeOverride: false
         }
       ]
     }
@@ -682,8 +680,6 @@ module avmDeploymentScritptCopyData 'br/public:avm/res/resources/deployment-scri
 
 //========== Deployment script to process and index data ========== //
 
-// NOT WORKING. Troubleshoot
-//
 module avmDeploymentScritptIndexData 'br/public:avm/res/resources/deployment-script:0.5.1' = {
   name: format(deploymentNameFormat, varIndexDataScriptName)
   params: {

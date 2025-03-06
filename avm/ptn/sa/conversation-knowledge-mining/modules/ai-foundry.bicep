@@ -52,7 +52,7 @@ resource existingKeyVaultResource 'Microsoft.keyvault/vaults@2024-04-01-preview'
 
 // AI Foundry: storage account
 
-module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.17.0' = {
+module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.18.1' = {
   name: format(deploymentNameFormat, storageAccount_name)
   params: {
     name: storageAccount_name
@@ -74,6 +74,16 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.17.0' = {
       defaultAction: 'Allow'
     }
     supportsHttpsTrafficOnly: true
+    blobServices: {
+      automaticSnapshotPolicyEnabled: false
+      deleteRetentionPolicyAllowPermanentDelete: false
+      deleteRetentionPolicyDays: 7 //NOTE: this should not apply when deleteRetentionPolicyEnabled is set to true
+      deleteRetentionPolicyEnabled: false
+      containerDeleteRetentionPolicyAllowPermanentDelete: false
+      containerDeleteRetentionPolicyDays: 7
+      containerDeleteRetentionPolicyEnabled: false
+    }
+    //blobServices: {}
     // encryption: {
     //   keySource: 'Microsoft.Storage'
     //   requireInfrastructureEncryption: false
@@ -193,6 +203,31 @@ resource avm_cognitive_services_accounts 'Microsoft.CognitiveServices/accounts@2
     publicNetworkAccess: 'Enabled' // Not in original script, it failing otherwise
   }
 }
+@batchSize(1)
+resource aiServicesDeployments 'Microsoft.CognitiveServices/accounts/deployments@2023-05-01' = [
+  for aiModeldeployment in aiServices_deployments: {
+    parent: avm_cognitive_services_accounts //aiServices_m
+    name: aiModeldeployment.name
+    properties: {
+      model: {
+        format: 'OpenAI'
+        name: aiModeldeployment.model.name
+      }
+      raiPolicyName: aiModeldeployment.raiPolicyName
+    }
+    sku: {
+      name: aiModeldeployment.sku.name
+      capacity: aiModeldeployment.sku.capacity
+    }
+  }
+]
+resource azureOpenAIKeyEntry 'Microsoft.KeyVault/vaults/secrets@2021-11-01-preview' = {
+  parent: existingKeyVaultResource
+  name: varKvSecretNameAzureOpenaiKey
+  properties: {
+    value: avm_cognitive_services_accounts.listKeys().key1 //'2024-02-15-preview'
+  }
+}
 
 // AI Foundry: AI Services Content Understanding
 // NOTE: Required version 'Microsoft.CognitiveServices/accounts/deployments@2023-05-01' not available in AVM
@@ -231,31 +266,13 @@ resource avm_cognitive_services_accounts_cu 'Microsoft.CognitiveServices/account
     publicNetworkAccess: 'Enabled' // Not in original script, it failing otherwise
   }
 }
-resource azureOpenAIKeyEntry 'Microsoft.KeyVault/vaults/secrets@2021-11-01-preview' = {
+resource azureOpenAICuKeyEntry 'Microsoft.KeyVault/vaults/secrets@2021-11-01-preview' = {
   parent: existingKeyVaultResource
   name: 'AZURE-OPENAI-CU-KEY'
   properties: {
     value: avm_cognitive_services_accounts_cu.listKeys().key1 //'2024-02-15-preview'
   }
 }
-@batchSize(1)
-resource aiServicesDeployments 'Microsoft.CognitiveServices/accounts/deployments@2023-05-01' = [
-  for aiModeldeployment in aiServices_deployments: {
-    parent: avm_cognitive_services_accounts_cu //aiServices_m
-    name: aiModeldeployment.name
-    properties: {
-      model: {
-        format: 'OpenAI'
-        name: aiModeldeployment.model.name
-      }
-      raiPolicyName: aiModeldeployment.raiPolicyName
-    }
-    sku: {
-      name: aiModeldeployment.sku.name
-      capacity: aiModeldeployment.sku.capacity
-    }
-  }
-]
 
 resource azureOpenAICUEndpointEntry 'Microsoft.keyvault/vaults/secrets@2021-11-01-preview' = {
   parent: existingKeyVaultResource

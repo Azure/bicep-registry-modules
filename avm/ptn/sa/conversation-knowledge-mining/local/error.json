@@ -16,7 +16,11 @@
     },
     {
       "code": "DeploymentScriptError",
-      "message": "100 3729 100 3729 0 0 27483 0 --:--:-- --:--:-- --:--:-- 27622"
+      "message": "100 3729 100 3729 0 0 13076 0 --:--:-- --:--:-- --:--:-- 13038"
+    },
+    {
+      "code": "DeploymentScriptError",
+      "message": "100 3729 100 3729 0 0 13060 0 --:--:-- --:--:-- --:--:-- 13038"
     },
     {
       "code": "DeploymentScriptError",
@@ -32,11 +36,7 @@
     },
     {
       "code": "DeploymentScriptError",
-      "message": "100 1718 100 1718 0 0 12024 0 --:--:-- --:--:-- --:--:-- 12013"
-    },
-    {
-      "code": "DeploymentScriptError",
-      "message": "100 1718 100 1718 0 0 11987 0 --:--:-- --:--:-- --:--:-- 11930"
+      "message": "100 1718 100 1718 0 0 7764 0 --:--:-- --:--:-- --:--:-- 7773"
     },
     {
       "code": "DeploymentScriptError",
@@ -52,7 +52,7 @@
     },
     {
       "code": "DeploymentScriptError",
-      "message": "100 1720 100 1720 0 0 9687 0 --:--:-- --:--:-- --:--:-- 9717"
+      "message": "100 1720 100 1720 0 0 12045 0 --:--:-- --:--:-- --:--:-- 12112"
     },
     {
       "code": "DeploymentScriptError",
@@ -68,7 +68,7 @@
     },
     {
       "code": "DeploymentScriptError",
-      "message": "100 26637 100 26637 0 0 137k 0 --:--:-- --:--:-- --:--:-- 137k"
+      "message": "100 26637 100 26637 0 0 156k 0 --:--:-- --:--:-- --:--:-- 156k"
     },
     {
       "code": "DeploymentScriptError",
@@ -84,7 +84,7 @@
     },
     {
       "code": "DeploymentScriptError",
-      "message": "100 12615 100 12615 0 0 89544 0 --:--:-- --:--:-- --:--:-- 90107"
+      "message": "100 12615 100 12615 0 0 80951 0 --:--:-- --:--:-- --:--:-- 81387"
     },
     {
       "code": "DeploymentScriptError",
@@ -100,7 +100,11 @@
     },
     {
       "code": "DeploymentScriptError",
-      "message": "100 1931 100 1931 0 0 5340 0 --:--:-- --:--:-- --:--:-- 5349"
+      "message": "100 1931 100 1931 0 0 12651 0 --:--:-- --:--:-- --:--:-- 12620"
+    },
+    {
+      "code": "DeploymentScriptError",
+      "message": "100 1931 100 1931 0 0 12612 0 --:--:-- --:--:-- --:--:-- 12620"
     },
     {
       "code": "DeploymentScriptError",
@@ -116,11 +120,7 @@
     },
     {
       "code": "DeploymentScriptError",
-      "message": "0 0 0 0 0 0 0 0 --:--:-- --:--:-- --:--:-- 0"
-    },
-    {
-      "code": "DeploymentScriptError",
-      "message": "100 1954 100 1954 0 0 13844 0 --:--:-- --:--:-- --:--:-- 13760"
+      "message": "100 1954 100 1954 0 0 14141 0 --:--:-- --:--:-- --:--:-- 14159"
     },
     {
       "code": "DeploymentScriptError",
@@ -136,7 +136,7 @@
     },
     {
       "code": "DeploymentScriptError",
-      "message": "100 2739k 100 2739k 0 0 13.7M 0 --:--:-- --:--:-- --:--:-- 13.7M"
+      "message": "100 2739k 100 2739k 0 0 12.7M 0 --:--:-- --:--:-- --:--:-- 12.8M"
     },
     {
       "code": "DeploymentScriptError",
@@ -152,7 +152,7 @@
     },
     {
       "code": "DeploymentScriptError",
-      "message": "100 1764k 100 1764k 0 0 9022k 0 --:--:-- --:--:-- --:--:-- 9048k"
+      "message": "100 1764k 100 1764k 0 0 9602k 0 --:--:-- --:--:-- --:--:-- 9641k"
     },
     {
       "code": "DeploymentScriptError",
@@ -168,7 +168,7 @@
     },
     {
       "code": "DeploymentScriptError",
-      "message": "100 2610k 100 2610k 0 0 11.7M 0 --:--:-- --:--:-- --:--:-- 11.8M"
+      "message": "100 2610k 100 2610k 0 0 13.4M 0 --:--:-- --:--:-- --:--:-- 13.4M"
     },
     {
       "code": "DeploymentScriptError",
@@ -184,7 +184,7 @@
     },
     {
       "code": "DeploymentScriptError",
-      "message": "100 227 100 227 0 0 1121 0 --:--:-- --:--:-- --:--:-- 1123"
+      "message": "100 227 100 227 0 0 1166 0 --:--:-- --:--:-- --:--:-- 1170"
     },
     {
       "code": "DeploymentScriptError",
@@ -209,6 +209,70 @@
     {
       "code": "DeploymentScriptError",
       "message": "[notice] To update, run: pip install --upgrade pip"
+    },
+    {
+      "code": "DeploymentScriptError",
+      "message": "Traceback (most recent call last):"
+    },
+    {
+      "code": "DeploymentScriptError",
+      "message": "File \"/mnt/azscripts/azscriptinput/02_create_cu_template_text.py\", line 50, in <module>"
+    },
+    {
+      "code": "DeploymentScriptError",
+      "message": "response = client.begin_create_analyzer(ANALYZER_ID, analyzer_template_path=ANALYZER_TEMPLATE_FILE)"
+    },
+    {
+      "code": "DeploymentScriptError",
+      "message": "File \"/mnt/azscripts/azscriptinput/content_understanding_client.py\", line 160, in begin_create_analyzer"
+    },
+    {
+      "code": "DeploymentScriptError",
+      "message": "response.raise_for_status()"
+    },
+    {
+      "code": "DeploymentScriptError",
+      "message": "File \"/usr/local/lib/python3.10/site-packages/requests/models.py\", line 1021, in raise_for_status"
+    },
+    {
+      "code": "DeploymentScriptError",
+      "message": "raise HTTPError(http_error_msg, response=self)"
+    },
+    {
+      "code": "DeploymentScriptError",
+      "message": "requests.exceptions.HTTPError: 401 Client Error: PermissionDenied for url: https://ckmlcl01-aifd-aisr-cu.cognitiveservices.azure.com/contentunderstanding/analyzers/ckm-json?api-version=2024-12-01-preview"
+    },
+    {
+      "code": "DeploymentScriptError",
+      "message": "Traceback (most recent call last):"
+    },
+    {
+      "code": "DeploymentScriptError",
+      "message": "File \"/mnt/azscripts/azscriptinput/02_create_cu_template_audio.py\", line 50, in <module>"
+    },
+    {
+      "code": "DeploymentScriptError",
+      "message": "response = client.begin_create_analyzer(ANALYZER_ID, analyzer_template_path=ANALYZER_TEMPLATE_FILE)"
+    },
+    {
+      "code": "DeploymentScriptError",
+      "message": "File \"/mnt/azscripts/azscriptinput/content_understanding_client.py\", line 160, in begin_create_analyzer"
+    },
+    {
+      "code": "DeploymentScriptError",
+      "message": "response.raise_for_status()"
+    },
+    {
+      "code": "DeploymentScriptError",
+      "message": "File \"/usr/local/lib/python3.10/site-packages/requests/models.py\", line 1021, in raise_for_status"
+    },
+    {
+      "code": "DeploymentScriptError",
+      "message": "raise HTTPError(http_error_msg, response=self)"
+    },
+    {
+      "code": "DeploymentScriptError",
+      "message": "requests.exceptions.HTTPError: 401 Client Error: PermissionDenied for url: https://ckmlcl01-aifd-aisr-cu.cognitiveservices.azure.com/contentunderstanding/analyzers/ckm-audio?api-version=2024-12-01-preview"
     },
     {
       "code": "DeploymentScriptError",
@@ -292,19 +356,19 @@
     },
     {
       "code": "DeploymentScriptError",
-      "message": "azure.core.exceptions.ResourceExistsError: This endpoint does not support BlobStorageEvents or SoftDelete. Please disable these account features if you would like to use this endpoint."
+      "message": "azure.core.exceptions.ResourceNotFoundError: The specified path does not exist."
     },
     {
       "code": "DeploymentScriptError",
-      "message": "RequestId:d928fee9-901f-005e-49fd-8d2705000000"
+      "message": "RequestId:c82cbf61-201f-0027-4698-8ebd11000000"
     },
     {
       "code": "DeploymentScriptError",
-      "message": "Time:2025-03-05T18:35:45.9835281Z"
+      "message": "Time:2025-03-06T13:04:33.9359062Z"
     },
     {
       "code": "DeploymentScriptError",
-      "message": "ErrorCode:EndpointUnsupportedAccountFeatures"
+      "message": "ErrorCode:PathNotFound"
     }
   ]
 }
