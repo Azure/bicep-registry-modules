@@ -11,7 +11,7 @@ metadata description = 'This module deploys the [Conversation Knowledge Mining S
 param resourceGroupName string = 'dep-${namePrefix}-sa.ckm-${serviceShort}-rg'
 
 @sys.description('Optional. The location to deploy resources to.')
-param resourceLocation string = deployment().location
+param resourceLocation string = 'East US' //Defaulted to East US since not all locations contain all AI services
 
 @sys.description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'ckmpoc'
