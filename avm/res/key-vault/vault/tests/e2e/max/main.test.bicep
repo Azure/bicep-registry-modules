@@ -249,6 +249,7 @@ module testDeployment '../../../main.bicep' = [
               }
             ]
           }
+          resourceGroupResourceId: resourceGroup.id
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
         }
       ]

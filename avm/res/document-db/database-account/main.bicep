@@ -112,8 +112,9 @@ param diagnosticSettings diagnosticSettingType
   'EnableNoSQLVectorSearch'
   'EnableNoSQLFullTextSearch'
   'EnableMaterializedViews'
+  'DeleteAllItemsByPartitionKey'
 ])
-@description('Optional. List of Cosmos DB capabilities for the account.')
+@description('Optional. List of Cosmos DB capabilities for the account. THE DeleteAllItemsByPartitionKey VALUE USED IN THIS PARAMETER IS USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION.')
 param capabilitiesToAdd string[] = []
 
 @allowed([
@@ -166,6 +167,8 @@ param networkRestrictions networkRestrictionsType = {
 ])
 @description('Optional. Default to TLS 1.2. Enum to indicate the minimum allowed TLS version. Azure Cosmos DB for MongoDB RU and Apache Cassandra only work with TLS 1.2 or later.')
 param minimumTlsVersion string = 'Tls12'
+
+var enableReferencedModulesTelemetry = false
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -348,7 +351,7 @@ var formattedRoleAssignments = [
 ]
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-07-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.documentdb-databaseaccount.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -366,7 +369,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' = {
+resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2024-11-15' = {
   name: name
   location: location
   tags: tags
@@ -532,7 +535,7 @@ module databaseAccount_privateEndpoints 'br/public:avm/res/network/private-endpo
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
-      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "10302508139309191094"
+      "version": "0.33.93.31351",
+      "templateHash": "8229307748074468927"
     },
     "name": "Relay Namespaces",
     "description": "This module deploys a Relay Namespace"
@@ -677,6 +677,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
+    "enableReferencedModulesTelemetry": false,
     "builtInRoleNames": {
       "Azure Relay Listener": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '26e0b698-aa6d-4085-9386-aadae190014d')]",
       "Azure Relay Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '2787bf04-f1f5-4bfe-8383-c8a24483ee38')]",
@@ -827,8 +828,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "15268013886112846705"
+              "version": "0.33.93.31351",
+              "templateHash": "12396097431548310332"
             },
             "name": "Relay Namespace Authorization Rules",
             "description": "This module deploys a Relay Namespace Authorization Rule."
@@ -931,8 +932,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "10160210519805428977"
+              "version": "0.33.93.31351",
+              "templateHash": "10666964284324639309"
             },
             "name": "Relay Namespace Network Rules Sets",
             "description": "This module deploys a Relay Namespace Network Rule Set."
@@ -1060,8 +1061,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "11660138499437785479"
+              "version": "0.33.93.31351",
+              "templateHash": "3864537269096148710"
             },
             "name": "Relay Namespace Hybrid Connections",
             "description": "This module deploys a Relay Namespace Hybrid Connection."
@@ -1353,8 +1354,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "15677572676731388129"
+                      "version": "0.33.93.31351",
+                      "templateHash": "5879619403570334872"
                     },
                     "name": "Hybrid Connection Authorization Rules",
                     "description": "This module deploys a Hybrid Connection Authorization Rule."
@@ -1503,8 +1504,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "14336768507394712835"
+              "version": "0.33.93.31351",
+              "templateHash": "15007312304350182610"
             },
             "name": "Relay Namespace WCF Relays",
             "description": "This module deploys a Relay Namespace WCF Relay."
@@ -1816,8 +1817,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "8198137222619344066"
+                      "version": "0.33.93.31351",
+                      "templateHash": "5328221054932309931"
                     },
                     "name": "WCF Relay Authorization Rules",
                     "description": "This module deploys a WCF Relay Authorization Rule."
@@ -1931,6 +1932,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-namespace-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "subscriptionId": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[2]]",
+      "resourceGroup": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[4]]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -1946,7 +1949,7 @@
             "value": "[coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId]"
           },
           "enableTelemetry": {
-            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           },
           "location": {
             "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'location'), reference(split(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location)]"
@@ -2717,7 +2720,7 @@
         "description": "The private endpoints of the relay namespace."
       },
       "copy": {
-        "count": "[length(if(not(empty(parameters('privateEndpoints'))), array(parameters('privateEndpoints')), createArray()))]",
+        "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]",
         "input": {
           "name": "[reference(format('namespace_privateEndpoints[{0}]', copyIndex())).outputs.name.value]",
           "resourceId": "[reference(format('namespace_privateEndpoints[{0}]', copyIndex())).outputs.resourceId.value]",

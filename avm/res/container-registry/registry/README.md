@@ -305,7 +305,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
     ]
     roleAssignments: [
       {
-        name: '60395919-cfd3-47bf-8349-775ddebb255e'
+        name: '8f8b1c39-827f-43e6-a457-98bb15b5dbdf'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -453,7 +453,7 @@ module registry 'br/public:avm/res/container-registry/registry:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "60395919-cfd3-47bf-8349-775ddebb255e",
+          "name": "8f8b1c39-827f-43e6-a457-98bb15b5dbdf",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -583,7 +583,7 @@ param replications = [
 ]
 param roleAssignments = [
   {
-    name: '60395919-cfd3-47bf-8349-775ddebb255e'
+    name: '8f8b1c39-827f-43e6-a457-98bb15b5dbdf'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'
@@ -937,7 +937,7 @@ param trustPolicyStatus = 'enabled'
 | [`acrAdminUserEnabled`](#parameter-acradminuserenabled) | bool | Enable admin user that have push / pull permission to the registry. |
 | [`acrSku`](#parameter-acrsku) | string | Tier of your Azure container registry. |
 | [`anonymousPullEnabled`](#parameter-anonymouspullenabled) | bool | Enables registry-wide pull from unauthenticated clients. It's in preview and available in the Standard and Premium service tiers. |
-| [`azureADAuthenticationAsArmPolicyStatus`](#parameter-azureadauthenticationasarmpolicystatus) | string | The value that indicates whether the policy for using ARM audience token for a container registr is enabled or not. Default is enabled. |
+| [`azureADAuthenticationAsArmPolicyStatus`](#parameter-azureadauthenticationasarmpolicystatus) | string | The value that indicates whether the policy for using ARM audience token for a container registry is enabled or not. Default is enabled. |
 | [`cacheRules`](#parameter-cacherules) | array | Array of Cache Rules. |
 | [`credentialSets`](#parameter-credentialsets) | array | Array of Credential Sets. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
@@ -1007,7 +1007,7 @@ Enables registry-wide pull from unauthenticated clients. It's in preview and ava
 
 ### Parameter: `azureADAuthenticationAsArmPolicyStatus`
 
-The value that indicates whether the policy for using ARM audience token for a container registr is enabled or not. Default is enabled.
+The value that indicates whether the policy for using ARM audience token for a container registry is enabled or not. Default is enabled.
 
 - Required: No
 - Type: string

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "10576304396294722473"
+      "templateHash": "7075159430454310469"
     },
     "name": "Container Apps",
     "description": "This module deploys a Container App."
@@ -512,6 +512,43 @@
         "description": "Optional. App runtime configuration for the Container App."
       }
     },
+    "secretType": {
+      "type": "object",
+      "properties": {
+        "identity": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of a managed identity to authenticate with Azure Key Vault, or System to use a system-assigned identity."
+          }
+        },
+        "keyVaultUrl": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Conditional. Azure Key Vault URL pointing to the secret referenced by the Container App Job. Required if `value` is null."
+          }
+        },
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the secret."
+          }
+        },
+        "value": {
+          "type": "securestring",
+          "nullable": true,
+          "metadata": {
+            "description": "Conditional. The secret value, if not fetched from Key Vault. Required if `keyVaultUrl` is not null."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a secret."
+      }
+    },
     "lockType": {
       "type": "object",
       "properties": {
@@ -934,8 +971,11 @@
       }
     },
     "secrets": {
-      "type": "secureObject",
-      "defaultValue": {},
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/secretType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. The secrets of the Container App."
       }
@@ -970,7 +1010,6 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
-    "secretList": "[if(not(empty(parameters('secrets'))), parameters('secrets').secureList, createArray())]",
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "builtInRoleNames": {
@@ -1019,7 +1058,7 @@
           "service": "[if(and(parameters('includeAddOns'), not(empty(parameters('service')))), parameters('service'), null())]",
           "maxInactiveRevisions": "[parameters('maxInactiveRevisions')]",
           "registries": "[if(not(empty(parameters('registries'))), parameters('registries'), null())]",
-          "secrets": "[variables('secretList')]",
+          "secrets": "[parameters('secrets')]",
           "runtime": {
             "dotnet": "[if(not(empty(tryGet(parameters('runtime'), 'dotnet'))), createObject('autoConfigureDataProtection', tryGet(parameters('runtime'), 'dotnet', 'autoConfigureDataProtection')), null())]",
             "java": "[if(not(empty(tryGet(parameters('runtime'), 'java'))), createObject('enableMetrics', tryGet(parameters('runtime'), 'java', 'enableMetrics'), 'javaAgent', createObject('enabled', tryGet(parameters('runtime'), 'java', 'enableJavaAgent'), 'logging', createObject('loggerSettings', tryGet(tryGet(parameters('runtime'), 'java'), 'loggerSettings')))), null())]"
