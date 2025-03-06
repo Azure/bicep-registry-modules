@@ -404,11 +404,6 @@ module testDeployment '../../../main.bicep' = [
         softDeleteRetentionPeriodInDays: 14
         softDeleteState: 'Enabled'
       }
-      // securitySettings: {
-      //   immutabilitySettings: {
-      //     state: 'Unlocked'
-      //   }
-      // }
     }
   }
 ]

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "15610768134592067919"
+      "version": "0.33.93.31351",
+      "templateHash": "16569607494443729229"
     },
     "name": "Recovery Services Vaults",
     "description": "This module deploys a Recovery Services Vault."
@@ -533,72 +533,43 @@
         "__bicep_export!": true
       }
     },
-    "securitySettingType": {
+    "softDeleteSettingType": {
       "type": "object",
       "properties": {
-        "immutabilitySettings": {
-          "type": "object",
-          "properties": {
-            "state": {
-              "type": "string",
-              "allowedValues": [
-                "Disabled",
-                "Locked",
-                "Unlocked"
-              ],
-              "metadata": {
-                "description": "Required. The immmutability setting of the vault."
-              }
-            }
-          },
-          "nullable": true,
+        "enhancedSecurityState": {
+          "type": "string",
+          "allowedValues": [
+            "AlwaysON",
+            "Disabled",
+            "Enabled",
+            "Invalid"
+          ],
           "metadata": {
-            "description": "Optional. Immutability settings of a vault."
+            "description": "Required. The enhanced security state."
           }
         },
-        "softDeleteSettings": {
-          "type": "object",
-          "properties": {
-            "enhancedSecurityState": {
-              "type": "string",
-              "allowedValues": [
-                "AlwaysON",
-                "Disabled",
-                "Enabled",
-                "Invalid"
-              ],
-              "metadata": {
-                "description": "Required. The enhanced security state."
-              }
-            },
-            "softDeleteRetentionPeriodInDays": {
-              "type": "int",
-              "metadata": {
-                "description": "Required. The soft delete retention period in days."
-              }
-            },
-            "softDeleteState": {
-              "type": "string",
-              "allowedValues": [
-                "AlwaysON",
-                "Disabled",
-                "Enabled",
-                "Invalid"
-              ],
-              "metadata": {
-                "description": "Required. The soft delete state."
-              }
-            }
-          },
-          "nullable": true,
+        "softDeleteRetentionPeriodInDays": {
+          "type": "int",
           "metadata": {
-            "description": "Optional. Soft delete settings of a vault."
+            "description": "Required. The soft delete retention period in days."
+          }
+        },
+        "softDeleteState": {
+          "type": "string",
+          "allowedValues": [
+            "AlwaysON",
+            "Disabled",
+            "Enabled",
+            "Invalid"
+          ],
+          "metadata": {
+            "description": "Required. The soft delete state."
           }
         }
       },
       "metadata": {
         "__bicep_export!": true,
-        "description": "The type for security settings."
+        "description": "The type for soft delete settings."
       }
     },
     "_1.privateEndpointCustomDnsConfigType": {
@@ -1372,11 +1343,23 @@
         "description": "Optional. Monitoring Settings of the vault."
       }
     },
-    "securitySettings": {
-      "$ref": "#/definitions/securitySettingType",
+    "softDeleteSettings": {
+      "$ref": "#/definitions/softDeleteSettingType",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Security Settings of the vault."
+        "description": "Optional. The soft delete related settings."
+      }
+    },
+    "immutabilitySettingState": {
+      "type": "string",
+      "nullable": true,
+      "allowedValues": [
+        "Disabled",
+        "Locked",
+        "Unlocked"
+      ],
+      "metadata": {
+        "description": "Optional. The immmutability setting state of the backup vault resource."
       }
     },
     "publicNetworkAccess": {
@@ -1497,7 +1480,10 @@
       },
       "properties": {
         "monitoringSettings": "[if(not(empty(parameters('monitoringSettings'))), createObject('azureMonitorAlertSettings', if(not(empty(tryGet(parameters('monitoringSettings'), 'azureMonitorAlertSettings'))), createObject('alertsForAllFailoverIssues', coalesce(tryGet(tryGet(parameters('monitoringSettings'), 'azureMonitorAlertSettings'), 'alertsForAllFailoverIssues'), 'Enabled'), 'alertsForAllJobFailures', coalesce(tryGet(tryGet(parameters('monitoringSettings'), 'azureMonitorAlertSettings'), 'alertsForAllJobFailures'), 'Enabled'), 'alertsForAllReplicationIssues', coalesce(tryGet(tryGet(parameters('monitoringSettings'), 'azureMonitorAlertSettings'), 'alertsForAllReplicationIssues'), 'Enabled')), null()), 'classicAlertSettings', if(not(empty(tryGet(parameters('monitoringSettings'), 'classicAlertSettings'))), createObject('alertsForCriticalOperations', coalesce(tryGet(tryGet(parameters('monitoringSettings'), 'classicAlertSettings'), 'alertsForCriticalOperations'), 'Enabled'), 'emailNotificationsForSiteRecovery', coalesce(tryGet(tryGet(parameters('monitoringSettings'), 'classicAlertSettings'), 'emailNotificationsForSiteRecovery'), 'Enabled')), null())), null())]",
-        "securitySettings": "[parameters('securitySettings')]",
+        "securitySettings": {
+          "immutabilitySettings": "[if(not(empty(parameters('immutabilitySettingState'))), createObject('state', parameters('immutabilitySettingState')), null())]",
+          "softDeleteSettings": "[parameters('softDeleteSettings')]"
+        },
         "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
         "redundancySettings": "[parameters('redundancySettings')]",
         "restoreSettings": "[parameters('restoreSettings')]",
@@ -1618,8 +1604,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "8049192542960910465"
+              "version": "0.33.93.31351",
+              "templateHash": "3521978883504239263"
             },
             "name": "Recovery Services Vault Replication Fabrics",
             "description": "This module deploys a Replication Fabric for Azure to Azure disaster recovery scenario of Azure Site Recovery.\n\n> Note: this module currently support only the `instanceType: 'Azure'` scenario."
@@ -1788,8 +1774,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "852813454503469785"
+                      "version": "0.33.93.31351",
+                      "templateHash": "17757271388548981503"
                     },
                     "name": "Recovery Services Vault Replication Fabric Replication Protection Containers",
                     "description": "This module deploys a Recovery Services Vault Replication Protection Container.\n\n> **Note**: this version of the module only supports the `instanceType: 'A2A'` scenario."
@@ -1951,8 +1937,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.13.18514",
-                              "templateHash": "17160081039503517469"
+                              "version": "0.33.93.31351",
+                              "templateHash": "15162808708445236734"
                             },
                             "name": "Recovery Services Vault Replication Fabric Replication Protection Container Replication Protection Container Mappings",
                             "description": "This module deploys a Recovery Services Vault (RSV) Replication Protection Container Mapping.\n\n> **Note**: this version of the module only supports the `instanceType: 'A2A'` scenario."
@@ -2185,8 +2171,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "10948839526456404680"
+              "version": "0.33.93.31351",
+              "templateHash": "11177184067861792085"
             },
             "name": "Recovery Services Vault Replication Policies",
             "description": "This module deploys a Recovery Services Vault Replication Policy for Disaster Recovery scenario.\n\n> **Note**: this version of the module only supports the `instanceType: 'A2A'` scenario."
@@ -2309,8 +2295,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "17375948662410777678"
+              "version": "0.33.93.31351",
+              "templateHash": "13863529138439550763"
             },
             "name": "Recovery Services Vault Backup Storage Config",
             "description": "This module deploys a Recovery Service Vault Backup Storage Configuration."
@@ -2432,8 +2418,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "14694277488209426813"
+              "version": "0.33.93.31351",
+              "templateHash": "10294897873641603439"
             },
             "name": "Recovery Service Vaults Protection Container Protected Item",
             "description": "This module deploys a Recovery Services Vault Protection Container Protected Item."
@@ -2568,8 +2554,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "18409788320626401161"
+              "version": "0.33.93.31351",
+              "templateHash": "13593639619492360097"
             },
             "name": "Recovery Services Vault Backup Policies",
             "description": "This module deploys a Recovery Services Vault Backup Policy."
@@ -2676,8 +2662,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "1001038691929568740"
+              "version": "0.33.93.31351",
+              "templateHash": "9852518266265355905"
             },
             "name": "Recovery Services Vault Backup Config",
             "description": "This module deploys a Recovery Services Vault Backup Config."
@@ -2849,8 +2835,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "13714844551703046217"
+              "version": "0.33.93.31351",
+              "templateHash": "7655757666522414851"
             },
             "name": "Recovery Services Vault Replication Alert Settings",
             "description": "This module deploys a Recovery Services Vault Replication Alert Settings."

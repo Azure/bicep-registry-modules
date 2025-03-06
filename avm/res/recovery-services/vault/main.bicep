@@ -57,8 +57,6 @@ param privateEndpoints privateEndpointSingleServiceType[]?
 @description('Optional. Monitoring Settings of the vault.')
 param monitoringSettings monitoringSettingsType?
 
-// @description('Optional. Security Settings of the vault.')
-// param securitySettings securitySettingType?
 @description('Optional. The soft delete related settings.')
 param softDeleteSettings softDeleteSettingType?
 
@@ -699,25 +697,3 @@ type softDeleteSettingType = {
   @description('Required. The soft delete state.')
   softDeleteState: ('AlwaysON' | 'Disabled' | 'Enabled' | 'Invalid')
 }
-
-// @export()
-// @description('The type for security settings.')
-// type securitySettingType = {
-//   @description('Optional. Immutability settings of a vault.')
-//   immutabilitySettings: {
-//     @description('Required. The immmutability setting of the vault.')
-//     state: ('Disabled' | 'Locked' | 'Unlocked')
-//   }?
-
-//   @description('Optional. Soft delete settings of a vault.')
-//   softDeleteSettings: {
-//     @description('Required. The enhanced security state.')
-//     enhancedSecurityState: ('AlwaysON' | 'Disabled' | 'Enabled' | 'Invalid')
-
-//     @description('Required. The soft delete retention period in days.')
-//     softDeleteRetentionPeriodInDays: int
-
-//     @description('Required. The soft delete state.')
-//     softDeleteState: ('AlwaysON' | 'Disabled' | 'Enabled' | 'Invalid')
-//   }?
-// }

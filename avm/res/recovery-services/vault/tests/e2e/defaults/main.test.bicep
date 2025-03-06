@@ -42,19 +42,6 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      // location: resourceLocation
-      // replicationAlertSettings: {
-      //   customEmailAddresses: [
-      //     'test.user@testcompany.com'
-      //   ]
-      //   locale: 'en-US'
-      //   sendToOwners: 'Send'
-      // }
-      // securitySettings: {
-      //   immutabilitySettings: {
-      //     state: 'Unlocked'
-      //   }
-      // }
     }
   }
 ]
