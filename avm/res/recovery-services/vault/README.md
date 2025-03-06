@@ -2826,7 +2826,7 @@ param softDeleteSettings = {
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`immutabilitySettingState`](#parameter-immutabilitysettingstate) | string | The immmutability setting state of the backup vault resource. |
+| [`immutabilitySettingState`](#parameter-immutabilitysettingstate) | string | The immmutability setting state of the recovery services vault resource. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
@@ -3251,7 +3251,7 @@ Enable/Disable usage telemetry for module.
 
 ### Parameter: `immutabilitySettingState`
 
-The immmutability setting state of the backup vault resource.
+The immmutability setting state of the recovery services vault resource.
 
 - Required: No
 - Type: string

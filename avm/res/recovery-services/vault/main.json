@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "16569607494443729229"
+      "templateHash": "9887667822567676989"
     },
     "name": "Recovery Services Vaults",
     "description": "This module deploys a Recovery Services Vault."
@@ -1359,7 +1359,7 @@
         "Unlocked"
       ],
       "metadata": {
-        "description": "Optional. The immmutability setting state of the backup vault resource."
+        "description": "Optional. The immmutability setting state of the recovery services vault resource."
       }
     },
     "publicNetworkAccess": {

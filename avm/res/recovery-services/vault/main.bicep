@@ -60,7 +60,7 @@ param monitoringSettings monitoringSettingsType?
 @description('Optional. The soft delete related settings.')
 param softDeleteSettings softDeleteSettingType?
 
-@description('Optional. The immmutability setting state of the backup vault resource.')
+@description('Optional. The immmutability setting state of the recovery services vault resource.')
 @allowed([
   'Disabled'
   'Locked'
