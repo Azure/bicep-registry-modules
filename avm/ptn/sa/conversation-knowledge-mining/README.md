@@ -351,7 +351,7 @@ The SKU for the web app. If empty, contentUnderstandingLocation will be used.
 
 - Required: No
 - Type: string
-- Default: `'P0v3'`
+- Default: `'B2'`
 - MinValue: 10
 
 ## Outputs

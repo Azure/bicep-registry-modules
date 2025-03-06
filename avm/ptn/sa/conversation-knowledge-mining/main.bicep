@@ -35,7 +35,7 @@ param ckmWebAppServerFarmLocation string = ''
 
 // PARAMETERS: Web app configuration
 @description('Optional. The SKU for the web app. If empty, contentUnderstandingLocation will be used.')
-param webApServerFarmSku string = 'P0v3'
+param webApServerFarmSku string = 'B2'
 
 // PARAMETERS: models configuration
 @description('Optional. GPT model deployment type.')
