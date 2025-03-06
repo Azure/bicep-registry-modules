@@ -2,8 +2,6 @@ targetScope = 'subscription'
 
 metadata name = 'App Service Landing Zone Accelerator'
 metadata description = 'This Azure App Service pattern module represents an Azure App Service deployment aligned with the cloud adoption framework'
-metadata owner = 'Azure/module-maintainers'
-
 // ================ //
 // Parameters       //
 // ================ //
@@ -28,8 +26,8 @@ param vnetSpokeAddressSpace string = '10.240.0.0/20'
 @description('Optional. CIDR of the subnet that will hold the app services plan. ATTENTION: ASEv3 needs a /24 network.')
 param subnetSpokeAppSvcAddressSpace string = '10.240.0.0/26'
 
-@description('Optional. CIDR of the subnet that will hold devOps agents etc.')
-param subnetSpokeDevOpsAddressSpace string = '10.240.10.128/26'
+@description('Optional. CIDR of the subnet that will hold the jumpbox.')
+param subnetSpokeJumpboxAddressSpace string = '10.240.10.128/26'
 
 @description('Optional. CIDR of the subnet that will hold the private endpoints of the supporting services.')
 param subnetSpokePrivateEndpointAddressSpace string = '10.240.11.0/24'
@@ -60,7 +58,7 @@ param vmSize string = 'Standard_D2s_v4'
 ])
 param webAppPlanSku string = 'P1V3'
 
-@description('Optional. Set to true if you want to deploy the App Service Plan in a zone redundant manner. Defult is true.')
+@description('Optional. Set to true if you want to deploy the App Service Plan in a zone redundant manner. Default is true.')
 param zoneRedundant bool = true
 
 @description('Optional. Kind of server OS of the App Service Plan. Default is "windows".')
@@ -99,6 +97,10 @@ param enableTelemetry bool = true
 @description('Optional. Set to true if you want to auto-approve the private endpoint connection to the Azure Front Door.')
 param autoApproveAfdPrivateEndpoint bool = true
 
+@description('Optional. Default is windows. The OS of the jump box virtual machine to create.')
+@allowed(['linux', 'windows', 'none'])
+param vmJumpboxOSType string = 'windows'
+
 var resourceSuffix = '${workloadName}-${environmentName}-${location}'
 var resourceGroupName = 'rg-spoke-${resourceSuffix}'
 
@@ -135,7 +137,7 @@ module spoke './modules/spoke/deploy.spoke.bicep' = {
     vnetSpokeAddressSpace: vnetSpokeAddressSpace
     subnetSpokeAppSvcAddressSpace: subnetSpokeAppSvcAddressSpace
     subnetSpokePrivateEndpointAddressSpace: subnetSpokePrivateEndpointAddressSpace
-    subnetSpokeDevOpsAddressSpace: subnetSpokeDevOpsAddressSpace
+    subnetSpokeJumpboxAddressSpace: subnetSpokeJumpboxAddressSpace
     vnetHubResourceId: vnetHubResourceId
     firewallInternalIp: firewallInternalIp
     deployAseV3: deployAseV3
@@ -147,6 +149,7 @@ module spoke './modules/spoke/deploy.spoke.bicep' = {
     enableEgressLockdown: enableEgressLockdown
     autoApproveAfdPrivateEndpoint: autoApproveAfdPrivateEndpoint
     deployJumpHost: deployJumpHost
+    vmJumpboxOSType: vmJumpboxOSType
     vmAdminUsername: adminUsername
     vmAdminPassword: adminPassword
     vmSize: vmSize
@@ -163,11 +166,11 @@ module supportingServices './modules/supporting-services/deploy.supporting-servi
     enableTelemetry: enableTelemetry
     naming: naming.outputs.names
     location: location
-    spokeVNetId: spoke.outputs.vnetSpokeId
+    spokeVNetResourceId: spoke.outputs.vnetSpokeResourceId
     spokePrivateEndpointSubnetName: spoke.outputs.spokePrivateEndpointSubnetName
     appServiceManagedIdentityPrincipalId: spoke.outputs.appServiceManagedIdentityPrincipalId
-    logAnalyticsWorkspaceId: spoke.outputs.logAnalyticsWorkspaceId
-    hubVNetId: vnetHubResourceId
+    logAnalyticsWorspaceResourceId: spoke.outputs.logAnalyticsWorkspaceResourceId
+    hubVNetResourceId: vnetHubResourceId
     tags: tags
   }
 }
@@ -201,7 +204,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 output spokeResourceGroupName string = resourceGroup.outputs.name
 
 @description('The  resource ID of the Spoke Virtual Network.')
-output spokeVNetResourceId string = spoke.outputs.vnetSpokeId
+output spokeVNetResourceId string = spoke.outputs.vnetSpokeResourceId
 
 @description('The name of the Spoke Virtual Network.')
 output spokeVnetName string = spoke.outputs.vnetSpokeName

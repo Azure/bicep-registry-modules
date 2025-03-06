@@ -124,23 +124,10 @@ This instance deploys the module with the minimum set of required parameters.
 module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment:<version>' = {
   name: 'hostingEnvironmentDeployment'
   params: {
-    adminPassword: '<adminPassword>'
-    adminUsername: 'azureuser'
-    autoApproveAfdPrivateEndpoint: true
-    deployAseV3: false
-    deployJumpHost: true
-    enableEgressLockdown: false
     location: '<location>'
-    subnetSpokeAppSvcAddressSpace: '10.240.0.0/26'
-    subnetSpokeDevOpsAddressSpace: '10.240.10.128/26'
-    subnetSpokePrivateEndpointAddressSpace: '10.240.11.0/24'
     tags: {
       environment: 'test'
     }
-    vmSize: 'Standard_D2s_v4'
-    vnetSpokeAddressSpace: '10.240.0.0/20'
-    webAppBaseOs: 'linux'
-    webAppPlanSku: 'P1V3'
     workloadName: '<workloadName>'
   }
 }
@@ -158,52 +145,13 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "adminPassword": {
-      "value": "<adminPassword>"
-    },
-    "adminUsername": {
-      "value": "azureuser"
-    },
-    "autoApproveAfdPrivateEndpoint": {
-      "value": true
-    },
-    "deployAseV3": {
-      "value": false
-    },
-    "deployJumpHost": {
-      "value": true
-    },
-    "enableEgressLockdown": {
-      "value": false
-    },
     "location": {
       "value": "<location>"
-    },
-    "subnetSpokeAppSvcAddressSpace": {
-      "value": "10.240.0.0/26"
-    },
-    "subnetSpokeDevOpsAddressSpace": {
-      "value": "10.240.10.128/26"
-    },
-    "subnetSpokePrivateEndpointAddressSpace": {
-      "value": "10.240.11.0/24"
     },
     "tags": {
       "value": {
         "environment": "test"
       }
-    },
-    "vmSize": {
-      "value": "Standard_D2s_v4"
-    },
-    "vnetSpokeAddressSpace": {
-      "value": "10.240.0.0/20"
-    },
-    "webAppBaseOs": {
-      "value": "linux"
-    },
-    "webAppPlanSku": {
-      "value": "P1V3"
     },
     "workloadName": {
       "value": "<workloadName>"
@@ -222,23 +170,10 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
 ```bicep-params
 using 'br/public:avm/ptn/app-service-lza/hosting-environment:<version>'
 
-param adminPassword = '<adminPassword>'
-param adminUsername = 'azureuser'
-param autoApproveAfdPrivateEndpoint = true
-deployAseV3: false
-param deployJumpHost = true
-param enableEgressLockdown = false
 param location = '<location>'
-param subnetSpokeAppSvcAddressSpace = '10.240.0.0/26'
-param subnetSpokeDevOpsAddressSpace = '10.240.10.128/26'
-param subnetSpokePrivateEndpointAddressSpace = '10.240.11.0/24'
 param tags = {
   environment: 'test'
 }
-param vmSize = 'Standard_D2s_v4'
-param vnetSpokeAddressSpace = '10.240.0.0/20'
-param webAppBaseOs = 'linux'
-param webAppPlanSku = 'P1V3'
 param workloadName = '<workloadName>'
 ```
 
@@ -260,24 +195,14 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
   params: {
     adminPassword: '<adminPassword>'
     adminUsername: 'azureuser'
-    autoApproveAfdPrivateEndpoint: true
-    deployAseV3: false
     deployJumpHost: true
     enableEgressLockdown: true
     location: '<location>'
-    subnetSpokeAppSvcAddressSpace: '10.240.0.0/26'
-    subnetSpokeDevOpsAddressSpace: '10.240.10.128/26'
-    subnetSpokePrivateEndpointAddressSpace: '10.240.11.0/24'
     tags: {
       environment: 'test'
     }
-    vmAuthenticationType: 'sshPublicKey'
     vmSize: 'Standard_D2s_v4'
-    vnetSpokeAddressSpace: '10.240.0.0/20'
-    webAppBaseOs: 'linux'
-    webAppPlanSku: 'P1V3'
     workloadName: '<workloadName>'
-    zoneRedundant: true
   }
 }
 ```
@@ -300,12 +225,6 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
     "adminUsername": {
       "value": "azureuser"
     },
-    "autoApproveAfdPrivateEndpoint": {
-      "value": true
-    },
-    "deployAseV3": {
-      "value": false
-    },
     "deployJumpHost": {
       "value": true
     },
@@ -315,40 +234,16 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
     "location": {
       "value": "<location>"
     },
-    "subnetSpokeAppSvcAddressSpace": {
-      "value": "10.240.0.0/26"
-    },
-    "subnetSpokeDevOpsAddressSpace": {
-      "value": "10.240.10.128/26"
-    },
-    "subnetSpokePrivateEndpointAddressSpace": {
-      "value": "10.240.11.0/24"
-    },
     "tags": {
       "value": {
         "environment": "test"
       }
     },
-    "vmAuthenticationType": {
-      "value": "sshPublicKey"
-    },
     "vmSize": {
       "value": "Standard_D2s_v4"
     },
-    "vnetSpokeAddressSpace": {
-      "value": "10.240.0.0/20"
-    },
-    "webAppBaseOs": {
-      "value": "linux"
-    },
-    "webAppPlanSku": {
-      "value": "P1V3"
-    },
     "workloadName": {
       "value": "<workloadName>"
-    },
-    "zoneRedundant": {
-      "value": true
     }
   }
 }
@@ -366,24 +261,14 @@ using 'br/public:avm/ptn/app-service-lza/hosting-environment:<version>'
 
 param adminPassword = '<adminPassword>'
 param adminUsername = 'azureuser'
-param autoApproveAfdPrivateEndpoint = true
-deployAseV3: false
 param deployJumpHost = true
 param enableEgressLockdown = true
 param location = '<location>'
-param subnetSpokeAppSvcAddressSpace = '10.240.0.0/26'
-param subnetSpokeDevOpsAddressSpace = '10.240.10.128/26'
-param subnetSpokePrivateEndpointAddressSpace = '10.240.11.0/24'
 param tags = {
   environment: 'test'
 }
-param vmAuthenticationType = 'sshPublicKey'
 param vmSize = 'Standard_D2s_v4'
-param vnetSpokeAddressSpace = '10.240.0.0/20'
-param webAppBaseOs = 'linux'
-param webAppPlanSku = 'P1V3'
 param workloadName = '<workloadName>'
-param zoneRedundant = true
 ```
 
 </details>
@@ -412,17 +297,18 @@ param zoneRedundant = true
 | [`firewallInternalIp`](#parameter-firewallinternalip) | string | Internal IP of the Azure firewall deployed in Hub. Used for creating UDR to route all vnet egress traffic through Firewall. If empty no UDR. |
 | [`location`](#parameter-location) | string | Azure region where the resources will be deployed in. |
 | [`subnetSpokeAppSvcAddressSpace`](#parameter-subnetspokeappsvcaddressspace) | string | CIDR of the subnet that will hold the app services plan. ATTENTION: ASEv3 needs a /24 network. |
-| [`subnetSpokeDevOpsAddressSpace`](#parameter-subnetspokedevopsaddressspace) | string | CIDR of the subnet that will hold devOps agents etc. |
+| [`subnetSpokeJumpboxAddressSpace`](#parameter-subnetspokejumpboxaddressspace) | string | CIDR of the subnet that will hold the jumpbox. |
 | [`subnetSpokePrivateEndpointAddressSpace`](#parameter-subnetspokeprivateendpointaddressspace) | string | CIDR of the subnet that will hold the private endpoints of the supporting services. |
 | [`tags`](#parameter-tags) | object | Tags to apply to all resources. |
 | [`vmAuthenticationType`](#parameter-vmauthenticationtype) | string | Type of authentication to use on the Virtual Machine. SSH key is recommended. Default is "password". |
+| [`vmJumpboxOSType`](#parameter-vmjumpboxostype) | string | Default is windows. The OS of the jump box virtual machine to create. |
 | [`vmSize`](#parameter-vmsize) | string | The size of the jump box virtual machine to create. See https://learn.microsoft.com/azure/virtual-machines/sizes for more information. |
 | [`vnetHubResourceId`](#parameter-vnethubresourceid) | string | Default is empty. If given, peering between spoke and and existing hub vnet will be created. |
 | [`vnetSpokeAddressSpace`](#parameter-vnetspokeaddressspace) | string | CIDR of the SPOKE vnet i.e. 192.168.0.0/24. |
 | [`webAppBaseOs`](#parameter-webappbaseos) | string | Kind of server OS of the App Service Plan. Default is "windows". |
 | [`webAppPlanSku`](#parameter-webappplansku) | string | Defines the name, tier, size, family and capacity of the App Service Plan. EP* is only for functions. |
 | [`workloadName`](#parameter-workloadname) | string | suffix (max 10 characters long) that will be used to name the resources in a pattern like <resourceAbbreviation>-<workloadName>. |
-| [`zoneRedundant`](#parameter-zoneredundant) | bool | Set to true if you want to deploy the App Service Plan in a zone redundant manner. Defult is true. |
+| [`zoneRedundant`](#parameter-zoneredundant) | bool | Set to true if you want to deploy the App Service Plan in a zone redundant manner. Default is true. |
 
 ### Parameter: `adminPassword`
 
@@ -520,9 +406,9 @@ CIDR of the subnet that will hold the app services plan. ATTENTION: ASEv3 needs 
 - Type: string
 - Default: `'10.240.0.0/26'`
 
-### Parameter: `subnetSpokeDevOpsAddressSpace`
+### Parameter: `subnetSpokeJumpboxAddressSpace`
 
-CIDR of the subnet that will hold devOps agents etc.
+CIDR of the subnet that will hold the jumpbox.
 
 - Required: No
 - Type: string
@@ -556,6 +442,22 @@ Type of authentication to use on the Virtual Machine. SSH key is recommended. De
   [
     'password'
     'sshPublicKey'
+  ]
+  ```
+
+### Parameter: `vmJumpboxOSType`
+
+Default is windows. The OS of the jump box virtual machine to create.
+
+- Required: No
+- Type: string
+- Default: `'windows'`
+- Allowed:
+  ```Bicep
+  [
+    'linux'
+    'none'
+    'windows'
   ]
   ```
 
@@ -633,7 +535,7 @@ suffix (max 10 characters long) that will be used to name the resources in a pat
 
 ### Parameter: `zoneRedundant`
 
-Set to true if you want to deploy the App Service Plan in a zone redundant manner. Defult is true.
+Set to true if you want to deploy the App Service Plan in a zone redundant manner. Default is true.
 
 - Required: No
 - Type: bool

@@ -29,7 +29,7 @@ param enableEgressLockdown bool
 
 param logAnalyticsWorkspaceId string
 
-param hubVnetId string = ''
+param hubVnetResourceId string = ''
 
 var resourceNames = {
   vnetSpoke: take('${naming.virtualNetwork.name}-spoke', 80)
@@ -82,10 +82,10 @@ module vnetSpoke 'br/public:avm/res/network/virtual-network:0.5.4' = {
       vnetSpokeAddressSpace
     ]
     subnets: subnets
-    peerings: !empty(hubVnetId)
+    peerings: !empty(hubVnetResourceId)
       ? [
           {
-            remoteVirtualNetworkResourceId: hubVnetId
+            remoteVirtualNetworkResourceId: hubVnetResourceId
             allowVirtualNetworkAccess: true
             allowForwardedTraffic: false
             allowGatewayTransit: false
@@ -169,8 +169,8 @@ module nsgAse 'br/public:avm/res/network/network-security-group:0.5.0' = if (dep
   }
 }
 
-output vnetSpokeId string = vnetSpoke.outputs.resourceId
+output vnetSpokeResourceId string = vnetSpoke.outputs.resourceId
 output vnetSpokeName string = vnetSpoke.outputs.name
-output snetAppSvcId string = vnetSpoke.outputs.subnetResourceIds[0]
-output snetPeId string = vnetSpoke.outputs.subnetResourceIds[1]
+output snetAppSvcResourceId string = vnetSpoke.outputs.subnetResourceIds[0]
+output snetPeResourceId string = vnetSpoke.outputs.subnetResourceIds[1]
 output snetPeName string = vnetSpoke.outputs.subnetNames[1]

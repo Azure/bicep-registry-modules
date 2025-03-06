@@ -22,8 +22,8 @@ param vnetSpokeAddressSpace string
 @description('Required. CIDR of the subnet that will hold the app services plan')
 param subnetSpokeAppSvcAddressSpace string
 
-@description('Required. CIDR of the subnet that will hold devOps agents etc ')
-param subnetSpokeDevOpsAddressSpace string
+@description('Optional. CIDR of the subnet that will hold the jumpbox.')
+param subnetSpokeJumpboxAddressSpace string
 
 @description('Required. CIDR of the subnet that will hold the private endpoints of the supporting services')
 param subnetSpokePrivateEndpointAddressSpace string
@@ -136,7 +136,7 @@ var resourceNames = {
 var virtualNetworkLinks = [
   {
     name: networking.outputs.vnetSpokeName
-    virtualNetworkResourceId: networking.outputs.vnetSpokeId
+    virtualNetworkResourceId: networking.outputs.vnetSpokeResourceId
     registrationEnabled: false
   }
 ]
@@ -151,7 +151,7 @@ module networking '../networking/network.module.bicep' = {
     subnetSpokeAppSvcAddressSpace: subnetSpokeAppSvcAddressSpace
     subnetSpokePrivateEndpointAddressSpace: subnetSpokePrivateEndpointAddressSpace
     firewallInternalIp: firewallInternalIp
-    hubVnetId: vnetHubResourceId
+    hubVnetResourceId: vnetHubResourceId
     logAnalyticsWorkspaceId: logAnalyticsWs.outputs.resourceId
     tags: tags
   }
@@ -177,12 +177,12 @@ module webApp '../app-service/app-service.module.bicep' = {
     webAppName: resourceNames.webApp
     managedIdentityName: resourceNames.appSvcUserAssignedManagedIdentity
     location: location
-    logAnalyticsWsId: logAnalyticsWs.outputs.resourceId
-    subnetIdForVnetInjection: networking.outputs.snetAppSvcId
+    logAnalyticsWorkspaceResourceId: logAnalyticsWs.outputs.resourceId
+    subnetIdForVnetInjection: networking.outputs.snetAppSvcResourceId
     tags: tags
     webAppBaseOs: webAppBaseOs
     zoneRedundant: zoneRedundant
-    subnetPrivateEndpointId: networking.outputs.snetPeId
+    subnetPrivateEndpointResourceId: networking.outputs.snetPeResourceId
     virtualNetworkLinks: virtualNetworkLinks
     sku: webAppPlanSku
   }
@@ -208,7 +208,7 @@ module afd '../front-door/front-door.module.bicep' = {
       }
     ]
     skuName: 'Premium_AzureFrontDoor'
-    logAnalyticsWorkspaceId: logAnalyticsWs.outputs.resourceId
+    logAnalyticsWorkspaceResourceId: logAnalyticsWs.outputs.resourceId
     tags: tags
   }
 }
@@ -242,7 +242,7 @@ module jumpboxLinuxVM '../compute/linux-vm.bicep' = if (deployJumpHost && vmJump
     vmZone: vmZone
     vmVnetName: networking.outputs.vnetSpokeName
     vmSubnetName: resourceNames.snetDevOps
-    vmSubnetAddressPrefix: subnetSpokeDevOpsAddressSpace
+    vmSubnetAddressPrefix: subnetSpokeJumpboxAddressSpace
     vmNetworkInterfaceName: naming.networkInterface.name
     vmNetworkSecurityGroupName: naming.networkSecurityGroup.name
     vmAuthenticationType: vmAuthenticationType
@@ -266,7 +266,7 @@ module jumpboxWindowsVM '../compute/windows-vm.bicep' = if (deployJumpHost && vm
     vmZone: vmZone
     vmVnetName: networking.outputs.vnetSpokeName
     vmSubnetName: vmSubnetName
-    vmSubnetAddressPrefix: subnetSpokeDevOpsAddressSpace
+    vmSubnetAddressPrefix: subnetSpokeJumpboxAddressSpace
     vmNetworkInterfaceName: naming.networkInterface.name
     vmNetworkSecurityGroupName: resourceNames.jumpboxNsg
     logAnalyticsWorkspaceResourceId: logAnalyticsWs.outputs.resourceId
@@ -274,7 +274,7 @@ module jumpboxWindowsVM '../compute/windows-vm.bicep' = if (deployJumpHost && vm
 }
 
 output vnetSpokeName string = networking.outputs.vnetSpokeName
-output vnetSpokeId string = networking.outputs.vnetSpokeId
+output vnetSpokeResourceId string = networking.outputs.vnetSpokeResourceId
 output spokePrivateEndpointSubnetName string = networking.outputs.snetPeName
 output appServiceManagedIdentityPrincipalId string = webApp.outputs.webAppSystemAssignedPrincipalId
-output logAnalyticsWorkspaceId string = logAnalyticsWs.outputs.resourceId
+output logAnalyticsWorkspaceResourceId string = logAnalyticsWs.outputs.resourceId

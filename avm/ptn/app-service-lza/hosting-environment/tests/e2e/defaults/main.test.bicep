@@ -32,19 +32,6 @@ module testDeployment '../../../main.bicep' = {
       environment: 'test'
     }
     location: resourceLocation
-    deployAseV3: false
-    deployJumpHost: true
-    vmSize: 'Standard_D2s_v4'
-    adminUsername: 'azureuser'
-    adminPassword: password
-    enableEgressLockdown: false
-    autoApproveAfdPrivateEndpoint: true
-    vnetSpokeAddressSpace: '10.240.0.0/20'
-    subnetSpokeAppSvcAddressSpace: '10.240.0.0/26'
-    subnetSpokeDevOpsAddressSpace: '10.240.10.128/26'
-    subnetSpokePrivateEndpointAddressSpace: '10.240.11.0/24'
-    webAppPlanSku: 'P1V3'
-    webAppBaseOs: 'linux'
   }
 }
 

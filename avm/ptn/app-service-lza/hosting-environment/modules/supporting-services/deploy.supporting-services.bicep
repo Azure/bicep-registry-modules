@@ -18,17 +18,17 @@ param enableTelemetry bool
 
 // Hub
 @description('The resource ID of the existing hub virtual network.')
-param hubVNetId string
+param hubVNetResourceId string
 
 // Spoke
 @description('The resource ID of the existing spoke virtual network to which the private endpoint will be connected.')
-param spokeVNetId string
+param spokeVNetResourceId string
 
 @description('The name of the existing subnet in the spoke virtual to which the private endpoint will be connected.')
 param spokePrivateEndpointSubnetName string
 
 @description('Optional. Resource ID of the diagnostic log analytics workspace. If left empty, no diagnostics settings will be defined.')
-param logAnalyticsWorkspaceId string = ''
+param logAnalyticsWorspaceResourceId string = ''
 
 param appServiceManagedIdentityPrincipalId string
 
@@ -44,10 +44,10 @@ module keyVault 'modules/key-vault.bicep' = {
     keyVaultName: naming.keyVault.nameUnique
     tags: tags
     enableTelemetry: enableTelemetry
-    hubVNetId: hubVNetId
-    spokeVNetId: spokeVNetId
+    hubVNetResourceId: hubVNetResourceId
+    spokeVNetResourceId: spokeVNetResourceId
     spokePrivateEndpointSubnetName: spokePrivateEndpointSubnetName
-    diagnosticWorkspaceId: logAnalyticsWorkspaceId
+    diagnosticWorkspaceId: logAnalyticsWorspaceResourceId
     appServiceManagedIdentityPrincipalId: appServiceManagedIdentityPrincipalId
   }
 }
@@ -57,7 +57,7 @@ module keyVault 'modules/key-vault.bicep' = {
 // ------------------
 
 @description('The resource ID of the Azure Key Vault.')
-output keyVaultResourceId string = keyVault.outputs.keyVaultId
+output keyVaultResourceId string = keyVault.outputs.keyVaultResourceId
 
 @description('The name of the Azure Key Vault.')
 output keyVaultName string = keyVault.outputs.keyVaultName

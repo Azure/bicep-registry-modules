@@ -47,7 +47,7 @@ param location string
 param tags object
 
 @description('Default is empty. If empty no Private Endpoint will be created for the resoure. Otherwise, the subnet where the private endpoint will be attached to')
-param subnetPrivateEndpointId string = ''
+param subnetPrivateEndpointResourceId string = ''
 
 @description('Optional. Array of custom objects describing vNet links of the DNS zone. Each object should contain vnetName, vnetId, registrationEnabled')
 param virtualNetworkLinks array = []
@@ -57,7 +57,7 @@ param virtualNetworkLinks array = []
 param webAppBaseOs string
 
 @description('An existing Log Analytics WS Id for creating app Insights, diagnostics etc.')
-param logAnalyticsWsId string
+param logAnalyticsWorkspaceResourceId string
 
 @description('The subnet ID that is dedicated to Web Server, for Vnet Injection of the web app. If deployAseV3=true then this is the subnet dedicated to the ASE v3')
 param subnetIdForVnetInjection string
@@ -85,18 +85,6 @@ param serverOS string = 'Windows'
   2
 ])
 param targetWorkerSize int = 0
-
-@description('Optional. The name of metrics that will be streamed.')
-param diagnosticMetricsToEnable array = [
-  {
-    metricCategories: [
-      {
-        category: 'AllMetrics'
-      }
-    ]
-    workspaceResourceId: logAnalyticsWsId
-  }
-]
 
 @description('Optional. The site configuration for the web app.')
 param siteConfig object = {
@@ -194,6 +182,7 @@ module ase './ase.module.bicep' = if (deployAseV3) {
     zoneRedundant: zoneRedundant
     allowNewPrivateEndpointConnections: true
     virtualNetworkLinks: virtualNetworkLinks
+    logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId
   }
 }
 
@@ -203,7 +192,7 @@ module appInsights 'br/public:avm/res/insights/component:0.4.1' = {
     name: 'appi-${webAppName}'
     location: location
     tags: tags
-    workspaceResourceId: logAnalyticsWsId
+    workspaceResourceId: logAnalyticsWorkspaceResourceId
     applicationType: 'web'
     publicNetworkAccessForIngestion: 'Enabled'
     publicNetworkAccessForQuery: 'Enabled'
@@ -227,7 +216,11 @@ module plan 'br/public:avm/res/web/serverfarm:0.2.4' = {
     targetWorkerCount: (targetWorkerCount < 3 && zoneRedundant) ? 3 : targetWorkerCount
     targetWorkerSize: targetWorkerSize
     appServiceEnvironmentId: deployAseV3 ? ase.outputs.resourceId : ''
-    diagnosticSettings: diagnosticMetricsToEnable
+    diagnosticSettings: [
+      {
+        workspaceResourceId: logAnalyticsWorkspaceResourceId
+      }
+    ]
   }
 }
 
@@ -243,7 +236,13 @@ module webApp 'br/public:avm/res/web/site:0.9.0' = {
     clientAffinityEnabled: false
     diagnosticSettings: [
       {
-        workspaceResourceId: logAnalyticsWsId
+        name: 'webApp'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        workspaceResourceId: logAnalyticsWorkspaceResourceId
       }
     ]
     virtualNetworkSubnetId: !(deployAseV3) ? subnetIdForVnetInjection : ''
@@ -255,11 +254,11 @@ module webApp 'br/public:avm/res/web/site:0.9.0' = {
         name: slotName
       }
     ]
-    privateEndpoints: (!empty(subnetPrivateEndpointId) && !deployAseV3)
+    privateEndpoints: (!empty(subnetPrivateEndpointResourceId) && !deployAseV3)
       ? [
           {
             name: 'webApp'
-            subnetResourceId: subnetPrivateEndpointId
+            subnetResourceId: subnetPrivateEndpointResourceId
             privateDnsZoneGroup: {
               name: 'webApp'
               privateDnsZoneGroupConfigs: [
@@ -276,7 +275,7 @@ module webApp 'br/public:avm/res/web/site:0.9.0' = {
   }
 }
 
-module webAppPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.6.0' = if (!empty(subnetPrivateEndpointId) && !deployAseV3) {
+module webAppPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.6.0' = if (!empty(subnetPrivateEndpointResourceId) && !deployAseV3) {
   name: '${uniqueString(deployment().name, location, 'webapp')}-dnszone'
   params: {
     name: webAppDnsZoneName
@@ -295,13 +294,13 @@ module webAppUserAssignedManagedIdentity 'br/public:avm/res/managed-identity/use
   }
 }
 
-module peWebAppSlot 'br/public:avm/res/network/private-endpoint:0.9.0' = if (!empty(subnetPrivateEndpointId) && !deployAseV3) {
+module peWebAppSlot 'br/public:avm/res/network/private-endpoint:0.9.0' = if (!empty(subnetPrivateEndpointResourceId) && !deployAseV3) {
   name: '${uniqueString(deployment().name, location, 'webapp')}-slot-${slotName}'
   params: {
     name: take('pe-${webAppName}-slot-${slotName}', 64)
     location: location
     tags: tags
-    privateDnsZoneGroup: (!empty(subnetPrivateEndpointId) && !deployAseV3)
+    privateDnsZoneGroup: (!empty(subnetPrivateEndpointResourceId) && !deployAseV3)
       ? {
           privateDnsZoneGroupConfigs: [
             {
@@ -310,7 +309,7 @@ module peWebAppSlot 'br/public:avm/res/network/private-endpoint:0.9.0' = if (!em
           ]
         }
       : null
-    subnetResourceId: subnetPrivateEndpointId
+    subnetResourceId: subnetPrivateEndpointResourceId
     privateLinkServiceConnections: [
       {
         name: 'webApp'

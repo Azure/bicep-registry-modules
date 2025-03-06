@@ -75,36 +75,10 @@ param subnetResourceId string
 @description('Optional. Switch to make the App Service Environment zone redundant. If enabled, the minimum App Service plan instance count will be three, otherwise 1. If enabled, the `dedicatedHostCount` must be set to `-1`.')
 param zoneRedundant bool = false
 
-@description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to \'\' to disable log collection.')
-@allowed([
-  ''
-  'allLogs'
-  'AppServiceEnvironmentPlatformLogs'
-])
-param diagnosticLogCategoriesToEnable array = [
-  'allLogs'
-]
-
-@description('Optional. The name of the diagnostic setting, if deployed. If left empty, it defaults to "<resourceName>-diagnosticSettings".')
-param diagnosticSettingsName string = '${name}-diagnosticSettings'
+@description('Required. The name of the existing Log Analytics workspace to which the diagnostic settings will be sent. If left empty, no diagnostics settings will be defined.')
+param logAnalyticsWorkspaceResourceId string = ''
 
 param virtualNetworkLinks array
-
-var diagnosticsLogsSpecified = [
-  for category in filter(diagnosticLogCategoriesToEnable, item => item != 'allLogs' && item != ''): {
-    category: category
-    enabled: true
-  }
-]
-
-var diagnosticsLogs = contains(diagnosticLogCategoriesToEnable, 'allLogs')
-  ? [
-      {
-        categoryGroup: 'allLogs'
-        enabled: true
-      }
-    ]
-  : contains(diagnosticLogCategoriesToEnable, '') ? [] : diagnosticsLogsSpecified
 
 module ase 'br/public:avm/res/web/hosting-environment:0.3.0' = {
   name: '${uniqueString(deployment().name, location)}-ase-avm'
@@ -130,8 +104,13 @@ module ase 'br/public:avm/res/web/hosting-environment:0.3.0' = {
     upgradePreference: upgradePreference
     diagnosticSettings: [
       {
-        name: diagnosticSettingsName
-        logCategoriesAndGroups: diagnosticsLogs
+        name: 'ase'
+        workspaceResourceId: logAnalyticsWorkspaceResourceId
+        logCategoriesAndGroups: [
+          {
+            category: 'AllLogs'
+          }
+        ]
       }
     ]
     lock: { kind: lock, name: '${name}-${lock}-lock' }

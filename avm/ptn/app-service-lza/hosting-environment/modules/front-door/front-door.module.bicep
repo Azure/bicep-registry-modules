@@ -53,7 +53,7 @@ param wafPolicyMode string = 'Prevention'
 
 @description('Required. The resource ID of the Log Analytics workspace to send logs to.')
 @secure()
-param logAnalyticsWorkspaceId string
+param logAnalyticsWorkspaceResourceId string
 
 // Create an Array of all Endpoint which includes customDomain Id and afdEndpoint Id
 // This array is needed to be attached to Microsoft.Cdn/profiles/securitypolicies
@@ -176,7 +176,7 @@ module frontDoor 'br/public:avm/res/cdn/profile:0.12.1' = {
     diagnosticSettings: [
       {
         name: 'FrontdoorAccessLog'
-        workspaceResourceId: logAnalyticsWorkspaceId
+        workspaceResourceId: logAnalyticsWorkspaceResourceId
         logCategoriesAndGroups: [
           {
             category: 'FrontdoorAccessLog'
@@ -280,7 +280,7 @@ module frontDoor 'br/public:avm/res/cdn/profile:0.12.1' = {
 output afdProfileName string = frontDoor.outputs.name
 
 @description('The resource ID of the CDN profile.')
-output afdProfileId string = frontDoor.outputs.resourceId
+output afdProfileResourceId string = frontDoor.outputs.resourceId
 
 @description('Name of the endpoint.')
 output endpointName string = frontDoor.outputs.endpointName
