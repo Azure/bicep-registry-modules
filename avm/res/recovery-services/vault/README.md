@@ -345,6 +345,12 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
         }
       }
     ]
+    customerManagedKey: {
+      autoRotationEnabled: false
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+    }
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -707,6 +713,14 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
           }
         }
       ]
+    },
+    "customerManagedKey": {
+      "value": {
+        "autoRotationEnabled": false,
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
+      }
     },
     "diagnosticSettings": {
       "value": [
@@ -1079,6 +1093,12 @@ param backupPolicies = [
     }
   }
 ]
+param customerManagedKey = {
+  autoRotationEnabled: false
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+}
 param diagnosticSettings = [
   {
     eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
