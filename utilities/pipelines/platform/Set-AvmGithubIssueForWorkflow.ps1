@@ -51,6 +51,10 @@ function Set-AvmGithubIssueForWorkflow {
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Get-AvmCsvData.ps1')
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Add-GithubIssueToProject.ps1')
 
+    $knownPatterns = Get-AvmCsvData -ModuleIndex 'Bicep-Pattern'
+    $knownResources = Get-AvmCsvData -ModuleIndex 'Bicep-Resource'
+    $knownUtilities = Get-AvmCsvData -ModuleIndex 'Bicep-Utility'
+
     $issues = gh issue list --state open --limit 500 --label 'Type: AVM :a: :v: :m:,Type: Bug :bug:' --json 'title,url,body,comments,labels' --repo $Repo | ConvertFrom-Json -Depth 100
     $runs = gh run list --json 'url,workflowName,headBranch,startedAt' --limit $LimitNumberOfRuns --repo $Repo | ConvertFrom-Json -Depth 100
     $workflowRuns = @{}
@@ -101,9 +105,14 @@ function Set-AvmGithubIssueForWorkflow {
 "@
 
                     if ($workflowRun.workflowName -match 'avm.(?:res|ptn|utl)') {
-                        $moduleIndex = $moduleName.StartsWith('avm/res') ? 'Bicep-Resource' : 'Bicep-Pattern'
-                        # get CSV data
-                        $module = Get-AvmCsvData -ModuleIndex $moduleIndex | Where-Object ModuleName -EQ $moduleName
+                        switch ($matches[0]) {
+                            'avm.ptn' { $module = $knownPatterns | Where-Object { $_.ModuleName -eq $moduleName }; break }
+                            'avm.res' { $module = $knownResources | Where-Object { $_.ModuleName -eq $moduleName }; break }
+                            'avm.utl' { $module = $knownUtilities | Where-Object { $_.ModuleName -eq $moduleName }; break }
+                            Default {
+                                throw 'Impossible regex condition.'
+                            }
+                        }
 
                         if (($module.ModuleStatus -ne 'Orphaned :eyes:') -and (-not ([string]::IsNullOrEmpty($module.PrimaryModuleOwnerGHHandle)))) {
                             $ProjectNumber = 566 # AVM - Module Issues
