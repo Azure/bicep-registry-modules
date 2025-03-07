@@ -446,11 +446,16 @@ function Set-DefinitionSection {
             }
 
             # add MinValue and maxValue to the description
-            if ($parameter.ContainsKey('minValue')) {
+            if ($parameter.Keys -contains 'minValue') {
                 $formattedMinValue = "- MinValue: $($parameter['minValue'])"
+            } else {
+                $formattedMinValue = $null # Reset value for future iterations
             }
-            if ($parameter.ContainsKey('maxValue')) {
+
+            if ($parameter.Keys -contains 'maxValue') {
                 $formattedMaxValue = "- MaxValue: $($parameter['maxValue'])"
+            } else {
+                $formattedMaxValue = $null # Reset value for future iterations
             }
 
             # Special case for 'roleAssignments' parameter
