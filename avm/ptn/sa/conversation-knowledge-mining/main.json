@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "11569283318544748526"
+      "templateHash": "896733979690205974"
     },
     "name": "Conversation Knowledge Mining Solution Accelerator",
     "description": "This module deploys the [Conversation Knowledge Mining Solution Accelerator](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator).\n\n**Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator product. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future.\n\nThis may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -306,7 +306,7 @@
       "location": "[parameters('solutionLocation')]"
     },
     "deploymentNameFormat": "deploy-{0}",
-    "varAiFoundryAiHubResourceName": "[if(empty(parameters('aiFoundryAiHubResourceName')), parameters('aiFoundryAiHubResourceName'), format(variables('varWorkloadNameFormat'), 'aifd-aihb'))]",
+    "varAiFoundryAiHubResourceName": "[if(empty(parameters('aiFoundryAiHubResourceName')), format(variables('varWorkloadNameFormat'), 'aifd-aihb'), parameters('aiFoundryAiHubResourceName'))]",
     "varAiFoundryAiProjectResourceName": "[if(empty(parameters('aiFoundryAiProjectResourceName')), format(variables('varWorkloadNameFormat'), 'aifd-aipj'), parameters('aiFoundryAiProjectResourceName'))]",
     "varAiFoundryAiServicesContentUnderstandingResourceName": "[if(empty(parameters('aiFoundryAiServicesContentUnderstandingResourceName')), format(variables('varWorkloadNameFormat'), 'aifd-aisr-cu'), parameters('aiFoundryAiServicesContentUnderstandingResourceName'))]",
     "varAiFoundryAiServicesResourceName": "[if(empty(parameters('aiFoundryAiServicesResourceName')), format(variables('varWorkloadNameFormat'), 'aifd-aisr'), parameters('aiFoundryAiServicesResourceName'))]",
@@ -51216,6 +51216,13 @@
         "description": "The resource group the resources were deployed into."
       },
       "value": "[resourceGroup().name]"
+    },
+    "webAppUrl": {
+      "type": "string",
+      "metadata": {
+        "description": "The url of the webapp where the deployed Conversation Knowledge Mining solution can be accessed"
+      },
+      "value": "[format('{0}.azurewebsites.net', variables('varWebAppResourceName'))]"
     }
   }
 }
