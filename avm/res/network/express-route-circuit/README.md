@@ -46,12 +46,12 @@ module expressRouteCircuit 'br/public:avm/res/network/express-route-circuit:<ver
   name: 'expressRouteCircuitDeployment'
   params: {
     // Required parameters
-    bandwidthInMbps: 50
     name: 'nercmin001'
+    // Non-required parameters
+    bandwidthInMbps: 50
+    location: '<location>'
     peeringLocation: 'Amsterdam'
     serviceProviderName: 'Equinix'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -69,21 +69,21 @@ module expressRouteCircuit 'br/public:avm/res/network/express-route-circuit:<ver
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "name": {
+      "value": "nercmin001"
+    },
+    // Non-required parameters
     "bandwidthInMbps": {
       "value": 50
     },
-    "name": {
-      "value": "nercmin001"
+    "location": {
+      "value": "<location>"
     },
     "peeringLocation": {
       "value": "Amsterdam"
     },
     "serviceProviderName": {
       "value": "Equinix"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -100,12 +100,12 @@ module expressRouteCircuit 'br/public:avm/res/network/express-route-circuit:<ver
 using 'br/public:avm/res/network/express-route-circuit:<version>'
 
 // Required parameters
-param bandwidthInMbps = 50
 param name = 'nercmin001'
+// Non-required parameters
+param bandwidthInMbps = 50
+param location = '<location>'
 param peeringLocation = 'Amsterdam'
 param serviceProviderName = 'Equinix'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -125,12 +125,10 @@ module expressRouteCircuit 'br/public:avm/res/network/express-route-circuit:<ver
   name: 'expressRouteCircuitDeployment'
   params: {
     // Required parameters
-    bandwidthInMbps: 50
     name: 'nercmax001'
-    peeringLocation: 'Amsterdam'
-    serviceProviderName: 'Equinix'
     // Non-required parameters
     allowClassicOperations: true
+    bandwidthInMbps: 50
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -151,6 +149,7 @@ module expressRouteCircuit 'br/public:avm/res/network/express-route-circuit:<ver
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
+    peeringLocation: 'Amsterdam'
     roleAssignments: [
       {
         name: 'd7aa3dfa-6ba6-4ed8-b561-2164fbb1327e'
@@ -170,6 +169,7 @@ module expressRouteCircuit 'br/public:avm/res/network/express-route-circuit:<ver
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
+    serviceProviderName: 'Equinix'
     skuFamily: 'MeteredData'
     skuTier: 'Standard'
     tags: {
@@ -194,21 +194,15 @@ module expressRouteCircuit 'br/public:avm/res/network/express-route-circuit:<ver
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "bandwidthInMbps": {
-      "value": 50
-    },
     "name": {
       "value": "nercmax001"
-    },
-    "peeringLocation": {
-      "value": "Amsterdam"
-    },
-    "serviceProviderName": {
-      "value": "Equinix"
     },
     // Non-required parameters
     "allowClassicOperations": {
       "value": true
+    },
+    "bandwidthInMbps": {
+      "value": 50
     },
     "diagnosticSettings": {
       "value": [
@@ -238,6 +232,9 @@ module expressRouteCircuit 'br/public:avm/res/network/express-route-circuit:<ver
         "name": "myCustomLockName"
       }
     },
+    "peeringLocation": {
+      "value": "Amsterdam"
+    },
     "roleAssignments": {
       "value": [
         {
@@ -258,6 +255,9 @@ module expressRouteCircuit 'br/public:avm/res/network/express-route-circuit:<ver
           "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
         }
       ]
+    },
+    "serviceProviderName": {
+      "value": "Equinix"
     },
     "skuFamily": {
       "value": "MeteredData"
@@ -287,12 +287,10 @@ module expressRouteCircuit 'br/public:avm/res/network/express-route-circuit:<ver
 using 'br/public:avm/res/network/express-route-circuit:<version>'
 
 // Required parameters
-param bandwidthInMbps = 50
 param name = 'nercmax001'
-param peeringLocation = 'Amsterdam'
-param serviceProviderName = 'Equinix'
 // Non-required parameters
 param allowClassicOperations = true
+param bandwidthInMbps = 50
 param diagnosticSettings = [
   {
     eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -313,6 +311,7 @@ param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
 }
+param peeringLocation = 'Amsterdam'
 param roleAssignments = [
   {
     name: 'd7aa3dfa-6ba6-4ed8-b561-2164fbb1327e'
@@ -332,6 +331,7 @@ param roleAssignments = [
     roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
   }
 ]
+param serviceProviderName = 'Equinix'
 param skuFamily = 'MeteredData'
 param skuTier = 'Standard'
 param tags = {
@@ -358,12 +358,10 @@ module expressRouteCircuit 'br/public:avm/res/network/express-route-circuit:<ver
   name: 'expressRouteCircuitDeployment'
   params: {
     // Required parameters
-    bandwidthInMbps: 50
     name: 'nercwaf001'
-    peeringLocation: 'Amsterdam'
-    serviceProviderName: 'Equinix'
     // Non-required parameters
     allowClassicOperations: true
+    bandwidthInMbps: 50
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -383,6 +381,8 @@ module expressRouteCircuit 'br/public:avm/res/network/express-route-circuit:<ver
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
+    peeringLocation: 'Amsterdam'
+    serviceProviderName: 'Equinix'
     skuFamily: 'MeteredData'
     skuTier: 'Standard'
     tags: {
@@ -407,21 +407,15 @@ module expressRouteCircuit 'br/public:avm/res/network/express-route-circuit:<ver
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "bandwidthInMbps": {
-      "value": 50
-    },
     "name": {
       "value": "nercwaf001"
-    },
-    "peeringLocation": {
-      "value": "Amsterdam"
-    },
-    "serviceProviderName": {
-      "value": "Equinix"
     },
     // Non-required parameters
     "allowClassicOperations": {
       "value": true
+    },
+    "bandwidthInMbps": {
+      "value": 50
     },
     "diagnosticSettings": {
       "value": [
@@ -447,6 +441,12 @@ module expressRouteCircuit 'br/public:avm/res/network/express-route-circuit:<ver
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
       }
+    },
+    "peeringLocation": {
+      "value": "Amsterdam"
+    },
+    "serviceProviderName": {
+      "value": "Equinix"
     },
     "skuFamily": {
       "value": "MeteredData"
@@ -476,12 +476,10 @@ module expressRouteCircuit 'br/public:avm/res/network/express-route-circuit:<ver
 using 'br/public:avm/res/network/express-route-circuit:<version>'
 
 // Required parameters
-param bandwidthInMbps = 50
 param name = 'nercwaf001'
-param peeringLocation = 'Amsterdam'
-param serviceProviderName = 'Equinix'
 // Non-required parameters
 param allowClassicOperations = true
+param bandwidthInMbps = 50
 param diagnosticSettings = [
   {
     eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -501,6 +499,8 @@ param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
 }
+param peeringLocation = 'Amsterdam'
+param serviceProviderName = 'Equinix'
 param skuFamily = 'MeteredData'
 param skuTier = 'Standard'
 param tags = {
@@ -519,10 +519,17 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`bandwidthInMbps`](#parameter-bandwidthinmbps) | int | This is the bandwidth in Mbps of the circuit being created. It must exactly match one of the available bandwidth offers List ExpressRoute Service Providers API call. |
 | [`name`](#parameter-name) | string | This is the name of the ExpressRoute circuit. |
-| [`peeringLocation`](#parameter-peeringlocation) | string | This is the name of the peering location and not the ARM resource location. It must exactly match one of the available peering locations from List ExpressRoute Service Providers API call. |
-| [`serviceProviderName`](#parameter-serviceprovidername) | string | This is the name of the ExpressRoute Service Provider. It must exactly match one of the Service Providers from List ExpressRoute Service Providers API call. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`bandwidthInGbps`](#parameter-bandwidthingbps) | int | Required if 'serviceProviderName', 'peeringLocation', and 'bandwidthInMbps' are not set. The bandwidth of the circuit when the circuit is provisioned on an ExpressRoutePort resource. Available when configuring Express Route Direct. Default value of 0 will set the property to null. |
+| [`bandwidthInMbps`](#parameter-bandwidthinmbps) | int | Required if 'expressRoutePortResourceId' is not set. This is the bandwidth in Mbps of the circuit being created. It must exactly match one of the available bandwidth offers List ExpressRoute Service Providers API call. |
+| [`expressRoutePortResourceId`](#parameter-expressrouteportresourceid) | string | Required if 'serviceProviderName', 'peeringLocation', and 'bandwidthInMbps' are not set. The reference to the ExpressRoutePort resource when the circuit is provisioned on an ExpressRoutePort resource. Available when configuring Express Route Direct. |
+| [`peeringLocation`](#parameter-peeringlocation) | string | Required if 'expressRoutePortResourceId' is not set. This is the name of the peering location and not the ARM resource location. It must exactly match one of the available peering locations from List ExpressRoute Service Providers API call. |
+| [`serviceProviderName`](#parameter-serviceprovidername) | string | Required if 'expressRoutePortResourceId' is not set. This is the name of the ExpressRoute Service Provider. It must exactly match one of the Service Providers from List ExpressRoute Service Providers API call. |
 
 **Optional parameters**
 
@@ -530,11 +537,9 @@ param tags = {
 | :-- | :-- | :-- |
 | [`allowClassicOperations`](#parameter-allowclassicoperations) | bool | Allow classic operations. You can connect to virtual networks in the classic deployment model by setting allowClassicOperations to true. |
 | [`authorizationNames`](#parameter-authorizationnames) | array | List of names for ExpressRoute circuit authorizations to create. To fetch the `authorizationKey` for the authorization, use the `existing` resource reference for `Microsoft.Network/expressRouteCircuits/authorizations`. |
-| [`bandwidthInGbps`](#parameter-bandwidthingbps) | int | The bandwidth of the circuit when the circuit is provisioned on an ExpressRoutePort resource. Available when configuring Express Route Direct. Default value of 0 will set the property to null. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`enableDirectPortRateLimit`](#parameter-enabledirectportratelimit) | bool | Flag denoting rate-limiting status of the ExpressRoute direct-port circuit. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`expressRoutePortResourceId`](#parameter-expressrouteportresourceid) | string | The reference to the ExpressRoutePort resource when the circuit is provisioned on an ExpressRoutePort resource. Available when configuring Express Route Direct. |
 | [`globalReachEnabled`](#parameter-globalreachenabled) | bool | Flag denoting global reach status. To enable ExpressRoute Global Reach between different geopolitical regions, your circuits must be Premium SKU. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -550,13 +555,6 @@ param tags = {
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`vlanId`](#parameter-vlanid) | int | Specifies the identifier that is used to identify the customer. |
 
-### Parameter: `bandwidthInMbps`
-
-This is the bandwidth in Mbps of the circuit being created. It must exactly match one of the available bandwidth offers List ExpressRoute Service Providers API call.
-
-- Required: Yes
-- Type: int
-
 ### Parameter: `name`
 
 This is the name of the ExpressRoute circuit.
@@ -564,18 +562,41 @@ This is the name of the ExpressRoute circuit.
 - Required: Yes
 - Type: string
 
+### Parameter: `bandwidthInGbps`
+
+Required if 'serviceProviderName', 'peeringLocation', and 'bandwidthInMbps' are not set. The bandwidth of the circuit when the circuit is provisioned on an ExpressRoutePort resource. Available when configuring Express Route Direct. Default value of 0 will set the property to null.
+
+- Required: No
+- Type: int
+- Default: `0`
+
+### Parameter: `bandwidthInMbps`
+
+Required if 'expressRoutePortResourceId' is not set. This is the bandwidth in Mbps of the circuit being created. It must exactly match one of the available bandwidth offers List ExpressRoute Service Providers API call.
+
+- Required: No
+- Type: int
+
+### Parameter: `expressRoutePortResourceId`
+
+Required if 'serviceProviderName', 'peeringLocation', and 'bandwidthInMbps' are not set. The reference to the ExpressRoutePort resource when the circuit is provisioned on an ExpressRoutePort resource. Available when configuring Express Route Direct.
+
+- Required: No
+- Type: string
+- Default: `''`
+
 ### Parameter: `peeringLocation`
 
-This is the name of the peering location and not the ARM resource location. It must exactly match one of the available peering locations from List ExpressRoute Service Providers API call.
+Required if 'expressRoutePortResourceId' is not set. This is the name of the peering location and not the ARM resource location. It must exactly match one of the available peering locations from List ExpressRoute Service Providers API call.
 
-- Required: Yes
+- Required: No
 - Type: string
 
 ### Parameter: `serviceProviderName`
 
-This is the name of the ExpressRoute Service Provider. It must exactly match one of the Service Providers from List ExpressRoute Service Providers API call.
+Required if 'expressRoutePortResourceId' is not set. This is the name of the ExpressRoute Service Provider. It must exactly match one of the Service Providers from List ExpressRoute Service Providers API call.
 
-- Required: Yes
+- Required: No
 - Type: string
 
 ### Parameter: `allowClassicOperations`
@@ -593,14 +614,6 @@ List of names for ExpressRoute circuit authorizations to create. To fetch the `a
 - Required: No
 - Type: array
 - Default: `[]`
-
-### Parameter: `bandwidthInGbps`
-
-The bandwidth of the circuit when the circuit is provisioned on an ExpressRoutePort resource. Available when configuring Express Route Direct. Default value of 0 will set the property to null.
-
-- Required: No
-- Type: int
-- Default: `0`
 
 ### Parameter: `diagnosticSettings`
 
@@ -763,14 +776,6 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
-
-### Parameter: `expressRoutePortResourceId`
-
-The reference to the ExpressRoutePort resource when the circuit is provisioned on an ExpressRoutePort resource. Available when configuring Express Route Direct.
-
-- Required: No
-- Type: string
-- Default: `''`
 
 ### Parameter: `globalReachEnabled`
 

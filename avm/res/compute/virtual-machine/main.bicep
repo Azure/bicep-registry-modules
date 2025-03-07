@@ -518,7 +518,7 @@ resource managedDataDisks 'Microsoft.Compute/disks@2024-03-02' = [
       diskIOPSReadWrite: dataDisk.?diskIOPSReadWrite
       diskMBpsReadWrite: dataDisk.?diskMBpsReadWrite
     }
-    zones: zone != 0 ? array(string(zone)) : null
+    zones: zone != 0 && !contains(dataDisk.managedDisk.storageAccountType, 'ZRS') ? array(string(zone)) : null
   }
 ]
 
