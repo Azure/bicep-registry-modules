@@ -18,9 +18,10 @@ param storageAccount_name string
 param machineLearningServicesWorkspaces_aihub_name string
 param machineLearningServicesWorkspaces_project_name string
 //param machineLearningServicesWorkspaces_phiServerless_name string
-param gptModelVersionPreview string
+//param gptModelVersionPreview string
 param deploymentVersion string = utcNow()
 param managedIdentityPrincipalId string
+param enableTelemetry bool = true
 
 // VARIABLES
 var deploymentNameFormat = '${deploymentVersion}-deploy-{0}'
@@ -44,7 +45,7 @@ var deploymentNameFormat = '${deploymentVersion}-deploy-{0}'
 //var varPhiModelUrl = 'azureml://registries/azureml/models/Phi-4'
 var varKvSecretNameAzureOpenaiKey = 'AZURE-OPENAI-KEY'
 var varKvSecretNameAzureSearchKey = 'AZURE-SEARCH-KEY'
-var azureAiProjectConnString = '${toLower(replace(avmMLServicesWorkspacesProject.outputs.location, ' ', ''))}.api.azureml.ms;${subscription().subscriptionId};${resourceGroup().name};${avmMLServicesWorkspacesProject.outputs.name}'
+//var azureAiProjectConnString = '${toLower(replace(avmMLServicesWorkspacesProject.outputs.location, ' ', ''))}.api.azureml.ms;${subscription().subscriptionId};${resourceGroup().name};${avmMLServicesWorkspacesProject.outputs.name}'
 
 resource existingKeyVaultResource 'Microsoft.keyvault/vaults@2024-04-01-preview' existing = {
   name: keyVault_name
@@ -58,6 +59,7 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.18.1' = {
     name: storageAccount_name
     location: location
     tags: tags
+    enableTelemetry: enableTelemetry
     skuName: 'Standard_LRS'
     kind: 'StorageV2'
     accessTier: 'Hot'
@@ -121,8 +123,9 @@ module avm_insights_component 'br/public:avm/res/insights/component:0.5.0' = {
   params: {
     name: applicationInsights_name
     workspaceResourceId: avm_operational_insights_workspace_resourceId //NOTE: Adding this due to AVM requirement
-    location: location
     tags: tags
+    location: location
+    enableTelemetry: enableTelemetry
     kind: 'web'
     applicationType: 'web'
     disableIpMasking: false
@@ -142,8 +145,9 @@ module avm_container_registry_registry 'br/public:avm/res/container-registry/reg
   name: format(deploymentNameFormat, containerRegistry_name)
   params: {
     name: containerRegistry_name
-    location: location
     tags: tags
+    location: location
+    enableTelemetry: enableTelemetry
     acrSku: 'Premium'
     acrAdminUserEnabled: false
     dataEndpointEnabled: false
@@ -190,6 +194,7 @@ module avm_container_registry_registry 'br/public:avm/res/container-registry/reg
 // }
 resource avm_cognitive_services_accounts 'Microsoft.CognitiveServices/accounts@2024-04-01-preview' = {
   name: aiServices_name
+  tags: tags
   location: location
   sku: {
     name: 'S0'
@@ -253,6 +258,7 @@ resource azureOpenAIKeyEntry 'Microsoft.KeyVault/vaults/secrets@2021-11-01-previ
 // }
 resource avm_cognitive_services_accounts_cu 'Microsoft.CognitiveServices/accounts@2024-04-01-preview' = {
   name: aiServices_cu_name
+  tags: tags
   location: aiServices_cu_location
   sku: {
     name: 'S0'
@@ -290,8 +296,9 @@ module avm_search_search_services 'br/public:avm/res/search/search-service:0.9.0
   name: format(deploymentNameFormat, searchService_name)
   params: {
     name: searchService_name
-    location: location
     tags: tags
+    location: location
+    enableTelemetry: enableTelemetry
     sku: 'basic'
     replicaCount: 1
     partitionCount: 1
@@ -319,11 +326,11 @@ module moduleAIHub './ai-foundry-ai-hub.bicep' = {
   params: {
     deploymentName: format(deploymentNameFormat, machineLearningServicesWorkspaces_aihub_name)
     //aiServicesName: avm_cognitive_services_accounts.outputs.name
+    tags: tags
+    location: location
     aiServicesName: avm_cognitive_services_accounts.name
     searchServiceName: avm_search_search_services.outputs.name
     aiHubName: machineLearningServicesWorkspaces_aihub_name
-    location: location
-    tags: tags
     keyVaultResourceId: existingKeyVaultResource.id
     containerRegistryResourceId: avm_container_registry_registry.outputs.resourceId
     applicationInsightsResourceId: avm_insights_component.outputs.resourceId
@@ -343,6 +350,7 @@ module avmMLServicesWorkspacesProject 'br/public:avm/res/machine-learning-servic
   name: format(deploymentNameFormat, machineLearningServicesWorkspaces_project_name)
   params: {
     name: machineLearningServicesWorkspaces_project_name
+    tags: tags
     location: location
     sku: 'Basic' //NOTE: Confirm this
     kind: 'Project'
@@ -408,69 +416,12 @@ resource azureOpenAIInferenceKey 'Microsoft.keyvault/vaults/secrets@2021-11-01-p
   }
 }
 
-resource azureOpenAIDeploymentModel 'Microsoft.KeyVault/vaults/secrets@2021-11-01-preview' = {
-  parent: existingKeyVaultResource
-  name: 'AZURE-OPEN-AI-DEPLOYMENT-MODEL'
-  properties: {
-    value: aiServices_deployments[0].model.name
-  }
-}
-
-resource azureOpenAIApiVersionEntry 'Microsoft.KeyVault/vaults/secrets@2021-11-01-preview' = {
-  parent: existingKeyVaultResource
-  name: 'AZURE-OPENAI-PREVIEW-API-VERSION'
-  properties: {
-    value: gptModelVersionPreview //'2024-02-15-preview'
-  }
-}
-
 resource azureOpenAIEndpointEntry 'Microsoft.keyvault/vaults/secrets@2021-11-01-preview' = {
   parent: existingKeyVaultResource
   name: 'AZURE-OPENAI-ENDPOINT'
   properties: {
     //value: avm_cognitive_services_accounts.outputs.endpoint
     value: avm_cognitive_services_accounts.properties.endpoint
-  }
-}
-
-resource azureAIProjectConnectionStringEntry 'Microsoft.keyvault/vaults/secrets@2021-11-01-preview' = {
-  parent: existingKeyVaultResource
-  name: 'AZURE-AI-PROJECT-CONN-STRING'
-  properties: {
-    //value: '${split(deployedMLServicesWorkspacesProject.properties.discoveryUrl, '/')[2]};${subscription().subscriptionId};${resourceGroup().name};${deployedMLServicesWorkspacesProject.name}'
-    value: azureAiProjectConnString
-  }
-}
-
-resource azureOpenAICUApiVersionEntry 'Microsoft.keyvault/vaults/secrets@2021-11-01-preview' = {
-  parent: existingKeyVaultResource
-  name: 'AZURE-OPENAI-CU-VERSION'
-  properties: {
-    value: '?api-version=2024-12-01-preview'
-  }
-}
-
-resource azureSearchServiceEndpointEntry 'Microsoft.keyvault/vaults/secrets@2021-11-01-preview' = {
-  parent: existingKeyVaultResource
-  name: 'AZURE-SEARCH-ENDPOINT'
-  properties: {
-    value: 'https://${avm_search_search_services.outputs.name}.search.windows.net'
-  }
-}
-
-resource azureSearchServiceEntry 'Microsoft.keyvault/vaults/secrets@2021-11-01-preview' = {
-  parent: existingKeyVaultResource
-  name: 'AZURE-SEARCH-SERVICE'
-  properties: {
-    value: avm_search_search_services.outputs.name
-  }
-}
-
-resource azureSearchIndexEntry 'Microsoft.keyvault/vaults/secrets@2021-11-01-preview' = {
-  parent: existingKeyVaultResource
-  name: 'AZURE-SEARCH-INDEX'
-  properties: {
-    value: 'transcripts_index'
   }
 }
 
@@ -492,39 +443,6 @@ module aiFoundryKvSecretCogServicesKey './ai-foundry-kv-secret-cog-services-key.
   }
 }
 
-resource cogServiceNameEntry 'Microsoft.keyvault/vaults/secrets@2021-11-01-preview' = {
-  parent: existingKeyVaultResource
-  name: 'COG-SERVICES-NAME'
-  properties: {
-    //value: avm_cognitive_services_accounts.outputs.name
-    value: avm_cognitive_services_accounts.name
-  }
-}
-
-resource azureSubscriptionIdEntry 'Microsoft.keyvault/vaults/secrets@2021-11-01-preview' = {
-  parent: existingKeyVaultResource
-  name: 'AZURE-SUBSCRIPTION-ID'
-  properties: {
-    value: subscription().subscriptionId
-  }
-}
-
-resource resourceGroupNameEntry 'Microsoft.keyvault/vaults/secrets@2021-11-01-preview' = {
-  parent: existingKeyVaultResource
-  name: 'AZURE-RESOURCE-GROUP'
-  properties: {
-    value: resourceGroup().name
-  }
-}
-
-resource azureLocatioEntry 'Microsoft.keyvault/vaults/secrets@2021-11-01-preview' = {
-  parent: existingKeyVaultResource
-  name: 'AZURE-LOCATION'
-  properties: {
-    value: location
-  }
-}
-
 output keyvault_name string = existingKeyVaultResource.name
 output keyvault_id string = existingKeyVaultResource.id
 
@@ -543,7 +461,7 @@ output aiSearch_connectionString string = 'https://${avm_search_search_services.
 
 output aiHub_project_name string = avmMLServicesWorkspacesProject.outputs.name
 output aiHub_project_resourceId string = avmMLServicesWorkspacesProject.outputs.resourceId
-output aiHub_project_connectionString string = azureAiProjectConnString
+//output aiHub_project_connectionString string = azureAiProjectConnString
 
 output appInsights_resourceId string = avm_insights_component.outputs.resourceId
 output appInsights_instrumentationKey string = avm_insights_component.outputs.instrumentationKey

@@ -22,6 +22,7 @@ param cosmosDbSqlDbNameCollectionName string
 param ragFunctionDefaultHostName string
 param ragFunctionFunctionName string
 param avmCosmosDbResourceName string
+param enableTelemetry bool
 
 resource existingAIFoundryAIServices 'Microsoft.CognitiveServices/accounts@2024-10-01' existing = {
   name: aiFoundryAIServicesName
@@ -32,8 +33,9 @@ module avmWebsiteWebapp 'br/public:avm/res/web/site:0.13.3' = {
   params: {
     name: webAppName
     tags: tags
-    kind: 'app,linux,container'
     location: location
+    enableTelemetry: enableTelemetry
+    kind: 'app,linux,container'
     serverFarmResourceId: serverFarmResourceId
     appInsightResourceId: appInsightsResourceId
     managedIdentities: {

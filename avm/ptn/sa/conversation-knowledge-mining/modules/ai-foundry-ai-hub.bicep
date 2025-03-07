@@ -15,6 +15,7 @@ param cognitiveServicesEndpoint string
 param cognitiveServicesResourceId string
 param searchServicesEndpoint string
 param searchServicesResourceId string
+param enableTelemetry bool = true
 
 resource deployed_avm_cognitive_services_accounts 'Microsoft.CognitiveServices/accounts@2024-10-01' existing = {
   name: aiServicesName
@@ -28,8 +29,9 @@ module avmMachineLearningServicesWorkspacesAiHub 'br/public:avm/res/machine-lear
   name: deploymentName
   params: {
     name: aiHubName
-    location: location
     tags: tags
+    location: location
+    enableTelemetry: enableTelemetry
     // Missing in AVM:
     // friendlyName: aiHubFriendlyName
     managedIdentities: { systemAssigned: true }

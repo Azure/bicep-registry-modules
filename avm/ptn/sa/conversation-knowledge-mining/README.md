@@ -49,9 +49,9 @@ This may result in breaking changes in upcoming versions when these features are
 | `Microsoft.KeyVault/vaults` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults) |
 | `Microsoft.KeyVault/vaults/accessPolicies` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/accessPolicies) |
 | `Microsoft.KeyVault/vaults/keys` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/keys) |
-| `Microsoft.KeyVault/vaults/secrets` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/secrets) |
-| `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
 | `Microsoft.KeyVault/vaults/secrets` | [2021-11-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2021-11-01-preview/vaults/secrets) |
+| `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
+| `Microsoft.KeyVault/vaults/secrets` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/secrets) |
 | `Microsoft.MachineLearningServices/workspaces` | [2024-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2024-04-01-preview/workspaces) |
 | `Microsoft.MachineLearningServices/workspaces/computes` | [2022-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2022-10-01/workspaces/computes) |
 | `Microsoft.MachineLearningServices/workspaces/connections` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2024-04-01/workspaces/connections) |
@@ -98,8 +98,8 @@ This may result in breaking changes in upcoming versions when these features are
 | `Microsoft.Storage/storageAccounts/tableServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/tableServices) |
 | `Microsoft.Storage/storageAccounts/tableServices/tables` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/tableServices/tables) |
 | `Microsoft.Web/serverfarms` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2022-09-01/serverfarms) |
-| `Microsoft.Web/sites` | [2023-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2023-12-01/sites) |
 | `Microsoft.Web/sites` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites) |
+| `Microsoft.Web/sites` | [2023-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2023-12-01/sites) |
 | `Microsoft.Web/sites/basicPublishingCredentialsPolicies` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/basicPublishingCredentialsPolicies) |
 | `Microsoft.Web/sites/config` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/config) |
 | `Microsoft.Web/sites/extensions` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/extensions) |
@@ -134,7 +134,7 @@ module conversationKnowledgeMining 'br/public:avm/ptn/sa/conversation-knowledge-
   params: {
     // Required parameters
     contentUnderstandingLocation: 'West US'
-    environmentName: 'ckmgh'
+    solutionPrefix: 'ckmpoc'
   }
 }
 ```
@@ -155,8 +155,8 @@ module conversationKnowledgeMining 'br/public:avm/ptn/sa/conversation-knowledge-
     "contentUnderstandingLocation": {
       "value": "West US"
     },
-    "environmentName": {
-      "value": "ckmgh"
+    "solutionPrefix": {
+      "value": "ckmpoc"
     }
   }
 }
@@ -174,7 +174,7 @@ using 'br/public:avm/ptn/sa/conversation-knowledge-mining:<version>'
 
 // Required parameters
 param contentUnderstandingLocation = 'West US'
-param environmentName = 'ckmgh'
+param solutionPrefix = 'ckmpoc'
 ```
 
 </details>
@@ -187,14 +187,14 @@ param environmentName = 'ckmgh'
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`contentUnderstandingLocation`](#parameter-contentunderstandinglocation) | string | Location for the Content Understanding service deployment. |
-| [`environmentName`](#parameter-environmentname) | string | The prefix for all deployed components log analytics workspace. |
+| [`solutionPrefix`](#parameter-solutionprefix) | string | The prefix for all deployed resources. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`aiFoundryAiServicesProjectLocation`](#parameter-aifoundryaiservicesprojectlocation) | string | The location of the AI Foundry AI Services Project. If empty, contentUnderstandingLocation will be used. |
 | [`armDeploymentSuffix`](#parameter-armdeploymentsuffix) | string | The version string to add to Resource Group deployments. Defaulted to current UTC time stamp, this default can lead to reach the RG deployment limit. |
-| [`ckmWebAppServerFarmLocation`](#parameter-ckmwebappserverfarmlocation) | string | The location for the web app. If empty, contentUnderstandingLocation will be used. |
 | [`deploymentType`](#parameter-deploymenttype) | string | GPT model deployment type. |
 | [`embeddingDeploymentCapacity`](#parameter-embeddingdeploymentcapacity) | int | Capacity of the Embedding Model deployment. |
 | [`embeddingModel`](#parameter-embeddingmodel) | string | Name of the Text Embedding model to deploy. |
@@ -203,7 +203,8 @@ param environmentName = 'ckmgh'
 | [`gptModelName`](#parameter-gptmodelname) | string | Name of the GPT model to deploy. |
 | [`imageTag`](#parameter-imagetag) | string | Docker image version to use for all deployed containers (functions and web app). |
 | [`secondaryLocation`](#parameter-secondarylocation) | string | Secondary location for databases creation. |
-| [`solutionLocation`](#parameter-solutionlocation) | string | Location for the solution deployment. Defaulted to the location of the Resource Group. |
+| [`solutionLocation`](#parameter-solutionlocation) | string | Location for the solution deployment. Defaulted to the resource group location. |
+| [`webAppServerFarmLocation`](#parameter-webappserverfarmlocation) | string | The location for the Web App Server Farm. If empty, contentUnderstandingLocation will be used. |
 | [`webApServerFarmSku`](#parameter-webapserverfarmsku) | string | The SKU for the web app. If empty, contentUnderstandingLocation will be used. |
 
 ### Parameter: `contentUnderstandingLocation`
@@ -221,12 +222,20 @@ Location for the Content Understanding service deployment.
   ]
   ```
 
-### Parameter: `environmentName`
+### Parameter: `solutionPrefix`
 
-The prefix for all deployed components log analytics workspace.
+The prefix for all deployed resources.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `aiFoundryAiServicesProjectLocation`
+
+The location of the AI Foundry AI Services Project. If empty, contentUnderstandingLocation will be used.
+
+- Required: No
+- Type: string
+- Default: `''`
 
 ### Parameter: `armDeploymentSuffix`
 
@@ -235,14 +244,6 @@ The version string to add to Resource Group deployments. Defaulted to current UT
 - Required: No
 - Type: string
 - Default: `[utcNow()]`
-
-### Parameter: `ckmWebAppServerFarmLocation`
-
-The location for the web app. If empty, contentUnderstandingLocation will be used.
-
-- Required: No
-- Type: string
-- Default: `''`
 
 ### Parameter: `deploymentType`
 
@@ -338,11 +339,20 @@ Secondary location for databases creation.
 
 ### Parameter: `solutionLocation`
 
-Location for the solution deployment. Defaulted to the location of the Resource Group.
+Location for the solution deployment. Defaulted to the resource group location.
 
 - Required: No
 - Type: string
-- Default: `[resourceGroup().location]`
+- Default: `'East US'`
+- MinValue: 10
+
+### Parameter: `webAppServerFarmLocation`
+
+The location for the Web App Server Farm. If empty, contentUnderstandingLocation will be used.
+
+- Required: No
+- Type: string
+- Default: `''`
 - MinValue: 10
 
 ### Parameter: `webApServerFarmSku`
