@@ -19,12 +19,12 @@ param machineLearningServicesWorkspaces_aihub_name string
 param machineLearningServicesWorkspaces_project_name string
 //param machineLearningServicesWorkspaces_phiServerless_name string
 //param gptModelVersionPreview string
-param deploymentVersion string = utcNow()
+//param deploymentVersion string = utcNow()
 param managedIdentityPrincipalId string
 param enableTelemetry bool = true
 
 // VARIABLES
-var deploymentNameFormat = '${deploymentVersion}-deploy-{0}'
+var deploymentNameFormat = 'deploy-{0}'
 // var phiModelRegions = [
 //   'East US'
 //   'East US 2'

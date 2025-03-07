@@ -133,7 +133,7 @@ module conversationKnowledgeMining 'br/public:avm/ptn/sa/conversation-knowledge-
   name: 'conversationKnowledgeMiningDeployment'
   params: {
     // Required parameters
-    contentUnderstandingLocation: 'West US'
+    aiFoundryAiServiceContentUnderstandingLocation: 'West US'
     solutionPrefix: 'ckmpoc'
   }
 }
@@ -152,7 +152,7 @@ module conversationKnowledgeMining 'br/public:avm/ptn/sa/conversation-knowledge-
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "contentUnderstandingLocation": {
+    "aiFoundryAiServiceContentUnderstandingLocation": {
       "value": "West US"
     },
     "solutionPrefix": {
@@ -173,7 +173,7 @@ module conversationKnowledgeMining 'br/public:avm/ptn/sa/conversation-knowledge-
 using 'br/public:avm/ptn/sa/conversation-knowledge-mining:<version>'
 
 // Required parameters
-param contentUnderstandingLocation = 'West US'
+param aiFoundryAiServiceContentUnderstandingLocation = 'West US'
 param solutionPrefix = 'ckmpoc'
 ```
 
@@ -186,30 +186,50 @@ param solutionPrefix = 'ckmpoc'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`contentUnderstandingLocation`](#parameter-contentunderstandinglocation) | string | Location for the Content Understanding service deployment. |
-| [`solutionPrefix`](#parameter-solutionprefix) | string | The prefix for all deployed resources. |
+| [`aiFoundryAiServiceContentUnderstandingLocation`](#parameter-aifoundryaiservicecontentunderstandinglocation) | string | Location for the AI Foundry Content Understanding service deployment. |
+| [`solutionPrefix`](#parameter-solutionprefix) | string | The prefix to add in the default names given to all deployed Azure resources. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`aiFoundryAiServicesProjectLocation`](#parameter-aifoundryaiservicesprojectlocation) | string | The location of the AI Foundry AI Services Project. If empty, contentUnderstandingLocation will be used. |
-| [`armDeploymentSuffix`](#parameter-armdeploymentsuffix) | string | The version string to add to Resource Group deployments. Defaulted to current UTC time stamp, this default can lead to reach the RG deployment limit. |
-| [`deploymentType`](#parameter-deploymenttype) | string | GPT model deployment type. |
+| [`aiFoundryAiHubResourceName`](#parameter-aifoundryaihubresourcename) | string | The name of the AI Foundry AI Hub resource. It will override the default given name. |
+| [`aiFoundryAiProjectResourceName`](#parameter-aifoundryaiprojectresourcename) | string | The name of the AI Foundry AI Project resource. It will override the default given name. |
+| [`aiFoundryAiServicesContentUnderstandingResourceName`](#parameter-aifoundryaiservicescontentunderstandingresourcename) | string | The name of the AI Foundry AI Services Content Understanding resource. It will override the default given name. |
+| [`aiFoundryAIServicesGptModelDeploymentCapacity`](#parameter-aifoundryaiservicesgptmodeldeploymentcapacity) | int | Capacity of the GPT deployment. You can increase this, but capacity is limited per model/region, so you will get errors if you go over. [Quotas link](https://learn.microsoft.com/en-us/azure/ai-services/openai/quotas-limits). |
+| [`aiFoundryAIServicesGptModelDeploymentType`](#parameter-aifoundryaiservicesgptmodeldeploymenttype) | string | GPT model deployment type. |
+| [`aiFoundryAIServicesGptModelName`](#parameter-aifoundryaiservicesgptmodelname) | string | Name of the GPT model to deploy. |
+| [`aiFoundryAiServicesProjectLocation`](#parameter-aifoundryaiservicesprojectlocation) | string | The location of the AI Foundry AI Services Project. If empty, aiFoundryAiServiceContentUnderstandingLocation will be used. |
+| [`aiFoundryAiServicesResourceName`](#parameter-aifoundryaiservicesresourcename) | string | The name of the AI Foundry AI Services resource. It will override the default given name. |
+| [`aiFoundryAiServicesTextEmbeddingModelName`](#parameter-aifoundryaiservicestextembeddingmodelname) | string | Name of the Text Embedding model to deploy. |
+| [`aiFoundryApplicationInsightsResourceName`](#parameter-aifoundryapplicationinsightsresourcename) | string | The name of the AI Foundry Application Insights resource. It will override the default given name. |
+| [`aiFoundryContainerRegistryResourceName`](#parameter-aifoundrycontainerregistryresourcename) | string | The name of the AI Foundry Container Registry resource. It will override the default given name. |
+| [`aiFoundrySearchServiceResourceName`](#parameter-aifoundrysearchserviceresourcename) | string | The name of the AI Foundry Search Service resource. It will override the default given name. |
+| [`aiFoundryStorageAccountResourceName`](#parameter-aifoundrystorageaccountresourcename) | string | The name of the AI Foundry Storage Account resource. It will override the default given name. |
+| [`cosmosDbAccountResourceName`](#parameter-cosmosdbaccountresourcename) | string | The name of the Cosmos DB Account resource. It will override the default given name. |
+| [`databasesLocation`](#parameter-databaseslocation) | string | Secondary location for databases creation. |
 | [`embeddingDeploymentCapacity`](#parameter-embeddingdeploymentcapacity) | int | Capacity of the Embedding Model deployment. |
-| [`embeddingModel`](#parameter-embeddingmodel) | string | Name of the Text Embedding model to deploy. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`gptDeploymentCapacity`](#parameter-gptdeploymentcapacity) | int | Capacity of the GPT deployment. You can increase this, but capacity is limited per model/region, so you will get errors if you go over. [Quotas link](https://learn.microsoft.com/en-us/azure/ai-services/openai/quotas-limits). |
-| [`gptModelName`](#parameter-gptmodelname) | string | Name of the GPT model to deploy. |
+| [`functionChartsResourceName`](#parameter-functionchartsresourcename) | string | The name of the Function Charts resource. It will override the default given name. |
+| [`functionRagResourceName`](#parameter-functionragresourcename) | string | The name of the Function RAG resource. It will override the default given name. |
+| [`functionsManagedEnvironmentResourceName`](#parameter-functionsmanagedenvironmentresourcename) | string | The name of the Functions Managed Environment resource. It will override the default given name. |
 | [`imageTag`](#parameter-imagetag) | string | Docker image version to use for all deployed containers (functions and web app). |
-| [`secondaryLocation`](#parameter-secondarylocation) | string | Secondary location for databases creation. |
+| [`keyVaultResourceName`](#parameter-keyvaultresourcename) | string | The name of the Key Vault resource. It will override the default given name. |
+| [`logAnalyticsWorkspaceResourceName`](#parameter-loganalyticsworkspaceresourcename) | string | The name of the Log Analytics Workspace resource. It will override the default given name. |
+| [`managedIdentityResourceName`](#parameter-managedidentityresourcename) | string | The name of the Managed Identity resource. It will override the default given name. |
+| [`scriptCopyDataResourceName`](#parameter-scriptcopydataresourcename) | string | The name of the Script Copy Data resource. It will override the default given name. |
+| [`scriptIndexDataResourceName`](#parameter-scriptindexdataresourcename) | string | The name of the Script Index Data resource. It will override the default given name. |
 | [`solutionLocation`](#parameter-solutionlocation) | string | Location for the solution deployment. Defaulted to the resource group location. |
-| [`webAppServerFarmLocation`](#parameter-webappserverfarmlocation) | string | The location for the Web App Server Farm. If empty, contentUnderstandingLocation will be used. |
-| [`webApServerFarmSku`](#parameter-webapserverfarmsku) | string | The SKU for the web app. If empty, contentUnderstandingLocation will be used. |
+| [`sqlServerResourceName`](#parameter-sqlserverresourcename) | string | The name of the SQL Server resource. It will override the default given name. |
+| [`storageAccountResourceName`](#parameter-storageaccountresourcename) | string | The name of the Storage Account resource. It will override the default given name. |
+| [`webAppResourceName`](#parameter-webappresourcename) | string | The name of the Web App resource. |
+| [`webAppServerFarmLocation`](#parameter-webappserverfarmlocation) | string | The location for the Web App Server Farm. If empty, aiFoundryAiServiceContentUnderstandingLocation will be used. |
+| [`webAppServerFarmResourceName`](#parameter-webappserverfarmresourcename) | string | The name of the Web App Server Farm resource. It will override the default given name. |
+| [`webAppServerFarmSku`](#parameter-webappserverfarmsku) | string | The SKU for the web app. If empty, aiFoundryAiServiceContentUnderstandingLocation will be used. |
 
-### Parameter: `contentUnderstandingLocation`
+### Parameter: `aiFoundryAiServiceContentUnderstandingLocation`
 
-Location for the Content Understanding service deployment.
+Location for the AI Foundry Content Understanding service deployment.
 
 - Required: Yes
 - Type: string
@@ -224,28 +244,45 @@ Location for the Content Understanding service deployment.
 
 ### Parameter: `solutionPrefix`
 
-The prefix for all deployed resources.
+The prefix to add in the default names given to all deployed Azure resources.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `aiFoundryAiServicesProjectLocation`
+### Parameter: `aiFoundryAiHubResourceName`
 
-The location of the AI Foundry AI Services Project. If empty, contentUnderstandingLocation will be used.
+The name of the AI Foundry AI Hub resource. It will override the default given name.
 
 - Required: No
 - Type: string
 - Default: `''`
 
-### Parameter: `armDeploymentSuffix`
+### Parameter: `aiFoundryAiProjectResourceName`
 
-The version string to add to Resource Group deployments. Defaulted to current UTC time stamp, this default can lead to reach the RG deployment limit.
+The name of the AI Foundry AI Project resource. It will override the default given name.
 
 - Required: No
 - Type: string
-- Default: `[utcNow()]`
+- Default: `''`
 
-### Parameter: `deploymentType`
+### Parameter: `aiFoundryAiServicesContentUnderstandingResourceName`
+
+The name of the AI Foundry AI Services Content Understanding resource. It will override the default given name.
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `aiFoundryAIServicesGptModelDeploymentCapacity`
+
+Capacity of the GPT deployment. You can increase this, but capacity is limited per model/region, so you will get errors if you go over. [Quotas link](https://learn.microsoft.com/en-us/azure/ai-services/openai/quotas-limits).
+
+- Required: No
+- Type: int
+- Default: `100`
+- MinValue: 10
+
+### Parameter: `aiFoundryAIServicesGptModelDeploymentType`
 
 GPT model deployment type.
 
@@ -259,50 +296,9 @@ GPT model deployment type.
     'Standard'
   ]
   ```
-
-### Parameter: `embeddingDeploymentCapacity`
-
-Capacity of the Embedding Model deployment.
-
-- Required: No
-- Type: int
-- Default: `80`
 - MinValue: 10
 
-### Parameter: `embeddingModel`
-
-Name of the Text Embedding model to deploy.
-
-- Required: No
-- Type: string
-- Default: `'text-embedding-ada-002'`
-- Allowed:
-  ```Bicep
-  [
-    'text-embedding-ada-002'
-  ]
-  ```
-- MinValue: 10
-
-### Parameter: `enableTelemetry`
-
-Enable/Disable usage telemetry for module.
-
-- Required: No
-- Type: bool
-- Default: `True`
-- MinValue: 10
-
-### Parameter: `gptDeploymentCapacity`
-
-Capacity of the GPT deployment. You can increase this, but capacity is limited per model/region, so you will get errors if you go over. [Quotas link](https://learn.microsoft.com/en-us/azure/ai-services/openai/quotas-limits).
-
-- Required: No
-- Type: int
-- Default: `100`
-- MinValue: 10
-
-### Parameter: `gptModelName`
+### Parameter: `aiFoundryAIServicesGptModelName`
 
 Name of the GPT model to deploy.
 
@@ -319,6 +315,138 @@ Name of the GPT model to deploy.
   ```
 - MinValue: 10
 
+### Parameter: `aiFoundryAiServicesProjectLocation`
+
+The location of the AI Foundry AI Services Project. If empty, aiFoundryAiServiceContentUnderstandingLocation will be used.
+
+- Required: No
+- Type: string
+- Default: `''`
+- MinValue: 10
+
+### Parameter: `aiFoundryAiServicesResourceName`
+
+The name of the AI Foundry AI Services resource. It will override the default given name.
+
+- Required: No
+- Type: string
+- Default: `''`
+- MinValue: 10
+
+### Parameter: `aiFoundryAiServicesTextEmbeddingModelName`
+
+Name of the Text Embedding model to deploy.
+
+- Required: No
+- Type: string
+- Default: `'text-embedding-ada-002'`
+- Allowed:
+  ```Bicep
+  [
+    'text-embedding-ada-002'
+  ]
+  ```
+- MinValue: 10
+
+### Parameter: `aiFoundryApplicationInsightsResourceName`
+
+The name of the AI Foundry Application Insights resource. It will override the default given name.
+
+- Required: No
+- Type: string
+- Default: `''`
+- MinValue: 10
+
+### Parameter: `aiFoundryContainerRegistryResourceName`
+
+The name of the AI Foundry Container Registry resource. It will override the default given name.
+
+- Required: No
+- Type: string
+- Default: `''`
+- MinValue: 10
+
+### Parameter: `aiFoundrySearchServiceResourceName`
+
+The name of the AI Foundry Search Service resource. It will override the default given name.
+
+- Required: No
+- Type: string
+- Default: `''`
+- MinValue: 10
+
+### Parameter: `aiFoundryStorageAccountResourceName`
+
+The name of the AI Foundry Storage Account resource. It will override the default given name.
+
+- Required: No
+- Type: string
+- Default: `''`
+- MinValue: 10
+
+### Parameter: `cosmosDbAccountResourceName`
+
+The name of the Cosmos DB Account resource. It will override the default given name.
+
+- Required: No
+- Type: string
+- Default: `''`
+- MinValue: 10
+
+### Parameter: `databasesLocation`
+
+Secondary location for databases creation.
+
+- Required: No
+- Type: string
+- Default: `'East US 2'`
+- MinValue: 10
+
+### Parameter: `embeddingDeploymentCapacity`
+
+Capacity of the Embedding Model deployment.
+
+- Required: No
+- Type: int
+- Default: `80`
+- MinValue: 10
+
+### Parameter: `enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
+- Default: `True`
+- MinValue: 10
+
+### Parameter: `functionChartsResourceName`
+
+The name of the Function Charts resource. It will override the default given name.
+
+- Required: No
+- Type: string
+- Default: `''`
+- MinValue: 10
+
+### Parameter: `functionRagResourceName`
+
+The name of the Function RAG resource. It will override the default given name.
+
+- Required: No
+- Type: string
+- Default: `''`
+- MinValue: 10
+
+### Parameter: `functionsManagedEnvironmentResourceName`
+
+The name of the Functions Managed Environment resource. It will override the default given name.
+
+- Required: No
+- Type: string
+- Default: `''`
+- MinValue: 10
+
 ### Parameter: `imageTag`
 
 Docker image version to use for all deployed containers (functions and web app).
@@ -328,13 +456,49 @@ Docker image version to use for all deployed containers (functions and web app).
 - Default: `'latest'`
 - MinValue: 10
 
-### Parameter: `secondaryLocation`
+### Parameter: `keyVaultResourceName`
 
-Secondary location for databases creation.
+The name of the Key Vault resource. It will override the default given name.
 
 - Required: No
 - Type: string
-- Default: `'East US 2'`
+- Default: `''`
+- MinValue: 10
+
+### Parameter: `logAnalyticsWorkspaceResourceName`
+
+The name of the Log Analytics Workspace resource. It will override the default given name.
+
+- Required: No
+- Type: string
+- Default: `''`
+- MinValue: 10
+
+### Parameter: `managedIdentityResourceName`
+
+The name of the Managed Identity resource. It will override the default given name.
+
+- Required: No
+- Type: string
+- Default: `''`
+- MinValue: 10
+
+### Parameter: `scriptCopyDataResourceName`
+
+The name of the Script Copy Data resource. It will override the default given name.
+
+- Required: No
+- Type: string
+- Default: `''`
+- MinValue: 10
+
+### Parameter: `scriptIndexDataResourceName`
+
+The name of the Script Index Data resource. It will override the default given name.
+
+- Required: No
+- Type: string
+- Default: `''`
 - MinValue: 10
 
 ### Parameter: `solutionLocation`
@@ -346,18 +510,54 @@ Location for the solution deployment. Defaulted to the resource group location.
 - Default: `'East US'`
 - MinValue: 10
 
-### Parameter: `webAppServerFarmLocation`
+### Parameter: `sqlServerResourceName`
 
-The location for the Web App Server Farm. If empty, contentUnderstandingLocation will be used.
+The name of the SQL Server resource. It will override the default given name.
 
 - Required: No
 - Type: string
 - Default: `''`
 - MinValue: 10
 
-### Parameter: `webApServerFarmSku`
+### Parameter: `storageAccountResourceName`
 
-The SKU for the web app. If empty, contentUnderstandingLocation will be used.
+The name of the Storage Account resource. It will override the default given name.
+
+- Required: No
+- Type: string
+- Default: `''`
+- MinValue: 10
+
+### Parameter: `webAppResourceName`
+
+The name of the Web App resource.
+
+- Required: No
+- Type: string
+- Default: `''`
+- MinValue: 10
+
+### Parameter: `webAppServerFarmLocation`
+
+The location for the Web App Server Farm. If empty, aiFoundryAiServiceContentUnderstandingLocation will be used.
+
+- Required: No
+- Type: string
+- Default: `''`
+- MinValue: 10
+
+### Parameter: `webAppServerFarmResourceName`
+
+The name of the Web App Server Farm resource. It will override the default given name.
+
+- Required: No
+- Type: string
+- Default: `''`
+- MinValue: 10
+
+### Parameter: `webAppServerFarmSku`
+
+The SKU for the web app. If empty, aiFoundryAiServiceContentUnderstandingLocation will be used.
 
 - Required: No
 - Type: string
