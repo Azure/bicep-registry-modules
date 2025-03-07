@@ -85,20 +85,77 @@ param webAppServerFarmResourceName string = ''
 //NOTE: allow for individual locations for each resource
 @description('Required. Location for the AI Foundry Content Understanding service deployment.')
 @allowed(['West US', 'Sweden Central', 'Australia East'])
-@metadata({
-  azd: {
-    type: 'location'
-  }
-})
+@metadata({ azd: { type: 'location' } })
 param aiFoundryAiServiceContentUnderstandingLocation string
 @description('Optional. Location for the solution deployment. Defaulted to the resource group location.')
+@metadata({ azd: { type: 'location' } })
 param solutionLocation string = 'East US'
 @description('Optional. Secondary location for databases creation.')
+@metadata({ azd: { type: 'location' } })
 param databasesLocation string = 'East US 2'
-@description('Optional. The location for the Web App Server Farm. If empty, aiFoundryAiServiceContentUnderstandingLocation will be used.')
-param webAppServerFarmLocation string = ''
-@description('Optional. The location of the AI Foundry AI Services Project. If empty, aiFoundryAiServiceContentUnderstandingLocation will be used.')
-param aiFoundryAiServicesProjectLocation string = ''
+@description('Optional. The location for the Web App Server Farm. Defaulted to the solution location')
+@metadata({ azd: { type: 'location' } })
+param webAppServerFarmLocation string = solutionLocation
+@description('Optional. The location of the AI Foundry AI Services Project.')
+@metadata({ azd: { type: 'location' } })
+param aiFoundryAiServicesProjectLocation string = solutionLocation
+@description('Optional. Location for the AI Foundry AI Hub resource deployment.')
+@metadata({ azd: { type: 'location' } })
+param aiFoundryAiHubLocation string = solutionLocation
+@description('Optional. Location for the AI Foundry AI Service resource deployment.')
+@metadata({ azd: { type: 'location' } })
+param aiFoundryAiServiceLocation string = solutionLocation
+@description('Optional. Location for the AI Foundry AI Project resource deployment.')
+@metadata({ azd: { type: 'location' } })
+param aiFoundryAiProjectLocation string = solutionLocation
+@description('Optional. Location for the AI Foundry Application Insights resource deployment.')
+@metadata({ azd: { type: 'location' } })
+param aiFoundryApplicationInsightsLocation string = solutionLocation
+@description('Optional. Location for the AI Foundry Container Registry resource deployment.')
+@metadata({ azd: { type: 'location' } })
+param aiFoundryContainerRegistryLocation string = solutionLocation
+@description('Optional. Location for the AI Foundry Search Service resource deployment.')
+@metadata({ azd: { type: 'location' } })
+param aiFoundrySearchServiceLocation string = solutionLocation
+@description('Optional. Location for the AI Foundry Storage Account resource deployment.')
+@metadata({ azd: { type: 'location' } })
+param aiFoundryStorageAccountLocation string = solutionLocation
+@description('Optional. Location for the Cosmos DB Account resource deployment.')
+@metadata({ azd: { type: 'location' } })
+param cosmosDbAccountLocation string = databasesLocation
+@description('Optional. Location for the Function Charts resource deployment.')
+@metadata({ azd: { type: 'location' } })
+param functionChartsLocation string = solutionLocation
+@description('Optional. Location for the Function RAG resource deployment.')
+@metadata({ azd: { type: 'location' } })
+param functionRagLocation string = solutionLocation
+@description('Optional. Location for the Functions Managed Environment resource deployment.')
+@metadata({ azd: { type: 'location' } })
+param functionsManagedEnvironmentLocation string = solutionLocation
+@description('Optional. Location for the Key Vault resource deployment.')
+@metadata({ azd: { type: 'location' } })
+param keyVaultLocation string = solutionLocation
+@description('Optional. Location for the Log Analytics Workspace resource deployment.')
+@metadata({ azd: { type: 'location' } })
+param logAnalyticsWorkspaceLocation string = solutionLocation
+@description('Optional. Location for the Managed Identity resource deployment.')
+@metadata({ azd: { type: 'location' } })
+param managedIdentityLocation string = solutionLocation
+@description('Optional. Location for the Script Copy Data resource deployment.')
+@metadata({ azd: { type: 'location' } })
+param scriptCopyDataLocation string = solutionLocation
+@description('Optional. Location for the Script Index Data resource deployment.')
+@metadata({ azd: { type: 'location' } })
+param scriptIndexDataLocation string = solutionLocation
+@description('Optional. Location for the SQL Server resource deployment.')
+@metadata({ azd: { type: 'location' } })
+param sqlServerLocation string = databasesLocation
+@description('Optional. Location for the Storage Account resource deployment.')
+@metadata({ azd: { type: 'location' } })
+param storageAccountLocation string = solutionLocation
+@description('Optional. Location for the Web App resource deployment.')
+@metadata({ azd: { type: 'location' } })
+param webAppLocation string = solutionLocation
 
 // PARAMETERS: Web app configuration
 @description('Optional. The SKU for the web app. If empty, aiFoundryAiServiceContentUnderstandingLocation will be used.')
@@ -157,10 +214,10 @@ var varAiFoundryAiHubResourceName = empty(aiFoundryAiHubResourceName)
 var varAiFoundryAiProjectResourceName = empty(aiFoundryAiProjectResourceName)
   ? format(varWorkloadNameFormat, 'aifd-aipj')
   : aiFoundryAiProjectResourceName
-var varAiFoundryAiServicesContentUnderstandingResourceName = empty(aiFoundryAiServicesContentUnderstandingResourceName)
+var varAiFoundryAiServiceContentUnderstandingResourceName = empty(aiFoundryAiServicesContentUnderstandingResourceName)
   ? format(varWorkloadNameFormat, 'aifd-aisr-cu')
   : aiFoundryAiServicesContentUnderstandingResourceName
-var varAiFoundryAiServicesResourceName = empty(aiFoundryAiServicesResourceName)
+var varAiFoundryAiServiceResourceName = empty(aiFoundryAiServicesResourceName)
   ? format(varWorkloadNameFormat, 'aifd-aisr')
   : aiFoundryAiServicesResourceName
 var varAiFoundryApplicationInsightsResourceName = empty(aiFoundryApplicationInsightsResourceName)
@@ -213,17 +270,6 @@ var varWebAppServerFarmResourceName = empty(webAppServerFarmResourceName)
   ? format(varWorkloadNameFormat, 'waoo-srvf')
   : webAppServerFarmResourceName
 
-// VARIABLES: Calculated resources locations
-var varAIFoundryAIServicesContentUnderstandingLocation = aiFoundryAiServiceContentUnderstandingLocation == ''
-  ? solutionLocation
-  : aiFoundryAiServiceContentUnderstandingLocation
-var varAiFoundryAiServicesProjectLocation = aiFoundryAiServicesProjectLocation == ''
-  ? solutionLocation
-  : aiFoundryAiServicesProjectLocation
-var varCosmosDBAccountLocation = databasesLocation
-var varSQLServerLocation = databasesLocation
-var varWebAppServerFarmLocation = webAppServerFarmLocation == '' ? solutionLocation : webAppServerFarmLocation
-
 // VARIABLES: key vault secrets names
 var varKvSecretNameAdlsAccountKey = 'ADLS-ACCOUNT-KEY'
 var varKvSecretNameAzureCosmosdbAccountKey = 'AZURE-COSMOSDB-ACCOUNT-KEY'
@@ -240,17 +286,17 @@ var varKvSecretNameSqlDbUsername = 'SQLDB-USERNAME'
 var varKvSecretNameSqlDbPassword = 'SQLDB-PASSWORD'
 
 // VARIABLES: AI Model deployments
-var varAiFoundryAiServicesGPTModelVersion = '2024-07-18'
-var varAiFoundryAiServicesGPTModelVersionPreview = '2024-02-15-preview'
-var varAiFoundryAiServicesTextEmbeddingModelVersion = '2'
-var varAiFoundryAiServicesProjectConnectionString = '${toLower(replace(varAiFoundryAiServicesProjectLocation, ' ', ''))}.api.azureml.ms;${subscription().subscriptionId};${resourceGroup().name};${varAiFoundryAiProjectResourceName}'
+var varAiFoundryAiServiceGPTModelVersion = '2024-07-18'
+var varAiFoundryAiServiceGPTModelVersionPreview = '2024-02-15-preview'
+var varAiFoundryAiServiceTextEmbeddingModelVersion = '2'
+var varAiFoundryAiServiceProjectConnectionString = '${toLower(replace(aiFoundryAiServicesProjectLocation, ' ', ''))}.api.azureml.ms;${subscription().subscriptionId};${resourceGroup().name};${varAiFoundryAiProjectResourceName}'
 var varAiFoundryAIServicesModelDeployments = [
   {
     name: aiFoundryAIServicesGptModelName
     model: {
       name: aiFoundryAIServicesGptModelName
       format: 'OpenAI'
-      version: varAiFoundryAiServicesGPTModelVersion //NOTE: This attribute is mandatory for AVM, but optional for ARM. Request AVM to make it optional
+      version: varAiFoundryAiServiceGPTModelVersion //NOTE: This attribute is mandatory for AVM, but optional for ARM. Request AVM to make it optional
     }
     sku: {
       name: aiFoundryAIServicesGptModelDeploymentType
@@ -263,7 +309,7 @@ var varAiFoundryAIServicesModelDeployments = [
     model: {
       name: aiFoundryAiServicesTextEmbeddingModelName
       format: 'OpenAI'
-      version: varAiFoundryAiServicesTextEmbeddingModelVersion //NOTE: This attribute is mandatory for AVM, but optional for ARM. Request AVM to make it optional
+      version: varAiFoundryAiServiceTextEmbeddingModelVersion //NOTE: This attribute is mandatory for AVM, but optional for ARM. Request AVM to make it optional
     }
     sku: {
       name: 'Standard'
@@ -402,13 +448,13 @@ module avmManagedIdentity 'br/public:avm/res/managed-identity/user-assigned-iden
   params: {
     name: varManagedIdentityResourceName
     tags: tags
-    location: solutionLocation
+    location: managedIdentityLocation
     enableTelemetry: enableTelemetry
   }
 }
 
 // NOTE: This assignment should leverage AVM module [avm/res/resources/resource-group](https://azure.github.io/Azure-Verified-Modules/indexes/bicep/bicep-resource-modules/), but current target scope is resourceGroup
-// TODO: Owner permissions to RG is a bad practice, fine grain permissions
+// TODO: Owner permissions to RG is an unsecure practice, fine grain permissions
 module assignResourceGroupOwner 'modules/rbac-rg-owner.bicep' = {
   name: 'rbac-rg-owner'
   params: {
@@ -423,7 +469,7 @@ module avmKeyVault 'br/public:avm/res/key-vault/vault:0.11.2' = {
   params: {
     name: varKeyVaultResourceName
     tags: tags
-    location: solutionLocation
+    location: keyVaultLocation
     enableTelemetry: enableTelemetry
     sku: 'standard'
     createMode: 'default'
@@ -470,14 +516,14 @@ module avmKeyVault 'br/public:avm/res/key-vault/vault:0.11.2' = {
       { name: varKvSecretNameSqlDbDatabase, value: varSQLDatabaseName }
       { name: varKvSecretNameSqlDbUsername, value: varSQLServerAdministratorLogin }
       { name: varKvSecretNameSqlDbPassword, value: varSQLServerAdministratorPassword }
-      { name: 'AZURE-OPENAI-PREVIEW-API-VERSION', value: varAiFoundryAiServicesGPTModelVersionPreview }
-      { name: 'AZURE-AI-PROJECT-CONN-STRING', value: varAiFoundryAiServicesProjectConnectionString }
+      { name: 'AZURE-OPENAI-PREVIEW-API-VERSION', value: varAiFoundryAiServiceGPTModelVersionPreview }
+      { name: 'AZURE-AI-PROJECT-CONN-STRING', value: varAiFoundryAiServiceProjectConnectionString }
       { name: 'AZURE-OPEN-AI-DEPLOYMENT-MODEL', value: varAiFoundryAIServicesModelDeployments[0].model.name }
       { name: 'AZURE-OPENAI-CU-VERSION', value: '?api-version=2024-12-01-preview' }
       { name: 'AZURE-SEARCH-ENDPOINT', value: 'https://${varAiFoundrySearchServiceResourceName}.search.windows.net' }
       { name: 'AZURE-SEARCH-SERVICE', value: varAiFoundrySearchServiceResourceName }
       { name: 'AZURE-SEARCH-INDEX', value: 'transcripts_index' }
-      { name: 'COG-SERVICES-NAME', value: varAiFoundryAiServicesResourceName }
+      { name: 'COG-SERVICES-NAME', value: varAiFoundryAiServiceResourceName }
       { name: 'AZURE-SUBSCRIPTION-ID', value: subscription().subscriptionId }
       { name: 'AZURE-RESOURCE-GROUP', value: resourceGroup().name }
       { name: 'AZURE-LOCATION', value: solutionLocation }
@@ -495,7 +541,7 @@ module avmLogAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspac
   params: {
     name: varLogAnalyticsWorkspaceResourceName
     tags: tags
-    location: solutionLocation
+    location: logAnalyticsWorkspaceLocation
     enableTelemetry: enableTelemetry
     skuName: 'PerGB2018'
     dataRetention: 30
@@ -509,25 +555,26 @@ module moduleAIFoundry './modules/ai-foundry.bicep' = {
   name: 'module-ai-foundry'
   params: {
     tags: tags
-    location: solutionLocation
+    aiHubLocation: aiFoundryAiHubLocation
+    aiServiceLocation: aiFoundryAiServiceLocation
+    aiServiceContentUnderstandingLocation: aiFoundryAiServiceContentUnderstandingLocation
+    aiProjectLocation: aiFoundryAiProjectLocation
+    applicationInsightsLocation: aiFoundryApplicationInsightsLocation
+    containerRegistryLocation: aiFoundryContainerRegistryLocation
+    searchServiceLocation: aiFoundrySearchServiceLocation
+    storageAccountLocation: aiFoundryStorageAccountLocation
     enableTelemetry: enableTelemetry
-    //managedIdentity_name: varManagedIdentityResourceName
     keyVault_name: varKeyVaultResourceName
     avm_operational_insights_workspace_resourceId: avmLogAnalyticsWorkspace.outputs.resourceId
     applicationInsights_name: varAiFoundryApplicationInsightsResourceName
     containerRegistry_name: varAiFoundryContainerRegistryResourceName
-    aiServices_name: varAiFoundryAiServicesResourceName
-    //aiServices_m_name: varAIFoundryAIServicesResourceName_m
-    aiServices_cu_name: varAiFoundryAiServicesContentUnderstandingResourceName
-    aiServices_cu_location: varAIFoundryAIServicesContentUnderstandingLocation
+    aiServices_name: varAiFoundryAiServiceResourceName
+    aiServices_cu_name: varAiFoundryAiServiceContentUnderstandingResourceName
     aiServices_deployments: varAiFoundryAIServicesModelDeployments
     searchService_name: varAiFoundrySearchServiceResourceName
     storageAccount_name: varAiFoundryStorageAccountResourceName
     machineLearningServicesWorkspaces_aihub_name: varAiFoundryAiHubResourceName
     machineLearningServicesWorkspaces_project_name: varAiFoundryAiProjectResourceName
-    //    machineLearningServicesWorkspaces_phiServerless_name: varAiFoundryAiServicesModelPHIServerlessName
-    //gptModelVersionPreview: varAiFoundryAiServicesGPTModelVersionPreview
-    //deploymentVersion: armDeploymentSuffix
     managedIdentityPrincipalId: avmManagedIdentity.outputs.principalId
   }
 }
@@ -539,7 +586,7 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.18.1' = {
   params: {
     name: varStorageAccountResourceName
     tags: tags
-    location: solutionLocation
+    location: storageAccountLocation
     enableTelemetry: enableTelemetry
     skuName: 'Standard_LRS'
     kind: 'StorageV2'
@@ -581,7 +628,7 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.18.1' = {
         roleDefinitionIdOrName: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe' //NOTE: Built-in role 'Storage Blob Data Contributor'
       }
       {
-        principalId: resWebapp.identity.principalId
+        principalId: functionCharts.identity.principalId
         roleDefinitionIdOrName: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe' //NOTE: Built-in role 'Storage Blob Data Contributor'
       }
     ]
@@ -599,12 +646,12 @@ module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.11.0' = {
   params: {
     name: varCosmosDbAccountResourceName
     tags: tags
-    location: varCosmosDBAccountLocation
+    location: cosmosDbAccountLocation
     enableTelemetry: enableTelemetry
     defaultConsistencyLevel: 'Session'
     locations: [
       {
-        locationName: varCosmosDBAccountLocation
+        locationName: cosmosDbAccountLocation
         failoverPriority: 0
         isZoneRedundant: false
       }
@@ -640,7 +687,7 @@ module avmSQLServer 'br/public:avm/res/sql/server:0.12.2' = {
   params: {
     name: varSqlServerResourceName
     tags: tags
-    location: varSQLServerLocation
+    location: sqlServerLocation
     enableTelemetry: enableTelemetry
     administratorLogin: varSQLServerAdministratorLogin
     administratorLoginPassword: varSQLServerAdministratorPassword
@@ -681,7 +728,7 @@ module avmDeploymentScriptCopyData 'br/public:avm/res/resources/deployment-scrip
     kind: 'AzureCLI'
     name: varScriptCopyDataResourceName
     tags: tags
-    location: solutionLocation
+    location: scriptCopyDataLocation
     enableTelemetry: enableTelemetry
     managedIdentities: {
       userAssignedResourceIds: [
@@ -709,7 +756,7 @@ module avmDeploymentScritptIndexData 'br/public:avm/res/resources/deployment-scr
     kind: 'AzureCLI'
     name: varScriptIndexDataResourceName
     tags: tags
-    location: solutionLocation
+    location: scriptIndexDataLocation
     enableTelemetry: enableTelemetry
     managedIdentities: {
       userAssignedResourceIds: [
@@ -733,7 +780,7 @@ module avmFunctionsManagedEnvironment 'br/public:avm/res/app/managed-environment
   params: {
     name: varFunctionsManagedEnvironmentResourceName
     tags: tags
-    location: solutionLocation
+    location: functionsManagedEnvironmentLocation
     enableTelemetry: enableTelemetry
     zoneRedundant: false
     workloadProfiles: [
@@ -747,10 +794,10 @@ module avmFunctionsManagedEnvironment 'br/public:avm/res/app/managed-environment
   }
 }
 
-resource resWebapp 'Microsoft.Web/sites@2023-12-01' = {
+resource functionCharts 'Microsoft.Web/sites@2023-12-01' = {
   name: varFunctionChartsResourceName
   tags: tags
-  location: solutionLocation
+  location: functionChartsLocation
   kind: 'functionapp,linux,container,azurecontainerapps'
   identity: {
     type: 'SystemAssigned'
@@ -808,7 +855,7 @@ resource resWebapp 'Microsoft.Web/sites@2023-12-01' = {
 //     accessTier: 'Hot'
 //     roleAssignments: [
 //       {
-//         principalId: resWebapp.identity.principalId
+//         principalId: functionCharts.identity.principalId
 //         roleDefinitionIdOrName: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe' //NOTE: Built-in role 'Storage Blob Data Contributor'
 //       }
 //     ]
@@ -821,17 +868,17 @@ module moduleFunctionRAG 'modules/function-rag.bicep' = {
   name: 'module-function-rag'
   params: {
     ragFunctionName: varFunctionRagResourceName
-    solutionLocation: solutionLocation
+    solutionLocation: functionRagLocation
     tags: tags
     ragStorageAccountName: moduleAIFoundry.outputs.storageAccount_name
-    aiFoundryAIHubProjectConnectionString: varAiFoundryAiServicesProjectConnectionString
+    aiFoundryAIHubProjectConnectionString: varAiFoundryAiServiceProjectConnectionString
     AIFoundryAISearchServiceConnectionString: moduleAIFoundry.outputs.aiSearch_connectionString
     aiFoundryAIServicesName: moduleAIFoundry.outputs.aiServices_name
     aiFoundryOpenAIServicesEndpoint: moduleAIFoundry.outputs.aiServices_endpoint
     aiFoundrySearchServicesName: moduleAIFoundry.outputs.aiSearch_name
     functionsManagedEnvironmentResourceId: avmFunctionsManagedEnvironment.outputs.resourceId
     gptModelName: aiFoundryAIServicesGptModelName
-    gptModelVersionPreview: varAiFoundryAiServicesGPTModelVersionPreview
+    gptModelVersionPreview: varAiFoundryAiServiceGPTModelVersionPreview
     ragDockerImageName: varRAGDockerImageName
     sqlDatabaseName: varSQLDatabaseName
     sqlServerAdministratorLogin: varSQLServerAdministratorLogin
@@ -855,7 +902,7 @@ module moduleFunctionRAG 'modules/function-rag.bicep' = {
 //       //   roleDefinitionIdOrName: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe' //NOTE: Built-in role 'Storage Blob Data Contributor'
 //       // }
 //       {
-//         principalId: resWebapp.identity.principalId
+//         principalId: functionCharts.identity.principalId
 //         roleDefinitionIdOrName: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe' //NOTE: Built-in role 'Storage Blob Data Contributor'
 //       }
 //     ]
@@ -897,7 +944,7 @@ module avmServerFarmWebapp 'br/public:avm/res/web/serverfarm:0.4.1' = {
   params: {
     name: varWebAppServerFarmResourceName
     tags: tags
-    location: varWebAppServerFarmLocation
+    location: webAppServerFarmLocation
     enableTelemetry: enableTelemetry
     skuName: webAppServerFarmSku
     reserved: true
@@ -911,7 +958,7 @@ module moduleWebsiteWebapp 'modules/webapp.bicep' = {
     deploymentName: format(deploymentNameFormat, varWebAppResourceName)
     webAppName: varWebAppResourceName
     tags: tags
-    location: solutionLocation
+    location: webAppLocation
     enableTelemetry: enableTelemetry
     serverFarmResourceId: avmServerFarmWebapp.outputs.resourceId
     appInsightsResourceId: moduleAIFoundry.outputs.appInsights_resourceId
@@ -920,9 +967,9 @@ module moduleWebsiteWebapp 'modules/webapp.bicep' = {
     appInsightsInstrumentationKey: moduleAIFoundry.outputs.appInsights_instrumentationKey
     aiServicesEndpoint: moduleAIFoundry.outputs.aiServices_endpoint
     gptModelName: aiFoundryAIServicesGptModelName
-    gptModelVersionPreview: varAiFoundryAiServicesGPTModelVersionPreview
+    gptModelVersionPreview: varAiFoundryAiServiceGPTModelVersionPreview
     aiServicesResourceName: moduleAIFoundry.outputs.aiServices_name
-    managedIdentityDefaultHostName: resWebapp.properties.defaultHostName
+    managedIdentityDefaultHostName: functionCharts.properties.defaultHostName
     chartsFunctionFunctionName: varChartsFunctionFunctionName
     webAppAppConfigReact: varWebAppAppConfigReact
     cosmosDbSqlDbName: varCosmosDbSqlDbName

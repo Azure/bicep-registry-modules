@@ -1,7 +1,14 @@
 // // ========== main.bicep ========== //
 // targetScope = 'resourceGroup'
 
-param location string
+param aiHubLocation string
+param aiServiceLocation string
+param aiServiceContentUnderstandingLocation string
+param aiProjectLocation string
+param applicationInsightsLocation string
+param containerRegistryLocation string
+param searchServiceLocation string
+param storageAccountLocation string
 param tags object
 //param managedIdentity_name string
 param avm_operational_insights_workspace_resourceId string
@@ -11,7 +18,7 @@ param keyVault_name string
 param aiServices_name string
 param aiServices_deployments array
 param aiServices_cu_name string
-param aiServices_cu_location string
+//param aiServices_cu_location string
 //param aiServices_m_name string
 param searchService_name string
 param storageAccount_name string
@@ -57,7 +64,7 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.18.1' = {
   name: format(deploymentNameFormat, storageAccount_name)
   params: {
     name: storageAccount_name
-    location: location
+    location: storageAccountLocation
     tags: tags
     enableTelemetry: enableTelemetry
     skuName: 'Standard_LRS'
@@ -124,7 +131,7 @@ module avm_insights_component 'br/public:avm/res/insights/component:0.5.0' = {
     name: applicationInsights_name
     workspaceResourceId: avm_operational_insights_workspace_resourceId //NOTE: Adding this due to AVM requirement
     tags: tags
-    location: location
+    location: applicationInsightsLocation
     enableTelemetry: enableTelemetry
     kind: 'web'
     applicationType: 'web'
@@ -146,7 +153,7 @@ module avm_container_registry_registry 'br/public:avm/res/container-registry/reg
   params: {
     name: containerRegistry_name
     tags: tags
-    location: location
+    location: containerRegistryLocation
     enableTelemetry: enableTelemetry
     acrSku: 'Premium'
     acrAdminUserEnabled: false
@@ -195,7 +202,7 @@ module avm_container_registry_registry 'br/public:avm/res/container-registry/reg
 resource avm_cognitive_services_accounts 'Microsoft.CognitiveServices/accounts@2024-04-01-preview' = {
   name: aiServices_name
   tags: tags
-  location: location
+  location: aiServiceLocation
   sku: {
     name: 'S0'
   }
@@ -259,7 +266,7 @@ resource azureOpenAIKeyEntry 'Microsoft.KeyVault/vaults/secrets@2021-11-01-previ
 resource avm_cognitive_services_accounts_cu 'Microsoft.CognitiveServices/accounts@2024-04-01-preview' = {
   name: aiServices_cu_name
   tags: tags
-  location: aiServices_cu_location
+  location: aiServiceContentUnderstandingLocation
   sku: {
     name: 'S0'
   }
@@ -297,7 +304,7 @@ module avm_search_search_services 'br/public:avm/res/search/search-service:0.9.0
   params: {
     name: searchService_name
     tags: tags
-    location: location
+    location: searchServiceLocation
     enableTelemetry: enableTelemetry
     sku: 'basic'
     replicaCount: 1
@@ -327,7 +334,7 @@ module moduleAIHub './ai-foundry-ai-hub.bicep' = {
     deploymentName: format(deploymentNameFormat, machineLearningServicesWorkspaces_aihub_name)
     //aiServicesName: avm_cognitive_services_accounts.outputs.name
     tags: tags
-    location: location
+    location: aiHubLocation
     aiServicesName: avm_cognitive_services_accounts.name
     searchServiceName: avm_search_search_services.outputs.name
     aiHubName: machineLearningServicesWorkspaces_aihub_name
@@ -351,7 +358,7 @@ module avmMLServicesWorkspacesProject 'br/public:avm/res/machine-learning-servic
   params: {
     name: machineLearningServicesWorkspaces_project_name
     tags: tags
-    location: location
+    location: aiProjectLocation
     sku: 'Basic' //NOTE: Confirm this
     kind: 'Project'
     publicNetworkAccess: 'Enabled' // Not in original script, check this

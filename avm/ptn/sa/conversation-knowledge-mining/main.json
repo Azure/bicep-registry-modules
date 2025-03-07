@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "896733979690205974"
+      "templateHash": "2211660746292982266"
     },
     "name": "Conversation Knowledge Mining Solution Accelerator",
     "description": "This module deploys the [Conversation Knowledge Mining Solution Accelerator](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator).\n\n**Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator product. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future.\n\nThis may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -204,6 +204,9 @@
       "type": "string",
       "defaultValue": "East US",
       "metadata": {
+        "azd": {
+          "type": "location"
+        },
         "description": "Optional. Location for the solution deployment. Defaulted to the resource group location."
       }
     },
@@ -211,21 +214,220 @@
       "type": "string",
       "defaultValue": "East US 2",
       "metadata": {
+        "azd": {
+          "type": "location"
+        },
         "description": "Optional. Secondary location for databases creation."
       }
     },
     "webAppServerFarmLocation": {
       "type": "string",
-      "defaultValue": "",
+      "defaultValue": "[parameters('solutionLocation')]",
       "metadata": {
-        "description": "Optional. The location for the Web App Server Farm. If empty, aiFoundryAiServiceContentUnderstandingLocation will be used."
+        "azd": {
+          "type": "location"
+        },
+        "description": "Optional. The location for the Web App Server Farm. Defaulted to the solution location"
       }
     },
     "aiFoundryAiServicesProjectLocation": {
       "type": "string",
-      "defaultValue": "",
+      "defaultValue": "[parameters('solutionLocation')]",
       "metadata": {
-        "description": "Optional. The location of the AI Foundry AI Services Project. If empty, aiFoundryAiServiceContentUnderstandingLocation will be used."
+        "azd": {
+          "type": "location"
+        },
+        "description": "Optional. The location of the AI Foundry AI Services Project."
+      }
+    },
+    "aiFoundryAiHubLocation": {
+      "type": "string",
+      "defaultValue": "[parameters('solutionLocation')]",
+      "metadata": {
+        "azd": {
+          "type": "location"
+        },
+        "description": "Optional. Location for the AI Foundry AI Hub resource deployment."
+      }
+    },
+    "aiFoundryAiServiceLocation": {
+      "type": "string",
+      "defaultValue": "[parameters('solutionLocation')]",
+      "metadata": {
+        "azd": {
+          "type": "location"
+        },
+        "description": "Optional. Location for the AI Foundry AI Service resource deployment."
+      }
+    },
+    "aiFoundryAiProjectLocation": {
+      "type": "string",
+      "defaultValue": "[parameters('solutionLocation')]",
+      "metadata": {
+        "azd": {
+          "type": "location"
+        },
+        "description": "Optional. Location for the AI Foundry AI Project resource deployment."
+      }
+    },
+    "aiFoundryApplicationInsightsLocation": {
+      "type": "string",
+      "defaultValue": "[parameters('solutionLocation')]",
+      "metadata": {
+        "azd": {
+          "type": "location"
+        },
+        "description": "Optional. Location for the AI Foundry Application Insights resource deployment."
+      }
+    },
+    "aiFoundryContainerRegistryLocation": {
+      "type": "string",
+      "defaultValue": "[parameters('solutionLocation')]",
+      "metadata": {
+        "azd": {
+          "type": "location"
+        },
+        "description": "Optional. Location for the AI Foundry Container Registry resource deployment."
+      }
+    },
+    "aiFoundrySearchServiceLocation": {
+      "type": "string",
+      "defaultValue": "[parameters('solutionLocation')]",
+      "metadata": {
+        "azd": {
+          "type": "location"
+        },
+        "description": "Optional. Location for the AI Foundry Search Service resource deployment."
+      }
+    },
+    "aiFoundryStorageAccountLocation": {
+      "type": "string",
+      "defaultValue": "[parameters('solutionLocation')]",
+      "metadata": {
+        "azd": {
+          "type": "location"
+        },
+        "description": "Optional. Location for the AI Foundry Storage Account resource deployment."
+      }
+    },
+    "cosmosDbAccountLocation": {
+      "type": "string",
+      "defaultValue": "[parameters('databasesLocation')]",
+      "metadata": {
+        "azd": {
+          "type": "location"
+        },
+        "description": "Optional. Location for the Cosmos DB Account resource deployment."
+      }
+    },
+    "functionChartsLocation": {
+      "type": "string",
+      "defaultValue": "[parameters('solutionLocation')]",
+      "metadata": {
+        "azd": {
+          "type": "location"
+        },
+        "description": "Optional. Location for the Function Charts resource deployment."
+      }
+    },
+    "functionRagLocation": {
+      "type": "string",
+      "defaultValue": "[parameters('solutionLocation')]",
+      "metadata": {
+        "azd": {
+          "type": "location"
+        },
+        "description": "Optional. Location for the Function RAG resource deployment."
+      }
+    },
+    "functionsManagedEnvironmentLocation": {
+      "type": "string",
+      "defaultValue": "[parameters('solutionLocation')]",
+      "metadata": {
+        "azd": {
+          "type": "location"
+        },
+        "description": "Optional. Location for the Functions Managed Environment resource deployment."
+      }
+    },
+    "keyVaultLocation": {
+      "type": "string",
+      "defaultValue": "[parameters('solutionLocation')]",
+      "metadata": {
+        "azd": {
+          "type": "location"
+        },
+        "description": "Optional. Location for the Key Vault resource deployment."
+      }
+    },
+    "logAnalyticsWorkspaceLocation": {
+      "type": "string",
+      "defaultValue": "[parameters('solutionLocation')]",
+      "metadata": {
+        "azd": {
+          "type": "location"
+        },
+        "description": "Optional. Location for the Log Analytics Workspace resource deployment."
+      }
+    },
+    "managedIdentityLocation": {
+      "type": "string",
+      "defaultValue": "[parameters('solutionLocation')]",
+      "metadata": {
+        "azd": {
+          "type": "location"
+        },
+        "description": "Optional. Location for the Managed Identity resource deployment."
+      }
+    },
+    "scriptCopyDataLocation": {
+      "type": "string",
+      "defaultValue": "[parameters('solutionLocation')]",
+      "metadata": {
+        "azd": {
+          "type": "location"
+        },
+        "description": "Optional. Location for the Script Copy Data resource deployment."
+      }
+    },
+    "scriptIndexDataLocation": {
+      "type": "string",
+      "defaultValue": "[parameters('solutionLocation')]",
+      "metadata": {
+        "azd": {
+          "type": "location"
+        },
+        "description": "Optional. Location for the Script Index Data resource deployment."
+      }
+    },
+    "sqlServerLocation": {
+      "type": "string",
+      "defaultValue": "[parameters('databasesLocation')]",
+      "metadata": {
+        "azd": {
+          "type": "location"
+        },
+        "description": "Optional. Location for the SQL Server resource deployment."
+      }
+    },
+    "storageAccountLocation": {
+      "type": "string",
+      "defaultValue": "[parameters('solutionLocation')]",
+      "metadata": {
+        "azd": {
+          "type": "location"
+        },
+        "description": "Optional. Location for the Storage Account resource deployment."
+      }
+    },
+    "webAppLocation": {
+      "type": "string",
+      "defaultValue": "[parameters('solutionLocation')]",
+      "metadata": {
+        "azd": {
+          "type": "location"
+        },
+        "description": "Optional. Location for the Web App resource deployment."
       }
     },
     "webAppServerFarmSku": {
@@ -308,8 +510,8 @@
     "deploymentNameFormat": "deploy-{0}",
     "varAiFoundryAiHubResourceName": "[if(empty(parameters('aiFoundryAiHubResourceName')), format(variables('varWorkloadNameFormat'), 'aifd-aihb'), parameters('aiFoundryAiHubResourceName'))]",
     "varAiFoundryAiProjectResourceName": "[if(empty(parameters('aiFoundryAiProjectResourceName')), format(variables('varWorkloadNameFormat'), 'aifd-aipj'), parameters('aiFoundryAiProjectResourceName'))]",
-    "varAiFoundryAiServicesContentUnderstandingResourceName": "[if(empty(parameters('aiFoundryAiServicesContentUnderstandingResourceName')), format(variables('varWorkloadNameFormat'), 'aifd-aisr-cu'), parameters('aiFoundryAiServicesContentUnderstandingResourceName'))]",
-    "varAiFoundryAiServicesResourceName": "[if(empty(parameters('aiFoundryAiServicesResourceName')), format(variables('varWorkloadNameFormat'), 'aifd-aisr'), parameters('aiFoundryAiServicesResourceName'))]",
+    "varAiFoundryAiServiceContentUnderstandingResourceName": "[if(empty(parameters('aiFoundryAiServicesContentUnderstandingResourceName')), format(variables('varWorkloadNameFormat'), 'aifd-aisr-cu'), parameters('aiFoundryAiServicesContentUnderstandingResourceName'))]",
+    "varAiFoundryAiServiceResourceName": "[if(empty(parameters('aiFoundryAiServicesResourceName')), format(variables('varWorkloadNameFormat'), 'aifd-aisr'), parameters('aiFoundryAiServicesResourceName'))]",
     "varAiFoundryApplicationInsightsResourceName": "[if(empty(parameters('aiFoundryApplicationInsightsResourceName')), format(variables('varWorkloadNameFormat'), 'aifd-appi'), parameters('aiFoundryApplicationInsightsResourceName'))]",
     "varAiFoundryContainerRegistryResourceName": "[if(empty(parameters('aiFoundryContainerRegistryResourceName')), replace(format(variables('varWorkloadNameFormat'), 'aifd-creg'), '-', ''), parameters('aiFoundryContainerRegistryResourceName'))]",
     "varAiFoundrySearchServiceResourceName": "[if(empty(parameters('aiFoundrySearchServiceResourceName')), format(variables('varWorkloadNameFormat'), 'aifd-srch'), parameters('aiFoundrySearchServiceResourceName'))]",
@@ -327,11 +529,6 @@
     "varStorageAccountResourceName": "[if(empty(parameters('storageAccountResourceName')), replace(format(variables('varWorkloadNameFormat'), 'strg'), '-', ''), parameters('storageAccountResourceName'))]",
     "varWebAppResourceName": "[if(empty(parameters('webAppResourceName')), format(variables('varWorkloadNameFormat'), 'wapp-wapp'), parameters('webAppResourceName'))]",
     "varWebAppServerFarmResourceName": "[if(empty(parameters('webAppServerFarmResourceName')), format(variables('varWorkloadNameFormat'), 'waoo-srvf'), parameters('webAppServerFarmResourceName'))]",
-    "varAIFoundryAIServicesContentUnderstandingLocation": "[if(equals(parameters('aiFoundryAiServiceContentUnderstandingLocation'), ''), parameters('solutionLocation'), parameters('aiFoundryAiServiceContentUnderstandingLocation'))]",
-    "varAiFoundryAiServicesProjectLocation": "[if(equals(parameters('aiFoundryAiServicesProjectLocation'), ''), parameters('solutionLocation'), parameters('aiFoundryAiServicesProjectLocation'))]",
-    "varCosmosDBAccountLocation": "[parameters('databasesLocation')]",
-    "varSQLServerLocation": "[parameters('databasesLocation')]",
-    "varWebAppServerFarmLocation": "[if(equals(parameters('webAppServerFarmLocation'), ''), parameters('solutionLocation'), parameters('webAppServerFarmLocation'))]",
     "varKvSecretNameAdlsAccountKey": "ADLS-ACCOUNT-KEY",
     "varKvSecretNameAzureCosmosdbAccountKey": "AZURE-COSMOSDB-ACCOUNT-KEY",
     "varKvSecretNameAdlsAccountContainer": "ADLS-ACCOUNT-CONTAINER",
@@ -345,17 +542,17 @@
     "varKvSecretNameSqlDbDatabase": "SQLDB-DATABASE",
     "varKvSecretNameSqlDbUsername": "SQLDB-USERNAME",
     "varKvSecretNameSqlDbPassword": "SQLDB-PASSWORD",
-    "varAiFoundryAiServicesGPTModelVersion": "2024-07-18",
-    "varAiFoundryAiServicesGPTModelVersionPreview": "2024-02-15-preview",
-    "varAiFoundryAiServicesTextEmbeddingModelVersion": "2",
-    "varAiFoundryAiServicesProjectConnectionString": "[format('{0}.api.azureml.ms;{1};{2};{3}', toLower(replace(variables('varAiFoundryAiServicesProjectLocation'), ' ', '')), subscription().subscriptionId, resourceGroup().name, variables('varAiFoundryAiProjectResourceName'))]",
+    "varAiFoundryAiServiceGPTModelVersion": "2024-07-18",
+    "varAiFoundryAiServiceGPTModelVersionPreview": "2024-02-15-preview",
+    "varAiFoundryAiServiceTextEmbeddingModelVersion": "2",
+    "varAiFoundryAiServiceProjectConnectionString": "[format('{0}.api.azureml.ms;{1};{2};{3}', toLower(replace(parameters('aiFoundryAiServicesProjectLocation'), ' ', '')), subscription().subscriptionId, resourceGroup().name, variables('varAiFoundryAiProjectResourceName'))]",
     "varAiFoundryAIServicesModelDeployments": [
       {
         "name": "[parameters('aiFoundryAIServicesGptModelName')]",
         "model": {
           "name": "[parameters('aiFoundryAIServicesGptModelName')]",
           "format": "OpenAI",
-          "version": "[variables('varAiFoundryAiServicesGPTModelVersion')]"
+          "version": "[variables('varAiFoundryAiServiceGPTModelVersion')]"
         },
         "sku": {
           "name": "[parameters('aiFoundryAIServicesGptModelDeploymentType')]",
@@ -368,7 +565,7 @@
         "model": {
           "name": "[parameters('aiFoundryAiServicesTextEmbeddingModelName')]",
           "format": "OpenAI",
-          "version": "[variables('varAiFoundryAiServicesTextEmbeddingModelVersion')]"
+          "version": "[variables('varAiFoundryAiServiceTextEmbeddingModelVersion')]"
         },
         "sku": {
           "name": "Standard",
@@ -424,7 +621,7 @@
       "apiVersion": "2023-12-01",
       "name": "[variables('varFunctionChartsResourceName')]",
       "tags": "[variables('tags')]",
-      "location": "[parameters('solutionLocation')]",
+      "location": "[parameters('functionChartsLocation')]",
       "kind": "functionapp,linux,container,azurecontainerapps",
       "identity": {
         "type": "SystemAssigned"
@@ -488,7 +685,7 @@
             "value": "[variables('tags')]"
           },
           "location": {
-            "value": "[parameters('solutionLocation')]"
+            "value": "[parameters('managedIdentityLocation')]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -1009,7 +1206,7 @@
             "value": "[variables('tags')]"
           },
           "location": {
-            "value": "[parameters('solutionLocation')]"
+            "value": "[parameters('keyVaultLocation')]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -1122,11 +1319,11 @@
               },
               {
                 "name": "AZURE-OPENAI-PREVIEW-API-VERSION",
-                "value": "[variables('varAiFoundryAiServicesGPTModelVersionPreview')]"
+                "value": "[variables('varAiFoundryAiServiceGPTModelVersionPreview')]"
               },
               {
                 "name": "AZURE-AI-PROJECT-CONN-STRING",
-                "value": "[variables('varAiFoundryAiServicesProjectConnectionString')]"
+                "value": "[variables('varAiFoundryAiServiceProjectConnectionString')]"
               },
               {
                 "name": "AZURE-OPEN-AI-DEPLOYMENT-MODEL",
@@ -1150,7 +1347,7 @@
               },
               {
                 "name": "COG-SERVICES-NAME",
-                "value": "[variables('varAiFoundryAiServicesResourceName')]"
+                "value": "[variables('varAiFoundryAiServiceResourceName')]"
               },
               {
                 "name": "AZURE-SUBSCRIPTION-ID",
@@ -4356,7 +4553,7 @@
             "value": "[variables('tags')]"
           },
           "location": {
-            "value": "[parameters('solutionLocation')]"
+            "value": "[parameters('logAnalyticsWorkspaceLocation')]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -7346,8 +7543,29 @@
           "tags": {
             "value": "[variables('tags')]"
           },
-          "location": {
-            "value": "[parameters('solutionLocation')]"
+          "aiHubLocation": {
+            "value": "[parameters('aiFoundryAiHubLocation')]"
+          },
+          "aiServiceLocation": {
+            "value": "[parameters('aiFoundryAiServiceLocation')]"
+          },
+          "aiServiceContentUnderstandingLocation": {
+            "value": "[parameters('aiFoundryAiServiceContentUnderstandingLocation')]"
+          },
+          "aiProjectLocation": {
+            "value": "[parameters('aiFoundryAiProjectLocation')]"
+          },
+          "applicationInsightsLocation": {
+            "value": "[parameters('aiFoundryApplicationInsightsLocation')]"
+          },
+          "containerRegistryLocation": {
+            "value": "[parameters('aiFoundryContainerRegistryLocation')]"
+          },
+          "searchServiceLocation": {
+            "value": "[parameters('aiFoundrySearchServiceLocation')]"
+          },
+          "storageAccountLocation": {
+            "value": "[parameters('aiFoundryStorageAccountLocation')]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -7365,13 +7583,10 @@
             "value": "[variables('varAiFoundryContainerRegistryResourceName')]"
           },
           "aiServices_name": {
-            "value": "[variables('varAiFoundryAiServicesResourceName')]"
+            "value": "[variables('varAiFoundryAiServiceResourceName')]"
           },
           "aiServices_cu_name": {
-            "value": "[variables('varAiFoundryAiServicesContentUnderstandingResourceName')]"
-          },
-          "aiServices_cu_location": {
-            "value": "[variables('varAIFoundryAIServicesContentUnderstandingLocation')]"
+            "value": "[variables('varAiFoundryAiServiceContentUnderstandingResourceName')]"
           },
           "aiServices_deployments": {
             "value": "[variables('varAiFoundryAIServicesModelDeployments')]"
@@ -7399,11 +7614,32 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "13171962556448336085"
+              "templateHash": "7464762366840713627"
             }
           },
           "parameters": {
-            "location": {
+            "aiHubLocation": {
+              "type": "string"
+            },
+            "aiServiceLocation": {
+              "type": "string"
+            },
+            "aiServiceContentUnderstandingLocation": {
+              "type": "string"
+            },
+            "aiProjectLocation": {
+              "type": "string"
+            },
+            "applicationInsightsLocation": {
+              "type": "string"
+            },
+            "containerRegistryLocation": {
+              "type": "string"
+            },
+            "searchServiceLocation": {
+              "type": "string"
+            },
+            "storageAccountLocation": {
               "type": "string"
             },
             "tags": {
@@ -7428,9 +7664,6 @@
               "type": "array"
             },
             "aiServices_cu_name": {
-              "type": "string"
-            },
-            "aiServices_cu_location": {
               "type": "string"
             },
             "searchService_name": {
@@ -7464,7 +7697,7 @@
               "apiVersion": "2024-04-01-preview",
               "name": "[parameters('aiServices_name')]",
               "tags": "[parameters('tags')]",
-              "location": "[parameters('location')]",
+              "location": "[parameters('aiServiceLocation')]",
               "sku": {
                 "name": "S0"
               },
@@ -7518,7 +7751,7 @@
               "apiVersion": "2024-04-01-preview",
               "name": "[parameters('aiServices_cu_name')]",
               "tags": "[parameters('tags')]",
-              "location": "[parameters('aiServices_cu_location')]",
+              "location": "[parameters('aiServiceContentUnderstandingLocation')]",
               "sku": {
                 "name": "S0"
               },
@@ -7605,7 +7838,7 @@
                     "value": "[parameters('storageAccount_name')]"
                   },
                   "location": {
-                    "value": "[parameters('location')]"
+                    "value": "[parameters('storageAccountLocation')]"
                   },
                   "tags": {
                     "value": "[parameters('tags')]"
@@ -13355,7 +13588,7 @@
                     "value": "[parameters('tags')]"
                   },
                   "location": {
-                    "value": "[parameters('location')]"
+                    "value": "[parameters('applicationInsightsLocation')]"
                   },
                   "enableTelemetry": {
                     "value": "[parameters('enableTelemetry')]"
@@ -14073,7 +14306,7 @@
                     "value": "[parameters('tags')]"
                   },
                   "location": {
-                    "value": "[parameters('location')]"
+                    "value": "[parameters('containerRegistryLocation')]"
                   },
                   "enableTelemetry": {
                     "value": "[parameters('enableTelemetry')]"
@@ -17142,7 +17375,7 @@
                     "value": "[parameters('tags')]"
                   },
                   "location": {
-                    "value": "[parameters('location')]"
+                    "value": "[parameters('searchServiceLocation')]"
                   },
                   "enableTelemetry": {
                     "value": "[parameters('enableTelemetry')]"
@@ -19273,7 +19506,7 @@
                     "value": "[parameters('tags')]"
                   },
                   "location": {
-                    "value": "[parameters('location')]"
+                    "value": "[parameters('aiHubLocation')]"
                   },
                   "aiServicesName": {
                     "value": "[parameters('aiServices_name')]"
@@ -23345,7 +23578,7 @@
                     "value": "[parameters('tags')]"
                   },
                   "location": {
-                    "value": "[parameters('location')]"
+                    "value": "[parameters('aiProjectLocation')]"
                   },
                   "sku": {
                     "value": "Basic"
@@ -27352,7 +27585,7 @@
             "value": "[variables('tags')]"
           },
           "location": {
-            "value": "[parameters('solutionLocation')]"
+            "value": "[parameters('storageAccountLocation')]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -33120,7 +33353,7 @@
             "value": "[variables('tags')]"
           },
           "location": {
-            "value": "[variables('varCosmosDBAccountLocation')]"
+            "value": "[parameters('cosmosDbAccountLocation')]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -33131,7 +33364,7 @@
           "locations": {
             "value": [
               {
-                "locationName": "[variables('varCosmosDBAccountLocation')]",
+                "locationName": "[parameters('cosmosDbAccountLocation')]",
                 "failoverPriority": 0,
                 "isZoneRedundant": false
               }
@@ -36917,7 +37150,7 @@
             "value": "[variables('tags')]"
           },
           "location": {
-            "value": "[variables('varSQLServerLocation')]"
+            "value": "[parameters('sqlServerLocation')]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -42968,7 +43201,7 @@
             "value": "[variables('tags')]"
           },
           "location": {
-            "value": "[parameters('solutionLocation')]"
+            "value": "[parameters('scriptCopyDataLocation')]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -43550,7 +43783,7 @@
             "value": "[variables('tags')]"
           },
           "location": {
-            "value": "[parameters('solutionLocation')]"
+            "value": "[parameters('scriptIndexDataLocation')]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -44131,7 +44364,7 @@
             "value": "[variables('tags')]"
           },
           "location": {
-            "value": "[parameters('solutionLocation')]"
+            "value": "[parameters('functionsManagedEnvironmentLocation')]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -44753,7 +44986,7 @@
             "value": "[variables('varFunctionRagResourceName')]"
           },
           "solutionLocation": {
-            "value": "[parameters('solutionLocation')]"
+            "value": "[parameters('functionRagLocation')]"
           },
           "tags": {
             "value": "[variables('tags')]"
@@ -44762,7 +44995,7 @@
             "value": "[reference(resourceId('Microsoft.Resources/deployments', 'module-ai-foundry'), '2022-09-01').outputs.storageAccount_name.value]"
           },
           "aiFoundryAIHubProjectConnectionString": {
-            "value": "[variables('varAiFoundryAiServicesProjectConnectionString')]"
+            "value": "[variables('varAiFoundryAiServiceProjectConnectionString')]"
           },
           "AIFoundryAISearchServiceConnectionString": {
             "value": "[reference(resourceId('Microsoft.Resources/deployments', 'module-ai-foundry'), '2022-09-01').outputs.aiSearch_connectionString.value]"
@@ -44783,7 +45016,7 @@
             "value": "[parameters('aiFoundryAIServicesGptModelName')]"
           },
           "gptModelVersionPreview": {
-            "value": "[variables('varAiFoundryAiServicesGPTModelVersionPreview')]"
+            "value": "[variables('varAiFoundryAiServiceGPTModelVersionPreview')]"
           },
           "ragDockerImageName": {
             "value": "[variables('varRAGDockerImageName')]"
@@ -45058,7 +45291,7 @@
             "value": "[variables('tags')]"
           },
           "location": {
-            "value": "[variables('varWebAppServerFarmLocation')]"
+            "value": "[parameters('webAppServerFarmLocation')]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -45623,7 +45856,7 @@
             "value": "[variables('tags')]"
           },
           "location": {
-            "value": "[parameters('solutionLocation')]"
+            "value": "[parameters('webAppLocation')]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -45650,7 +45883,7 @@
             "value": "[parameters('aiFoundryAIServicesGptModelName')]"
           },
           "gptModelVersionPreview": {
-            "value": "[variables('varAiFoundryAiServicesGPTModelVersionPreview')]"
+            "value": "[variables('varAiFoundryAiServiceGPTModelVersionPreview')]"
           },
           "aiServicesResourceName": {
             "value": "[reference(resourceId('Microsoft.Resources/deployments', 'module-ai-foundry'), '2022-09-01').outputs.aiServices_name.value]"
@@ -51149,9 +51382,9 @@
       "dependsOn": [
         "[resourceId('Microsoft.Resources/deployments', format(variables('deploymentNameFormat'), variables('varCosmosDbAccountResourceName')))]",
         "[resourceId('Microsoft.Resources/deployments', format(variables('deploymentNameFormat'), variables('varWebAppServerFarmResourceName')))]",
+        "[resourceId('Microsoft.Web/sites', variables('varFunctionChartsResourceName'))]",
         "[resourceId('Microsoft.Resources/deployments', 'module-ai-foundry')]",
-        "[resourceId('Microsoft.Resources/deployments', 'module-function-rag')]",
-        "[resourceId('Microsoft.Web/sites', variables('varFunctionChartsResourceName'))]"
+        "[resourceId('Microsoft.Resources/deployments', 'module-function-rag')]"
       ]
     },
     {
