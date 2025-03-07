@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "6993195762807838890"
+      "templateHash": "9887667822567676989"
     },
     "name": "Recovery Services Vaults",
     "description": "This module deploys a Recovery Services Vault."
@@ -533,72 +533,43 @@
         "__bicep_export!": true
       }
     },
-    "securitySettingType": {
+    "softDeleteSettingType": {
       "type": "object",
       "properties": {
-        "immutabilitySettings": {
-          "type": "object",
-          "properties": {
-            "state": {
-              "type": "string",
-              "allowedValues": [
-                "Disabled",
-                "Locked",
-                "Unlocked"
-              ],
-              "metadata": {
-                "description": "Required. The immmutability setting of the vault."
-              }
-            }
-          },
-          "nullable": true,
+        "enhancedSecurityState": {
+          "type": "string",
+          "allowedValues": [
+            "AlwaysON",
+            "Disabled",
+            "Enabled",
+            "Invalid"
+          ],
           "metadata": {
-            "description": "Optional. Immutability settings of a vault."
+            "description": "Required. The enhanced security state."
           }
         },
-        "softDeleteSettings": {
-          "type": "object",
-          "properties": {
-            "enhancedSecurityState": {
-              "type": "string",
-              "allowedValues": [
-                "AlwaysON",
-                "Disabled",
-                "Enabled",
-                "Invalid"
-              ],
-              "metadata": {
-                "description": "Required. The enhanced security state."
-              }
-            },
-            "softDeleteRetentionPeriodInDays": {
-              "type": "int",
-              "metadata": {
-                "description": "Required. The soft delete retention period in days."
-              }
-            },
-            "softDeleteState": {
-              "type": "string",
-              "allowedValues": [
-                "AlwaysON",
-                "Disabled",
-                "Enabled",
-                "Invalid"
-              ],
-              "metadata": {
-                "description": "Required. The soft delete state."
-              }
-            }
-          },
-          "nullable": true,
+        "softDeleteRetentionPeriodInDays": {
+          "type": "int",
           "metadata": {
-            "description": "Optional. Soft delete settings of a vault."
+            "description": "Required. The soft delete retention period in days."
+          }
+        },
+        "softDeleteState": {
+          "type": "string",
+          "allowedValues": [
+            "AlwaysON",
+            "Disabled",
+            "Enabled",
+            "Invalid"
+          ],
+          "metadata": {
+            "description": "Required. The soft delete state."
           }
         }
       },
       "metadata": {
         "__bicep_export!": true,
-        "description": "The type for security settings."
+        "description": "The type for soft delete settings."
       }
     },
     "_1.privateEndpointCustomDnsConfigType": {
@@ -1372,11 +1343,23 @@
         "description": "Optional. Monitoring Settings of the vault."
       }
     },
-    "securitySettings": {
-      "$ref": "#/definitions/securitySettingType",
+    "softDeleteSettings": {
+      "$ref": "#/definitions/softDeleteSettingType",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Security Settings of the vault."
+        "description": "Optional. The soft delete related settings."
+      }
+    },
+    "immutabilitySettingState": {
+      "type": "string",
+      "nullable": true,
+      "allowedValues": [
+        "Disabled",
+        "Locked",
+        "Unlocked"
+      ],
+      "metadata": {
+        "description": "Optional. The immmutability setting state of the recovery services vault resource."
       }
     },
     "publicNetworkAccess": {
@@ -1498,7 +1481,10 @@
       },
       "properties": {
         "monitoringSettings": "[if(not(empty(parameters('monitoringSettings'))), createObject('azureMonitorAlertSettings', if(not(empty(tryGet(parameters('monitoringSettings'), 'azureMonitorAlertSettings'))), createObject('alertsForAllFailoverIssues', coalesce(tryGet(tryGet(parameters('monitoringSettings'), 'azureMonitorAlertSettings'), 'alertsForAllFailoverIssues'), 'Enabled'), 'alertsForAllJobFailures', coalesce(tryGet(tryGet(parameters('monitoringSettings'), 'azureMonitorAlertSettings'), 'alertsForAllJobFailures'), 'Enabled'), 'alertsForAllReplicationIssues', coalesce(tryGet(tryGet(parameters('monitoringSettings'), 'azureMonitorAlertSettings'), 'alertsForAllReplicationIssues'), 'Enabled')), null()), 'classicAlertSettings', if(not(empty(tryGet(parameters('monitoringSettings'), 'classicAlertSettings'))), createObject('alertsForCriticalOperations', coalesce(tryGet(tryGet(parameters('monitoringSettings'), 'classicAlertSettings'), 'alertsForCriticalOperations'), 'Enabled'), 'emailNotificationsForSiteRecovery', coalesce(tryGet(tryGet(parameters('monitoringSettings'), 'classicAlertSettings'), 'emailNotificationsForSiteRecovery'), 'Enabled')), null())), null())]",
-        "securitySettings": "[parameters('securitySettings')]",
+        "securitySettings": {
+          "immutabilitySettings": "[if(not(empty(parameters('immutabilitySettingState'))), createObject('state', parameters('immutabilitySettingState')), null())]",
+          "softDeleteSettings": "[parameters('softDeleteSettings')]"
+        },
         "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
         "redundancySettings": "[parameters('redundancySettings')]",
         "restoreSettings": "[parameters('restoreSettings')]",
