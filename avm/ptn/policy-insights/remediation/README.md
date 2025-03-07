@@ -671,8 +671,6 @@ The policy definition reference ID of the individual definition that should be r
 - Required: No
 - Type: string
 - Default: `''`
-- MinValue: 1
-- MaxValue: 30
 
 ### Parameter: `resourceCount`
 
@@ -698,8 +696,6 @@ The way resources to remediate are discovered. Defaults to ExistingNonCompliant 
     'ReEvaluateCompliance'
   ]
   ```
-- MinValue: 1
-- MaxValue: 50000
 
 ### Parameter: `resourceGroupName`
 
@@ -708,8 +704,6 @@ The target scope for the remediation. The name of the resource group for the pol
 - Required: No
 - Type: string
 - Default: `''`
-- MinValue: 1
-- MaxValue: 50000
 
 ### Parameter: `subscriptionId`
 
@@ -718,8 +712,6 @@ The target scope for the remediation. The subscription ID of the subscription fo
 - Required: No
 - Type: string
 - Default: `''`
-- MinValue: 1
-- MaxValue: 50000
 
 ## Outputs
 

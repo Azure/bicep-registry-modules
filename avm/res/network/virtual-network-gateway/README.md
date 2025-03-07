@@ -2492,8 +2492,6 @@ The list of custom BGP IP Address (APIPA) peering addresses which belong to IP c
 
 - Required: No
 - Type: array
-- MinValue: 0
-- MaxValue: 4294967295
 
 ### Parameter: `clusterSettings.clusterMode-activeActiveBgp.existingSecondPipResourceId`
 
@@ -2501,8 +2499,6 @@ The secondary Public IP resource ID to associate to the Virtual Network Gateway 
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 4294967295
 
 ### Parameter: `clusterSettings.clusterMode-activeActiveBgp.secondCustomBgpIpAddresses`
 
@@ -2510,8 +2506,6 @@ The list of the second custom BGP IP Address (APIPA) peering addresses which bel
 
 - Required: No
 - Type: array
-- MinValue: 0
-- MaxValue: 4294967295
 
 ### Parameter: `clusterSettings.clusterMode-activeActiveBgp.secondPipName`
 
@@ -2519,8 +2513,6 @@ Specifies the name of the secondary Public IP to be created for the Virtual Netw
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 4294967295
 
 ### Variant: `clusterSettings.clusterMode-activePassiveBgp`
 The type for an active-passive BGP configuration.
@@ -2568,8 +2560,6 @@ The list of custom BGP IP Address (APIPA) peering addresses which belong to IP c
 
 - Required: No
 - Type: array
-- MinValue: 0
-- MaxValue: 4294967295
 
 ### Variant: `clusterSettings.clusterMode-activePassiveNoBgp`
 The type for an active-passive no BGP configuration.

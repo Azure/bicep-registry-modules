@@ -1841,6 +1841,119 @@ The schedule information for the role assignment.
 
 - Required: Yes
 - Type: object
+- Type-deciding property: durationType
+
+<h4>The available variants are:</h4>
+
+| Variant | Description |
+| :-- | :-- |
+| [`NoExpiration`](#variant-pimroleassignmentsscheduleinfodurationtype-noexpiration) |  |
+| [`AfterDuration`](#variant-pimroleassignmentsscheduleinfodurationtype-afterduration) |  |
+| [`AfterDateTime`](#variant-pimroleassignmentsscheduleinfodurationtype-afterdatetime) |  |
+
+### Variant: `pimRoleAssignments.scheduleInfo.durationType-NoExpiration`
+
+
+To use this variant, set the property `durationType` to `NoExpiration`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`durationType`](#parameter-pimroleassignmentsscheduleinfodurationtype-noexpirationdurationtype) | string | The type of the duration. |
+
+### Parameter: `pimRoleAssignments.scheduleInfo.durationType-NoExpiration.durationType`
+
+The type of the duration.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'NoExpiration'
+  ]
+  ```
+
+### Variant: `pimRoleAssignments.scheduleInfo.durationType-AfterDuration`
+
+
+To use this variant, set the property `durationType` to `AfterDuration`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`duration`](#parameter-pimroleassignmentsscheduleinfodurationtype-afterdurationduration) | string | The duration for the role assignment. |
+| [`durationType`](#parameter-pimroleassignmentsscheduleinfodurationtype-afterdurationdurationtype) | string | The type of the duration. |
+| [`startTime`](#parameter-pimroleassignmentsscheduleinfodurationtype-afterdurationstarttime) | string | The start time for the role assignment. |
+
+### Parameter: `pimRoleAssignments.scheduleInfo.durationType-AfterDuration.duration`
+
+The duration for the role assignment.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `pimRoleAssignments.scheduleInfo.durationType-AfterDuration.durationType`
+
+The type of the duration.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AfterDuration'
+  ]
+  ```
+
+### Parameter: `pimRoleAssignments.scheduleInfo.durationType-AfterDuration.startTime`
+
+The start time for the role assignment.
+
+- Required: Yes
+- Type: string
+
+### Variant: `pimRoleAssignments.scheduleInfo.durationType-AfterDateTime`
+
+
+To use this variant, set the property `durationType` to `AfterDateTime`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`durationType`](#parameter-pimroleassignmentsscheduleinfodurationtype-afterdatetimedurationtype) | string | The type of the duration. |
+| [`endDateTime`](#parameter-pimroleassignmentsscheduleinfodurationtype-afterdatetimeenddatetime) | string | The end date and time for the role assignment. |
+| [`startTime`](#parameter-pimroleassignmentsscheduleinfodurationtype-afterdatetimestarttime) | string | The start date and time for the role assignment. |
+
+### Parameter: `pimRoleAssignments.scheduleInfo.durationType-AfterDateTime.durationType`
+
+The type of the duration.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AfterDateTime'
+  ]
+  ```
+
+### Parameter: `pimRoleAssignments.scheduleInfo.durationType-AfterDateTime.endDateTime`
+
+The end date and time for the role assignment.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `pimRoleAssignments.scheduleInfo.durationType-AfterDateTime.startTime`
+
+The start date and time for the role assignment.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `pimRoleAssignments.justification`
 

@@ -1095,8 +1095,6 @@ Network protocol this rule applies to.
     'Udp'
   ]
   ```
-- MinValue: 100
-- MaxValue: 4096
 
 ### Parameter: `securityRules.properties.description`
 
@@ -1104,8 +1102,6 @@ The description of the security rule.
 
 - Required: No
 - Type: string
-- MinValue: 100
-- MaxValue: 4096
 
 ### Parameter: `securityRules.properties.destinationAddressPrefix`
 
@@ -1113,8 +1109,6 @@ Optional. The destination address prefix. CIDR or destination IP range. Asterisk
 
 - Required: No
 - Type: string
-- MinValue: 100
-- MaxValue: 4096
 
 ### Parameter: `securityRules.properties.destinationAddressPrefixes`
 
@@ -1122,8 +1116,6 @@ The destination address prefixes. CIDR or destination IP ranges.
 
 - Required: No
 - Type: array
-- MinValue: 100
-- MaxValue: 4096
 
 ### Parameter: `securityRules.properties.destinationApplicationSecurityGroupResourceIds`
 
@@ -1131,8 +1123,6 @@ The resource IDs of the application security groups specified as destination.
 
 - Required: No
 - Type: array
-- MinValue: 100
-- MaxValue: 4096
 
 ### Parameter: `securityRules.properties.destinationPortRange`
 
@@ -1140,8 +1130,6 @@ The destination port or range. Integer or range between 0 and 65535. Asterisk "*
 
 - Required: No
 - Type: string
-- MinValue: 100
-- MaxValue: 4096
 
 ### Parameter: `securityRules.properties.destinationPortRanges`
 
@@ -1149,8 +1137,6 @@ The destination port ranges.
 
 - Required: No
 - Type: array
-- MinValue: 100
-- MaxValue: 4096
 
 ### Parameter: `securityRules.properties.sourceAddressPrefix`
 
@@ -1158,8 +1144,6 @@ The CIDR or source IP range. Asterisk "*" can also be used to match all source I
 
 - Required: No
 - Type: string
-- MinValue: 100
-- MaxValue: 4096
 
 ### Parameter: `securityRules.properties.sourceAddressPrefixes`
 
@@ -1167,8 +1151,6 @@ The CIDR or source IP ranges.
 
 - Required: No
 - Type: array
-- MinValue: 100
-- MaxValue: 4096
 
 ### Parameter: `securityRules.properties.sourceApplicationSecurityGroupResourceIds`
 
@@ -1176,8 +1158,6 @@ The resource IDs of the application security groups specified as source.
 
 - Required: No
 - Type: array
-- MinValue: 100
-- MaxValue: 4096
 
 ### Parameter: `securityRules.properties.sourcePortRange`
 
@@ -1185,8 +1165,6 @@ The source port or range. Integer or range between 0 and 65535. Asterisk "*" can
 
 - Required: No
 - Type: string
-- MinValue: 100
-- MaxValue: 4096
 
 ### Parameter: `securityRules.properties.sourcePortRanges`
 
@@ -1194,8 +1172,6 @@ The source port ranges.
 
 - Required: No
 - Type: array
-- MinValue: 100
-- MaxValue: 4096
 
 ### Parameter: `tags`
 
