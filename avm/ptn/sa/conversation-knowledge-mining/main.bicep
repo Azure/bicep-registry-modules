@@ -11,8 +11,8 @@ This may result in breaking changes in upcoming versions when these features are
 
 // ========== Parameters ========== //
 // PARAMETERS: names
-@description('Required. The prefix for all deployed components log analytics workspace.')
-@maxLength(8)
+@description('Required. The prefix for all deployed resources.')
+@maxLength(12)
 param environmentName string
 
 // PARAMETERS: locations
@@ -25,9 +25,8 @@ param environmentName string
   }
 })
 param contentUnderstandingLocation string
-//NOTE: determine allowed locations for resources with limited region availability
-@description('Optional. Location for the solution deployment. Defaulted to the location of the Resource Group.')
-param solutionLocation string = resourceGroup().location
+@description('Optional. Location for the solution deployment. Defaulted to the resource group location.')
+param solutionLocation string = 'East US'
 @description('Optional. Secondary location for databases creation.')
 param secondaryLocation string = 'East US 2'
 @description('Optional. The location for the web app. If empty, contentUnderstandingLocation will be used.')
@@ -104,7 +103,7 @@ var varAIFoundryMachineLearningServicesAIHubName = format(workloadNameFormat, 'a
 var varAIFoundryMachineLearningServicesProjectName = format(workloadNameFormat, 'aifd-aipj')
 // var varAIFoundryMachineLearningServicesModelPHIServerlessName = format(workloadNameFormat, 'aifd-sphi')
 var varStorageAccountName = replace(format(workloadNameFormat, 'strg'), '-', '') //NOTE: SA name should not contain hyphens
-var varCosmosDBAccountName = format(workloadNameFormat, 'cmdb')
+var varCosmosDbAccountName = format(workloadNameFormat, 'cmdb')
 var varCosmosDBAccountLocation = secondaryLocation
 var varSQLServerName = format(workloadNameFormat, 'sqls')
 var varSQLServerLocation = secondaryLocation
@@ -123,11 +122,19 @@ var varCopyDataScriptName = format(workloadNameFormat, 'scrp-cpdt')
 var varIndexDataScriptName = format(workloadNameFormat, 'scrp-idxd')
 
 // VARIABLES: key vault secrets names
-// Secret names can only contain alphanumeric characters and dashes.
-// The value you provide may be copied globally for the purpose of running the service.
-// The value provided should not include personally identifiable or sensitive information
 var varKvSecretNameAdlsAccountKey = 'ADLS-ACCOUNT-KEY'
 var varKvSecretNameAzureCosmosdbAccountKey = 'AZURE-COSMOSDB-ACCOUNT-KEY'
+var varKvSecretNameAdlsAccountContainer = 'ADLS-ACCOUNT-CONTAINER'
+var varKvSecretNameAdlsAccountName = 'ADLS-ACCOUNT-NAME'
+var varKvSecretNameTenantId = 'TENANT-ID'
+var varKvSecretNameAzureCosmosDbAccount = 'AZURE-COSMOSDB-ACCOUNT'
+var varKvSecretNameAzureCosmosDbDatabase = 'AZURE-COSMOSDB-DATABASE'
+var varKvSecretNameAzureCosmosDbConversationsContainer = 'AZURE-COSMOSDB-CONVERSATIONS-CONTAINER'
+var varKvSecretNameAzureCosmosDbEnableFeedback = 'AZURE-COSMOSDB-ENABLE-FEEDBACK'
+var varKvSecretNameSqlDbServer = 'SQLDB-SERVER'
+var varKvSecretNameSqlDbDatabase = 'SQLDB-DATABASE'
+var varKvSecretNameSqlDbUsername = 'SQLDB-USERNAME'
+var varKvSecretNameSqlDbPassword = 'SQLDB-PASSWORD'
 
 // VARIABLES: AI Model deployments
 var varGPTModelVersion = '2024-07-18'
@@ -164,12 +171,12 @@ var varAIFoundryAIServicesModelDeployments = [
 ]
 
 // VARIABLES: CosmosDB
-var varCosdbSqlDbName = 'db_conversation_history'
-var varCosdbSqlDbNameCollName = 'conversations'
+var varCosmosDbSqlDbName = 'db_conversation_history'
+var varCosmosDbSqlDbCollName = 'conversations'
 var varCosdbSqlDbContainers = [
   {
-    name: varCosdbSqlDbNameCollName
-    id: varCosdbSqlDbNameCollName //NOT: Might not be needed
+    name: varCosmosDbSqlDbCollName
+    id: varCosmosDbSqlDbCollName //NOT: Might not be needed
     partitionKey: '/userId'
   }
 ]
@@ -344,34 +351,19 @@ module avmKeyVault 'br/public:avm/res/key-vault/vault:0.11.2' = {
       }
     ]
     secrets: [
-      {
-        name: 'ADLS-ACCOUNT-CONTAINER'
-        value: 'data'
-      }
+      { name: varKvSecretNameAdlsAccountContainer, value: 'data' }
+      { name: varKvSecretNameAdlsAccountName, value: varStorageAccountName }
+      { name: varKvSecretNameTenantId, value: subscription().tenantId }
+      { name: varKvSecretNameAzureCosmosDbAccount, value: varCosmosDbAccountName }
+      { name: varKvSecretNameAzureCosmosDbDatabase, value: varCosmosDbSqlDbName }
+      { name: varKvSecretNameAzureCosmosDbConversationsContainer, value: varCosmosDbSqlDbCollName }
+      { name: varKvSecretNameAzureCosmosDbEnableFeedback, value: 'True' }
+      { name: varKvSecretNameSqlDbServer, value: '${varSQLServerName}${environment().suffixes.sqlServerHostname}' } //value: '${varSQLServerName}.database.windows.net'
+      { name: varKvSecretNameSqlDbDatabase, value: varSQLDatabaseName }
+      { name: varKvSecretNameSqlDbUsername, value: varSQLServerAdministratorLogin }
+      { name: varKvSecretNameSqlDbPassword, value: varSQLServerAdministratorPassword }
     ]
   }
-}
-
-// resource kvSecretADLSAccountContainer 'Microsoft.KeyVault/vaults/secrets@2021-11-01-preview' = {
-//   name: '${varKeyVaultName}/ADLS-ACCOUNT-CONTAINER'
-//   properties: {
-//     value: 'data'
-//   }
-//   dependsOn: [
-//     avmKeyVault
-//   ]
-// }
-
-//NOTE: Check if this is required
-
-resource kvSecretTenantIdEntry 'Microsoft.KeyVault/vaults/secrets@2021-11-01-preview' = {
-  name: '${varKeyVaultName}/TENANT-ID'
-  properties: {
-    value: subscription().tenantId
-  }
-  dependsOn: [
-    avmKeyVault
-  ]
 }
 
 // ========== Log Analytics Workspace ========== //
@@ -478,19 +470,12 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.18.1' = {
   }
 }
 
-resource kvSecretADLSAccountName 'Microsoft.KeyVault/vaults/secrets@2021-11-01-preview' = {
-  name: '${varKeyVaultName}/ADLS-ACCOUNT-NAME'
-  properties: {
-    value: avmStorageAccount.outputs.name
-  }
-}
-
 // ========== Cosmos Database ========== //
 
 module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.11.0' = {
-  name: format(deploymentNameFormat, varCosmosDBAccountName)
+  name: format(deploymentNameFormat, varCosmosDbAccountName)
   params: {
-    name: varCosmosDBAccountName
+    name: varCosmosDbAccountName
     tags: tags
     location: varCosmosDBAccountLocation
     defaultConsistencyLevel: 'Session'
@@ -509,7 +494,7 @@ module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.11.0' = {
     serverVersion: '4.0'
     sqlDatabases: [
       {
-        name: varCosdbSqlDbName
+        name: varCosmosDbSqlDbName
         containers: [
           for container in varCosdbSqlDbContainers: {
             name: container.name
@@ -523,53 +508,6 @@ module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.11.0' = {
       primaryWriteKeySecretName: varKvSecretNameAzureCosmosdbAccountKey
     }
   }
-}
-
-resource kvSecretAzureCosmosDBAccount 'Microsoft.KeyVault/vaults/secrets@2021-11-01-preview' = {
-  name: '${varKeyVaultName}/AZURE-COSMOSDB-ACCOUNT'
-  properties: {
-    value: avmCosmosDB.outputs.name
-  }
-}
-
-// resource kvSecretAzureCosmosDBAccountKey 'Microsoft.KeyVault/vaults/secrets@2021-11-01-preview' = {
-//   name: '${varKeyVaultName}/AZURE-COSMOSDB-ACCOUNT-KEY'
-//   properties: {
-//     value: existingCosmosDB.listKeys().primaryMasterKey
-//   }
-//   dependsOn: [
-//     avmKeyVault
-//   ]
-// }
-
-resource kvSecretAzureCosmosDBDatabase 'Microsoft.KeyVault/vaults/secrets@2021-11-01-preview' = {
-  name: '${varKeyVaultName}/AZURE-COSMOSDB-DATABASE'
-  properties: {
-    value: varCosdbSqlDbName
-  }
-  dependsOn: [
-    avmKeyVault
-  ]
-}
-
-resource kvSecretAzureCosmosDBConversationsContainer 'Microsoft.KeyVault/vaults/secrets@2021-11-01-preview' = {
-  name: '${varKeyVaultName}/AZURE-COSMOSDB-CONVERSATIONS-CONTAINER'
-  properties: {
-    value: varCosdbSqlDbNameCollName
-  }
-  dependsOn: [
-    avmKeyVault
-  ]
-}
-
-resource kvSecretAzureCosmosDBEnableFeedback 'Microsoft.KeyVault/vaults/secrets@2021-11-01-preview' = {
-  name: '${varKeyVaultName}/AZURE-COSMOSDB-ENABLE-FEEDBACK'
-  properties: {
-    value: 'True'
-  }
-  dependsOn: [
-    avmKeyVault
-  ]
 }
 
 // ========== SQL Database Server ========== //
@@ -611,49 +549,9 @@ module avmSQLServer 'br/public:avm/res/sql/server:0.12.2' = {
   }
 }
 
-resource kvSecretSQLDServer 'Microsoft.KeyVault/vaults/secrets@2021-11-01-preview' = {
-  name: '${varKeyVaultName}/SQLDB-SERVER'
-  properties: {
-    value: avmSQLServer.outputs.fullyQualifiedDomainName //'${existingSQLServer.name}.database.windows.net' CHECK THIS
-  }
-  dependsOn: [
-    avmKeyVault
-  ]
-}
-
-resource kvSecretSQLDBDatabase 'Microsoft.KeyVault/vaults/secrets@2021-11-01-preview' = {
-  name: '${varKeyVaultName}/SQLDB-DATABASE'
-  properties: {
-    value: varSQLDatabaseName
-  }
-  dependsOn: [
-    avmKeyVault
-  ]
-}
-
-resource kvSecretSQLDBUsername 'Microsoft.KeyVault/vaults/secrets@2021-11-01-preview' = {
-  name: '${varKeyVaultName}/SQLDB-USERNAME'
-  properties: {
-    value: varSQLServerAdministratorLogin
-  }
-  dependsOn: [
-    avmKeyVault
-  ]
-}
-
-resource kvSecretSQLDBPassword 'Microsoft.KeyVault/vaults/secrets@2021-11-01-preview' = {
-  name: '${varKeyVaultName}/SQLDB-PASSWORD'
-  properties: {
-    value: varSQLServerAdministratorPassword
-  }
-  dependsOn: [
-    avmKeyVault
-  ]
-}
-
 //========== Deployment script to upload sample data ========== //
 
-module avmDeploymentScritptCopyData 'br/public:avm/res/resources/deployment-script:0.5.1' = {
+module avmDeploymentScriptCopyData 'br/public:avm/res/resources/deployment-script:0.5.1' = {
   name: format(deploymentNameFormat, varCopyDataScriptName)
   params: {
     kind: 'AzureCLI'
@@ -699,7 +597,7 @@ module avmDeploymentScritptIndexData 'br/public:avm/res/resources/deployment-scr
     retentionInterval: 'PT1H'
     cleanupPreference: 'OnSuccess'
   }
-  dependsOn: [moduleAIFoundry, avmSQLServer, avmDeploymentScritptCopyData]
+  dependsOn: [moduleAIFoundry, avmSQLServer, avmDeploymentScriptCopyData]
 }
 
 //========== Azure function: Managed Environment ========== //
@@ -897,8 +795,8 @@ module moduleWebsiteWebapp 'modules/webapp.bicep' = {
     managedIdentityDefaultHostName: resWebapp.properties.defaultHostName
     chartsFunctionFunctionName: varChartsFunctionFunctionName
     webAppAppConfigReact: varWebAppAppConfigReact
-    cosmosDbSqlDbName: varCosdbSqlDbName
-    cosmosDbSqlDbNameCollectionName: varCosdbSqlDbNameCollName
+    cosmosDbSqlDbName: varCosmosDbSqlDbName
+    cosmosDbSqlDbNameCollectionName: varCosmosDbSqlDbCollName
     ragFunctionDefaultHostName: moduleFunctionRAG.outputs.defaultHostName
     ragFunctionFunctionName: varRAGFunctionFunctionName
     avmCosmosDbResourceName: avmCosmosDB.outputs.name
