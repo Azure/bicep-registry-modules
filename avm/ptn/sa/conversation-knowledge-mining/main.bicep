@@ -149,8 +149,8 @@ var deploymentNameFormat = 'deploy-{0}'
 // VARIABLES: calculated resource names
 
 var varAiFoundryAiHubResourceName = empty(aiFoundryAiHubResourceName)
-  ? aiFoundryAiHubResourceName
-  : format(varWorkloadNameFormat, 'aifd-aihb')
+  ? format(varWorkloadNameFormat, 'aifd-aihb')
+  : aiFoundryAiHubResourceName
 var varAiFoundryAiProjectResourceName = empty(aiFoundryAiProjectResourceName)
   ? format(varWorkloadNameFormat, 'aifd-aipj')
   : aiFoundryAiProjectResourceName
