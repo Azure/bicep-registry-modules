@@ -257,6 +257,19 @@ resource staticSite_roleAssignments 'Microsoft.Authorization/roleAssignments@202
   }
 ]
 
+@description('Condiitonal. Due the nature of Azure Static Apps, a partition ID is added to the app URL upon creation. Enabling the creation of the private DNS Zone will provision a DNS Zone with the correct partition ID, this is required for private endpoint connectivity to be enabled. You can choose to disable this option and create your own private DNS Zone by leveraging the output of the partitionId within this module. Default is `Enabled`, However the Private Dns Zone will only be created following if a `privateEndpoint` configuration is supplied.')
+param createPrivateDnsZone string = 'Enabled'
+
+@description('Condiitonal. If you choose to create your own private DNS Zone, you can provide the resource ID of the private DNS Zone here. This is required if you have disabled the `createPrivateDnsZone` and have supplied a `privateEndpoint` configuration.')
+param customPrivateDnsZoneResourceId string = ''
+
+module staticSite_privateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.0' = if (!empty(privateEndpoints) && createPrivateDnsZone == 'Enabled') {
+  name: '${uniqueString(deployment().name, location)}-staticSite-PrivateDnsZone'
+  params: {
+    name: 'privatelink.${staticSite.properties.defaultHostname}.azurestaticapps.net'
+  }
+}
+
 module staticSite_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-staticSite-PrivateEndpoint-${index}'
@@ -301,7 +314,23 @@ module staticSite_privateEndpoints 'br/public:avm/res/network/private-endpoint:0
         'Full'
       ).location
       lock: privateEndpoint.?lock ?? lock
-      privateDnsZoneGroup: privateEndpoint.?privateDnsZoneGroup
+      // privateDnsZoneGroup: privateEndpoint.?privateDnsZoneGroup
+      privateDnsZoneGroup: {
+        // privateDnsZoneGroupConfigs: (createPrivateDnsZone != 'Disabled')
+        // ? [
+        //     {
+        //       privateDnsZoneResourceId: staticSite_privateDnsZone.outputs.resourceId
+        //     }
+        //   ]
+        // : []
+        privateDnsZoneGroupConfigs: [
+          {
+            privateDnsZoneResourceId: (createPrivateDnsZone != 'Disabled')
+              ? staticSite_privateDnsZone.outputs.resourceId
+              : customPrivateDnsZoneResourceId
+          }
+        ]
+      }
       roleAssignments: privateEndpoint.?roleAssignments
       tags: privateEndpoint.?tags ?? tags
       customDnsConfigs: privateEndpoint.?customDnsConfigs
