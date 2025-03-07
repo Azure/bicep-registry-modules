@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "1390192729878803338"
+      "templateHash": "17720684346741935565"
     },
     "name": "Action Groups",
     "description": "This module deploys an Action Group."
@@ -123,6 +123,13 @@
       "nullable": true,
       "metadata": {
         "description": "Optional. The list of email receivers that are part of this action group."
+      }
+    },
+    "eventHubReceivers": {
+      "type": "array",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The list of Event Hub receivers that are part of this action group."
       }
     },
     "smsReceivers": {
@@ -257,6 +264,7 @@
         "groupShortName": "[parameters('groupShortName')]",
         "enabled": "[parameters('enabled')]",
         "emailReceivers": "[parameters('emailReceivers')]",
+        "eventHubReceivers": "[parameters('eventHubReceivers')]",
         "smsReceivers": "[parameters('smsReceivers')]",
         "webhookReceivers": "[parameters('webhookReceivers')]",
         "itsmReceivers": "[parameters('itsmReceivers')]",
