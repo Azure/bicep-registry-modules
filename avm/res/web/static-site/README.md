@@ -1413,6 +1413,13 @@ Due the nature of Azure Static Apps, a partition ID is added to the app URL upon
 - Required: No
 - Type: string
 - Default: `'Enabled'`
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
 
 ### Parameter: `customPrivateDnsZoneResourceId`
 

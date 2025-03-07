@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "15883051576344218970"
+      "templateHash": "16601307140722570602"
     },
     "name": "Static Web Apps",
     "description": "This module deploys a Static Web App."
@@ -651,6 +651,10 @@
     "createPrivateDnsZone": {
       "type": "string",
       "defaultValue": "Enabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
       "metadata": {
         "description": "Condiitonal. Due the nature of Azure Static Apps, a partition ID is added to the app URL upon creation. Enabling the creation of the private DNS Zone will provision a DNS Zone with the correct partition ID, this is required for private endpoint connectivity to be enabled. You can choose to disable this option and create your own private DNS Zone by leveraging the output of the partitionId within this module. Default is `Enabled`, However the Private Dns Zone will only be created following if a `privateEndpoint` configuration is supplied."
       }
@@ -1161,6 +1165,9 @@
         "parameters": {
           "name": {
             "value": "[format('privatelink.{0}.azurestaticapps.net', reference('staticSite').defaultHostname)]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
