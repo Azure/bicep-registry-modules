@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "2631969094686923970"
+      "version": "0.33.13.18514",
+      "templateHash": "3310414374523389442"
     },
     "name": "Container job toolkit",
     "description": "This module deploys a container to run as a job."
@@ -702,8 +702,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "574751768049543080"
+              "version": "0.33.13.18514",
+              "templateHash": "16961582462316371199"
             }
           },
           "definitions": {
@@ -1198,7 +1198,7 @@
               {
                 "name": "secrets",
                 "count": "[length(coalesce(parameters('keyVaultSecrets'), createArray()))]",
-                "input": "[if(not(equals(coalesce(parameters('keyVaultSecrets'), createArray())[copyIndex('secrets')].keyVaultUrl, null())), createObject('name', last(split(coalesce(coalesce(parameters('keyVaultSecrets'), createArray())[copyIndex('secrets')].keyVaultUrl, 'dummy-for-deployment-validation'), '/')), 'identity', coalesce(parameters('keyVaultSecrets'), createArray())[copyIndex('secrets')].identity, 'value', 'dummy'), null())]"
+                "input": "[if(not(equals(coalesce(parameters('keyVaultSecrets'), createArray())[copyIndex('secrets')].keyVaultUrl, null())), createObject('name', last(split(coalesce(parameters('keyVaultSecrets'), createArray())[copyIndex('secrets')].keyVaultUrl, '/')), 'identity', coalesce(parameters('keyVaultSecrets'), createArray())[copyIndex('secrets')].identity, 'value', 'dummy'), null())]"
               }
             ],
             "vaultBuiltInRoleNames": {
@@ -1305,9 +1305,9 @@
               "existing": true,
               "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
               "apiVersion": "2023-01-31",
-              "subscriptionId": "[split(coalesce(parameters('managedIdentityResourceId'), '//'), '/')[2]]",
-              "resourceGroup": "[split(coalesce(parameters('managedIdentityResourceId'), '////'), '/')[4]]",
-              "name": "[last(split(coalesce(parameters('managedIdentityResourceId'), 'dummyMsi'), '/'))]"
+              "subscriptionId": "[split(parameters('managedIdentityResourceId'), '/')[2]]",
+              "resourceGroup": "[split(parameters('managedIdentityResourceId'), '/')[4]]",
+              "name": "[last(split(parameters('managedIdentityResourceId'), '/'))]"
             },
             "nsg": {
               "condition": "[variables('zoneRedundant')]",
@@ -27915,7 +27915,7 @@
               "metadata": {
                 "description": "The resource ID of the (new or existing) managed identity."
               },
-              "value": "[if(equals(parameters('managedIdentityResourceId'), null()), resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', coalesce(parameters('managedIdentityName'), format('jobsUserIdentity-{0}', parameters('name')))), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(parameters('managedIdentityResourceId'), '//'), '/')[2], split(coalesce(parameters('managedIdentityResourceId'), '////'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(coalesce(parameters('managedIdentityResourceId'), 'dummyMsi'), '/'))))]"
+              "value": "[if(equals(parameters('managedIdentityResourceId'), null()), resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', coalesce(parameters('managedIdentityName'), format('jobsUserIdentity-{0}', parameters('name')))), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('managedIdentityResourceId'), '/')[2], split(parameters('managedIdentityResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(parameters('managedIdentityResourceId'), '/'))))]"
             },
             "userManagedIdentityPrincipalId": {
               "type": "string",

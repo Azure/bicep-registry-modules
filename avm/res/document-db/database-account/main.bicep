@@ -559,17 +559,17 @@ module databaseAccount_privateEndpoints 'br/public:avm/res/network/private-endpo
 module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfiguration != null) {
   name: '${uniqueString(deployment().name, location)}-secrets-kv'
   scope: resourceGroup(
-    split((secretsExportConfiguration.?keyVaultResourceId ?? '//'), '/')[2],
-    split((secretsExportConfiguration.?keyVaultResourceId ?? '////'), '/')[4]
+    split(secretsExportConfiguration.?keyVaultResourceId!, '/')[2],
+    split(secretsExportConfiguration.?keyVaultResourceId!, '/')[4]
   )
   params: {
-    keyVaultName: last(split(secretsExportConfiguration.?keyVaultResourceId ?? '//', '/'))
+    keyVaultName: last(split(secretsExportConfiguration.?keyVaultResourceId!, '/'))
     secretsToSet: union(
       [],
       contains(secretsExportConfiguration!, 'primaryWriteKeySecretName')
         ? [
             {
-              name: secretsExportConfiguration!.primaryWriteKeySecretName
+              name: secretsExportConfiguration!.?primaryWriteKeySecretName
               value: databaseAccount.listKeys().primaryMasterKey
             }
           ]
@@ -577,7 +577,7 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
       contains(secretsExportConfiguration!, 'primaryReadOnlyKeySecretName')
         ? [
             {
-              name: secretsExportConfiguration!.primaryReadOnlyKeySecretName
+              name: secretsExportConfiguration!.?primaryReadOnlyKeySecretName
               value: databaseAccount.listKeys().primaryReadonlyMasterKey
             }
           ]
@@ -585,7 +585,7 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
       contains(secretsExportConfiguration!, 'primaryWriteConnectionStringSecretName')
         ? [
             {
-              name: secretsExportConfiguration!.primaryWriteConnectionStringSecretName
+              name: secretsExportConfiguration!.?primaryWriteConnectionStringSecretName
               value: databaseAccount.listConnectionStrings().connectionStrings[0].connectionString
             }
           ]
@@ -593,7 +593,7 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
       contains(secretsExportConfiguration!, 'primaryReadonlyConnectionStringSecretName')
         ? [
             {
-              name: secretsExportConfiguration!.primaryReadonlyConnectionStringSecretName
+              name: secretsExportConfiguration!.?primaryReadonlyConnectionStringSecretName
               value: databaseAccount.listConnectionStrings().connectionStrings[2].connectionString
             }
           ]
@@ -601,7 +601,7 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
       contains(secretsExportConfiguration!, 'secondaryWriteKeySecretName')
         ? [
             {
-              name: secretsExportConfiguration!.secondaryWriteKeySecretName
+              name: secretsExportConfiguration!.?secondaryWriteKeySecretName
               value: databaseAccount.listKeys().secondaryMasterKey
             }
           ]
@@ -609,7 +609,7 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
       contains(secretsExportConfiguration!, 'secondaryReadonlyKeySecretName')
         ? [
             {
-              name: secretsExportConfiguration!.secondaryReadonlyKeySecretName
+              name: secretsExportConfiguration!.?secondaryReadonlyKeySecretName
               value: databaseAccount.listKeys().secondaryReadonlyMasterKey
             }
           ]
@@ -617,7 +617,7 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
       contains(secretsExportConfiguration!, 'secondaryWriteConnectionStringSecretName')
         ? [
             {
-              name: secretsExportConfiguration!.secondaryWriteConnectionStringSecretName
+              name: secretsExportConfiguration!.?secondaryWriteConnectionStringSecretName
               value: databaseAccount.listConnectionStrings().connectionStrings[1].connectionString
             }
           ]
@@ -625,7 +625,7 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
       contains(secretsExportConfiguration!, 'secondaryReadonlyConnectionStringSecretName')
         ? [
             {
-              name: secretsExportConfiguration!.secondaryReadonlyConnectionStringSecretName
+              name: secretsExportConfiguration!.?secondaryReadonlyConnectionStringSecretName
               value: databaseAccount.listConnectionStrings().connectionStrings[3].connectionString
             }
           ]

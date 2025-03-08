@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "7944054550680645095"
+      "version": "0.33.13.18514",
+      "templateHash": "15529669085824746946"
     },
     "name": "Custom Images using Azure Image Builder",
     "description": "This module provides you with a packaged solution to create custom images using the Azure Image Builder service publishing to an Azure Compute Gallery."
@@ -1517,8 +1517,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "3372394731458682071"
+              "version": "0.33.13.18514",
+              "templateHash": "8518404711371528217"
             }
           },
           "parameters": {
@@ -1539,9 +1539,9 @@
             {
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
-              "name": "[guid(resourceGroup().id, extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(parameters('msiResourceId'), '//'), '/')[2], split(coalesce(parameters('msiResourceId'), '////'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(parameters('msiResourceId'), '/'))), parameters('roleDefinitionId'))]",
+              "name": "[guid(resourceGroup().id, extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('msiResourceId'), '/')[2], split(parameters('msiResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(parameters('msiResourceId'), '/'))), parameters('roleDefinitionId'))]",
               "properties": {
-                "principalId": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(parameters('msiResourceId'), '//'), '/')[2], split(coalesce(parameters('msiResourceId'), '////'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(parameters('msiResourceId'), '/'))), '2018-11-30').principalId]",
+                "principalId": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('msiResourceId'), '/')[2], split(parameters('msiResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(parameters('msiResourceId'), '/'))), '2018-11-30').principalId]",
                 "roleDefinitionId": "[parameters('roleDefinitionId')]",
                 "principalType": "ServicePrincipal"
               }
