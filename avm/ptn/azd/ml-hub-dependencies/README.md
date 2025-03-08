@@ -537,8 +537,6 @@ When set to true, calls to the search service will not be permitted to utilize A
 - Required: No
 - Type: bool
 - Default: `False`
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `dnsEndpointType`
 
@@ -555,8 +553,6 @@ Allows you to specify the type of endpoint in the storage account. Set this to A
     'Standard'
   ]
   ```
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `enablePurgeProtection`
 
@@ -565,8 +561,6 @@ Provide 'true' to enable Key Vault's purge protection feature.
 - Required: No
 - Type: bool
 - Default: `False`
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `enableRbacAuthorization`
 
@@ -575,8 +569,6 @@ Property that controls how data actions are authorized. When true, the key vault
 - Required: No
 - Type: bool
 - Default: `False`
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `enableTelemetry`
 
@@ -585,8 +577,6 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `enableVaultForDeployment`
 
@@ -595,8 +585,6 @@ Specifies if the vault is enabled for deployment by script or compute.
 - Required: No
 - Type: bool
 - Default: `False`
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `enableVaultForTemplateDeployment`
 
@@ -605,8 +593,6 @@ Specifies if the vault is enabled for a template deployment.
 - Required: No
 - Type: bool
 - Default: `False`
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `fileServices`
 
@@ -620,8 +606,6 @@ File service and shares to deploy.
       name: 'default'
   }
   ```
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `hostingMode`
 
@@ -637,8 +621,6 @@ Applicable only for the standard3 SKU. You can set this property to enable up to
     'highDensity'
   ]
   ```
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `keyVaultSku`
 
@@ -654,8 +636,6 @@ Specifies the SKU for the vault.
     'standard'
   ]
   ```
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `location`
 
@@ -664,8 +644,6 @@ Location for all Resources.
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `logAnalyticsName`
 
@@ -674,8 +652,6 @@ The resource operational insights workspaces name.
 - Required: No
 - Type: string
 - Default: `''`
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `logAnalyticsSkuName`
 
@@ -697,8 +673,6 @@ The name of the SKU.
     'Standard'
   ]
   ```
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `networkAcls`
 
@@ -713,8 +687,6 @@ Networks ACLs, this value contains IPs to whitelist and/or Subnet information. I
       defaultAction: 'Allow'
   }
   ```
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `networkRuleSet`
 
@@ -729,8 +701,6 @@ Network specific rules that determine how the Azure Cognitive Search service may
       ipRules: []
   }
   ```
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `partitionCount`
 
@@ -757,8 +727,6 @@ Whether or not public network access is allowed for the storage account. For sec
     'Enabled'
   ]
   ```
-- MinValue: 1
-- MaxValue: 12
 
 ### Parameter: `queueServices`
 
@@ -772,8 +740,6 @@ Queue service and queues to create.
       name: 'default'
   }
   ```
-- MinValue: 1
-- MaxValue: 12
 
 ### Parameter: `registryAcrSku`
 
@@ -790,8 +756,6 @@ Tier of your Azure container registry.
     'Standard'
   ]
   ```
-- MinValue: 1
-- MaxValue: 12
 
 ### Parameter: `registryPublicNetworkAccess`
 
@@ -800,8 +764,6 @@ Public network access setting.
 - Required: No
 - Type: string
 - Default: `'Enabled'`
-- MinValue: 1
-- MaxValue: 12
 
 ### Parameter: `replicaCount`
 
@@ -820,8 +782,6 @@ Name of the Azure Cognitive Search service.
 - Required: No
 - Type: string
 - Default: `''`
-- MinValue: 1
-- MaxValue: 12
 
 ### Parameter: `searchServicePublicNetworkAccess`
 
@@ -837,8 +797,6 @@ This value can be set to 'Enabled' to avoid breaking changes on existing custome
     'Enabled'
   ]
   ```
-- MinValue: 1
-- MaxValue: 12
 
 ### Parameter: `searchServiceSku`
 
@@ -859,8 +817,6 @@ Defines the SKU of an Azure Cognitive Search Service, which determines price tie
     'storage_optimized_l2'
   ]
   ```
-- MinValue: 1
-- MaxValue: 12
 
 ### Parameter: `semanticSearch`
 
@@ -877,8 +833,6 @@ Sets options that control the availability of semantic search. This configuratio
     'standard'
   ]
   ```
-- MinValue: 1
-- MaxValue: 12
 
 ### Parameter: `tableServices`
 
@@ -892,8 +846,6 @@ Table service and tables to create.
       name: 'default'
   }
   ```
-- MinValue: 1
-- MaxValue: 12
 
 ### Parameter: `tags`
 
@@ -901,8 +853,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-- MinValue: 1
-- MaxValue: 12
 - Example:
   ```Bicep
   {

@@ -1912,8 +1912,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-- MinValue: 1
-- MaxValue: 7
 
 ## Outputs
 

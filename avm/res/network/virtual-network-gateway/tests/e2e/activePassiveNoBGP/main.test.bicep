@@ -51,15 +51,14 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      location: resourceLocation
       name: '${namePrefix}${serviceShort}001'
       vpnGatewayGeneration: 'Generation2'
       skuName: 'VpnGw2AZ'
       gatewayType: 'Vpn'
       vNetResourceId: nestedDependencies.outputs.vnetResourceId
       clusterSettings: {
-        clusterMode:'activePassiveNoBgp'
-        }
+        clusterMode: 'activePassiveNoBgp'
+      }
 
       domainNameLabel: [
         '${namePrefix}-dm-${serviceShort}'
@@ -76,8 +75,5 @@ module testDeployment '../../../main.bicep' = [
       allowRemoteVnetTraffic: true
       enableBgpRouteTranslationForNat: true
     }
-    dependsOn: [
-      nestedDependencies
-    ]
   }
 ]
