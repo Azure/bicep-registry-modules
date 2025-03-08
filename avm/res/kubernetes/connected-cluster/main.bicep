@@ -23,10 +23,6 @@ param tenantId string?
 @description('Optional. The Azure AD admin group object IDs.')
 param aadAdminGroupObjectIds array?
 
-import { managedIdentityOnlySysAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
-@description('Optional. The managed identity definition for this resource.')
-param managedIdentities managedIdentityOnlySysAssignedType?
-
 @description('Optional. Enable Azure RBAC.')
 param enableAzureRBAC bool = false
 
@@ -102,7 +98,7 @@ resource connectedCluster 'Microsoft.Kubernetes/connectedClusters@2024-07-15-pre
   kind: 'ProvisionedCluster'
   location: location
   identity: {
-    type: managedIdentities.?systemAssigned == false ? 'None' : 'SystemAssigned'
+    type: 'SystemAssigned'
   }
   tags: tags
   properties: {

@@ -41,9 +41,6 @@ module testDeployment '../../../main.bicep' = {
     workloadIdentityEnabled: true
     enableAzureRBAC: true
     enableTelemetry: true
-    managedIdentities: {
-      systemAssigned: true
-    }
     roleAssignments: [
       {
         name: 'cbc3932a-1bee-4318-ae76-d70e1ba399c8'
