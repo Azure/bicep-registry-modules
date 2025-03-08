@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "9684487909252985724"
+      "version": "0.33.13.18514",
+      "templateHash": "6764717189497682582"
     },
     "name": "Azure Cosmos DB MongoDB vCore cluster",
     "description": "This module deploys a Azure Cosmos DB MongoDB vCore cluster.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case."
@@ -845,8 +845,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "1544899685990336416"
+              "version": "0.33.13.18514",
+              "templateHash": "17541016566770928293"
             },
             "name": "Azure Cosmos DB MongoDB vCore Cluster Config FireWall Rules",
             "description": "This module config firewall rules for the Azure Cosmos DB MongoDB vCore cluster."
@@ -922,8 +922,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-secrets-kv', uniqueString(deployment().name, parameters('location')))]",
-      "subscriptionId": "[split(coalesce(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '//'), '/')[2]]",
-      "resourceGroup": "[split(coalesce(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '////'), '/')[4]]",
+      "subscriptionId": "[split(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '/')[4]]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -931,10 +931,10 @@
         "mode": "Incremental",
         "parameters": {
           "keyVaultName": {
-            "value": "[last(split(coalesce(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '//'), '/'))]"
+            "value": "[last(split(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '/'))]"
           },
           "secretsToSet": {
-            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'connectionStringSecretName'), createArray(createObject('name', parameters('secretsExportConfiguration').connectionStringSecretName, 'value', reference('mongoCluster').connectionString)), createArray()))]"
+            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'connectionStringSecretName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'connectionStringSecretName'), 'value', reference('mongoCluster').connectionString)), createArray()))]"
           }
         },
         "template": {
@@ -944,8 +944,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "7635336304585068699"
+              "version": "0.33.13.18514",
+              "templateHash": "15250057529938805373"
             }
           },
           "definitions": {
