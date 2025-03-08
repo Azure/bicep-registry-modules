@@ -98,7 +98,7 @@ resource machineLearningWorkspace 'Microsoft.MachineLearningServices/workspaces@
 // Deployments  //
 // ============ //
 
-resource compute 'Microsoft.MachineLearningServices/workspaces/computes@2022-10-01' = if (deployCompute == true) {
+resource compute 'Microsoft.MachineLearningServices/workspaces/computes@2024-10-01' = if (deployCompute == true) {
   name: name
   location: location
   tags: empty(resourceId) ? tags : any(null)
