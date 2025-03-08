@@ -191,9 +191,7 @@ resource imageTemplate 'Microsoft.VirtualMachineImages/imageTemplates@2024-02-01
         : {})
       ...(distribution.type == 'SharedImage'
         ? {
-            runOutputName: distribution.?runOutputName ?? (!empty(distribution.?sharedImageGalleryImageDefinitionResourceId)
-              ? '${last(split(distribution.sharedImageGalleryImageDefinitionResourceId, '/'))}-SharedImage'
-              : 'SharedImage')
+            runOutputName: distribution.?runOutputName ?? '${last(split(distribution.?sharedImageGalleryImageDefinitionResourceId, '/'))}-SharedImage'
             galleryImageId: !empty(distribution.?sharedImageGalleryImageDefinitionTargetVersion)
               ? '${distribution.sharedImageGalleryImageDefinitionResourceId}/versions/${distribution.sharedImageGalleryImageDefinitionTargetVersion}'
               : distribution.sharedImageGalleryImageDefinitionResourceId
@@ -292,7 +290,7 @@ type sharedImageDistributionType = {
   @description('Required. The type of distribution.')
   type: 'SharedImage'
 
-  @description('Conditional. Resource ID of Compute Gallery Image Definition to distribute image to, e.g.: /subscriptions/<subscriptionID>/resourceGroups/<SIG resourcegroup>/providers/Microsoft.Compute/galleries/<SIG name>/images/<image definition>.')
+  @description('Required. Resource ID of Compute Gallery Image Definition to distribute image to, e.g.: /subscriptions/<subscriptionID>/resourceGroups/<SIG resourcegroup>/providers/Microsoft.Compute/galleries/<SIG name>/images/<image definition>.')
   sharedImageGalleryImageDefinitionResourceId: string
 
   @description('Optional. Version of the Compute Gallery Image. Supports the following Version Syntax: Major.Minor.Build (i.e., \'1.1.1\' or \'10.1.2\'). If not provided, a version will be calculated.')
