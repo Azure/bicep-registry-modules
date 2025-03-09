@@ -1019,7 +1019,7 @@
         "diskIOPSReadWrite": "[tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()], 'diskIOPSReadWrite')]",
         "diskMBpsReadWrite": "[tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()], 'diskMBpsReadWrite')]"
       },
-      "zones": "[if(not(equals(parameters('zone'), 0)), array(string(parameters('zone'))), null())]"
+      "zones": "[if(and(not(equals(parameters('zone'), 0)), not(contains(coalesce(parameters('dataDisks'), createArray())[copyIndex()].managedDisk.storageAccountType, 'ZRS'))), array(string(parameters('zone'))), null())]"
     },
     "vm": {
       "type": "Microsoft.Compute/virtualMachines",

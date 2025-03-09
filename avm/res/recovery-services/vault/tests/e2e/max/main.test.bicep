@@ -436,10 +436,11 @@ module testDeployment '../../../main.bicep' = [
           emailNotificationsForSiteRecovery: 'Enabled'
         }
       }
-      securitySettings: {
-        immutabilitySettings: {
-          state: 'Unlocked'
-        }
+      immutabilitySettingState: 'Unlocked'
+      softDeleteSettings: {
+        enhancedSecurityState: 'Enabled'
+        softDeleteRetentionPeriodInDays: 14
+        softDeleteState: 'Enabled'
       }
       tags: {
         'hidden-title': 'This is visible in the resource name'

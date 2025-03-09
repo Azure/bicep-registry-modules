@@ -41,7 +41,6 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      location: resourceLocation
       name: '${namePrefix}${serviceShort}001'
       replicationAlertSettings: {
         customEmailAddresses: [
@@ -50,11 +49,7 @@ module testDeployment '../../../main.bicep' = [
         locale: 'en-US'
         sendToOwners: 'Send'
       }
-      securitySettings: {
-        immutabilitySettings: {
-          state: 'Unlocked'
-        }
-      }
+      immutabilitySettingState: 'Unlocked'
     }
   }
 ]

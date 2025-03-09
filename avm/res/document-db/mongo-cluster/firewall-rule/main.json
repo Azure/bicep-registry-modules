@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "9916755480501583026"
+      "version": "0.32.4.45862",
+      "templateHash": "1544899685990336416"
     },
     "name": "Azure Cosmos DB MongoDB vCore Cluster Config FireWall Rules",
     "description": "This module config firewall rules for the Azure Cosmos DB MongoDB vCore cluster."

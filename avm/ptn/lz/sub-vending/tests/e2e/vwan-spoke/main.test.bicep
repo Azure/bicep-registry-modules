@@ -6,6 +6,7 @@ targetScope = 'managementGroup'
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
 
+// This parameter needs to be updated with the billing account and the enrollment account of your environment.
 @description('Required. The scope of the subscription billing. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-SubscriptionBillingScope\'.')
 @secure()
 param subscriptionBillingScope string = ''
@@ -30,6 +31,10 @@ param vwanHubVirtualNetworkName string = 'vnet-uksouth-hub-blzv'
 
 @description('Optional. The name of the existing vwan hub.')
 param vwanHubName string = 'vhub-uksouth-blzv'
+
+@description('Required. Principle ID of the user. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-testUserObjectId\'.')
+@secure()
+param testUserObjectId string = ''
 
 // Provide a reference to an existing Azure Virtual WAN hub.
 module nestedDependencies 'dependencies.bicep' = {
@@ -70,7 +75,7 @@ module testDeployment '../../../main.bicep' = {
     roleAssignmentEnabled: true
     roleAssignments: [
       {
-        principalId: '896b1162-be44-4b28-888a-d01acc1b4271'
+        principalId: testUserObjectId
         //Network contributor role
         definition: '/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7'
         relativeScope: '/resourceGroups/rsg-${resourceLocation}-net-vwan-${namePrefix}-${serviceShort}'

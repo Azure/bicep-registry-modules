@@ -823,8 +823,13 @@ Describe 'Module tests' -Tag 'Module' {
                         [hashtable] $templateFileContent
                     )
 
-                    $matchingTypeKey = $templateFileContent.definitions.Keys | Where-Object { $_ -match 'managedIdentity' }
-                    if ($matchingTypeKey -and $templateFileContent.definitions.$matchingTypeKey.properties.keys -contains 'systemAssigned') {
+                    # Testing for `managedIdentit*` in type, to be not dependent on singular/plural in UDT name
+                    $hasMatchingParameter = $templateFileContent.parameters.managedIdentities.'$ref' -match 'managedIdentit'
+
+                    $matchingTypeKey = $templateFileContent.definitions.Keys | Where-Object { $_ -match 'managedIdentit' }
+                    $hasSystemAssignedInType = $templateFileContent.definitions.($matchingTypeKey ?? '').properties.keys -contains 'systemAssigned'
+
+                    if ($hasMatchingParameter -and $hasSystemAssignedInType) {
                         $templateFileContent.outputs.Keys | Should -Contain 'systemAssignedMIPrincipalId' -Because 'The AVM specs require a this output. For information please review the [AVM Specs](https://azure.github.io/Azure-Verified-Modules/specs/bcp/res/interfaces/#managed-identities).'
 
                         $templateFileContent.outputs.systemAssignedMIPrincipalId.type | Should -Be 'string' -Because 'it should match the AVM spec for managed identities. For information please review the [AVM Specs](https://azure.github.io/Azure-Verified-Modules/specs/bcp/res/interfaces/#managed-identities).'

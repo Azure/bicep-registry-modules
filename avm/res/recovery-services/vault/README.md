@@ -61,18 +61,13 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
     // Required parameters
     name: 'rsvmin001'
     // Non-required parameters
-    location: '<location>'
+    immutabilitySettingState: 'Unlocked'
     replicationAlertSettings: {
       customEmailAddresses: [
         'test.user@testcompany.com'
       ]
       locale: 'en-US'
       sendToOwners: 'Send'
-    }
-    securitySettings: {
-      immutabilitySettings: {
-        state: 'Unlocked'
-      }
     }
   }
 }
@@ -95,8 +90,8 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
       "value": "rsvmin001"
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
+    "immutabilitySettingState": {
+      "value": "Unlocked"
     },
     "replicationAlertSettings": {
       "value": {
@@ -105,13 +100,6 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
         ],
         "locale": "en-US",
         "sendToOwners": "Send"
-      }
-    },
-    "securitySettings": {
-      "value": {
-        "immutabilitySettings": {
-          "state": "Unlocked"
-        }
       }
     }
   }
@@ -131,18 +119,13 @@ using 'br/public:avm/res/recovery-services/vault:<version>'
 // Required parameters
 param name = 'rsvmin001'
 // Non-required parameters
-param location = '<location>'
+param immutabilitySettingState = 'Unlocked'
 param replicationAlertSettings = {
   customEmailAddresses: [
     'test.user@testcompany.com'
   ]
   locale: 'en-US'
   sendToOwners: 'Send'
-}
-param securitySettings = {
-  immutabilitySettings: {
-    state: 'Unlocked'
-  }
 }
 ```
 
@@ -764,6 +747,7 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
+    immutabilitySettingState: 'Unlocked'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -880,10 +864,10 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
-    securitySettings: {
-      immutabilitySettings: {
-        state: 'Unlocked'
-      }
+    softDeleteSettings: {
+      enhancedSecurityState: 'Enabled'
+      softDeleteRetentionPeriodInDays: 14
+      softDeleteState: 'Enabled'
     }
     tags: {
       Environment: 'Non-Prod'
@@ -1165,6 +1149,9 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
         }
       ]
     },
+    "immutabilitySettingState": {
+      "value": "Unlocked"
+    },
     "location": {
       "value": "<location>"
     },
@@ -1297,11 +1284,11 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
         }
       ]
     },
-    "securitySettings": {
+    "softDeleteSettings": {
       "value": {
-        "immutabilitySettings": {
-          "state": "Unlocked"
-        }
+        "enhancedSecurityState": "Enabled",
+        "softDeleteRetentionPeriodInDays": 14,
+        "softDeleteState": "Enabled"
       }
     },
     "tags": {
@@ -1576,6 +1563,7 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
+param immutabilitySettingState = 'Unlocked'
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
@@ -1692,10 +1680,10 @@ param roleAssignments = [
     roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
   }
 ]
-param securitySettings = {
-  immutabilitySettings: {
-    state: 'Unlocked'
-  }
+param softDeleteSettings = {
+  enhancedSecurityState: 'Enabled'
+  softDeleteRetentionPeriodInDays: 14
+  softDeleteState: 'Enabled'
 }
 param tags = {
   Environment: 'Non-Prod'
@@ -1957,6 +1945,12 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
         }
       }
     ]
+    customerManagedKey: {
+      autoRotationEnabled: false
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+    }
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -1971,11 +1965,8 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
+    immutabilitySettingState: 'Unlocked'
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [
@@ -2059,15 +2050,10 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
       locale: 'en-US'
       sendToOwners: 'Send'
     }
-    securitySettings: {
-      immutabilitySettings: {
-        state: 'Unlocked'
-      }
-    }
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
+    softDeleteSettings: {
+      enhancedSecurityState: 'Enabled'
+      softDeleteRetentionPeriodInDays: 14
+      softDeleteState: 'Enabled'
     }
   }
 }
@@ -2328,6 +2314,14 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
         }
       ]
     },
+    "customerManagedKey": {
+      "value": {
+        "autoRotationEnabled": false,
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
+      }
+    },
     "diagnosticSettings": {
       "value": [
         {
@@ -2344,14 +2338,11 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
         }
       ]
     },
+    "immutabilitySettingState": {
+      "value": "Unlocked"
+    },
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
     },
     "managedIdentities": {
       "value": {
@@ -2444,18 +2435,11 @@ module vault 'br/public:avm/res/recovery-services/vault:<version>' = {
         "sendToOwners": "Send"
       }
     },
-    "securitySettings": {
+    "softDeleteSettings": {
       "value": {
-        "immutabilitySettings": {
-          "state": "Unlocked"
-        }
-      }
-    },
-    "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
+        "enhancedSecurityState": "Enabled",
+        "softDeleteRetentionPeriodInDays": 14,
+        "softDeleteState": "Enabled"
       }
     }
   }
@@ -2709,6 +2693,12 @@ param backupPolicies = [
     }
   }
 ]
+param customerManagedKey = {
+  autoRotationEnabled: false
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+}
 param diagnosticSettings = [
   {
     eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -2723,11 +2713,8 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
+param immutabilitySettingState = 'Unlocked'
 param location = '<location>'
-param lock = {
-  kind: 'CanNotDelete'
-  name: 'myCustomLockName'
-}
 param managedIdentities = {
   systemAssigned: true
   userAssignedResourceIds: [
@@ -2811,15 +2798,10 @@ param replicationAlertSettings = {
   locale: 'en-US'
   sendToOwners: 'Send'
 }
-param securitySettings = {
-  immutabilitySettings: {
-    state: 'Unlocked'
-  }
-}
-param tags = {
-  Environment: 'Non-Prod'
-  'hidden-title': 'This is visible in the resource name'
-  Role: 'DeploymentValidation'
+param softDeleteSettings = {
+  enhancedSecurityState: 'Enabled'
+  softDeleteRetentionPeriodInDays: 14
+  softDeleteState: 'Enabled'
 }
 ```
 
@@ -2844,6 +2826,7 @@ param tags = {
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`immutabilitySettingState`](#parameter-immutabilitysettingstate) | string | The immmutability setting state of the recovery services vault resource. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
@@ -2857,7 +2840,7 @@ param tags = {
 | [`replicationPolicies`](#parameter-replicationpolicies) | array | List of all replication policies. |
 | [`restoreSettings`](#parameter-restoresettings) | object | The restore settings of the vault. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`securitySettings`](#parameter-securitysettings) | object | Security Settings of the vault. |
+| [`softDeleteSettings`](#parameter-softdeletesettings) | object | The soft delete related settings. |
 | [`tags`](#parameter-tags) | object | Tags of the Recovery Service Vault resource. |
 
 ### Parameter: `name`
@@ -3265,6 +3248,21 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `immutabilitySettingState`
+
+The immmutability setting state of the recovery services vault resource.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Locked'
+    'Unlocked'
+  ]
+  ```
 
 ### Parameter: `location`
 
@@ -4357,23 +4355,9 @@ The principal type of the assigned principal ID.
   ]
   ```
 
-### Parameter: `securitySettings`
+### Parameter: `softDeleteSettings`
 
-Security Settings of the vault.
-
-- Required: No
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`immutabilitySettings`](#parameter-securitysettingsimmutabilitysettings) | object | Immutability settings of a vault. |
-| [`softDeleteSettings`](#parameter-securitysettingssoftdeletesettings) | object | Soft delete settings of a vault. |
-
-### Parameter: `securitySettings.immutabilitySettings`
-
-Immutability settings of a vault.
+The soft delete related settings.
 
 - Required: No
 - Type: object
@@ -4382,39 +4366,11 @@ Immutability settings of a vault.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`state`](#parameter-securitysettingsimmutabilitysettingsstate) | string | The immmutability setting of the vault. |
+| [`enhancedSecurityState`](#parameter-softdeletesettingsenhancedsecuritystate) | string | The enhanced security state. |
+| [`softDeleteRetentionPeriodInDays`](#parameter-softdeletesettingssoftdeleteretentionperiodindays) | int | The soft delete retention period in days. |
+| [`softDeleteState`](#parameter-softdeletesettingssoftdeletestate) | string | The soft delete state. |
 
-### Parameter: `securitySettings.immutabilitySettings.state`
-
-The immmutability setting of the vault.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Disabled'
-    'Locked'
-    'Unlocked'
-  ]
-  ```
-
-### Parameter: `securitySettings.softDeleteSettings`
-
-Soft delete settings of a vault.
-
-- Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`enhancedSecurityState`](#parameter-securitysettingssoftdeletesettingsenhancedsecuritystate) | string | The enhanced security state. |
-| [`softDeleteRetentionPeriodInDays`](#parameter-securitysettingssoftdeletesettingssoftdeleteretentionperiodindays) | int | The soft delete retention period in days. |
-| [`softDeleteState`](#parameter-securitysettingssoftdeletesettingssoftdeletestate) | string | The soft delete state. |
-
-### Parameter: `securitySettings.softDeleteSettings.enhancedSecurityState`
+### Parameter: `softDeleteSettings.enhancedSecurityState`
 
 The enhanced security state.
 
@@ -4430,14 +4386,14 @@ The enhanced security state.
   ]
   ```
 
-### Parameter: `securitySettings.softDeleteSettings.softDeleteRetentionPeriodInDays`
+### Parameter: `softDeleteSettings.softDeleteRetentionPeriodInDays`
 
 The soft delete retention period in days.
 
 - Required: Yes
 - Type: int
 
-### Parameter: `securitySettings.softDeleteSettings.softDeleteState`
+### Parameter: `softDeleteSettings.softDeleteState`
 
 The soft delete state.
 

@@ -57,8 +57,16 @@ param privateEndpoints privateEndpointSingleServiceType[]?
 @description('Optional. Monitoring Settings of the vault.')
 param monitoringSettings monitoringSettingsType?
 
-@description('Optional. Security Settings of the vault.')
-param securitySettings securitySettingType?
+@description('Optional. The soft delete related settings.')
+param softDeleteSettings softDeleteSettingType?
+
+@description('Optional. The immmutability setting state of the recovery services vault resource.')
+@allowed([
+  'Disabled'
+  'Locked'
+  'Unlocked'
+])
+param immutabilitySettingState string?
 
 @description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled.')
 @allowed([
@@ -209,7 +217,14 @@ resource rsv 'Microsoft.RecoveryServices/vaults@2024-04-01' = {
             : null
         }
       : null
-    securitySettings: securitySettings
+    securitySettings: {
+      immutabilitySettings: !empty(immutabilitySettingState)
+        ? {
+            state: immutabilitySettingState
+          }
+        : null
+      softDeleteSettings: softDeleteSettings
+    }
     publicNetworkAccess: publicNetworkAccess
     redundancySettings: redundancySettings
     restoreSettings: restoreSettings
@@ -668,24 +683,19 @@ type monitoringSettingsType = {
   }?
 }
 
+// =============== //
+//   Definitions   //
+// =============== //
+
 @export()
-@description('The type for security settings.')
-type securitySettingType = {
-  @description('Optional. Immutability settings of a vault.')
-  immutabilitySettings: {
-    @description('Required. The immmutability setting of the vault.')
-    state: ('Disabled' | 'Locked' | 'Unlocked')
-  }?
+@description('The type for soft delete settings.')
+type softDeleteSettingType = {
+  @description('Required. The enhanced security state.')
+  enhancedSecurityState: ('AlwaysON' | 'Disabled' | 'Enabled' | 'Invalid')
 
-  @description('Optional. Soft delete settings of a vault.')
-  softDeleteSettings: {
-    @description('Required. The enhanced security state.')
-    enhancedSecurityState: ('AlwaysON' | 'Disabled' | 'Enabled' | 'Invalid')
+  @description('Required. The soft delete retention period in days.')
+  softDeleteRetentionPeriodInDays: int
 
-    @description('Required. The soft delete retention period in days.')
-    softDeleteRetentionPeriodInDays: int
-
-    @description('Required. The soft delete state.')
-    softDeleteState: ('AlwaysON' | 'Disabled' | 'Enabled' | 'Invalid')
-  }?
+  @description('Required. The soft delete state.')
+  softDeleteState: ('AlwaysON' | 'Disabled' | 'Enabled' | 'Invalid')
 }
