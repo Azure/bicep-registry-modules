@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "10306977480348141040"
+      "version": "0.33.93.31351",
+      "templateHash": "15951053815804086272"
     },
     "name": "Azure NetApp Files",
     "description": "This module deploys an Azure NetApp File."
@@ -247,7 +247,82 @@
         "description": "The type for a backup policy."
       }
     },
-    "_1.backupType": {
+    "_1.roleAssignmentType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+          }
+        },
+        "roleDefinitionIdOrName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+          }
+        },
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+          }
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "Device",
+            "ForeignGroup",
+            "Group",
+            "ServicePrincipal",
+            "User"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The principal type of the assigned principal ID."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The description of the role assignment."
+          }
+        },
+        "condition": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+          }
+        },
+        "conditionVersion": {
+          "type": "string",
+          "allowedValues": [
+            "2.0"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Version of the condition."
+          }
+        },
+        "delegatedManagedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Resource Id of the delegated managed identity resource."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a role assignment.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+        }
+      }
+    },
+    "_2.backupType": {
       "type": "object",
       "properties": {
         "backupPolicyName": {
@@ -276,25 +351,25 @@
         }
       }
     },
-    "_1.dataProtectionType": {
+    "_2.dataProtectionType": {
       "type": "object",
       "properties": {
         "replication": {
-          "$ref": "#/definitions/_1.replicationType",
+          "$ref": "#/definitions/_2.replicationType",
           "nullable": true,
           "metadata": {
             "description": "Optional. Replication properties."
           }
         },
         "backup": {
-          "$ref": "#/definitions/_1.backupType",
+          "$ref": "#/definitions/_2.backupType",
           "nullable": true,
           "metadata": {
             "description": "Optional. Backup properties."
           }
         },
         "snapshot": {
-          "$ref": "#/definitions/_1.snapshotType",
+          "$ref": "#/definitions/_2.snapshotType",
           "nullable": true,
           "metadata": {
             "description": "Optional. Snapshot properties."
@@ -308,7 +383,7 @@
         }
       }
     },
-    "_1.exportPolicyType": {
+    "_2.exportPolicyType": {
       "type": "object",
       "properties": {
         "rules": {
@@ -428,7 +503,7 @@
         }
       }
     },
-    "_1.replicationType": {
+    "_2.replicationType": {
       "type": "object",
       "properties": {
         "endpointType": {
@@ -501,7 +576,7 @@
         }
       }
     },
-    "_1.snapshotType": {
+    "_2.snapshotType": {
       "type": "object",
       "properties": {
         "snapshotPolicyName": {
@@ -595,7 +670,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a customer-managed key. To be used if the resource type does not support auto-rotation of the customer-managed key.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     },
@@ -701,7 +776,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     },
@@ -722,7 +797,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a managed identity configuration. To be used if only user-assigned identities are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     },
@@ -845,7 +920,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     },
@@ -894,7 +969,7 @@
           }
         },
         "dataProtection": {
-          "$ref": "#/definitions/_1.dataProtectionType",
+          "$ref": "#/definitions/_2.dataProtectionType",
           "nullable": true,
           "metadata": {
             "description": "Optional. DataProtection type volumes include an object containing details of the replication."
@@ -971,7 +1046,7 @@
           }
         },
         "exportPolicy": {
-          "$ref": "#/definitions/_1.exportPolicyType",
+          "$ref": "#/definitions/_2.exportPolicyType",
           "nullable": true,
           "metadata": {
             "description": "Optional. Export policy rules."
@@ -980,7 +1055,7 @@
         "roleAssignments": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/roleAssignmentType"
+            "$ref": "#/definitions/_1.roleAssignmentType"
           },
           "nullable": true,
           "metadata": {
@@ -1456,8 +1531,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "7141176618644423280"
+              "version": "0.33.93.31351",
+              "templateHash": "2748634922557584170"
             },
             "name": "Azure NetApp Files Backup Policy",
             "description": "This module deploys a Backup Policy for Azure NetApp File."
@@ -1603,8 +1678,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "7486219490853787459"
+              "version": "0.33.93.31351",
+              "templateHash": "7661114070380487495"
             },
             "name": "Azure NetApp Files Snapshot Policy",
             "description": "This module deploys a Snapshot Policy for an Azure NetApp File."
@@ -1919,8 +1994,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "9738469557677047438"
+              "version": "0.33.93.31351",
+              "templateHash": "6704781490326075849"
             },
             "name": "Azure NetApp Files Volume Backup Vault",
             "description": "This module deploys a NetApp Files Backup Vault."
@@ -2058,8 +2133,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "3948084235912412629"
+                      "version": "0.33.93.31351",
+                      "templateHash": "17452697444375969559"
                     },
                     "name": "Azure NetApp Files Volume Backup",
                     "description": "This module deploys a backup of a NetApp Files Volume."
@@ -2268,8 +2343,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "2977180644802548055"
+              "version": "0.33.93.31351",
+              "templateHash": "9421958637421607679"
             },
             "name": "Azure NetApp Files Capacity Pools",
             "description": "This module deploys an Azure NetApp Files Capacity Pool."
@@ -3080,8 +3155,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "11923985213879729371"
+                      "version": "0.33.93.31351",
+                      "templateHash": "14117994727187133496"
                     },
                     "name": "Azure NetApp Files Capacity Pool Volumes",
                     "description": "This module deploys an Azure NetApp Files Capacity Pool Volume."
@@ -3873,8 +3948,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "9738469557677047438"
+              "version": "0.33.93.31351",
+              "templateHash": "6704781490326075849"
             },
             "name": "Azure NetApp Files Volume Backup Vault",
             "description": "This module deploys a NetApp Files Backup Vault."
@@ -4012,8 +4087,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "3948084235912412629"
+                      "version": "0.33.93.31351",
+                      "templateHash": "17452697444375969559"
                     },
                     "name": "Azure NetApp Files Volume Backup",
                     "description": "This module deploys a backup of a NetApp Files Volume."
