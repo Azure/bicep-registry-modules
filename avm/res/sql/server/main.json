@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "15781736031753199939"
+      "templateHash": "380221310876456571"
     },
     "name": "Azure SQL Servers",
     "description": "This module deploys an Azure SQL Server."
@@ -1124,6 +1124,50 @@
         }
       }
     },
+    "customerManagedKeyWithAutoRotateType": {
+      "type": "object",
+      "properties": {
+        "keyVaultResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of a key vault to reference a customer managed key for encryption from."
+          }
+        },
+        "keyName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the customer managed key to use for encryption."
+          }
+        },
+        "keyVersion": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationEnabled' setting."
+          }
+        },
+        "autoRotationEnabled": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enable or disable auto-rotating to the latest key version. Default is `true`. If set to `false`, the latest key version at the time of the deployment is used."
+          }
+        },
+        "userAssignedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a customer-managed key. To be used if the resource type supports auto-rotation of the customer-managed key.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    },
     "databaseSkuType": {
       "type": "object",
       "properties": {
@@ -1963,14 +2007,11 @@
         "description": "Optional. The security alert policies to create in the server."
       }
     },
-    "keys": {
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/keyType"
-      },
-      "defaultValue": [],
+    "customerManagedKey": {
+      "$ref": "#/definitions/customerManagedKeyWithAutoRotateType",
+      "nullable": true,
       "metadata": {
-        "description": "Optional. The keys to configure."
+        "description": "Optional. The customer managed key definition for server TDE."
       }
     },
     "administrators": {
@@ -1987,13 +2028,6 @@
       "maxLength": 36,
       "metadata": {
         "description": "Optional. The Client id used for cross tenant CMK scenario."
-      }
-    },
-    "keyId": {
-      "type": "string",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. A CMK URI of the key to use for encryption."
       }
     },
     "minimalTlsVersion": {
@@ -2053,13 +2087,6 @@
       ],
       "metadata": {
         "description": "Optional. Whether or not to restrict outbound network access for this server."
-      }
-    },
-    "encryptionProtectorObj": {
-      "$ref": "#/definitions/encryptionProtectorType",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. The encryption protection configuration."
       }
     },
     "vulnerabilityAssessmentsObj": {
@@ -2123,6 +2150,24 @@
     }
   },
   "resources": {
+    "cMKKeyVault::cMKKey": {
+      "condition": "[and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKey'), 'keyName')))))]",
+      "existing": true,
+      "type": "Microsoft.KeyVault/vaults/keys",
+      "apiVersion": "2023-07-01",
+      "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
+      "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'))]"
+    },
+    "cMKKeyVault": {
+      "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))]",
+      "existing": true,
+      "type": "Microsoft.KeyVault/vaults",
+      "apiVersion": "2023-07-01",
+      "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
+      "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
+    },
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
@@ -2156,13 +2201,16 @@
         "administrators": "[union(createObject('administratorType', 'ActiveDirectory'), coalesce(parameters('administrators'), createObject()))]",
         "federatedClientId": "[parameters('federatedClientId')]",
         "isIPv6Enabled": "[parameters('isIPv6Enabled')]",
-        "keyId": "[parameters('keyId')]",
+        "keyId": "[if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, tryGet(parameters('customerManagedKey'), 'keyVersion')), if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), reference('cMKKeyVault::cMKKey').keyUri, reference('cMKKeyVault::cMKKey').keyUriWithVersion))]",
         "version": "12.0",
         "minimalTlsVersion": "[parameters('minimalTlsVersion')]",
         "primaryUserAssignedIdentityId": "[if(not(empty(parameters('primaryUserAssignedIdentityId'))), parameters('primaryUserAssignedIdentityId'), null())]",
         "publicNetworkAccess": "[if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(and(and(not(empty(parameters('privateEndpoints'))), empty(parameters('firewallRules'))), empty(parameters('virtualNetworkRules'))), 'Disabled', null()))]",
         "restrictOutboundNetworkAccess": "[if(not(empty(parameters('restrictOutboundNetworkAccess'))), parameters('restrictOutboundNetworkAccess'), null())]"
-      }
+      },
+      "dependsOn": [
+        "cMKKeyVault::cMKKey"
+      ]
     },
     "server_lock": {
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
@@ -5068,14 +5116,11 @@
         "server_securityAlertPolicies"
       ]
     },
-    "server_keys": {
-      "copy": {
-        "name": "server_keys",
-        "count": "[length(parameters('keys'))]"
-      },
+    "server_key": {
+      "condition": "[not(equals(parameters('customerManagedKey'), null()))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-Sql-Key-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "name": "[format('{0}-Sql-Key', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -5086,14 +5131,12 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[tryGet(parameters('keys')[copyIndex()], 'name')]"
+            "value": "[format('{0}_{1}_{2}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'), tryGet(parameters('customerManagedKey'), 'keyVersion'))]"
           },
           "serverKeyType": {
-            "value": "[tryGet(parameters('keys')[copyIndex()], 'serverKeyType')]"
+            "value": "AzureKeyVault"
           },
-          "uri": {
-            "value": "[tryGet(parameters('keys')[copyIndex()], 'uri')]"
-          }
+          "uri": "[if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), createObject('value', format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, tryGet(parameters('customerManagedKey'), 'keyVersion'))), if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), createObject('value', reference('cMKKeyVault::cMKKey').keyUri), createObject('value', reference('cMKKeyVault::cMKKey').keyUriWithVersion)))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -5188,11 +5231,12 @@
         }
       },
       "dependsOn": [
+        "cMKKeyVault::cMKKey",
         "server"
       ]
     },
     "server_encryptionProtector": {
-      "condition": "[not(equals(parameters('encryptionProtectorObj'), null()))]",
+      "condition": "[not(equals(parameters('customerManagedKey'), null()))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-Sql-EncryProtector', uniqueString(deployment().name, parameters('location')))]",
@@ -5206,13 +5250,13 @@
             "value": "[parameters('name')]"
           },
           "serverKeyName": {
-            "value": "[parameters('encryptionProtectorObj').serverKeyName]"
+            "value": "[reference('server_key').outputs.name.value]"
           },
           "serverKeyType": {
-            "value": "[tryGet(parameters('encryptionProtectorObj'), 'serverKeyType')]"
+            "value": "AzureKeyVault"
           },
           "autoRotationEnabled": {
-            "value": "[tryGet(parameters('encryptionProtectorObj'), 'autoRotationEnabled')]"
+            "value": "[tryGet(parameters('customerManagedKey'), 'autoRotationEnabled')]"
           }
         },
         "template": {
@@ -5298,7 +5342,7 @@
       },
       "dependsOn": [
         "server",
-        "server_keys"
+        "server_key"
       ]
     },
     "server_audit_settings": {
