@@ -1,0 +1,731 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.33.93.31351",
+      "templateHash": "7744073653843315323"
+    },
+    "name": "Hybrid Container Service Provisioned Cluster Instance",
+    "description": "Deploy a provisioned cluster instance."
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the provisioned cluster instance."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. Location for all Resources."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    },
+    "sshPrivateKeyPemSecretName": {
+      "type": "string",
+      "defaultValue": "AksArcAgentSshPrivateKeyPem",
+      "metadata": {
+        "description": "Optional. The name of the secret in the key vault that contains the SSH private key PEM."
+      }
+    },
+    "sshPublicKeySecretName": {
+      "type": "string",
+      "defaultValue": "AksArcAgentSshPublicKey",
+      "metadata": {
+        "description": "Optional. The name of the secret in the key vault that contains the SSH public key."
+      }
+    },
+    "sshPublicKey": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Conditional. The SSH public key that will be used to access the kubernetes cluster nodes. If not specified, a new SSH key pair will be generated. Required if no existing SSH keys."
+      }
+    },
+    "keyVaultName": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Conditional. The name of the key vault. The key vault name. Required if no existing SSH keys."
+      }
+    },
+    "customLocationId": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The id of the Custom location that used to create hybrid aks."
+      }
+    },
+    "kubernetesVersion": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The Kubernetes version for the cluster."
+      }
+    },
+    "agentPoolProfiles": {
+      "type": "array",
+      "defaultValue": [
+        {
+          "name": "nodepool1",
+          "count": 1,
+          "enableAutoScaling": false,
+          "maxCount": 5,
+          "minCount": 1,
+          "maxPods": 110,
+          "nodeLabels": {},
+          "nodeTaints": [],
+          "osSKU": "CBLMariner",
+          "osType": "Linux",
+          "vmSize": "Standard_A4_v2"
+        }
+      ],
+      "metadata": {
+        "description": "Optional. Agent pool configuration."
+      }
+    },
+    "logicalNetworkId": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The id of the logical network that the AKS nodes will be connected to."
+      }
+    },
+    "controlPlaneCount": {
+      "type": "int",
+      "defaultValue": 1,
+      "metadata": {
+        "description": "Optional. The number of control plane nodes."
+      }
+    },
+    "controlPlaneVmSize": {
+      "type": "string",
+      "defaultValue": "Standard_A4_v2",
+      "metadata": {
+        "description": "Optional. The VM size for control plane nodes."
+      }
+    },
+    "controlPlaneIP": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The host IP for control plane endpoint."
+      }
+    },
+    "podCidr": {
+      "type": "string",
+      "defaultValue": "10.244.0.0/16",
+      "metadata": {
+        "description": "Optional. The CIDR range for the pods in the kubernetes cluster."
+      }
+    },
+    "azureHybridBenefit": {
+      "type": "string",
+      "defaultValue": "False",
+      "allowedValues": [
+        "False",
+        "NotApplicable",
+        "True"
+      ],
+      "metadata": {
+        "description": "Optional. Azure Hybrid Benefit configuration."
+      }
+    },
+    "nfsCsiDriverEnabled": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable or disable NFS CSI driver."
+      }
+    },
+    "smbCsiDriverEnabled": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable or disable SMB CSI driver."
+      }
+    },
+    "connectClustersTags": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Tags for the cluster resource."
+      }
+    },
+    "tenantId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The Azure AD tenant ID."
+      }
+    },
+    "aadAdminGroupObjectIds": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. The Azure AD admin group object IDs."
+      }
+    },
+    "enableAzureRBAC": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Enable Azure RBAC."
+      }
+    },
+    "agentAutoUpgrade": {
+      "type": "string",
+      "defaultValue": "Enabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
+      "metadata": {
+        "description": "Optional. Enable automatic agent upgrades."
+      }
+    },
+    "oidcIssuerEnabled": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Enable OIDC issuer."
+      }
+    },
+    "workloadIdentityEnabled": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Enable workload identity."
+      }
+    }
+  },
+  "variables": {
+    "enableReferencedModulesTelemetry": false
+  },
+  "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2024-03-01",
+      "name": "[format('46d3xbcp.res.hybcontsvc-provclustinst.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
+    "kv": {
+      "condition": "[and(empty(parameters('sshPublicKey')), not(empty(parameters('keyVaultName'))))]",
+      "existing": true,
+      "type": "Microsoft.KeyVault/vaults",
+      "apiVersion": "2023-07-01",
+      "name": "[parameters('keyVaultName')]"
+    },
+    "managedIdentity": {
+      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+      "apiVersion": "2018-11-30",
+      "name": "temp",
+      "location": "[parameters('location')]"
+    },
+    "generateSSHKey": {
+      "condition": "[empty(parameters('sshPublicKey'))]",
+      "type": "Microsoft.Resources/deploymentScripts",
+      "apiVersion": "2020-10-01",
+      "name": "generateSSHKey",
+      "location": "[parameters('location')]",
+      "kind": "AzurePowerShell",
+      "identity": {
+        "type": "UserAssigned",
+        "userAssignedIdentities": {
+          "[format('{0}', resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', 'temp'))]": {}
+        }
+      },
+      "properties": {
+        "azPowerShellVersion": "8.0",
+        "retentionInterval": "P1D",
+        "scriptContent": "      # Create temp directory in a known location\n      $tempDir = \"/tmp/sshkeys\"\n      New-Item -ItemType Directory -Path $tempDir -Force\n      Set-Location $tempDir\n      # Generate SSH key pair using ssh-keygen\n      ssh-keygen -t rsa -b 4096 -f ./key -N '\"\"' -q\n      # Read the generated keys\n      $publicKey = Get-Content -Path \"./key.pub\" -Raw\n      $privateKey = Get-Content -Path \"./key\" -Raw\n      # Clean up temp files\n      Remove-Item -Path \"./key*\" -Force\n      Remove-Item -Path $tempDir -Force -Recurse\n      # Set output\n      $DeploymentScriptOutputs = @{}\n      $DeploymentScriptOutputs['publicKey'] = $publicKey\n      $DeploymentScriptOutputs['privateKey'] = $privateKey\n    "
+      },
+      "dependsOn": [
+        "managedIdentity"
+      ]
+    },
+    "sshPublicKeyPem": {
+      "condition": "[empty(parameters('sshPublicKey'))]",
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "apiVersion": "2023-07-01",
+      "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('sshPublicKeySecretName'))]",
+      "properties": {
+        "value": "[reference('generateSSHKey').outputs.publicKey]"
+      },
+      "dependsOn": [
+        "generateSSHKey"
+      ]
+    },
+    "sshPrivateKeyPem": {
+      "condition": "[empty(parameters('sshPublicKey'))]",
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "apiVersion": "2023-07-01",
+      "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('sshPrivateKeyPemSecretName'))]",
+      "properties": {
+        "value": "[reference('generateSSHKey').outputs.privateKey]"
+      },
+      "dependsOn": [
+        "generateSSHKey"
+      ]
+    },
+    "existingCluster": {
+      "existing": true,
+      "type": "Microsoft.Kubernetes/connectedClusters",
+      "apiVersion": "2024-07-15-preview",
+      "name": "[parameters('name')]"
+    },
+    "provisionedCluster": {
+      "type": "Microsoft.HybridContainerService/provisionedClusterInstances",
+      "apiVersion": "2024-01-01",
+      "scope": "[format('Microsoft.Kubernetes/connectedClusters/{0}', parameters('name'))]",
+      "name": "default",
+      "extendedLocation": {
+        "name": "[parameters('customLocationId')]",
+        "type": "CustomLocation"
+      },
+      "properties": {
+        "agentPoolProfiles": "[parameters('agentPoolProfiles')]",
+        "cloudProviderProfile": {
+          "infraNetworkProfile": {
+            "vnetSubnetIds": [
+              "[parameters('logicalNetworkId')]"
+            ]
+          }
+        },
+        "clusterVMAccessProfile": {},
+        "controlPlane": {
+          "count": "[parameters('controlPlaneCount')]",
+          "vmSize": "[parameters('controlPlaneVmSize')]",
+          "controlPlaneEndpoint": {
+            "hostIP": "[parameters('controlPlaneIP')]"
+          }
+        },
+        "kubernetesVersion": "[coalesce(parameters('kubernetesVersion'), '')]",
+        "licenseProfile": {
+          "azureHybridBenefit": "[parameters('azureHybridBenefit')]"
+        },
+        "linuxProfile": {
+          "ssh": {
+            "publicKeys": [
+              {
+                "keyData": "[if(empty(parameters('sshPublicKey')), reference('generateSSHKey').outputs.publicKey, parameters('sshPublicKey'))]"
+              }
+            ]
+          }
+        },
+        "networkProfile": {
+          "podCidr": "[parameters('podCidr')]",
+          "networkPolicy": "calico",
+          "loadBalancerProfile": {
+            "count": 0
+          }
+        },
+        "storageProfile": {
+          "nfsCsiDriver": {
+            "enabled": "[parameters('nfsCsiDriverEnabled')]"
+          },
+          "smbCsiDriver": {
+            "enabled": "[parameters('smbCsiDriverEnabled')]"
+          }
+        }
+      },
+      "dependsOn": [
+        "connectedCluster",
+        "generateSSHKey",
+        "sshPublicKeyPem"
+      ]
+    },
+    "connectedCluster": {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "connectedCluster",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[parameters('name')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
+          },
+          "tags": {
+            "value": "[parameters('connectClustersTags')]"
+          },
+          "tenantId": {
+            "value": "[parameters('tenantId')]"
+          },
+          "aadAdminGroupObjectIds": {
+            "value": "[parameters('aadAdminGroupObjectIds')]"
+          },
+          "enableAzureRBAC": {
+            "value": "[parameters('enableAzureRBAC')]"
+          },
+          "agentAutoUpgrade": {
+            "value": "[parameters('agentAutoUpgrade')]"
+          },
+          "oidcIssuerEnabled": {
+            "value": "[parameters('oidcIssuerEnabled')]"
+          },
+          "workloadIdentityEnabled": {
+            "value": "[parameters('workloadIdentityEnabled')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.33.93.31351",
+              "templateHash": "13180712657215340322"
+            },
+            "name": "Kubernetes Connected Cluster",
+            "description": "This module deploys an Azure Arc connected cluster."
+          },
+          "definitions": {
+            "roleAssignmentType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                  }
+                },
+                "roleDefinitionIdOrName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                  }
+                },
+                "principalId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                  }
+                },
+                "principalType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Device",
+                    "ForeignGroup",
+                    "Group",
+                    "ServicePrincipal",
+                    "User"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The principal type of the assigned principal ID."
+                  }
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The description of the role assignment."
+                  }
+                },
+                "condition": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                  }
+                },
+                "conditionVersion": {
+                  "type": "string",
+                  "allowedValues": [
+                    "2.0"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Version of the condition."
+                  }
+                },
+                "delegatedManagedIdentityResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The Resource Id of the delegated managed identity resource."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a role assignment.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                }
+              }
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the Azure Arc connected cluster."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Optional. Location for all Resources."
+              }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Tags for the cluster resource."
+              }
+            },
+            "tenantId": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The Azure AD tenant ID."
+              }
+            },
+            "aadAdminGroupObjectIds": {
+              "type": "array",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The Azure AD admin group object IDs."
+              }
+            },
+            "enableAzureRBAC": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Enable Azure RBAC."
+              }
+            },
+            "agentAutoUpgrade": {
+              "type": "string",
+              "defaultValue": "Enabled",
+              "allowedValues": [
+                "Enabled",
+                "Disabled"
+              ],
+              "metadata": {
+                "description": "Optional. Enable automatic agent upgrades."
+              }
+            },
+            "oidcIssuerEnabled": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Enable OIDC issuer."
+              }
+            },
+            "workloadIdentityEnabled": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Enable workload identity."
+              }
+            },
+            "roleAssignments": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/roleAssignmentType"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Array of role assignments to create."
+              }
+            }
+          },
+          "variables": {
+            "copy": [
+              {
+                "name": "formattedRoleAssignments",
+                "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+                "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+              }
+            ],
+            "builtInRoleNames": {
+              "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+              "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+              "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+              "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]",
+              "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]"
+            }
+          },
+          "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.kubernetes-connectedcluster.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
+            "connectedCluster": {
+              "type": "Microsoft.Kubernetes/connectedClusters",
+              "apiVersion": "2024-07-15-preview",
+              "name": "[parameters('name')]",
+              "kind": "ProvisionedCluster",
+              "location": "[parameters('location')]",
+              "identity": {
+                "type": "SystemAssigned"
+              },
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "aadProfile": "[if(parameters('enableAzureRBAC'), createObject('tenantID', if(not(empty(parameters('tenantId'))), parameters('tenantId'), tenant().tenantId), 'adminGroupObjectIDs', coalesce(parameters('aadAdminGroupObjectIds'), createArray()), 'enableAzureRBAC', parameters('enableAzureRBAC')), null())]",
+                "agentPublicKeyCertificate": "",
+                "arcAgentProfile": {
+                  "agentAutoUpgrade": "[parameters('agentAutoUpgrade')]"
+                },
+                "distribution": null,
+                "infrastructure": null,
+                "oidcIssuerProfile": {
+                  "enabled": "[parameters('oidcIssuerEnabled')]"
+                },
+                "securityProfile": {
+                  "workloadIdentity": {
+                    "enabled": "[parameters('workloadIdentityEnabled')]"
+                  }
+                },
+                "azureHybridBenefit": null
+              }
+            },
+            "connectedCluster_roleAssignments": {
+              "copy": {
+                "name": "connectedCluster_roleAssignments",
+                "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
+              },
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[format('Microsoft.Kubernetes/connectedClusters/{0}', parameters('name'))]",
+              "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Kubernetes/connectedClusters', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
+              "properties": {
+                "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+                "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+                "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+                "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+                "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+                "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+              },
+              "dependsOn": [
+                "connectedCluster"
+              ]
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the connected cluster."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the connected cluster."
+              },
+              "value": "[resourceId('Microsoft.Kubernetes/connectedClusters', parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group of the connected cluster."
+              },
+              "value": "[resourceGroup().name]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location of the connected cluster."
+              },
+              "value": "[reference('connectedCluster', '2024-07-15-preview', 'full').location]"
+            },
+            "systemAssignedMIPrincipalId": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "The principalId of the connected cluster identity."
+              },
+              "value": "[reference('connectedCluster', '2024-07-15-preview', 'full').identity.principalId]"
+            }
+          }
+        }
+      }
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Aks Arc."
+      },
+      "value": "default"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The ID of the Aks Arc."
+      },
+      "value": "[extensionResourceId(resourceId('Microsoft.Kubernetes/connectedClusters', parameters('name')), 'Microsoft.HybridContainerService/provisionedClusterInstances', 'default')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group of the Aks Arc."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}
