@@ -1,5 +1,6 @@
 //TODO: standardize deployment names
 //TODO: define parameters for customized configuration
+//TODO: check latest versions of AVM resource modules for those that still deploy regular resources
 
 // // ========== main.bicep ========== //
 targetScope = 'resourceGroup'
@@ -7,9 +8,7 @@ targetScope = 'resourceGroup'
 metadata name = 'Conversation Knowledge Mining Solution Accelerator'
 metadata description = '''This module deploys the [Conversation Knowledge Mining Solution Accelerator](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator).
 
-**Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator product. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future.
-
-This may result in breaking changes in upcoming versions when these features are implemented.
+> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator product. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.
 '''
 
 // ========== Parameters ========== //
@@ -86,7 +85,7 @@ param webAppServerFarmResourceName string = ''
 @description('Required. Location for the AI Foundry Content Understanding service deployment.')
 @allowed(['West US', 'Sweden Central', 'Australia East'])
 @metadata({ azd: { type: 'location' } })
-param aiFoundryAiServiceContentUnderstandingLocation string
+param aiFoundryAiServicesContentUnderstandingLocation string
 @description('Optional. Location for the solution deployment. Defaulted to the resource group location.')
 @metadata({ azd: { type: 'location' } })
 param solutionLocation string = 'East US'
@@ -96,15 +95,12 @@ param databasesLocation string = 'East US 2'
 @description('Optional. The location for the Web App Server Farm. Defaulted to the solution location.')
 @metadata({ azd: { type: 'location' } })
 param webAppServerFarmLocation string = solutionLocation
-@description('Optional. The location of the AI Foundry AI Services Project.')
-@metadata({ azd: { type: 'location' } })
-param aiFoundryAiServicesProjectLocation string = solutionLocation
 @description('Optional. Location for the AI Foundry AI Hub resource deployment.')
 @metadata({ azd: { type: 'location' } })
 param aiFoundryAiHubLocation string = solutionLocation
 @description('Optional. Location for the AI Foundry AI Service resource deployment.')
 @metadata({ azd: { type: 'location' } })
-param aiFoundryAiServiceLocation string = solutionLocation
+param aiFoundryAiServicesLocation string = solutionLocation
 @description('Optional. Location for the AI Foundry AI Project resource deployment.')
 @metadata({ azd: { type: 'location' } })
 param aiFoundryAiProjectLocation string = solutionLocation
@@ -157,18 +153,96 @@ param storageAccountLocation string = solutionLocation
 @metadata({ azd: { type: 'location' } })
 param webAppLocation string = solutionLocation
 
-// PARAMETERS: Web app configuration
-@description('Optional. The SKU for the web app. If empty, aiFoundryAiServiceContentUnderstandingLocation will be used.')
-param webAppServerFarmSku string = 'B2'
+// PARAMETERS: Log Analytics workspace configuration
+@description('Optional. The SKU for the Log Analytics Workspace. If empty, PerGB2018 will be used.')
+@allowed(['CapacityReservation', 'Free', 'LACluster', 'PerGB2018', 'PerNode', 'Premium', 'Standalone', 'Standard'])
+param logAnalyticsWorkspaceSkuName string = 'PerGB2018'
 
-// PARAMETERS: models configuration
-@description('Optional. GPT model deployment type.')
+@description('Optional. The number of days to retain the data in the Log Analytics Workspace. If empty, it will be set to 30 days.')
+@minValue(0)
+@maxValue(730)
+param logAnalyticsWorkspaceDataRetentionInDays int = 30
+
+// PARAMETERS: Key Vault configuration
+@allowed(['premium', 'standard'])
+@description('Optional. The SKU for the Key Vault. If empty, standard will be used.')
+param keyVaultSku string = 'standard'
+
+@description('Optional. The Key Vault create mode. Indicates whether the vault need to be recovered from purge or not. If empty, default will be used.')
+@allowed(['default', 'recover'])
+param keyVaultCreateMode string = 'default'
+
+@description('Optional. If set to true, The Key Vault soft delete will be enabled. If empty, it will be set to false.')
+param keyVaultSoftDeleteEnabled bool = false
+
+@description('Optional. The number of days to retain the soft deleted vault. If empty, it will be set to 7.')
+@minValue(7)
+@maxValue(90)
+param keyVaultSoftDeleteRetentionInDays int = 7
+
+@description('Optional. If set to true, The Key Vault purge protection will be enabled. If empty, it will be set to false.')
+param keyVaultPurgeProtectionEnabled bool = false
+
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+@description('Optional. Array of role assignments to include in the Key Vault.')
+param keyVaultRoleAssignments roleAssignmentType[] = []
+
+// PARAMETERS: AI Foundry Storage Account configuration
+@description('Optional. The SKU for the AI Foundry Storage Account. If empty, Standard_LRS will be used.')
+@allowed([
+  'Standard_LRS'
+  'Standard_GRS'
+  'Standard_RAGRS'
+  'Standard_ZRS'
+  'Premium_LRS'
+  'Premium_ZRS'
+])
+param aiFoundryStorageAccountSkuName string = 'Standard_LRS'
+
+// PARAMETERS: AI Foundry Application Insights configuration
+
+@description('Optional. The retention of Application Insights data in days. If empty, Standard will be used.')
+@allowed([120, 180, 270, 30, 365, 550, 60, 730, 90])
+param aiFoundryApplicationInsightsRetentionInDays int = 30
+
+// PARAMETERS: AI Foundry Container Registry configuration
+@description('Optional. The SKU for the AI Foundry Container Registry. If empty, Premium will be used.')
+@allowed([
+  'Basic'
+  'Standard'
+  'Premium'
+])
+param aiFoundryContainerRegistrySkuName string = 'Premium'
+
+// PARAMETERS: AI Foundry AI Services configuration
+@description('Optional. The SKU of the AI Foundry AI Services account. Use \'Get-AzCognitiveServicesAccountSku\' to determine a valid combinations of \'kind\' and \'SKU\' for your Azure region.')
+@allowed([
+  'C2'
+  'C3'
+  'C4'
+  'F0'
+  'F1'
+  'S'
+  'S0'
+  'S1'
+  'S10'
+  'S2'
+  'S3'
+  'S4'
+  'S5'
+  'S6'
+  'S7'
+  'S8'
+  'S9'
+])
+param aiFoundryAiServicesSkuName string = 'S0'
+@description('Optional. GPT model deployment type of the AI Foundry AI Services account.')
 @allowed([
   'Standard'
   'GlobalStandard'
 ])
 param aiFoundryAIServicesGptModelDeploymentType string = 'GlobalStandard'
-@description('Optional. Name of the GPT model to deploy.')
+@description('Optional. Name of the GPT model to deploy in the AI Foundry AI Services account.')
 @allowed([
   'gpt-4o-mini'
   'gpt-4o'
@@ -176,17 +250,76 @@ param aiFoundryAIServicesGptModelDeploymentType string = 'GlobalStandard'
 ])
 param aiFoundryAIServicesGptModelName string = 'gpt-4o-mini'
 @minValue(10)
-@description('Optional. Capacity of the GPT deployment. You can increase this, but capacity is limited per model/region, so you will get errors if you go over. [Quotas link](https://learn.microsoft.com/en-us/azure/ai-services/openai/quotas-limits).')
-// You can increase this, but capacity is limited per model/region, so you will get errors if you go over. // https://learn.microsoft.com/en-us/azure/ai-services/openai/quotas-limits
+@description('Optional. Capacity of the GPT model to deploy in the AI Foundry AI Services account. Capacity is limited per model/region, so you will get errors if you go over. [Quotas link](https://learn.microsoft.com/azure/ai-services/openai/quotas-limits).')
 param aiFoundryAIServicesGptModelDeploymentCapacity int = 100
-@description('Optional. Name of the Text Embedding model to deploy.')
+@description('Optional. Name of the Text Embedding model to deploy in the AI Foundry AI Services account.')
 @allowed([
   'text-embedding-ada-002'
 ])
 param aiFoundryAiServicesTextEmbeddingModelName string = 'text-embedding-ada-002'
 @minValue(10)
-@description('Optional. Capacity of the Embedding Model deployment.')
-param embeddingDeploymentCapacity int = 80
+@description('Optional. Capacity of the Text Embedding model to deploy in the AI Foundry AI Services account. Capacity is limited per model/region, so you will get errors if you go over. [Quotas link](https://learn.microsoft.com/azure/ai-services/openai/quotas-limits).')
+param aiFoundryAiServicesTextEmbeddingModelCapacity int = 80
+
+// PARAMETERS: AI Foundry AI Services Content Understanding configuration
+@description('Optional. The SKU of the AI Foundry AI Services account. Use \'Get-AzCognitiveServicesAccountSku\' to determine a valid combinations of \'kind\' and \'SKU\' for your Azure region.')
+@allowed([
+  'C2'
+  'C3'
+  'C4'
+  'F0'
+  'F1'
+  'S'
+  'S0'
+  'S1'
+  'S10'
+  'S2'
+  'S3'
+  'S4'
+  'S5'
+  'S6'
+  'S7'
+  'S8'
+  'S9'
+])
+param aiFoundryAiServicesContentUnderstandingSkuName string = 'S0'
+
+// PARAMETERS: AI Foundry Search Services configuration
+@description('Optional. The SKU of the AI Foundry Search Service account.')
+@allowed([
+  'basic'
+  'free'
+  'standard'
+  'standard2'
+  'standard3'
+  'storage_optimized_l1'
+  'storage_optimized_l2'
+])
+param aiFoundrySearchServiceSkuName string = 'basic'
+
+// PARAMETERS: AI Foundry AI Hub configuration
+@description('Optional. The SKU of the AI Foundry AI Hub account.')
+@allowed([
+  'Basic'
+  'Free'
+  'Standard'
+  'Premium'
+])
+param aiFoundryAiHubSkuName string = 'Basic'
+
+// PARAMETERS: AI Foundry AI Project configuration
+@description('Optional. The SKU of the AI Foundry AI project.')
+@allowed([
+  'Basic'
+  'Free'
+  'Standard'
+  'Premium'
+])
+param aiFoundryAiProjectSkuName string = 'Standard'
+
+// PARAMETERS: Web app configuration
+@description('Optional. The SKU for the web app. If empty, aiFoundryAiServicesContentUnderstandingLocation will be used.')
+param webAppServerFarmSku string = 'B2'
 
 // PARAMETERS: Docker image configuration
 @description('Optional. Docker image version to use for all deployed containers (functions and web app).')
@@ -203,9 +336,9 @@ var tags = {
   app: solutionPrefix
   location: solutionLocation
 }
-var deploymentNameFormat = 'deploy-{0}'
+var avmDeploymentNameFormat = 'ckm-deploy-avm-{0}'
+var localModuleDeploymentNameFormat = 'ckm-deploy-module-{0}'
 
-// NOTE: Update location to allow individual locations for each resource
 // VARIABLES: calculated resource names
 
 var varAiFoundryAiHubResourceName = empty(aiFoundryAiHubResourceName)
@@ -214,7 +347,7 @@ var varAiFoundryAiHubResourceName = empty(aiFoundryAiHubResourceName)
 var varAiFoundryAiProjectResourceName = empty(aiFoundryAiProjectResourceName)
   ? format(varWorkloadNameFormat, 'aifd-aipj')
   : aiFoundryAiProjectResourceName
-var varAiFoundryAiServiceContentUnderstandingResourceName = empty(aiFoundryAiServicesContentUnderstandingResourceName)
+var varAiFoundryAiServicesContentUnderstandingResourceName = empty(aiFoundryAiServicesContentUnderstandingResourceName)
   ? format(varWorkloadNameFormat, 'aifd-aisr-cu')
   : aiFoundryAiServicesContentUnderstandingResourceName
 var varAiFoundryAiServiceResourceName = empty(aiFoundryAiServicesResourceName)
@@ -270,26 +403,15 @@ var varWebAppServerFarmResourceName = empty(webAppServerFarmResourceName)
   ? format(varWorkloadNameFormat, 'waoo-srvf')
   : webAppServerFarmResourceName
 
-// VARIABLES: key vault secrets names
+// VARIABLES: Key Vault configuration
 var varKvSecretNameAdlsAccountKey = 'ADLS-ACCOUNT-KEY'
 var varKvSecretNameAzureCosmosdbAccountKey = 'AZURE-COSMOSDB-ACCOUNT-KEY'
-var varKvSecretNameAdlsAccountContainer = 'ADLS-ACCOUNT-CONTAINER'
-var varKvSecretNameAdlsAccountName = 'ADLS-ACCOUNT-NAME'
-var varKvSecretNameTenantId = 'TENANT-ID'
-var varKvSecretNameAzureCosmosDbAccount = 'AZURE-COSMOSDB-ACCOUNT'
-var varKvSecretNameAzureCosmosDbDatabase = 'AZURE-COSMOSDB-DATABASE'
-var varKvSecretNameAzureCosmosDbConversationsContainer = 'AZURE-COSMOSDB-CONVERSATIONS-CONTAINER'
-var varKvSecretNameAzureCosmosDbEnableFeedback = 'AZURE-COSMOSDB-ENABLE-FEEDBACK'
-var varKvSecretNameSqlDbServer = 'SQLDB-SERVER'
-var varKvSecretNameSqlDbDatabase = 'SQLDB-DATABASE'
-var varKvSecretNameSqlDbUsername = 'SQLDB-USERNAME'
-var varKvSecretNameSqlDbPassword = 'SQLDB-PASSWORD'
 
 // VARIABLES: AI Model deployments
 var varAiFoundryAiServiceGPTModelVersion = '2024-07-18'
 var varAiFoundryAiServiceGPTModelVersionPreview = '2024-02-15-preview'
 var varAiFoundryAiServiceTextEmbeddingModelVersion = '2'
-var varAiFoundryAiServiceProjectConnectionString = '${toLower(replace(aiFoundryAiServicesProjectLocation, ' ', ''))}.api.azureml.ms;${subscription().subscriptionId};${resourceGroup().name};${varAiFoundryAiProjectResourceName}'
+var varAiFoundryAiServiceProjectConnectionString = '${toLower(replace(aiFoundryAiProjectLocation, ' ', ''))}.api.azureml.ms;${subscription().subscriptionId};${resourceGroup().name};${varAiFoundryAiProjectResourceName}'
 var varAiFoundryAIServicesModelDeployments = [
   {
     name: aiFoundryAIServicesGptModelName
@@ -313,7 +435,7 @@ var varAiFoundryAIServicesModelDeployments = [
     }
     sku: {
       name: 'Standard'
-      capacity: embeddingDeploymentCapacity
+      capacity: aiFoundryAiServicesTextEmbeddingModelCapacity
     }
     raiPolicyName: 'Microsoft.Default'
   }
@@ -435,16 +557,8 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-// ========== Managed Identity ========== //
-
-// resource avmManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-07-31-preview' = {
-//   name: varManagedIdentityResourceName
-//   location: solutionLocation
-//   tags: tags
-// }
-
 module avmManagedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0' = {
-  name: format(deploymentNameFormat, varManagedIdentityResourceName)
+  name: format(avmDeploymentNameFormat, varManagedIdentityResourceName)
   params: {
     name: varManagedIdentityResourceName
     tags: tags
@@ -456,66 +570,67 @@ module avmManagedIdentity 'br/public:avm/res/managed-identity/user-assigned-iden
 // NOTE: This assignment should leverage AVM module [avm/res/resources/resource-group](https://azure.github.io/Azure-Verified-Modules/indexes/bicep/bicep-resource-modules/), but current target scope is resourceGroup
 // TODO: Owner permissions to RG is an unsecure practice, fine grain permissions
 module assignResourceGroupOwner 'modules/rbac-rg-owner.bicep' = {
-  name: 'rbac-rg-owner'
+  name: format(localModuleDeploymentNameFormat, 'rbac-rg-owner')
   params: {
     managedIdentityResourceId: avmManagedIdentity.outputs.resourceId
     managedIdentityPrincipalId: avmManagedIdentity.outputs.principalId
   }
 }
 
+// ========== Log Analytics Workspace ========== //
+module avmLogAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.11.1' = {
+  name: format(avmDeploymentNameFormat, varLogAnalyticsWorkspaceResourceName)
+  params: {
+    name: varLogAnalyticsWorkspaceResourceName
+    tags: tags
+    location: logAnalyticsWorkspaceLocation
+    enableTelemetry: enableTelemetry
+    skuName: logAnalyticsWorkspaceSkuName
+    dataRetention: logAnalyticsWorkspaceDataRetentionInDays
+  }
+}
+
 // ========== Key Vault ========== //
-module avmKeyVault 'br/public:avm/res/key-vault/vault:0.11.2' = {
-  name: format(deploymentNameFormat, varKeyVaultResourceName)
+module avmKeyVault 'br/public:avm/res/key-vault/vault:0.12.1' = {
+  name: format(avmDeploymentNameFormat, varKeyVaultResourceName)
   params: {
     name: varKeyVaultResourceName
     tags: tags
     location: keyVaultLocation
     enableTelemetry: enableTelemetry
-    sku: 'standard'
-    createMode: 'default'
+    diagnosticSettings: [{ workspaceResourceId: avmLogAnalyticsWorkspace.outputs.resourceId }]
+    sku: keyVaultSku
+    createMode: keyVaultCreateMode
     enableVaultForDeployment: true
     enableVaultForDiskEncryption: true
     enableVaultForTemplateDeployment: true
-    enableSoftDelete: true //NOTE: This must become a parameter
-    softDeleteRetentionInDays: 7
-    enablePurgeProtection: false //NOTE: Set to true on original
+    enableSoftDelete: keyVaultSoftDeleteEnabled
+    softDeleteRetentionInDays: keyVaultSoftDeleteRetentionInDays
+    enablePurgeProtection: keyVaultPurgeProtectionEnabled
     publicNetworkAccess: 'Enabled'
     enableRbacAuthorization: true
-    accessPolicies: [
-      //NOTE: This should be moved to RBAC
-      {
-        objectId: avmManagedIdentity.outputs.principalId
-        permissions: {
-          //NOTE: Fine grain permissions for Production environment
-          keys: ['all']
-          secrets: ['all']
-          certificates: ['all']
-          storage: ['all']
+    roleAssignments: concat(
+      [
+        {
+          principalId: avmManagedIdentity.outputs.principalId
+          principalType: 'ServicePrincipal'
+          roleDefinitionIdOrName: '00482a5a-887f-4fb3-b363-3b7fe8e74483' //NOTE: Built-in role 'Key Vault Administrator'
         }
-      }
-    ]
-    roleAssignments: [
-      {
-        principalId: avmManagedIdentity.outputs.principalId
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: '00482a5a-887f-4fb3-b363-3b7fe8e74483' //NOTE: Built-in role 'Key Vault Administrator'
-      }
-    ]
+      ],
+      keyVaultRoleAssignments
+    )
     secrets: [
-      { name: varKvSecretNameAdlsAccountContainer, value: 'data' }
-      { name: varKvSecretNameAdlsAccountName, value: varStorageAccountResourceName }
-      { name: varKvSecretNameTenantId, value: subscription().tenantId }
-      { name: varKvSecretNameAzureCosmosDbAccount, value: varCosmosDbAccountResourceName }
-      { name: varKvSecretNameAzureCosmosDbDatabase, value: varCosmosDbSqlDbName }
-      { name: varKvSecretNameAzureCosmosDbConversationsContainer, value: varCosmosDbSqlDbCollName }
-      { name: varKvSecretNameAzureCosmosDbEnableFeedback, value: 'True' }
-      {
-        name: varKvSecretNameSqlDbServer
-        value: '${varSqlServerResourceName}${environment().suffixes.sqlServerHostname}'
-      } //value: '${varSqlServerResourceName}.database.windows.net'
-      { name: varKvSecretNameSqlDbDatabase, value: varSQLDatabaseName }
-      { name: varKvSecretNameSqlDbUsername, value: varSQLServerAdministratorLogin }
-      { name: varKvSecretNameSqlDbPassword, value: varSQLServerAdministratorPassword }
+      { name: 'ADLS-ACCOUNT-CONTAINER', value: 'data' }
+      { name: 'ADLS-ACCOUNT-NAME', value: varStorageAccountResourceName }
+      { name: 'TENANT-ID', value: subscription().tenantId }
+      { name: 'AZURE-COSMOSDB-ACCOUNT', value: varCosmosDbAccountResourceName }
+      { name: 'AZURE-COSMOSDB-DATABASE', value: varCosmosDbSqlDbName }
+      { name: 'AZURE-COSMOSDB-CONVERSATIONS-CONTAINER', value: varCosmosDbSqlDbCollName }
+      { name: 'AZURE-COSMOSDB-ENABLE-FEEDBACK', value: 'True' }
+      { name: 'SQLDB-SERVER', value: '${varSqlServerResourceName}${environment().suffixes.sqlServerHostname}' }
+      { name: 'SQLDB-DATABASE', value: varSQLDatabaseName }
+      { name: 'SQLDB-USERNAME', value: varSQLServerAdministratorLogin }
+      { name: 'SQLDB-PASSWORD', value: varSQLServerAdministratorPassword }
       { name: 'AZURE-OPENAI-PREVIEW-API-VERSION', value: varAiFoundryAiServiceGPTModelVersionPreview }
       { name: 'AZURE-AI-PROJECT-CONN-STRING', value: varAiFoundryAiServiceProjectConnectionString }
       { name: 'AZURE-OPEN-AI-DEPLOYMENT-MODEL', value: varAiFoundryAIServicesModelDeployments[0].model.name }
@@ -531,58 +646,50 @@ module avmKeyVault 'br/public:avm/res/key-vault/vault:0.11.2' = {
   }
 }
 
-// ========== Log Analytics Workspace ========== //
-
-// NOTE: Deploying this resource to use latest version of AVM Application Insights - Resource ID of the log analytics workspace which the
-// data will be ingested to. This property is required to create an application with this API version.
-// Applications from older versions will not have this property.
-module avmLogAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.9.1' = {
-  name: format(deploymentNameFormat, varLogAnalyticsWorkspaceResourceName)
-  params: {
-    name: varLogAnalyticsWorkspaceResourceName
-    tags: tags
-    location: logAnalyticsWorkspaceLocation
-    enableTelemetry: enableTelemetry
-    skuName: 'PerGB2018'
-    dataRetention: 30
-  }
-}
-
 // ========== AI Foundry ========== //
 
 module moduleAIFoundry './modules/ai-foundry.bicep' = {
-  //name: format(deploymentNameFormat, varAIFoundryDeploymentName)
-  name: 'module-ai-foundry'
+  name: format(localModuleDeploymentNameFormat, 'ai-foundry')
   params: {
-    tags: tags
     aiHubLocation: aiFoundryAiHubLocation
-    aiServiceLocation: aiFoundryAiServiceLocation
-    aiServiceContentUnderstandingLocation: aiFoundryAiServiceContentUnderstandingLocation
+    aiHubResourceName: varAiFoundryAiHubResourceName
+    aiHubSkuName: aiFoundryAiHubSkuName
     aiProjectLocation: aiFoundryAiProjectLocation
+    aiProjectResourceName: varAiFoundryAiProjectResourceName
+    aiProjectSkuName: aiFoundryAiProjectSkuName
+    aiServicesLocation: aiFoundryAiServicesLocation
+    aiServicesContentUnderstandingLocation: aiFoundryAiServicesContentUnderstandingLocation
+    aiServicesContentUnderstandingResourceName: varAiFoundryAiServicesContentUnderstandingResourceName
+    aiServicesContentUnderstandingSkuName: aiFoundryAiServicesContentUnderstandingSkuName
+    aiServicesModelDeployments: varAiFoundryAIServicesModelDeployments
+    aiServicesResourceName: varAiFoundryAiServiceResourceName
+    aiServicesSkuName: aiFoundryAiServicesSkuName
     applicationInsightsLocation: aiFoundryApplicationInsightsLocation
+    applicationInsightsResourceName: varAiFoundryApplicationInsightsResourceName
+    applicationInsightsRetentionInDays: aiFoundryApplicationInsightsRetentionInDays
     containerRegistryLocation: aiFoundryContainerRegistryLocation
-    searchServiceLocation: aiFoundrySearchServiceLocation
-    storageAccountLocation: aiFoundryStorageAccountLocation
+    containerRegistryResourceName: varAiFoundryContainerRegistryResourceName
+    containerRegistrySkuName: aiFoundryContainerRegistrySkuName
     enableTelemetry: enableTelemetry
-    keyVault_name: varKeyVaultResourceName
-    avm_operational_insights_workspace_resourceId: avmLogAnalyticsWorkspace.outputs.resourceId
-    applicationInsights_name: varAiFoundryApplicationInsightsResourceName
-    containerRegistry_name: varAiFoundryContainerRegistryResourceName
-    aiServices_name: varAiFoundryAiServiceResourceName
-    aiServices_cu_name: varAiFoundryAiServiceContentUnderstandingResourceName
-    aiServices_deployments: varAiFoundryAIServicesModelDeployments
-    searchService_name: varAiFoundrySearchServiceResourceName
-    storageAccount_name: varAiFoundryStorageAccountResourceName
-    machineLearningServicesWorkspaces_aihub_name: varAiFoundryAiHubResourceName
-    machineLearningServicesWorkspaces_project_name: varAiFoundryAiProjectResourceName
+    keyVaultResourceName: varKeyVaultResourceName
+    logAnalyticsWorkspaceResourceId: avmLogAnalyticsWorkspace.outputs.resourceId
     managedIdentityPrincipalId: avmManagedIdentity.outputs.principalId
+    searchServiceLocation: aiFoundrySearchServiceLocation
+    searchServiceResourceName: varAiFoundrySearchServiceResourceName
+    searchServiceSkuName: aiFoundrySearchServiceSkuName
+    storageAccountLocation: aiFoundryStorageAccountLocation
+    storageAccountResourceName: varAiFoundryStorageAccountResourceName
+    storageAccountSkuName: aiFoundryStorageAccountSkuName
+    tags: tags
+    avmDeploymentNameFormat: avmDeploymentNameFormat
+    localModuleDeploymentNameFormat: localModuleDeploymentNameFormat
   }
 }
 
 // ========== Storage Account ========== //
 
-module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.18.1' = {
-  name: format(deploymentNameFormat, varStorageAccountResourceName)
+module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.18.2' = {
+  name: format(avmDeploymentNameFormat, varStorageAccountResourceName)
   params: {
     name: varStorageAccountResourceName
     tags: tags
@@ -641,8 +748,8 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.18.1' = {
 
 // ========== Cosmos Database ========== //
 
-module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.11.0' = {
-  name: format(deploymentNameFormat, varCosmosDbAccountResourceName)
+module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.11.2' = {
+  name: format(avmDeploymentNameFormat, varCosmosDbAccountResourceName)
   params: {
     name: varCosmosDbAccountResourceName
     tags: tags
@@ -682,8 +789,8 @@ module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.11.0' = {
 
 // ========== SQL Database Server ========== //
 
-module avmSQLServer 'br/public:avm/res/sql/server:0.12.2' = {
-  name: format(deploymentNameFormat, varSqlServerResourceName)
+module avmSQLServer 'br/public:avm/res/sql/server:0.13.1' = {
+  name: format(avmDeploymentNameFormat, varSqlServerResourceName)
   params: {
     name: varSqlServerResourceName
     tags: tags
@@ -723,7 +830,7 @@ module avmSQLServer 'br/public:avm/res/sql/server:0.12.2' = {
 //========== Deployment script to upload sample data ========== //
 
 module avmDeploymentScriptCopyData 'br/public:avm/res/resources/deployment-script:0.5.1' = {
-  name: format(deploymentNameFormat, varScriptCopyDataResourceName)
+  name: format(avmDeploymentNameFormat, varScriptCopyDataResourceName)
   params: {
     kind: 'AzureCLI'
     name: varScriptCopyDataResourceName
@@ -751,7 +858,7 @@ module avmDeploymentScriptCopyData 'br/public:avm/res/resources/deployment-scrip
 //========== Deployment script to process and index data ========== //
 
 module avmDeploymentScritptIndexData 'br/public:avm/res/resources/deployment-script:0.5.1' = {
-  name: format(deploymentNameFormat, varScriptIndexDataResourceName)
+  name: format(avmDeploymentNameFormat, varScriptIndexDataResourceName)
   params: {
     kind: 'AzureCLI'
     name: varScriptIndexDataResourceName
@@ -775,8 +882,8 @@ module avmDeploymentScritptIndexData 'br/public:avm/res/resources/deployment-scr
 
 //========== Azure function: Managed Environment ========== //
 
-module avmFunctionsManagedEnvironment 'br/public:avm/res/app/managed-environment:0.9.0' = {
-  name: format(deploymentNameFormat, varFunctionsManagedEnvironmentResourceName)
+module avmFunctionsManagedEnvironment 'br/public:avm/res/app/managed-environment:0.10.0' = {
+  name: format(avmDeploymentNameFormat, varFunctionsManagedEnvironmentResourceName)
   params: {
     name: varFunctionsManagedEnvironmentResourceName
     tags: tags
@@ -807,7 +914,7 @@ resource functionCharts 'Microsoft.Web/sites@2023-12-01' = {
       appSettings: [
         {
           name: 'AzureWebJobsStorage_accountname'
-          value: moduleAIFoundry.outputs.storageAccount_name
+          value: moduleAIFoundry.outputs.storageAccountName
         }
         {
           name: 'SQLDB_DATABASE'
@@ -845,7 +952,7 @@ resource functionCharts 'Microsoft.Web/sites@2023-12-01' = {
 }
 
 // module avmStorageAccountCharts 'br/public:avm/res/storage/storage-account:0.17.3' = {
-//   name: format(deploymentNameFormat, varChartsStorageAccountName)
+//   name: format(avmDeploymentNameFormat, varChartsStorageAccountName)
 //   params: {
 //     name: varChartsStorageAccountName
 //     location: solutionLocation
@@ -865,17 +972,17 @@ resource functionCharts 'Microsoft.Web/sites@2023-12-01' = {
 //========== Azure function: Rag ========== //
 
 module moduleFunctionRAG 'modules/function-rag.bicep' = {
-  name: 'module-function-rag'
+  name: format(localModuleDeploymentNameFormat, 'function-rag')
   params: {
     ragFunctionName: varFunctionRagResourceName
     solutionLocation: functionRagLocation
     tags: tags
-    ragStorageAccountName: moduleAIFoundry.outputs.storageAccount_name
+    ragStorageAccountName: moduleAIFoundry.outputs.storageAccountName
     aiFoundryAIHubProjectConnectionString: varAiFoundryAiServiceProjectConnectionString
-    AIFoundryAISearchServiceConnectionString: moduleAIFoundry.outputs.aiSearch_connectionString
-    aiFoundryAIServicesName: moduleAIFoundry.outputs.aiServices_name
-    aiFoundryOpenAIServicesEndpoint: moduleAIFoundry.outputs.aiServices_endpoint
-    aiFoundrySearchServicesName: moduleAIFoundry.outputs.aiSearch_name
+    AIFoundryAISearchServiceConnectionString: moduleAIFoundry.outputs.aiSearchConnectionString
+    aiFoundryAIServicesName: moduleAIFoundry.outputs.aiServicesName
+    aiFoundryOpenAIServicesEndpoint: moduleAIFoundry.outputs.aiServicesEndpoint
+    aiFoundrySearchServicesName: moduleAIFoundry.outputs.aiSearchName
     functionsManagedEnvironmentResourceId: avmFunctionsManagedEnvironment.outputs.resourceId
     gptModelName: aiFoundryAIServicesGptModelName
     gptModelVersionPreview: varAiFoundryAiServiceGPTModelVersionPreview
@@ -887,52 +994,12 @@ module moduleFunctionRAG 'modules/function-rag.bicep' = {
   }
 }
 
-// module avmStorageAccountFunctions 'br/public:avm/res/storage/storage-account:0.17.3' = {
-//   name: format(deploymentNameFormat, varFunctionsStorageAccountName)
-//   params: {
-//     name: varFunctionsStorageAccountName
-//     location: solutionLocation
-//     tags: tags
-//     skuName: 'Standard_LRS'
-//     kind: 'StorageV2'
-//     accessTier: 'Hot'
-//     roleAssignments: [
-//       // {
-//       //   principalId: moduleFunctionRAG.outputs.principalId
-//       //   roleDefinitionIdOrName: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe' //NOTE: Built-in role 'Storage Blob Data Contributor'
-//       // }
-//       {
-//         principalId: functionCharts.identity.principalId
-//         roleDefinitionIdOrName: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe' //NOTE: Built-in role 'Storage Blob Data Contributor'
-//       }
-//     ]
-//   }
-// }
-
-// module avmStorageAccountRAG 'br/public:avm/res/storage/storage-account:0.17.3' = {
-//   name: format(deploymentNameFormat, varRAGStorageAccountName)
-//   params: {
-//     name: varRAGStorageAccountName
-//     location: solutionLocation
-//     tags: tags
-//     skuName: 'Standard_LRS'
-//     kind: 'StorageV2'
-//     accessTier: 'Hot'
-//     roleAssignments: [
-//       {
-//         principalId: moduleFunctionRAG.outputs.principalId
-//         roleDefinitionIdOrName: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe' //NOTE: Built-in role 'Storage Blob Data Contributor'
-//       }
-//     ]
-//   }
-// }
-
 module rbacAiprojectAideveloper 'modules/rbac-aiproject-aideveloper.bicep' = {
-  name: 'module-rbac-aiproject-aideveloper'
+  name: format(localModuleDeploymentNameFormat, 'rbac-aiproject-aideveloper')
   params: {
-    aiServicesProjectResourceName: moduleAIFoundry.outputs.aiHub_project_name
+    aiServicesProjectResourceName: moduleAIFoundry.outputs.aiProjectName
     identityPrincipalId: moduleFunctionRAG.outputs.principalId
-    aiServicesProjectResourceId: moduleAIFoundry.outputs.aiHub_project_resourceId
+    aiServicesProjectResourceId: moduleAIFoundry.outputs.aiProjectResourceId
     ragFunctionResourceId: moduleFunctionRAG.outputs.resourceId
   }
 }
@@ -940,7 +1007,7 @@ module rbacAiprojectAideveloper 'modules/rbac-aiproject-aideveloper.bicep' = {
 //========== CKM Webapp ========== //
 
 module avmServerFarmWebapp 'br/public:avm/res/web/serverfarm:0.4.1' = {
-  name: format(deploymentNameFormat, varWebAppServerFarmResourceName)
+  name: format(avmDeploymentNameFormat, varWebAppServerFarmResourceName)
   params: {
     name: varWebAppServerFarmResourceName
     tags: tags
@@ -953,22 +1020,22 @@ module avmServerFarmWebapp 'br/public:avm/res/web/serverfarm:0.4.1' = {
 }
 
 module moduleWebsiteWebapp 'modules/webapp.bicep' = {
-  name: 'module-webapp'
+  name: format(localModuleDeploymentNameFormat, 'webapp')
   params: {
-    deploymentName: format(deploymentNameFormat, varWebAppResourceName)
+    deploymentName: format(avmDeploymentNameFormat, varWebAppResourceName)
     webAppName: varWebAppResourceName
     tags: tags
     location: webAppLocation
     enableTelemetry: enableTelemetry
     serverFarmResourceId: avmServerFarmWebapp.outputs.resourceId
-    appInsightsResourceId: moduleAIFoundry.outputs.appInsights_resourceId
-    aiFoundryAIServicesName: moduleAIFoundry.outputs.aiServices_name
+    appInsightsResourceId: moduleAIFoundry.outputs.applicationInsightsResourceId
+    aiFoundryAIServicesName: moduleAIFoundry.outputs.aiServicesName
     webAppImageName: varWebAppImageName
-    appInsightsInstrumentationKey: moduleAIFoundry.outputs.appInsights_instrumentationKey
-    aiServicesEndpoint: moduleAIFoundry.outputs.aiServices_endpoint
+    appInsightsInstrumentationKey: moduleAIFoundry.outputs.applicationInsightsInstrumentationKey
+    aiServicesEndpoint: moduleAIFoundry.outputs.aiServicesEndpoint
     gptModelName: aiFoundryAIServicesGptModelName
     gptModelVersionPreview: varAiFoundryAiServiceGPTModelVersionPreview
-    aiServicesResourceName: moduleAIFoundry.outputs.aiServices_name
+    aiServicesResourceName: moduleAIFoundry.outputs.aiServicesName
     managedIdentityDefaultHostName: functionCharts.properties.defaultHostName
     chartsFunctionFunctionName: varChartsFunctionFunctionName
     webAppAppConfigReact: varWebAppAppConfigReact
@@ -981,7 +1048,7 @@ module moduleWebsiteWebapp 'modules/webapp.bicep' = {
 }
 
 module rbac 'modules/rbac-cosmosdb-contributor.bicep' = {
-  name: 'module-rbac-cosmosdb-contributor'
+  name: format(localModuleDeploymentNameFormat, 'rbac-cosmosdb-contributor')
   params: {
     cosmosDBAccountName: avmCosmosDB.outputs.name
     principalId: moduleWebsiteWebapp.outputs.webAppSystemAssignedPrincipalId

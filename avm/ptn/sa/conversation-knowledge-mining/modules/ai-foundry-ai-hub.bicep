@@ -1,10 +1,11 @@
 // NOTE: This module is required to pass keys from previously deployed resources leveraging the existing keyword
-// This behavior will be updated in future versions to leverage more secure solutions such as Key Vault or manag
+// This behavior will be updated in future versions to leverage more secure solutions such as Key Vault or managed identities
 
 param deploymentName string
 param aiServicesName string
 param searchServiceName string
 param aiHubName string
+param sku string
 param location string
 param tags object
 param keyVaultResourceId string
@@ -16,6 +17,7 @@ param cognitiveServicesResourceId string
 param searchServicesEndpoint string
 param searchServicesResourceId string
 param enableTelemetry bool = true
+param logAnalyticsWorkspaceResourceId string
 
 resource deployed_avm_cognitive_services_accounts 'Microsoft.CognitiveServices/accounts@2024-10-01' existing = {
   name: aiServicesName
@@ -32,13 +34,13 @@ module avmMachineLearningServicesWorkspacesAiHub 'br/public:avm/res/machine-lear
     tags: tags
     location: location
     enableTelemetry: enableTelemetry
-    // Missing in AVM:
-    // friendlyName: aiHubFriendlyName
+    diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspaceResourceId }]
+    // friendlyName: aiHubFriendlyName    // Missing in AVM:
     managedIdentities: { systemAssigned: true }
     kind: 'Hub'
-    sku: 'Basic' // Double check this
+    sku: sku
     publicNetworkAccess: 'Enabled' // Not in original script, check this
-    description: 'AI Hub for KM template'
+    description: 'AI Hub for Conversation Knowledge Mining template'
     associatedKeyVaultResourceId: keyVaultResourceId
     associatedStorageAccountResourceId: storageAccountResourceId
     associatedContainerRegistryResourceId: containerRegistryResourceId

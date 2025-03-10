@@ -2,9 +2,7 @@
 
 This module deploys the [Conversation Knowledge Mining Solution Accelerator](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator).
 
-**Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator product. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future.
-
-This may result in breaking changes in upcoming versions when these features are implemented.
+> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator product. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.
 
 
 ## Navigation
@@ -20,8 +18,8 @@ This may result in breaking changes in upcoming versions when these features are
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.App/managedEnvironments` | [2024-02-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-02-02-preview/managedEnvironments) |
-| `Microsoft.App/managedEnvironments/storages` | [2024-02-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-02-02-preview/managedEnvironments/storages) |
+| `Microsoft.App/managedEnvironments` | [2024-10-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-10-02-preview/managedEnvironments) |
+| `Microsoft.App/managedEnvironments/storages` | [2024-10-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-10-02-preview/managedEnvironments/storages) |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.CognitiveServices/accounts` | [2024-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2024-04-01-preview/accounts) |
@@ -32,25 +30,25 @@ This may result in breaking changes in upcoming versions when these features are
 | `Microsoft.ContainerRegistry/registries/replications` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries/replications) |
 | `Microsoft.ContainerRegistry/registries/scopeMaps` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries/scopeMaps) |
 | `Microsoft.ContainerRegistry/registries/webhooks` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries/webhooks) |
-| `Microsoft.DocumentDB/databaseAccounts` | [2023-04-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2023-04-15/databaseAccounts) |
-| `Microsoft.DocumentDB/databaseAccounts/gremlinDatabases` | [2023-04-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2023-04-15/databaseAccounts/gremlinDatabases) |
-| `Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs` | [2023-04-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2023-04-15/databaseAccounts/gremlinDatabases/graphs) |
-| `Microsoft.DocumentDB/databaseAccounts/mongodbDatabases` | [2023-04-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2023-04-15/databaseAccounts/mongodbDatabases) |
-| `Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections` | [2023-04-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2023-04-15/databaseAccounts/mongodbDatabases/collections) |
-| `Microsoft.DocumentDB/databaseAccounts/sqlDatabases` | [2023-04-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2023-04-15/databaseAccounts/sqlDatabases) |
-| `Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers` | [2023-04-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2023-04-15/databaseAccounts/sqlDatabases/containers) |
-| `Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments` | [2023-04-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2023-04-15/databaseAccounts/sqlRoleAssignments) |
+| `Microsoft.DocumentDB/databaseAccounts` | [2024-11-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts) |
+| `Microsoft.DocumentDB/databaseAccounts/gremlinDatabases` | [2024-11-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/gremlinDatabases) |
+| `Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs` | [2024-11-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/gremlinDatabases/graphs) |
+| `Microsoft.DocumentDB/databaseAccounts/mongodbDatabases` | [2024-11-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/mongodbDatabases) |
+| `Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections` | [2024-11-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/mongodbDatabases/collections) |
+| `Microsoft.DocumentDB/databaseAccounts/sqlDatabases` | [2024-11-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/sqlDatabases) |
+| `Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers` | [2024-11-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/sqlDatabases/containers) |
+| `Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments` | [2024-11-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/sqlRoleAssignments) |
 | `Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments` | [2024-12-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-12-01-preview/databaseAccounts/sqlRoleAssignments) |
-| `Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions` | [2023-04-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2023-04-15/databaseAccounts/sqlRoleDefinitions) |
-| `Microsoft.DocumentDB/databaseAccounts/tables` | [2023-04-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2023-04-15/databaseAccounts/tables) |
+| `Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions` | [2024-11-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/sqlRoleDefinitions) |
+| `Microsoft.DocumentDB/databaseAccounts/tables` | [2024-11-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/tables) |
 | `Microsoft.Insights/components` | [2020-02-02](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2020-02-02/components) |
 | `microsoft.insights/components/linkedStorageAccounts` | [2020-03-01-preview](https://learn.microsoft.com/en-us/azure/templates/microsoft.insights/2020-03-01-preview/components/linkedStorageAccounts) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.KeyVault/vaults` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults) |
 | `Microsoft.KeyVault/vaults/accessPolicies` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/accessPolicies) |
 | `Microsoft.KeyVault/vaults/keys` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/keys) |
-| `Microsoft.KeyVault/vaults/secrets` | [2021-11-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2021-11-01-preview/vaults/secrets) |
 | `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
+| `Microsoft.KeyVault/vaults/secrets` | [2021-11-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2021-11-01-preview/vaults/secrets) |
 | `Microsoft.KeyVault/vaults/secrets` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/secrets) |
 | `Microsoft.MachineLearningServices/workspaces` | [2024-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2024-04-01-preview/workspaces) |
 | `Microsoft.MachineLearningServices/workspaces/computes` | [2022-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2022-10-01/workspaces/computes) |
@@ -59,14 +57,14 @@ This may result in breaking changes in upcoming versions when these features are
 | `Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials` | [2023-01-31](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-01-31/userAssignedIdentities/federatedIdentityCredentials) |
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
-| `Microsoft.OperationalInsights/workspaces` | [2022-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2022-10-01/workspaces) |
-| `Microsoft.OperationalInsights/workspaces/dataExports` | [2020-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2020-08-01/workspaces/dataExports) |
-| `Microsoft.OperationalInsights/workspaces/dataSources` | [2020-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2020-08-01/workspaces/dataSources) |
-| `Microsoft.OperationalInsights/workspaces/linkedServices` | [2020-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2020-08-01/workspaces/linkedServices) |
-| `Microsoft.OperationalInsights/workspaces/linkedStorageAccounts` | [2020-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2020-08-01/workspaces/linkedStorageAccounts) |
-| `Microsoft.OperationalInsights/workspaces/savedSearches` | [2020-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2020-08-01/workspaces/savedSearches) |
-| `Microsoft.OperationalInsights/workspaces/storageInsightConfigs` | [2020-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2020-08-01/workspaces/storageInsightConfigs) |
-| `Microsoft.OperationalInsights/workspaces/tables` | [2022-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2022-10-01/workspaces/tables) |
+| `Microsoft.OperationalInsights/workspaces` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces) |
+| `Microsoft.OperationalInsights/workspaces/dataExports` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces/dataExports) |
+| `Microsoft.OperationalInsights/workspaces/dataSources` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces/dataSources) |
+| `Microsoft.OperationalInsights/workspaces/linkedServices` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces/linkedServices) |
+| `Microsoft.OperationalInsights/workspaces/linkedStorageAccounts` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces/linkedStorageAccounts) |
+| `Microsoft.OperationalInsights/workspaces/savedSearches` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces/savedSearches) |
+| `Microsoft.OperationalInsights/workspaces/storageInsightConfigs` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces/storageInsightConfigs) |
+| `Microsoft.OperationalInsights/workspaces/tables` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces/tables) |
 | `Microsoft.OperationsManagement/solutions` | [2015-11-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationsManagement/2015-11-01-preview/solutions) |
 | `Microsoft.Resources/deploymentScripts` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2023-08-01/deploymentScripts) |
 | `Microsoft.Search/searchServices` | [2024-03-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Search/2024-03-01-preview/searchServices) |
@@ -133,7 +131,7 @@ module conversationKnowledgeMining 'br/public:avm/ptn/sa/conversation-knowledge-
   name: 'conversationKnowledgeMiningDeployment'
   params: {
     // Required parameters
-    aiFoundryAiServiceContentUnderstandingLocation: 'West US'
+    aiFoundryAiServicesContentUnderstandingLocation: 'West US'
     solutionPrefix: 'ckmpoc'
   }
 }
@@ -152,7 +150,7 @@ module conversationKnowledgeMining 'br/public:avm/ptn/sa/conversation-knowledge-
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "aiFoundryAiServiceContentUnderstandingLocation": {
+    "aiFoundryAiServicesContentUnderstandingLocation": {
       "value": "West US"
     },
     "solutionPrefix": {
@@ -173,7 +171,7 @@ module conversationKnowledgeMining 'br/public:avm/ptn/sa/conversation-knowledge-
 using 'br/public:avm/ptn/sa/conversation-knowledge-mining:<version>'
 
 // Required parameters
-param aiFoundryAiServiceContentUnderstandingLocation = 'West US'
+param aiFoundryAiServicesContentUnderstandingLocation = 'West US'
 param solutionPrefix = 'ckmpoc'
 ```
 
@@ -186,7 +184,7 @@ param solutionPrefix = 'ckmpoc'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`aiFoundryAiServiceContentUnderstandingLocation`](#parameter-aifoundryaiservicecontentunderstandinglocation) | string | Location for the AI Foundry Content Understanding service deployment. |
+| [`aiFoundryAiServicesContentUnderstandingLocation`](#parameter-aifoundryaiservicescontentunderstandinglocation) | string | Location for the AI Foundry Content Understanding service deployment. |
 | [`solutionPrefix`](#parameter-solutionprefix) | string | The prefix to add in the default names given to all deployed Azure resources. |
 
 **Optional parameters**
@@ -195,28 +193,35 @@ param solutionPrefix = 'ckmpoc'
 | :-- | :-- | :-- |
 | [`aiFoundryAiHubLocation`](#parameter-aifoundryaihublocation) | string | Location for the AI Foundry AI Hub resource deployment. |
 | [`aiFoundryAiHubResourceName`](#parameter-aifoundryaihubresourcename) | string | The name of the AI Foundry AI Hub resource. It will override the default given name. |
+| [`aiFoundryAiHubSkuName`](#parameter-aifoundryaihubskuname) | string | The SKU of the AI Foundry AI Hub account. |
 | [`aiFoundryAiProjectLocation`](#parameter-aifoundryaiprojectlocation) | string | Location for the AI Foundry AI Project resource deployment. |
 | [`aiFoundryAiProjectResourceName`](#parameter-aifoundryaiprojectresourcename) | string | The name of the AI Foundry AI Project resource. It will override the default given name. |
-| [`aiFoundryAiServiceLocation`](#parameter-aifoundryaiservicelocation) | string | Location for the AI Foundry AI Service resource deployment. |
+| [`aiFoundryAiProjectSkuName`](#parameter-aifoundryaiprojectskuname) | string | The SKU of the AI Foundry AI project. |
 | [`aiFoundryAiServicesContentUnderstandingResourceName`](#parameter-aifoundryaiservicescontentunderstandingresourcename) | string | The name of the AI Foundry AI Services Content Understanding resource. It will override the default given name. |
-| [`aiFoundryAIServicesGptModelDeploymentCapacity`](#parameter-aifoundryaiservicesgptmodeldeploymentcapacity) | int | Capacity of the GPT deployment. You can increase this, but capacity is limited per model/region, so you will get errors if you go over. [Quotas link](https://learn.microsoft.com/en-us/azure/ai-services/openai/quotas-limits). |
-| [`aiFoundryAIServicesGptModelDeploymentType`](#parameter-aifoundryaiservicesgptmodeldeploymenttype) | string | GPT model deployment type. |
-| [`aiFoundryAIServicesGptModelName`](#parameter-aifoundryaiservicesgptmodelname) | string | Name of the GPT model to deploy. |
-| [`aiFoundryAiServicesProjectLocation`](#parameter-aifoundryaiservicesprojectlocation) | string | The location of the AI Foundry AI Services Project. |
+| [`aiFoundryAiServicesContentUnderstandingSkuName`](#parameter-aifoundryaiservicescontentunderstandingskuname) | string | The SKU of the AI Foundry AI Services account. Use 'Get-AzCognitiveServicesAccountSku' to determine a valid combinations of 'kind' and 'SKU' for your Azure region. |
+| [`aiFoundryAIServicesGptModelDeploymentCapacity`](#parameter-aifoundryaiservicesgptmodeldeploymentcapacity) | int | Capacity of the GPT model to deploy in the AI Foundry AI Services account. Capacity is limited per model/region, so you will get errors if you go over. [Quotas link](https://learn.microsoft.com/azure/ai-services/openai/quotas-limits). |
+| [`aiFoundryAIServicesGptModelDeploymentType`](#parameter-aifoundryaiservicesgptmodeldeploymenttype) | string | GPT model deployment type of the AI Foundry AI Services account. |
+| [`aiFoundryAIServicesGptModelName`](#parameter-aifoundryaiservicesgptmodelname) | string | Name of the GPT model to deploy in the AI Foundry AI Services account. |
+| [`aiFoundryAiServicesLocation`](#parameter-aifoundryaiserviceslocation) | string | Location for the AI Foundry AI Service resource deployment. |
 | [`aiFoundryAiServicesResourceName`](#parameter-aifoundryaiservicesresourcename) | string | The name of the AI Foundry AI Services resource. It will override the default given name. |
-| [`aiFoundryAiServicesTextEmbeddingModelName`](#parameter-aifoundryaiservicestextembeddingmodelname) | string | Name of the Text Embedding model to deploy. |
+| [`aiFoundryAiServicesSkuName`](#parameter-aifoundryaiservicesskuname) | string | The SKU of the AI Foundry AI Services account. Use 'Get-AzCognitiveServicesAccountSku' to determine a valid combinations of 'kind' and 'SKU' for your Azure region. |
+| [`aiFoundryAiServicesTextEmbeddingModelCapacity`](#parameter-aifoundryaiservicestextembeddingmodelcapacity) | int | Capacity of the Text Embedding model to deploy in the AI Foundry AI Services account. Capacity is limited per model/region, so you will get errors if you go over. [Quotas link](https://learn.microsoft.com/azure/ai-services/openai/quotas-limits). |
+| [`aiFoundryAiServicesTextEmbeddingModelName`](#parameter-aifoundryaiservicestextembeddingmodelname) | string | Name of the Text Embedding model to deploy in the AI Foundry AI Services account. |
 | [`aiFoundryApplicationInsightsLocation`](#parameter-aifoundryapplicationinsightslocation) | string | Location for the AI Foundry Application Insights resource deployment. |
 | [`aiFoundryApplicationInsightsResourceName`](#parameter-aifoundryapplicationinsightsresourcename) | string | The name of the AI Foundry Application Insights resource. It will override the default given name. |
+| [`aiFoundryApplicationInsightsRetentionInDays`](#parameter-aifoundryapplicationinsightsretentionindays) | int | The retention of Application Insights data in days. If empty, Standard will be used. |
 | [`aiFoundryContainerRegistryLocation`](#parameter-aifoundrycontainerregistrylocation) | string | Location for the AI Foundry Container Registry resource deployment. |
 | [`aiFoundryContainerRegistryResourceName`](#parameter-aifoundrycontainerregistryresourcename) | string | The name of the AI Foundry Container Registry resource. It will override the default given name. |
+| [`aiFoundryContainerRegistrySkuName`](#parameter-aifoundrycontainerregistryskuname) | string | The SKU for the AI Foundry Container Registry. If empty, Premium will be used. |
 | [`aiFoundrySearchServiceLocation`](#parameter-aifoundrysearchservicelocation) | string | Location for the AI Foundry Search Service resource deployment. |
 | [`aiFoundrySearchServiceResourceName`](#parameter-aifoundrysearchserviceresourcename) | string | The name of the AI Foundry Search Service resource. It will override the default given name. |
+| [`aiFoundrySearchServiceSkuName`](#parameter-aifoundrysearchserviceskuname) | string | The SKU of the AI Foundry Search Service account. |
 | [`aiFoundryStorageAccountLocation`](#parameter-aifoundrystorageaccountlocation) | string | Location for the AI Foundry Storage Account resource deployment. |
 | [`aiFoundryStorageAccountResourceName`](#parameter-aifoundrystorageaccountresourcename) | string | The name of the AI Foundry Storage Account resource. It will override the default given name. |
+| [`aiFoundryStorageAccountSkuName`](#parameter-aifoundrystorageaccountskuname) | string | The SKU for the AI Foundry Storage Account. If empty, Standard_LRS will be used. |
 | [`cosmosDbAccountLocation`](#parameter-cosmosdbaccountlocation) | string | Location for the Cosmos DB Account resource deployment. |
 | [`cosmosDbAccountResourceName`](#parameter-cosmosdbaccountresourcename) | string | The name of the Cosmos DB Account resource. It will override the default given name. |
 | [`databasesLocation`](#parameter-databaseslocation) | string | Secondary location for databases creation. |
-| [`embeddingDeploymentCapacity`](#parameter-embeddingdeploymentcapacity) | int | Capacity of the Embedding Model deployment. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`functionChartsLocation`](#parameter-functionchartslocation) | string | Location for the Function Charts resource deployment. |
 | [`functionChartsResourceName`](#parameter-functionchartsresourcename) | string | The name of the Function Charts resource. It will override the default given name. |
@@ -225,10 +230,18 @@ param solutionPrefix = 'ckmpoc'
 | [`functionsManagedEnvironmentLocation`](#parameter-functionsmanagedenvironmentlocation) | string | Location for the Functions Managed Environment resource deployment. |
 | [`functionsManagedEnvironmentResourceName`](#parameter-functionsmanagedenvironmentresourcename) | string | The name of the Functions Managed Environment resource. It will override the default given name. |
 | [`imageTag`](#parameter-imagetag) | string | Docker image version to use for all deployed containers (functions and web app). |
+| [`keyVaultCreateMode`](#parameter-keyvaultcreatemode) | string | The Key Vault create mode. Indicates whether the vault need to be recovered from purge or not. If empty, default will be used. |
 | [`keyVaultLocation`](#parameter-keyvaultlocation) | string | Location for the Key Vault resource deployment. |
+| [`keyVaultPurgeProtectionEnabled`](#parameter-keyvaultpurgeprotectionenabled) | bool | If set to true, The Key Vault purge protection will be enabled. If empty, it will be set to false. |
 | [`keyVaultResourceName`](#parameter-keyvaultresourcename) | string | The name of the Key Vault resource. It will override the default given name. |
+| [`keyVaultRoleAssignments`](#parameter-keyvaultroleassignments) | array | Array of role assignments to include in the Key Vault. |
+| [`keyVaultSku`](#parameter-keyvaultsku) | string | The SKU for the Key Vault. If empty, standard will be used. |
+| [`keyVaultSoftDeleteEnabled`](#parameter-keyvaultsoftdeleteenabled) | bool | If set to true, The Key Vault soft delete will be enabled. If empty, it will be set to false. |
+| [`keyVaultSoftDeleteRetentionInDays`](#parameter-keyvaultsoftdeleteretentionindays) | int | The number of days to retain the soft deleted vault. If empty, it will be set to 7. |
+| [`logAnalyticsWorkspaceDataRetentionInDays`](#parameter-loganalyticsworkspacedataretentionindays) | int | The number of days to retain the data in the Log Analytics Workspace. If empty, it will be set to 30 days. |
 | [`logAnalyticsWorkspaceLocation`](#parameter-loganalyticsworkspacelocation) | string | Location for the Log Analytics Workspace resource deployment. |
 | [`logAnalyticsWorkspaceResourceName`](#parameter-loganalyticsworkspaceresourcename) | string | The name of the Log Analytics Workspace resource. It will override the default given name. |
+| [`logAnalyticsWorkspaceSkuName`](#parameter-loganalyticsworkspaceskuname) | string | The SKU for the Log Analytics Workspace. If empty, PerGB2018 will be used. |
 | [`managedIdentityLocation`](#parameter-managedidentitylocation) | string | Location for the Managed Identity resource deployment. |
 | [`managedIdentityResourceName`](#parameter-managedidentityresourcename) | string | The name of the Managed Identity resource. It will override the default given name. |
 | [`scriptCopyDataLocation`](#parameter-scriptcopydatalocation) | string | Location for the Script Copy Data resource deployment. |
@@ -244,9 +257,9 @@ param solutionPrefix = 'ckmpoc'
 | [`webAppResourceName`](#parameter-webappresourcename) | string | The name of the Web App resource. |
 | [`webAppServerFarmLocation`](#parameter-webappserverfarmlocation) | string | The location for the Web App Server Farm. Defaulted to the solution location. |
 | [`webAppServerFarmResourceName`](#parameter-webappserverfarmresourcename) | string | The name of the Web App Server Farm resource. It will override the default given name. |
-| [`webAppServerFarmSku`](#parameter-webappserverfarmsku) | string | The SKU for the web app. If empty, aiFoundryAiServiceContentUnderstandingLocation will be used. |
+| [`webAppServerFarmSku`](#parameter-webappserverfarmsku) | string | The SKU for the web app. If empty, aiFoundryAiServicesContentUnderstandingLocation will be used. |
 
-### Parameter: `aiFoundryAiServiceContentUnderstandingLocation`
+### Parameter: `aiFoundryAiServicesContentUnderstandingLocation`
 
 Location for the AI Foundry Content Understanding service deployment.
 
@@ -284,6 +297,23 @@ The name of the AI Foundry AI Hub resource. It will override the default given n
 - Type: string
 - Default: `''`
 
+### Parameter: `aiFoundryAiHubSkuName`
+
+The SKU of the AI Foundry AI Hub account.
+
+- Required: No
+- Type: string
+- Default: `'Basic'`
+- Allowed:
+  ```Bicep
+  [
+    'Basic'
+    'Free'
+    'Premium'
+    'Standard'
+  ]
+  ```
+
 ### Parameter: `aiFoundryAiProjectLocation`
 
 Location for the AI Foundry AI Project resource deployment.
@@ -300,13 +330,22 @@ The name of the AI Foundry AI Project resource. It will override the default giv
 - Type: string
 - Default: `''`
 
-### Parameter: `aiFoundryAiServiceLocation`
+### Parameter: `aiFoundryAiProjectSkuName`
 
-Location for the AI Foundry AI Service resource deployment.
+The SKU of the AI Foundry AI project.
 
 - Required: No
 - Type: string
-- Default: `[parameters('solutionLocation')]`
+- Default: `'Standard'`
+- Allowed:
+  ```Bicep
+  [
+    'Basic'
+    'Free'
+    'Premium'
+    'Standard'
+  ]
+  ```
 
 ### Parameter: `aiFoundryAiServicesContentUnderstandingResourceName`
 
@@ -316,9 +355,39 @@ The name of the AI Foundry AI Services Content Understanding resource. It will o
 - Type: string
 - Default: `''`
 
+### Parameter: `aiFoundryAiServicesContentUnderstandingSkuName`
+
+The SKU of the AI Foundry AI Services account. Use 'Get-AzCognitiveServicesAccountSku' to determine a valid combinations of 'kind' and 'SKU' for your Azure region.
+
+- Required: No
+- Type: string
+- Default: `'S0'`
+- Allowed:
+  ```Bicep
+  [
+    'C2'
+    'C3'
+    'C4'
+    'F0'
+    'F1'
+    'S'
+    'S0'
+    'S1'
+    'S10'
+    'S2'
+    'S3'
+    'S4'
+    'S5'
+    'S6'
+    'S7'
+    'S8'
+    'S9'
+  ]
+  ```
+
 ### Parameter: `aiFoundryAIServicesGptModelDeploymentCapacity`
 
-Capacity of the GPT deployment. You can increase this, but capacity is limited per model/region, so you will get errors if you go over. [Quotas link](https://learn.microsoft.com/en-us/azure/ai-services/openai/quotas-limits).
+Capacity of the GPT model to deploy in the AI Foundry AI Services account. Capacity is limited per model/region, so you will get errors if you go over. [Quotas link](https://learn.microsoft.com/azure/ai-services/openai/quotas-limits).
 
 - Required: No
 - Type: int
@@ -327,7 +396,7 @@ Capacity of the GPT deployment. You can increase this, but capacity is limited p
 
 ### Parameter: `aiFoundryAIServicesGptModelDeploymentType`
 
-GPT model deployment type.
+GPT model deployment type of the AI Foundry AI Services account.
 
 - Required: No
 - Type: string
@@ -343,7 +412,7 @@ GPT model deployment type.
 
 ### Parameter: `aiFoundryAIServicesGptModelName`
 
-Name of the GPT model to deploy.
+Name of the GPT model to deploy in the AI Foundry AI Services account.
 
 - Required: No
 - Type: string
@@ -358,9 +427,9 @@ Name of the GPT model to deploy.
   ```
 - MinValue: 10
 
-### Parameter: `aiFoundryAiServicesProjectLocation`
+### Parameter: `aiFoundryAiServicesLocation`
 
-The location of the AI Foundry AI Services Project.
+Location for the AI Foundry AI Service resource deployment.
 
 - Required: No
 - Type: string
@@ -376,9 +445,49 @@ The name of the AI Foundry AI Services resource. It will override the default gi
 - Default: `''`
 - MinValue: 10
 
+### Parameter: `aiFoundryAiServicesSkuName`
+
+The SKU of the AI Foundry AI Services account. Use 'Get-AzCognitiveServicesAccountSku' to determine a valid combinations of 'kind' and 'SKU' for your Azure region.
+
+- Required: No
+- Type: string
+- Default: `'S0'`
+- Allowed:
+  ```Bicep
+  [
+    'C2'
+    'C3'
+    'C4'
+    'F0'
+    'F1'
+    'S'
+    'S0'
+    'S1'
+    'S10'
+    'S2'
+    'S3'
+    'S4'
+    'S5'
+    'S6'
+    'S7'
+    'S8'
+    'S9'
+  ]
+  ```
+- MinValue: 10
+
+### Parameter: `aiFoundryAiServicesTextEmbeddingModelCapacity`
+
+Capacity of the Text Embedding model to deploy in the AI Foundry AI Services account. Capacity is limited per model/region, so you will get errors if you go over. [Quotas link](https://learn.microsoft.com/azure/ai-services/openai/quotas-limits).
+
+- Required: No
+- Type: int
+- Default: `80`
+- MinValue: 10
+
 ### Parameter: `aiFoundryAiServicesTextEmbeddingModelName`
 
-Name of the Text Embedding model to deploy.
+Name of the Text Embedding model to deploy in the AI Foundry AI Services account.
 
 - Required: No
 - Type: string
@@ -409,6 +518,29 @@ The name of the AI Foundry Application Insights resource. It will override the d
 - Default: `''`
 - MinValue: 10
 
+### Parameter: `aiFoundryApplicationInsightsRetentionInDays`
+
+The retention of Application Insights data in days. If empty, Standard will be used.
+
+- Required: No
+- Type: int
+- Default: `30`
+- Allowed:
+  ```Bicep
+  [
+    30
+    60
+    90
+    120
+    180
+    270
+    365
+    550
+    730
+  ]
+  ```
+- MinValue: 10
+
 ### Parameter: `aiFoundryContainerRegistryLocation`
 
 Location for the AI Foundry Container Registry resource deployment.
@@ -425,6 +557,23 @@ The name of the AI Foundry Container Registry resource. It will override the def
 - Required: No
 - Type: string
 - Default: `''`
+- MinValue: 10
+
+### Parameter: `aiFoundryContainerRegistrySkuName`
+
+The SKU for the AI Foundry Container Registry. If empty, Premium will be used.
+
+- Required: No
+- Type: string
+- Default: `'Premium'`
+- Allowed:
+  ```Bicep
+  [
+    'Basic'
+    'Premium'
+    'Standard'
+  ]
+  ```
 - MinValue: 10
 
 ### Parameter: `aiFoundrySearchServiceLocation`
@@ -445,6 +594,27 @@ The name of the AI Foundry Search Service resource. It will override the default
 - Default: `''`
 - MinValue: 10
 
+### Parameter: `aiFoundrySearchServiceSkuName`
+
+The SKU of the AI Foundry Search Service account.
+
+- Required: No
+- Type: string
+- Default: `'basic'`
+- Allowed:
+  ```Bicep
+  [
+    'basic'
+    'free'
+    'standard'
+    'standard2'
+    'standard3'
+    'storage_optimized_l1'
+    'storage_optimized_l2'
+  ]
+  ```
+- MinValue: 10
+
 ### Parameter: `aiFoundryStorageAccountLocation`
 
 Location for the AI Foundry Storage Account resource deployment.
@@ -461,6 +631,26 @@ The name of the AI Foundry Storage Account resource. It will override the defaul
 - Required: No
 - Type: string
 - Default: `''`
+- MinValue: 10
+
+### Parameter: `aiFoundryStorageAccountSkuName`
+
+The SKU for the AI Foundry Storage Account. If empty, Standard_LRS will be used.
+
+- Required: No
+- Type: string
+- Default: `'Standard_LRS'`
+- Allowed:
+  ```Bicep
+  [
+    'Premium_LRS'
+    'Premium_ZRS'
+    'Standard_GRS'
+    'Standard_LRS'
+    'Standard_RAGRS'
+    'Standard_ZRS'
+  ]
+  ```
 - MinValue: 10
 
 ### Parameter: `cosmosDbAccountLocation`
@@ -488,15 +678,6 @@ Secondary location for databases creation.
 - Required: No
 - Type: string
 - Default: `'East US 2'`
-- MinValue: 10
-
-### Parameter: `embeddingDeploymentCapacity`
-
-Capacity of the Embedding Model deployment.
-
-- Required: No
-- Type: int
-- Default: `80`
 - MinValue: 10
 
 ### Parameter: `enableTelemetry`
@@ -571,6 +752,22 @@ Docker image version to use for all deployed containers (functions and web app).
 - Default: `'latest'`
 - MinValue: 10
 
+### Parameter: `keyVaultCreateMode`
+
+The Key Vault create mode. Indicates whether the vault need to be recovered from purge or not. If empty, default will be used.
+
+- Required: No
+- Type: string
+- Default: `'default'`
+- Allowed:
+  ```Bicep
+  [
+    'default'
+    'recover'
+  ]
+  ```
+- MinValue: 10
+
 ### Parameter: `keyVaultLocation`
 
 Location for the Key Vault resource deployment.
@@ -578,6 +775,15 @@ Location for the Key Vault resource deployment.
 - Required: No
 - Type: string
 - Default: `[parameters('solutionLocation')]`
+- MinValue: 10
+
+### Parameter: `keyVaultPurgeProtectionEnabled`
+
+If set to true, The Key Vault purge protection will be enabled. If empty, it will be set to false.
+
+- Required: No
+- Type: bool
+- Default: `False`
 - MinValue: 10
 
 ### Parameter: `keyVaultResourceName`
@@ -589,6 +795,158 @@ The name of the Key Vault resource. It will override the default given name.
 - Default: `''`
 - MinValue: 10
 
+### Parameter: `keyVaultRoleAssignments`
+
+Array of role assignments to include in the Key Vault.
+
+- Required: No
+- Type: array
+- Default: `[]`
+- MinValue: 10
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-keyvaultroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-keyvaultroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-keyvaultroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-keyvaultroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-keyvaultroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-keyvaultroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-keyvaultroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
+| [`principalType`](#parameter-keyvaultroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `keyVaultRoleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+- MinValue: 10
+
+### Parameter: `keyVaultRoleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
+- MinValue: 10
+
+### Parameter: `keyVaultRoleAssignments.condition`
+
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
+
+- Required: No
+- Type: string
+- MinValue: 10
+
+### Parameter: `keyVaultRoleAssignments.conditionVersion`
+
+Version of the condition.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+- MinValue: 10
+
+### Parameter: `keyVaultRoleAssignments.delegatedManagedIdentityResourceId`
+
+The Resource Id of the delegated managed identity resource.
+
+- Required: No
+- Type: string
+- MinValue: 10
+
+### Parameter: `keyVaultRoleAssignments.description`
+
+The description of the role assignment.
+
+- Required: No
+- Type: string
+- MinValue: 10
+
+### Parameter: `keyVaultRoleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+- MinValue: 10
+
+### Parameter: `keyVaultRoleAssignments.principalType`
+
+The principal type of the assigned principal ID.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
+- MinValue: 10
+
+### Parameter: `keyVaultSku`
+
+The SKU for the Key Vault. If empty, standard will be used.
+
+- Required: No
+- Type: string
+- Default: `'standard'`
+- Allowed:
+  ```Bicep
+  [
+    'premium'
+    'standard'
+  ]
+  ```
+- MinValue: 10
+
+### Parameter: `keyVaultSoftDeleteEnabled`
+
+If set to true, The Key Vault soft delete will be enabled. If empty, it will be set to false.
+
+- Required: No
+- Type: bool
+- Default: `False`
+- MinValue: 10
+
+### Parameter: `keyVaultSoftDeleteRetentionInDays`
+
+The number of days to retain the soft deleted vault. If empty, it will be set to 7.
+
+- Required: No
+- Type: int
+- Default: `7`
+- MinValue: 7
+- MaxValue: 90
+
+### Parameter: `logAnalyticsWorkspaceDataRetentionInDays`
+
+The number of days to retain the data in the Log Analytics Workspace. If empty, it will be set to 30 days.
+
+- Required: No
+- Type: int
+- Default: `30`
+- MinValue: 0
+- MaxValue: 730
+
 ### Parameter: `logAnalyticsWorkspaceLocation`
 
 Location for the Log Analytics Workspace resource deployment.
@@ -596,7 +954,8 @@ Location for the Log Analytics Workspace resource deployment.
 - Required: No
 - Type: string
 - Default: `[parameters('solutionLocation')]`
-- MinValue: 10
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `logAnalyticsWorkspaceResourceName`
 
@@ -605,7 +964,31 @@ The name of the Log Analytics Workspace resource. It will override the default g
 - Required: No
 - Type: string
 - Default: `''`
-- MinValue: 10
+- MinValue: 0
+- MaxValue: 730
+
+### Parameter: `logAnalyticsWorkspaceSkuName`
+
+The SKU for the Log Analytics Workspace. If empty, PerGB2018 will be used.
+
+- Required: No
+- Type: string
+- Default: `'PerGB2018'`
+- Allowed:
+  ```Bicep
+  [
+    'CapacityReservation'
+    'Free'
+    'LACluster'
+    'PerGB2018'
+    'PerNode'
+    'Premium'
+    'Standalone'
+    'Standard'
+  ]
+  ```
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `managedIdentityLocation`
 
@@ -614,7 +997,8 @@ Location for the Managed Identity resource deployment.
 - Required: No
 - Type: string
 - Default: `[parameters('solutionLocation')]`
-- MinValue: 10
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `managedIdentityResourceName`
 
@@ -623,7 +1007,8 @@ The name of the Managed Identity resource. It will override the default given na
 - Required: No
 - Type: string
 - Default: `''`
-- MinValue: 10
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `scriptCopyDataLocation`
 
@@ -632,7 +1017,8 @@ Location for the Script Copy Data resource deployment.
 - Required: No
 - Type: string
 - Default: `[parameters('solutionLocation')]`
-- MinValue: 10
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `scriptCopyDataResourceName`
 
@@ -641,7 +1027,8 @@ The name of the Script Copy Data resource. It will override the default given na
 - Required: No
 - Type: string
 - Default: `''`
-- MinValue: 10
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `scriptIndexDataLocation`
 
@@ -650,7 +1037,8 @@ Location for the Script Index Data resource deployment.
 - Required: No
 - Type: string
 - Default: `[parameters('solutionLocation')]`
-- MinValue: 10
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `scriptIndexDataResourceName`
 
@@ -659,7 +1047,8 @@ The name of the Script Index Data resource. It will override the default given n
 - Required: No
 - Type: string
 - Default: `''`
-- MinValue: 10
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `solutionLocation`
 
@@ -668,7 +1057,8 @@ Location for the solution deployment. Defaulted to the resource group location.
 - Required: No
 - Type: string
 - Default: `'East US'`
-- MinValue: 10
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `sqlServerLocation`
 
@@ -677,7 +1067,8 @@ Location for the SQL Server resource deployment.
 - Required: No
 - Type: string
 - Default: `[parameters('databasesLocation')]`
-- MinValue: 10
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `sqlServerResourceName`
 
@@ -686,7 +1077,8 @@ The name of the SQL Server resource. It will override the default given name.
 - Required: No
 - Type: string
 - Default: `''`
-- MinValue: 10
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `storageAccountLocation`
 
@@ -695,7 +1087,8 @@ Location for the Storage Account resource deployment.
 - Required: No
 - Type: string
 - Default: `[parameters('solutionLocation')]`
-- MinValue: 10
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `storageAccountResourceName`
 
@@ -704,7 +1097,8 @@ The name of the Storage Account resource. It will override the default given nam
 - Required: No
 - Type: string
 - Default: `''`
-- MinValue: 10
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `webAppLocation`
 
@@ -713,7 +1107,8 @@ Location for the Web App resource deployment.
 - Required: No
 - Type: string
 - Default: `[parameters('solutionLocation')]`
-- MinValue: 10
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `webAppResourceName`
 
@@ -722,7 +1117,8 @@ The name of the Web App resource.
 - Required: No
 - Type: string
 - Default: `''`
-- MinValue: 10
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `webAppServerFarmLocation`
 
@@ -731,7 +1127,8 @@ The location for the Web App Server Farm. Defaulted to the solution location.
 - Required: No
 - Type: string
 - Default: `[parameters('solutionLocation')]`
-- MinValue: 10
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `webAppServerFarmResourceName`
 
@@ -740,16 +1137,18 @@ The name of the Web App Server Farm resource. It will override the default given
 - Required: No
 - Type: string
 - Default: `''`
-- MinValue: 10
+- MinValue: 0
+- MaxValue: 730
 
 ### Parameter: `webAppServerFarmSku`
 
-The SKU for the web app. If empty, aiFoundryAiServiceContentUnderstandingLocation will be used.
+The SKU for the web app. If empty, aiFoundryAiServicesContentUnderstandingLocation will be used.
 
 - Required: No
 - Type: string
 - Default: `'B2'`
-- MinValue: 10
+- MinValue: 0
+- MaxValue: 730
 
 ## Outputs
 
@@ -764,21 +1163,21 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/app/managed-environment:0.9.0` | Remote reference |
-| `br/public:avm/res/container-registry/registry:0.8.3` | Remote reference |
-| `br/public:avm/res/document-db/database-account:0.11.0` | Remote reference |
-| `br/public:avm/res/insights/component:0.5.0` | Remote reference |
-| `br/public:avm/res/key-vault/vault:0.11.2` | Remote reference |
-| `br/public:avm/res/machine-learning-services/workspace:0.10.0` | Remote reference |
+| `br/public:avm/res/app/managed-environment:0.10.0` | Remote reference |
+| `br/public:avm/res/container-registry/registry:0.9.1` | Remote reference |
+| `br/public:avm/res/document-db/database-account:0.11.2` | Remote reference |
+| `br/public:avm/res/insights/component:0.6.0` | Remote reference |
+| `br/public:avm/res/key-vault/vault:0.12.1` | Remote reference |
 | `br/public:avm/res/machine-learning-services/workspace:0.10.1` | Remote reference |
 | `br/public:avm/res/managed-identity/user-assigned-identity:0.4.0` | Remote reference |
-| `br/public:avm/res/operational-insights/workspace:0.9.1` | Remote reference |
+| `br/public:avm/res/operational-insights/workspace:0.11.1` | Remote reference |
 | `br/public:avm/res/resources/deployment-script:0.5.1` | Remote reference |
-| `br/public:avm/res/search/search-service:0.9.0` | Remote reference |
-| `br/public:avm/res/sql/server:0.12.2` | Remote reference |
-| `br/public:avm/res/storage/storage-account:0.18.1` | Remote reference |
+| `br/public:avm/res/search/search-service:0.9.1` | Remote reference |
+| `br/public:avm/res/sql/server:0.13.1` | Remote reference |
+| `br/public:avm/res/storage/storage-account:0.18.2` | Remote reference |
 | `br/public:avm/res/web/serverfarm:0.4.1` | Remote reference |
 | `br/public:avm/res/web/site:0.13.3` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 
