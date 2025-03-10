@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "6038017271598459132"
+      "templateHash": "16268650074494181455"
     },
     "name": "Azure Stack HCI Cluster",
     "description": "This module deploys an Azure Stack HCI Cluster on the provided Arc Machines."
@@ -497,25 +497,25 @@
     "KeyVaultSecretNames": {
       "type": "object",
       "properties": {
-        "AzureStackLCMUserCredential": {
+        "azureStackLCMUserCredential": {
           "type": "string",
           "metadata": {
             "description": "Required. The name of the Azure Stack HCI LCM user credential secret."
           }
         },
-        "LocalAdminCredential": {
+        "localAdminCredential": {
           "type": "string",
           "metadata": {
             "description": "Required. The name of the Azure Stack HCI local admin credential secret."
           }
         },
-        "DefaultARBApplication": {
+        "defaultARBApplication": {
           "type": "string",
           "metadata": {
             "description": "Required. The name of the Azure Stack HCI default ARB application secret."
           }
         },
-        "WitnessStorageKey": {
+        "witnessStorageKey": {
           "type": "string",
           "metadata": {
             "description": "Required. The name of the Azure Stack HCI witness storage key secret."
@@ -754,10 +754,10 @@
     "keyVaultSecretNames": {
       "$ref": "#/definitions/KeyVaultSecretNames",
       "defaultValue": {
-        "AzureStackLCMUserCredential": "AzureStackLCMUserCredential",
-        "LocalAdminCredential": "LocalAdminCredential",
-        "DefaultARBApplication": "DefaultARBApplication",
-        "WitnessStorageKey": "WitnessStorageKey"
+        "azureStackLCMUserCredential": "AzureStackLCMUserCredential",
+        "localAdminCredential": "LocalAdminCredential",
+        "defaultARBApplication": "DefaultARBApplication",
+        "witnessStorageKey": "WitnessStorageKey"
       },
       "metadata": {
         "description": "Optional. Key vault secret names mapping."
@@ -809,7 +809,8 @@
       "Azure Stack HCI Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'bda0d508-adf1-4af0-9c28-88919fc3ae06')]",
       "Windows Admin Center Administrator Login": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a6333a3e-0164-44c3-b281-7a577aff287f')]"
     },
-    "sortedDeploymentOperations": "[if(not(empty(parameters('deploymentOperations'))), sort(parameters('deploymentOperations'), lambda('a', 'b', greater(lambdaVariables('a'), lambdaVariables('b')))), createArray())]"
+    "sortedDeploymentOperations": "[if(not(empty(parameters('deploymentOperations'))), sort(parameters('deploymentOperations'), lambda('a', 'b', greater(lambdaVariables('a'), lambdaVariables('b')))), createArray())]",
+    "enableReferencedModulesTelemetry": false
   },
   "resources": {
     "witnessStorageAccount::blobService": {
@@ -920,11 +921,14 @@
           "name": {
             "value": "[parameters('deploymentSettings').keyVaultName]"
           },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
+          },
           "secrets": {
             "value": [
               {
                 "contentType": "[parameters('azureStackLCMUserCredentialContentType')]",
-                "name": "[parameters('keyVaultSecretNames').AzureStackLCMUserCredential]",
+                "name": "[parameters('keyVaultSecretNames').azureStackLCMUserCredential]",
                 "value": "[base64(format('{0}:{1}', parameters('deploymentUser'), parameters('deploymentUserPassword')))]",
                 "tags": "[parameters('azureStackLCMUserCredentialTags')]",
                 "attributes": {
@@ -933,7 +937,7 @@
               },
               {
                 "contentType": "[parameters('localAdminCredentialContentType')]",
-                "name": "[parameters('keyVaultSecretNames').LocalAdminCredential]",
+                "name": "[parameters('keyVaultSecretNames').localAdminCredential]",
                 "value": "[base64(format('{0}:{1}', parameters('localAdminUser'), parameters('localAdminPassword')))]",
                 "tags": "[parameters('localAdminCredentialTags')]",
                 "attributes": {
@@ -942,7 +946,7 @@
               },
               {
                 "contentType": "[parameters('witnessStoragekeyContentType')]",
-                "name": "[parameters('keyVaultSecretNames').WitnessStorageKey]",
+                "name": "[parameters('keyVaultSecretNames').witnessStorageKey]",
                 "value": "[base64(listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('deploymentSettings').clusterWitnessStorageAccountName), '2023-01-01').keys[0].value)]",
                 "tags": "[parameters('witnessStoragekeyTags')]",
                 "attributes": {
@@ -951,7 +955,7 @@
               },
               {
                 "contentType": "[parameters('defaultARBApplicationContentType')]",
-                "name": "[parameters('keyVaultSecretNames').DefaultARBApplication]",
+                "name": "[parameters('keyVaultSecretNames').defaultARBApplication]",
                 "value": "[base64(format('{0}:{1}', parameters('servicePrincipalId'), parameters('servicePrincipalSecret')))]",
                 "tags": "[parameters('defaultARBApplicationTags')]",
                 "attributes": {

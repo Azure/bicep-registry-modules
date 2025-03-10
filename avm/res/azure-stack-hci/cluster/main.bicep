@@ -73,10 +73,10 @@ param defaultARBApplicationContentType string = 'Secret'
 
 @description('Optional. Key vault secret names mapping.')
 param keyVaultSecretNames KeyVaultSecretNames = {
-  AzureStackLCMUserCredential: 'AzureStackLCMUserCredential'
-  LocalAdminCredential: 'LocalAdminCredential'
-  DefaultARBApplication: 'DefaultARBApplication'
-  WitnessStorageKey: 'WitnessStorageKey'
+  azureStackLCMUserCredential: 'AzureStackLCMUserCredential'
+  localAdminCredential: 'LocalAdminCredential'
+  defaultARBApplication: 'DefaultARBApplication'
+  witnessStorageKey: 'WitnessStorageKey'
 }
 
 @description('Optional. Tags of azure stack LCM user credential.')
@@ -201,15 +201,18 @@ resource witnessStorageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = 
   }
 }
 
+var enableReferencedModulesTelemetry = false
+
 module keyVault 'br/public:avm/res/key-vault/vault:0.12.1' = if (!useSharedKeyVault) {
   name: deploymentSettings!.keyVaultName
   scope: resourceGroup()
   params: {
     name: deploymentSettings!.keyVaultName
+    enableTelemetry: enableReferencedModulesTelemetry
     secrets: [
       {
         contentType: azureStackLCMUserCredentialContentType
-        name: keyVaultSecretNames.AzureStackLCMUserCredential
+        name: keyVaultSecretNames.azureStackLCMUserCredential
         value: base64('${deploymentUser}:${deploymentUserPassword}')
         tags: azureStackLCMUserCredentialTags
         attributes: {
@@ -218,7 +221,7 @@ module keyVault 'br/public:avm/res/key-vault/vault:0.12.1' = if (!useSharedKeyVa
       }
       {
         contentType: localAdminCredentialContentType
-        name: keyVaultSecretNames.LocalAdminCredential
+        name: keyVaultSecretNames.localAdminCredential
         value: base64('${localAdminUser}:${localAdminPassword}')
         tags: localAdminCredentialTags
         attributes: {
@@ -227,7 +230,7 @@ module keyVault 'br/public:avm/res/key-vault/vault:0.12.1' = if (!useSharedKeyVa
       }
       {
         contentType: witnessStoragekeyContentType
-        name: keyVaultSecretNames.WitnessStorageKey
+        name: keyVaultSecretNames.witnessStorageKey
         value: base64(witnessStorageAccount.listKeys().keys[0].value)
         tags: witnessStoragekeyTags
         attributes: {
@@ -236,7 +239,7 @@ module keyVault 'br/public:avm/res/key-vault/vault:0.12.1' = if (!useSharedKeyVa
       }
       {
         contentType: defaultARBApplicationContentType
-        name: keyVaultSecretNames.DefaultARBApplication
+        name: keyVaultSecretNames.defaultARBApplication
         value: base64('${servicePrincipalId}:${servicePrincipalSecret}')
         tags: defaultARBApplicationTags
         attributes: {
@@ -543,11 +546,11 @@ type deploymentSettingsType = {
 @description('Key vault secret names interface')
 type KeyVaultSecretNames = {
   @description('Required. The name of the Azure Stack HCI LCM user credential secret.')
-  AzureStackLCMUserCredential: string
+  azureStackLCMUserCredential: string
   @description('Required. The name of the Azure Stack HCI local admin credential secret.')
-  LocalAdminCredential: string
+  localAdminCredential: string
   @description('Required. The name of the Azure Stack HCI default ARB application secret.')
-  DefaultARBApplication: string
+  defaultARBApplication: string
   @description('Required. The name of the Azure Stack HCI witness storage key secret.')
-  WitnessStorageKey: string
+  witnessStorageKey: string
 }

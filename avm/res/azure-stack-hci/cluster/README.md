@@ -1671,10 +1671,10 @@ Key vault secret names mapping.
 - Default:
   ```Bicep
   {
-      AzureStackLCMUserCredential: 'AzureStackLCMUserCredential'
-      DefaultARBApplication: 'DefaultARBApplication'
-      LocalAdminCredential: 'LocalAdminCredential'
-      WitnessStorageKey: 'WitnessStorageKey'
+      azureStackLCMUserCredential: 'AzureStackLCMUserCredential'
+      defaultARBApplication: 'DefaultARBApplication'
+      localAdminCredential: 'LocalAdminCredential'
+      witnessStorageKey: 'WitnessStorageKey'
   }
   ```
 
@@ -1682,33 +1682,33 @@ Key vault secret names mapping.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`AzureStackLCMUserCredential`](#parameter-keyvaultsecretnamesazurestacklcmusercredential) | string | The name of the Azure Stack HCI LCM user credential secret. |
-| [`DefaultARBApplication`](#parameter-keyvaultsecretnamesdefaultarbapplication) | string | The name of the Azure Stack HCI default ARB application secret. |
-| [`LocalAdminCredential`](#parameter-keyvaultsecretnameslocaladmincredential) | string | The name of the Azure Stack HCI local admin credential secret. |
-| [`WitnessStorageKey`](#parameter-keyvaultsecretnameswitnessstoragekey) | string | The name of the Azure Stack HCI witness storage key secret. |
+| [`azureStackLCMUserCredential`](#parameter-keyvaultsecretnamesazurestacklcmusercredential) | string | The name of the Azure Stack HCI LCM user credential secret. |
+| [`defaultARBApplication`](#parameter-keyvaultsecretnamesdefaultarbapplication) | string | The name of the Azure Stack HCI default ARB application secret. |
+| [`localAdminCredential`](#parameter-keyvaultsecretnameslocaladmincredential) | string | The name of the Azure Stack HCI local admin credential secret. |
+| [`witnessStorageKey`](#parameter-keyvaultsecretnameswitnessstoragekey) | string | The name of the Azure Stack HCI witness storage key secret. |
 
-### Parameter: `keyVaultSecretNames.AzureStackLCMUserCredential`
+### Parameter: `keyVaultSecretNames.azureStackLCMUserCredential`
 
 The name of the Azure Stack HCI LCM user credential secret.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `keyVaultSecretNames.DefaultARBApplication`
+### Parameter: `keyVaultSecretNames.defaultARBApplication`
 
 The name of the Azure Stack HCI default ARB application secret.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `keyVaultSecretNames.LocalAdminCredential`
+### Parameter: `keyVaultSecretNames.localAdminCredential`
 
 The name of the Azure Stack HCI local admin credential secret.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `keyVaultSecretNames.WitnessStorageKey`
+### Parameter: `keyVaultSecretNames.witnessStorageKey`
 
 The name of the Azure Stack HCI witness storage key secret.
 
