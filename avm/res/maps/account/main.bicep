@@ -36,6 +36,10 @@ import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/av
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyWithAutoRotateType?
 
+@description('Optional. Enable infrastructure encryption (double encryption). Note, this setting requires the configuration of Customer-Managed-Keys (CMK) via the corresponding module parameters.')
+@allowed(['enabled', 'disabled'])
+param requireInfrastructureEncryption string = 'disabled'
+
 import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
@@ -150,6 +154,7 @@ resource mapsAccount 'Microsoft.Maps/accounts@2024-07-01-preview' = {
   properties: {
     encryption: !empty(customerManagedKey)
       ? {
+          infrastructureEncryption: requireInfrastructureEncryption
           customerManagedKeyEncryption: {
             keyEncryptionKeyIdentity: {
               userAssignedIdentityResourceId: !empty(customerManagedKey.?userAssignedIdentityResourceId)
