@@ -991,5 +991,5 @@ module rbac 'modules/rbac-cosmosdb-contributor.bicep' = {
 @description('The resource group the resources were deployed into.')
 output resourceGroupName string = resourceGroup().name
 
-@description('The url of the webapp where the deployed Conversation Knowledge Mining solution can be accessed')
+@description('The url of the webapp where the deployed Conversation Knowledge Mining solution can be accessed.')
 output webAppUrl string = '${varWebAppResourceName}.azurewebsites.net'

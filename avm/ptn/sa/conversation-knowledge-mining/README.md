@@ -756,7 +756,7 @@ The SKU for the web app. If empty, aiFoundryAiServiceContentUnderstandingLocatio
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `resourceGroupName` | string | The resource group the resources were deployed into. |
-| `webAppUrl` | string | The url of the webapp where the deployed Conversation Knowledge Mining solution can be accessed |
+| `webAppUrl` | string | The url of the webapp where the deployed Conversation Knowledge Mining solution can be accessed. |
 
 ## Cross-referenced modules
 
