@@ -165,7 +165,7 @@ resource mapsAccount 'Microsoft.Maps/accounts@2024-07-01-preview' = {
                 ? 'userAssignedIdentity'
                 : 'systemAssignedIdentity'
             }
-            keyEncryptionKeyUrl: cMKKeyVault.properties.vaultUri
+            keyEncryptionKeyUrl: cMKKeyVault::cMKKey.properties.keyUri
           }
         }
       : null
