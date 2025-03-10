@@ -93,7 +93,7 @@ param solutionLocation string = 'East US'
 @description('Optional. Secondary location for databases creation.')
 @metadata({ azd: { type: 'location' } })
 param databasesLocation string = 'East US 2'
-@description('Optional. The location for the Web App Server Farm. Defaulted to the solution location')
+@description('Optional. The location for the Web App Server Farm. Defaulted to the solution location.')
 @metadata({ azd: { type: 'location' } })
 param webAppServerFarmLocation string = solutionLocation
 @description('Optional. The location of the AI Foundry AI Services Project.')
