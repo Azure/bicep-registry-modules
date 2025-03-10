@@ -242,7 +242,7 @@ param solutionPrefix = 'ckmpoc'
 | [`storageAccountResourceName`](#parameter-storageaccountresourcename) | string | The name of the Storage Account resource. It will override the default given name. |
 | [`webAppLocation`](#parameter-webapplocation) | string | Location for the Web App resource deployment. |
 | [`webAppResourceName`](#parameter-webappresourcename) | string | The name of the Web App resource. |
-| [`webAppServerFarmLocation`](#parameter-webappserverfarmlocation) | string | The location for the Web App Server Farm. Defaulted to the solution location |
+| [`webAppServerFarmLocation`](#parameter-webappserverfarmlocation) | string | The location for the Web App Server Farm. Defaulted to the solution location. |
 | [`webAppServerFarmResourceName`](#parameter-webappserverfarmresourcename) | string | The name of the Web App Server Farm resource. It will override the default given name. |
 | [`webAppServerFarmSku`](#parameter-webappserverfarmsku) | string | The SKU for the web app. If empty, aiFoundryAiServiceContentUnderstandingLocation will be used. |
 
@@ -726,7 +726,7 @@ The name of the Web App resource.
 
 ### Parameter: `webAppServerFarmLocation`
 
-The location for the Web App Server Farm. Defaulted to the solution location
+The location for the Web App Server Farm. Defaulted to the solution location.
 
 - Required: No
 - Type: string
