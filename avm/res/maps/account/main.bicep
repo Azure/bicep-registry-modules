@@ -160,9 +160,10 @@ resource mapsAccount 'Microsoft.Maps/accounts@2024-07-01-preview' = {
               userAssignedIdentityResourceId: !empty(customerManagedKey.?userAssignedIdentityResourceId)
                 ? cMKUserAssignedIdentity.id
                 : null
+
               identityType: !empty(customerManagedKey.?userAssignedIdentityResourceId)
-                ? 'UserAssigned'
-                : 'SystemAssigned'
+                ? 'userAssignedIdentity'
+                : 'systemAssignedIdentity'
             }
             keyEncryptionKeyUrl: cMKKeyVault.properties.vaultUri
           }
