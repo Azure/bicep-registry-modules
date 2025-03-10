@@ -479,6 +479,7 @@ param tags = {
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`locations`](#parameter-locations) | array | List of additional data processing regions for the Maps Account, which may result in requests being processed in another geography. Some features or results may be restricted to specific regions. By default, Maps REST APIs process requests according to the account location or the geographic scope. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
+| [`requireInfrastructureEncryption`](#parameter-requireinfrastructureencryption) | string | Enable infrastructure encryption (double encryption). Note, this setting requires the configuration of Customer-Managed-Keys (CMK) via the corresponding module parameters. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`sku`](#parameter-sku) | string | The SKU of the Maps Account. Default is G2. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
@@ -664,6 +665,21 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 
 - Required: No
 - Type: array
+
+### Parameter: `requireInfrastructureEncryption`
+
+Enable infrastructure encryption (double encryption). Note, this setting requires the configuration of Customer-Managed-Keys (CMK) via the corresponding module parameters.
+
+- Required: No
+- Type: string
+- Default: `'disabled'`
+- Allowed:
+  ```Bicep
+  [
+    'disabled'
+    'enabled'
+  ]
+  ```
 
 ### Parameter: `roleAssignments`
 
