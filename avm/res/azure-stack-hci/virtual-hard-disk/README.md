@@ -47,7 +47,7 @@ module virtualHardDisk 'br/public:avm/res/azure-stack-hci/virtual-hard-disk:<ver
     customLocationResourceId: '<customLocationResourceId>'
     diskSizeGB: 4
     dynamic: false
-    name: 'ashvhdmin001'
+    name: 'ashvdmin1'
     // Non-required parameters
     location: '<location>'
   }
@@ -77,7 +77,7 @@ module virtualHardDisk 'br/public:avm/res/azure-stack-hci/virtual-hard-disk:<ver
       "value": false
     },
     "name": {
-      "value": "ashvhdmin001"
+      "value": "ashvdmin1"
     },
     // Non-required parameters
     "location": {
@@ -101,7 +101,7 @@ using 'br/public:avm/res/azure-stack-hci/virtual-hard-disk:<version>'
 param customLocationResourceId = '<customLocationResourceId>'
 param diskSizeGB = 4
 param dynamic = false
-param name = 'ashvhdmin001'
+param name = 'ashvdmin1'
 // Non-required parameters
 param location = '<location>'
 ```
@@ -126,7 +126,7 @@ module virtualHardDisk 'br/public:avm/res/azure-stack-hci/virtual-hard-disk:<ver
     customLocationResourceId: '<customLocationResourceId>'
     diskSizeGB: 4
     dynamic: true
-    name: 'ashvhdmax001'
+    name: 'ashvdmax1'
     // Non-required parameters
     containerId: '<containerId>'
     enableTelemetry: true
@@ -182,7 +182,7 @@ module virtualHardDisk 'br/public:avm/res/azure-stack-hci/virtual-hard-disk:<ver
       "value": true
     },
     "name": {
-      "value": "ashvhdmax001"
+      "value": "ashvdmax1"
     },
     // Non-required parameters
     "containerId": {
@@ -240,7 +240,7 @@ using 'br/public:avm/res/azure-stack-hci/virtual-hard-disk:<version>'
 param customLocationResourceId = '<customLocationResourceId>'
 param diskSizeGB = 4
 param dynamic = true
-param name = 'ashvhdmax001'
+param name = 'ashvdmax1'
 // Non-required parameters
 param containerId = '<containerId>'
 param enableTelemetry = true
@@ -291,7 +291,7 @@ module virtualHardDisk 'br/public:avm/res/azure-stack-hci/virtual-hard-disk:<ver
     customLocationResourceId: '<customLocationResourceId>'
     diskSizeGB: 4
     dynamic: true
-    name: 'ashvhdwaf001'
+    name: 'ashvdwaf1'
     // Non-required parameters
     location: '<location>'
     tags: {
@@ -326,7 +326,7 @@ module virtualHardDisk 'br/public:avm/res/azure-stack-hci/virtual-hard-disk:<ver
       "value": true
     },
     "name": {
-      "value": "ashvhdwaf001"
+      "value": "ashvdwaf1"
     },
     // Non-required parameters
     "location": {
@@ -357,7 +357,7 @@ using 'br/public:avm/res/azure-stack-hci/virtual-hard-disk:<version>'
 param customLocationResourceId = '<customLocationResourceId>'
 param diskSizeGB = 4
 param dynamic = true
-param name = 'ashvhdwaf001'
+param name = 'ashvdwaf1'
 // Non-required parameters
 param location = '<location>'
 param tags = {
