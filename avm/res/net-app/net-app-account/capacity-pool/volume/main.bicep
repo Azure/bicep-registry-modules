@@ -78,7 +78,7 @@ param subnetResourceId string
 @description('Optional. The export policy rules.')
 param exportPolicy exportPolicyType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
