@@ -15,9 +15,19 @@ This module deploys an Azure Stack HCI Cluster on the provided Arc Machines.
 
 | Resource Type | API Version |
 | :-- | :-- |
+| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.AzureStackHCI/clusters` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AzureStackHCI/clusters) |
 | `Microsoft.AzureStackHCI/clusters/deploymentSettings` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AzureStackHCI/clusters/deploymentSettings) |
+| `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
+| `Microsoft.KeyVault/vaults` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults) |
+| `Microsoft.KeyVault/vaults/accessPolicies` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/accessPolicies) |
+| `Microsoft.KeyVault/vaults/keys` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/keys) |
+| `Microsoft.KeyVault/vaults/secrets` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/secrets) |
+| `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
+| `Microsoft.Storage/storageAccounts` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-01-01/storageAccounts) |
+| `Microsoft.Storage/storageAccounts/blobServices` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-01-01/storageAccounts/blobServices) |
 
 ## Usage examples
 
@@ -28,7 +38,8 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/azure-stack-hci/cluster:<version>`.
 
 - [Deploy Azure Stack HCI Cluster in Azure with a 2 node switched configuration](#example-1-deploy-azure-stack-hci-cluster-in-azure-with-a-2-node-switched-configuration)
-- [Deploy Azure Stack HCI Cluster in Azure with a 2 node switched configuration WAF aligned](#example-2-deploy-azure-stack-hci-cluster-in-azure-with-a-2-node-switched-configuration-waf-aligned)
+- [Deploy Azure Stack HCI Cluster in Azure with creating key vault](#example-2-deploy-azure-stack-hci-cluster-in-azure-with-creating-key-vault)
+- [Deploy Azure Stack HCI Cluster in Azure with a 2 node switched configuration WAF aligned](#example-3-deploy-azure-stack-hci-cluster-in-azure-with-a-2-node-switched-configuration-waf-aligned)
 
 ### Example 1: _Deploy Azure Stack HCI Cluster in Azure with a 2 node switched configuration_
 
@@ -421,7 +432,403 @@ param deploymentSettings = {
 </details>
 <p>
 
-### Example 2: _Deploy Azure Stack HCI Cluster in Azure with a 2 node switched configuration WAF aligned_
+### Example 2: _Deploy Azure Stack HCI Cluster in Azure with creating key vault_
+
+This test deploys an Azure VM with creating key vault, validates the cluster configuration, and then deploys the cluster.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
+  name: 'clusterDeployment'
+  params: {
+    // Required parameters
+    name: '<name>'
+    // Non-required parameters
+    deploymentSettings: {
+      clusterNodeNames: '<clusterNodeNames>'
+      clusterWitnessStorageAccountName: '<clusterWitnessStorageAccountName>'
+      customLocationName: 'ashckv-location'
+      defaultGateway: '172.20.0.1'
+      deploymentPrefix: '<deploymentPrefix>'
+      dnsServers: [
+        '172.20.0.1'
+      ]
+      domainFqdn: 'hci.local'
+      domainOUPath: '<domainOUPath>'
+      enableStorageAutoIp: true
+      endingIPAddress: '172.20.0.7'
+      keyVaultName: '<keyVaultName>'
+      networkIntents: [
+        {
+          adapter: [
+            'mgmt'
+          ]
+          adapterPropertyOverrides: {
+            jumboPacket: '9014'
+            networkDirect: 'Disabled'
+            networkDirectTechnology: 'iWARP'
+          }
+          name: 'management'
+          overrideAdapterProperty: true
+          overrideQosPolicy: false
+          overrideVirtualSwitchConfiguration: false
+          qosPolicyOverrides: {
+            bandwidthPercentage_SMB: '50'
+            priorityValue8021Action_Cluster: '7'
+            priorityValue8021Action_SMB: '3'
+          }
+          trafficType: [
+            'Management'
+          ]
+          virtualSwitchConfigurationOverrides: {
+            enableIov: 'true'
+            loadBalancingAlgorithm: 'Dynamic'
+          }
+        }
+        {
+          adapter: [
+            'comp0'
+            'comp1'
+          ]
+          adapterPropertyOverrides: {
+            jumboPacket: '9014'
+            networkDirect: 'Disabled'
+            networkDirectTechnology: 'iWARP'
+          }
+          name: 'compute'
+          overrideAdapterProperty: true
+          overrideQosPolicy: false
+          overrideVirtualSwitchConfiguration: false
+          qosPolicyOverrides: {
+            bandwidthPercentage_SMB: '50'
+            priorityValue8021Action_Cluster: '7'
+            priorityValue8021Action_SMB: '3'
+          }
+          trafficType: [
+            'Compute'
+          ]
+          virtualSwitchConfigurationOverrides: {
+            enableIov: 'true'
+            loadBalancingAlgorithm: 'Dynamic'
+          }
+        }
+        {
+          adapter: [
+            'smb0'
+            'smb1'
+          ]
+          adapterPropertyOverrides: {
+            jumboPacket: '9014'
+            networkDirect: 'Disabled'
+            networkDirectTechnology: 'iWARP'
+          }
+          name: 'storage'
+          overrideAdapterProperty: true
+          overrideQosPolicy: true
+          overrideVirtualSwitchConfiguration: false
+          qosPolicyOverrides: {
+            bandwidthPercentage_SMB: '50'
+            priorityValue8021Action_Cluster: '7'
+            priorityValue8021Action_SMB: '3'
+          }
+          trafficType: [
+            'Storage'
+          ]
+          virtualSwitchConfigurationOverrides: {
+            enableIov: 'true'
+            loadBalancingAlgorithm: 'Dynamic'
+          }
+        }
+      ]
+      startingIPAddress: '172.20.0.2'
+      storageConnectivitySwitchless: false
+      storageNetworks: [
+        {
+          adapterName: 'smb0'
+          vlan: '711'
+        }
+        {
+          adapterName: 'smb1'
+          vlan: '712'
+        }
+      ]
+      subnetMask: '255.255.255.0'
+    }
+    useSharedKeyVault: false
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "<name>"
+    },
+    // Non-required parameters
+    "deploymentSettings": {
+      "value": {
+        "clusterNodeNames": "<clusterNodeNames>",
+        "clusterWitnessStorageAccountName": "<clusterWitnessStorageAccountName>",
+        "customLocationName": "ashckv-location",
+        "defaultGateway": "172.20.0.1",
+        "deploymentPrefix": "<deploymentPrefix>",
+        "dnsServers": [
+          "172.20.0.1"
+        ],
+        "domainFqdn": "hci.local",
+        "domainOUPath": "<domainOUPath>",
+        "enableStorageAutoIp": true,
+        "endingIPAddress": "172.20.0.7",
+        "keyVaultName": "<keyVaultName>",
+        "networkIntents": [
+          {
+            "adapter": [
+              "mgmt"
+            ],
+            "adapterPropertyOverrides": {
+              "jumboPacket": "9014",
+              "networkDirect": "Disabled",
+              "networkDirectTechnology": "iWARP"
+            },
+            "name": "management",
+            "overrideAdapterProperty": true,
+            "overrideQosPolicy": false,
+            "overrideVirtualSwitchConfiguration": false,
+            "qosPolicyOverrides": {
+              "bandwidthPercentage_SMB": "50",
+              "priorityValue8021Action_Cluster": "7",
+              "priorityValue8021Action_SMB": "3"
+            },
+            "trafficType": [
+              "Management"
+            ],
+            "virtualSwitchConfigurationOverrides": {
+              "enableIov": "true",
+              "loadBalancingAlgorithm": "Dynamic"
+            }
+          },
+          {
+            "adapter": [
+              "comp0",
+              "comp1"
+            ],
+            "adapterPropertyOverrides": {
+              "jumboPacket": "9014",
+              "networkDirect": "Disabled",
+              "networkDirectTechnology": "iWARP"
+            },
+            "name": "compute",
+            "overrideAdapterProperty": true,
+            "overrideQosPolicy": false,
+            "overrideVirtualSwitchConfiguration": false,
+            "qosPolicyOverrides": {
+              "bandwidthPercentage_SMB": "50",
+              "priorityValue8021Action_Cluster": "7",
+              "priorityValue8021Action_SMB": "3"
+            },
+            "trafficType": [
+              "Compute"
+            ],
+            "virtualSwitchConfigurationOverrides": {
+              "enableIov": "true",
+              "loadBalancingAlgorithm": "Dynamic"
+            }
+          },
+          {
+            "adapter": [
+              "smb0",
+              "smb1"
+            ],
+            "adapterPropertyOverrides": {
+              "jumboPacket": "9014",
+              "networkDirect": "Disabled",
+              "networkDirectTechnology": "iWARP"
+            },
+            "name": "storage",
+            "overrideAdapterProperty": true,
+            "overrideQosPolicy": true,
+            "overrideVirtualSwitchConfiguration": false,
+            "qosPolicyOverrides": {
+              "bandwidthPercentage_SMB": "50",
+              "priorityValue8021Action_Cluster": "7",
+              "priorityValue8021Action_SMB": "3"
+            },
+            "trafficType": [
+              "Storage"
+            ],
+            "virtualSwitchConfigurationOverrides": {
+              "enableIov": "true",
+              "loadBalancingAlgorithm": "Dynamic"
+            }
+          }
+        ],
+        "startingIPAddress": "172.20.0.2",
+        "storageConnectivitySwitchless": false,
+        "storageNetworks": [
+          {
+            "adapterName": "smb0",
+            "vlan": "711"
+          },
+          {
+            "adapterName": "smb1",
+            "vlan": "712"
+          }
+        ],
+        "subnetMask": "255.255.255.0"
+      }
+    },
+    "useSharedKeyVault": {
+      "value": false
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/azure-stack-hci/cluster:<version>'
+
+// Required parameters
+param name = '<name>'
+// Non-required parameters
+param deploymentSettings = {
+  clusterNodeNames: '<clusterNodeNames>'
+  clusterWitnessStorageAccountName: '<clusterWitnessStorageAccountName>'
+  customLocationName: 'ashckv-location'
+  defaultGateway: '172.20.0.1'
+  deploymentPrefix: '<deploymentPrefix>'
+  dnsServers: [
+    '172.20.0.1'
+  ]
+  domainFqdn: 'hci.local'
+  domainOUPath: '<domainOUPath>'
+  enableStorageAutoIp: true
+  endingIPAddress: '172.20.0.7'
+  keyVaultName: '<keyVaultName>'
+  networkIntents: [
+    {
+      adapter: [
+        'mgmt'
+      ]
+      adapterPropertyOverrides: {
+        jumboPacket: '9014'
+        networkDirect: 'Disabled'
+        networkDirectTechnology: 'iWARP'
+      }
+      name: 'management'
+      overrideAdapterProperty: true
+      overrideQosPolicy: false
+      overrideVirtualSwitchConfiguration: false
+      qosPolicyOverrides: {
+        bandwidthPercentage_SMB: '50'
+        priorityValue8021Action_Cluster: '7'
+        priorityValue8021Action_SMB: '3'
+      }
+      trafficType: [
+        'Management'
+      ]
+      virtualSwitchConfigurationOverrides: {
+        enableIov: 'true'
+        loadBalancingAlgorithm: 'Dynamic'
+      }
+    }
+    {
+      adapter: [
+        'comp0'
+        'comp1'
+      ]
+      adapterPropertyOverrides: {
+        jumboPacket: '9014'
+        networkDirect: 'Disabled'
+        networkDirectTechnology: 'iWARP'
+      }
+      name: 'compute'
+      overrideAdapterProperty: true
+      overrideQosPolicy: false
+      overrideVirtualSwitchConfiguration: false
+      qosPolicyOverrides: {
+        bandwidthPercentage_SMB: '50'
+        priorityValue8021Action_Cluster: '7'
+        priorityValue8021Action_SMB: '3'
+      }
+      trafficType: [
+        'Compute'
+      ]
+      virtualSwitchConfigurationOverrides: {
+        enableIov: 'true'
+        loadBalancingAlgorithm: 'Dynamic'
+      }
+    }
+    {
+      adapter: [
+        'smb0'
+        'smb1'
+      ]
+      adapterPropertyOverrides: {
+        jumboPacket: '9014'
+        networkDirect: 'Disabled'
+        networkDirectTechnology: 'iWARP'
+      }
+      name: 'storage'
+      overrideAdapterProperty: true
+      overrideQosPolicy: true
+      overrideVirtualSwitchConfiguration: false
+      qosPolicyOverrides: {
+        bandwidthPercentage_SMB: '50'
+        priorityValue8021Action_Cluster: '7'
+        priorityValue8021Action_SMB: '3'
+      }
+      trafficType: [
+        'Storage'
+      ]
+      virtualSwitchConfigurationOverrides: {
+        enableIov: 'true'
+        loadBalancingAlgorithm: 'Dynamic'
+      }
+    }
+  ]
+  startingIPAddress: '172.20.0.2'
+  storageConnectivitySwitchless: false
+  storageNetworks: [
+    {
+      adapterName: 'smb0'
+      vlan: '711'
+    }
+    {
+      adapterName: 'smb1'
+      vlan: '712'
+    }
+  ]
+  subnetMask: '255.255.255.0'
+}
+param useSharedKeyVault = false
+```
+
+</details>
+<p>
+
+### Example 3: _Deploy Azure Stack HCI Cluster in Azure with a 2 node switched configuration WAF aligned_
 
 This test deploys an Azure VM to host a 2 node switched Azure Stack HCI cluster, validates the cluster configuration, and then deploys the cluster WAF aligned.
 
@@ -855,17 +1262,38 @@ param tags = {
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | The name of the Azure Stack HCI cluster - this must be a valid Active Directory computer name and will be the name of your cluster in Azure. |
 
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`deploymentUser`](#parameter-deploymentuser) | string | The name of the deployment user. Required if useSharedKeyVault is false. |
+| [`deploymentUserPassword`](#parameter-deploymentuserpassword) | securestring | The password of the deployment user. Required if useSharedKeyVault is false. |
+| [`localAdminPassword`](#parameter-localadminpassword) | securestring | The password of the local admin user. Required if useSharedKeyVault is false. |
+| [`localAdminUser`](#parameter-localadminuser) | string | The name of the local admin user. Required if useSharedKeyVault is false. |
+
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`azureStackLCMUserCredentialContentType`](#parameter-azurestacklcmusercredentialcontenttype) | string | Content type of the azure stack lcm user credential. |
+| [`azureStackLCMUserCredentialTags`](#parameter-azurestacklcmusercredentialtags) | object | Tags of azure stack LCM user credential. |
+| [`defaultARBApplicationContentType`](#parameter-defaultarbapplicationcontenttype) | string | Content type of the default ARB application. |
+| [`defaultARBApplicationTags`](#parameter-defaultarbapplicationtags) | object | Tags of the default ARB application. |
 | [`deploymentOperations`](#parameter-deploymentoperations) | array | The cluster deployment operations to execute. Defaults to "[Validate, Deploy]". |
 | [`deploymentSettings`](#parameter-deploymentsettings) | object | The deployment settings of the cluster. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`keyVaultSecretNames`](#parameter-keyvaultsecretnames) | object | Key vault secret names mapping. |
+| [`localAdminCredentialContentType`](#parameter-localadmincredentialcontenttype) | string | Content type of the local admin credential. |
+| [`localAdminCredentialTags`](#parameter-localadmincredentialtags) | object | Tags of the local admin credential. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`servicePrincipalId`](#parameter-serviceprincipalid) | string | The service principal ID for ARB. |
+| [`servicePrincipalSecret`](#parameter-serviceprincipalsecret) | string | The service principal secret for ARB. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`useSharedKeyVault`](#parameter-usesharedkeyvault) | bool | Specify whether to use the shared key vault for the HCI cluster. |
+| [`witnessStoragekeyContentType`](#parameter-witnessstoragekeycontenttype) | string | Content type of the witness storage key. |
+| [`witnessStoragekeyTags`](#parameter-witnessstoragekeytags) | object | Tags of the witness storage key. |
+| [`witnessType`](#parameter-witnesstype) | string | The type of the witness. |
 
 ### Parameter: `name`
 
@@ -873,6 +1301,64 @@ The name of the Azure Stack HCI cluster - this must be a valid Active Directory 
 
 - Required: Yes
 - Type: string
+
+### Parameter: `deploymentUser`
+
+The name of the deployment user. Required if useSharedKeyVault is false.
+
+- Required: No
+- Type: string
+
+### Parameter: `deploymentUserPassword`
+
+The password of the deployment user. Required if useSharedKeyVault is false.
+
+- Required: No
+- Type: securestring
+
+### Parameter: `localAdminPassword`
+
+The password of the local admin user. Required if useSharedKeyVault is false.
+
+- Required: No
+- Type: securestring
+
+### Parameter: `localAdminUser`
+
+The name of the local admin user. Required if useSharedKeyVault is false.
+
+- Required: No
+- Type: string
+
+### Parameter: `azureStackLCMUserCredentialContentType`
+
+Content type of the azure stack lcm user credential.
+
+- Required: No
+- Type: string
+- Default: `'Secret'`
+
+### Parameter: `azureStackLCMUserCredentialTags`
+
+Tags of azure stack LCM user credential.
+
+- Required: No
+- Type: object
+
+### Parameter: `defaultARBApplicationContentType`
+
+Content type of the default ARB application.
+
+- Required: No
+- Type: string
+- Default: `'Secret'`
+
+### Parameter: `defaultARBApplicationTags`
+
+Tags of the default ARB application.
+
+- Required: No
+- Type: object
 
 ### Parameter: `deploymentOperations`
 
@@ -1176,6 +1662,74 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
+### Parameter: `keyVaultSecretNames`
+
+Key vault secret names mapping.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      AzureStackLCMUserCredential: 'AzureStackLCMUserCredential'
+      DefaultARBApplication: 'DefaultARBApplication'
+      LocalAdminCredential: 'LocalAdminCredential'
+      WitnessStorageKey: 'WitnessStorageKey'
+  }
+  ```
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`AzureStackLCMUserCredential`](#parameter-keyvaultsecretnamesazurestacklcmusercredential) | string | The name of the Azure Stack HCI LCM user credential secret. |
+| [`DefaultARBApplication`](#parameter-keyvaultsecretnamesdefaultarbapplication) | string | The name of the Azure Stack HCI default ARB application secret. |
+| [`LocalAdminCredential`](#parameter-keyvaultsecretnameslocaladmincredential) | string | The name of the Azure Stack HCI local admin credential secret. |
+| [`WitnessStorageKey`](#parameter-keyvaultsecretnameswitnessstoragekey) | string | The name of the Azure Stack HCI witness storage key secret. |
+
+### Parameter: `keyVaultSecretNames.AzureStackLCMUserCredential`
+
+The name of the Azure Stack HCI LCM user credential secret.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `keyVaultSecretNames.DefaultARBApplication`
+
+The name of the Azure Stack HCI default ARB application secret.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `keyVaultSecretNames.LocalAdminCredential`
+
+The name of the Azure Stack HCI local admin credential secret.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `keyVaultSecretNames.WitnessStorageKey`
+
+The name of the Azure Stack HCI witness storage key secret.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `localAdminCredentialContentType`
+
+Content type of the local admin credential.
+
+- Required: No
+- Type: string
+- Default: `'Secret'`
+
+### Parameter: `localAdminCredentialTags`
+
+Tags of the local admin credential.
+
+- Required: No
+- Type: object
+
 ### Parameter: `location`
 
 Location for all resources.
@@ -1289,6 +1843,20 @@ The principal type of the assigned principal ID.
   ]
   ```
 
+### Parameter: `servicePrincipalId`
+
+The service principal ID for ARB.
+
+- Required: No
+- Type: string
+
+### Parameter: `servicePrincipalSecret`
+
+The service principal secret for ARB.
+
+- Required: No
+- Type: string
+
 ### Parameter: `tags`
 
 Tags of the resource.
@@ -1303,6 +1871,29 @@ Specify whether to use the shared key vault for the HCI cluster.
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `witnessStoragekeyContentType`
+
+Content type of the witness storage key.
+
+- Required: No
+- Type: string
+- Default: `'Secret'`
+
+### Parameter: `witnessStoragekeyTags`
+
+Tags of the witness storage key.
+
+- Required: No
+- Type: object
+
+### Parameter: `witnessType`
+
+The type of the witness.
+
+- Required: No
+- Type: string
+- Default: `'Cloud'`
 
 ## Outputs
 
@@ -1320,6 +1911,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
+| `br/public:avm/res/key-vault/vault:0.12.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
