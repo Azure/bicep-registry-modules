@@ -57,8 +57,16 @@ param privateEndpoints privateEndpointSingleServiceType[]?
 @description('Optional. Monitoring Settings of the vault.')
 param monitoringSettings monitoringSettingsType?
 
-@description('Optional. Security Settings of the vault.')
-param securitySettings securitySettingType?
+@description('Optional. The soft delete related settings.')
+param softDeleteSettings softDeleteSettingType?
+
+@description('Optional. The immmutability setting state of the recovery services vault resource.')
+@allowed([
+  'Disabled'
+  'Locked'
+  'Unlocked'
+])
+param immutabilitySettingState string?
 
 @description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled.')
 @allowed([
@@ -76,6 +84,8 @@ param restoreSettings restoreSettingsType?
 import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyWithAutoRotateType?
+
+var enableReferencedModulesTelemetry = false
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -161,22 +171,22 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 }
 
 resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
-  name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
+  name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
   scope: resourceGroup(
-    split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
-    split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
+    split(customerManagedKey.?keyVaultResourceId!, '/')[2],
+    split(customerManagedKey.?keyVaultResourceId!, '/')[4]
   )
 
   resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
-    name: customerManagedKey.?keyName ?? 'dummyKey'
+    name: customerManagedKey.?keyName!
   }
 }
 
 resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
-  name: last(split(customerManagedKey.?userAssignedIdentityResourceId ?? 'dummyMsi', '/'))
+  name: last(split(customerManagedKey.?userAssignedIdentityResourceId!, '/'))
   scope: resourceGroup(
-    split((customerManagedKey.?userAssignedIdentityResourceId ?? '//'), '/')[2],
-    split((customerManagedKey.?userAssignedIdentityResourceId ?? '////'), '/')[4]
+    split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[2],
+    split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[4]
   )
 }
 
@@ -207,7 +217,14 @@ resource rsv 'Microsoft.RecoveryServices/vaults@2024-04-01' = {
             : null
         }
       : null
-    securitySettings: securitySettings
+    securitySettings: {
+      immutabilitySettings: !empty(immutabilitySettingState)
+        ? {
+            state: immutabilitySettingState
+          }
+        : null
+      softDeleteSettings: softDeleteSettings
+    }
     publicNetworkAccess: publicNetworkAccess
     redundancySettings: redundancySettings
     restoreSettings: restoreSettings
@@ -403,7 +420,7 @@ module rsv_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' 
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
-      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',
@@ -666,24 +683,19 @@ type monitoringSettingsType = {
   }?
 }
 
+// =============== //
+//   Definitions   //
+// =============== //
+
 @export()
-@description('The type for security settings.')
-type securitySettingType = {
-  @description('Optional. Immutability settings of a vault.')
-  immutabilitySettings: {
-    @description('Required. The immmutability setting of the vault.')
-    state: ('Disabled' | 'Locked' | 'Unlocked')
-  }?
+@description('The type for soft delete settings.')
+type softDeleteSettingType = {
+  @description('Required. The enhanced security state.')
+  enhancedSecurityState: ('AlwaysON' | 'Disabled' | 'Enabled' | 'Invalid')
 
-  @description('Optional. Soft delete settings of a vault.')
-  softDeleteSettings: {
-    @description('Required. The enhanced security state.')
-    enhancedSecurityState: ('AlwaysON' | 'Disabled' | 'Enabled' | 'Invalid')
+  @description('Required. The soft delete retention period in days.')
+  softDeleteRetentionPeriodInDays: int
 
-    @description('Required. The soft delete retention period in days.')
-    softDeleteRetentionPeriodInDays: int
-
-    @description('Required. The soft delete state.')
-    softDeleteState: ('AlwaysON' | 'Disabled' | 'Enabled' | 'Invalid')
-  }?
+  @description('Required. The soft delete state.')
+  softDeleteState: ('AlwaysON' | 'Disabled' | 'Enabled' | 'Invalid')
 }

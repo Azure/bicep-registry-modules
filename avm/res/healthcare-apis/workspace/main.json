@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "8497599531477204854"
+      "version": "0.33.13.18514",
+      "templateHash": "18124626632177610524"
     },
     "name": "Healthcare API Workspaces",
     "description": "This module deploys a Healthcare API Workspace."
@@ -393,8 +393,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "720257412430408145"
+              "version": "0.33.13.18514",
+              "templateHash": "17374059306165867366"
             },
             "name": "Healthcare API Workspace FHIR Services",
             "description": "This module deploys a Healthcare API Workspace FHIR Service."
@@ -1036,10 +1036,11 @@
             },
             "systemAssignedMIPrincipalId": {
               "type": "string",
+              "nullable": true,
               "metadata": {
                 "description": "The principal ID of the system assigned identity."
               },
-              "value": "[if(and(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), contains(reference('fhir', '2022-06-01', 'full').identity, 'principalId')), reference('fhir', '2022-06-01', 'full').identity.principalId, '')]"
+              "value": "[tryGet(tryGet(reference('fhir', '2022-06-01', 'full'), 'identity'), 'principalId')]"
             },
             "location": {
               "type": "string",
@@ -1123,8 +1124,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "15725443146645806343"
+              "version": "0.33.13.18514",
+              "templateHash": "6035434891698156409"
             },
             "name": "Healthcare API Workspace DICOM Services",
             "description": "This module deploys a Healthcare API Workspace DICOM Service."
@@ -1509,10 +1510,11 @@
             },
             "systemAssignedMIPrincipalId": {
               "type": "string",
+              "nullable": true,
               "metadata": {
                 "description": "The principal ID of the system assigned identity."
               },
-              "value": "[coalesce(tryGet(tryGet(reference('dicom', '2022-06-01', 'full'), 'identity'), 'principalId'), '')]"
+              "value": "[tryGet(tryGet(reference('dicom', '2022-06-01', 'full'), 'identity'), 'principalId')]"
             },
             "location": {
               "type": "string",
@@ -1586,8 +1588,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "15307253086923849247"
+              "version": "0.33.13.18514",
+              "templateHash": "3685356098294718814"
             },
             "name": "Healthcare API Workspace IoT Connectors",
             "description": "This module deploys a Healthcare API Workspace IoT Connector."
@@ -1969,8 +1971,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "4307853570131837135"
+                      "version": "0.33.13.18514",
+                      "templateHash": "10762900247985096400"
                     },
                     "name": "Healthcare API Workspace IoT Connector FHIR Destinations",
                     "description": "This module deploys a Healthcare API Workspace IoT Connector FHIR Destination."
@@ -2113,10 +2115,11 @@
             },
             "systemAssignedMIPrincipalId": {
               "type": "string",
+              "nullable": true,
               "metadata": {
                 "description": "The principal ID of the system assigned identity."
               },
-              "value": "[coalesce(tryGet(tryGet(reference('iotConnector', '2022-06-01', 'full'), 'identity'), 'principalId'), '')]"
+              "value": "[tryGet(tryGet(reference('iotConnector', '2022-06-01', 'full'), 'identity'), 'principalId')]"
             },
             "location": {
               "type": "string",
