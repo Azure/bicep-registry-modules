@@ -1120,7 +1120,7 @@ param volumeGroups = [
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`availabilityZone`](#parameter-availabilityzone) | int | Configuration of the availability zone for the Elastic SAN. Required if `sku` is `Premium_LRS`. If this parameter is not provided, the `sku` parameter will default to Premium_ZRS. Note that the availability zone number here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones). |
+| [`availabilityZone`](#parameter-availabilityzone) | int | Configuration of the availability zone for the Elastic SAN. Required if `Sku` is `Premium_LRS`. If this parameter is not provided, the `Sku` parameter will default to Premium_ZRS. Note that the availability zone number here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones). |
 
 **Optional parameters**
 
@@ -1147,7 +1147,7 @@ Name of the Elastic SAN. The name can only contain lowercase letters, numbers, h
 
 ### Parameter: `availabilityZone`
 
-Configuration of the availability zone for the Elastic SAN. Required if `sku` is `Premium_LRS`. If this parameter is not provided, the `sku` parameter will default to Premium_ZRS. Note that the availability zone number here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones).
+Configuration of the availability zone for the Elastic SAN. Required if `Sku` is `Premium_LRS`. If this parameter is not provided, the `Sku` parameter will default to Premium_ZRS. Note that the availability zone number here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones).
 
 - Required: No
 - Type: int

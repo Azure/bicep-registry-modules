@@ -49,7 +49,7 @@ param keyVaultAccessIdentityResourceId string?
 @description('Optional. Checks if Customer provided storage account is required.')
 param storageAccountRequired bool = false
 
-@description('Optional. Azure Resource Manager ID of the Virtual network and subnet to be joined by Regional VNet Integration. This must be of the form /subscriptions/{subscriptionName}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{vnetName}/subnets/{subnetName}.')
+@description('Optional. Azure Resource Manager ID of the Virtual network and subnet to be joined by Regional VNET Integration. This must be of the form /subscriptions/{subscriptionName}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{vnetName}/subnets/{subnetName}.')
 param virtualNetworkSubnetId string?
 
 @description('Optional. To enable accessing content over virtual network.')

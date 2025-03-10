@@ -675,7 +675,7 @@
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Azure Resource Manager ID of the Virtual network and subnet to be joined by Regional VNet Integration. This must be of the form /subscriptions/{subscriptionName}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{vnetName}/subnets/{subnetName}."
+        "description": "Optional. Azure Resource Manager ID of the Virtual network and subnet to be joined by Regional VNET Integration. This must be of the form /subscriptions/{subscriptionName}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{vnetName}/subnets/{subnetName}."
       }
     },
     "vnetContentShareEnabled": {
