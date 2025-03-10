@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "3135951919631286272"
+      "templateHash": "14592202711795767071"
     },
     "name": "Machine Learning Services Workspaces Connections",
     "description": "This module creates a connection in a Machine Learning Services workspace."
@@ -577,6 +577,9 @@
           },
           "AccessKey": {
             "$ref": "#/definitions/accessKeyAuthTypeWorkspaceConnectionPropertyType"
+          },
+          "AccountKey": {
+            "$ref": "#/definitions/accountKeyAuthTypeWorkspaceConnectionPropertyType"
           },
           "ApiKey": {
             "$ref": "#/definitions/apiKeyAuthWorkspaceConnectionPropertyType"

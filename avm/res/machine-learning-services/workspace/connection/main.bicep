@@ -384,6 +384,7 @@ type workspaceConnectionUsernamePasswordType = {
 type connectionPropertyType =
   | aadAuthTypeWorkspaceConnectionPropertyType
   | accessKeyAuthTypeWorkspaceConnectionPropertyType
+  | accountKeyAuthTypeWorkspaceConnectionPropertyType
   | apiKeyAuthWorkspaceConnectionPropertyType
   | customKeysWorkspaceConnectionPropertyType
   | managedIdentityAuthTypeWorkspaceConnectionPropertyType

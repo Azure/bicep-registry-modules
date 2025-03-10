@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "16092882599098315854"
+      "templateHash": "1201097929477904425"
     },
     "name": "Machine Learning Services Workspaces",
     "description": "This module deploys a Machine Learning Services Workspace."
@@ -546,6 +546,31 @@
         }
       }
     },
+    "_2.accountKeyAuthTypeWorkspaceConnectionPropertyType": {
+      "type": "object",
+      "properties": {
+        "authType": {
+          "type": "string",
+          "allowedValues": [
+            "AccountKey"
+          ],
+          "metadata": {
+            "description": "Required. The authentication type of the connection target."
+          }
+        },
+        "credentials": {
+          "$ref": "#/definitions/_2.workspaceConnectionAccountKeyType",
+          "metadata": {
+            "description": "Required. The credentials for the connection."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "connection/main.bicep"
+        }
+      }
+    },
     "_2.apiKeyAuthWorkspaceConnectionPropertyType": {
       "type": "object",
       "properties": {
@@ -801,6 +826,22 @@
           "type": "string",
           "metadata": {
             "description": "Required. The connection secret access key."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "connection/main.bicep"
+        }
+      }
+    },
+    "_2.workspaceConnectionAccountKeyType": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The connection key."
           }
         }
       },
@@ -1128,6 +1169,9 @@
           },
           "AccessKey": {
             "$ref": "#/definitions/_2.accessKeyAuthTypeWorkspaceConnectionPropertyType"
+          },
+          "AccountKey": {
+            "$ref": "#/definitions/_2.accountKeyAuthTypeWorkspaceConnectionPropertyType"
           },
           "ApiKey": {
             "$ref": "#/definitions/_2.apiKeyAuthWorkspaceConnectionPropertyType"
@@ -2382,7 +2426,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "3135951919631286272"
+              "templateHash": "14592202711795767071"
             },
             "name": "Machine Learning Services Workspaces Connections",
             "description": "This module creates a connection in a Machine Learning Services workspace."
@@ -2953,6 +2997,9 @@
                   },
                   "AccessKey": {
                     "$ref": "#/definitions/accessKeyAuthTypeWorkspaceConnectionPropertyType"
+                  },
+                  "AccountKey": {
+                    "$ref": "#/definitions/accountKeyAuthTypeWorkspaceConnectionPropertyType"
                   },
                   "ApiKey": {
                     "$ref": "#/definitions/apiKeyAuthWorkspaceConnectionPropertyType"
