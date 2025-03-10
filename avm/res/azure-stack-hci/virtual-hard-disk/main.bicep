@@ -19,7 +19,7 @@ param enableTelemetry bool = true
 @description('Required. The size of the disk in GB.')
 param diskSizeGB int
 
-@description('Required. The disk type.')
+@description('Required. The disk type, dynamic or not.')
 param dynamic bool
 
 @description('Optional. Storage ContainerID of the storage container to be used for VHD.')
