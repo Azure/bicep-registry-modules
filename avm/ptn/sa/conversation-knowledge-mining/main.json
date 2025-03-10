@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "6745279566684770252"
+      "templateHash": "17457521274784609317"
     },
     "name": "Conversation Knowledge Mining Solution Accelerator",
     "description": "This module deploys the [Conversation Knowledge Mining Solution Accelerator](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator).\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator product. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -767,18 +767,195 @@
         "description": "Optional. The SKU of the AI Foundry AI project."
       }
     },
+    "storageAccountSkuName": {
+      "type": "string",
+      "defaultValue": "Standard_LRS",
+      "allowedValues": [
+        "Standard_LRS",
+        "Standard_GRS",
+        "Standard_RAGRS",
+        "Standard_ZRS",
+        "Premium_LRS",
+        "Premium_ZRS"
+      ],
+      "metadata": {
+        "description": "Optional. The SKU for the Storage Account. If empty, Standard_LRS will be used."
+      }
+    },
+    "sqlServerAdministratorLogin": {
+      "type": "securestring",
+      "defaultValue": "sqladmin",
+      "metadata": {
+        "description": "Optional. The administrator login credential for the SQL Server."
+      }
+    },
+    "sqlServerAdministratorPassword": {
+      "type": "securestring",
+      "defaultValue": "TestPassword_1234",
+      "metadata": {
+        "description": "Optional. The administrator password credential for the SQL Server."
+      }
+    },
+    "sqlServerDatabaseName": {
+      "type": "string",
+      "defaultValue": "[format('{0}-sql-db', parameters('sqlServerResourceName'))]",
+      "maxLength": 128,
+      "metadata": {
+        "description": "Optional. The name of the SQL Server database."
+      }
+    },
+    "sqlServerDatabaseSkuName": {
+      "type": "string",
+      "defaultValue": "GP_Gen5_2",
+      "metadata": {
+        "description": "Optional. The SKU name of the SQL Server database. If empty, it will be set to GP_Gen5_2. Find available options: Database.[Sku property](https://learn.microsoft.com/dotnet/api/microsoft.azure.management.sql.models.database.sku)."
+      }
+    },
+    "sqlServerDatabaseSkuTier": {
+      "type": "string",
+      "defaultValue": "GeneralPurpose",
+      "metadata": {
+        "description": "Optional. The SKU tier of the SQL Server database. If empty, it will be set to GeneralPurpose. Find available options: Database.[Sku property](https://learn.microsoft.com/dotnet/api/microsoft.azure.management.sql.models.database.sku)."
+      }
+    },
+    "sqlServerDatabaseSkuFamily": {
+      "type": "string",
+      "defaultValue": "Gen5",
+      "metadata": {
+        "description": "Optional. The SKU Family of the SQL Server database. If empty, it will be set to Gen5. Find available options: Database.[Sku property](https://learn.microsoft.com/dotnet/api/microsoft.azure.management.sql.models.database.sku)."
+      }
+    },
+    "sqlServerDatabaseSkuCapacity": {
+      "type": "int",
+      "defaultValue": 2,
+      "metadata": {
+        "description": "Optional. The SKU capacity of the SQL Server database. If empty, it will be set to 2. Find available options: Database.[Sku property](https://learn.microsoft.com/dotnet/api/microsoft.azure.management.sql.models.database.sku)."
+      }
+    },
+    "functionChartDockerImageContainerRegistryUrl": {
+      "type": "string",
+      "defaultValue": "kmcontainerreg.azurecr.io",
+      "metadata": {
+        "description": "Optional. The url of the Container Registry where the docker image for the Charts function is located."
+      }
+    },
+    "functionChartDockerImageName": {
+      "type": "string",
+      "defaultValue": "km-charts-function",
+      "metadata": {
+        "description": "Optional. The name of the docker image for the Charts function."
+      }
+    },
+    "functionChartDockerImageTag": {
+      "type": "string",
+      "defaultValue": "latest",
+      "metadata": {
+        "description": "Optional. The tag of the docker image for the Charts function."
+      }
+    },
+    "functionChartCpu": {
+      "type": "int",
+      "defaultValue": 1,
+      "metadata": {
+        "description": "Optional. The required CPU in cores of the Charts function."
+      }
+    },
+    "functionChartMemory": {
+      "type": "string",
+      "defaultValue": "2Gi",
+      "metadata": {
+        "description": "Optional. The required memory in GiB of the Charts function."
+      }
+    },
+    "functionChartAppScaleLimit": {
+      "type": "int",
+      "defaultValue": 10,
+      "metadata": {
+        "description": "Optional. The maximum number of workers that the Charts function can scale out."
+      }
+    },
+    "functionChartsFunctionName": {
+      "type": "string",
+      "defaultValue": "get_metrics",
+      "metadata": {
+        "description": "Optional. The name of the function to be used to get the metrics in the Charts function."
+      }
+    },
+    "functionRagDockerImageContainerRegistryUrl": {
+      "type": "string",
+      "defaultValue": "kmcontainerreg.azurecr.io",
+      "metadata": {
+        "description": "Optional. The url of the Container Registry where the docker image for the Rag function is located."
+      }
+    },
+    "functionRagDockerImageName": {
+      "type": "string",
+      "defaultValue": "km-Rag-function",
+      "metadata": {
+        "description": "Optional. The name of the docker image for the Rag function."
+      }
+    },
+    "functionRagDockerImageTag": {
+      "type": "string",
+      "defaultValue": "latest",
+      "metadata": {
+        "description": "Optional. The tag of the docker image for the Rag function."
+      }
+    },
+    "functionRagCpu": {
+      "type": "int",
+      "defaultValue": 1,
+      "metadata": {
+        "description": "Optional. The required CPU in cores of the Rag function."
+      }
+    },
+    "functionRagMemory": {
+      "type": "string",
+      "defaultValue": "2Gi",
+      "metadata": {
+        "description": "Optional. The required memory in GiB of the Rag function."
+      }
+    },
+    "functionRagAppScaleLimit": {
+      "type": "int",
+      "defaultValue": 10,
+      "metadata": {
+        "description": "Optional. The maximum number of workers that the Rag function can scale out."
+      }
+    },
+    "functionRagFunctionName": {
+      "type": "string",
+      "defaultValue": "stream_openai_text",
+      "metadata": {
+        "description": "Optional. The name of the function to be used to stream text in the Rag function."
+      }
+    },
     "webAppServerFarmSku": {
       "type": "string",
       "defaultValue": "B2",
       "metadata": {
-        "description": "Optional. The SKU for the web app. If empty, aiFoundryAiServicesContentUnderstandingLocation will be used."
+        "description": "Optional. The SKU for the web app. If empty it will be set to B2."
       }
     },
-    "imageTag": {
+    "webAppDockerImageContainerRegistryUrl": {
+      "type": "string",
+      "defaultValue": "kmcontainerreg.azurecr.io",
+      "metadata": {
+        "description": "Optional. The url of the Container Registry where the docker image for Conversation Knowledge Mining webapp is located."
+      }
+    },
+    "webAppDockerImageName": {
+      "type": "string",
+      "defaultValue": "km-app",
+      "metadata": {
+        "description": "Optional. The name of the docker image for the Rag function."
+      }
+    },
+    "webAppDockerImageTag": {
       "type": "string",
       "defaultValue": "latest",
       "metadata": {
-        "description": "Optional. Docker image version to use for all deployed containers (functions and web app)."
+        "description": "Optional. The tag of the docker image for the Rag function."
       }
     },
     "enableTelemetry": {
@@ -861,16 +1038,8 @@
         "partitionKey": "/userId"
       }
     ],
-    "varSQLDatabaseName": "[format('{0}-sql-db', variables('varSqlServerResourceName'))]",
-    "varSQLServerAdministratorLogin": "sqladmin",
-    "varSQLServerAdministratorPassword": "TestPassword_1234",
     "varCKMGithubBaseUrl": "https://raw.githubusercontent.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator/main/",
     "varStorageContainerName": "data",
-    "varChartsDockerImageName": "[format('DOCKER|kmcontainerreg.azurecr.io/km-charts-function:{0}', parameters('imageTag'))]",
-    "varChartsFunctionFunctionName": "get_metrics",
-    "varRAGDockerImageName": "[format('DOCKER|kmcontainerreg.azurecr.io/km-rag-function:{0}', parameters('imageTag'))]",
-    "varRAGFunctionFunctionName": "stream_openai_text",
-    "varWebAppImageName": "[format('DOCKER|kmcontainerreg.azurecr.io/km-app:{0}', parameters('imageTag'))]",
     "varWebAppAppConfigReact": "{\n  \"appConfig\": {\n    \"THREE_COLUMN\": {\n      \"DASHBOARD\": 50,\n      \"CHAT\": 33,\n      \"CHATHISTORY\": 17\n    },\n    \"TWO_COLUMN\": {\n      \"DASHBOARD_CHAT\": {\n        \"DASHBOARD\": 65,\n        \"CHAT\": 35\n      },\n      \"CHAT_CHATHISTORY\": {\n        \"CHAT\": 80,\n        \"CHATHISTORY\": 20\n      }\n    }\n  },\n  \"charts\": [\n    {\n      \"id\": \"SATISFIED\",\n      \"name\": \"Satisfied\",\n      \"type\": \"card\",\n      \"layout\": { \"row\": 1, \"column\": 1, \"height\": 11 }\n    },\n    {\n      \"id\": \"TOTAL_CALLS\",\n      \"name\": \"Total Calls\",\n      \"type\": \"card\",\n      \"layout\": { \"row\": 1, \"column\": 2, \"span\": 1 }\n    },\n    {\n      \"id\": \"AVG_HANDLING_TIME\",\n      \"name\": \"Average Handling Time\",\n      \"type\": \"card\",\n      \"layout\": { \"row\": 1, \"column\": 3, \"span\": 1 }\n    },\n    {\n      \"id\": \"SENTIMENT\",\n      \"name\": \"Topics Overview\",\n      \"type\": \"donutchart\",\n      \"layout\": { \"row\": 2, \"column\": 1, \"width\": 40, \"height\": 44.5 }\n    },\n    {\n      \"id\": \"AVG_HANDLING_TIME_BY_TOPIC\",\n      \"name\": \"Average Handling Time By Topic\",\n      \"type\": \"bar\",\n      \"layout\": { \"row\": 2, \"column\": 2, \"row-span\": 2, \"width\": 60 }\n    },\n    {\n      \"id\": \"TOPICS\",\n      \"name\": \"Trending Topics\",\n      \"type\": \"table\",\n      \"layout\": { \"row\": 3, \"column\": 1, \"span\": 2 }\n    },\n    {\n      \"id\": \"KEY_PHRASES\",\n      \"name\": \"Key Phrases\",\n      \"type\": \"wordcloud\",\n      \"layout\": { \"row\": 3, \"column\": 2, \"height\": 44.5 }\n    }\n  ]\n}"
   },
   "resources": {
@@ -913,11 +1082,11 @@
             },
             {
               "name": "SQLDB_DATABASE",
-              "value": "[variables('varSQLDatabaseName')]"
+              "value": "[parameters('sqlServerDatabaseName')]"
             },
             {
               "name": "SQLDB_PASSWORD",
-              "value": "[variables('varSQLServerAdministratorPassword')]"
+              "value": "[parameters('sqlServerAdministratorPassword')]"
             },
             {
               "name": "SQLDB_SERVER",
@@ -925,18 +1094,18 @@
             },
             {
               "name": "SQLDB_USERNAME",
-              "value": "[variables('varSQLServerAdministratorLogin')]"
+              "value": "[parameters('sqlServerAdministratorLogin')]"
             }
           ],
-          "linuxFxVersion": "[variables('varChartsDockerImageName')]",
-          "functionAppScaleLimit": 10,
+          "linuxFxVersion": "[format('DOCKER|{0}/{1}:{2}', parameters('functionChartDockerImageContainerRegistryUrl'), parameters('functionChartDockerImageName'), parameters('functionChartDockerImageTag'))]",
+          "functionAppScaleLimit": "[parameters('functionChartAppScaleLimit')]",
           "minimumElasticInstanceCount": 0
         },
         "managedEnvironmentId": "[reference('avmFunctionsManagedEnvironment').outputs.resourceId.value]",
         "workloadProfileName": "Consumption",
         "resourceConfig": {
-          "cpu": 1,
-          "memory": "2Gi"
+          "cpu": "[parameters('functionChartCpu')]",
+          "memory": "[parameters('functionChartMemory')]"
         },
         "storageAccountRequired": false
       },
@@ -4593,15 +4762,15 @@
               },
               {
                 "name": "SQLDB-DATABASE",
-                "value": "[variables('varSQLDatabaseName')]"
+                "value": "[parameters('sqlServerDatabaseName')]"
               },
               {
                 "name": "SQLDB-USERNAME",
-                "value": "[variables('varSQLServerAdministratorLogin')]"
+                "value": "[parameters('sqlServerAdministratorLogin')]"
               },
               {
                 "name": "SQLDB-PASSWORD",
-                "value": "[variables('varSQLServerAdministratorPassword')]"
+                "value": "[parameters('sqlServerAdministratorPassword')]"
               },
               {
                 "name": "AZURE-OPENAI-PREVIEW-API-VERSION",
@@ -7886,7 +8055,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "9924488336676764192"
+              "templateHash": "5882758231668891872"
             }
           },
           "parameters": {
@@ -27908,7 +28077,7 @@
             {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "module-ai-foundry-kv-secret-cog-services-key",
+              "name": "[format(parameters('localModuleDeploymentNameFormat'), 'ai-foundry-kv-secret-cog-services-ke')]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -28032,8 +28201,15 @@
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
           },
+          "diagnosticSettings": {
+            "value": [
+              {
+                "workspaceResourceId": "[reference('avmLogAnalyticsWorkspace').outputs.resourceId.value]"
+              }
+            ]
+          },
           "skuName": {
-            "value": "Standard_LRS"
+            "value": "[parameters('storageAccountSkuName')]"
           },
           "kind": {
             "value": "StorageV2"
@@ -33774,6 +33950,7 @@
       },
       "dependsOn": [
         "avmKeyVault",
+        "avmLogAnalyticsWorkspace",
         "avmManagedIdentity",
         "functionCharts"
       ]
@@ -33799,6 +33976,13 @@
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
+          },
+          "diagnosticSettings": {
+            "value": [
+              {
+                "workspaceResourceId": "[reference('avmLogAnalyticsWorkspace').outputs.resourceId.value]"
+              }
+            ]
           },
           "defaultConsistencyLevel": {
             "value": "Session"
@@ -37574,7 +37758,8 @@
         }
       },
       "dependsOn": [
-        "avmKeyVault"
+        "avmKeyVault",
+        "avmLogAnalyticsWorkspace"
       ]
     },
     "avmSQLServer": {
@@ -37600,10 +37785,10 @@
             "value": "[parameters('enableTelemetry')]"
           },
           "administratorLogin": {
-            "value": "[variables('varSQLServerAdministratorLogin')]"
+            "value": "[parameters('sqlServerAdministratorLogin')]"
           },
           "administratorLoginPassword": {
-            "value": "[variables('varSQLServerAdministratorPassword')]"
+            "value": "[parameters('sqlServerAdministratorPassword')]"
           },
           "publicNetworkAccess": {
             "value": "Enabled"
@@ -37623,12 +37808,17 @@
           "databases": {
             "value": [
               {
-                "name": "[variables('varSQLDatabaseName')]",
+                "name": "[parameters('sqlServerDatabaseName')]",
+                "diagnosticSettings": [
+                  {
+                    "workspaceResourceId": "[reference('avmLogAnalyticsWorkspace').outputs.resourceId.value]"
+                  }
+                ],
                 "sku": {
-                  "name": "GP_Gen5_2",
-                  "tier": "GeneralPurpose",
-                  "family": "Gen5",
-                  "capacity": 2
+                  "name": "[parameters('sqlServerDatabaseSkuName')]",
+                  "tier": "[parameters('sqlServerDatabaseSkuTier')]",
+                  "family": "[parameters('sqlServerDatabaseSkuFamily')]",
+                  "capacity": "[parameters('sqlServerDatabaseSkuCapacity')]"
                 },
                 "collation": "SQL_Latin1_General_CP1_CI_AS",
                 "autoPauseDelay": 60,
@@ -43626,7 +43816,10 @@
             }
           }
         }
-      }
+      },
+      "dependsOn": [
+        "avmLogAnalyticsWorkspace"
+      ]
     },
     "avmDeploymentScriptCopyData": {
       "type": "Microsoft.Resources/deployments",
@@ -44210,7 +44403,7 @@
         "moduleAIFoundry"
       ]
     },
-    "avmDeploymentScritptIndexData": {
+    "avmDeploymentScriptIndexData": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format(variables('avmDeploymentNameFormat'), variables('varScriptIndexDataResourceName'))]",
@@ -45485,19 +45678,28 @@
             "value": "[variables('varAiFoundryAiServiceGPTModelVersionPreview')]"
           },
           "ragDockerImageName": {
-            "value": "[variables('varRAGDockerImageName')]"
+            "value": "[format('DOCKER|{0}/{1}:{2}', parameters('functionRagDockerImageContainerRegistryUrl'), parameters('functionRagDockerImageName'), parameters('functionRagDockerImageTag'))]"
           },
           "sqlDatabaseName": {
-            "value": "[variables('varSQLDatabaseName')]"
+            "value": "[parameters('sqlServerDatabaseName')]"
           },
           "sqlServerAdministratorLogin": {
-            "value": "[variables('varSQLServerAdministratorLogin')]"
+            "value": "[parameters('sqlServerAdministratorLogin')]"
           },
           "sqlServerAdministratorPassword": {
-            "value": "[variables('varSQLServerAdministratorPassword')]"
+            "value": "[parameters('sqlServerAdministratorPassword')]"
           },
           "sqlServerFullyQualifiedDomainName": {
             "value": "[reference('avmSQLServer').outputs.fullyQualifiedDomainName.value]"
+          },
+          "functionRagCpu": {
+            "value": "[parameters('functionRagCpu')]"
+          },
+          "functionRagMemory": {
+            "value": "[parameters('functionRagMemory')]"
+          },
+          "functionRagAppScaleLimit": {
+            "value": "[parameters('functionRagAppScaleLimit')]"
           }
         },
         "template": {
@@ -45507,7 +45709,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "7786760795451317482"
+              "templateHash": "2305686905319534725"
             }
           },
           "parameters": {
@@ -45533,7 +45735,7 @@
               "type": "string"
             },
             "sqlServerAdministratorLogin": {
-              "type": "string"
+              "type": "securestring"
             },
             "sqlServerAdministratorPassword": {
               "type": "securestring"
@@ -45561,6 +45763,15 @@
             },
             "functionsManagedEnvironmentResourceId": {
               "type": "string"
+            },
+            "functionRagCpu": {
+              "type": "int"
+            },
+            "functionRagMemory": {
+              "type": "string"
+            },
+            "functionRagAppScaleLimit": {
+              "type": "int"
             }
           },
           "resources": [
@@ -45639,14 +45850,14 @@
                     }
                   ],
                   "linuxFxVersion": "[parameters('ragDockerImageName')]",
-                  "functionAppScaleLimit": 10,
+                  "functionAppScaleLimit": "[parameters('functionRagAppScaleLimit')]",
                   "minimumElasticInstanceCount": 0
                 },
                 "managedEnvironmentId": "[parameters('functionsManagedEnvironmentResourceId')]",
                 "workloadProfileName": "Consumption",
                 "resourceConfig": {
-                  "cpu": 1,
-                  "memory": "2Gi"
+                  "cpu": "[parameters('functionRagCpu')]",
+                  "memory": "[parameters('functionRagMemory')]"
                 },
                 "storageAccountRequired": false
               }
@@ -45761,6 +45972,13 @@
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
+          },
+          "diagnosticSettings": {
+            "value": [
+              {
+                "workspaceResourceId": "[reference('avmLogAnalyticsWorkspace').outputs.resourceId.value]"
+              }
+            ]
           },
           "skuName": {
             "value": "[parameters('webAppServerFarmSku')]"
@@ -46300,7 +46518,10 @@
             }
           }
         }
-      }
+      },
+      "dependsOn": [
+        "avmLogAnalyticsWorkspace"
+      ]
     },
     "moduleWebsiteWebapp": {
       "type": "Microsoft.Resources/deployments",
@@ -46337,7 +46558,7 @@
             "value": "[reference('moduleAIFoundry').outputs.aiServicesName.value]"
           },
           "webAppImageName": {
-            "value": "[variables('varWebAppImageName')]"
+            "value": "[format('DOCKER|{0}/{1}:{2}', parameters('webAppDockerImageContainerRegistryUrl'), parameters('webAppDockerImageName'), parameters('webAppDockerImageTag'))]"
           },
           "appInsightsInstrumentationKey": {
             "value": "[reference('moduleAIFoundry').outputs.applicationInsightsInstrumentationKey.value]"
@@ -46358,7 +46579,7 @@
             "value": "[reference('functionCharts').defaultHostName]"
           },
           "chartsFunctionFunctionName": {
-            "value": "[variables('varChartsFunctionFunctionName')]"
+            "value": "[parameters('functionChartsFunctionName')]"
           },
           "webAppAppConfigReact": {
             "value": "[variables('varWebAppAppConfigReact')]"
@@ -46373,7 +46594,7 @@
             "value": "[reference('moduleFunctionRAG').outputs.defaultHostName.value]"
           },
           "ragFunctionFunctionName": {
-            "value": "[variables('varRAGFunctionFunctionName')]"
+            "value": "[parameters('functionRagFunctionName')]"
           },
           "avmCosmosDbResourceName": {
             "value": "[reference('avmCosmosDB').outputs.name.value]"

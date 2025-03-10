@@ -422,7 +422,7 @@ resource cogServiceEndpointEntry 'Microsoft.keyvault/vaults/secrets@2021-11-01-p
 }
 
 module aiFoundryKvSecretCogServicesKey './ai-foundry-kv-secret-cog-services-key.bicep' = {
-  name: 'module-ai-foundry-kv-secret-cog-services-key'
+  name: format(localModuleDeploymentNameFormat, 'ai-foundry-kv-secret-cog-services-ke')
   params: {
     keyVaultResourceName: keyVaultResourceName
     //cognitiveServicesAccountsResourceName: avmCognitiveServicesAccounts.outputs.name

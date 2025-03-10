@@ -1,5 +1,3 @@
-//TODO: standardize deployment names
-//TODO: define parameters for customized configuration
 //TODO: check latest versions of AVM resource modules for those that still deploy regular resources
 
 // // ========== main.bicep ========== //
@@ -317,13 +315,86 @@ param aiFoundryAiHubSkuName string = 'Basic'
 ])
 param aiFoundryAiProjectSkuName string = 'Standard'
 
-// PARAMETERS: Web app configuration
-@description('Optional. The SKU for the web app. If empty, aiFoundryAiServicesContentUnderstandingLocation will be used.')
-param webAppServerFarmSku string = 'B2'
+// PARAMETERS: AI Foundry Storage Account configuration
+@description('Optional. The SKU for the Storage Account. If empty, Standard_LRS will be used.')
+@allowed([
+  'Standard_LRS'
+  'Standard_GRS'
+  'Standard_RAGRS'
+  'Standard_ZRS'
+  'Premium_LRS'
+  'Premium_ZRS'
+])
+param storageAccountSkuName string = 'Standard_LRS'
 
-// PARAMETERS: Docker image configuration
-@description('Optional. Docker image version to use for all deployed containers (functions and web app).')
-param imageTag string = 'latest'
+// PARAMETERS: SQL Server configuration
+@description('Optional. The administrator login credential for the SQL Server.')
+@secure()
+#disable-next-line secure-parameter-default
+param sqlServerAdministratorLogin string = 'sqladmin'
+
+@description('Optional. The administrator password credential for the SQL Server.')
+@secure()
+#disable-next-line secure-parameter-default
+param sqlServerAdministratorPassword string = 'TestPassword_1234'
+
+@description('Optional. The name of the SQL Server database.')
+@maxLength(128)
+param sqlServerDatabaseName string = '${sqlServerResourceName}-sql-db'
+
+@description('Optional. The SKU name of the SQL Server database. If empty, it will be set to GP_Gen5_2. Find available options: Database.[Sku property](https://learn.microsoft.com/dotnet/api/microsoft.azure.management.sql.models.database.sku).')
+param sqlServerDatabaseSkuName string = 'GP_Gen5_2'
+
+@description('Optional. The SKU tier of the SQL Server database. If empty, it will be set to GeneralPurpose. Find available options: Database.[Sku property](https://learn.microsoft.com/dotnet/api/microsoft.azure.management.sql.models.database.sku).')
+param sqlServerDatabaseSkuTier string = 'GeneralPurpose'
+
+@description('Optional. The SKU Family of the SQL Server database. If empty, it will be set to Gen5. Find available options: Database.[Sku property](https://learn.microsoft.com/dotnet/api/microsoft.azure.management.sql.models.database.sku).')
+param sqlServerDatabaseSkuFamily string = 'Gen5'
+
+@description('Optional. The SKU capacity of the SQL Server database. If empty, it will be set to 2. Find available options: Database.[Sku property](https://learn.microsoft.com/dotnet/api/microsoft.azure.management.sql.models.database.sku).')
+param sqlServerDatabaseSkuCapacity int = 2
+
+// PARAMETERS: Function Charts configuration
+@description('Optional. The url of the Container Registry where the docker image for the Charts function is located.')
+param functionChartDockerImageContainerRegistryUrl string = 'kmcontainerreg.azurecr.io'
+@description('Optional. The name of the docker image for the Charts function.')
+param functionChartDockerImageName string = 'km-charts-function'
+@description('Optional. The tag of the docker image for the Charts function.')
+param functionChartDockerImageTag string = 'latest'
+@description('Optional. The required CPU in cores of the Charts function.')
+param functionChartCpu int = 1
+@description('Optional. The required memory in GiB of the Charts function.')
+param functionChartMemory string = '2Gi'
+@description('Optional. The maximum number of workers that the Charts function can scale out.')
+param functionChartAppScaleLimit int = 10
+@description('Optional. The name of the function to be used to get the metrics in the Charts function.')
+param functionChartsFunctionName string = 'get_metrics'
+
+// PARAMETERS: Function Rag configuration
+@description('Optional. The url of the Container Registry where the docker image for the Rag function is located.')
+param functionRagDockerImageContainerRegistryUrl string = 'kmcontainerreg.azurecr.io'
+@description('Optional. The name of the docker image for the Rag function.')
+param functionRagDockerImageName string = 'km-Rag-function'
+@description('Optional. The tag of the docker image for the Rag function.')
+param functionRagDockerImageTag string = 'latest'
+@description('Optional. The required CPU in cores of the Rag function.')
+param functionRagCpu int = 1
+@description('Optional. The required memory in GiB of the Rag function.')
+param functionRagMemory string = '2Gi'
+@description('Optional. The maximum number of workers that the Rag function can scale out.')
+param functionRagAppScaleLimit int = 10
+@description('Optional. The name of the function to be used to stream text in the Rag function.')
+param functionRagFunctionName string = 'stream_openai_text'
+
+// PARAMETERS: Web app configuration
+@description('Optional. The SKU for the web app. If empty it will be set to B2.')
+param webAppServerFarmSku string = 'B2'
+@description('Optional. The url of the Container Registry where the docker image for Conversation Knowledge Mining webapp is located.')
+param webAppDockerImageContainerRegistryUrl string = 'kmcontainerreg.azurecr.io'
+@description('Optional. The name of the docker image for the Rag function.')
+param webAppDockerImageName string = 'km-app'
+@description('Optional. The tag of the docker image for the Rag function.')
+param webAppDockerImageTag string = 'latest'
 
 // PARAMETERS: Telemetry
 @description('Optional. Enable/Disable usage telemetry for module.')
@@ -452,23 +523,11 @@ var varCosmosDbAccountSqlDbContainers = [
   }
 ]
 
-// VARIABLES: SQL Database
-var varSQLDatabaseName = '${varSqlServerResourceName }-sql-db'
-var varSQLServerAdministratorLogin = 'sqladmin' //NOTE: credentials should not be hardcoded
-var varSQLServerAdministratorPassword = 'TestPassword_1234' //NOTE: credentials should not be hardcoded
-
 // VARIABLES: Deployment scripts
 var varCKMGithubBaseUrl = 'https://raw.githubusercontent.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator/main/'
 var varStorageContainerName = 'data'
 
-// VARIABLES: Function settings
-var varChartsDockerImageName = 'DOCKER|kmcontainerreg.azurecr.io/km-charts-function:${imageTag}'
-var varChartsFunctionFunctionName = 'get_metrics'
-var varRAGDockerImageName = 'DOCKER|kmcontainerreg.azurecr.io/km-rag-function:${imageTag}'
-var varRAGFunctionFunctionName = 'stream_openai_text'
-
 // VARIABLES: Web App settings
-var varWebAppImageName = 'DOCKER|kmcontainerreg.azurecr.io/km-app:${imageTag}'
 var varWebAppAppConfigReact = '''{
   "appConfig": {
     "THREE_COLUMN": {
@@ -628,9 +687,9 @@ module avmKeyVault 'br/public:avm/res/key-vault/vault:0.12.1' = {
       { name: 'AZURE-COSMOSDB-CONVERSATIONS-CONTAINER', value: varCosmosDbSqlDbCollName }
       { name: 'AZURE-COSMOSDB-ENABLE-FEEDBACK', value: 'True' }
       { name: 'SQLDB-SERVER', value: '${varSqlServerResourceName}${environment().suffixes.sqlServerHostname}' }
-      { name: 'SQLDB-DATABASE', value: varSQLDatabaseName }
-      { name: 'SQLDB-USERNAME', value: varSQLServerAdministratorLogin }
-      { name: 'SQLDB-PASSWORD', value: varSQLServerAdministratorPassword }
+      { name: 'SQLDB-DATABASE', value: sqlServerDatabaseName }
+      { name: 'SQLDB-USERNAME', value: sqlServerAdministratorLogin }
+      { name: 'SQLDB-PASSWORD', value: sqlServerAdministratorPassword }
       { name: 'AZURE-OPENAI-PREVIEW-API-VERSION', value: varAiFoundryAiServiceGPTModelVersionPreview }
       { name: 'AZURE-AI-PROJECT-CONN-STRING', value: varAiFoundryAiServiceProjectConnectionString }
       { name: 'AZURE-OPEN-AI-DEPLOYMENT-MODEL', value: varAiFoundryAIServicesModelDeployments[0].model.name }
@@ -695,7 +754,8 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.18.2' = {
     tags: tags
     location: storageAccountLocation
     enableTelemetry: enableTelemetry
-    skuName: 'Standard_LRS'
+    diagnosticSettings: [{ workspaceResourceId: avmLogAnalyticsWorkspace.outputs.resourceId }]
+    skuName: storageAccountSkuName
     kind: 'StorageV2'
     accessTier: 'Hot'
     minimumTlsVersion: 'TLS1_2'
@@ -755,6 +815,7 @@ module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.11.2' = {
     tags: tags
     location: cosmosDbAccountLocation
     enableTelemetry: enableTelemetry
+    diagnosticSettings: [{ workspaceResourceId: avmLogAnalyticsWorkspace.outputs.resourceId }]
     defaultConsistencyLevel: 'Session'
     locations: [
       {
@@ -796,8 +857,8 @@ module avmSQLServer 'br/public:avm/res/sql/server:0.13.1' = {
     tags: tags
     location: sqlServerLocation
     enableTelemetry: enableTelemetry
-    administratorLogin: varSQLServerAdministratorLogin
-    administratorLoginPassword: varSQLServerAdministratorPassword
+    administratorLogin: sqlServerAdministratorLogin
+    administratorLoginPassword: sqlServerAdministratorPassword
     publicNetworkAccess: 'Enabled'
     restrictOutboundNetworkAccess: 'Disabled'
 
@@ -810,12 +871,13 @@ module avmSQLServer 'br/public:avm/res/sql/server:0.13.1' = {
     ]
     databases: [
       {
-        name: varSQLDatabaseName
+        name: sqlServerDatabaseName
+        diagnosticSettings: [{ workspaceResourceId: avmLogAnalyticsWorkspace.outputs.resourceId }]
         sku: {
-          name: 'GP_Gen5_2'
-          tier: 'GeneralPurpose'
-          family: 'Gen5'
-          capacity: 2
+          name: sqlServerDatabaseSkuName
+          tier: sqlServerDatabaseSkuTier
+          family: sqlServerDatabaseSkuFamily
+          capacity: sqlServerDatabaseSkuCapacity
         }
         collation: 'SQL_Latin1_General_CP1_CI_AS'
         autoPauseDelay: 60
@@ -857,7 +919,7 @@ module avmDeploymentScriptCopyData 'br/public:avm/res/resources/deployment-scrip
 
 //========== Deployment script to process and index data ========== //
 
-module avmDeploymentScritptIndexData 'br/public:avm/res/resources/deployment-script:0.5.1' = {
+module avmDeploymentScriptIndexData 'br/public:avm/res/resources/deployment-script:0.5.1' = {
   name: format(avmDeploymentNameFormat, varScriptIndexDataResourceName)
   params: {
     kind: 'AzureCLI'
@@ -918,23 +980,23 @@ resource functionCharts 'Microsoft.Web/sites@2023-12-01' = {
         }
         {
           name: 'SQLDB_DATABASE'
-          value: varSQLDatabaseName
+          value: sqlServerDatabaseName
         }
         {
           name: 'SQLDB_PASSWORD'
-          value: varSQLServerAdministratorPassword
+          value: sqlServerAdministratorPassword
         }
         {
           name: 'SQLDB_SERVER'
-          value: avmSQLServer.outputs.fullyQualifiedDomainName //'${varSqlServerResourceName}.database.windows.net' CHECK THIS
+          value: avmSQLServer.outputs.fullyQualifiedDomainName
         }
         {
           name: 'SQLDB_USERNAME'
-          value: varSQLServerAdministratorLogin
+          value: sqlServerAdministratorLogin
         }
       ]
-      linuxFxVersion: varChartsDockerImageName
-      functionAppScaleLimit: 10
+      linuxFxVersion: 'DOCKER|${functionChartDockerImageContainerRegistryUrl}/${functionChartDockerImageName}:${functionChartDockerImageTag}'
+      functionAppScaleLimit: functionChartAppScaleLimit
       minimumElasticInstanceCount: 0
       // use32BitWorkerProcess: false
       // ftpsState: 'FtpsOnly'
@@ -944,30 +1006,12 @@ resource functionCharts 'Microsoft.Web/sites@2023-12-01' = {
     // virtualNetworkSubnetId: null
     // clientAffinityEnabled: false
     resourceConfig: {
-      cpu: 1
-      memory: '2Gi'
+      cpu: functionChartCpu
+      memory: functionChartMemory
     }
     storageAccountRequired: false
   }
 }
-
-// module avmStorageAccountCharts 'br/public:avm/res/storage/storage-account:0.17.3' = {
-//   name: format(avmDeploymentNameFormat, varChartsStorageAccountName)
-//   params: {
-//     name: varChartsStorageAccountName
-//     location: solutionLocation
-//     tags: tags
-//     skuName: 'Standard_LRS'
-//     kind: 'StorageV2'
-//     accessTier: 'Hot'
-//     roleAssignments: [
-//       {
-//         principalId: functionCharts.identity.principalId
-//         roleDefinitionIdOrName: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe' //NOTE: Built-in role 'Storage Blob Data Contributor'
-//       }
-//     ]
-//   }
-// }
 
 //========== Azure function: Rag ========== //
 
@@ -986,11 +1030,14 @@ module moduleFunctionRAG 'modules/function-rag.bicep' = {
     functionsManagedEnvironmentResourceId: avmFunctionsManagedEnvironment.outputs.resourceId
     gptModelName: aiFoundryAIServicesGptModelName
     gptModelVersionPreview: varAiFoundryAiServiceGPTModelVersionPreview
-    ragDockerImageName: varRAGDockerImageName
-    sqlDatabaseName: varSQLDatabaseName
-    sqlServerAdministratorLogin: varSQLServerAdministratorLogin
-    sqlServerAdministratorPassword: varSQLServerAdministratorPassword
+    ragDockerImageName: 'DOCKER|${functionRagDockerImageContainerRegistryUrl}/${functionRagDockerImageName}:${functionRagDockerImageTag}'
+    sqlDatabaseName: sqlServerDatabaseName
+    sqlServerAdministratorLogin: sqlServerAdministratorLogin
+    sqlServerAdministratorPassword: sqlServerAdministratorPassword
     sqlServerFullyQualifiedDomainName: avmSQLServer.outputs.fullyQualifiedDomainName
+    functionRagCpu: functionRagCpu
+    functionRagMemory: functionRagMemory
+    functionRagAppScaleLimit: functionRagAppScaleLimit
   }
 }
 
@@ -1013,6 +1060,7 @@ module avmServerFarmWebapp 'br/public:avm/res/web/serverfarm:0.4.1' = {
     tags: tags
     location: webAppServerFarmLocation
     enableTelemetry: enableTelemetry
+    diagnosticSettings: [{ workspaceResourceId: avmLogAnalyticsWorkspace.outputs.resourceId }]
     skuName: webAppServerFarmSku
     reserved: true
     kind: 'linux'
@@ -1030,19 +1078,19 @@ module moduleWebsiteWebapp 'modules/webapp.bicep' = {
     serverFarmResourceId: avmServerFarmWebapp.outputs.resourceId
     appInsightsResourceId: moduleAIFoundry.outputs.applicationInsightsResourceId
     aiFoundryAIServicesName: moduleAIFoundry.outputs.aiServicesName
-    webAppImageName: varWebAppImageName
+    webAppImageName: 'DOCKER|${webAppDockerImageContainerRegistryUrl}/${webAppDockerImageName}:${webAppDockerImageTag}'
     appInsightsInstrumentationKey: moduleAIFoundry.outputs.applicationInsightsInstrumentationKey
     aiServicesEndpoint: moduleAIFoundry.outputs.aiServicesEndpoint
     gptModelName: aiFoundryAIServicesGptModelName
     gptModelVersionPreview: varAiFoundryAiServiceGPTModelVersionPreview
     aiServicesResourceName: moduleAIFoundry.outputs.aiServicesName
     managedIdentityDefaultHostName: functionCharts.properties.defaultHostName
-    chartsFunctionFunctionName: varChartsFunctionFunctionName
+    chartsFunctionFunctionName: functionChartsFunctionName
     webAppAppConfigReact: varWebAppAppConfigReact
     cosmosDbSqlDbName: varCosmosDbSqlDbName
     cosmosDbSqlDbNameCollectionName: varCosmosDbSqlDbCollName
     ragFunctionDefaultHostName: moduleFunctionRAG.outputs.defaultHostName
-    ragFunctionFunctionName: varRAGFunctionFunctionName
+    ragFunctionFunctionName: functionRagFunctionName
     avmCosmosDbResourceName: avmCosmosDB.outputs.name
   }
 }

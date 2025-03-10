@@ -8,6 +8,7 @@ param ragDockerImageName string
 param ragStorageAccountName string
 param sqlDatabaseName string
 param sqlServerFullyQualifiedDomainName string
+@secure()
 param sqlServerAdministratorLogin string
 @secure()
 param sqlServerAdministratorPassword string
@@ -19,6 +20,9 @@ param aiFoundryOpenAIServicesEndpoint string
 param aiFoundryAIHubProjectConnectionString string
 param AIFoundryAISearchServiceConnectionString string
 param functionsManagedEnvironmentResourceId string
+param functionRagCpu int
+param functionRagMemory string
+param functionRagAppScaleLimit int
 
 resource existingAIFoundryAIServices 'Microsoft.CognitiveServices/accounts@2024-10-01' existing = {
   name: aiFoundryAIServicesName
@@ -101,7 +105,7 @@ resource resFunctionRAG 'Microsoft.Web/sites@2023-12-01' = {
         }
       ]
       linuxFxVersion: ragDockerImageName
-      functionAppScaleLimit: 10
+      functionAppScaleLimit: functionRagAppScaleLimit
       minimumElasticInstanceCount: 0
       // use32BitWorkerProcess: false
       // ftpsState: 'FtpsOnly'
@@ -111,8 +115,8 @@ resource resFunctionRAG 'Microsoft.Web/sites@2023-12-01' = {
     // virtualNetworkSubnetId: null
     // clientAffinityEnabled: false
     resourceConfig: {
-      cpu: 1
-      memory: '2Gi'
+      cpu: functionRagCpu
+      memory: functionRagMemory
     }
     storageAccountRequired: false
   }

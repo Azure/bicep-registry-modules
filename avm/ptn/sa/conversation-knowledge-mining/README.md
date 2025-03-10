@@ -223,13 +223,26 @@ param solutionPrefix = 'ckmpoc'
 | [`cosmosDbAccountResourceName`](#parameter-cosmosdbaccountresourcename) | string | The name of the Cosmos DB Account resource. It will override the default given name. |
 | [`databasesLocation`](#parameter-databaseslocation) | string | Secondary location for databases creation. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`functionChartAppScaleLimit`](#parameter-functionchartappscalelimit) | int | The maximum number of workers that the Charts function can scale out. |
+| [`functionChartCpu`](#parameter-functionchartcpu) | int | The required CPU in cores of the Charts function. |
+| [`functionChartDockerImageContainerRegistryUrl`](#parameter-functionchartdockerimagecontainerregistryurl) | string | The url of the Container Registry where the docker image for the Charts function is located. |
+| [`functionChartDockerImageName`](#parameter-functionchartdockerimagename) | string | The name of the docker image for the Charts function. |
+| [`functionChartDockerImageTag`](#parameter-functionchartdockerimagetag) | string | The tag of the docker image for the Charts function. |
+| [`functionChartMemory`](#parameter-functionchartmemory) | string | The required memory in GiB of the Charts function. |
+| [`functionChartsFunctionName`](#parameter-functionchartsfunctionname) | string | The name of the function to be used to get the metrics in the Charts function. |
 | [`functionChartsLocation`](#parameter-functionchartslocation) | string | Location for the Function Charts resource deployment. |
 | [`functionChartsResourceName`](#parameter-functionchartsresourcename) | string | The name of the Function Charts resource. It will override the default given name. |
+| [`functionRagAppScaleLimit`](#parameter-functionragappscalelimit) | int | The maximum number of workers that the Rag function can scale out. |
+| [`functionRagCpu`](#parameter-functionragcpu) | int | The required CPU in cores of the Rag function. |
+| [`functionRagDockerImageContainerRegistryUrl`](#parameter-functionragdockerimagecontainerregistryurl) | string | The url of the Container Registry where the docker image for the Rag function is located. |
+| [`functionRagDockerImageName`](#parameter-functionragdockerimagename) | string | The name of the docker image for the Rag function. |
+| [`functionRagDockerImageTag`](#parameter-functionragdockerimagetag) | string | The tag of the docker image for the Rag function. |
+| [`functionRagFunctionName`](#parameter-functionragfunctionname) | string | The name of the function to be used to stream text in the Rag function. |
 | [`functionRagLocation`](#parameter-functionraglocation) | string | Location for the Function RAG resource deployment. |
+| [`functionRagMemory`](#parameter-functionragmemory) | string | The required memory in GiB of the Rag function. |
 | [`functionRagResourceName`](#parameter-functionragresourcename) | string | The name of the Function RAG resource. It will override the default given name. |
 | [`functionsManagedEnvironmentLocation`](#parameter-functionsmanagedenvironmentlocation) | string | Location for the Functions Managed Environment resource deployment. |
 | [`functionsManagedEnvironmentResourceName`](#parameter-functionsmanagedenvironmentresourcename) | string | The name of the Functions Managed Environment resource. It will override the default given name. |
-| [`imageTag`](#parameter-imagetag) | string | Docker image version to use for all deployed containers (functions and web app). |
 | [`keyVaultCreateMode`](#parameter-keyvaultcreatemode) | string | The Key Vault create mode. Indicates whether the vault need to be recovered from purge or not. If empty, default will be used. |
 | [`keyVaultLocation`](#parameter-keyvaultlocation) | string | Location for the Key Vault resource deployment. |
 | [`keyVaultPurgeProtectionEnabled`](#parameter-keyvaultpurgeprotectionenabled) | bool | If set to true, The Key Vault purge protection will be enabled. If empty, it will be set to false. |
@@ -249,15 +262,26 @@ param solutionPrefix = 'ckmpoc'
 | [`scriptIndexDataLocation`](#parameter-scriptindexdatalocation) | string | Location for the Script Index Data resource deployment. |
 | [`scriptIndexDataResourceName`](#parameter-scriptindexdataresourcename) | string | The name of the Script Index Data resource. It will override the default given name. |
 | [`solutionLocation`](#parameter-solutionlocation) | string | Location for the solution deployment. Defaulted to the resource group location. |
+| [`sqlServerAdministratorLogin`](#parameter-sqlserveradministratorlogin) | securestring | The administrator login credential for the SQL Server. |
+| [`sqlServerAdministratorPassword`](#parameter-sqlserveradministratorpassword) | securestring | The administrator password credential for the SQL Server. |
+| [`sqlServerDatabaseName`](#parameter-sqlserverdatabasename) | string | The name of the SQL Server database. |
+| [`sqlServerDatabaseSkuCapacity`](#parameter-sqlserverdatabaseskucapacity) | int | The SKU capacity of the SQL Server database. If empty, it will be set to 2. Find available options: Database.[Sku property](https://learn.microsoft.com/dotnet/api/microsoft.azure.management.sql.models.database.sku). |
+| [`sqlServerDatabaseSkuFamily`](#parameter-sqlserverdatabaseskufamily) | string | The SKU Family of the SQL Server database. If empty, it will be set to Gen5. Find available options: Database.[Sku property](https://learn.microsoft.com/dotnet/api/microsoft.azure.management.sql.models.database.sku). |
+| [`sqlServerDatabaseSkuName`](#parameter-sqlserverdatabaseskuname) | string | The SKU name of the SQL Server database. If empty, it will be set to GP_Gen5_2. Find available options: Database.[Sku property](https://learn.microsoft.com/dotnet/api/microsoft.azure.management.sql.models.database.sku). |
+| [`sqlServerDatabaseSkuTier`](#parameter-sqlserverdatabaseskutier) | string | The SKU tier of the SQL Server database. If empty, it will be set to GeneralPurpose. Find available options: Database.[Sku property](https://learn.microsoft.com/dotnet/api/microsoft.azure.management.sql.models.database.sku). |
 | [`sqlServerLocation`](#parameter-sqlserverlocation) | string | Location for the SQL Server resource deployment. |
 | [`sqlServerResourceName`](#parameter-sqlserverresourcename) | string | The name of the SQL Server resource. It will override the default given name. |
 | [`storageAccountLocation`](#parameter-storageaccountlocation) | string | Location for the Storage Account resource deployment. |
 | [`storageAccountResourceName`](#parameter-storageaccountresourcename) | string | The name of the Storage Account resource. It will override the default given name. |
+| [`storageAccountSkuName`](#parameter-storageaccountskuname) | string | The SKU for the Storage Account. If empty, Standard_LRS will be used. |
+| [`webAppDockerImageContainerRegistryUrl`](#parameter-webappdockerimagecontainerregistryurl) | string | The url of the Container Registry where the docker image for Conversation Knowledge Mining webapp is located. |
+| [`webAppDockerImageName`](#parameter-webappdockerimagename) | string | The name of the docker image for the Rag function. |
+| [`webAppDockerImageTag`](#parameter-webappdockerimagetag) | string | The tag of the docker image for the Rag function. |
 | [`webAppLocation`](#parameter-webapplocation) | string | Location for the Web App resource deployment. |
 | [`webAppResourceName`](#parameter-webappresourcename) | string | The name of the Web App resource. |
 | [`webAppServerFarmLocation`](#parameter-webappserverfarmlocation) | string | The location for the Web App Server Farm. Defaulted to the solution location. |
 | [`webAppServerFarmResourceName`](#parameter-webappserverfarmresourcename) | string | The name of the Web App Server Farm resource. It will override the default given name. |
-| [`webAppServerFarmSku`](#parameter-webappserverfarmsku) | string | The SKU for the web app. If empty, aiFoundryAiServicesContentUnderstandingLocation will be used. |
+| [`webAppServerFarmSku`](#parameter-webappserverfarmsku) | string | The SKU for the web app. If empty it will be set to B2. |
 
 ### Parameter: `aiFoundryAiServicesContentUnderstandingLocation`
 
@@ -689,6 +713,69 @@ Enable/Disable usage telemetry for module.
 - Default: `True`
 - MinValue: 10
 
+### Parameter: `functionChartAppScaleLimit`
+
+The maximum number of workers that the Charts function can scale out.
+
+- Required: No
+- Type: int
+- Default: `10`
+- MinValue: 10
+
+### Parameter: `functionChartCpu`
+
+The required CPU in cores of the Charts function.
+
+- Required: No
+- Type: int
+- Default: `1`
+- MinValue: 10
+
+### Parameter: `functionChartDockerImageContainerRegistryUrl`
+
+The url of the Container Registry where the docker image for the Charts function is located.
+
+- Required: No
+- Type: string
+- Default: `'kmcontainerreg.azurecr.io'`
+- MinValue: 10
+
+### Parameter: `functionChartDockerImageName`
+
+The name of the docker image for the Charts function.
+
+- Required: No
+- Type: string
+- Default: `'km-charts-function'`
+- MinValue: 10
+
+### Parameter: `functionChartDockerImageTag`
+
+The tag of the docker image for the Charts function.
+
+- Required: No
+- Type: string
+- Default: `'latest'`
+- MinValue: 10
+
+### Parameter: `functionChartMemory`
+
+The required memory in GiB of the Charts function.
+
+- Required: No
+- Type: string
+- Default: `'2Gi'`
+- MinValue: 10
+
+### Parameter: `functionChartsFunctionName`
+
+The name of the function to be used to get the metrics in the Charts function.
+
+- Required: No
+- Type: string
+- Default: `'get_metrics'`
+- MinValue: 10
+
 ### Parameter: `functionChartsLocation`
 
 Location for the Function Charts resource deployment.
@@ -707,6 +794,60 @@ The name of the Function Charts resource. It will override the default given nam
 - Default: `''`
 - MinValue: 10
 
+### Parameter: `functionRagAppScaleLimit`
+
+The maximum number of workers that the Rag function can scale out.
+
+- Required: No
+- Type: int
+- Default: `10`
+- MinValue: 10
+
+### Parameter: `functionRagCpu`
+
+The required CPU in cores of the Rag function.
+
+- Required: No
+- Type: int
+- Default: `1`
+- MinValue: 10
+
+### Parameter: `functionRagDockerImageContainerRegistryUrl`
+
+The url of the Container Registry where the docker image for the Rag function is located.
+
+- Required: No
+- Type: string
+- Default: `'kmcontainerreg.azurecr.io'`
+- MinValue: 10
+
+### Parameter: `functionRagDockerImageName`
+
+The name of the docker image for the Rag function.
+
+- Required: No
+- Type: string
+- Default: `'km-Rag-function'`
+- MinValue: 10
+
+### Parameter: `functionRagDockerImageTag`
+
+The tag of the docker image for the Rag function.
+
+- Required: No
+- Type: string
+- Default: `'latest'`
+- MinValue: 10
+
+### Parameter: `functionRagFunctionName`
+
+The name of the function to be used to stream text in the Rag function.
+
+- Required: No
+- Type: string
+- Default: `'stream_openai_text'`
+- MinValue: 10
+
 ### Parameter: `functionRagLocation`
 
 Location for the Function RAG resource deployment.
@@ -714,6 +855,15 @@ Location for the Function RAG resource deployment.
 - Required: No
 - Type: string
 - Default: `[parameters('solutionLocation')]`
+- MinValue: 10
+
+### Parameter: `functionRagMemory`
+
+The required memory in GiB of the Rag function.
+
+- Required: No
+- Type: string
+- Default: `'2Gi'`
 - MinValue: 10
 
 ### Parameter: `functionRagResourceName`
@@ -741,15 +891,6 @@ The name of the Functions Managed Environment resource. It will override the def
 - Required: No
 - Type: string
 - Default: `''`
-- MinValue: 10
-
-### Parameter: `imageTag`
-
-Docker image version to use for all deployed containers (functions and web app).
-
-- Required: No
-- Type: string
-- Default: `'latest'`
 - MinValue: 10
 
 ### Parameter: `keyVaultCreateMode`
@@ -1060,6 +1201,76 @@ Location for the solution deployment. Defaulted to the resource group location.
 - MinValue: 0
 - MaxValue: 730
 
+### Parameter: `sqlServerAdministratorLogin`
+
+The administrator login credential for the SQL Server.
+
+- Required: No
+- Type: securestring
+- Default: `'sqladmin'`
+- MinValue: 0
+- MaxValue: 730
+
+### Parameter: `sqlServerAdministratorPassword`
+
+The administrator password credential for the SQL Server.
+
+- Required: No
+- Type: securestring
+- Default: `'TestPassword_1234'`
+- MinValue: 0
+- MaxValue: 730
+
+### Parameter: `sqlServerDatabaseName`
+
+The name of the SQL Server database.
+
+- Required: No
+- Type: string
+- Default: `[format('{0}-sql-db', parameters('sqlServerResourceName'))]`
+- MinValue: 0
+- MaxValue: 730
+
+### Parameter: `sqlServerDatabaseSkuCapacity`
+
+The SKU capacity of the SQL Server database. If empty, it will be set to 2. Find available options: Database.[Sku property](https://learn.microsoft.com/dotnet/api/microsoft.azure.management.sql.models.database.sku).
+
+- Required: No
+- Type: int
+- Default: `2`
+- MinValue: 0
+- MaxValue: 730
+
+### Parameter: `sqlServerDatabaseSkuFamily`
+
+The SKU Family of the SQL Server database. If empty, it will be set to Gen5. Find available options: Database.[Sku property](https://learn.microsoft.com/dotnet/api/microsoft.azure.management.sql.models.database.sku).
+
+- Required: No
+- Type: string
+- Default: `'Gen5'`
+- MinValue: 0
+- MaxValue: 730
+
+### Parameter: `sqlServerDatabaseSkuName`
+
+The SKU name of the SQL Server database. If empty, it will be set to GP_Gen5_2. Find available options: Database.[Sku property](https://learn.microsoft.com/dotnet/api/microsoft.azure.management.sql.models.database.sku).
+
+- Required: No
+- Type: string
+- Default: `'GP_Gen5_2'`
+- MinValue: 0
+- MaxValue: 730
+
+### Parameter: `sqlServerDatabaseSkuTier`
+
+The SKU tier of the SQL Server database. If empty, it will be set to GeneralPurpose. Find available options: Database.[Sku property](https://learn.microsoft.com/dotnet/api/microsoft.azure.management.sql.models.database.sku).
+
+- Required: No
+- Type: string
+- Default: `'GeneralPurpose'`
+- MinValue: 0
+- MaxValue: 730
+
 ### Parameter: `sqlServerLocation`
 
 Location for the SQL Server resource deployment.
@@ -1097,6 +1308,57 @@ The name of the Storage Account resource. It will override the default given nam
 - Required: No
 - Type: string
 - Default: `''`
+- MinValue: 0
+- MaxValue: 730
+
+### Parameter: `storageAccountSkuName`
+
+The SKU for the Storage Account. If empty, Standard_LRS will be used.
+
+- Required: No
+- Type: string
+- Default: `'Standard_LRS'`
+- Allowed:
+  ```Bicep
+  [
+    'Premium_LRS'
+    'Premium_ZRS'
+    'Standard_GRS'
+    'Standard_LRS'
+    'Standard_RAGRS'
+    'Standard_ZRS'
+  ]
+  ```
+- MinValue: 0
+- MaxValue: 730
+
+### Parameter: `webAppDockerImageContainerRegistryUrl`
+
+The url of the Container Registry where the docker image for Conversation Knowledge Mining webapp is located.
+
+- Required: No
+- Type: string
+- Default: `'kmcontainerreg.azurecr.io'`
+- MinValue: 0
+- MaxValue: 730
+
+### Parameter: `webAppDockerImageName`
+
+The name of the docker image for the Rag function.
+
+- Required: No
+- Type: string
+- Default: `'km-app'`
+- MinValue: 0
+- MaxValue: 730
+
+### Parameter: `webAppDockerImageTag`
+
+The tag of the docker image for the Rag function.
+
+- Required: No
+- Type: string
+- Default: `'latest'`
 - MinValue: 0
 - MaxValue: 730
 
@@ -1142,7 +1404,7 @@ The name of the Web App Server Farm resource. It will override the default given
 
 ### Parameter: `webAppServerFarmSku`
 
-The SKU for the web app. If empty, aiFoundryAiServicesContentUnderstandingLocation will be used.
+The SKU for the web app. If empty it will be set to B2.
 
 - Required: No
 - Type: string
