@@ -37,6 +37,7 @@ This module deploys Azure SQL Server failover group.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`readOnlyEndpoint`](#parameter-readonlyendpoint) | object | Read-only endpoint of the failover group instance. |
+| [`tags`](#parameter-tags) | object | Tags of the resource. |
 
 ### Parameter: `databases`
 
@@ -154,6 +155,13 @@ The target partner server where the read-only endpoint points to.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `tags`
+
+Tags of the resource.
+
+- Required: No
+- Type: object
 
 ## Outputs
 
