@@ -312,7 +312,7 @@ resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2024-08-01' =
           privateDnsZoneArmResourceId: privateDnsZoneArmResourceId
           publicNetworkAccess: publicNetworkAccess
         }
-      : { publicNetworkAccess: 'Disabled' }
+      : { publicNetworkAccess: publicNetworkAccess }
     pointInTimeUTC: createMode == 'PointInTimeRestore' ? pointInTimeUTC : null
     replica: !empty(replica) ? replica : null
     sourceServerResourceId: (createMode == 'PointInTimeRestore' || createMode == 'Replica')

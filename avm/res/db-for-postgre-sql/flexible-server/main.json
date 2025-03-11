@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "6350795977347687440"
+      "version": "0.33.13.18514",
+      "templateHash": "10499571262594547818"
     },
     "name": "DBforPostgreSQL Flexible Servers",
     "description": "This module deploys a DBforPostgreSQL Flexible Server."
@@ -1077,7 +1077,7 @@
           "standbyAvailabilityZone": "[if(equals(parameters('highAvailability'), 'SameZone'), parameters('availabilityZone'), null())]"
         },
         "maintenanceWindow": "[if(not(empty(parameters('maintenanceWindow'))), createObject('customWindow', parameters('maintenanceWindow').customWindow, 'dayOfWeek', if(equals(parameters('maintenanceWindow').customWindow, 'Enabled'), parameters('maintenanceWindow').dayOfWeek, 0), 'startHour', if(equals(parameters('maintenanceWindow').customWindow, 'Enabled'), parameters('maintenanceWindow').startHour, 0), 'startMinute', if(equals(parameters('maintenanceWindow').customWindow, 'Enabled'), parameters('maintenanceWindow').startMinute, 0)), null())]",
-        "network": "[if(and(not(empty(parameters('delegatedSubnetResourceId'))), empty(parameters('firewallRules'))), createObject('delegatedSubnetResourceId', parameters('delegatedSubnetResourceId'), 'privateDnsZoneArmResourceId', parameters('privateDnsZoneArmResourceId'), 'publicNetworkAccess', parameters('publicNetworkAccess')), null())]",
+        "network": "[if(and(not(empty(parameters('delegatedSubnetResourceId'))), empty(parameters('firewallRules'))), createObject('delegatedSubnetResourceId', parameters('delegatedSubnetResourceId'), 'privateDnsZoneArmResourceId', parameters('privateDnsZoneArmResourceId'), 'publicNetworkAccess', parameters('publicNetworkAccess')), createObject('publicNetworkAccess', parameters('publicNetworkAccess')))]",
         "pointInTimeUTC": "[if(equals(parameters('createMode'), 'PointInTimeRestore'), parameters('pointInTimeUTC'), null())]",
         "replica": "[if(not(empty(parameters('replica'))), parameters('replica'), null())]",
         "sourceServerResourceId": "[if(or(equals(parameters('createMode'), 'PointInTimeRestore'), equals(parameters('createMode'), 'Replica')), parameters('sourceServerResourceId'), null())]",
@@ -1202,8 +1202,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "562413302994246231"
+              "version": "0.33.13.18514",
+              "templateHash": "12559382321541199726"
             },
             "name": "DBforPostgreSQL Flexible Server Databases",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Database."
@@ -1315,8 +1315,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "17303238617469661530"
+              "version": "0.33.13.18514",
+              "templateHash": "533163168353951900"
             },
             "name": "DBforPostgreSQL Flexible Server Firewall Rules",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Firewall Rule."
@@ -1424,8 +1424,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "10184004603904028584"
+              "version": "0.33.13.18514",
+              "templateHash": "14381841795302215842"
             },
             "name": "DBforPostgreSQL Flexible Server Configurations",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Configuration."
@@ -1541,8 +1541,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "14949929816214813418"
+              "version": "0.33.13.18514",
+              "templateHash": "9438694500506305843"
             },
             "name": "DBforPostgreSQL Flexible Server Administrators",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Administrator."
@@ -1652,8 +1652,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "7080936927606489698"
+              "version": "0.33.13.18514",
+              "templateHash": "17600786812294347393"
             },
             "name": "DBforPostgreSQL Flexible Server Advanced Threat Protection",
             "description": "This module deploys a DBforPostgreSQL Advanced Threat Protection."
