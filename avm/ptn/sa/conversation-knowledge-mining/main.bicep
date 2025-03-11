@@ -170,8 +170,8 @@ param keyVaultSku string = 'standard'
 @allowed(['default', 'recover'])
 param keyVaultCreateMode string = 'default'
 
-@description('Optional. If set to true, The Key Vault soft delete will be enabled. If empty, it will be set to false.')
-param keyVaultSoftDeleteEnabled bool = false
+@description('Optional. If set to true, The Key Vault soft delete will be enabled.')
+param keyVaultSoftDeleteEnabled bool = true
 
 @description('Optional. The number of days to retain the soft deleted vault. If empty, it will be set to 7.')
 @minValue(7)

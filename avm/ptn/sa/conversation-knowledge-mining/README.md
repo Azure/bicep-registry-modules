@@ -249,7 +249,7 @@ param solutionPrefix = 'ckmpoc'
 | [`keyVaultResourceName`](#parameter-keyvaultresourcename) | string | The name of the Key Vault resource. It will override the default given name. |
 | [`keyVaultRoleAssignments`](#parameter-keyvaultroleassignments) | array | Array of role assignments to include in the Key Vault. |
 | [`keyVaultSku`](#parameter-keyvaultsku) | string | The SKU for the Key Vault. If empty, standard will be used. |
-| [`keyVaultSoftDeleteEnabled`](#parameter-keyvaultsoftdeleteenabled) | bool | If set to true, The Key Vault soft delete will be enabled. If empty, it will be set to false. |
+| [`keyVaultSoftDeleteEnabled`](#parameter-keyvaultsoftdeleteenabled) | bool | If set to true, The Key Vault soft delete will be enabled. |
 | [`keyVaultSoftDeleteRetentionInDays`](#parameter-keyvaultsoftdeleteretentionindays) | int | The number of days to retain the soft deleted vault. If empty, it will be set to 7. |
 | [`logAnalyticsWorkspaceDataRetentionInDays`](#parameter-loganalyticsworkspacedataretentionindays) | int | The number of days to retain the data in the Log Analytics Workspace. If empty, it will be set to 30 days. |
 | [`logAnalyticsWorkspaceLocation`](#parameter-loganalyticsworkspacelocation) | string | Location for the Log Analytics Workspace resource deployment. |
@@ -1061,11 +1061,11 @@ The SKU for the Key Vault. If empty, standard will be used.
 
 ### Parameter: `keyVaultSoftDeleteEnabled`
 
-If set to true, The Key Vault soft delete will be enabled. If empty, it will be set to false.
+If set to true, The Key Vault soft delete will be enabled.
 
 - Required: No
 - Type: bool
-- Default: `False`
+- Default: `True`
 - MinValue: 10
 
 ### Parameter: `keyVaultSoftDeleteRetentionInDays`
