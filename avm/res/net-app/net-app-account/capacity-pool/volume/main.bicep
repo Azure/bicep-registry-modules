@@ -78,7 +78,7 @@ param subnetResourceId string
 @description('Optional. The export policy rules.')
 param exportPolicy exportPolicyType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -102,10 +102,10 @@ param smbNonBrowsable string = 'Disabled'
 param kerberosEnabled bool = false
 
 var remoteCapacityPoolName = !empty(dataProtection.?replication.?remoteVolumeResourceId)
-  ? split((dataProtection.?replication.?remoteVolumeResourceId ?? '//'), '/')[10]
+  ? split(dataProtection.?replication.?remoteVolumeResourceId!, '/')[10]
   : ''
 var remoteNetAppName = !empty(dataProtection.?replication.?remoteVolumeResourceId)
-  ? split((dataProtection.?replication.?remoteVolumeResourceId ?? '//'), '/')[8]
+  ? split(dataProtection.?replication.?remoteVolumeResourceId!, '/')[8]
   : ''
 
 var builtInRoleNames = {
@@ -155,26 +155,26 @@ resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2024-07-01' existing = {
 }
 
 resource keyVaultPrivateEndpoint 'Microsoft.Network/privateEndpoints@2024-03-01' existing = if (encryptionKeySource != 'Microsoft.NetApp') {
-  name: last(split(keyVaultPrivateEndpointResourceId ?? 'dummyVault', '/'))
+  name: last(split(keyVaultPrivateEndpointResourceId!, '/'))
   scope: resourceGroup(
-    split((keyVaultPrivateEndpointResourceId ?? '//'), '/')[2],
-    split((keyVaultPrivateEndpointResourceId ?? '////'), '/')[4]
+    split(keyVaultPrivateEndpointResourceId!, '/')[2],
+    split(keyVaultPrivateEndpointResourceId!, '/')[4]
   )
 }
 
 resource remoteNetAppAccount 'Microsoft.NetApp/netAppAccounts@2024-07-01' existing = if (!empty(dataProtection.?replication.?remoteVolumeResourceId) && (remoteNetAppName != netAppAccountName)) {
-  name: split((dataProtection.?replication.?remoteVolumeResourceId ?? '//'), '/')[8]
+  name: split(dataProtection.?replication.?remoteVolumeResourceId!, '/')[8]
   scope: resourceGroup(
-    split((dataProtection.?replication.?remoteVolumeResourceId ?? '//'), '/')[2],
-    split((dataProtection.?replication.?remoteVolumeResourceId ?? '////'), '/')[4]
+    split(dataProtection.?replication.?remoteVolumeResourceId!, '/')[2],
+    split(dataProtection.?replication.?remoteVolumeResourceId!, '/')[4]
   )
 
   //cp-na-anfs-swc-y01
   resource remoteCapacityPool 'capacityPools@2024-07-01' existing = if (!empty(dataProtection.?replication.?remoteVolumeResourceId) && (remoteCapacityPoolName != capacityPoolName)) {
-    name: split((dataProtection.?replication.?remoteVolumeResourceId ?? '//'), '/')[10]
+    name: split(dataProtection.?replication.?remoteVolumeResourceId!, '/')[10]
 
     resource remoteVolume 'volumes@2024-07-01' existing = if (!empty(dataProtection.?replication)) {
-      name: last(split(dataProtection.?replication.?remoteVolumeResourceId ?? 'dummyvolume', '/'))
+      name: last(split(dataProtection.?replication.?remoteVolumeResourceId!, '/'))
     }
   }
 }
