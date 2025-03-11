@@ -174,73 +174,6 @@ module avmCognitiveServicesAccounts 'br/public:avm/res/cognitive-services/accoun
     }
   }
 }
-// resource cognitiveServicesAccounts 'Microsoft.CognitiveServices/accounts@2024-04-01-preview' = {
-//   name: aiServicesResourceName
-//   tags: tags
-//   location: aiServicesLocation
-//   sku: {
-//     name: aiServicesSkuName
-//   }
-//   kind: 'AIServices'
-//   properties: {
-//     customSubDomainName: aiServicesResourceName
-//     apiProperties: {
-//       statisticsEnabled: false
-//     }
-//     publicNetworkAccess: 'Enabled' // Not in original script, it failing otherwise
-//   }
-// }
-// @batchSize(1)
-// resource aiServicesDeployments 'Microsoft.CognitiveServices/accounts/deployments@2023-05-01' = [
-//   for aiModeldeployment in aiServicesModelDeployments: {
-//     parent: avmCognitiveServicesAccounts //aiServices_m
-//     name: aiModeldeployment.name
-//     properties: {
-//       model: {
-//         format: 'OpenAI'
-//         name: aiModeldeployment.model.name
-//       }
-//       raiPolicyName: aiModeldeployment.raiPolicyName
-//     }
-//     sku: {
-//       name: aiModeldeployment.sku.name
-//       capacity: aiModeldeployment.sku.capacity
-//     }
-//   }
-// ]
-// resource cognitiveServicesAccount_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
-//   name: '${avmCognitiveServicesAccounts.name}-diagnosticSettings'
-//   scope: avmCognitiveServicesAccounts
-//   properties: {
-//     workspaceId: logAnalyticsWorkspaceResourceId
-//     metrics: [
-//       {
-//         category: 'AllMetrics'
-//         enabled: true
-//         timeGrain: null
-//       }
-//     ]
-//     logs: [
-//       {
-//         categoryGroup: 'audit'
-//         category: null
-//         enabled: true
-//       }
-//       {
-//         categoryGroup: 'allLogs'
-//         category: null
-//         enabled: true
-//       }
-//     ]
-//   }
-// }
-// resource azureOpenAIKeyEntry 'Microsoft.KeyVault/vaults/secrets@2021-11-01-preview' = {
-//   parent: existingKeyVaultResource
-//   name: varKvSecretNameAzureOpenaiKey
-//   properties: {
-//     value: avmCognitiveServicesAccounts.listKeys().key1
-//   }
-// }
 
 // AI Foundry: AI Services Content Understanding
 // NOTE: Required version 'Microsoft.CognitiveServices/accounts/deployments@2023-05-01' not available in AVM
@@ -266,55 +199,6 @@ module avmCognitiveServicesAccountsContentUnderstanding 'br/public:avm/res/cogni
     }
   }
 }
-// resource cognitiveServicesAccountsContentUnderstanding 'Microsoft.CognitiveServices/accounts@2024-04-01-preview' = {
-//   name: aiServicesContentUnderstandingResourceName
-//   tags: tags
-//   location: aiServicesContentUnderstandingLocation
-//   sku: {
-//     name: aiServicesContentUnderstandingSkuName
-//   }
-//   kind: 'AIServices'
-//   properties: {
-//     customSubDomainName: aiServicesContentUnderstandingResourceName
-//     apiProperties: {
-//       statisticsEnabled: false
-//     }
-//     publicNetworkAccess: 'Enabled'
-//   }
-// }
-// resource cognitiveServicesAccountsContentUnderstanding_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
-//   name: '${cognitiveServicesAccountsContentUnderstanding.name}-diagnosticSettings'
-//   scope: cognitiveServicesAccountsContentUnderstanding
-//   properties: {
-//     workspaceId: logAnalyticsWorkspaceResourceId
-//     metrics: [
-//       {
-//         category: 'AllMetrics'
-//         enabled: true
-//         timeGrain: null
-//       }
-//     ]
-//     logs: [
-//       {
-//         categoryGroup: 'audit'
-//         category: null
-//         enabled: true
-//       }
-//       {
-//         categoryGroup: 'allLogs'
-//         category: null
-//         enabled: true
-//       }
-//     ]
-//   }
-// }
-// resource azureOpenAICuKeyEntry 'Microsoft.KeyVault/vaults/secrets@2021-11-01-preview' = {
-//   parent: existingKeyVaultResource
-//   name: 'AZURE-OPENAI-CU-KEY'
-//   properties: {
-//     value: cognitiveServicesAccountsContentUnderstanding.listKeys().key1 //'2024-02-15-preview'
-//   }
-// }
 
 resource azureOpenAICUEndpointEntry 'Microsoft.keyvault/vaults/secrets@2021-11-01-preview' = {
   parent: existingKeyVaultResource
