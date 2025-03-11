@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "353797495875556869"
+      "version": "0.33.93.31351",
+      "templateHash": "13539851033295848425"
     },
     "name": "DNS Resolver",
     "description": "This module deploys a DNS Resolver."
@@ -197,6 +197,27 @@
         }
       },
       "nullable": true
+    },
+    "endpointDetailsType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "The name of the resource."
+          }
+        },
+        "resourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "The resource ID of the resource."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for an endpoint details."
+      }
     }
   },
   "parameters": {
@@ -392,8 +413,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "3824129655159697612"
+              "version": "0.33.93.31351",
+              "templateHash": "457587831316183445"
             },
             "name": "DNS Resolver Inbound Endpoint",
             "description": "This module deploys a DNS Resolver Inbound Endpoint."
@@ -539,8 +560,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "17231952253556640030"
+              "version": "0.33.93.31351",
+              "templateHash": "6512088712263491853"
             },
             "name": "DNS Resolver Outbound Endpoint",
             "description": "This module deploys a DNS Resolver Outbound Endpoint."
@@ -658,6 +679,38 @@
         "description": "The location the resource was deployed into."
       },
       "value": "[reference('dnsResolver', '2022-07-01', 'full').location]"
+    },
+    "outboundEndpointsObject": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/endpointDetailsType"
+      },
+      "metadata": {
+        "description": "The outbound endpoints object."
+      },
+      "copy": {
+        "count": "[length(range(0, length(coalesce(parameters('outboundEndpoints'), createArray()))))]",
+        "input": {
+          "name": "[reference(format('dnsResolver_outboundEndpoints[{0}]', range(0, length(coalesce(parameters('outboundEndpoints'), createArray())))[copyIndex()])).outputs.name.value]",
+          "resourceId": "[reference(format('dnsResolver_outboundEndpoints[{0}]', range(0, length(coalesce(parameters('outboundEndpoints'), createArray())))[copyIndex()])).outputs.resourceId.value]"
+        }
+      }
+    },
+    "inboundEndpointsObject": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/endpointDetailsType"
+      },
+      "metadata": {
+        "description": "The outbound endpoints object."
+      },
+      "copy": {
+        "count": "[length(range(0, length(coalesce(parameters('inboundEndpoints'), createArray()))))]",
+        "input": {
+          "name": "[reference(format('dnsResolver_inboundEndpoints[{0}]', range(0, length(coalesce(parameters('inboundEndpoints'), createArray())))[copyIndex()])).outputs.name.value]",
+          "resourceId": "[reference(format('dnsResolver_inboundEndpoints[{0}]', range(0, length(coalesce(parameters('inboundEndpoints'), createArray())))[copyIndex()])).outputs.resourceId.value]"
+        }
+      }
     }
   }
 }

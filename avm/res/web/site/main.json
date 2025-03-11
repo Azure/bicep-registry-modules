@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "6063412784919637403"
+      "version": "0.33.93.31351",
+      "templateHash": "15502471216449411961"
     },
     "name": "Web/Function Apps",
     "description": "This module deploys a Web or Function App."
@@ -961,6 +961,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
+    "enableReferencedModulesTelemetry": false,
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned, UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "builtInRoleNames": {
@@ -1147,8 +1148,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "3773744005628323179"
+              "version": "0.33.93.31351",
+              "templateHash": "12262977018813780856"
             },
             "name": "Site App Settings",
             "description": "This module deploys a Site App Setting."
@@ -1228,25 +1229,25 @@
               "existing": true,
               "type": "Microsoft.Insights/components",
               "apiVersion": "2020-02-02",
-              "subscriptionId": "[split(coalesce(parameters('appInsightResourceId'), '//'), '/')[2]]",
-              "resourceGroup": "[split(coalesce(parameters('appInsightResourceId'), '////'), '/')[4]]",
-              "name": "[last(split(coalesce(parameters('appInsightResourceId'), 'dummyName'), '/'))]"
+              "subscriptionId": "[split(parameters('appInsightResourceId'), '/')[2]]",
+              "resourceGroup": "[split(parameters('appInsightResourceId'), '/')[4]]",
+              "name": "[last(split(parameters('appInsightResourceId'), '/'))]"
             },
             "storageAccount": {
               "condition": "[not(empty(parameters('storageAccountResourceId')))]",
               "existing": true,
               "type": "Microsoft.Storage/storageAccounts",
               "apiVersion": "2023-05-01",
-              "subscriptionId": "[split(coalesce(parameters('storageAccountResourceId'), '//'), '/')[2]]",
-              "resourceGroup": "[split(coalesce(parameters('storageAccountResourceId'), '////'), '/')[4]]",
-              "name": "[last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/'))]"
+              "subscriptionId": "[split(parameters('storageAccountResourceId'), '/')[2]]",
+              "resourceGroup": "[split(parameters('storageAccountResourceId'), '/')[4]]",
+              "name": "[last(split(parameters('storageAccountResourceId'), '/'))]"
             },
             "appSettings": {
               "type": "Microsoft.Web/sites/config",
               "apiVersion": "2024-04-01",
               "name": "[format('{0}/{1}', parameters('appName'), 'appsettings')]",
               "kind": "[parameters('kind')]",
-              "properties": "[union(coalesce(parameters('currentAppSettings'), createObject()), coalesce(parameters('appSettingsKeyValuePairs'), createObject()), if(and(not(empty(parameters('storageAccountResourceId'))), not(parameters('storageAccountUseIdentityAuthentication'))), createObject('AzureWebJobsStorage', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/')), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(parameters('storageAccountResourceId'), '//'), '/')[2], split(coalesce(parameters('storageAccountResourceId'), '////'), '/')[4]), 'Microsoft.Storage/storageAccounts', last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/'))), '2023-05-01').keys[0].value, environment().suffixes.storage)), if(and(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountUseIdentityAuthentication')), union(createObject('AzureWebJobsStorage__accountName', last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/'))), createObject('AzureWebJobsStorage__blobServiceUri', reference('storageAccount').primaryEndpoints.blob), createObject('AzureWebJobsStorage__queueServiceUri', reference('storageAccount').primaryEndpoints.queue), createObject('AzureWebJobsStorage__tableServiceUri', reference('storageAccount').primaryEndpoints.table)), createObject())), if(not(empty(parameters('appInsightResourceId'))), createObject('APPLICATIONINSIGHTS_CONNECTION_STRING', reference('appInsight').ConnectionString), createObject()))]",
+              "properties": "[union(coalesce(parameters('currentAppSettings'), createObject()), coalesce(parameters('appSettingsKeyValuePairs'), createObject()), if(and(not(empty(parameters('storageAccountResourceId'))), not(parameters('storageAccountUseIdentityAuthentication'))), createObject('AzureWebJobsStorage', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', last(split(parameters('storageAccountResourceId'), '/')), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('storageAccountResourceId'), '/')[2], split(parameters('storageAccountResourceId'), '/')[4]), 'Microsoft.Storage/storageAccounts', last(split(parameters('storageAccountResourceId'), '/'))), '2023-05-01').keys[0].value, environment().suffixes.storage)), if(and(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountUseIdentityAuthentication')), union(createObject('AzureWebJobsStorage__accountName', last(split(parameters('storageAccountResourceId'), '/'))), createObject('AzureWebJobsStorage__blobServiceUri', reference('storageAccount').primaryEndpoints.blob), createObject('AzureWebJobsStorage__queueServiceUri', reference('storageAccount').primaryEndpoints.queue), createObject('AzureWebJobsStorage__tableServiceUri', reference('storageAccount').primaryEndpoints.table)), createObject())), if(not(empty(parameters('appInsightResourceId'))), createObject('APPLICATIONINSIGHTS_CONNECTION_STRING', reference('appInsight').ConnectionString), createObject()))]",
               "dependsOn": [
                 "appInsight",
                 "storageAccount"
@@ -1309,8 +1310,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "12604769145311962317"
+              "version": "0.33.93.31351",
+              "templateHash": "1129994114817101549"
             },
             "name": "Site Auth Settings V2 Config",
             "description": "This module deploys a Site Auth Settings V2 Configuration."
@@ -1412,8 +1413,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "10353279242186955906"
+              "version": "0.33.93.31351",
+              "templateHash": "17967336872376441757"
             },
             "name": "Site logs Config",
             "description": "This module deploys a Site logs Configuration."
@@ -1503,8 +1504,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "15063123874711680503"
+              "version": "0.33.93.31351",
+              "templateHash": "15058680643544097487"
             },
             "name": "Site Web Config",
             "description": "This module deploys web settings configuration available under sites/config name: web."
@@ -1593,8 +1594,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "10653723640225381902"
+              "version": "0.33.93.31351",
+              "templateHash": "14895622660217616811"
             },
             "name": "Site Deployment Extension ",
             "description": "This module deploys a Site extension for MSDeploy."
@@ -1776,9 +1777,6 @@
           "enabled": {
             "value": "[tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'enabled')]"
           },
-          "enableTelemetry": {
-            "value": "[coalesce(tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
-          },
           "hostNameSslStates": {
             "value": "[tryGet(coalesce(parameters('slots'), createArray())[copyIndex()], 'hostNameSslStates')]"
           },
@@ -1811,8 +1809,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "5676574800935579140"
+              "version": "0.33.93.31351",
+              "templateHash": "4067755327331248181"
             },
             "name": "Web/Function App Deployment Slots",
             "description": "This module deploys a Web or Function App Deployment Slot."
@@ -2647,13 +2645,6 @@
                 "description": "Optional. Setting this value to false disables the app (takes the app offline)."
               }
             },
-            "enableTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable/Disable usage telemetry for module."
-              }
-            },
             "hostNameSslStates": {
               "type": "array",
               "nullable": true,
@@ -2737,6 +2728,7 @@
                 "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
               }
             ],
+            "enableReferencedModulesTelemetry": false,
             "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
             "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned, UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
             "builtInRoleNames": {
@@ -2910,8 +2902,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "6379851449588708934"
+                      "version": "0.33.93.31351",
+                      "templateHash": "18192409627790392598"
                     },
                     "name": "Site Slot App Settings",
                     "description": "This module deploys a Site Slot App Setting."
@@ -3003,25 +2995,25 @@
                       "existing": true,
                       "type": "Microsoft.Insights/components",
                       "apiVersion": "2020-02-02",
-                      "subscriptionId": "[split(coalesce(parameters('appInsightResourceId'), '//'), '/')[2]]",
-                      "resourceGroup": "[split(coalesce(parameters('appInsightResourceId'), '////'), '/')[4]]",
-                      "name": "[last(split(coalesce(parameters('appInsightResourceId'), 'dummyName'), '/'))]"
+                      "subscriptionId": "[split(parameters('appInsightResourceId'), '/')[2]]",
+                      "resourceGroup": "[split(parameters('appInsightResourceId'), '/')[4]]",
+                      "name": "[last(split(parameters('appInsightResourceId'), '/'))]"
                     },
                     "storageAccount": {
                       "condition": "[not(empty(parameters('storageAccountResourceId')))]",
                       "existing": true,
                       "type": "Microsoft.Storage/storageAccounts",
                       "apiVersion": "2023-05-01",
-                      "subscriptionId": "[split(coalesce(parameters('storageAccountResourceId'), '//'), '/')[2]]",
-                      "resourceGroup": "[split(coalesce(parameters('storageAccountResourceId'), '////'), '/')[4]]",
-                      "name": "[last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/'))]"
+                      "subscriptionId": "[split(parameters('storageAccountResourceId'), '/')[2]]",
+                      "resourceGroup": "[split(parameters('storageAccountResourceId'), '/')[4]]",
+                      "name": "[last(split(parameters('storageAccountResourceId'), '/'))]"
                     },
                     "slotSettings": {
                       "type": "Microsoft.Web/sites/slots/config",
                       "apiVersion": "2024-04-01",
                       "name": "[format('{0}/{1}/{2}', parameters('appName'), parameters('slotName'), 'appsettings')]",
                       "kind": "[parameters('kind')]",
-                      "properties": "[union(coalesce(parameters('currentAppSettings'), createObject()), coalesce(parameters('appSettingsKeyValuePairs'), createObject()), if(and(not(empty(parameters('storageAccountResourceId'))), not(parameters('storageAccountUseIdentityAuthentication'))), createObject('AzureWebJobsStorage', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/')), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(parameters('storageAccountResourceId'), '//'), '/')[2], split(coalesce(parameters('storageAccountResourceId'), '////'), '/')[4]), 'Microsoft.Storage/storageAccounts', last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/'))), '2023-05-01').keys[0].value, environment().suffixes.storage)), if(and(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountUseIdentityAuthentication')), union(createObject('AzureWebJobsStorage__accountName', last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/'))), createObject('AzureWebJobsStorage__blobServiceUri', reference('storageAccount').primaryEndpoints.blob)), createObject())), if(not(empty(parameters('appInsightResourceId'))), createObject('APPLICATIONINSIGHTS_CONNECTION_STRING', reference('appInsight').ConnectionString), createObject()))]",
+                      "properties": "[union(coalesce(parameters('currentAppSettings'), createObject()), coalesce(parameters('appSettingsKeyValuePairs'), createObject()), if(and(not(empty(parameters('storageAccountResourceId'))), not(parameters('storageAccountUseIdentityAuthentication'))), createObject('AzureWebJobsStorage', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', last(split(parameters('storageAccountResourceId'), '/')), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('storageAccountResourceId'), '/')[2], split(parameters('storageAccountResourceId'), '/')[4]), 'Microsoft.Storage/storageAccounts', last(split(parameters('storageAccountResourceId'), '/'))), '2023-05-01').keys[0].value, environment().suffixes.storage)), if(and(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountUseIdentityAuthentication')), union(createObject('AzureWebJobsStorage__accountName', last(split(parameters('storageAccountResourceId'), '/'))), createObject('AzureWebJobsStorage__blobServiceUri', reference('storageAccount').primaryEndpoints.blob)), createObject())), if(not(empty(parameters('appInsightResourceId'))), createObject('APPLICATIONINSIGHTS_CONNECTION_STRING', reference('appInsight').ConnectionString), createObject()))]",
                       "dependsOn": [
                         "appInsight",
                         "storageAccount"
@@ -3087,8 +3079,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "4192061847386712633"
+                      "version": "0.33.93.31351",
+                      "templateHash": "4602741618711602070"
                     },
                     "name": "Site Slot Auth Settings V2 Config",
                     "description": "This module deploys a Site Auth Settings V2 Configuration."
@@ -3207,8 +3199,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "13483227944246460692"
+                      "version": "0.33.93.31351",
+                      "templateHash": "8803130402255189673"
                     },
                     "name": "Web Site Slot Basic Publishing Credentials Policies",
                     "description": "This module deploys a Web Site Slot Basic Publishing Credentials Policy."
@@ -3331,8 +3323,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "17428168852439619558"
+                      "version": "0.33.93.31351",
+                      "templateHash": "16445776675656358479"
                     },
                     "name": "Web/Function Apps Slot Hybrid Connection Relay",
                     "description": "This module deploys a Site Slot Hybrid Connection Namespace Relay."
@@ -3435,8 +3427,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "10653723640225381902"
+                      "version": "0.33.93.31351",
+                      "templateHash": "14895622660217616811"
                     },
                     "name": "Site Deployment Extension ",
                     "description": "This module deploys a Site extension for MSDeploy."
@@ -3522,7 +3514,7 @@
                     "value": "[coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId]"
                   },
                   "enableTelemetry": {
-                    "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   },
                   "location": {
                     "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'location'), reference(split(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location)]"
@@ -4351,8 +4343,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "1499299399255876013"
+              "version": "0.33.93.31351",
+              "templateHash": "7001118912896436334"
             },
             "name": "Web Site Basic Publishing Credentials Policies",
             "description": "This module deploys a Web Site Basic Publishing Credentials Policy."
@@ -4466,8 +4458,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "3864138738153964150"
+              "version": "0.33.93.31351",
+              "templateHash": "13214417392638890300"
             },
             "name": "Web/Function Apps Hybrid Connection Relay",
             "description": "This module deploys a Site Hybrid Connection Namespace Relay."
@@ -4564,7 +4556,7 @@
             "value": "[coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId]"
           },
           "enableTelemetry": {
-            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           },
           "location": {
             "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'location'), reference(split(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location)]"

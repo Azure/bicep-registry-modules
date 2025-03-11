@@ -124,6 +124,8 @@ param accessPolicyAssignments accessPolicyAssignmentType[] = []
 @description('Optional. Key vault reference and secret settings for the module\'s secrets export.')
 param secretsExportConfiguration secretsExportConfigurationType?
 
+var enableReferencedModulesTelemetry = false
+
 var availabilityZones = skuName == 'Premium'
   ? zoneRedundant ? !empty(zones) ? zones : pickZones('Microsoft.Cache', 'redis', location, 3) : []
   : []
@@ -338,7 +340,7 @@ module redis_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
-      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',
@@ -370,11 +372,11 @@ module redis_geoReplication 'linked-servers/main.bicep' = if (!empty(geoReplicat
 module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfiguration != null) {
   name: '${uniqueString(deployment().name, location)}-secrets-kv'
   scope: resourceGroup(
-    split((secretsExportConfiguration.?keyVaultResourceId ?? '//'), '/')[2],
-    split((secretsExportConfiguration.?keyVaultResourceId ?? '////'), '/')[4]
+    split(secretsExportConfiguration.?keyVaultResourceId!, '/')[2],
+    split(secretsExportConfiguration.?keyVaultResourceId!, '/')[4]
   )
   params: {
-    keyVaultName: last(split(secretsExportConfiguration.?keyVaultResourceId ?? '//', '/'))
+    keyVaultName: last(split(secretsExportConfiguration.?keyVaultResourceId!, '/'))
     secretsToSet: union(
       [],
       contains(secretsExportConfiguration!, 'primaryAccessKeyName')

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "2230838564092408507"
+      "version": "0.33.93.31351",
+      "templateHash": "11877937459195392501"
     },
     "name": "Kusto Cluster Databases",
     "description": "This module deploys a Kusto Cluster Database."

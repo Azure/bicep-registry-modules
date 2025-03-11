@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "6410547302386858558"
+      "version": "0.33.93.31351",
+      "templateHash": "12262977018813780856"
     },
     "name": "Site App Settings",
     "description": "This module deploys a Site App Setting."
@@ -86,25 +86,25 @@
       "existing": true,
       "type": "Microsoft.Insights/components",
       "apiVersion": "2020-02-02",
-      "subscriptionId": "[split(coalesce(parameters('appInsightResourceId'), '//'), '/')[2]]",
-      "resourceGroup": "[split(coalesce(parameters('appInsightResourceId'), '////'), '/')[4]]",
-      "name": "[last(split(coalesce(parameters('appInsightResourceId'), 'dummyName'), '/'))]"
+      "subscriptionId": "[split(parameters('appInsightResourceId'), '/')[2]]",
+      "resourceGroup": "[split(parameters('appInsightResourceId'), '/')[4]]",
+      "name": "[last(split(parameters('appInsightResourceId'), '/'))]"
     },
     "storageAccount": {
       "condition": "[not(empty(parameters('storageAccountResourceId')))]",
       "existing": true,
       "type": "Microsoft.Storage/storageAccounts",
       "apiVersion": "2023-05-01",
-      "subscriptionId": "[split(coalesce(parameters('storageAccountResourceId'), '//'), '/')[2]]",
-      "resourceGroup": "[split(coalesce(parameters('storageAccountResourceId'), '////'), '/')[4]]",
-      "name": "[last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/'))]"
+      "subscriptionId": "[split(parameters('storageAccountResourceId'), '/')[2]]",
+      "resourceGroup": "[split(parameters('storageAccountResourceId'), '/')[4]]",
+      "name": "[last(split(parameters('storageAccountResourceId'), '/'))]"
     },
     "appSettings": {
       "type": "Microsoft.Web/sites/config",
       "apiVersion": "2024-04-01",
       "name": "[format('{0}/{1}', parameters('appName'), 'appsettings')]",
       "kind": "[parameters('kind')]",
-      "properties": "[union(coalesce(parameters('currentAppSettings'), createObject()), coalesce(parameters('appSettingsKeyValuePairs'), createObject()), if(and(not(empty(parameters('storageAccountResourceId'))), not(parameters('storageAccountUseIdentityAuthentication'))), createObject('AzureWebJobsStorage', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/')), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(parameters('storageAccountResourceId'), '//'), '/')[2], split(coalesce(parameters('storageAccountResourceId'), '////'), '/')[4]), 'Microsoft.Storage/storageAccounts', last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/'))), '2023-05-01').keys[0].value, environment().suffixes.storage)), if(and(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountUseIdentityAuthentication')), union(createObject('AzureWebJobsStorage__accountName', last(split(coalesce(parameters('storageAccountResourceId'), 'dummyName'), '/'))), createObject('AzureWebJobsStorage__blobServiceUri', reference('storageAccount').primaryEndpoints.blob), createObject('AzureWebJobsStorage__queueServiceUri', reference('storageAccount').primaryEndpoints.queue), createObject('AzureWebJobsStorage__tableServiceUri', reference('storageAccount').primaryEndpoints.table)), createObject())), if(not(empty(parameters('appInsightResourceId'))), createObject('APPLICATIONINSIGHTS_CONNECTION_STRING', reference('appInsight').ConnectionString), createObject()))]",
+      "properties": "[union(coalesce(parameters('currentAppSettings'), createObject()), coalesce(parameters('appSettingsKeyValuePairs'), createObject()), if(and(not(empty(parameters('storageAccountResourceId'))), not(parameters('storageAccountUseIdentityAuthentication'))), createObject('AzureWebJobsStorage', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', last(split(parameters('storageAccountResourceId'), '/')), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('storageAccountResourceId'), '/')[2], split(parameters('storageAccountResourceId'), '/')[4]), 'Microsoft.Storage/storageAccounts', last(split(parameters('storageAccountResourceId'), '/'))), '2023-05-01').keys[0].value, environment().suffixes.storage)), if(and(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountUseIdentityAuthentication')), union(createObject('AzureWebJobsStorage__accountName', last(split(parameters('storageAccountResourceId'), '/'))), createObject('AzureWebJobsStorage__blobServiceUri', reference('storageAccount').primaryEndpoints.blob), createObject('AzureWebJobsStorage__queueServiceUri', reference('storageAccount').primaryEndpoints.queue), createObject('AzureWebJobsStorage__tableServiceUri', reference('storageAccount').primaryEndpoints.table)), createObject())), if(not(empty(parameters('appInsightResourceId'))), createObject('APPLICATIONINSIGHTS_CONNECTION_STRING', reference('appInsight').ConnectionString), createObject()))]",
       "dependsOn": [
         "appInsight",
         "storageAccount"

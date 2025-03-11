@@ -31,8 +31,14 @@ param keyVaultPrivateEndpointResourceId string?
 @description('Optional. The type of the volume. DataProtection volumes are used for replication.')
 param volumeType string?
 
-@description('Optional. Zone where the volume will be placed.')
-param zones int[] = [1, 2, 3]
+@description('Required. The Availability Zone to place the resource in. If set to 0, then Availability Zone is not set.')
+@allowed([
+  0
+  1
+  2
+  3
+])
+param zone int
 
 @description('Optional. The pool service level. Must match the one of the parent capacity pool.')
 @allowed([
@@ -58,8 +64,13 @@ param creationToken string = name
 @description('Required. Maximum storage quota allowed for a file system in bytes.')
 param usageThreshold int
 
-@description('Optional. Set of protocol types.')
-param protocolTypes array = []
+@description('Optional. Set of protocol types. Default value is `[\'NFSv3\']`. If you are creating a dual-stack volume, set either `[\'NFSv3\',\'CIFS\']` or `[\'NFSv4.1\',\'CIFS\']`.')
+@allowed([
+  'NFSv3'
+  'NFSv4.1'
+  'CIFS'
+])
+param protocolTypes string[] = ['NFSv3']
 
 @description('Required. The Azure Resource URI for a delegated subnet. Must have the delegation Microsoft.NetApp/volumes.')
 param subnetResourceId string
@@ -67,7 +78,7 @@ param subnetResourceId string
 @description('Optional. The export policy rules.')
 param exportPolicy exportPolicyType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -91,10 +102,10 @@ param smbNonBrowsable string = 'Disabled'
 param kerberosEnabled bool = false
 
 var remoteCapacityPoolName = !empty(dataProtection.?replication.?remoteVolumeResourceId)
-  ? split((dataProtection.?replication.?remoteVolumeResourceId ?? '//'), '/')[10]
+  ? split(dataProtection.?replication.?remoteVolumeResourceId!, '/')[10]
   : ''
 var remoteNetAppName = !empty(dataProtection.?replication.?remoteVolumeResourceId)
-  ? split((dataProtection.?replication.?remoteVolumeResourceId ?? '//'), '/')[8]
+  ? split(dataProtection.?replication.?remoteVolumeResourceId!, '/')[8]
   : ''
 
 var builtInRoleNames = {
@@ -144,26 +155,26 @@ resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2024-07-01' existing = {
 }
 
 resource keyVaultPrivateEndpoint 'Microsoft.Network/privateEndpoints@2024-03-01' existing = if (encryptionKeySource != 'Microsoft.NetApp') {
-  name: last(split(keyVaultPrivateEndpointResourceId ?? 'dummyVault', '/'))
+  name: last(split(keyVaultPrivateEndpointResourceId!, '/'))
   scope: resourceGroup(
-    split((keyVaultPrivateEndpointResourceId ?? '//'), '/')[2],
-    split((keyVaultPrivateEndpointResourceId ?? '////'), '/')[4]
+    split(keyVaultPrivateEndpointResourceId!, '/')[2],
+    split(keyVaultPrivateEndpointResourceId!, '/')[4]
   )
 }
 
 resource remoteNetAppAccount 'Microsoft.NetApp/netAppAccounts@2024-07-01' existing = if (!empty(dataProtection.?replication.?remoteVolumeResourceId) && (remoteNetAppName != netAppAccountName)) {
-  name: split((dataProtection.?replication.?remoteVolumeResourceId ?? '//'), '/')[8]
+  name: split(dataProtection.?replication.?remoteVolumeResourceId!, '/')[8]
   scope: resourceGroup(
-    split((dataProtection.?replication.?remoteVolumeResourceId ?? '//'), '/')[2],
-    split((dataProtection.?replication.?remoteVolumeResourceId ?? '////'), '/')[4]
+    split(dataProtection.?replication.?remoteVolumeResourceId!, '/')[2],
+    split(dataProtection.?replication.?remoteVolumeResourceId!, '/')[4]
   )
 
   //cp-na-anfs-swc-y01
   resource remoteCapacityPool 'capacityPools@2024-07-01' existing = if (!empty(dataProtection.?replication.?remoteVolumeResourceId) && (remoteCapacityPoolName != capacityPoolName)) {
-    name: split((dataProtection.?replication.?remoteVolumeResourceId ?? '//'), '/')[10]
+    name: split(dataProtection.?replication.?remoteVolumeResourceId!, '/')[10]
 
     resource remoteVolume 'volumes@2024-07-01' existing = if (!empty(dataProtection.?replication)) {
-      name: last(split(dataProtection.?replication.?remoteVolumeResourceId ?? 'dummyvolume', '/'))
+      name: last(split(dataProtection.?replication.?remoteVolumeResourceId!, '/'))
     }
   }
 }
@@ -235,7 +246,7 @@ resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2024-07-0
     smbNonBrowsable: smbNonBrowsable
     kerberosEnabled: kerberosEnabled
   }
-  zones: map(zones, zone => '${zone}')
+  zones: zone != 0 ? [string(zone)] : null
 }
 
 resource volume_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
