@@ -18,11 +18,13 @@ param aiFoundryAIServicesName string
 param aiFoundrySearchServicesName string
 param aiFoundryOpenAIServicesEndpoint string
 param aiFoundryAIHubProjectConnectionString string
-param AIFoundryAISearchServiceConnectionString string
+param aiFoundryAISearchServiceConnectionString string
 param functionsManagedEnvironmentResourceId string
 param functionRagCpu int
 param functionRagMemory string
 param functionRagAppScaleLimit int
+param applicationInsightsConnectionString string
+param applicationInsightsInstrumentationKey string
 
 resource existingAIFoundryAIServices 'Microsoft.CognitiveServices/accounts@2024-10-01' existing = {
   name: aiFoundryAIServicesName
@@ -46,6 +48,14 @@ resource resFunctionRAG 'Microsoft.Web/sites@2023-12-01' = {
         {
           name: 'AzureWebJobsStorage_accountname'
           value: ragStorageAccountName
+        }
+        {
+          name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
+          value: applicationInsightsConnectionString
+        }
+        {
+          name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
+          value: applicationInsightsInstrumentationKey
         }
         {
           name: 'PYTHON_ENABLE_INIT_INDEXING'
@@ -93,7 +103,7 @@ resource resFunctionRAG 'Microsoft.Web/sites@2023-12-01' = {
         }
         {
           name: 'AZURE_AI_SEARCH_ENDPOINT'
-          value: AIFoundryAISearchServiceConnectionString //moduleAIFoundry.outputs.aiSearch_connectionString
+          value: aiFoundryAISearchServiceConnectionString //moduleAIFoundry.outputs.aiSearch_connectionString
         }
         {
           name: 'AZURE_AI_SEARCH_API_KEY'

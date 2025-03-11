@@ -22,7 +22,7 @@ This module deploys the [Conversation Knowledge Mining Solution Accelerator](htt
 | `Microsoft.App/managedEnvironments/storages` | [2024-10-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-10-02-preview/managedEnvironments/storages) |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.CognitiveServices/accounts` | [2024-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2024-04-01-preview/accounts) |
+| `Microsoft.CognitiveServices/accounts` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2023-05-01/accounts) |
 | `Microsoft.CognitiveServices/accounts/deployments` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2023-05-01/accounts/deployments) |
 | `Microsoft.ContainerRegistry/registries` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries) |
 | `Microsoft.ContainerRegistry/registries/cacheRules` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries/cacheRules) |
@@ -47,9 +47,9 @@ This module deploys the [Conversation Knowledge Mining Solution Accelerator](htt
 | `Microsoft.KeyVault/vaults` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults) |
 | `Microsoft.KeyVault/vaults/accessPolicies` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/accessPolicies) |
 | `Microsoft.KeyVault/vaults/keys` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/keys) |
-| `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
 | `Microsoft.KeyVault/vaults/secrets` | [2021-11-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2021-11-01-preview/vaults/secrets) |
 | `Microsoft.KeyVault/vaults/secrets` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/secrets) |
+| `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
 | `Microsoft.MachineLearningServices/workspaces` | [2024-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2024-04-01-preview/workspaces) |
 | `Microsoft.MachineLearningServices/workspaces/computes` | [2022-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2022-10-01/workspaces/computes) |
 | `Microsoft.MachineLearningServices/workspaces/connections` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2024-04-01/workspaces/connections) |
@@ -827,7 +827,7 @@ The name of the docker image for the Rag function.
 
 - Required: No
 - Type: string
-- Default: `'km-Rag-function'`
+- Default: `'km-rag-function'`
 - MinValue: 10
 
 ### Parameter: `functionRagDockerImageTag`
@@ -1227,7 +1227,7 @@ The name of the SQL Server database.
 
 - Required: No
 - Type: string
-- Default: `[format('{0}-sql-db', parameters('sqlServerResourceName'))]`
+- Default: `''`
 - MinValue: 0
 - MaxValue: 730
 
@@ -1426,6 +1426,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/res/app/managed-environment:0.10.0` | Remote reference |
+| `br/public:avm/res/cognitive-services/account:0.10.1` | Remote reference |
 | `br/public:avm/res/container-registry/registry:0.9.1` | Remote reference |
 | `br/public:avm/res/document-db/database-account:0.11.2` | Remote reference |
 | `br/public:avm/res/insights/component:0.6.0` | Remote reference |

@@ -340,7 +340,7 @@ param sqlServerAdministratorPassword string = 'TestPassword_1234'
 
 @description('Optional. The name of the SQL Server database.')
 @maxLength(128)
-param sqlServerDatabaseName string = '${sqlServerResourceName}-sql-db'
+param sqlServerDatabaseName string = ''
 
 @description('Optional. The SKU name of the SQL Server database. If empty, it will be set to GP_Gen5_2. Find available options: Database.[Sku property](https://learn.microsoft.com/dotnet/api/microsoft.azure.management.sql.models.database.sku).')
 param sqlServerDatabaseSkuName string = 'GP_Gen5_2'
@@ -374,7 +374,7 @@ param functionChartsFunctionName string = 'get_metrics'
 @description('Optional. The url of the Container Registry where the docker image for the Rag function is located.')
 param functionRagDockerImageContainerRegistryUrl string = 'kmcontainerreg.azurecr.io'
 @description('Optional. The name of the docker image for the Rag function.')
-param functionRagDockerImageName string = 'km-Rag-function'
+param functionRagDockerImageName string = 'km-rag-function'
 @description('Optional. The tag of the docker image for the Rag function.')
 param functionRagDockerImageTag string = 'latest'
 @description('Optional. The required CPU in cores of the Rag function.')
@@ -440,10 +440,10 @@ var varCosmosDbAccountResourceName = empty(cosmosDbAccountResourceName)
   ? format(varWorkloadNameFormat, 'cmdb')
   : cosmosDbAccountResourceName
 var varFunctionChartsResourceName = empty(functionChartsResourceName)
-  ? format(varWorkloadNameFormat, 'fchr-azfct')
+  ? format(varWorkloadNameFormat, 'fchr-azfn')
   : functionChartsResourceName
 var varFunctionRagResourceName = empty(functionRagResourceName)
-  ? format(varWorkloadNameFormat, 'frag-azfct')
+  ? format(varWorkloadNameFormat, 'frag-azfn')
   : functionRagResourceName
 var varFunctionsManagedEnvironmentResourceName = empty(functionsManagedEnvironmentResourceName)
   ? format(varWorkloadNameFormat, 'ftme')
@@ -466,6 +466,10 @@ var varScriptIndexDataResourceName = empty(scriptIndexDataResourceName)
 var varSqlServerResourceName = empty(sqlServerResourceName)
   ? format(varWorkloadNameFormat, 'sqls')
   : sqlServerResourceName
+var varSqlServerDatabaseName = empty(sqlServerDatabaseName)
+  ? '${varSqlServerResourceName}-ckmdb'
+  : sqlServerDatabaseName
+
 var varStorageAccountResourceName = empty(storageAccountResourceName)
   ? replace(format(varWorkloadNameFormat, 'strg'), '-', '') //NOTE: SA name should not contain hyphens
   : storageAccountResourceName
@@ -687,7 +691,7 @@ module avmKeyVault 'br/public:avm/res/key-vault/vault:0.12.1' = {
       { name: 'AZURE-COSMOSDB-CONVERSATIONS-CONTAINER', value: varCosmosDbSqlDbCollName }
       { name: 'AZURE-COSMOSDB-ENABLE-FEEDBACK', value: 'True' }
       { name: 'SQLDB-SERVER', value: '${varSqlServerResourceName}${environment().suffixes.sqlServerHostname}' }
-      { name: 'SQLDB-DATABASE', value: sqlServerDatabaseName }
+      { name: 'SQLDB-DATABASE', value: varSqlServerDatabaseName }
       { name: 'SQLDB-USERNAME', value: sqlServerAdministratorLogin }
       { name: 'SQLDB-PASSWORD', value: sqlServerAdministratorPassword }
       { name: 'AZURE-OPENAI-PREVIEW-API-VERSION', value: varAiFoundryAiServiceGPTModelVersionPreview }
@@ -730,7 +734,7 @@ module moduleAIFoundry './modules/ai-foundry.bicep' = {
     containerRegistryResourceName: varAiFoundryContainerRegistryResourceName
     containerRegistrySkuName: aiFoundryContainerRegistrySkuName
     enableTelemetry: enableTelemetry
-    keyVaultResourceName: varKeyVaultResourceName
+    keyVaultResourceName: avmKeyVault.outputs.name
     logAnalyticsWorkspaceResourceId: avmLogAnalyticsWorkspace.outputs.resourceId
     managedIdentityPrincipalId: avmManagedIdentity.outputs.principalId
     searchServiceLocation: aiFoundrySearchServiceLocation
@@ -780,6 +784,7 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.18.2' = {
       containerDeleteRetentionPolicyAllowPermanentDelete: false
       containerDeleteRetentionPolicyDays: 7
       containerDeleteRetentionPolicyEnabled: false
+      diagnosticSettings: [{ workspaceResourceId: avmLogAnalyticsWorkspace.outputs.resourceId }]
       containers: [
         {
           name: 'data'
@@ -796,6 +801,8 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.18.2' = {
       }
       {
         principalId: functionCharts.identity.principalId
+        //#disable-next-line BCP321
+        //principalId: avmFunctionCharts.outputs.?systemAssignedMIPrincipalId
         roleDefinitionIdOrName: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe' //NOTE: Built-in role 'Storage Blob Data Contributor'
       }
     ]
@@ -871,7 +878,7 @@ module avmSQLServer 'br/public:avm/res/sql/server:0.13.1' = {
     ]
     databases: [
       {
-        name: sqlServerDatabaseName
+        name: varSqlServerDatabaseName
         diagnosticSettings: [{ workspaceResourceId: avmLogAnalyticsWorkspace.outputs.resourceId }]
         sku: {
           name: sqlServerDatabaseSkuName
@@ -958,10 +965,50 @@ module avmFunctionsManagedEnvironment 'br/public:avm/res/app/managed-environment
         name: 'Consumption'
       }
     ]
+    publicNetworkAccess: 'Enabled'
     peerTrafficEncryption: false
     logAnalyticsWorkspaceResourceId: avmLogAnalyticsWorkspace.outputs.resourceId
   }
 }
+
+// NOTE: This version of the AVM module does not support the deployment to Azure Container Apps Environment resource
+// ERROR: VnetRouteAllEnabled cannot be configured for function app deployed on Azure Container Apps. Please try to configure from Azure Container Apps Environment resource
+
+// module avmFunctionCharts 'br/public:avm/res/web/site:0.15.0' = {
+//   name: format(avmDeploymentNameFormat, varFunctionChartsResourceName)
+//   params: {
+//     name: varFunctionChartsResourceName
+//     tags: tags
+//     location: functionChartsLocation
+//     enableTelemetry: enableTelemetry
+//     diagnosticSettings: [{ workspaceResourceId: avmLogAnalyticsWorkspace.outputs.resourceId }]
+//     kind: 'functionapp,linux,container,azurecontainerapps'
+//     managedIdentities: {
+//       systemAssigned: true
+//     }
+//     managedEnvironmentId: avmFunctionsManagedEnvironment.outputs.resourceId
+//     serverFarmResourceId: 'null'
+//     siteConfig: {
+//       linuxFxVersion: 'DOCKER|${functionChartDockerImageContainerRegistryUrl}/${functionChartDockerImageName}:${functionChartDockerImageTag}'
+//       functionAppScaleLimit: functionChartAppScaleLimit
+//       minimumElasticInstanceCount: 0
+//     }
+//     appSettingsKeyValuePairs: {
+//       AzureWebJobsStorage_accountname: moduleAIFoundry.outputs.storageAccountName
+//       SQLDB_DATABASE: varSqlServerDatabaseName
+//       SQLDB_PASSWORD: sqlServerAdministratorPassword
+//       SQLDB_SERVER: avmSQLServer.outputs.fullyQualifiedDomainName
+//       SQLDB_USERNAME: sqlServerAdministratorLogin
+//     }
+//     // workloadProfileName: 'Consumption'
+//     // resourceConfig: {
+//     //   cpu: functionChartCpu
+//     //   memory: functionChartMemory
+//     // }
+//     storageAccountRequired: false
+//     appInsightResourceId: moduleAIFoundry.outputs.applicationInsightsResourceId
+//   }
+// }
 
 resource functionCharts 'Microsoft.Web/sites@2023-12-01' = {
   name: varFunctionChartsResourceName
@@ -975,12 +1022,20 @@ resource functionCharts 'Microsoft.Web/sites@2023-12-01' = {
     siteConfig: {
       appSettings: [
         {
+          name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
+          value: moduleAIFoundry.outputs.applicationInsightsConnectionString
+        }
+        {
+          name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
+          value: moduleAIFoundry.outputs.applicationInsightsInstrumentationKey
+        }
+        {
           name: 'AzureWebJobsStorage_accountname'
           value: moduleAIFoundry.outputs.storageAccountName
         }
         {
           name: 'SQLDB_DATABASE'
-          value: sqlServerDatabaseName
+          value: varSqlServerDatabaseName
         }
         {
           name: 'SQLDB_PASSWORD'
@@ -1018,26 +1073,28 @@ resource functionCharts 'Microsoft.Web/sites@2023-12-01' = {
 module moduleFunctionRAG 'modules/function-rag.bicep' = {
   name: format(localModuleDeploymentNameFormat, 'function-rag')
   params: {
-    ragFunctionName: varFunctionRagResourceName
-    solutionLocation: functionRagLocation
-    tags: tags
-    ragStorageAccountName: moduleAIFoundry.outputs.storageAccountName
     aiFoundryAIHubProjectConnectionString: varAiFoundryAiServiceProjectConnectionString
-    AIFoundryAISearchServiceConnectionString: moduleAIFoundry.outputs.aiSearchConnectionString
+    aiFoundryAISearchServiceConnectionString: moduleAIFoundry.outputs.aiSearchConnectionString
     aiFoundryAIServicesName: moduleAIFoundry.outputs.aiServicesName
     aiFoundryOpenAIServicesEndpoint: moduleAIFoundry.outputs.aiServicesEndpoint
     aiFoundrySearchServicesName: moduleAIFoundry.outputs.aiSearchName
+    applicationInsightsConnectionString: moduleAIFoundry.outputs.applicationInsightsConnectionString
+    applicationInsightsInstrumentationKey: moduleAIFoundry.outputs.applicationInsightsInstrumentationKey
+    functionRagAppScaleLimit: functionRagAppScaleLimit
+    functionRagCpu: functionRagCpu
+    functionRagMemory: functionRagMemory
     functionsManagedEnvironmentResourceId: avmFunctionsManagedEnvironment.outputs.resourceId
     gptModelName: aiFoundryAIServicesGptModelName
     gptModelVersionPreview: varAiFoundryAiServiceGPTModelVersionPreview
     ragDockerImageName: 'DOCKER|${functionRagDockerImageContainerRegistryUrl}/${functionRagDockerImageName}:${functionRagDockerImageTag}'
-    sqlDatabaseName: sqlServerDatabaseName
+    ragFunctionName: varFunctionRagResourceName
+    ragStorageAccountName: moduleAIFoundry.outputs.storageAccountName
+    solutionLocation: functionRagLocation
+    sqlDatabaseName: varSqlServerDatabaseName
     sqlServerAdministratorLogin: sqlServerAdministratorLogin
     sqlServerAdministratorPassword: sqlServerAdministratorPassword
     sqlServerFullyQualifiedDomainName: avmSQLServer.outputs.fullyQualifiedDomainName
-    functionRagCpu: functionRagCpu
-    functionRagMemory: functionRagMemory
-    functionRagAppScaleLimit: functionRagAppScaleLimit
+    tags: tags
   }
 }
 
@@ -1085,6 +1142,7 @@ module moduleWebsiteWebapp 'modules/webapp.bicep' = {
     gptModelVersionPreview: varAiFoundryAiServiceGPTModelVersionPreview
     aiServicesResourceName: moduleAIFoundry.outputs.aiServicesName
     managedIdentityDefaultHostName: functionCharts.properties.defaultHostName
+    //managedIdentityDefaultHostName: avmFunctionCharts.outputs.defaultHostname
     chartsFunctionFunctionName: functionChartsFunctionName
     webAppAppConfigReact: varWebAppAppConfigReact
     cosmosDbSqlDbName: varCosmosDbSqlDbName

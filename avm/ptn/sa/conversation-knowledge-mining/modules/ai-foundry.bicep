@@ -35,7 +35,13 @@ param tags object
 
 // VARIABLES
 var varKvSecretNameAzureOpenaiKey = 'AZURE-OPENAI-KEY'
+var varKvSecretNameAzureOpenaiEndpoint = 'AZURE-OPENAI-ENDPOINT'
+var varKvSecretNameCogServicesEndpoint = 'COG-SERVICES-ENDPOINT'
 var varKvSecretNameAzureSearchKey = 'AZURE-SEARCH-KEY'
+var varKvSecretNameAzureOpenaiCuKey = 'AZURE-OPENAI-CU-KEY'
+var varKvSecretNameAzureOpenaiCuEndpoint = 'AZURE-OPENAI-CU-ENDPOINT'
+var varKvSecretNameAzureOpenaiInferenceEndpoint = 'AZURE-OPENAI-INFERENCE-ENDPOINT'
+var varKvSecretNameAzureOpenaiInferenceKey = 'AZURE-OPENAI-INFERENCE-KEY'
 
 // Existing resources
 
@@ -77,6 +83,7 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.18.2' = {
       containerDeleteRetentionPolicyAllowPermanentDelete: false
       containerDeleteRetentionPolicyDays: 7
       containerDeleteRetentionPolicyEnabled: false
+      diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspaceResourceId }]
     }
     roleAssignments: [
       {
@@ -107,7 +114,7 @@ module avmInsightsComponent 'br/public:avm/res/insights/component:0.6.0' = {
     // MISSING: ImmediatePurgeDataOn30Days: true
     // MISSING: IngestionMode: 'ApplicationInsights'
     publicNetworkAccessForIngestion: 'Enabled'
-    publicNetworkAccessForQuery: 'Disabled'
+    publicNetworkAccessForQuery: 'Enabled'
     requestSource: 'rest'
   }
 }
@@ -136,180 +143,185 @@ module avmContainerRegistryRegistry 'br/public:avm/res/container-registry/regist
 }
 
 // AI Foundry: AI Services
-// NOTE: Required version 'Microsoft.CognitiveServices/accounts/deployments@2023-05-01' not available in AVM
-// module avmCognitiveServicesAccounts 'br/public:avm/res/cognitive-services/account:0.10.1' = {
-//   name: format(avmDeploymentNameFormat, aiServicesResourceName)
-//   params: {
-//     name: aiServicesResourceName
-//     disableLocalAuth: false //Added this in order to retrieve the keys. Evaluate alternatives
-//     location: location
-//     tags: tags
-//     sku: 'S0'
-//     kind: 'AIServices'
-//     customSubDomainName: aiServicesResourceName
-//     apiProperties: {
-//       staticsEnabled: false
-//     }
-//     publicNetworkAccess: 'Enabled' //Not in original script, check this
-//     deployments: [
-//       for aiModelDeployment in aiServicesModelDeployments: {
-//         name: aiModelDeployment.name
-//         model: aiModelDeployment.model
-//         sku: aiModelDeployment.sku
-//         raiPolicyName: aiModelDeployment.raiPolicyName
-//       }
-//     ]
-//     secretsExportConfiguration: {
-//       keyVaultResourceId: existingKeyVaultResource.id
-//       accessKey1Name: varKvSecretNameAzureOpenaiKey
-//     }
-//   }
-// }
-resource avmCognitiveServicesAccounts 'Microsoft.CognitiveServices/accounts@2024-04-01-preview' = {
-  name: aiServicesResourceName
-  tags: tags
-  location: aiServicesLocation
-  sku: {
-    name: aiServicesSkuName
-  }
-  kind: 'AIServices'
-  properties: {
+// NOTE: Required version 'Microsoft.CognitiveServices/accounts@2024-04-01-preview' not available in AVM
+module avmCognitiveServicesAccounts 'br/public:avm/res/cognitive-services/account:0.10.1' = {
+  name: format(avmDeploymentNameFormat, aiServicesResourceName)
+  params: {
+    name: aiServicesResourceName
+    tags: tags
+    location: aiServicesLocation
+    enableTelemetry: enableTelemetry
+    diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspaceResourceId }]
+    sku: aiServicesSkuName
+    kind: 'AIServices'
+    disableLocalAuth: false //Added this in order to retrieve the keys. Evaluate alternatives
     customSubDomainName: aiServicesResourceName
     apiProperties: {
-      statisticsEnabled: false
+      staticsEnabled: false
     }
-    publicNetworkAccess: 'Enabled' // Not in original script, it failing otherwise
-  }
-}
-@batchSize(1)
-resource aiServicesDeployments 'Microsoft.CognitiveServices/accounts/deployments@2023-05-01' = [
-  for aiModeldeployment in aiServicesModelDeployments: {
-    parent: avmCognitiveServicesAccounts //aiServices_m
-    name: aiModeldeployment.name
-    properties: {
-      model: {
-        format: 'OpenAI'
-        name: aiModeldeployment.model.name
-      }
-      raiPolicyName: aiModeldeployment.raiPolicyName
-    }
-    sku: {
-      name: aiModeldeployment.sku.name
-      capacity: aiModeldeployment.sku.capacity
-    }
-  }
-]
-resource cognitiveServicesAccount_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
-  name: '${avmCognitiveServicesAccounts.name}-diagnosticSettings'
-  scope: avmCognitiveServicesAccounts
-  properties: {
-    workspaceId: logAnalyticsWorkspaceResourceId
-    metrics: [
-      {
-        category: 'AllMetrics'
-        enabled: true
-        timeGrain: null
+    publicNetworkAccess: 'Enabled' //Not in original script, check this
+    deployments: [
+      for aiModelDeployment in aiServicesModelDeployments: {
+        name: aiModelDeployment.name
+        model: aiModelDeployment.model
+        sku: aiModelDeployment.sku
+        raiPolicyName: aiModelDeployment.raiPolicyName
       }
     ]
-    logs: [
-      {
-        categoryGroup: 'audit'
-        category: null
-        enabled: true
-      }
-      {
-        categoryGroup: 'allLogs'
-        category: null
-        enabled: true
-      }
-    ]
+    secretsExportConfiguration: {
+      keyVaultResourceId: existingKeyVaultResource.id
+      accessKey1Name: varKvSecretNameAzureOpenaiKey
+    }
   }
 }
-resource azureOpenAIKeyEntry 'Microsoft.KeyVault/vaults/secrets@2021-11-01-preview' = {
-  parent: existingKeyVaultResource
-  name: varKvSecretNameAzureOpenaiKey
-  properties: {
-    value: avmCognitiveServicesAccounts.listKeys().key1
-  }
-}
+// resource cognitiveServicesAccounts 'Microsoft.CognitiveServices/accounts@2024-04-01-preview' = {
+//   name: aiServicesResourceName
+//   tags: tags
+//   location: aiServicesLocation
+//   sku: {
+//     name: aiServicesSkuName
+//   }
+//   kind: 'AIServices'
+//   properties: {
+//     customSubDomainName: aiServicesResourceName
+//     apiProperties: {
+//       statisticsEnabled: false
+//     }
+//     publicNetworkAccess: 'Enabled' // Not in original script, it failing otherwise
+//   }
+// }
+// @batchSize(1)
+// resource aiServicesDeployments 'Microsoft.CognitiveServices/accounts/deployments@2023-05-01' = [
+//   for aiModeldeployment in aiServicesModelDeployments: {
+//     parent: avmCognitiveServicesAccounts //aiServices_m
+//     name: aiModeldeployment.name
+//     properties: {
+//       model: {
+//         format: 'OpenAI'
+//         name: aiModeldeployment.model.name
+//       }
+//       raiPolicyName: aiModeldeployment.raiPolicyName
+//     }
+//     sku: {
+//       name: aiModeldeployment.sku.name
+//       capacity: aiModeldeployment.sku.capacity
+//     }
+//   }
+// ]
+// resource cognitiveServicesAccount_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+//   name: '${avmCognitiveServicesAccounts.name}-diagnosticSettings'
+//   scope: avmCognitiveServicesAccounts
+//   properties: {
+//     workspaceId: logAnalyticsWorkspaceResourceId
+//     metrics: [
+//       {
+//         category: 'AllMetrics'
+//         enabled: true
+//         timeGrain: null
+//       }
+//     ]
+//     logs: [
+//       {
+//         categoryGroup: 'audit'
+//         category: null
+//         enabled: true
+//       }
+//       {
+//         categoryGroup: 'allLogs'
+//         category: null
+//         enabled: true
+//       }
+//     ]
+//   }
+// }
+// resource azureOpenAIKeyEntry 'Microsoft.KeyVault/vaults/secrets@2021-11-01-preview' = {
+//   parent: existingKeyVaultResource
+//   name: varKvSecretNameAzureOpenaiKey
+//   properties: {
+//     value: avmCognitiveServicesAccounts.listKeys().key1
+//   }
+// }
 
 // AI Foundry: AI Services Content Understanding
 // NOTE: Required version 'Microsoft.CognitiveServices/accounts/deployments@2023-05-01' not available in AVM
-// module avmCognitiveServicesAccountsContentUnderstanding 'br/public:avm/res/cognitive-services/account:0.10.1' = {
-//   name: format(avmDeploymentNameFormat, aiServicesContentUnderstandingResourceName)
-//   params: {
-//     name: aiServicesContentUnderstandingResourceName
-//     location: aiServices_cu_location
-//     tags: tags
-//     disableLocalAuth: false //Added this in order to retrieve the keys. Evaluate alternatives
-//     customSubDomainName: aiServicesContentUnderstandingResourceName
-//     sku: 'S0'
-//     kind: 'AIServices'
-//     apiProperties: {
-//       staticsEnabled: false
-//     }
-//     publicNetworkAccess: 'Enabled' // Not in original script, check this
-//     secretsExportConfiguration: {
-//       keyVaultResourceId: existingKeyVaultResource.id
-//       accessKey1Name: 'AZURE-OPENAI-CU-KEY'
-//     }
-//   }
-// }
-resource avmCognitiveServicesAccountsContentUnderstanding 'Microsoft.CognitiveServices/accounts@2024-04-01-preview' = {
-  name: aiServicesContentUnderstandingResourceName
-  tags: tags
-  location: aiServicesContentUnderstandingLocation
-  sku: {
-    name: aiServicesContentUnderstandingSkuName
-  }
-  kind: 'AIServices'
-  properties: {
+module avmCognitiveServicesAccountsContentUnderstanding 'br/public:avm/res/cognitive-services/account:0.10.1' = {
+  name: format(avmDeploymentNameFormat, aiServicesContentUnderstandingResourceName)
+  params: {
+    name: aiServicesContentUnderstandingResourceName
+    location: aiServicesContentUnderstandingLocation
+    tags: tags
+    enableTelemetry: enableTelemetry
+    diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspaceResourceId }]
+    sku: aiServicesContentUnderstandingSkuName
+    kind: 'AIServices'
+    disableLocalAuth: false //Added this in order to retrieve the keys. Evaluate alternatives
     customSubDomainName: aiServicesContentUnderstandingResourceName
     apiProperties: {
-      statisticsEnabled: false
+      staticsEnabled: false
     }
-    publicNetworkAccess: 'Enabled'
+    publicNetworkAccess: 'Enabled' // Not in original script, check this
+    secretsExportConfiguration: {
+      keyVaultResourceId: existingKeyVaultResource.id
+      accessKey1Name: varKvSecretNameAzureOpenaiCuKey
+    }
   }
 }
-resource cognitiveServicesAccountsContentUnderstanding_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
-  name: '${avmCognitiveServicesAccountsContentUnderstanding.name}-diagnosticSettings'
-  scope: avmCognitiveServicesAccountsContentUnderstanding
-  properties: {
-    workspaceId: logAnalyticsWorkspaceResourceId
-    metrics: [
-      {
-        category: 'AllMetrics'
-        enabled: true
-        timeGrain: null
-      }
-    ]
-    logs: [
-      {
-        categoryGroup: 'audit'
-        category: null
-        enabled: true
-      }
-      {
-        categoryGroup: 'allLogs'
-        category: null
-        enabled: true
-      }
-    ]
-  }
-}
-resource azureOpenAICuKeyEntry 'Microsoft.KeyVault/vaults/secrets@2021-11-01-preview' = {
-  parent: existingKeyVaultResource
-  name: 'AZURE-OPENAI-CU-KEY'
-  properties: {
-    value: avmCognitiveServicesAccountsContentUnderstanding.listKeys().key1 //'2024-02-15-preview'
-  }
-}
+// resource cognitiveServicesAccountsContentUnderstanding 'Microsoft.CognitiveServices/accounts@2024-04-01-preview' = {
+//   name: aiServicesContentUnderstandingResourceName
+//   tags: tags
+//   location: aiServicesContentUnderstandingLocation
+//   sku: {
+//     name: aiServicesContentUnderstandingSkuName
+//   }
+//   kind: 'AIServices'
+//   properties: {
+//     customSubDomainName: aiServicesContentUnderstandingResourceName
+//     apiProperties: {
+//       statisticsEnabled: false
+//     }
+//     publicNetworkAccess: 'Enabled'
+//   }
+// }
+// resource cognitiveServicesAccountsContentUnderstanding_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+//   name: '${cognitiveServicesAccountsContentUnderstanding.name}-diagnosticSettings'
+//   scope: cognitiveServicesAccountsContentUnderstanding
+//   properties: {
+//     workspaceId: logAnalyticsWorkspaceResourceId
+//     metrics: [
+//       {
+//         category: 'AllMetrics'
+//         enabled: true
+//         timeGrain: null
+//       }
+//     ]
+//     logs: [
+//       {
+//         categoryGroup: 'audit'
+//         category: null
+//         enabled: true
+//       }
+//       {
+//         categoryGroup: 'allLogs'
+//         category: null
+//         enabled: true
+//       }
+//     ]
+//   }
+// }
+// resource azureOpenAICuKeyEntry 'Microsoft.KeyVault/vaults/secrets@2021-11-01-preview' = {
+//   parent: existingKeyVaultResource
+//   name: 'AZURE-OPENAI-CU-KEY'
+//   properties: {
+//     value: cognitiveServicesAccountsContentUnderstanding.listKeys().key1 //'2024-02-15-preview'
+//   }
+// }
 
 resource azureOpenAICUEndpointEntry 'Microsoft.keyvault/vaults/secrets@2021-11-01-preview' = {
   parent: existingKeyVaultResource
-  name: 'AZURE-OPENAI-CU-ENDPOINT'
+  name: varKvSecretNameAzureOpenaiCuEndpoint
   properties: {
-    value: avmCognitiveServicesAccountsContentUnderstanding.properties.endpoint //deployed_avmCognitiveServicesAccountsContentUnderstanding.properties.endpoint
+    //value: cognitiveServicesAccountsContentUnderstanding.properties.endpoint
+    value: avmCognitiveServicesAccountsContentUnderstanding.outputs.endpoint
   }
 }
 
@@ -351,7 +363,8 @@ module moduleAIHub './ai-foundry-ai-hub.bicep' = {
     tags: tags
     location: aiHubLocation
     logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId
-    aiServicesName: avmCognitiveServicesAccounts.name
+    //aiServicesName: cognitiveServicesAccounts.name
+    aiServicesName: avmCognitiveServicesAccounts.outputs.name
     searchServiceName: avmSearchSearchServices.outputs.name
     aiHubName: aiHubResourceName
     sku: aiHubSkuName
@@ -359,8 +372,10 @@ module moduleAIHub './ai-foundry-ai-hub.bicep' = {
     containerRegistryResourceId: avmContainerRegistryRegistry.outputs.resourceId
     applicationInsightsResourceId: avmInsightsComponent.outputs.resourceId
     storageAccountResourceId: avmStorageAccount.outputs.resourceId
-    cognitiveServicesEndpoint: avmCognitiveServicesAccounts.properties.endpoint
-    cognitiveServicesResourceId: avmCognitiveServicesAccounts.id
+    //cognitiveServicesEndpoint: cognitiveServicesAccounts.properties.endpoint
+    cognitiveServicesEndpoint: avmCognitiveServicesAccounts.outputs.endpoint
+    //cognitiveServicesResourceId: cognitiveServicesAccounts.id
+    cognitiveServicesResourceId: avmCognitiveServicesAccounts.outputs.resourceId
     searchServicesEndpoint: 'https://${avmSearchSearchServices.outputs.name}.search.windows.net'
     searchServicesResourceId: avmSearchSearchServices.outputs.resourceId
   }
@@ -389,7 +404,7 @@ module avmMLServicesWorkspacesProject 'br/public:avm/res/machine-learning-servic
 
 resource azureOpenAIInferenceEndpoint 'Microsoft.keyvault/vaults/secrets@2021-11-01-preview' = {
   parent: existingKeyVaultResource
-  name: 'AZURE-OPENAI-INFERENCE-ENDPOINT'
+  name: varKvSecretNameAzureOpenaiInferenceEndpoint
   properties: {
     value: ''
   }
@@ -397,7 +412,7 @@ resource azureOpenAIInferenceEndpoint 'Microsoft.keyvault/vaults/secrets@2021-11
 
 resource azureOpenAIInferenceKey 'Microsoft.keyvault/vaults/secrets@2021-11-01-preview' = {
   parent: existingKeyVaultResource
-  name: 'AZURE-OPENAI-INFERENCE-KEY'
+  name: varKvSecretNameAzureOpenaiInferenceKey
   properties: {
     value: ''
   }
@@ -405,19 +420,19 @@ resource azureOpenAIInferenceKey 'Microsoft.keyvault/vaults/secrets@2021-11-01-p
 
 resource azureOpenAIEndpointEntry 'Microsoft.keyvault/vaults/secrets@2021-11-01-preview' = {
   parent: existingKeyVaultResource
-  name: 'AZURE-OPENAI-ENDPOINT'
+  name: varKvSecretNameAzureOpenaiEndpoint
   properties: {
     //value: avmCognitiveServicesAccounts.outputs.endpoint
-    value: avmCognitiveServicesAccounts.properties.endpoint
+    value: avmCognitiveServicesAccounts.outputs.endpoint
   }
 }
 
 resource cogServiceEndpointEntry 'Microsoft.keyvault/vaults/secrets@2021-11-01-preview' = {
   parent: existingKeyVaultResource
-  name: 'COG-SERVICES-ENDPOINT'
+  name: varKvSecretNameCogServicesEndpoint
   properties: {
-    //value: avmCognitiveServicesAccounts.outputs.endpoint
-    value: avmCognitiveServicesAccounts.properties.endpoint
+    //value: cognitiveServicesAccounts.properties.endpoint
+    value: avmCognitiveServicesAccounts.outputs.endpoint
   }
 }
 
@@ -425,14 +440,17 @@ module aiFoundryKvSecretCogServicesKey './ai-foundry-kv-secret-cog-services-key.
   name: format(localModuleDeploymentNameFormat, 'ai-foundry-kv-secret-cog-services-ke')
   params: {
     keyVaultResourceName: keyVaultResourceName
-    //cognitiveServicesAccountsResourceName: avmCognitiveServicesAccounts.outputs.name
-    cognitiveServicesAccountsResourceName: avmCognitiveServicesAccounts.name
+    // cognitiveServicesAccountsResourceName: cognitiveServicesAccounts.name
+    cognitiveServicesAccountsResourceName: avmCognitiveServicesAccounts.outputs.name
   }
 }
 
-output aiServicesName string = avmCognitiveServicesAccounts.name //aiServicesName_m
-output aiServicesEndpoint string = avmCognitiveServicesAccounts.properties.endpoint //aiServices_m.properties.endpoint
-output aiServicesResourceId string = avmCognitiveServicesAccounts.id //aiServices_m.id
+//output aiServicesName string = cognitiveServicesAccounts.name
+output aiServicesName string = avmCognitiveServicesAccounts.outputs.name
+//output aiServicesEndpoint string = cognitiveServicesAccounts.properties.endpoint //aiServices_m.properties.endpoint
+output aiServicesEndpoint string = avmCognitiveServicesAccounts.outputs.endpoint //aiServices_m.properties.endpoint
+//output aiServicesResourceId string = cognitiveServicesAccounts.id
+output aiServicesResourceId string = avmCognitiveServicesAccounts.outputs.resourceId
 
 output aiSearchName string = avmSearchSearchServices.outputs.name
 output aiSearchResourceId string = avmSearchSearchServices.outputs.resourceId
@@ -443,5 +461,6 @@ output aiProjectResourceId string = avmMLServicesWorkspacesProject.outputs.resou
 
 output applicationInsightsResourceId string = avmInsightsComponent.outputs.resourceId
 output applicationInsightsInstrumentationKey string = avmInsightsComponent.outputs.instrumentationKey
+output applicationInsightsConnectionString string = avmInsightsComponent.outputs.connectionString
 
 output storageAccountName string = avmStorageAccount.outputs.name
