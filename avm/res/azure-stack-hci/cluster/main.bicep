@@ -36,27 +36,24 @@ param roleAssignments roleAssignmentType[]?
 @description('Optional. Specify whether to use the shared key vault for the HCI cluster.')
 param useSharedKeyVault bool = true
 
-@description('Optional. The type of the witness.')
-param witnessType string = 'Cloud'
-
-@description('Conditional. The name of the deployment user. Required if useSharedKeyVault is false.')
+@description('Conditional. The name of the deployment user. Required if useSharedKeyVault is true.')
 param deploymentUser string?
 
 @secure()
-@description('Conditional. The password of the deployment user. Required if useSharedKeyVault is false.')
+@description('Conditional. The password of the deployment user. Required if useSharedKeyVault is true.')
 param deploymentUserPassword string?
 
-@description('Conditional. The name of the local admin user. Required if useSharedKeyVault is false.')
+@description('Conditional. The name of the local admin user. Required if useSharedKeyVault is true.')
 param localAdminUser string?
 
 @secure()
-@description('Conditional. The password of the local admin user. Required if useSharedKeyVault is false.')
+@description('Conditional. The password of the local admin user. Required if useSharedKeyVault is true.')
 param localAdminPassword string?
 
-@description('Optional. The service principal ID for ARB.')
+@description('Conditional. The service principal ID for ARB. Required if useSharedKeyVault is true.')
 param servicePrincipalId string?
 
-@description('Optional. The service principal secret for ARB.')
+@description('Conditional. The service principal secret for ARB. Required if useSharedKeyVault is true.')
 param servicePrincipalSecret string?
 
 @description('Optional. Content type of the azure stack lcm user credential.')
@@ -70,14 +67,6 @@ param witnessStoragekeyContentType string = 'Secret'
 
 @description('Optional. Content type of the default ARB application.')
 param defaultARBApplicationContentType string = 'Secret'
-
-@description('Optional. Key vault secret names mapping.')
-param keyVaultSecretNames KeyVaultSecretNames = {
-  azureStackLCMUserCredential: 'AzureStackLCMUserCredential'
-  localAdminCredential: 'LocalAdminCredential'
-  defaultARBApplication: 'DefaultARBApplication'
-  witnessStorageKey: 'WitnessStorageKey'
-}
 
 @description('Optional. Tags of azure stack LCM user credential.')
 param azureStackLCMUserCredentialTags object?
@@ -168,85 +157,27 @@ resource cluster 'Microsoft.AzureStackHCI/clusters@2024-04-01' = {
   tags: tags
 }
 
-resource witnessStorageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = if (toLower(witnessType) == 'cloud') {
-  name: deploymentSettings!.clusterWitnessStorageAccountName
-  location: location
-  sku: {
-    name: 'Standard_ZRS'
-  }
-  kind: 'StorageV2'
-  properties: {
-    supportsHttpsTrafficOnly: true
-    allowBlobPublicAccess: false
-    minimumTlsVersion: 'TLS1_2'
-    networkAcls: {
-      bypass: 'AzureServices'
-      defaultAction: 'Deny'
-      ipRules: []
-      virtualNetworkRules: []
-    }
-  }
-  resource blobService 'blobServices' = {
-    name: 'default'
-    properties: {
-      deleteRetentionPolicy: {
-        enabled: true
-        days: 7
-      }
-      containerDeleteRetentionPolicy: {
-        enabled: true
-        days: 7
-      }
-    }
-  }
-}
-
-var enableReferencedModulesTelemetry = false
-
-module keyVault 'br/public:avm/res/key-vault/vault:0.12.1' = if (!useSharedKeyVault) {
-  name: deploymentSettings!.keyVaultName
-  scope: resourceGroup()
+module secrets './secrets.bicep' = if (useSharedKeyVault) {
+  name: '${uniqueString(deployment().name, location)}-secrets'
   params: {
-    name: deploymentSettings!.keyVaultName
-    enableTelemetry: enableReferencedModulesTelemetry
-    secrets: [
-      {
-        contentType: azureStackLCMUserCredentialContentType
-        name: keyVaultSecretNames.azureStackLCMUserCredential
-        value: base64('${deploymentUser}:${deploymentUserPassword}')
-        tags: azureStackLCMUserCredentialTags
-        attributes: {
-          enabled: true
-        }
-      }
-      {
-        contentType: localAdminCredentialContentType
-        name: keyVaultSecretNames.localAdminCredential
-        value: base64('${localAdminUser}:${localAdminPassword}')
-        tags: localAdminCredentialTags
-        attributes: {
-          enabled: true
-        }
-      }
-      {
-        contentType: witnessStoragekeyContentType
-        name: keyVaultSecretNames.witnessStorageKey
-        value: base64(witnessStorageAccount.listKeys().keys[0].value)
-        tags: witnessStoragekeyTags
-        attributes: {
-          enabled: true
-        }
-      }
-      {
-        contentType: defaultARBApplicationContentType
-        name: keyVaultSecretNames.defaultARBApplication
-        value: base64('${servicePrincipalId}:${servicePrincipalSecret}')
-        tags: defaultARBApplicationTags
-        attributes: {
-          enabled: true
-        }
-      }
-    ]
+    clusterName: name
+    cloudId: cluster.properties.cloudId
+    keyVaultName: deploymentSettings!.keyVaultName
+    storageAccountName: deploymentSettings!.clusterWitnessStorageAccountName
+    deploymentUser: deploymentUser!
+    deploymentUserPassword: deploymentUserPassword!
+    localAdminUser: localAdminUser!
+    localAdminPassword: localAdminPassword!
+    servicePrincipalId: servicePrincipalId!
+    servicePrincipalSecret: servicePrincipalSecret!
+    azureStackLCMUserCredentialContentType: azureStackLCMUserCredentialContentType
+    localAdminCredentialContentType: localAdminCredentialContentType
+    witnessStoragekeyContentType: witnessStoragekeyContentType
+    defaultARBApplicationContentType: defaultARBApplicationContentType
+    azureStackLCMUserCredentialTags: azureStackLCMUserCredentialTags
+    localAdminCredentialTags: localAdminCredentialTags
+    witnessStoragekeyTags: witnessStoragekeyTags
+    defaultARBApplicationTags: defaultARBApplicationTags
   }
 }
 
