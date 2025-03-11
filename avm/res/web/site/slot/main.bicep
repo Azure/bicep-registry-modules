@@ -126,9 +126,6 @@ param dailyMemoryTimeQuota int?
 @description('Optional. Setting this value to false disables the app (takes the app offline).')
 param enabled bool = true
 
-@description('Optional. Enable/Disable usage telemetry for module.')
-param enableTelemetry bool = true
-
 @description('Optional. Hostname SSL states are used to manage the SSL bindings for app\'s hostnames.')
 param hostNameSslStates array?
 
@@ -166,6 +163,8 @@ param vnetRouteAllEnabled bool = false
 
 @description('Optional. Names of hybrid connection relays to connect app with.')
 param hybridConnectionRelays array?
+
+var enableReferencedModulesTelemetry = false
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -374,12 +373,12 @@ resource slot_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-0
   }
 ]
 
-module slot_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
+module slot_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-slot-PrivateEndpoint-${index}'
     scope: resourceGroup(
-      split(privateEndpoint.?resourceGroupResourceId ?? privateEndpoint.?subnetResourceId, '/')[2],
-      split(privateEndpoint.?resourceGroupResourceId ?? privateEndpoint.?subnetResourceId, '/')[4]
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
     )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(app.id, '/'))}-${privateEndpoint.?service ?? 'sites-${slot.name}'}-${index}'
@@ -411,7 +410,7 @@ module slot_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' 
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
-      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',
@@ -445,12 +444,39 @@ output systemAssignedMIPrincipalId string? = slot.?identity.?principalId
 output location string = slot.location
 
 @description('The private endpoints of the slot.')
-output privateEndpoints array = [
-  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
-    name: slot_privateEndpoints[i].outputs.name
-    resourceId: slot_privateEndpoints[i].outputs.resourceId
-    groupId: slot_privateEndpoints[i].outputs.groupId
-    customDnsConfig: slot_privateEndpoints[i].outputs.customDnsConfig
-    networkInterfaceIds: slot_privateEndpoints[i].outputs.networkInterfaceIds
+output privateEndpoints privateEndpointOutputType[] = [
+  for (item, index) in (privateEndpoints ?? []): {
+    name: slot_privateEndpoints[index].outputs.name
+    resourceId: slot_privateEndpoints[index].outputs.resourceId
+    groupId: slot_privateEndpoints[index].outputs.?groupId!
+    customDnsConfigs: slot_privateEndpoints[index].outputs.customDnsConfigs
+    networkInterfaceResourceIds: slot_privateEndpoints[index].outputs.networkInterfaceResourceIds
   }
 ]
+
+// ================ //
+// Definitions      //
+// ================ //
+@export()
+type privateEndpointOutputType = {
+  @description('The name of the private endpoint.')
+  name: string
+
+  @description('The resource ID of the private endpoint.')
+  resourceId: string
+
+  @description('The group Id for the private endpoint Group.')
+  groupId: string?
+
+  @description('The custom DNS configurations of the private endpoint.')
+  customDnsConfigs: {
+    @description('FQDN that resolves to private endpoint IP address.')
+    fqdn: string?
+
+    @description('A list of private IP addresses of the private endpoint.')
+    ipAddresses: string[]
+  }[]
+
+  @description('The IDs of the network interfaces associated with the private endpoint.')
+  networkInterfaceResourceIds: string[]
+}

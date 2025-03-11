@@ -107,6 +107,8 @@ param diagnosticSettings diagnosticSettingLogsOnlyType[]?
 
 // Variables
 
+var enableReferencedModulesTelemetry = false
+
 var cmkUserAssignedIdentityAsArray = !empty(customerManagedKey.?userAssignedIdentityResourceId ?? [])
   ? [customerManagedKey.?userAssignedIdentityResourceId]
   : []
@@ -175,22 +177,22 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 }
 
 resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
-  name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
+  name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
   scope: resourceGroup(
-    split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
-    split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
+    split(customerManagedKey.?keyVaultResourceId!, '/')[2],
+    split(customerManagedKey.?keyVaultResourceId!, '/')[4]
   )
 
   resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
-    name: customerManagedKey.?keyName ?? 'dummyKey'
+    name: customerManagedKey.?keyName!
   }
 }
 
 resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
-  name: last(split(customerManagedKey.?userAssignedIdentityResourceId ?? 'dummyMsi', '/'))
+  name: last(split(customerManagedKey.?userAssignedIdentityResourceId!, '/'))
   scope: resourceGroup(
-    split((customerManagedKey.?userAssignedIdentityResourceId ?? '//'), '/')[2],
-    split((customerManagedKey.?userAssignedIdentityResourceId ?? '////'), '/')[4]
+    split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[2],
+    split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[4]
   )
 }
 
@@ -275,8 +277,8 @@ module workspace_cmk_rbac 'modules/nested_cmkRbac.bicep' = if (encryptionActivat
       : true
   }
   scope: resourceGroup(
-    split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
-    split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
+    split(customerManagedKey.?keyVaultResourceId!, '/')[2],
+    split(customerManagedKey.?keyVaultResourceId!, '/')[4]
   )
 }
 
@@ -349,12 +351,12 @@ module workspace_firewallRules 'firewall-rules/main.bicep' = [
 ]
 
 // Endpoints
-module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.9.1' = [
+module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-workspace-PrivateEndpoint-${index}'
     scope: resourceGroup(
-      split(privateEndpoint.?resourceGroupResourceId ?? privateEndpoint.?subnetResourceId, '/')[2],
-      split(privateEndpoint.?resourceGroupResourceId ?? privateEndpoint.?subnetResourceId, '/')[4]
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
     )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(workspace.id, '/'))}-${privateEndpoint.service}-${index}'
@@ -386,7 +388,7 @@ module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
-      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',
@@ -413,10 +415,11 @@ resource workspace_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@202
       workspaceId: diagnosticSetting.?workspaceResourceId
       eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
       eventHubName: diagnosticSetting.?eventHubName
-      logs: diagnosticSetting.?logCategoriesAndGroups ?? [
-        {
-          categoryGroup: 'AllLogs'
-          enabled: true
+      logs: [
+        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
+          categoryGroup: group.?categoryGroup
+          category: group.?category
+          enabled: group.?enabled ?? true
         }
       ]
       marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
@@ -446,12 +449,12 @@ output location string = workspace.location
 
 @description('The private endpoints of the Synapse Workspace.')
 output privateEndpoints privateEndpointOutputType[] = [
-  for (pe, i) in (privateEndpoints ?? []): {
-    name: workspace_privateEndpoints[i].outputs.name
-    resourceId: workspace_privateEndpoints[i].outputs.resourceId
-    groupId: workspace_privateEndpoints[i].outputs.groupId
-    customDnsConfigs: workspace_privateEndpoints[i].outputs.customDnsConfig
-    networkInterfaceResourceIds: workspace_privateEndpoints[i].outputs.networkInterfaceResourceIds
+  for (item, index) in (privateEndpoints ?? []): {
+    name: workspace_privateEndpoints[index].outputs.name
+    resourceId: workspace_privateEndpoints[index].outputs.resourceId
+    groupId: workspace_privateEndpoints[index].outputs.?groupId!
+    customDnsConfigs: workspace_privateEndpoints[index].outputs.customDnsConfigs
+    networkInterfaceResourceIds: workspace_privateEndpoints[index].outputs.networkInterfaceResourceIds
   }
 ]
 
