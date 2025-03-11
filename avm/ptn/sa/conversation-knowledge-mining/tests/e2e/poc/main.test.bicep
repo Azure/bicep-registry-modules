@@ -82,7 +82,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      solutionPrefix: '${namePrefix}ckmpoc'
+      solutionPrefix: '${namePrefix}${serviceShort}'
       aiFoundryAiServicesContentUnderstandingLocation: 'West US'
     }
   }
