@@ -14,7 +14,7 @@ This module deploys a Policy Insights Remediation.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.PolicyInsights/remediations` | [2021-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.PolicyInsights/2021-10-01/remediations) |
+| `Microsoft.PolicyInsights/remediations` | [2024-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.PolicyInsights/2024-10-01/remediations) |
 
 ## Usage examples
 
@@ -124,6 +124,7 @@ module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
     // Non-required parameters
     failureThresholdPercentage: '0.5'
     filtersLocations: []
+    filtersResourceIds: []
     location: '<location>'
     parallelDeployments: 1
     policyDefinitionReferenceId: 'Prerequisite_DeployExtensionWindows'
@@ -158,6 +159,9 @@ module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
     "filtersLocations": {
       "value": []
     },
+    "filtersResourceIds": {
+      "value": []
+    },
     "location": {
       "value": "<location>"
     },
@@ -190,6 +194,7 @@ param policyAssignmentId = '<policyAssignmentId>'
 // Non-required parameters
 param failureThresholdPercentage = '0.5'
 param filtersLocations = []
+param filtersResourceIds = []
 param location = '<location>'
 param parallelDeployments = 1
 param policyDefinitionReferenceId = 'Prerequisite_DeployExtensionWindows'
@@ -302,6 +307,7 @@ module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
     // Non-required parameters
     failureThresholdPercentage: '0.5'
     filtersLocations: []
+    filtersResourceIds: []
     location: '<location>'
     parallelDeployments: 1
     policyDefinitionReferenceId: 'Prerequisite_DeployExtensionWindows'
@@ -337,6 +343,9 @@ module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
       "value": "0.5"
     },
     "filtersLocations": {
+      "value": []
+    },
+    "filtersResourceIds": {
       "value": []
     },
     "location": {
@@ -380,6 +389,7 @@ param policyAssignmentId = '<policyAssignmentId>'
 // Non-required parameters
 param failureThresholdPercentage = '0.5'
 param filtersLocations = []
+param filtersResourceIds = []
 param location = '<location>'
 param parallelDeployments = 1
 param policyDefinitionReferenceId = 'Prerequisite_DeployExtensionWindows'
@@ -490,6 +500,7 @@ module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
     // Non-required parameters
     failureThresholdPercentage: '0.5'
     filtersLocations: []
+    filtersResourceIds: []
     location: '<location>'
     parallelDeployments: 1
     policyDefinitionReferenceId: 'Prerequisite_DeployExtensionWindows'
@@ -524,6 +535,9 @@ module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
       "value": "0.5"
     },
     "filtersLocations": {
+      "value": []
+    },
+    "filtersResourceIds": {
       "value": []
     },
     "location": {
@@ -564,6 +578,7 @@ param policyAssignmentId = '<policyAssignmentId>'
 // Non-required parameters
 param failureThresholdPercentage = '0.5'
 param filtersLocations = []
+param filtersResourceIds = []
 param location = '<location>'
 param parallelDeployments = 1
 param policyDefinitionReferenceId = 'Prerequisite_DeployExtensionWindows'
@@ -591,6 +606,7 @@ param subscriptionId = '<subscriptionId>'
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`failureThresholdPercentage`](#parameter-failurethresholdpercentage) | string | The remediation failure threshold settings. A number between 0.0 to 1.0 representing the percentage failure threshold. The remediation will fail if the percentage of failed remediation operations (i.e. failed deployments) exceeds this threshold. 0 means that the remediation will stop after the first failure. 1 means that the remediation will not stop even if all deployments fail. |
 | [`filtersLocations`](#parameter-filterslocations) | array | The filters that will be applied to determine which resources to remediate. |
+| [`filtersResourceIds`](#parameter-filtersresourceids) | array | The IDs of the resources that will be remediated. Can specify at most 100 IDs. |
 | [`location`](#parameter-location) | string | Location deployment metadata. |
 | [`managementGroupId`](#parameter-managementgroupid) | string | The target scope for the remediation. The name of the management group for the policy assignment. If not provided, will use the current scope for deployment. |
 | [`parallelDeployments`](#parameter-paralleldeployments) | int | Determines how many resources to remediate at any given time. Can be used to increase or reduce the pace of the remediation. Can be between 1-30. Higher values will cause the remediation to complete more quickly, but increase the risk of throttling. If not provided, the default parallel deployments value is used. |
@@ -633,6 +649,14 @@ The remediation failure threshold settings. A number between 0.0 to 1.0 represen
 ### Parameter: `filtersLocations`
 
 The filters that will be applied to determine which resources to remediate.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
+### Parameter: `filtersResourceIds`
+
+The IDs of the resources that will be remediated. Can specify at most 100 IDs.
 
 - Required: No
 - Type: array

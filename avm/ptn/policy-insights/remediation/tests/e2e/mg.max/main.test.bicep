@@ -46,6 +46,7 @@ module testDeployment '../../../main.bicep' = {
     policyAssignmentId: policySetAssignments.id
     policyDefinitionReferenceId: 'Prerequisite_DeployExtensionWindows'
     filtersLocations: []
+    filtersResourceIds: []
     resourceCount: 10
     parallelDeployments: 1
     failureThresholdPercentage: '0.5'
