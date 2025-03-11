@@ -336,17 +336,17 @@ module searchService_sharedPrivateLinkResources 'shared-private-link-resource/ma
 module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfiguration != null) {
   name: '${uniqueString(deployment().name, location)}-secrets-kv'
   scope: resourceGroup(
-    split((secretsExportConfiguration.?keyVaultResourceId ?? '//'), '/')[2],
-    split((secretsExportConfiguration.?keyVaultResourceId ?? '////'), '/')[4]
+    split(secretsExportConfiguration.?keyVaultResourceId!, '/')[2],
+    split(secretsExportConfiguration.?keyVaultResourceId!, '/')[4]
   )
   params: {
-    keyVaultName: last(split(secretsExportConfiguration.?keyVaultResourceId ?? '//', '/'))
+    keyVaultName: last(split(secretsExportConfiguration.?keyVaultResourceId!, '/'))
     secretsToSet: union(
       [],
       contains(secretsExportConfiguration!, 'primaryAdminKeyName')
         ? [
             {
-              name: secretsExportConfiguration!.primaryAdminKeyName
+              name: secretsExportConfiguration!.?primaryAdminKeyName
               value: searchService.listAdminKeys().primaryKey
             }
           ]
@@ -354,7 +354,7 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
       contains(secretsExportConfiguration!, 'secondaryAdminKeyName')
         ? [
             {
-              name: secretsExportConfiguration!.secondaryAdminKeyName
+              name: secretsExportConfiguration!.?secondaryAdminKeyName
               value: searchService.listAdminKeys().secondaryKey
             }
           ]

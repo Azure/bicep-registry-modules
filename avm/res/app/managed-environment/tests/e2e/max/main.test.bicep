@@ -57,6 +57,7 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
+      logsDestination: 'log-analytics'
       logAnalyticsWorkspaceResourceId: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
       location: resourceLocation
       appInsightsConnectionString: nestedDependencies.outputs.appInsightsConnectionString
@@ -141,8 +142,5 @@ module testDeployment '../../../main.bicep' = [
         Env: 'test'
       }
     }
-    dependsOn: [
-      nestedDependencies
-    ]
   }
 ]

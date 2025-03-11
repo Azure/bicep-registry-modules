@@ -69,7 +69,7 @@ param waitDeploymentScriptPrefixName string
 
 var clusterNodeNames = ['hcinode1', 'hcinode2']
 var domainOUPath = 'OU=HCI,DC=hci,DC=local'
-module hciHostDeployment '../../e2e-template-assets/azureStackHCIHost/hciHostDeployment.bicep' = {
+module hciHostDeployment '../azureStackHCIHost/hciHostDeployment.bicep' = {
   name: '${uniqueString(deployment().name, location)}-test-hcihostdeploy'
   params: {
     domainOUPath: domainOUPath
@@ -102,7 +102,7 @@ resource cluster 'Microsoft.AzureStackHCI/clusters@2024-04-01' = {
   properties: {}
 }
 
-module hciClusterPreqs '../../e2e-template-assets/azureStackHCIClusterPreqs/ashciPrereqs.bicep' = {
+module hciClusterPreqs '../azureStackHCIClusterPreqs/ashciPrereqs.bicep' = {
   name: '${uniqueString(deployment().name, location)}-test-hciclusterreqs'
   params: {
     location: location
