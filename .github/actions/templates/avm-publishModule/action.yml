@@ -66,11 +66,19 @@ runs:
           Write-Verbose "Invoke function with" -Verbose
           Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
+          # if($publishOutputs = Publish-ModuleFromPathToPBR @functionInput -Verbose) {
+          #   $publishOutputs.Keys | Foreach-Object {
+          #     $_.Keys | Foreach-Object {
+          #       Write-Verbose ('Passing pipeline variable [{0}] with value [{1}]' -f $_, $publishOutputs.$_) -Verbose
+          #       Write-Output ('{0}={1}' -f $_, $publishOutputs.$_) >> $env:GITHUB_OUTPUT
+          #     }
+          #   }
+          # }
           if($publishOutputs = Publish-ModuleFromPathToPBR @functionInput -Verbose) {
-            $publishOutputs.Keys | Foreach-Object {
-              $_.Keys | Foreach-Object {
-                Write-Verbose ('Passing pipeline variable [{0}] with value [{1}]' -f $_, $publishOutputs.$_) -Verbose
-                Write-Output ('{0}={1}' -f $_, $publishOutputs.$_) >> $env:GITHUB_OUTPUT
+            foreach($moduleName in $publishOutputs.Keys) {
+              foreach($key in $publishOutputs.$modulename.Keys) {
+                Write-Verbose ('Passing pipeline variable [{0}] with key [{1}] and value [{2}]' -f $moduleName, $key, $publishOutputs.$moduleName.$key) -Verbose
+                Write-Output ('{0}={{1},{2}}' -f $moduleName, $key, $publishOutputs.$moduleName.$key) >> $env:GITHUB_OUTPUT
               }
             }
           }
