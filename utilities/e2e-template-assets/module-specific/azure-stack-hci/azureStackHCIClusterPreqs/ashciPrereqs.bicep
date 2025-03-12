@@ -35,18 +35,7 @@ param arbDeploymentServicePrincipalSecret string
 param vnetSubnetResourceId string?
 param allowIPtoStorageAndKeyVault string?
 param usingArcGW bool = false
-param clusterName string?
-param cloudId string?
-
-// secret names for the Azure Key Vault - these cannot be changed.
-var localAdminSecretName = (empty(cloudId)) ? 'LocalAdminCredential' : '${clusterName}-LocalAdminCredential-${cloudId}'
-var domainAdminSecretName = (empty(cloudId))
-  ? 'AzureStackLCMUserCredential'
-  : '${clusterName}-AzureStackLCMUserCredential-${cloudId}'
-var arbDeploymentServicePrincipalName = (empty(cloudId))
-  ? 'DefaultARBApplication'
-  : '${clusterName}-DefaultARBApplication-${cloudId}'
-var storageWitnessName = (empty(cloudId)) ? 'WitnessStorageKey' : '${clusterName}-WitnessStorageKey-${cloudId}'
+param useSharedKeyVault bool = true
 
 // create base64 encoded secret values to be stored in the Azure Key Vault
 var deploymentUserSecretValue = base64('${deploymentUsername}:${deploymentUserPassword}')
@@ -198,8 +187,8 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
     diagnosticStorageAccount
   ]
 
-  resource keyVaultName_domainAdminSecret 'secrets@2023-07-01' = {
-    name: domainAdminSecretName
+  resource keyVaultName_domainAdminSecret 'secrets@2023-07-01' = if (!useSharedKeyVault) {
+    name: 'AzureStackLCMUserCredential'
     properties: {
       contentType: 'Secret'
       value: deploymentUserSecretValue
@@ -209,8 +198,8 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
     }
   }
 
-  resource keyVaultName_localAdminSecret 'secrets@2023-07-01' = {
-    name: localAdminSecretName
+  resource keyVaultName_localAdminSecret 'secrets@2023-07-01' = if (!useSharedKeyVault) {
+    name: 'LocalAdminCredential'
     properties: {
       contentType: 'Secret'
       value: localAdminSecretValue
@@ -220,8 +209,8 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
     }
   }
 
-  resource keyVaultName_arbDeploymentServicePrincipal 'secrets@2023-07-01' = {
-    name: arbDeploymentServicePrincipalName
+  resource keyVaultName_arbDeploymentServicePrincipal 'secrets@2023-07-01' = if (!useSharedKeyVault) {
+    name: 'DefaultARBApplication'
     properties: {
       contentType: 'Secret'
       value: arbDeploymentServicePrincipalValue
@@ -231,8 +220,8 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
     }
   }
 
-  resource keyVaultName_storageWitness 'secrets@2023-07-01' = {
-    name: storageWitnessName
+  resource keyVaultName_storageWitness 'secrets@2023-07-01' = if (!useSharedKeyVault) {
+    name: 'WitnessStorageKey'
     properties: {
       contentType: 'Secret'
       value: base64(witnessStorageAccount.listKeys().keys[0].value)
