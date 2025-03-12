@@ -21,6 +21,7 @@ This module deploys a Redis Cache.
 | `Microsoft.Cache/redis` | [2024-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2024-11-01/redis) |
 | `Microsoft.Cache/redis/accessPolicies` | [2024-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2024-11-01/redis/accessPolicies) |
 | `Microsoft.Cache/redis/accessPolicyAssignments` | [2024-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2024-11-01/redis/accessPolicyAssignments) |
+| `Microsoft.Cache/redis/firewallRules` | [2024-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2024-11-01/redis/firewallRules) |
 | `Microsoft.Cache/redis/linkedServers` | [2024-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2024-11-01/redis/linkedServers) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
@@ -349,6 +350,23 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
       }
     ]
     enableNonSslPort: true
+    firewallRules: [
+      {
+        endIP: '0.0.0.0'
+        name: 'AllowAllWindowsAzureIps'
+        startIP: '0.0.0.0'
+      }
+      {
+        endIP: '10.10.10.10'
+        name: 'testrule1'
+        startIP: '10.10.10.1'
+      }
+      {
+        endIP: '100.100.100.10'
+        name: 'testrule2'
+        startIP: '100.100.100.1'
+      }
+    ]
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -479,6 +497,25 @@ module redis 'br/public:avm/res/cache/redis:<version>' = {
     },
     "enableNonSslPort": {
       "value": true
+    },
+    "firewallRules": {
+      "value": [
+        {
+          "endIP": "0.0.0.0",
+          "name": "AllowAllWindowsAzureIps",
+          "startIP": "0.0.0.0"
+        },
+        {
+          "endIP": "10.10.10.10",
+          "name": "testrule1",
+          "startIP": "10.10.10.1"
+        },
+        {
+          "endIP": "100.100.100.10",
+          "name": "testrule2",
+          "startIP": "100.100.100.1"
+        }
+      ]
     },
     "location": {
       "value": "<location>"
@@ -625,6 +662,23 @@ param diagnosticSettings = [
   }
 ]
 param enableNonSslPort = true
+param firewallRules = [
+  {
+    endIP: '0.0.0.0'
+    name: 'AllowAllWindowsAzureIps'
+    startIP: '0.0.0.0'
+  }
+  {
+    endIP: '10.10.10.10'
+    name: 'testrule1'
+    startIP: '10.10.10.1'
+  }
+  {
+    endIP: '100.100.100.10'
+    name: 'testrule2'
+    startIP: '100.100.100.1'
+  }
+]
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
@@ -1134,6 +1188,7 @@ param zones = [
 | [`disableAccessKeyAuthentication`](#parameter-disableaccesskeyauthentication) | bool | Disable authentication via access keys. |
 | [`enableNonSslPort`](#parameter-enablenonsslport) | bool | Specifies whether the non-ssl Redis server port (6379) is enabled. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`firewallRules`](#parameter-firewallrules) | array | The firewall rules to create in the PostgreSQL flexible server. |
 | [`geoReplicationObject`](#parameter-georeplicationobject) | object | The geo-replication settings of the service. Requires a Premium SKU. Geo-replication is not supported on a cache with multiple replicas per primary. Secondary cache VM Size must be same or higher as compared to the primary cache VM Size. Geo-replication between a vnet and non vnet cache (and vice-a-versa) not supported. |
 | [`location`](#parameter-location) | string | The location to deploy the Redis cache service. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -1418,6 +1473,14 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `firewallRules`
+
+The firewall rules to create in the PostgreSQL flexible server.
+
+- Required: No
+- Type: array
+- Default: `[]`
 
 ### Parameter: `geoReplicationObject`
 

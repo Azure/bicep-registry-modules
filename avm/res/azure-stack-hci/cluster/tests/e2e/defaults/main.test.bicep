@@ -45,7 +45,7 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' = {
   location: enforcedLocation
 }
 
-module nestedDependencies 'dependencies.bicep' = {
+module nestedDependencies '../../../../../../../utilities/e2e-template-assets/module-specific/azure-stack-hci/dependencies/defaults-dependencies.bicep' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-nestedDependencies-${serviceShort}'
   scope: resourceGroup
   params: {
@@ -78,6 +78,12 @@ module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   params: {
     name: nestedDependencies.outputs.clusterName
+    deploymentUser: 'deployUser'
+    deploymentUserPassword: localAdminAndDeploymentUserPass
+    localAdminUser: 'admin-hci'
+    localAdminPassword: localAdminAndDeploymentUserPass
+    servicePrincipalId: arbDeploymentAppId
+    servicePrincipalSecret: arbDeploymentServicePrincipalSecret
     deploymentSettings: {
       customLocationName: '${namePrefix}${serviceShort}-location'
       clusterNodeNames: nestedDependencies.outputs.clusterNodeNames
