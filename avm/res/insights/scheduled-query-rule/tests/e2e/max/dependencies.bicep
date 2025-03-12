@@ -25,7 +25,7 @@ resource actionGroup 'Microsoft.Insights/actionGroups@2023-01-01' = {
   location: location
   properties: {
     enabled: true
-    groupShortName: actionGroupName
+    groupShortName: 'superShort'
   }
 }
 
