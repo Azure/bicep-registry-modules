@@ -76,7 +76,6 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
     ]
     // Non-required parameters
     evaluationFrequency: 'PT5M'
-    location: '<location>'
     windowSize: 'PT5M'
   }
 }
@@ -136,9 +135,6 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
     "evaluationFrequency": {
       "value": "PT5M"
     },
-    "location": {
-      "value": "<location>"
-    },
     "windowSize": {
       "value": "PT5M"
     }
@@ -190,7 +186,6 @@ param scopes = [
 ]
 // Non-required parameters
 param evaluationFrequency = 'PT5M'
-param location = '<location>'
 param windowSize = 'PT5M'
 ```
 
@@ -243,6 +238,17 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
       '<logAnalyticsWorkspaceResourceId>'
     ]
     // Non-required parameters
+    actions: {
+      actionGroupResourceIds: [
+        '<actionGroupResourceId>'
+      ]
+      actionProperties: {
+        propertyA: 'valueA'
+      }
+      customProperties: {
+        propertyB: 'valueB'
+      }
+    }
     alertDescription: 'My sample Alert'
     alertDisplayName: '<alertDisplayName>'
     autoMitigate: false
@@ -334,6 +340,19 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
       ]
     },
     // Non-required parameters
+    "actions": {
+      "value": {
+        "actionGroupResourceIds": [
+          "<actionGroupResourceId>"
+        ],
+        "actionProperties": {
+          "propertyA": "valueA"
+        },
+        "customProperties": {
+          "propertyB": "valueB"
+        }
+      }
+    },
     "alertDescription": {
       "value": "My sample Alert"
     },
@@ -439,6 +458,17 @@ param scopes = [
   '<logAnalyticsWorkspaceResourceId>'
 ]
 // Non-required parameters
+param actions = {
+  actionGroupResourceIds: [
+    '<actionGroupResourceId>'
+  ]
+  actionProperties: {
+    propertyA: 'valueA'
+  }
+  customProperties: {
+    propertyB: 'valueB'
+  }
+}
 param alertDescription = 'My sample Alert'
 param alertDisplayName = '<alertDisplayName>'
 param autoMitigate = false
@@ -529,7 +559,6 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
     alertDescription: 'My sample Alert'
     autoMitigate: false
     evaluationFrequency: 'PT5M'
-    location: '<location>'
     queryTimeRange: 'PT5M'
     suppressForMinutes: 'PT5M'
     tags: {
@@ -602,9 +631,6 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
     "evaluationFrequency": {
       "value": "PT5M"
     },
-    "location": {
-      "value": "<location>"
-    },
     "queryTimeRange": {
       "value": "PT5M"
     },
@@ -671,7 +697,6 @@ param scopes = [
 param alertDescription = 'My sample Alert'
 param autoMitigate = false
 param evaluationFrequency = 'PT5M'
-param location = '<location>'
 param queryTimeRange = 'PT5M'
 param suppressForMinutes = 'PT5M'
 param tags = {
@@ -705,7 +730,7 @@ param windowSize = 'PT5M'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`actions`](#parameter-actions) | array | Actions to invoke when the alert fires. |
+| [`actions`](#parameter-actions) | object | Actions to invoke when the alert fires. |
 | [`alertDescription`](#parameter-alertdescription) | string | The description of the scheduled query rule. |
 | [`alertDisplayName`](#parameter-alertdisplayname) | string | The display name of the scheduled query rule. |
 | [`autoMitigate`](#parameter-automitigate) | bool | The flag that indicates whether the alert should be automatically resolved or not. Relevant only for rules of the kind LogAlert. |
@@ -757,8 +782,62 @@ The period of time (in ISO 8601 duration format) on which the Alert query will b
 Actions to invoke when the alert fires.
 
 - Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`actionGroupResourceIds`](#parameter-actionsactiongroupresourceids) | array | Action Group resource Ids to invoke when the alert fires. |
+| [`actionProperties`](#parameter-actionsactionproperties) | object | The properties of an action properties. |
+| [`customProperties`](#parameter-actionscustomproperties) | object | The properties of an alert payload. |
+
+### Parameter: `actions.actionGroupResourceIds`
+
+Action Group resource Ids to invoke when the alert fires.
+
+- Required: No
 - Type: array
-- Default: `[]`
+
+### Parameter: `actions.actionProperties`
+
+The properties of an action properties.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`>Any_other_property<`](#parameter-actionsactionproperties>any_other_property<) | string | A property of an action payload. |
+
+### Parameter: `actions.actionProperties.>Any_other_property<`
+
+A property of an action payload.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `actions.customProperties`
+
+The properties of an alert payload.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`>Any_other_property<`](#parameter-actionscustomproperties>any_other_property<) | string | A custom property of an action payload. |
+
+### Parameter: `actions.customProperties.>Any_other_property<`
+
+A custom property of an action payload.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `alertDescription`
 

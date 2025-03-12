@@ -37,6 +37,7 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
+    actionGroupName: 'dep-${namePrefix}-ag-${serviceShort}'
     location: resourceLocation
   }
 }
@@ -55,6 +56,17 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       alertDescription: 'My sample Alert'
       autoMitigate: false
+      actions: {
+        actionGroupResourceIds: [
+          nestedDependencies.outputs.actionGroupResourceId
+        ]
+        actionProperties: {
+          propertyA: 'valueA'
+        }
+        customProperties: {
+          propertyB: 'valueB'
+        }
+      }
       criterias: {
         allOf: [
           {

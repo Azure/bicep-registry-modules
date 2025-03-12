@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "8433672501117405052"
+      "version": "0.33.13.18514",
+      "templateHash": "12141884431688324192"
     },
     "name": "Scheduled Query Rules",
     "description": "This module deploys a Scheduled Query Rule."
@@ -84,6 +84,53 @@
         }
       },
       "nullable": true
+    },
+    "actionsType": {
+      "type": "object",
+      "properties": {
+        "actionGroupResourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Action Group resource Ids to invoke when the alert fires."
+          }
+        },
+        "actionProperties": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": {
+            "type": "string",
+            "metadata": {
+              "description": "Optional. A property of an action payload."
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The properties of an action properties."
+          }
+        },
+        "customProperties": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": {
+            "type": "string",
+            "metadata": {
+              "description": "Optional. A custom property of an action payload."
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The properties of an alert payload."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for an actions configuration."
+      }
     }
   },
   "parameters": {
@@ -208,8 +255,8 @@
       }
     },
     "actions": {
-      "type": "array",
-      "defaultValue": [],
+      "$ref": "#/definitions/actionsType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Actions to invoke when the alert fires."
       }
@@ -288,8 +335,9 @@
       "kind": "[parameters('kind')]",
       "properties": {
         "actions": {
-          "actionGroups": "[parameters('actions')]",
-          "customProperties": {}
+          "actionGroups": "[tryGet(parameters('actions'), 'actionGroupResourceIds')]",
+          "actionProperties": "[tryGet(parameters('actions'), 'actionProperties')]",
+          "customProperties": "[tryGet(parameters('actions'), 'customProperties')]"
         },
         "autoMitigate": "[if(equals(parameters('kind'), 'LogAlert'), parameters('autoMitigate'), null())]",
         "criteria": "[parameters('criterias')]",
@@ -299,7 +347,7 @@
         "evaluationFrequency": "[if(and(equals(parameters('kind'), 'LogAlert'), not(empty(parameters('evaluationFrequency')))), parameters('evaluationFrequency'), null())]",
         "muteActionsDuration": "[if(and(equals(parameters('kind'), 'LogAlert'), not(empty(parameters('suppressForMinutes')))), parameters('suppressForMinutes'), null())]",
         "overrideQueryTimeRange": "[if(and(equals(parameters('kind'), 'LogAlert'), not(empty(parameters('queryTimeRange')))), parameters('queryTimeRange'), null())]",
-        "ruleResolveConfiguration": "[if(and(equals(parameters('kind'), 'LogAlert'), not(empty(parameters('ruleResolveConfiguration')))), parameters('ruleResolveConfiguration'), null())]",
+        "resolveConfiguration": "[if(and(equals(parameters('kind'), 'LogAlert'), not(empty(parameters('ruleResolveConfiguration')))), parameters('ruleResolveConfiguration'), null())]",
         "scopes": "[parameters('scopes')]",
         "severity": "[if(equals(parameters('kind'), 'LogAlert'), parameters('severity'), null())]",
         "skipQueryValidation": "[if(equals(parameters('kind'), 'LogAlert'), parameters('skipQueryValidation'), null())]",

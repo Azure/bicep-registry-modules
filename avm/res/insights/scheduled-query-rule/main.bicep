@@ -61,7 +61,7 @@ param evaluationFrequency string = ''
 param windowSize string = ''
 
 @description('Optional. Actions to invoke when the alert fires.')
-param actions array = []
+param actions actionsType?
 
 @description('Required. The rule criteria that defines the conditions of the scheduled query rule.')
 param criterias object
@@ -126,8 +126,9 @@ resource queryRule 'Microsoft.Insights/scheduledQueryRules@2023-03-15-preview' =
   kind: kind
   properties: {
     actions: {
-      actionGroups: actions
-      customProperties: {}
+      actionGroups: actions.?actionGroupResourceIds
+      actionProperties: actions.?actionProperties
+      customProperties: actions.?customProperties
     }
     autoMitigate: (kind == 'LogAlert') ? autoMitigate : null
     criteria: criterias
@@ -137,7 +138,7 @@ resource queryRule 'Microsoft.Insights/scheduledQueryRules@2023-03-15-preview' =
     evaluationFrequency: (kind == 'LogAlert' && !empty(evaluationFrequency)) ? evaluationFrequency : null
     muteActionsDuration: (kind == 'LogAlert' && !empty(suppressForMinutes)) ? suppressForMinutes : null
     overrideQueryTimeRange: (kind == 'LogAlert' && !empty(queryTimeRange)) ? queryTimeRange : null
-    ruleResolveConfiguration: (kind == 'LogAlert' && !empty(ruleResolveConfiguration)) ? ruleResolveConfiguration : null
+    resolveConfiguration: (kind == 'LogAlert' && !empty(ruleResolveConfiguration)) ? ruleResolveConfiguration : null
     scopes: scopes
     severity: (kind == 'LogAlert') ? severity : null
     skipQueryValidation: (kind == 'LogAlert') ? skipQueryValidation : null
@@ -203,3 +204,26 @@ type roleAssignmentType = {
   @description('Optional. The Resource Id of the delegated managed identity resource.')
   delegatedManagedIdentityResourceId: string?
 }[]?
+
+// =============== //
+//   Definitions   //
+// =============== //
+
+@export()
+@description('The type for an actions configuration.')
+type actionsType = {
+  @description('Optional. Action Group resource Ids to invoke when the alert fires.')
+  actionGroupResourceIds: string[]?
+
+  @description('Optional. The properties of an action properties.')
+  actionProperties: {
+    @description('Optional. A property of an action payload.')
+    *: string
+  }?
+
+  @description('Optional. The properties of an alert payload.')
+  customProperties: {
+    @description('Optional. A custom property of an action payload.')
+    *: string
+  }?
+}
