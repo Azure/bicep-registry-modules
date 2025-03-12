@@ -131,7 +131,7 @@ resource queryRule 'Microsoft.Insights/scheduledQueryRules@2023-03-15-preview' =
       actionProperties: actions.?actionProperties ?? {}
       customProperties: actions.?customProperties ?? {}
     }
-    autoMitigate: (kind == 'LogAlert') ? autoMitigate : null
+    autoMitigate: (kind == 'LogAlert' && empty(ruleResolveConfiguration)) ? autoMitigate : null
     criteria: criterias
     description: alertDescription
     displayName: alertDisplayName ?? name
