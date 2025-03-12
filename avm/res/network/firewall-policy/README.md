@@ -17,7 +17,7 @@ This module deploys a Firewall Policy.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Network/firewallPolicies` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/firewallPolicies) |
+| `Microsoft.Network/firewallPolicies` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/firewallPolicies) |
 | `Microsoft.Network/firewallPolicies/ruleCollectionGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/firewallPolicies/ruleCollectionGroups) |
 
 ## Usage examples
@@ -45,10 +45,7 @@ This instance deploys the module with the minimum set of required parameters.
 module firewallPolicy 'br/public:avm/res/network/firewall-policy:<version>' = {
   name: 'firewallPolicyDeployment'
   params: {
-    // Required parameters
     name: 'nfpmin001'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -65,13 +62,8 @@ module firewallPolicy 'br/public:avm/res/network/firewall-policy:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
     "name": {
       "value": "nfpmin001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -87,10 +79,7 @@ module firewallPolicy 'br/public:avm/res/network/firewall-policy:<version>' = {
 ```bicep-params
 using 'br/public:avm/res/network/firewall-policy:<version>'
 
-// Required parameters
 param name = 'nfpmin001'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -113,7 +102,9 @@ module firewallPolicy 'br/public:avm/res/network/firewall-policy:<version>' = {
     name: 'nfpmax001'
     // Non-required parameters
     allowSqlRedirect: true
-    autoLearnPrivateRanges: 'Enabled'
+    intrusionDetection: {
+      mode: 'Alert'
+    }
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -124,7 +115,6 @@ module firewallPolicy 'br/public:avm/res/network/firewall-policy:<version>' = {
         '<managedIdentityResourceId>'
       ]
     }
-    mode: 'Alert'
     roleAssignments: [
       {
         name: 'c1c7fa14-5a90-4932-8781-fa91318b8858'
@@ -182,6 +172,9 @@ module firewallPolicy 'br/public:avm/res/network/firewall-policy:<version>' = {
         ]
       }
     ]
+    snat: {
+      autoLearnPrivateRanges: 'Enabled'
+    }
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -212,8 +205,10 @@ module firewallPolicy 'br/public:avm/res/network/firewall-policy:<version>' = {
     "allowSqlRedirect": {
       "value": true
     },
-    "autoLearnPrivateRanges": {
-      "value": "Enabled"
+    "intrusionDetection": {
+      "value": {
+        "mode": "Alert"
+      }
     },
     "location": {
       "value": "<location>"
@@ -230,9 +225,6 @@ module firewallPolicy 'br/public:avm/res/network/firewall-policy:<version>' = {
           "<managedIdentityResourceId>"
         ]
       }
-    },
-    "mode": {
-      "value": "Alert"
     },
     "roleAssignments": {
       "value": [
@@ -295,6 +287,11 @@ module firewallPolicy 'br/public:avm/res/network/firewall-policy:<version>' = {
         }
       ]
     },
+    "snat": {
+      "value": {
+        "autoLearnPrivateRanges": "Enabled"
+      }
+    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -323,7 +320,9 @@ using 'br/public:avm/res/network/firewall-policy:<version>'
 param name = 'nfpmax001'
 // Non-required parameters
 param allowSqlRedirect = true
-param autoLearnPrivateRanges = 'Enabled'
+param intrusionDetection = {
+  mode: 'Alert'
+}
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
@@ -334,7 +333,6 @@ param managedIdentities = {
     '<managedIdentityResourceId>'
   ]
 }
-param mode = 'Alert'
 param roleAssignments = [
   {
     name: 'c1c7fa14-5a90-4932-8781-fa91318b8858'
@@ -392,6 +390,9 @@ param ruleCollectionGroups = [
     ]
   }
 ]
+param snat = {
+  autoLearnPrivateRanges: 'Enabled'
+}
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
@@ -420,8 +421,6 @@ module firewallPolicy 'br/public:avm/res/network/firewall-policy:<version>' = {
     name: 'nfpwaf001'
     // Non-required parameters
     allowSqlRedirect: true
-    autoLearnPrivateRanges: 'Enabled'
-    location: '<location>'
     ruleCollectionGroups: [
       {
         name: 'rule-001'
@@ -460,6 +459,9 @@ module firewallPolicy 'br/public:avm/res/network/firewall-policy:<version>' = {
         ]
       }
     ]
+    snat: {
+      autoLearnPrivateRanges: 'Enabled'
+    }
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -489,12 +491,6 @@ module firewallPolicy 'br/public:avm/res/network/firewall-policy:<version>' = {
     // Non-required parameters
     "allowSqlRedirect": {
       "value": true
-    },
-    "autoLearnPrivateRanges": {
-      "value": "Enabled"
-    },
-    "location": {
-      "value": "<location>"
     },
     "ruleCollectionGroups": {
       "value": [
@@ -536,6 +532,11 @@ module firewallPolicy 'br/public:avm/res/network/firewall-policy:<version>' = {
         }
       ]
     },
+    "snat": {
+      "value": {
+        "autoLearnPrivateRanges": "Enabled"
+      }
+    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -564,8 +565,6 @@ using 'br/public:avm/res/network/firewall-policy:<version>'
 param name = 'nfpwaf001'
 // Non-required parameters
 param allowSqlRedirect = true
-param autoLearnPrivateRanges = 'Enabled'
-param location = '<location>'
 param ruleCollectionGroups = [
   {
     name: 'rule-001'
@@ -604,6 +603,9 @@ param ruleCollectionGroups = [
     ]
   }
 ]
+param snat = {
+  autoLearnPrivateRanges: 'Enabled'
+}
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
@@ -628,27 +630,29 @@ param threatIntelMode = 'Deny'
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`allowSqlRedirect`](#parameter-allowsqlredirect) | bool | A flag to indicate if SQL Redirect traffic filtering is enabled. Turning on the flag requires no rule using port 11000-11999. |
-| [`autoLearnPrivateRanges`](#parameter-autolearnprivateranges) | string | The operation mode for automatically learning private ranges to not be SNAT. |
 | [`basePolicyResourceId`](#parameter-basepolicyresourceid) | string | Resource ID of the base policy. |
-| [`bypassTrafficSettings`](#parameter-bypasstrafficsettings) | array | List of rules for traffic to bypass. |
 | [`certificateName`](#parameter-certificatename) | string | Name of the CA certificate. |
-| [`defaultWorkspaceId`](#parameter-defaultworkspaceid) | string | Default Log Analytics Resource ID for Firewall Policy Insights. |
+| [`defaultWorkspaceResourceId`](#parameter-defaultworkspaceresourceid) | string | Default Log Analytics Resource ID for Firewall Policy Insights. |
 | [`enableProxy`](#parameter-enableproxy) | bool | Enable DNS Proxy on Firewalls attached to the Firewall Policy. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`fqdns`](#parameter-fqdns) | array | List of FQDNs for the ThreatIntel Allowlist. |
 | [`insightsIsEnabled`](#parameter-insightsisenabled) | bool | A flag to indicate if the insights are enabled on the policy. |
+| [`intrusionDetection`](#parameter-intrusiondetection) | object | The configuration for Intrusion detection. |
 | [`ipAddresses`](#parameter-ipaddresses) | array | List of IP addresses for the ThreatIntel Allowlist. |
 | [`keyVaultSecretId`](#parameter-keyvaultsecretid) | string | Secret ID of (base-64 encoded unencrypted PFX) Secret or Certificate object stored in KeyVault. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
+<<<<<<< HEAD
 | [`mode`](#parameter-mode) | string | The configuring of intrusion detection. Default is `Deny`. |
 | [`privateRanges`](#parameter-privateranges) | array | List of private IP addresses/IP address ranges to not be SNAT. |
+=======
+>>>>>>> 62d2577a378370a4484d096262722ac8310e8636
 | [`retentionDays`](#parameter-retentiondays) | int | Number of days the insights should be enabled on the policy. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`ruleCollectionGroups`](#parameter-rulecollectiongroups) | array | Rule collection groups. |
 | [`servers`](#parameter-servers) | array | List of Custom DNS Servers. |
-| [`signatureOverrides`](#parameter-signatureoverrides) | array | List of specific signatures states. |
+| [`snat`](#parameter-snat) | object | The private IP addresses/IP ranges to which traffic will not be SNAT. |
 | [`tags`](#parameter-tags) | object | Tags of the Firewall policy resource. |
 | [`threatIntelMode`](#parameter-threatintelmode) | string | The operation mode for Threat Intel. Default is `Deny`. |
 | [`tier`](#parameter-tier) | string | Tier of Firewall Policy. |
@@ -669,34 +673,12 @@ A flag to indicate if SQL Redirect traffic filtering is enabled. Turning on the 
 - Type: bool
 - Default: `False`
 
-### Parameter: `autoLearnPrivateRanges`
-
-The operation mode for automatically learning private ranges to not be SNAT.
-
-- Required: No
-- Type: string
-- Default: `'Disabled'`
-- Allowed:
-  ```Bicep
-  [
-    'Disabled'
-    'Enabled'
-  ]
-  ```
-
 ### Parameter: `basePolicyResourceId`
 
 Resource ID of the base policy.
 
 - Required: No
 - Type: string
-
-### Parameter: `bypassTrafficSettings`
-
-List of rules for traffic to bypass.
-
-- Required: No
-- Type: array
 
 ### Parameter: `certificateName`
 
@@ -705,7 +687,7 @@ Name of the CA certificate.
 - Required: No
 - Type: string
 
-### Parameter: `defaultWorkspaceId`
+### Parameter: `defaultWorkspaceResourceId`
 
 Default Log Analytics Resource ID for Firewall Policy Insights.
 
@@ -742,6 +724,200 @@ A flag to indicate if the insights are enabled on the policy.
 - Required: No
 - Type: bool
 - Default: `False`
+
+### Parameter: `intrusionDetection`
+
+The configuration for Intrusion detection.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`configuration`](#parameter-intrusiondetectionconfiguration) | object | Intrusion detection configuration properties. |
+| [`mode`](#parameter-intrusiondetectionmode) | string | Intrusion detection general state. When attached to a parent policy, the firewall's effective IDPS mode is the stricter mode of the two. |
+| [`profile`](#parameter-intrusiondetectionprofile) | string | IDPS profile name. When attached to a parent policy, the firewall's effective profile is the profile name of the parent policy. |
+
+### Parameter: `intrusionDetection.configuration`
+
+Intrusion detection configuration properties.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`bypassTrafficSettings`](#parameter-intrusiondetectionconfigurationbypasstrafficsettings) | array | List of rules for traffic to bypass. |
+| [`privateRanges`](#parameter-intrusiondetectionconfigurationprivateranges) | array | IDPS Private IP address ranges are used to identify traffic direction (i.e. inbound, outbound, etc.). By default, only ranges defined by IANA RFC 1918 are considered private IP addresses. To modify default ranges, specify your Private IP address ranges with this property. |
+| [`signatureOverrides`](#parameter-intrusiondetectionconfigurationsignatureoverrides) | array | List of specific signatures states. |
+
+### Parameter: `intrusionDetection.configuration.bypassTrafficSettings`
+
+List of rules for traffic to bypass.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-intrusiondetectionconfigurationbypasstrafficsettingsname) | string | Name of the bypass traffic rule. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-intrusiondetectionconfigurationbypasstrafficsettingsdescription) | string | Description of the bypass traffic rule. |
+| [`destinationAddresses`](#parameter-intrusiondetectionconfigurationbypasstrafficsettingsdestinationaddresses) | array | List of destination IP addresses or ranges for this rule. |
+| [`destinationIpGroups`](#parameter-intrusiondetectionconfigurationbypasstrafficsettingsdestinationipgroups) | array | List of destination IpGroups for this rule. |
+| [`destinationPorts`](#parameter-intrusiondetectionconfigurationbypasstrafficsettingsdestinationports) | array | List of destination ports or ranges. |
+| [`protocol`](#parameter-intrusiondetectionconfigurationbypasstrafficsettingsprotocol) | string | The rule bypass protocol. |
+| [`sourceAddresses`](#parameter-intrusiondetectionconfigurationbypasstrafficsettingssourceaddresses) | array | List of source IP addresses or ranges for this rule. |
+| [`sourceIpGroups`](#parameter-intrusiondetectionconfigurationbypasstrafficsettingssourceipgroups) | array | List of source IpGroups for this rule. |
+
+### Parameter: `intrusionDetection.configuration.bypassTrafficSettings.name`
+
+Name of the bypass traffic rule.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `intrusionDetection.configuration.bypassTrafficSettings.description`
+
+Description of the bypass traffic rule.
+
+- Required: No
+- Type: string
+
+### Parameter: `intrusionDetection.configuration.bypassTrafficSettings.destinationAddresses`
+
+List of destination IP addresses or ranges for this rule.
+
+- Required: No
+- Type: array
+
+### Parameter: `intrusionDetection.configuration.bypassTrafficSettings.destinationIpGroups`
+
+List of destination IpGroups for this rule.
+
+- Required: No
+- Type: array
+
+### Parameter: `intrusionDetection.configuration.bypassTrafficSettings.destinationPorts`
+
+List of destination ports or ranges.
+
+- Required: No
+- Type: array
+
+### Parameter: `intrusionDetection.configuration.bypassTrafficSettings.protocol`
+
+The rule bypass protocol.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'ANY'
+    'ICMP'
+    'TCP'
+    'UDP'
+  ]
+  ```
+
+### Parameter: `intrusionDetection.configuration.bypassTrafficSettings.sourceAddresses`
+
+List of source IP addresses or ranges for this rule.
+
+- Required: No
+- Type: array
+
+### Parameter: `intrusionDetection.configuration.bypassTrafficSettings.sourceIpGroups`
+
+List of source IpGroups for this rule.
+
+- Required: No
+- Type: array
+
+### Parameter: `intrusionDetection.configuration.privateRanges`
+
+IDPS Private IP address ranges are used to identify traffic direction (i.e. inbound, outbound, etc.). By default, only ranges defined by IANA RFC 1918 are considered private IP addresses. To modify default ranges, specify your Private IP address ranges with this property.
+
+- Required: No
+- Type: array
+
+### Parameter: `intrusionDetection.configuration.signatureOverrides`
+
+List of specific signatures states.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`id`](#parameter-intrusiondetectionconfigurationsignatureoverridesid) | string | The signature id. |
+| [`mode`](#parameter-intrusiondetectionconfigurationsignatureoverridesmode) | string | The signature state. |
+
+### Parameter: `intrusionDetection.configuration.signatureOverrides.id`
+
+The signature id.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `intrusionDetection.configuration.signatureOverrides.mode`
+
+The signature state.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Alert'
+    'Deny'
+    'Off'
+  ]
+  ```
+
+### Parameter: `intrusionDetection.mode`
+
+Intrusion detection general state. When attached to a parent policy, the firewall's effective IDPS mode is the stricter mode of the two.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Alert'
+    'Deny'
+    'Off'
+  ]
+  ```
+
+### Parameter: `intrusionDetection.profile`
+
+IDPS profile name. When attached to a parent policy, the firewall's effective profile is the profile name of the parent policy.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Advanced'
+    'Basic'
+    'Extended'
+    'Standard'
+  ]
+  ```
 
 ### Parameter: `ipAddresses`
 
@@ -821,6 +997,7 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 - Required: No
 - Type: array
 
+<<<<<<< HEAD
 ### Parameter: `mode`
 
 The configuring of intrusion detection. Default is `Deny`.
@@ -845,6 +1022,8 @@ List of private IP addresses/IP address ranges to not be SNAT.
 - Type: array
 - Default: `[]`
 
+=======
+>>>>>>> 62d2577a378370a4484d096262722ac8310e8636
 ### Parameter: `retentionDays`
 
 Number of days the insights should be enabled on the policy.
@@ -970,9 +1149,42 @@ List of Custom DNS Servers.
 - Required: No
 - Type: array
 
-### Parameter: `signatureOverrides`
+### Parameter: `snat`
 
-List of specific signatures states.
+The private IP addresses/IP ranges to which traffic will not be SNAT.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`autoLearnPrivateRanges`](#parameter-snatautolearnprivateranges) | string | The operation mode for automatically learning private ranges to not be SNAT. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`privateRanges`](#parameter-snatprivateranges) | array | List of private IP addresses/IP address ranges to not be SNAT. |
+
+### Parameter: `snat.autoLearnPrivateRanges`
+
+The operation mode for automatically learning private ranges to not be SNAT.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
+### Parameter: `snat.privateRanges`
+
+List of private IP addresses/IP address ranges to not be SNAT.
 
 - Required: No
 - Type: array

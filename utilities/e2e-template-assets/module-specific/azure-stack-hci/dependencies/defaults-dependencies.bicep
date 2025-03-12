@@ -124,8 +124,6 @@ module hciClusterPreqs '../azureStackHCIClusterPreqs/ashciPrereqs.bicep' = {
     softDeleteRetentionDays: 30
     tenantId: subscription().tenantId
     vnetSubnetResourceId: hciHostDeployment.outputs.vnetSubnetResourceId
-    clusterName: clusterName
-    cloudId: cluster.properties.cloudId
   }
 }
 

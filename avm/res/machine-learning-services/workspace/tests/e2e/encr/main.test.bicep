@@ -88,10 +88,8 @@ module testDeployment '../../../main.bicep' = [
             category: 'UserDefined'
           }
         }
+        firewallSku: 'Basic'
       }
     }
-    dependsOn: [
-      nestedDependencies
-    ]
   }
 ]

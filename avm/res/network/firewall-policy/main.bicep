@@ -27,7 +27,7 @@ param servers array?
 param insightsIsEnabled bool = false
 
 @description('Optional. Default Log Analytics Resource ID for Firewall Policy Insights.')
-param defaultWorkspaceId string?
+param defaultWorkspaceResourceId string?
 
 @description('Optional. List of workspaces for Firewall Policy Insights.')
 param workspaces array?
@@ -35,19 +35,11 @@ param workspaces array?
 @description('Optional. Number of days the insights should be enabled on the policy.')
 param retentionDays int = 365
 
-@description('Optional. List of rules for traffic to bypass.')
-param bypassTrafficSettings array?
+@description('Optional. The configuration for Intrusion detection.')
+param intrusionDetection intrusionDetectionType?
 
-@description('Optional. List of specific signatures states.')
-param signatureOverrides array?
-
-@description('Optional. The configuring of intrusion detection. Default is `Deny`.')
-@allowed([
-  'Alert'
-  'Deny'
-  'Off'
-])
-param mode string = 'Deny'
+@description('Optional. The private IP addresses/IP ranges to which traffic will not be SNAT.')
+param snat snatType?
 
 @description('Optional. Tier of Firewall Policy.')
 @allowed([
@@ -57,17 +49,7 @@ param mode string = 'Deny'
 ])
 param tier string = 'Standard'
 
-@description('Optional. List of private IP addresses/IP address ranges to not be SNAT.')
-param privateRanges array = []
-
-@allowed([
-  'Disabled'
-  'Enabled'
-])
-@description('Optional. The operation mode for automatically learning private ranges to not be SNAT.')
-param autoLearnPrivateRanges string = 'Disabled'
-
-@description('Optional. The operation mode for Threat Intel. Default is `Deny`.')
+@description('Optional. The operation mode for Threat Intel.')
 @allowed([
   'Alert'
   'Deny'
@@ -97,11 +79,13 @@ param enableTelemetry bool = true
 @description('Optional. Rule collection groups.')
 param ruleCollectionGroups array?
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
-param lock lockType
+param lock lockType?
 
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+param roleAssignments roleAssignmentType[]?
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -160,13 +144,13 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource firewallPolicy 'Microsoft.Network/firewallPolicies@2023-04-01' = {
+resource firewallPolicy 'Microsoft.Network/firewallPolicies@2024-05-01' = {
   name: name
   location: location
   tags: tags
   identity: identity
   properties: {
-    basePolicy: !empty(basePolicyResourceId ?? '')
+    basePolicy: !empty(basePolicyResourceId)
       ? {
           id: basePolicyResourceId
         }
@@ -182,31 +166,18 @@ resource firewallPolicy 'Microsoft.Network/firewallPolicies@2023-04-01' = {
           isEnabled: insightsIsEnabled
           logAnalyticsResources: {
             defaultWorkspaceId: {
-              id: defaultWorkspaceId
+              id: defaultWorkspaceResourceId
             }
             workspaces: workspaces
           }
           retentionDays: retentionDays
         }
       : null
-    intrusionDetection: (mode != 'Off')
-      ? {
-          configuration: {
-            bypassTrafficSettings: bypassTrafficSettings
-            signatureOverrides: signatureOverrides
-          }
-          mode: mode
-        }
-      : null
+    intrusionDetection: intrusionDetection
     sku: {
       tier: tier
     }
-    snat: !empty(privateRanges)
-      ? {
-          autoLearnPrivateRanges: autoLearnPrivateRanges
-          privateRanges: privateRanges
-        }
-      : null
+    snat: snat
     sql: {
       allowSqlRedirect: allowSqlRedirect
     }
@@ -286,36 +257,64 @@ output location string = firewallPolicy.location
 //   Definitions   //
 // =============== //
 
-type roleAssignmentType = {
-  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
-  name: string?
+@export()
+@description('The type for SNAT settings.')
+type snatType = {
+  @description('Required. The operation mode for automatically learning private ranges to not be SNAT.')
+  autoLearnPrivateRanges: 'Disabled' | 'Enabled'
 
-  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
+  @description('Optional. List of private IP addresses/IP address ranges to not be SNAT.')
+  privateRanges: string[]?
+}
 
-  @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
+@export()
+@description('The type for intrusion detection settings.')
+type intrusionDetectionType = {
+  @description('Optional. Intrusion detection general state. When attached to a parent policy, the firewall\'s effective IDPS mode is the stricter mode of the two.')
+  mode: ('Alert' | 'Deny' | 'Off')?
 
-  @description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
+  @description('Optional. IDPS profile name. When attached to a parent policy, the firewall\'s effective profile is the profile name of the parent policy.')
+  profile: ('Advanced' | 'Basic' | 'Extended' | 'Standard')?
 
-  @description('Optional. The description of the role assignment.')
-  description: string?
+  @description('Optional. Intrusion detection configuration properties.')
+  configuration: {
+    @description('Optional. List of rules for traffic to bypass.')
+    bypassTrafficSettings: {
+      @description('Optional. Description of the bypass traffic rule.')
+      description: string?
 
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
+      @description('Optional. List of destination IP addresses or ranges for this rule.')
+      destinationAddresses: string[]?
 
-  @description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
+      @description('Optional. List of destination IpGroups for this rule.')
+      destinationIpGroups: string[]?
 
-  @description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?
+      @description('Optional. List of destination ports or ranges.')
+      destinationPorts: string[]?
 
-type lockType = {
-  @description('Optional. Specify the name of lock.')
-  name: string?
+      @description('Required. Name of the bypass traffic rule.')
+      name: string
 
-  @description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?
+      @description('Optional. The rule bypass protocol.')
+      protocol: 'ANY' | 'ICMP' | 'TCP' | 'UDP'?
+
+      @description('Optional. List of source IP addresses or ranges for this rule.')
+      sourceAddresses: string[]?
+
+      @description('Optional. List of source IpGroups for this rule.')
+      sourceIpGroups: string[]?
+    }[]?
+
+    @description('Optional. IDPS Private IP address ranges are used to identify traffic direction (i.e. inbound, outbound, etc.). By default, only ranges defined by IANA RFC 1918 are considered private IP addresses. To modify default ranges, specify your Private IP address ranges with this property.')
+    privateRanges: string[]?
+
+    @description('Optional. List of specific signatures states.')
+    signatureOverrides: {
+      @description('Required. The signature id.')
+      id: string
+
+      @description('Required. The signature state.')
+      mode: ('Alert' | 'Deny' | 'Off')
+    }[]?
+  }?
+}

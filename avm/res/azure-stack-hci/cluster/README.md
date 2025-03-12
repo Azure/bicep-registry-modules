@@ -8,7 +8,6 @@ This module deploys an Azure Stack HCI Cluster on the provided Arc Machines.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -18,6 +17,7 @@ This module deploys an Azure Stack HCI Cluster on the provided Arc Machines.
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.AzureStackHCI/clusters` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AzureStackHCI/clusters) |
 | `Microsoft.AzureStackHCI/clusters/deploymentSettings` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AzureStackHCI/clusters/deploymentSettings) |
+| `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
 
 ## Usage examples
 
@@ -156,6 +156,12 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
       ]
       subnetMask: '255.255.255.0'
     }
+    deploymentUser: 'deployUser'
+    deploymentUserPassword: '<deploymentUserPassword>'
+    localAdminPassword: '<localAdminPassword>'
+    localAdminUser: 'admin-hci'
+    servicePrincipalId: '<servicePrincipalId>'
+    servicePrincipalSecret: '<servicePrincipalSecret>'
   }
 }
 ```
@@ -288,6 +294,24 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
         ],
         "subnetMask": "255.255.255.0"
       }
+    },
+    "deploymentUser": {
+      "value": "deployUser"
+    },
+    "deploymentUserPassword": {
+      "value": "<deploymentUserPassword>"
+    },
+    "localAdminPassword": {
+      "value": "<localAdminPassword>"
+    },
+    "localAdminUser": {
+      "value": "admin-hci"
+    },
+    "servicePrincipalId": {
+      "value": "<servicePrincipalId>"
+    },
+    "servicePrincipalSecret": {
+      "value": "<servicePrincipalSecret>"
     }
   }
 }
@@ -416,6 +440,12 @@ param deploymentSettings = {
   ]
   subnetMask: '255.255.255.0'
 }
+param deploymentUser = 'deployUser'
+param deploymentUserPassword = '<deploymentUserPassword>'
+param localAdminPassword = '<localAdminPassword>'
+param localAdminUser = 'admin-hci'
+param servicePrincipalId = '<servicePrincipalId>'
+param servicePrincipalSecret = '<servicePrincipalSecret>'
 ```
 
 </details>
@@ -553,6 +583,12 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
       ]
       subnetMask: '255.255.255.0'
     }
+    deploymentUser: 'deployUser'
+    deploymentUserPassword: '<deploymentUserPassword>'
+    localAdminPassword: '<localAdminPassword>'
+    localAdminUser: 'admin-hci'
+    servicePrincipalId: '<servicePrincipalId>'
+    servicePrincipalSecret: '<servicePrincipalSecret>'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -697,6 +733,24 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
         "subnetMask": "255.255.255.0"
       }
     },
+    "deploymentUser": {
+      "value": "deployUser"
+    },
+    "deploymentUserPassword": {
+      "value": "<deploymentUserPassword>"
+    },
+    "localAdminPassword": {
+      "value": "<localAdminPassword>"
+    },
+    "localAdminUser": {
+      "value": "admin-hci"
+    },
+    "servicePrincipalId": {
+      "value": "<servicePrincipalId>"
+    },
+    "servicePrincipalSecret": {
+      "value": "<servicePrincipalSecret>"
+    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -837,6 +891,12 @@ param deploymentSettings = {
   ]
   subnetMask: '255.255.255.0'
 }
+param deploymentUser = 'deployUser'
+param deploymentUserPassword = '<deploymentUserPassword>'
+param localAdminPassword = '<localAdminPassword>'
+param localAdminUser = 'admin-hci'
+param servicePrincipalId = '<servicePrincipalId>'
+param servicePrincipalSecret = '<servicePrincipalSecret>'
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
@@ -855,17 +915,36 @@ param tags = {
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | The name of the Azure Stack HCI cluster - this must be a valid Active Directory computer name and will be the name of your cluster in Azure. |
 
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`deploymentUser`](#parameter-deploymentuser) | string | The name of the deployment user. Required if useSharedKeyVault is true. |
+| [`deploymentUserPassword`](#parameter-deploymentuserpassword) | securestring | The password of the deployment user. Required if useSharedKeyVault is true. |
+| [`localAdminPassword`](#parameter-localadminpassword) | securestring | The password of the local admin user. Required if useSharedKeyVault is true. |
+| [`localAdminUser`](#parameter-localadminuser) | string | The name of the local admin user. Required if useSharedKeyVault is true. |
+| [`servicePrincipalId`](#parameter-serviceprincipalid) | string | The service principal ID for ARB. Required if useSharedKeyVault is true. |
+| [`servicePrincipalSecret`](#parameter-serviceprincipalsecret) | string | The service principal secret for ARB. Required if useSharedKeyVault is true. |
+
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`azureStackLCMUserCredentialContentType`](#parameter-azurestacklcmusercredentialcontenttype) | string | Content type of the azure stack lcm user credential. |
+| [`azureStackLCMUserCredentialTags`](#parameter-azurestacklcmusercredentialtags) | object | Tags of azure stack LCM user credential. |
+| [`defaultARBApplicationContentType`](#parameter-defaultarbapplicationcontenttype) | string | Content type of the default ARB application. |
+| [`defaultARBApplicationTags`](#parameter-defaultarbapplicationtags) | object | Tags of the default ARB application. |
 | [`deploymentOperations`](#parameter-deploymentoperations) | array | The cluster deployment operations to execute. Defaults to "[Validate, Deploy]". |
 | [`deploymentSettings`](#parameter-deploymentsettings) | object | The deployment settings of the cluster. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`localAdminCredentialContentType`](#parameter-localadmincredentialcontenttype) | string | Content type of the local admin credential. |
+| [`localAdminCredentialTags`](#parameter-localadmincredentialtags) | object | Tags of the local admin credential. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`useSharedKeyVault`](#parameter-usesharedkeyvault) | bool | Specify whether to use the shared key vault for the HCI cluster. |
+| [`witnessStoragekeyContentType`](#parameter-witnessstoragekeycontenttype) | string | Content type of the witness storage key. |
+| [`witnessStoragekeyTags`](#parameter-witnessstoragekeytags) | object | Tags of the witness storage key. |
 
 ### Parameter: `name`
 
@@ -873,6 +952,78 @@ The name of the Azure Stack HCI cluster - this must be a valid Active Directory 
 
 - Required: Yes
 - Type: string
+
+### Parameter: `deploymentUser`
+
+The name of the deployment user. Required if useSharedKeyVault is true.
+
+- Required: No
+- Type: string
+
+### Parameter: `deploymentUserPassword`
+
+The password of the deployment user. Required if useSharedKeyVault is true.
+
+- Required: No
+- Type: securestring
+
+### Parameter: `localAdminPassword`
+
+The password of the local admin user. Required if useSharedKeyVault is true.
+
+- Required: No
+- Type: securestring
+
+### Parameter: `localAdminUser`
+
+The name of the local admin user. Required if useSharedKeyVault is true.
+
+- Required: No
+- Type: string
+
+### Parameter: `servicePrincipalId`
+
+The service principal ID for ARB. Required if useSharedKeyVault is true.
+
+- Required: No
+- Type: string
+
+### Parameter: `servicePrincipalSecret`
+
+The service principal secret for ARB. Required if useSharedKeyVault is true.
+
+- Required: No
+- Type: string
+
+### Parameter: `azureStackLCMUserCredentialContentType`
+
+Content type of the azure stack lcm user credential.
+
+- Required: No
+- Type: string
+- Default: `'Secret'`
+
+### Parameter: `azureStackLCMUserCredentialTags`
+
+Tags of azure stack LCM user credential.
+
+- Required: No
+- Type: object
+
+### Parameter: `defaultARBApplicationContentType`
+
+Content type of the default ARB application.
+
+- Required: No
+- Type: string
+- Default: `'Secret'`
+
+### Parameter: `defaultARBApplicationTags`
+
+Tags of the default ARB application.
+
+- Required: No
+- Type: object
 
 ### Parameter: `deploymentOperations`
 
@@ -1176,6 +1327,21 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
+### Parameter: `localAdminCredentialContentType`
+
+Content type of the local admin credential.
+
+- Required: No
+- Type: string
+- Default: `'Secret'`
+
+### Parameter: `localAdminCredentialTags`
+
+Tags of the local admin credential.
+
+- Required: No
+- Type: object
+
 ### Parameter: `location`
 
 Location for all resources.
@@ -1304,6 +1470,21 @@ Specify whether to use the shared key vault for the HCI cluster.
 - Type: bool
 - Default: `True`
 
+### Parameter: `witnessStoragekeyContentType`
+
+Content type of the witness storage key.
+
+- Required: No
+- Type: string
+- Default: `'Secret'`
+
+### Parameter: `witnessStoragekeyTags`
+
+Tags of the witness storage key.
+
+- Required: No
+- Type: object
+
 ## Outputs
 
 | Output | Type | Description |
@@ -1313,14 +1494,6 @@ Specify whether to use the shared key vault for the HCI cluster.
 | `resourceGroupName` | string | The resource group of the cluster. |
 | `resourceId` | string | The ID of the cluster. |
 | `systemAssignedMIPrincipalId` | string | The managed identity of the cluster. |
-
-## Cross-referenced modules
-
-This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
-
-| Reference | Type |
-| :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 
