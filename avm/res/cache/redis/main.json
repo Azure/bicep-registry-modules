@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "1871530621480834649"
+      "version": "0.33.93.31351",
+      "templateHash": "16983762500120206359"
     },
     "name": "Redis Cache",
     "description": "This module deploys a Redis Cache."
@@ -972,6 +972,13 @@
         "description": "Optional. Array of access policy assignments."
       }
     },
+    "firewallRules": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. The firewall rules to create in the PostgreSQL flexible server."
+      }
+    },
     "secretsExportConfiguration": {
       "$ref": "#/definitions/secretsExportConfigurationType",
       "nullable": true,
@@ -1917,6 +1924,111 @@
         "redis"
       ]
     },
+    "redis_firewallRules": {
+      "copy": {
+        "name": "redis_firewallRules",
+        "count": "[length(parameters('firewallRules'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-redis-FirewallRules-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[parameters('firewallRules')[copyIndex()].name]"
+          },
+          "redisCacheName": {
+            "value": "[parameters('name')]"
+          },
+          "startIP": {
+            "value": "[parameters('firewallRules')[copyIndex()].startIP]"
+          },
+          "endIP": {
+            "value": "[parameters('firewallRules')[copyIndex()].endIP]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.33.93.31351",
+              "templateHash": "12788301977890543452"
+            },
+            "name": "Redis Cache Firewall Rules",
+            "description": "This module creates a firewall rule for Redis Cache."
+          },
+          "parameters": {
+            "redisCacheName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Redis cache name."
+              }
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the Redis Cache Firewall Rule."
+              }
+            },
+            "startIP": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The start IP address of the firewall rule. Must be IPv4 format. Use value '0.0.0.0' for all Azure-internal IP addresses."
+              }
+            },
+            "endIP": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The end IP address of the firewall rule. Must be IPv4 format. Must be greater than or equal to startIpAddress. Use value '0.0.0.0' for all Azure-internal IP addresses."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Cache/redis/firewallRules",
+              "apiVersion": "2024-11-01",
+              "name": "[format('{0}/{1}', parameters('redisCacheName'), parameters('name'))]",
+              "properties": {
+                "startIP": "[parameters('startIP')]",
+                "endIP": "[parameters('endIP')]"
+              }
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the deployed firewall rule."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the deployed firewall rule."
+              },
+              "value": "[resourceId('Microsoft.Cache/redis/firewallRules', parameters('redisCacheName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group of the deployed firewall rule."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "redis"
+      ]
+    },
     "redis_geoReplication": {
       "condition": "[not(empty(parameters('geoReplicationObject')))]",
       "type": "Microsoft.Resources/deployments",
@@ -1948,8 +2060,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "11294861621866290910"
+              "version": "0.33.93.31351",
+              "templateHash": "322534394383651316"
             },
             "name": "Redis Cache Linked Servers",
             "description": "This module connects a primary and secondary Redis Cache together for geo-replication."
@@ -2074,8 +2186,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "14045530027687796477"
+              "version": "0.33.93.31351",
+              "templateHash": "8063348652715653257"
             }
           },
           "definitions": {
