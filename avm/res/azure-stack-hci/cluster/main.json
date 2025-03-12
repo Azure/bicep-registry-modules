@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "2661952410917464461"
+      "templateHash": "11407718084128760252"
     },
     "name": "Azure Stack HCI Cluster",
     "description": "This module deploys an Azure Stack HCI Cluster on the provided Arc Machines."
@@ -494,6 +494,39 @@
         }
       }
     },
+    "KeyVaultSecretNames": {
+      "type": "object",
+      "properties": {
+        "azureStackLCMUserCredential": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the Azure Stack HCI LCM user credential secret."
+          }
+        },
+        "localAdminCredential": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the Azure Stack HCI local admin credential secret."
+          }
+        },
+        "defaultARBApplication": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the Azure Stack HCI default ARB application secret."
+          }
+        },
+        "witnessStorageKey": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the Azure Stack HCI witness storage key secret."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Key vault secret names interface"
+      }
+    },
     "roleAssignmentType": {
       "type": "object",
       "properties": {
@@ -640,6 +673,104 @@
       "metadata": {
         "description": "Optional. Specify whether to use the shared key vault for the HCI cluster."
       }
+    },
+    "deploymentUser": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Conditional. The name of the deployment user. Required if useSharedKeyVault is true."
+      }
+    },
+    "deploymentUserPassword": {
+      "type": "securestring",
+      "nullable": true,
+      "metadata": {
+        "description": "Conditional. The password of the deployment user. Required if useSharedKeyVault is true."
+      }
+    },
+    "localAdminUser": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Conditional. The name of the local admin user. Required if useSharedKeyVault is true."
+      }
+    },
+    "localAdminPassword": {
+      "type": "securestring",
+      "nullable": true,
+      "metadata": {
+        "description": "Conditional. The password of the local admin user. Required if useSharedKeyVault is true."
+      }
+    },
+    "servicePrincipalId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Conditional. The service principal ID for ARB. Required if useSharedKeyVault is true."
+      }
+    },
+    "servicePrincipalSecret": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Conditional. The service principal secret for ARB. Required if useSharedKeyVault is true."
+      }
+    },
+    "azureStackLCMUserCredentialContentType": {
+      "type": "string",
+      "defaultValue": "Secret",
+      "metadata": {
+        "description": "Optional. Content type of the azure stack lcm user credential."
+      }
+    },
+    "localAdminCredentialContentType": {
+      "type": "string",
+      "defaultValue": "Secret",
+      "metadata": {
+        "description": "Optional. Content type of the local admin credential."
+      }
+    },
+    "witnessStoragekeyContentType": {
+      "type": "string",
+      "defaultValue": "Secret",
+      "metadata": {
+        "description": "Optional. Content type of the witness storage key."
+      }
+    },
+    "defaultARBApplicationContentType": {
+      "type": "string",
+      "defaultValue": "Secret",
+      "metadata": {
+        "description": "Optional. Content type of the default ARB application."
+      }
+    },
+    "azureStackLCMUserCredentialTags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags of azure stack LCM user credential."
+      }
+    },
+    "localAdminCredentialTags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags of the local admin credential."
+      }
+    },
+    "witnessStoragekeyTags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags of the witness storage key."
+      }
+    },
+    "defaultARBApplicationTags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags of the default ARB application."
+      }
     }
   },
   "variables": {
@@ -710,6 +841,273 @@
         "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
         "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
         "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+      },
+      "dependsOn": [
+        "cluster"
+      ]
+    },
+    "secrets": {
+      "condition": "[parameters('useSharedKeyVault')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-secrets', uniqueString(deployment().name, parameters('location')))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "clusterName": {
+            "value": "[parameters('name')]"
+          },
+          "cloudId": {
+            "value": "[reference('cluster').cloudId]"
+          },
+          "keyVaultName": {
+            "value": "[parameters('deploymentSettings').keyVaultName]"
+          },
+          "storageAccountName": {
+            "value": "[parameters('deploymentSettings').clusterWitnessStorageAccountName]"
+          },
+          "deploymentUser": {
+            "value": "[parameters('deploymentUser')]"
+          },
+          "deploymentUserPassword": {
+            "value": "[parameters('deploymentUserPassword')]"
+          },
+          "localAdminUser": {
+            "value": "[parameters('localAdminUser')]"
+          },
+          "localAdminPassword": {
+            "value": "[parameters('localAdminPassword')]"
+          },
+          "servicePrincipalId": {
+            "value": "[parameters('servicePrincipalId')]"
+          },
+          "servicePrincipalSecret": {
+            "value": "[parameters('servicePrincipalSecret')]"
+          },
+          "azureStackLCMUserCredentialContentType": {
+            "value": "[parameters('azureStackLCMUserCredentialContentType')]"
+          },
+          "localAdminCredentialContentType": {
+            "value": "[parameters('localAdminCredentialContentType')]"
+          },
+          "witnessStoragekeyContentType": {
+            "value": "[parameters('witnessStoragekeyContentType')]"
+          },
+          "defaultARBApplicationContentType": {
+            "value": "[parameters('defaultARBApplicationContentType')]"
+          },
+          "azureStackLCMUserCredentialTags": {
+            "value": "[parameters('azureStackLCMUserCredentialTags')]"
+          },
+          "localAdminCredentialTags": {
+            "value": "[parameters('localAdminCredentialTags')]"
+          },
+          "witnessStoragekeyTags": {
+            "value": "[parameters('witnessStoragekeyTags')]"
+          },
+          "defaultARBApplicationTags": {
+            "value": "[parameters('defaultARBApplicationTags')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.33.93.31351",
+              "templateHash": "10708445161227912080"
+            }
+          },
+          "parameters": {
+            "keyVaultName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the key vault."
+              }
+            },
+            "storageAccountName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the strorage account."
+              }
+            },
+            "clusterName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the cluster."
+              }
+            },
+            "cloudId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The cloud ID."
+              }
+            },
+            "deploymentUser": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the deployment user."
+              }
+            },
+            "deploymentUserPassword": {
+              "type": "securestring",
+              "metadata": {
+                "description": "Required. The password of the deployment user."
+              }
+            },
+            "localAdminUser": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the local admin user."
+              }
+            },
+            "localAdminPassword": {
+              "type": "securestring",
+              "metadata": {
+                "description": "Required. The password of the local admin user."
+              }
+            },
+            "servicePrincipalId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The service principal ID for ARB."
+              }
+            },
+            "servicePrincipalSecret": {
+              "type": "securestring",
+              "metadata": {
+                "description": "Required. The service principal secret for ARB."
+              }
+            },
+            "azureStackLCMUserCredentialContentType": {
+              "type": "string",
+              "defaultValue": "Secret",
+              "metadata": {
+                "description": "Optional. Content type of the azure stack lcm user credential."
+              }
+            },
+            "localAdminCredentialContentType": {
+              "type": "string",
+              "defaultValue": "Secret",
+              "metadata": {
+                "description": "Optional. Content type of the local admin credential."
+              }
+            },
+            "witnessStoragekeyContentType": {
+              "type": "string",
+              "defaultValue": "Secret",
+              "metadata": {
+                "description": "Optional. Content type of the witness storage key."
+              }
+            },
+            "defaultARBApplicationContentType": {
+              "type": "string",
+              "defaultValue": "Secret",
+              "metadata": {
+                "description": "Optional. Content type of the default ARB application."
+              }
+            },
+            "azureStackLCMUserCredentialTags": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Tags of azure stack LCM user credential."
+              }
+            },
+            "localAdminCredentialTags": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Tags of the local admin credential."
+              }
+            },
+            "witnessStoragekeyTags": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Tags of the witness storage key."
+              }
+            },
+            "defaultARBApplicationTags": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Tags of the default ARB application."
+              }
+            }
+          },
+          "resources": {
+            "witnessStorageAccount": {
+              "existing": true,
+              "type": "Microsoft.Storage/storageAccounts",
+              "apiVersion": "2023-01-01",
+              "name": "[parameters('storageAccountName')]"
+            },
+            "keyVault": {
+              "existing": true,
+              "type": "Microsoft.KeyVault/vaults",
+              "apiVersion": "2022-07-01",
+              "name": "[parameters('keyVaultName')]"
+            },
+            "azureStackLCMUserCredential": {
+              "type": "Microsoft.KeyVault/vaults/secrets",
+              "apiVersion": "2023-07-01",
+              "name": "[format('{0}/{1}', parameters('keyVaultName'), format('{0}-AzureStackLCMUserCredential-{1}', parameters('clusterName'), parameters('cloudId')))]",
+              "properties": {
+                "contentType": "[parameters('azureStackLCMUserCredentialContentType')]",
+                "value": "[base64(format('{0}:{1}', parameters('deploymentUser'), parameters('deploymentUserPassword')))]",
+                "attributes": {
+                  "enabled": true
+                }
+              },
+              "tags": "[parameters('azureStackLCMUserCredentialTags')]"
+            },
+            "localAdminCredential": {
+              "type": "Microsoft.KeyVault/vaults/secrets",
+              "apiVersion": "2023-07-01",
+              "name": "[format('{0}/{1}', parameters('keyVaultName'), format('{0}-LocalAdminCredential-{1}', parameters('clusterName'), parameters('cloudId')))]",
+              "properties": {
+                "contentType": "[parameters('localAdminCredentialContentType')]",
+                "value": "[base64(format('{0}:{1}', parameters('localAdminUser'), parameters('localAdminPassword')))]",
+                "attributes": {
+                  "enabled": true
+                }
+              },
+              "tags": "[parameters('localAdminCredentialTags')]"
+            },
+            "witnessStorageKey": {
+              "type": "Microsoft.KeyVault/vaults/secrets",
+              "apiVersion": "2023-07-01",
+              "name": "[format('{0}/{1}', parameters('keyVaultName'), format('{0}-WitnessStorageKey-{1}', parameters('clusterName'), parameters('cloudId')))]",
+              "properties": {
+                "contentType": "[parameters('witnessStoragekeyContentType')]",
+                "value": "[base64(listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2023-01-01').keys[0].value)]",
+                "attributes": {
+                  "enabled": true
+                }
+              },
+              "tags": "[parameters('witnessStoragekeyTags')]"
+            },
+            "defaultARBApplication": {
+              "type": "Microsoft.KeyVault/vaults/secrets",
+              "apiVersion": "2023-07-01",
+              "name": "[format('{0}/{1}', parameters('keyVaultName'), format('{0}-DefaultARBApplication-{1}', parameters('clusterName'), parameters('cloudId')))]",
+              "properties": {
+                "contentType": "[parameters('defaultARBApplicationContentType')]",
+                "value": "[base64(format('{0}:{1}', parameters('servicePrincipalId'), parameters('servicePrincipalSecret')))]",
+                "attributes": {
+                  "enabled": true
+                }
+              },
+              "tags": "[parameters('defaultARBApplicationTags')]"
+            }
+          }
+        }
       },
       "dependsOn": [
         "cluster"
