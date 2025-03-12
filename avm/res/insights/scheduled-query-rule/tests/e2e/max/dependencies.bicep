@@ -23,6 +23,10 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2021-06
 resource actionGroup 'Microsoft.Insights/actionGroups@2023-01-01' = {
   name: actionGroupName
   location: location
+  properties: {
+    enabled: true
+    groupShortName: actionGroupName
+  }
 }
 
 @description('The principal ID of the created Managed Identity.')
