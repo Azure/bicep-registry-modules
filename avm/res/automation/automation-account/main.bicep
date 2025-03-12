@@ -24,6 +24,15 @@ param credentials credentialType[]?
 @description('Optional. List of modules to be created in the automation account.')
 param modules array = []
 
+@description('Optional. List of powershell72 modules to be created in the automation account.')
+param powershell72Modules pwsh72ModuleType[]?
+
+@description('Optional. List of python 3 packages to be created in the automation account.')
+param python3Packages python23PackageType[]?
+
+@description('Optional. List of python 2 packages to be created in the automation account.')
+param python2Packages python23PackageType[]?
+
 @description('Optional. List of runbooks to be created in the automation account.')
 param runbooks array = []
 
@@ -160,22 +169,22 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 }
 
 resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
-  name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
+  name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
   scope: resourceGroup(
-    split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
-    split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
+    split(customerManagedKey.?keyVaultResourceId!, '/')[2],
+    split(customerManagedKey.?keyVaultResourceId!, '/')[4]
   )
 
   resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
-    name: customerManagedKey.?keyName ?? 'dummyKey'
+    name: customerManagedKey.?keyName!
   }
 }
 
 resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
-  name: last(split(customerManagedKey.?userAssignedIdentityResourceId ?? 'dummyMsi', '/'))
+  name: last(split(customerManagedKey.?userAssignedIdentityResourceId!, '/'))
   scope: resourceGroup(
-    split((customerManagedKey.?userAssignedIdentityResourceId ?? '//'), '/')[2],
-    split((customerManagedKey.?userAssignedIdentityResourceId ?? '////'), '/')[4]
+    split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[2],
+    split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[4]
   )
 }
 
@@ -235,6 +244,46 @@ module automationAccount_modules 'module/main.bicep' = [
       uri: module.uri
       location: location
       tags: module.?tags ?? tags
+    }
+  }
+]
+
+module automationAccount_powershell72modules 'powershell72-modules/main.bicep' = [
+  for (pwsh72module, index) in (powershell72Modules ?? []): {
+    name: '${uniqueString(deployment().name, location)}-AutoAccount-Pwsh72Module-${index}'
+    params: {
+      name: pwsh72module.name
+      automationAccountName: automationAccount.name
+      version: pwsh72module.version
+      uri: pwsh72module.uri
+      location: pwsh72module.?location
+      tags: pwsh72module.?tags ?? tags
+    }
+  }
+]
+
+module automationAccount_python3packages 'python3-packages/main.bicep' = [
+  for (python3package, index) in (python3Packages ?? []): {
+    name: '${uniqueString(deployment().name, location)}-AutoAccount-Python3Package-${index}'
+    params: {
+      name: python3package.name
+      automationAccountName: automationAccount.name
+      version: python3package.version
+      uri: python3package.uri
+      tags: python3package.?tags ?? tags
+    }
+  }
+]
+
+module automationAccount_python2packages 'python2-packages/main.bicep' = [
+  for (python2package, index) in (python2Packages ?? []): {
+    name: '${uniqueString(deployment().name, location)}-AutoAccount-Python2Package-${index}'
+    params: {
+      name: python2package.name
+      automationAccountName: automationAccount.name
+      version: python2package.version
+      uri: python2package.uri
+      tags: python2package.?tags ?? tags
     }
   }
 ]
@@ -589,4 +638,39 @@ type gallerySolutionType = {
 
   @description('Required. Plan for solution object supported by the OperationsManagement resource provider.')
   plan: solutionPlanType
+}
+
+@export()
+@description('The type for a PowerShell 7.2 module configuration.')
+type pwsh72ModuleType = {
+  @description('Required. Name of the Powershell72 Automation Account module.')
+  name: string
+
+  @description('Optional. The location to deploy the module to.')
+  location: string?
+
+  @description('Optional. Tags of the Powershell 72 module resource.')
+  tags: object?
+
+  @description('Required. Module package URI, e.g. https://www.powershellgallery.com/api/v2/package.')
+  uri: string
+
+  @description('Optional. Module version or specify latest to get the latest version.')
+  version: string?
+}
+
+@export()
+@description('The type for a Python 2 or 3 module configuration.')
+type python23PackageType = {
+  @description('Required. Name of the Python3 Automation Account package.')
+  name: string
+
+  @description('Optional. Tags of the Python3 package resource.')
+  tags: object?
+
+  @description('Required. Module package URI, e.g. https://www.powershellgallery.com/api/v2/package.')
+  uri: string
+
+  @description('Optional. Module version or specify latest to get the latest version.')
+  version: string?
 }

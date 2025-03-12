@@ -196,7 +196,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.6.0' = if (empty(publicIPResourceID) && azureSkuName == 'AZFW_VNet') {
+module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.8.0' = if (empty(publicIPResourceID) && azureSkuName == 'AZFW_VNet') {
   name: '${uniqueString(deployment().name, location)}-Firewall-PIP'
   params: {
     name: publicIPAddressObject.name
@@ -227,7 +227,7 @@ module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.6.0' = if 
 }
 
 // create a Management Public IP address if one is not provided and the flag is true
-module managementIPAddress 'br/public:avm/res/network/public-ip-address:0.6.0' = if (isCreateDefaultManagementIP && azureSkuName == 'AZFW_VNet') {
+module managementIPAddress 'br/public:avm/res/network/public-ip-address:0.8.0' = if (isCreateDefaultManagementIP && azureSkuName == 'AZFW_VNet') {
   name: '${uniqueString(deployment().name, location)}-Firewall-MIP'
   params: {
     name: contains(managementIPAddressObject, 'name')
@@ -260,7 +260,7 @@ module managementIPAddress 'br/public:avm/res/network/public-ip-address:0.6.0' =
   }
 }
 
-resource azureFirewall 'Microsoft.Network/azureFirewalls@2024-01-01' = {
+resource azureFirewall 'Microsoft.Network/azureFirewalls@2024-05-01' = {
   name: name
   location: location
   zones: length(zones) == 0 ? null : zones
