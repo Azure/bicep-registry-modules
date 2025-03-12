@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "16511733559847029535"
+      "templateHash": "5969580028366892630"
     },
     "name": "Scheduled Query Rules",
     "description": "This module deploys a Scheduled Query Rule."
@@ -342,8 +342,8 @@
       "properties": {
         "actions": {
           "actionGroups": "[tryGet(parameters('actions'), 'actionGroupResourceIds')]",
-          "actionProperties": "[tryGet(parameters('actions'), 'actionProperties')]",
-          "customProperties": "[tryGet(parameters('actions'), 'customProperties')]"
+          "actionProperties": "[coalesce(tryGet(parameters('actions'), 'actionProperties'), createObject())]",
+          "customProperties": "[coalesce(tryGet(parameters('actions'), 'customProperties'), createObject())]"
         },
         "autoMitigate": "[if(equals(parameters('kind'), 'LogAlert'), parameters('autoMitigate'), null())]",
         "criteria": "[parameters('criterias')]",

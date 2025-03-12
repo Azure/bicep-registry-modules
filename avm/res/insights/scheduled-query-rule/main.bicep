@@ -128,8 +128,8 @@ resource queryRule 'Microsoft.Insights/scheduledQueryRules@2023-03-15-preview' =
   properties: {
     actions: {
       actionGroups: actions.?actionGroupResourceIds
-      actionProperties: actions.?actionProperties
-      customProperties: actions.?customProperties
+      actionProperties: actions.?actionProperties ?? {}
+      customProperties: actions.?customProperties ?? {}
     }
     autoMitigate: (kind == 'LogAlert') ? autoMitigate : null
     criteria: criterias
