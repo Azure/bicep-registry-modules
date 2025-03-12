@@ -643,18 +643,13 @@ param threatIntelMode = 'Deny'
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
-<<<<<<< HEAD
-| [`mode`](#parameter-mode) | string | The configuring of intrusion detection. Default is `Deny`. |
-| [`privateRanges`](#parameter-privateranges) | array | List of private IP addresses/IP address ranges to not be SNAT. |
-=======
->>>>>>> 62d2577a378370a4484d096262722ac8310e8636
 | [`retentionDays`](#parameter-retentiondays) | int | Number of days the insights should be enabled on the policy. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`ruleCollectionGroups`](#parameter-rulecollectiongroups) | array | Rule collection groups. |
 | [`servers`](#parameter-servers) | array | List of Custom DNS Servers. |
 | [`snat`](#parameter-snat) | object | The private IP addresses/IP ranges to which traffic will not be SNAT. |
 | [`tags`](#parameter-tags) | object | Tags of the Firewall policy resource. |
-| [`threatIntelMode`](#parameter-threatintelmode) | string | The operation mode for Threat Intel. Default is `Deny`. |
+| [`threatIntelMode`](#parameter-threatintelmode) | string | The operation mode for Threat Intel. |
 | [`tier`](#parameter-tier) | string | Tier of Firewall Policy. |
 | [`workspaces`](#parameter-workspaces) | array | List of workspaces for Firewall Policy Insights. |
 
@@ -997,33 +992,6 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 - Required: No
 - Type: array
 
-<<<<<<< HEAD
-### Parameter: `mode`
-
-The configuring of intrusion detection. Default is `Deny`.
-
-- Required: No
-- Type: string
-- Default: `'Deny'`
-- Allowed:
-  ```Bicep
-  [
-    'Alert'
-    'Deny'
-    'Off'
-  ]
-  ```
-
-### Parameter: `privateRanges`
-
-List of private IP addresses/IP address ranges to not be SNAT.
-
-- Required: No
-- Type: array
-- Default: `[]`
-
-=======
->>>>>>> 62d2577a378370a4484d096262722ac8310e8636
 ### Parameter: `retentionDays`
 
 Number of days the insights should be enabled on the policy.
@@ -1198,7 +1166,7 @@ Tags of the Firewall policy resource.
 
 ### Parameter: `threatIntelMode`
 
-The operation mode for Threat Intel. Default is `Deny`.
+The operation mode for Threat Intel.
 
 - Required: No
 - Type: string

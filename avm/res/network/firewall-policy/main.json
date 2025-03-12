@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "10793418680596552047"
+      "version": "0.33.93.31351",
+      "templateHash": "15014816603525976899"
     },
     "name": "Firewall Policies",
     "description": "This module deploys a Firewall Policy."
@@ -450,7 +450,7 @@
         "Off"
       ],
       "metadata": {
-        "description": "Optional. The operation mode for Threat Intel. Default is `Deny`."
+        "description": "Optional. The operation mode for Threat Intel."
       }
     },
     "allowSqlRedirect": {
@@ -658,8 +658,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "17871445358660179970"
+              "version": "0.33.93.31351",
+              "templateHash": "16872244979902179380"
             },
             "name": "Firewall Policy Rule Collection Groups",
             "description": "This module deploys a Firewall Policy Rule Collection Group."
