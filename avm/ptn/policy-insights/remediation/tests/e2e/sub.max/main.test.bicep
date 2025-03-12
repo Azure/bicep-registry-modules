@@ -1,6 +1,6 @@
 targetScope = 'managementGroup'
 
-metadata name = 'Policy Remediation (Subscription scope)'
+metadata name = 'Policy Remediation (Subscription scope - max)'
 metadata description = 'This module runs a Policy remediation task at subscription scope using common parameters.'
 
 // ========== //

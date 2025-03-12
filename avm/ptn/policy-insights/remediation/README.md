@@ -24,14 +24,14 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/policy-insights/remediation:<version>`.
 
-- [Policy Remediation (Management Group scope)](#example-1-policy-remediation-management-group-scope)
-- [Policy Remediation (Management Group scope)](#example-2-policy-remediation-management-group-scope)
-- [Policy Remediation (Resource Group scope)](#example-3-policy-remediation-resource-group-scope)
-- [Policy Remediation (Resource Group scope)](#example-4-policy-remediation-resource-group-scope)
-- [Policy Remediation (Subscription scope)](#example-5-policy-remediation-subscription-scope)
-- [Policy Remediation (Subscription scope)](#example-6-policy-remediation-subscription-scope)
+- [Policy Remediation (Management Group scope - defaults)](#example-1-policy-remediation-management-group-scope---defaults)
+- [Policy Remediation (Management Group scope - max)](#example-2-policy-remediation-management-group-scope---max)
+- [Policy Remediation (Resource Group scope - defaults)](#example-3-policy-remediation-resource-group-scope---defaults)
+- [Policy Remediation (Resource Group scope - max)](#example-4-policy-remediation-resource-group-scope---max)
+- [Policy Remediation (Subscription scope - defaults)](#example-5-policy-remediation-subscription-scope---defaults)
+- [Policy Remediation (Subscription scope - max)](#example-6-policy-remediation-subscription-scope---max)
 
-### Example 1: _Policy Remediation (Management Group scope)_
+### Example 1: _Policy Remediation (Management Group scope - defaults)_
 
 This module runs a Policy remediation task at Management Group scope using minimal parameters.
 
@@ -105,7 +105,7 @@ param policyDefinitionReferenceId = 'Prerequisite_DeployExtensionWindows'
 </details>
 <p>
 
-### Example 2: _Policy Remediation (Management Group scope)_
+### Example 2: _Policy Remediation (Management Group scope - max)_
 
 This module runs a Policy remediation task at Management Group scope using common parameters.
 
@@ -204,7 +204,7 @@ param resourceCount = 10
 </details>
 <p>
 
-### Example 3: _Policy Remediation (Resource Group scope)_
+### Example 3: _Policy Remediation (Resource Group scope - defaults)_
 
 This module runs a Policy remediation task at Resource Group scope using minimal parameters.
 
@@ -288,7 +288,7 @@ param subscriptionId = '<subscriptionId>'
 </details>
 <p>
 
-### Example 4: _Policy Remediation (Resource Group scope)_
+### Example 4: _Policy Remediation (Resource Group scope - max)_
 
 This module runs a Policy remediation task at Resource Group scope using common parameters.
 
@@ -402,7 +402,7 @@ param subscriptionId = '<subscriptionId>'
 </details>
 <p>
 
-### Example 5: _Policy Remediation (Subscription scope)_
+### Example 5: _Policy Remediation (Subscription scope - defaults)_
 
 This module runs a Policy remediation task at subscription scope using minimal parameters.
 
@@ -481,7 +481,7 @@ param subscriptionId = '<subscriptionId>'
 </details>
 <p>
 
-### Example 6: _Policy Remediation (Subscription scope)_
+### Example 6: _Policy Remediation (Subscription scope - max)_
 
 This module runs a Policy remediation task at subscription scope using common parameters.
 
