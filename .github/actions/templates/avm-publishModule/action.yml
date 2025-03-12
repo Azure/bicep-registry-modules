@@ -68,9 +68,10 @@ runs:
 
           if($publishOutputs = Publish-ModuleFromPathToPBR @functionInput -Verbose) {
             $publishOutputs.Keys | Foreach-Object {
-              $_.Keys | | Foreach-Object {
-              Write-Verbose ('Passing pipeline variable [{0}] with value [{1}]' -f $_, $publishOutputs.$_) -Verbose
-              Write-Output ('{0}={1}' -f $_, $publishOutputs.$_) >> $env:GITHUB_OUTPUT
+              $_.Keys | Foreach-Object {
+                Write-Verbose ('Passing pipeline variable [{0}] with value [{1}]' -f $_, $publishOutputs.$_) -Verbose
+                Write-Output ('{0}={1}' -f $_, $publishOutputs.$_) >> $env:GITHUB_OUTPUT
+              }
             }
           }
 
