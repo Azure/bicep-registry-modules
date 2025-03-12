@@ -26,12 +26,16 @@ resource server 'Microsoft.Sql/servers@2023-08-01-preview' existing = {
   name: serverName
 }
 
+@description('Optional. Tags of the resource.')
+param tags object?
+
 // https://stackoverflow.com/questions/78337117/azure-sql-failover-group-fails-on-second-run
 // https://github.com/Azure/bicep-types-az/issues/2153
 
 resource failoverGroup 'Microsoft.Sql/servers/failoverGroups@2024-05-01-preview' = {
   name: name
   parent: server
+  tags: tags
   properties: {
     databases: [for db in databases: resourceId('Microsoft.Sql/servers/databases', serverName, db)]
     partnerServers: [

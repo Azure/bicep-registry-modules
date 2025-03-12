@@ -19,9 +19,9 @@ This module deploys a Machine Learning Services Workspace.
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.MachineLearningServices/workspaces` | [2024-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2024-04-01-preview/workspaces) |
-| `Microsoft.MachineLearningServices/workspaces/computes` | [2022-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2022-10-01/workspaces/computes) |
-| `Microsoft.MachineLearningServices/workspaces/connections` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2024-04-01/workspaces/connections) |
+| `Microsoft.MachineLearningServices/workspaces` | [2024-10-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2024-10-01-preview/workspaces) |
+| `Microsoft.MachineLearningServices/workspaces/computes` | [2024-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2024-10-01/workspaces/computes) |
+| `Microsoft.MachineLearningServices/workspaces/connections` | [2024-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2024-10-01/workspaces/connections) |
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
 
@@ -322,6 +322,7 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
       ]
     }
     managedNetworkSettings: {
+      firewallSku: 'Basic'
       isolationMode: 'AllowInternetOutbound'
       outboundRules: {
         rule: {
@@ -388,6 +389,7 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
     },
     "managedNetworkSettings": {
       "value": {
+        "firewallSku": "Basic",
         "isolationMode": "AllowInternetOutbound",
         "outboundRules": {
           "rule": {
@@ -438,6 +440,7 @@ param managedIdentities = {
   ]
 }
 param managedNetworkSettings = {
+  firewallSku: 'Basic'
   isolationMode: 'AllowInternetOutbound'
   outboundRules: {
     rule: {
@@ -641,7 +644,11 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
       }
     ]
     discoveryUrl: 'http://example.com'
+    friendlyName: 'Workspace'
     imageBuildCompute: 'testcompute'
+    ipAllowlist: [
+      '1.2.3.4/32'
+    ]
     kind: 'Default'
     location: '<location>'
     lock: {
@@ -689,6 +696,7 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
         subnetResourceId: '<subnetResourceId>'
       }
     ]
+    provisionNetworkNow: true
     roleAssignments: [
       {
         name: 'f9b5b0d9-f27e-4c89-bacf-1bbc4a99dbce'
@@ -712,7 +720,7 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
       serverlessComputeCustomSubnet: '<serverlessComputeCustomSubnet>'
       serverlessComputeNoPublicIP: true
     }
-    systemDatastoresAuthMode: 'accessKey'
+    systemDatastoresAuthMode: 'AccessKey'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -820,8 +828,16 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
     "discoveryUrl": {
       "value": "http://example.com"
     },
+    "friendlyName": {
+      "value": "Workspace"
+    },
     "imageBuildCompute": {
       "value": "testcompute"
+    },
+    "ipAllowlist": {
+      "value": [
+        "1.2.3.4/32"
+      ]
     },
     "kind": {
       "value": "Default"
@@ -884,6 +900,9 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
         }
       ]
     },
+    "provisionNetworkNow": {
+      "value": true
+    },
     "roleAssignments": {
       "value": [
         {
@@ -912,7 +931,7 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
       }
     },
     "systemDatastoresAuthMode": {
-      "value": "accessKey"
+      "value": "AccessKey"
     },
     "tags": {
       "value": {
@@ -1001,7 +1020,11 @@ param diagnosticSettings = [
   }
 ]
 param discoveryUrl = 'http://example.com'
+param friendlyName = 'Workspace'
 param imageBuildCompute = 'testcompute'
+param ipAllowlist = [
+  '1.2.3.4/32'
+]
 param kind = 'Default'
 param location = '<location>'
 param lock = {
@@ -1049,6 +1072,7 @@ param privateEndpoints = [
     subnetResourceId: '<subnetResourceId>'
   }
 ]
+param provisionNetworkNow = true
 param roleAssignments = [
   {
     name: 'f9b5b0d9-f27e-4c89-bacf-1bbc4a99dbce'
@@ -1072,7 +1096,7 @@ param serverlessComputeSettings = {
   serverlessComputeCustomSubnet: '<serverlessComputeCustomSubnet>'
   serverlessComputeNoPublicIP: true
 }
-param systemDatastoresAuthMode = 'accessKey'
+param systemDatastoresAuthMode = 'AccessKey'
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
@@ -1113,6 +1137,7 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
     ]
     location: '<location>'
     managedNetworkSettings: {
+      firewallSku: 'Standard'
       isolationMode: 'AllowOnlyApprovedOutbound'
       outboundRules: {
         rule1: {
@@ -1157,7 +1182,8 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
         }
       }
     ]
-    systemDatastoresAuthMode: 'identity'
+    provisionNetworkNow: true
+    systemDatastoresAuthMode: 'Identity'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -1211,6 +1237,7 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
     },
     "managedNetworkSettings": {
       "value": {
+        "firewallSku": "Standard",
         "isolationMode": "AllowOnlyApprovedOutbound",
         "outboundRules": {
           "rule1": {
@@ -1258,8 +1285,11 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
         }
       ]
     },
+    "provisionNetworkNow": {
+      "value": true
+    },
     "systemDatastoresAuthMode": {
-      "value": "identity"
+      "value": "Identity"
     },
     "tags": {
       "value": {
@@ -1299,6 +1329,7 @@ param diagnosticSettings = [
 ]
 param location = '<location>'
 param managedNetworkSettings = {
+  firewallSku: 'Standard'
   isolationMode: 'AllowOnlyApprovedOutbound'
   outboundRules: {
     rule1: {
@@ -1343,7 +1374,8 @@ param privateEndpoints = [
     }
   }
 ]
-param systemDatastoresAuthMode = 'identity'
+param provisionNetworkNow = true
+param systemDatastoresAuthMode = 'Identity'
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
@@ -1368,7 +1400,7 @@ param tags = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`associatedApplicationInsightsResourceId`](#parameter-associatedapplicationinsightsresourceid) | string | The resource ID of the associated Application Insights. Required if 'kind' is 'Default' or 'FeatureStore'. |
-| [`associatedKeyVaultResourceId`](#parameter-associatedkeyvaultresourceid) | string | The resource ID of the associated Key Vault. Required if 'kind' is 'Default', 'FeatureStore' or 'Hub'. |
+| [`associatedKeyVaultResourceId`](#parameter-associatedkeyvaultresourceid) | string | The resource ID of the associated Key Vault. Required if 'kind' is 'Default' or 'FeatureStore'. If not provided, the key vault will be managed by Microsoft. |
 | [`associatedStorageAccountResourceId`](#parameter-associatedstorageaccountresourceid) | string | The resource ID of the associated Storage Account. Required if 'kind' is 'Default', 'FeatureStore' or 'Hub'. |
 | [`featureStoreSettings`](#parameter-featurestoresettings) | object | Settings for feature store type workspaces. Required if 'kind' is set to 'FeatureStore'. |
 | [`hubResourceId`](#parameter-hubresourceid) | string | The resource ID of the hub to associate with the workspace. Required if 'kind' is set to 'Project'. |
@@ -1385,15 +1417,19 @@ param tags = {
 | [`description`](#parameter-description) | string | The description of this workspace. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`discoveryUrl`](#parameter-discoveryurl) | string | URL for the discovery service to identify regional endpoints for machine learning experimentation services. |
+| [`enableServiceSideCMKEncryption`](#parameter-enableservicesidecmkencryption) | bool | Enable service-side encryption. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`friendlyName`](#parameter-friendlyname) | string | The friendly name of the machine learning workspace. |
 | [`hbiWorkspace`](#parameter-hbiworkspace) | bool | The flag to signal HBI data in the workspace and reduce diagnostic data collected by the service. |
 | [`imageBuildCompute`](#parameter-imagebuildcompute) | string | The compute name for image build. |
+| [`ipAllowlist`](#parameter-ipallowlist) | array | List of IPv4 addresse ranges that are allowed to access the workspace. |
 | [`kind`](#parameter-kind) | string | The type of Azure Machine Learning workspace to create. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. At least one identity type is required. |
 | [`managedNetworkSettings`](#parameter-managednetworksettings) | object | Managed Network settings for a machine learning workspace. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
+| [`provisionNetworkNow`](#parameter-provisionnetworknow) | bool | Trigger the provisioning of the managed virtual network when creating the workspace. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`serverlessComputeSettings`](#parameter-serverlesscomputesettings) | object | Settings for serverless compute created in the workspace. |
@@ -1435,7 +1471,7 @@ The resource ID of the associated Application Insights. Required if 'kind' is 'D
 
 ### Parameter: `associatedKeyVaultResourceId`
 
-The resource ID of the associated Key Vault. Required if 'kind' is 'Default', 'FeatureStore' or 'Hub'.
+The resource ID of the associated Key Vault. Required if 'kind' is 'Default' or 'FeatureStore'. If not provided, the key vault will be managed by Microsoft.
 
 - Required: No
 - Type: string
@@ -1595,6 +1631,7 @@ Category of the connection.
     'Dynamics'
     'DynamicsAx'
     'DynamicsCrm'
+    'Elasticsearch'
     'Eloqua'
     'FileServer'
     'FtpServer'
@@ -1614,6 +1651,7 @@ Category of the connection.
     'Informix'
     'Jira'
     'Magento'
+    'ManagedOnlineEndpoint'
     'MariaDb'
     'Marketo'
     'MicrosoftAccess'
@@ -1630,6 +1668,7 @@ Category of the connection.
     'OracleServiceCloud'
     'PayPal'
     'Phoenix'
+    'Pinecone'
     'PostgreSql'
     'Presto'
     'PythonFeed'
@@ -2540,6 +2579,13 @@ URL for the discovery service to identify regional endpoints for machine learnin
 - Required: No
 - Type: string
 
+### Parameter: `enableServiceSideCMKEncryption`
+
+Enable service-side encryption.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `enableTelemetry`
 
 Enable/Disable usage telemetry for module.
@@ -2547,6 +2593,13 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `friendlyName`
+
+The friendly name of the machine learning workspace.
+
+- Required: No
+- Type: string
 
 ### Parameter: `hbiWorkspace`
 
@@ -2562,6 +2615,13 @@ The compute name for image build.
 
 - Required: No
 - Type: string
+
+### Parameter: `ipAllowlist`
+
+List of IPv4 addresse ranges that are allowed to access the workspace.
+
+- Required: No
+- Type: array
 
 ### Parameter: `kind`
 
@@ -2675,6 +2735,7 @@ Managed Network settings for a machine learning workspace.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`firewallSku`](#parameter-managednetworksettingsfirewallsku) | string | The firewall SKU used for FQDN rules. |
 | [`outboundRules`](#parameter-managednetworksettingsoutboundrules) | object | Outbound rules for the managed network of a machine learning workspace. |
 
 ### Parameter: `managedNetworkSettings.isolationMode`
@@ -2689,6 +2750,20 @@ Isolation mode for the managed network of a machine learning workspace.
     'AllowInternetOutbound'
     'AllowOnlyApprovedOutbound'
     'Disabled'
+  ]
+  ```
+
+### Parameter: `managedNetworkSettings.firewallSku`
+
+The firewall SKU used for FQDN rules.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Basic'
+    'Standard'
   ]
   ```
 
@@ -3366,6 +3441,13 @@ Tags to be applied on all resources/Resource Groups in this deployment.
 - Required: No
 - Type: object
 
+### Parameter: `provisionNetworkNow`
+
+Trigger the provisioning of the managed virtual network when creating the workspace.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `publicNetworkAccess`
 
 Whether or not public network access is allowed for this resource. For security reasons it should be disabled.
@@ -3539,8 +3621,9 @@ The authentication mode used by the workspace when connecting to the default sto
 - Allowed:
   ```Bicep
   [
-    'accessKey'
-    'identity'
+    'AccessKey'
+    'Identity'
+    'UserDelegationSAS'
   ]
   ```
 
