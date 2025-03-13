@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "854013137033639667"
+      "templateHash": "3793211016074656906"
     },
     "name": "Azure Stack HCI Cluster",
     "description": "This module deploys an Azure Stack HCI Cluster on the provided Arc Machines."
@@ -484,13 +484,6 @@
           "metadata": {
             "description": "Required. The name of the key vault to be used for storing secrets for the HCI cluster. This currently needs to be unique per HCI cluster."
           }
-        },
-        "cloudId": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. If using a shared key vault or non-legacy secret naming, pass the properties.cloudId guid from the pre-created HCI cluster resource."
-          }
         }
       }
     },
@@ -797,7 +790,7 @@
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Storage account resource group, which is used as the witness for the HCI Windows Failover Cluster.."
+        "description": "Optional. Storage account resource group, which is used as the witness for the HCI Windows Failover Cluster."
       }
     }
   },

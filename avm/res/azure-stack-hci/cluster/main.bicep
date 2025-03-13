@@ -90,7 +90,7 @@ param keyvaultResourceGroup string?
 @description('Optional. Storage account subscription ID, which is used as the witness for the HCI Windows Failover Cluster.')
 param storageAccountSubscriptionId string?
 
-@description('Optional. Storage account resource group, which is used as the witness for the HCI Windows Failover Cluster..')
+@description('Optional. Storage account resource group, which is used as the witness for the HCI Windows Failover Cluster.')
 param storageAccountResourceGroup string?
 
 // ============= //
@@ -487,9 +487,6 @@ type deploymentSettingsType = {
 
   @description('Required. The name of the key vault to be used for storing secrets for the HCI cluster. This currently needs to be unique per HCI cluster.')
   keyVaultName: string
-
-  @description('Optional. If using a shared key vault or non-legacy secret naming, pass the properties.cloudId guid from the pre-created HCI cluster resource.')
-  cloudId: string?
 }
 
 @export()

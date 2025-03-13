@@ -943,7 +943,7 @@ param tags = {
 | [`localAdminCredentialTags`](#parameter-localadmincredentialtags) | object | Tags of the local admin credential. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`storageAccountResourceGroup`](#parameter-storageaccountresourcegroup) | string | Storage account resource group, which is used as the witness for the HCI Windows Failover Cluster.. |
+| [`storageAccountResourceGroup`](#parameter-storageaccountresourcegroup) | string | Storage account resource group, which is used as the witness for the HCI Windows Failover Cluster. |
 | [`storageAccountSubscriptionId`](#parameter-storageaccountsubscriptionid) | string | Storage account subscription ID, which is used as the witness for the HCI Windows Failover Cluster. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`useSharedKeyVault`](#parameter-usesharedkeyvault) | bool | Specify whether to use the shared key vault for the HCI cluster. |
@@ -1083,7 +1083,6 @@ The deployment settings of the cluster.
 | :-- | :-- | :-- |
 | [`bitlockerBootVolume`](#parameter-deploymentsettingsbitlockerbootvolume) | bool | When set to true, BitLocker XTS_AES 256-bit encryption is enabled for all data-at-rest on the OS volume of your Azure Stack HCI cluster. This setting is TPM-hardware dependent. |
 | [`bitlockerDataVolumes`](#parameter-deploymentsettingsbitlockerdatavolumes) | bool | When set to true, BitLocker XTS-AES 256-bit encryption is enabled for all data-at-rest on your Azure Stack HCI cluster shared volumes. |
-| [`cloudId`](#parameter-deploymentsettingscloudid) | string | If using a shared key vault or non-legacy secret naming, pass the properties.cloudId guid from the pre-created HCI cluster resource. |
 | [`credentialGuardEnforced`](#parameter-deploymentsettingscredentialguardenforced) | bool | Enables the Credential Guard. |
 | [`driftControlEnforced`](#parameter-deploymentsettingsdriftcontrolenforced) | bool | When set to true, the security baseline is re-applied regularly. |
 | [`drtmProtection`](#parameter-deploymentsettingsdrtmprotection) | bool | The hardware-dependent Secure Boot setting. |
@@ -1216,13 +1215,6 @@ When set to true, BitLocker XTS-AES 256-bit encryption is enabled for all data-a
 
 - Required: No
 - Type: bool
-
-### Parameter: `deploymentSettings.cloudId`
-
-If using a shared key vault or non-legacy secret naming, pass the properties.cloudId guid from the pre-created HCI cluster resource.
-
-- Required: No
-- Type: string
 
 ### Parameter: `deploymentSettings.credentialGuardEnforced`
 
@@ -1475,7 +1467,7 @@ The principal type of the assigned principal ID.
 
 ### Parameter: `storageAccountResourceGroup`
 
-Storage account resource group, which is used as the witness for the HCI Windows Failover Cluster..
+Storage account resource group, which is used as the witness for the HCI Windows Failover Cluster.
 
 - Required: No
 - Type: string
