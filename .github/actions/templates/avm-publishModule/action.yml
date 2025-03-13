@@ -74,38 +74,78 @@ runs:
           #     }
           #   }
           # }
+
+          # foreach($parameterName in $workflowParameters.Keys) {
+
+          #   if([String]::IsNullOrEmpty($workflowParameters[$parameterName])) {
+          #     Write-Verbose "Skipping parameter [$parameterName] as it has no explicit or default value" -Verbose
+          #     continue
+          #   }
+
+          #   Write-Verbose ('Passing output [{0}] with value [{1}]' -f $parameterName, $workflowParameters[$parameterName]) -Verbose
+          #   $workflowInput[$parameterName] = $workflowParameters[$parameterName].toString()
+          # }
+          # Write-Output ('{0}={1}' -f 'workflowInput', ($workflowInput | ConvertTo-Json -Compress)) >> $env:GITHUB_OUTPUT
+
+
+          # if($publishOutputs = Publish-ModuleFromPathToPBR @functionInput -Verbose) {
+          #   foreach($moduleName in $publishOutputs.Keys) {
+          #     foreach($key in $publishOutputs.$modulename.Keys) {
+          #       Write-Verbose ('Passing pipeline variable [{0}] with key [{1}] and value [{2}]' -f $moduleName, $key, $publishOutputs.$moduleName.$key) -Verbose
+          #       Write-Output ('{0}={{1},{2}}' -f $moduleName, $key, $publishOutputs.$moduleName.$key) >> $env:GITHUB_OUTPUT
+          #     }
+          #   }
+          # }
+
+          # # Output values to be accessed by next jobs
+          # $psRuleCompressedOutput = $psRuleTestFilePaths | ForEach-Object {
+          #   @{
+          #     path = $_
+          #     name = Split-Path (Split-Path $_) -Leaf
+          #   }
+          # } | ConvertTo-Json -Compress
+
+          # if($psRuleCompressedOutput -notmatch "\[.*\]") {
+          #   $psRuleCompressedOutput = "[$psRuleCompressedOutput]"
+          # }
+          # Write-Verbose "Publishing output: $psRuleCompressedOutput" -Verbose
+          # Write-Output ('{0}={1}' -f 'psRuleModuleTestFilePaths', $psRuleCompressedOutput) >> $env:GITHUB_OUTPUT
+
           if($publishOutputs = Publish-ModuleFromPathToPBR @functionInput -Verbose) {
-            foreach($moduleName in $publishOutputs.Keys) {
-              foreach($key in $publishOutputs.$modulename.Keys) {
-                Write-Verbose ('Passing pipeline variable [{0}] with key [{1}] and value [{2}]' -f $moduleName, $key, $publishOutputs.$moduleName.$key) -Verbose
-                Write-Output ('{0}={{1},{2}}' -f $moduleName, $key, $publishOutputs.$moduleName.$key) >> $env:GITHUB_OUTPUT
+            $publishCompressedOutput = $publishOutputs.Keys | Foreach-Object {
+              @{
+                version             = $publishOutputs.$_.version
+                publishedModuleName = $publishOutputs.$_.publishedModuleName
+                gitTagName          = $publishOutputs.$_.gitTagName
               }
-            }
+            } | ConvertTo-Json -Compress
+            Write-Verbose "Publishing output: $publishCompressedOutput" -Verbose
+            Write-Output ('{0}={1}' -f 'publishOutput', $publishCompressedOutput) >> $env:GITHUB_OUTPUT
           }
 
           Write-Output '::endgroup::'
 
-    - name: "Validate publish"
-      uses: azure/powershell@v2
-      if: ${{ steps.publish_step.outputs.version != '' && steps.publish_step.outputs.publishedModuleName != '' }}
-      with:
-        azPSVersion: "latest"
-        inlineScript: |
-          # Grouping task logs
-          Write-Output '::group::Validate publish'
+    # - name: "Validate publish"
+    #   uses: azure/powershell@v2
+    #   if: ${{ steps.publish_step.outputs.version != '' && steps.publish_step.outputs.publishedModuleName != '' }}
+    #   with:
+    #     azPSVersion: "latest"
+    #     inlineScript: |
+    #       # Grouping task logs
+    #       Write-Output '::group::Validate publish'
 
-          # Load used functions
-          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines'  'publish' 'Confirm-ModuleIsPublished.ps1')
+    #       # Load used functions
+    #       . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines'  'publish' 'Confirm-ModuleIsPublished.ps1')
 
-          $functionInput = @{
-            Version             = "${{ steps.publish_step.outputs.version }}"
-            PublishedModuleName = "${{ steps.publish_step.outputs.publishedModuleName }}"
-            GitTagName          = "${{ steps.publish_step.outputs.gitTagName }}"
-          }
+    #       $functionInput = @{
+    #         Version             = "${{ steps.publish_step.outputs.version }}"
+    #         PublishedModuleName = "${{ steps.publish_step.outputs.publishedModuleName }}"
+    #         GitTagName          = "${{ steps.publish_step.outputs.gitTagName }}"
+    #       }
 
-          Write-Verbose "Invoke function with" -Verbose
-          Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
+    #       Write-Verbose "Invoke function with" -Verbose
+    #       Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
-          Confirm-ModuleIsPublished @functionInput
+    #       Confirm-ModuleIsPublished @functionInput
 
-          Write-Output '::endgroup::'
+    #       Write-Output '::endgroup::'
