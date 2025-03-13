@@ -127,7 +127,6 @@ module testDeployment '../../../main.bicep' = [
       scopes: [
         nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
       ]
-      suppressForMinutes: 'PT5M'
       windowSize: 'PT5M'
       tags: {
         'hidden-title': 'This is visible in the resource name'
