@@ -132,6 +132,9 @@ runs:
                 gitTagName          = $publishOutputs.$_.gitTagName
               }
             } | ConvertTo-Json -Compress
+            if($publishCompressedOutput -notmatch "\[.*\]") {
+              $publishCompressedOutput = "[$publishCompressedOutput]"
+            }
             Write-Verbose "Publishing output: $publishCompressedOutput" -Verbose
             Write-Output ('{0}={1}' -f 'publishOutput', $publishCompressedOutput) >> $env:GITHUB_OUTPUT
           }
@@ -151,15 +154,19 @@ runs:
           # Load used functions
           . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines'  'publish' 'Confirm-ModuleIsPublished.ps1')
 
-          $functionInput = @{
-            Version             = "${{ steps.publish_step.outputs.version }}"
-            PublishedModuleName = "${{ steps.publish_step.outputs.publishedModuleName }}"
-            GitTagName          = "${{ steps.publish_step.outputs.gitTagName }}"
+          $convertedPublishOutput = "${{ steps.publish_step.outputs.publishOutput }}" | ConvertFrom-Json
+
+          foreach ($publishedModule in $convertedPublishOutput){
+
+            $functionInput = @{
+              Version             = $publishedModule.version
+              PublishedModuleName = $publishedModule.publishedModuleName
+              GitTagName          = $publishedModule.gitTagName
+            }
+
+            Write-Verbose "Invoke function with" -Verbose
+            Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
+
+            Confirm-ModuleIsPublished @functionInput
           }
-
-          Write-Verbose "Invoke function with" -Verbose
-          Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
-
-          Confirm-ModuleIsPublished @functionInput
-
           Write-Output '::endgroup::'
