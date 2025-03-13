@@ -937,14 +937,14 @@ param tags = {
 | [`deploymentOperations`](#parameter-deploymentoperations) | array | The cluster deployment operations to execute. Defaults to "[Validate, Deploy]". |
 | [`deploymentSettings`](#parameter-deploymentsettings) | object | The deployment settings of the cluster. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`kvResourceGroup`](#parameter-kvresourcegroup) | string | Key vault resource group. |
-| [`kvSubscriptionId`](#parameter-kvsubscriptionid) | string | Key vault subscription ID. |
+| [`keyvaultResourceGroup`](#parameter-keyvaultresourcegroup) | string | Key vault resource group, which is used for for storing secrets for the HCI cluster. |
+| [`keyvaultSubscriptionId`](#parameter-keyvaultsubscriptionid) | string | Key vault subscription ID, which is used for for storing secrets for the HCI cluster. |
 | [`localAdminCredentialContentType`](#parameter-localadmincredentialcontenttype) | string | Content type of the local admin credential. |
 | [`localAdminCredentialTags`](#parameter-localadmincredentialtags) | object | Tags of the local admin credential. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`storageAccountResourceGroup`](#parameter-storageaccountresourcegroup) | string | Storage account resource group. |
-| [`storageAccountSubscriptionId`](#parameter-storageaccountsubscriptionid) | string | Storage account subscription ID. |
+| [`storageAccountResourceGroup`](#parameter-storageaccountresourcegroup) | string | Storage account resource group, which is used as the witness for the HCI Windows Failover Cluster.. |
+| [`storageAccountSubscriptionId`](#parameter-storageaccountsubscriptionid) | string | Storage account subscription ID, which is used as the witness for the HCI Windows Failover Cluster. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`useSharedKeyVault`](#parameter-usesharedkeyvault) | bool | Specify whether to use the shared key vault for the HCI cluster. |
 | [`witnessStoragekeyContentType`](#parameter-witnessstoragekeycontenttype) | string | Content type of the witness storage key. |
@@ -1331,16 +1331,16 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
-### Parameter: `kvResourceGroup`
+### Parameter: `keyvaultResourceGroup`
 
-Key vault resource group.
+Key vault resource group, which is used for for storing secrets for the HCI cluster.
 
 - Required: No
 - Type: string
 
-### Parameter: `kvSubscriptionId`
+### Parameter: `keyvaultSubscriptionId`
 
-Key vault subscription ID.
+Key vault subscription ID, which is used for for storing secrets for the HCI cluster.
 
 - Required: No
 - Type: string
@@ -1475,14 +1475,14 @@ The principal type of the assigned principal ID.
 
 ### Parameter: `storageAccountResourceGroup`
 
-Storage account resource group.
+Storage account resource group, which is used as the witness for the HCI Windows Failover Cluster..
 
 - Required: No
 - Type: string
 
 ### Parameter: `storageAccountSubscriptionId`
 
-Storage account subscription ID.
+Storage account subscription ID, which is used as the witness for the HCI Windows Failover Cluster.
 
 - Required: No
 - Type: string

@@ -55,10 +55,10 @@ param witnessStoragekeyTags object?
 @description('Optional. Tags of the default ARB application.')
 param defaultARBApplicationTags object?
 
-@description('Optional. Storage account subscription ID.')
+@description('Optional. Storage account subscription ID, which is used as the witness for the HCI Windows Failover Cluster.')
 param storageAccountSubscriptionId string
 
-@description('Optional. Storage account resource group.')
+@description('Optional. Storage account resource group, which is used as the witness for the HCI Windows Failover Cluster..')
 param storageAccountResourceGroup string
 
 resource witnessStorageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' existing = {

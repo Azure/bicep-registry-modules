@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "10325289701022606903"
+      "templateHash": "854013137033639667"
     },
     "name": "Azure Stack HCI Cluster",
     "description": "This module deploys an Azure Stack HCI Cluster on the provided Arc Machines."
@@ -772,32 +772,32 @@
         "description": "Optional. Tags of the default ARB application."
       }
     },
-    "kvSubscriptionId": {
+    "keyvaultSubscriptionId": {
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Key vault subscription ID."
+        "description": "Optional. Key vault subscription ID, which is used for for storing secrets for the HCI cluster."
       }
     },
-    "kvResourceGroup": {
+    "keyvaultResourceGroup": {
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Key vault resource group."
+        "description": "Optional. Key vault resource group, which is used for for storing secrets for the HCI cluster."
       }
     },
     "storageAccountSubscriptionId": {
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Storage account subscription ID."
+        "description": "Optional. Storage account subscription ID, which is used as the witness for the HCI Windows Failover Cluster."
       }
     },
     "storageAccountResourceGroup": {
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Storage account resource group."
+        "description": "Optional. Storage account resource group, which is used as the witness for the HCI Windows Failover Cluster.."
       }
     }
   },
@@ -879,8 +879,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-secrets', uniqueString(deployment().name, parameters('location')))]",
-      "subscriptionId": "[coalesce(parameters('kvSubscriptionId'), subscription().subscriptionId)]",
-      "resourceGroup": "[coalesce(parameters('kvResourceGroup'), resourceGroup().name)]",
+      "subscriptionId": "[coalesce(parameters('keyvaultSubscriptionId'), subscription().subscriptionId)]",
+      "resourceGroup": "[coalesce(parameters('keyvaultResourceGroup'), resourceGroup().name)]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -956,7 +956,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "10957791056607239548"
+              "templateHash": "9688558427636867344"
             }
           },
           "parameters": {
@@ -1079,13 +1079,13 @@
             "storageAccountSubscriptionId": {
               "type": "string",
               "metadata": {
-                "description": "Optional. Storage account subscription ID."
+                "description": "Optional. Storage account subscription ID, which is used as the witness for the HCI Windows Failover Cluster."
               }
             },
             "storageAccountResourceGroup": {
               "type": "string",
               "metadata": {
-                "description": "Optional. Storage account resource group."
+                "description": "Optional. Storage account resource group, which is used as the witness for the HCI Windows Failover Cluster.."
               }
             }
           },
@@ -1286,7 +1286,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "7982158538530558379"
+              "templateHash": "9536857013030923630"
             },
             "name": "Azure Stack HCI Cluster Deployment Settings",
             "description": "This module deploys an Azure Stack HCI Cluster Deployment Settings resource."
@@ -1522,7 +1522,7 @@
             "keyVaultName": {
               "type": "string",
               "metadata": {
-                "description": "Required. The name of the key vault to be used for storing secrets for the HCI cluster. This currently needs to be unique per HCI cluster."
+                "description": "Required. The name of the key vault to be used for storing secrets for the HCI cluster."
               }
             },
             "cloudId": {
