@@ -154,7 +154,7 @@ runs:
           # Load used functions
           . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines'  'publish' 'Confirm-ModuleIsPublished.ps1')
 
-          $convertedPublishOutput = "${{ steps.publish_step.outputs.publishOutput }}" | ConvertFrom-Json
+          $convertedPublishOutput = '${{ steps.publish_step.outputs.publishOutput }}' | ConvertFrom-Json
 
           foreach ($publishedModule in $convertedPublishOutput){
 
