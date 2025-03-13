@@ -66,64 +66,6 @@ runs:
           Write-Verbose "Invoke function with" -Verbose
           Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
-          # if($publishOutputs = Publish-ModuleFromPathToPBR @functionInput -Verbose) {
-          #   $publishOutputs.Keys | Foreach-Object {
-          #     $_.Keys | Foreach-Object {
-          #       Write-Verbose ('Passing pipeline variable [{0}] with value [{1}]' -f $_, $publishOutputs.$_) -Verbose
-          #       Write-Output ('{0}={1}' -f $_, $publishOutputs.$_) >> $env:GITHUB_OUTPUT
-          #     }
-          #   }
-          # }
-
-          # foreach($parameterName in $workflowParameters.Keys) {
-
-          #   if([String]::IsNullOrEmpty($workflowParameters[$parameterName])) {
-          #     Write-Verbose "Skipping parameter [$parameterName] as it has no explicit or default value" -Verbose
-          #     continue
-          #   }
-
-          #   Write-Verbose ('Passing output [{0}] with value [{1}]' -f $parameterName, $workflowParameters[$parameterName]) -Verbose
-          #   $workflowInput[$parameterName] = $workflowParameters[$parameterName].toString()
-          # }
-          # Write-Output ('{0}={1}' -f 'workflowInput', ($workflowInput | ConvertTo-Json -Compress)) >> $env:GITHUB_OUTPUT
-
-
-          # if($publishOutputs = Publish-ModuleFromPathToPBR @functionInput -Verbose) {
-          #   foreach($moduleName in $publishOutputs.Keys) {
-          #     foreach($key in $publishOutputs.$modulename.Keys) {
-          #       Write-Verbose ('Passing pipeline variable [{0}] with key [{1}] and value [{2}]' -f $moduleName, $key, $publishOutputs.$moduleName.$key) -Verbose
-          #       Write-Output ('{0}={{1},{2}}' -f $moduleName, $key, $publishOutputs.$moduleName.$key) >> $env:GITHUB_OUTPUT
-          #     }
-          #   }
-          # }
-
-          # # Output values to be accessed by next jobs
-          # $psRuleCompressedOutput = $psRuleTestFilePaths | ForEach-Object {
-          #   @{
-          #     path = $_
-          #     name = Split-Path (Split-Path $_) -Leaf
-          #   }
-          # } | ConvertTo-Json -Compress
-
-          # if($psRuleCompressedOutput -notmatch "\[.*\]") {
-          #   $psRuleCompressedOutput = "[$psRuleCompressedOutput]"
-          # }
-          # Write-Verbose "Publishing output: $psRuleCompressedOutput" -Verbose
-          # Write-Output ('{0}={1}' -f 'psRuleModuleTestFilePaths', $psRuleCompressedOutput) >> $env:GITHUB_OUTPUT
-
-          # # WORKING
-          # if($publishOutputs = Publish-ModuleFromPathToPBR @functionInput -Verbose) {
-          #   $publishCompressedOutput = $publishOutputs.Keys | Foreach-Object {
-          #     @{
-          #       version             = $publishOutputs.$_.version
-          #       publishedModuleName = $publishOutputs.$_.publishedModuleName
-          #       gitTagName          = $publishOutputs.$_.gitTagName
-          #     }
-          #   } | ConvertTo-Json -Compress
-          #   Write-Verbose "Publishing output: $publishCompressedOutput" -Verbose
-          #   Write-Output ('{0}={1}' -f 'publishOutput', $publishCompressedOutput) >> $env:GITHUB_OUTPUT
-          # }
-
           if($publishOutputs = Publish-ModuleFromPathToPBR @functionInput -Verbose) {
             $publishCompressedOutput = $publishOutputs.Keys | Foreach-Object {
               @{
@@ -143,7 +85,6 @@ runs:
 
     - name: "Validate publish"
       uses: azure/powershell@v2
-      # if: ${{ steps.publish_step.outputs.version != '' && steps.publish_step.outputs.publishedModuleName != '' }}
       if: ${{ steps.publish_step.outputs.publishOutput != '' }}
       with:
         azPSVersion: "latest"

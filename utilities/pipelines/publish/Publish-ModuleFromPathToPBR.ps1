@@ -66,10 +66,9 @@ function Publish-ModuleFromPathToPBR {
         $moduleFolderRelativePath = ($moduleFolderPath -replace ('{0}[\/|\\]' -f [Regex]::Escape($repoRoot)), '') -replace '\\', '/'
         Write-Verbose "moduleFolderRelativePath:  $moduleFolderRelativePath" -Verbose
 
-        # 2. Test if module qualifies for publishing
+        # 2. Test if module qualifies for publishing, continuing to the next versioned module in the list otherwise
         if (-not (Get-ModulesToPublish -ModuleFolderPath $moduleFolderPath)) {
             Write-Verbose "No changes detected for versioned module $moduleFolderRelativePath. Skipping publishing" -Verbose
-            # return
             continue
         }
 
@@ -126,7 +125,6 @@ function Publish-ModuleFromPathToPBR {
         bicep publish @publishInput
 
         $resultSet[$moduleFolderRelativePath] = @{
-            # return @{
             version             = $targetVersion
             publishedModuleName = $publishedModuleName
             gitTagName          = $gitTagName
