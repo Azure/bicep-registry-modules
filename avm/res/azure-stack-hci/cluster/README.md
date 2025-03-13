@@ -924,7 +924,7 @@ param tags = {
 | [`localAdminPassword`](#parameter-localadminpassword) | securestring | The password of the local admin user. Required if useSharedKeyVault is true. |
 | [`localAdminUser`](#parameter-localadminuser) | string | The name of the local admin user. Required if useSharedKeyVault is true. |
 | [`servicePrincipalId`](#parameter-serviceprincipalid) | string | The service principal ID for ARB. Required if useSharedKeyVault is true. |
-| [`servicePrincipalSecret`](#parameter-serviceprincipalsecret) | string | The service principal secret for ARB. Required if useSharedKeyVault is true. |
+| [`servicePrincipalSecret`](#parameter-serviceprincipalsecret) | securestring | The service principal secret for ARB. Required if useSharedKeyVault is true. |
 
 **Optional parameters**
 
@@ -937,12 +937,16 @@ param tags = {
 | [`deploymentOperations`](#parameter-deploymentoperations) | array | The cluster deployment operations to execute. Defaults to "[Validate, Deploy]". |
 | [`deploymentSettings`](#parameter-deploymentsettings) | object | The deployment settings of the cluster. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`keyvaultResourceGroup`](#parameter-keyvaultresourcegroup) | string | Key vault resource group, which is used for for storing secrets for the HCI cluster. |
+| [`keyvaultSubscriptionId`](#parameter-keyvaultsubscriptionid) | string | Key vault subscription ID, which is used for for storing secrets for the HCI cluster. |
 | [`localAdminCredentialContentType`](#parameter-localadmincredentialcontenttype) | string | Content type of the local admin credential. |
 | [`localAdminCredentialTags`](#parameter-localadmincredentialtags) | object | Tags of the local admin credential. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`useSharedKeyVault`](#parameter-usesharedkeyvault) | bool | Specify whether to use the shared key vault for the HCI cluster. |
+| [`witnessStorageAccountResourceGroup`](#parameter-witnessstorageaccountresourcegroup) | string | Storage account resource group, which is used as the witness for the HCI Windows Failover Cluster. |
+| [`witnessStorageAccountSubscriptionId`](#parameter-witnessstorageaccountsubscriptionid) | string | Storage account subscription ID, which is used as the witness for the HCI Windows Failover Cluster. |
 | [`witnessStoragekeyContentType`](#parameter-witnessstoragekeycontenttype) | string | Content type of the witness storage key. |
 | [`witnessStoragekeyTags`](#parameter-witnessstoragekeytags) | object | Tags of the witness storage key. |
 
@@ -993,7 +997,7 @@ The service principal ID for ARB. Required if useSharedKeyVault is true.
 The service principal secret for ARB. Required if useSharedKeyVault is true.
 
 - Required: No
-- Type: string
+- Type: securestring
 
 ### Parameter: `azureStackLCMUserCredentialContentType`
 
@@ -1079,7 +1083,6 @@ The deployment settings of the cluster.
 | :-- | :-- | :-- |
 | [`bitlockerBootVolume`](#parameter-deploymentsettingsbitlockerbootvolume) | bool | When set to true, BitLocker XTS_AES 256-bit encryption is enabled for all data-at-rest on the OS volume of your Azure Stack HCI cluster. This setting is TPM-hardware dependent. |
 | [`bitlockerDataVolumes`](#parameter-deploymentsettingsbitlockerdatavolumes) | bool | When set to true, BitLocker XTS-AES 256-bit encryption is enabled for all data-at-rest on your Azure Stack HCI cluster shared volumes. |
-| [`cloudId`](#parameter-deploymentsettingscloudid) | string | If using a shared key vault or non-legacy secret naming, pass the properties.cloudId guid from the pre-created HCI cluster resource. |
 | [`credentialGuardEnforced`](#parameter-deploymentsettingscredentialguardenforced) | bool | Enables the Credential Guard. |
 | [`driftControlEnforced`](#parameter-deploymentsettingsdriftcontrolenforced) | bool | When set to true, the security baseline is re-applied regularly. |
 | [`drtmProtection`](#parameter-deploymentsettingsdrtmprotection) | bool | The hardware-dependent Secure Boot setting. |
@@ -1213,13 +1216,6 @@ When set to true, BitLocker XTS-AES 256-bit encryption is enabled for all data-a
 - Required: No
 - Type: bool
 
-### Parameter: `deploymentSettings.cloudId`
-
-If using a shared key vault or non-legacy secret naming, pass the properties.cloudId guid from the pre-created HCI cluster resource.
-
-- Required: No
-- Type: string
-
 ### Parameter: `deploymentSettings.credentialGuardEnforced`
 
 Enables the Credential Guard.
@@ -1326,6 +1322,20 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `keyvaultResourceGroup`
+
+Key vault resource group, which is used for for storing secrets for the HCI cluster.
+
+- Required: No
+- Type: string
+
+### Parameter: `keyvaultSubscriptionId`
+
+Key vault subscription ID, which is used for for storing secrets for the HCI cluster.
+
+- Required: No
+- Type: string
 
 ### Parameter: `localAdminCredentialContentType`
 
@@ -1469,6 +1479,20 @@ Specify whether to use the shared key vault for the HCI cluster.
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `witnessStorageAccountResourceGroup`
+
+Storage account resource group, which is used as the witness for the HCI Windows Failover Cluster.
+
+- Required: No
+- Type: string
+
+### Parameter: `witnessStorageAccountSubscriptionId`
+
+Storage account subscription ID, which is used as the witness for the HCI Windows Failover Cluster.
+
+- Required: No
+- Type: string
 
 ### Parameter: `witnessStoragekeyContentType`
 
