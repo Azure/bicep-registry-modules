@@ -924,7 +924,7 @@ param tags = {
 | [`localAdminPassword`](#parameter-localadminpassword) | securestring | The password of the local admin user. Required if useSharedKeyVault is true. |
 | [`localAdminUser`](#parameter-localadminuser) | string | The name of the local admin user. Required if useSharedKeyVault is true. |
 | [`servicePrincipalId`](#parameter-serviceprincipalid) | string | The service principal ID for ARB. Required if useSharedKeyVault is true. |
-| [`servicePrincipalSecret`](#parameter-serviceprincipalsecret) | string | The service principal secret for ARB. Required if useSharedKeyVault is true. |
+| [`servicePrincipalSecret`](#parameter-serviceprincipalsecret) | securestring | The service principal secret for ARB. Required if useSharedKeyVault is true. |
 
 **Optional parameters**
 
@@ -993,7 +993,7 @@ The service principal ID for ARB. Required if useSharedKeyVault is true.
 The service principal secret for ARB. Required if useSharedKeyVault is true.
 
 - Required: No
-- Type: string
+- Type: securestring
 
 ### Parameter: `azureStackLCMUserCredentialContentType`
 
