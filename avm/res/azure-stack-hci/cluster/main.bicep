@@ -53,6 +53,7 @@ param localAdminPassword string?
 @description('Conditional. The service principal ID for ARB. Required if useSharedKeyVault is true.')
 param servicePrincipalId string?
 
+@secure()
 @description('Conditional. The service principal secret for ARB. Required if useSharedKeyVault is true.')
 param servicePrincipalSecret string?
 
