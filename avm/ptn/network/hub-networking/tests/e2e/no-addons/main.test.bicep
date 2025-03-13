@@ -65,7 +65,6 @@ module testDeployment '../../../main.bicep' = [
           enableAzureFirewall: false
           enableBastion: false
           enablePeering: false
-          enableTelemetry: true
           flowTimeoutInMinutes: 30
           dnsServers: ['10.0.1.6', '10.0.1.7']
           diagnosticSettings: [
