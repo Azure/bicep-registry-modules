@@ -141,7 +141,7 @@ runs:
     - name: "Validate publish"
       uses: azure/powershell@v2
       # if: ${{ steps.publish_step.outputs.version != '' && steps.publish_step.outputs.publishedModuleName != '' }}
-      if: ${{ steps.publish_step.output.publishOutput != '' }}
+      if: ${{ steps.publish_step.outputs.publishOutput != '' }}
       with:
         azPSVersion: "latest"
         inlineScript: |
