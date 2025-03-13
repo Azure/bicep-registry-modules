@@ -1,6 +1,8 @@
 // NOTE: This is a role assignment at RG level and requires Owner permissions at subscription level
 // It is important to fine grain permissions
+@description('Required. The resource ID of the managed identity to grant the Owner RBAC role.')
 param managedIdentityResourceId string
+@description('Required. The principal ID of the managed identity to grant the Owner RBAC role.')
 param managedIdentityPrincipalId string
 
 @description('This is the built-in owner role. See https://docs.microsoft.com/azure/role-based-access-control/built-in-roles#owner')

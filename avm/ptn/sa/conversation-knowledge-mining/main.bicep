@@ -1,5 +1,3 @@
-//TODO: check latest versions of AVM resource modules for those that still deploy regular resources
-
 // // ========== main.bicep ========== //
 targetScope = 'resourceGroup'
 
@@ -10,10 +8,23 @@ metadata description = '''This module deploys the [Conversation Knowledge Mining
 '''
 
 // ========== Parameters ========== //
-// PARAMETERS: names
+// PARAMETERS: Solution configuration
 @description('Required. The prefix to add in the default names given to all deployed Azure resources.')
 @maxLength(12)
 param solutionPrefix string
+@description('Optional. Location for all the deployed Azure resources except databases. Defaulted to East US.')
+@metadata({ azd: { type: 'location' } })
+param solutionLocation string = 'East US'
+@description('Optional. Location for all the deployed databases Azure resources. Defaulted to East US 2.')
+@metadata({ azd: { type: 'location' } })
+param databasesLocation string = 'East US 2'
+@description('Optional. The tags to apply to all deployed Azure resources.')
+param tags object = {
+  app: solutionPrefix
+  location: solutionLocation
+}
+
+// PARAMETERS: Resource names
 @description('Optional. The name of the AI Foundry AI Hub resource. It will override the default given name.')
 @maxLength(90)
 param aiFoundryAiHubResourceName string = ''
@@ -84,12 +95,6 @@ param webAppServerFarmResourceName string = ''
 @allowed(['West US', 'Sweden Central', 'Australia East'])
 @metadata({ azd: { type: 'location' } })
 param aiFoundryAiServicesContentUnderstandingLocation string
-@description('Optional. Location for the solution deployment. Defaulted to the resource group location.')
-@metadata({ azd: { type: 'location' } })
-param solutionLocation string = 'East US'
-@description('Optional. Secondary location for databases creation.')
-@metadata({ azd: { type: 'location' } })
-param databasesLocation string = 'East US 2'
 @description('Optional. The location for the Web App Server Farm. Defaulted to the solution location.')
 @metadata({ azd: { type: 'location' } })
 param webAppServerFarmLocation string = solutionLocation
@@ -403,10 +408,6 @@ param enableTelemetry bool = true
 // ========== Variables ========== //
 // VARIABLES: defaults
 var varWorkloadNameFormat = '${solutionPrefix}-{0}' //${uniqueString(resourceGroup().id, solutionPrefix)}
-var tags = {
-  app: solutionPrefix
-  location: solutionLocation
-}
 var avmDeploymentNameFormat = 'ckm-deploy-avm-{0}'
 var localModuleDeploymentNameFormat = 'ckm-deploy-module-{0}'
 
@@ -1089,7 +1090,7 @@ module moduleFunctionRAG 'modules/function-rag.bicep' = {
     ragDockerImageName: 'DOCKER|${functionRagDockerImageContainerRegistryUrl}/${functionRagDockerImageName}:${functionRagDockerImageTag}'
     ragFunctionName: varFunctionRagResourceName
     ragStorageAccountName: moduleAIFoundry.outputs.storageAccountName
-    solutionLocation: functionRagLocation
+    ragFunctionLocation: functionRagLocation
     sqlDatabaseName: varSqlServerDatabaseName
     sqlServerAdministratorLogin: sqlServerAdministratorLogin
     sqlServerAdministratorPassword: sqlServerAdministratorPassword
@@ -1098,12 +1099,11 @@ module moduleFunctionRAG 'modules/function-rag.bicep' = {
   }
 }
 
-module rbacAiprojectAideveloper 'modules/rbac-aiproject-aideveloper.bicep' = {
+module rbacAiProjectAiDeveloper 'modules/rbac-aiproject-aideveloper.bicep' = {
   name: format(localModuleDeploymentNameFormat, 'rbac-aiproject-aideveloper')
   params: {
     aiServicesProjectResourceName: moduleAIFoundry.outputs.aiProjectName
-    identityPrincipalId: moduleFunctionRAG.outputs.principalId
-    aiServicesProjectResourceId: moduleAIFoundry.outputs.aiProjectResourceId
+    ragFunctionPrincipalId: moduleFunctionRAG.outputs.principalId
     ragFunctionResourceId: moduleFunctionRAG.outputs.resourceId
   }
 }
@@ -1141,15 +1141,15 @@ module moduleWebsiteWebapp 'modules/webapp.bicep' = {
     gptModelName: aiFoundryAIServicesGptModelName
     gptModelVersionPreview: varAiFoundryAiServiceGPTModelVersionPreview
     aiServicesResourceName: moduleAIFoundry.outputs.aiServicesName
-    managedIdentityDefaultHostName: functionCharts.properties.defaultHostName
-    //managedIdentityDefaultHostName: avmFunctionCharts.outputs.defaultHostname
+    chartsFunctionDefaultHostName: functionCharts.properties.defaultHostName
+    //chartsFunctionDefaultHostName: avmFunctionCharts.outputs.defaultHostname
     chartsFunctionFunctionName: functionChartsFunctionName
     webAppAppConfigReact: varWebAppAppConfigReact
     cosmosDbSqlDbName: varCosmosDbSqlDbName
     cosmosDbSqlDbNameCollectionName: varCosmosDbSqlDbCollName
     ragFunctionDefaultHostName: moduleFunctionRAG.outputs.defaultHostName
     ragFunctionFunctionName: functionRagFunctionName
-    avmCosmosDbResourceName: avmCosmosDB.outputs.name
+    cosmosDbResourceName: avmCosmosDB.outputs.name
   }
 }
 

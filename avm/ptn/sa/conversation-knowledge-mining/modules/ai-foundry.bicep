@@ -1,36 +1,67 @@
 // NOTE: This module is designed to be replaced in the future with an AVM patter module with AI Foundry services
-
+@description('Required. The location of the AI Hub resource to be deployed.')
 param aiHubLocation string
+@description('Required. The name of the AI Hub resource to be deployed.')
 param aiHubResourceName string
+@description('Required. The SKU of the AI Hub resource to be deployed.')
 param aiHubSkuName string
+@description('Required. The location of the AI Project resource to be deployed.')
 param aiProjectLocation string
+@description('Required. The name of the AI Project resource to be deployed.')
 param aiProjectResourceName string
+@description('Required. The SKU of the AI Project resource to be deployed.')
 param aiProjectSkuName string
+@description('Required. The location of the AI Service Content Understanding resource to be deployed.')
 param aiServicesContentUnderstandingLocation string
+@description('Required. The name of the AI Service Content Understanding resource to be deployed.')
 param aiServicesContentUnderstandingResourceName string
+@description('Required. The SKU of the AI Service Content Understanding resource to be deployed.')
 param aiServicesContentUnderstandingSkuName string
+@description('Required. The location of the AI Service resource to be deployed.')
 param aiServicesLocation string
+@description('Required. The AI Model deployments configuration of the AI Service resource to be deployed.')
 param aiServicesModelDeployments array
+@description('Required. The name of the AI Service resource to be deployed.')
 param aiServicesResourceName string
+@description('Required. The SKU of the AI Service resource to be deployed.')
 param aiServicesSkuName string
+@description('Required. The location of the Application Insights resource to be deployed.')
 param applicationInsightsLocation string
+@description('Required. The name of the Application Insights resource to be deployed.')
 param applicationInsightsResourceName string
+@description('Required. The data retention configuration of the Application Insights resource to be deployed.')
 param applicationInsightsRetentionInDays int
+@description('Required. The format to apply to the deployment names of the AVM resource modules.')
 param avmDeploymentNameFormat string
+@description('Required. The location of the Container Registry resource to be deployed.')
 param containerRegistryLocation string
+@description('Required. The name of the Container Registry resource to be deployed.')
 param containerRegistryResourceName string
+@description('Required. The SKU of the Container Registry resource to be deployed.')
 param containerRegistrySkuName string
+@description('Required. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
+@description('Required. The name the of existing Key Vault to store Conversation Knowledge Mining related secrets.')
 param keyVaultResourceName string
+@description('Required. The format to apply to the deployment names of the local modules.')
 param localModuleDeploymentNameFormat string
+@description('Required. The resource ID of the resource log analytic workspace to send Diagnostic logs from all resources.')
 param logAnalyticsWorkspaceResourceId string
+@description('Required. The principal ID of the managed identity to give required RBAC permissions.')
 param managedIdentityPrincipalId string
+@description('Required. The location of the Search Service resource to deploy.')
 param searchServiceLocation string
+@description('Required. The name of the Search Service resource to deploy.')
 param searchServiceResourceName string
+@description('Required. The SKU of the Search Service resource to deploy.')
 param searchServiceSkuName string
+@description('Required. The location of the storage account resource to deploy.')
 param storageAccountLocation string
+@description('Required. The name of the storage account resource to deploy.')
 param storageAccountResourceName string
+@description('Required. The SKU of the storage account resource to deploy.')
 param storageAccountSkuName string
+@description('Required. The tags to apply to all deployed Azure resources.')
 param tags object
 
 // VARIABLES
@@ -329,22 +360,34 @@ module aiFoundryKvSecretCogServicesKey './ai-foundry-kv-secret-cog-services-key.
   }
 }
 
+@description('The resource name of the deployed AI Services resource.')
 //output aiServicesName string = cognitiveServicesAccounts.name
 output aiServicesName string = avmCognitiveServicesAccounts.outputs.name
+@description('The endpoint of the deployed AI Services resource.')
 //output aiServicesEndpoint string = cognitiveServicesAccounts.properties.endpoint //aiServices_m.properties.endpoint
 output aiServicesEndpoint string = avmCognitiveServicesAccounts.outputs.endpoint //aiServices_m.properties.endpoint
+@description('The resource ID of the deployed AI Services resource.')
 //output aiServicesResourceId string = cognitiveServicesAccounts.id
 output aiServicesResourceId string = avmCognitiveServicesAccounts.outputs.resourceId
 
+@description('The resource name of the deployed Search Service resource.')
 output aiSearchName string = avmSearchSearchServices.outputs.name
+@description('The resource ID of the deployed Search Service resource.')
 output aiSearchResourceId string = avmSearchSearchServices.outputs.resourceId
+@description('The connection string of the deployed Search Service resource.')
 output aiSearchConnectionString string = 'https://${avmSearchSearchServices.outputs.name}.search.windows.net'
 
+@description('The resource name of the deployed AI Project resource.')
 output aiProjectName string = avmMLServicesWorkspacesProject.outputs.name
+@description('The resource ID of the deployed AI Project resource.')
 output aiProjectResourceId string = avmMLServicesWorkspacesProject.outputs.resourceId
 
+@description('The resource ID of the deployed Application Insights resource.')
 output applicationInsightsResourceId string = avmInsightsComponent.outputs.resourceId
+@description('The instrumentation key of the deployed Application Insights resource.')
 output applicationInsightsInstrumentationKey string = avmInsightsComponent.outputs.instrumentationKey
+@description('The connection string of the deployed Application Insights resource.')
 output applicationInsightsConnectionString string = avmInsightsComponent.outputs.connectionString
 
+@description('The resource name of the deployed Storage Account resource.')
 output storageAccountName string = avmStorageAccount.outputs.name

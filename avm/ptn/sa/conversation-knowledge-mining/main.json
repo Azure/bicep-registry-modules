@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "4988495759147653193"
+      "templateHash": "4982182534386301900"
     },
     "name": "Conversation Knowledge Mining Solution Accelerator",
     "description": "This module deploys the [Conversation Knowledge Mining Solution Accelerator](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator).\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator product. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -94,6 +94,36 @@
       "maxLength": 12,
       "metadata": {
         "description": "Required. The prefix to add in the default names given to all deployed Azure resources."
+      }
+    },
+    "solutionLocation": {
+      "type": "string",
+      "defaultValue": "East US",
+      "metadata": {
+        "azd": {
+          "type": "location"
+        },
+        "description": "Optional. Location for all the deployed Azure resources except databases. Defaulted to East US."
+      }
+    },
+    "databasesLocation": {
+      "type": "string",
+      "defaultValue": "East US 2",
+      "metadata": {
+        "azd": {
+          "type": "location"
+        },
+        "description": "Optional. Location for all the deployed databases Azure resources. Defaulted to East US 2."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "defaultValue": {
+        "app": "[parameters('solutionPrefix')]",
+        "location": "[parameters('solutionLocation')]"
+      },
+      "metadata": {
+        "description": "Optional. The tags to apply to all deployed Azure resources."
       }
     },
     "aiFoundryAiHubResourceName": {
@@ -276,26 +306,6 @@
           "type": "location"
         },
         "description": "Required. Location for the AI Foundry Content Understanding service deployment."
-      }
-    },
-    "solutionLocation": {
-      "type": "string",
-      "defaultValue": "East US",
-      "metadata": {
-        "azd": {
-          "type": "location"
-        },
-        "description": "Optional. Location for the solution deployment. Defaulted to the resource group location."
-      }
-    },
-    "databasesLocation": {
-      "type": "string",
-      "defaultValue": "East US 2",
-      "metadata": {
-        "azd": {
-          "type": "location"
-        },
-        "description": "Optional. Secondary location for databases creation."
       }
     },
     "webAppServerFarmLocation": {
@@ -968,10 +978,6 @@
   },
   "variables": {
     "varWorkloadNameFormat": "[format('{0}-{{0}}', parameters('solutionPrefix'))]",
-    "tags": {
-      "app": "[parameters('solutionPrefix')]",
-      "location": "[parameters('solutionLocation')]"
-    },
     "avmDeploymentNameFormat": "ckm-deploy-avm-{0}",
     "localModuleDeploymentNameFormat": "ckm-deploy-module-{0}",
     "varAiFoundryAiHubResourceName": "[if(empty(parameters('aiFoundryAiHubResourceName')), format(variables('varWorkloadNameFormat'), 'aifd-aihb'), parameters('aiFoundryAiHubResourceName'))]",
@@ -1068,7 +1074,7 @@
       "type": "Microsoft.Web/sites",
       "apiVersion": "2023-12-01",
       "name": "[variables('varFunctionChartsResourceName')]",
-      "tags": "[variables('tags')]",
+      "tags": "[parameters('tags')]",
       "location": "[parameters('functionChartsLocation')]",
       "kind": "functionapp,linux,container,azurecontainerapps",
       "identity": {
@@ -1138,7 +1144,7 @@
             "value": "[variables('varManagedIdentityResourceName')]"
           },
           "tags": {
-            "value": "[variables('tags')]"
+            "value": "[parameters('tags')]"
           },
           "location": {
             "value": "[parameters('managedIdentityLocation')]"
@@ -1616,15 +1622,21 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "6745305396501799599"
+              "templateHash": "16387854846241443824"
             }
           },
           "parameters": {
             "managedIdentityResourceId": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The resource ID of the managed identity to grant the Owner RBAC role."
+              }
             },
             "managedIdentityPrincipalId": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The principal ID of the managed identity to grant the Owner RBAC role."
+              }
             }
           },
           "resources": [
@@ -1659,7 +1671,7 @@
             "value": "[variables('varLogAnalyticsWorkspaceResourceName')]"
           },
           "tags": {
-            "value": "[variables('tags')]"
+            "value": "[parameters('tags')]"
           },
           "location": {
             "value": "[parameters('logAnalyticsWorkspaceLocation')]"
@@ -4687,7 +4699,7 @@
             "value": "[variables('varKeyVaultResourceName')]"
           },
           "tags": {
-            "value": "[variables('tags')]"
+            "value": "[parameters('tags')]"
           },
           "location": {
             "value": "[parameters('keyVaultLocation')]"
@@ -8048,7 +8060,7 @@
             "value": "[parameters('aiFoundryStorageAccountSkuName')]"
           },
           "tags": {
-            "value": "[variables('tags')]"
+            "value": "[parameters('tags')]"
           },
           "avmDeploymentNameFormat": {
             "value": "[variables('avmDeploymentNameFormat')]"
@@ -8064,106 +8076,202 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "4960988616624487709"
+              "templateHash": "18261124961722482690"
             }
           },
           "parameters": {
             "aiHubLocation": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The location of the AI Hub resource to be deployed."
+              }
             },
             "aiHubResourceName": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the AI Hub resource to be deployed."
+              }
             },
             "aiHubSkuName": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The SKU of the AI Hub resource to be deployed."
+              }
             },
             "aiProjectLocation": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The location of the AI Project resource to be deployed."
+              }
             },
             "aiProjectResourceName": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the AI Project resource to be deployed."
+              }
             },
             "aiProjectSkuName": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The SKU of the AI Project resource to be deployed."
+              }
             },
             "aiServicesContentUnderstandingLocation": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The location of the AI Service Content Understanding resource to be deployed."
+              }
             },
             "aiServicesContentUnderstandingResourceName": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the AI Service Content Understanding resource to be deployed."
+              }
             },
             "aiServicesContentUnderstandingSkuName": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The SKU of the AI Service Content Understanding resource to be deployed."
+              }
             },
             "aiServicesLocation": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The location of the AI Service resource to be deployed."
+              }
             },
             "aiServicesModelDeployments": {
-              "type": "array"
+              "type": "array",
+              "metadata": {
+                "description": "Required. The AI Model deployments configuration of the AI Service resource to be deployed."
+              }
             },
             "aiServicesResourceName": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the AI Service resource to be deployed."
+              }
             },
             "aiServicesSkuName": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The SKU of the AI Service resource to be deployed."
+              }
             },
             "applicationInsightsLocation": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The location of the Application Insights resource to be deployed."
+              }
             },
             "applicationInsightsResourceName": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the Application Insights resource to be deployed."
+              }
             },
             "applicationInsightsRetentionInDays": {
-              "type": "int"
+              "type": "int",
+              "metadata": {
+                "description": "Required. The data retention configuration of the Application Insights resource to be deployed."
+              }
             },
             "avmDeploymentNameFormat": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The format to apply to the deployment names of the AVM resource modules."
+              }
             },
             "containerRegistryLocation": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The location of the Container Registry resource to be deployed."
+              }
             },
             "containerRegistryResourceName": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the Container Registry resource to be deployed."
+              }
             },
             "containerRegistrySkuName": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The SKU of the Container Registry resource to be deployed."
+              }
             },
             "enableTelemetry": {
               "type": "bool",
-              "defaultValue": true
+              "defaultValue": true,
+              "metadata": {
+                "description": "Required. Enable/Disable usage telemetry for module."
+              }
             },
             "keyVaultResourceName": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name the of existing Key Vault to store Conversation Knowledge Mining related secrets."
+              }
             },
             "localModuleDeploymentNameFormat": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The format to apply to the deployment names of the local modules."
+              }
             },
             "logAnalyticsWorkspaceResourceId": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The resource ID of the resource log analytic workspace to send Diagnostic logs from all resources."
+              }
             },
             "managedIdentityPrincipalId": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The principal ID of the managed identity to give required RBAC permissions."
+              }
             },
             "searchServiceLocation": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The location of the Search Service resource to deploy."
+              }
             },
             "searchServiceResourceName": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the Search Service resource to deploy."
+              }
             },
             "searchServiceSkuName": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The SKU of the Search Service resource to deploy."
+              }
             },
             "storageAccountLocation": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The location of the storage account resource to deploy."
+              }
             },
             "storageAccountResourceName": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the storage account resource to deploy."
+              }
             },
             "storageAccountSkuName": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The SKU of the storage account resource to deploy."
+              }
             },
             "tags": {
-              "type": "object"
+              "type": "object",
+              "metadata": {
+                "description": "Required. The tags to apply to all deployed Azure resources."
+              }
             }
           },
           "variables": {
@@ -24652,61 +24760,112 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.33.93.31351",
-                      "templateHash": "3392081495147116023"
+                      "templateHash": "10655033990517497679"
                     }
                   },
                   "parameters": {
                     "deploymentName": {
-                      "type": "string"
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The deployment name of the AI Hub resource."
+                      }
                     },
                     "aiServicesName": {
-                      "type": "string"
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The name of the AI Services resource whose keys will be used to connect to the AI Hub."
+                      }
                     },
                     "searchServiceName": {
-                      "type": "string"
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The name of the Search Services resource whose keys will be used to connect to the AI Hub."
+                      }
                     },
                     "aiHubName": {
-                      "type": "string"
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The name of the AI Hub resource to be created."
+                      }
                     },
                     "sku": {
-                      "type": "string"
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The SKU of the AI Hub resource to be created."
+                      }
                     },
                     "location": {
-                      "type": "string"
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The location of the AI Hub resource to be created."
+                      }
                     },
                     "tags": {
-                      "type": "object"
+                      "type": "object",
+                      "metadata": {
+                        "description": "Required. The tags to be applied to the AI Hub resource."
+                      }
                     },
                     "keyVaultResourceId": {
-                      "type": "string"
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The resource ID of the Key Vault resource to be associated with the AI Hub."
+                      }
                     },
                     "containerRegistryResourceId": {
-                      "type": "string"
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The resource ID of the container registry to be associated with the AI Hub."
+                      }
                     },
                     "applicationInsightsResourceId": {
-                      "type": "string"
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The resource ID of the Application Insights resource to be associated with the AI Hub."
+                      }
                     },
                     "storageAccountResourceId": {
-                      "type": "string"
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The resource ID of the storage account to be associated with the AI Hub."
+                      }
                     },
                     "cognitiveServicesEndpoint": {
-                      "type": "string"
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The endpoint of the Cognitive Service to be associated with the AI Hub."
+                      }
                     },
                     "cognitiveServicesResourceId": {
-                      "type": "string"
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The resource ID of the Cognitive Service to be associated with the AI Hub."
+                      }
                     },
                     "searchServicesEndpoint": {
-                      "type": "string"
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The endpoint of the Search Services to be associated with the AI Hub."
+                      }
                     },
                     "searchServicesResourceId": {
-                      "type": "string"
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The resource ID of the Search Services to be associated with the AI Hub."
+                      }
                     },
                     "enableTelemetry": {
                       "type": "bool",
-                      "defaultValue": true
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Required. Enable/Disable usage telemetry for module."
+                      }
                     },
                     "logAnalyticsWorkspaceResourceId": {
-                      "type": "string"
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The resource ID of the Log Analytics workspace used to capture diagnostic logs of the AI Hub."
+                      }
                     }
                   },
                   "resources": [
@@ -28664,6 +28823,9 @@
                   "outputs": {
                     "resourceId": {
                       "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the AI Hub resource created by this module."
+                      },
                       "value": "[reference(resourceId('Microsoft.Resources/deployments', parameters('deploymentName')), '2022-09-01').outputs.resourceId.value]"
                     }
                   }
@@ -32606,15 +32768,21 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.33.93.31351",
-                      "templateHash": "18007426789209318440"
+                      "templateHash": "15330346278450231230"
                     }
                   },
                   "parameters": {
                     "keyVaultResourceName": {
-                      "type": "string"
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The name of the Key Vault resource to store the Cognitive Services key."
+                      }
                     },
                     "cognitiveServicesAccountsResourceName": {
-                      "type": "string"
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The name of the Cognitive Services resource."
+                      }
                     }
                   },
                   "resources": [
@@ -32637,50 +32805,86 @@
           "outputs": {
             "aiServicesName": {
               "type": "string",
+              "metadata": {
+                "description": "The resource name of the deployed AI Services resource."
+              },
               "value": "[reference(resourceId('Microsoft.Resources/deployments', format(parameters('avmDeploymentNameFormat'), parameters('aiServicesResourceName'))), '2022-09-01').outputs.name.value]"
             },
             "aiServicesEndpoint": {
               "type": "string",
+              "metadata": {
+                "description": "The endpoint of the deployed AI Services resource."
+              },
               "value": "[reference(resourceId('Microsoft.Resources/deployments', format(parameters('avmDeploymentNameFormat'), parameters('aiServicesResourceName'))), '2022-09-01').outputs.endpoint.value]"
             },
             "aiServicesResourceId": {
               "type": "string",
+              "metadata": {
+                "description": "The resource ID of the deployed AI Services resource."
+              },
               "value": "[reference(resourceId('Microsoft.Resources/deployments', format(parameters('avmDeploymentNameFormat'), parameters('aiServicesResourceName'))), '2022-09-01').outputs.resourceId.value]"
             },
             "aiSearchName": {
               "type": "string",
+              "metadata": {
+                "description": "The resource name of the deployed Search Service resource."
+              },
               "value": "[reference(resourceId('Microsoft.Resources/deployments', format(parameters('avmDeploymentNameFormat'), parameters('searchServiceResourceName'))), '2022-09-01').outputs.name.value]"
             },
             "aiSearchResourceId": {
               "type": "string",
+              "metadata": {
+                "description": "The resource ID of the deployed Search Service resource."
+              },
               "value": "[reference(resourceId('Microsoft.Resources/deployments', format(parameters('avmDeploymentNameFormat'), parameters('searchServiceResourceName'))), '2022-09-01').outputs.resourceId.value]"
             },
             "aiSearchConnectionString": {
               "type": "string",
+              "metadata": {
+                "description": "The connection string of the deployed Search Service resource."
+              },
               "value": "[format('https://{0}.search.windows.net', reference(resourceId('Microsoft.Resources/deployments', format(parameters('avmDeploymentNameFormat'), parameters('searchServiceResourceName'))), '2022-09-01').outputs.name.value)]"
             },
             "aiProjectName": {
               "type": "string",
+              "metadata": {
+                "description": "The resource name of the deployed AI Project resource."
+              },
               "value": "[reference(resourceId('Microsoft.Resources/deployments', format(parameters('avmDeploymentNameFormat'), parameters('aiProjectResourceName'))), '2022-09-01').outputs.name.value]"
             },
             "aiProjectResourceId": {
               "type": "string",
+              "metadata": {
+                "description": "The resource ID of the deployed AI Project resource."
+              },
               "value": "[reference(resourceId('Microsoft.Resources/deployments', format(parameters('avmDeploymentNameFormat'), parameters('aiProjectResourceName'))), '2022-09-01').outputs.resourceId.value]"
             },
             "applicationInsightsResourceId": {
               "type": "string",
+              "metadata": {
+                "description": "The resource ID of the deployed Application Insights resource."
+              },
               "value": "[reference(resourceId('Microsoft.Resources/deployments', format(parameters('avmDeploymentNameFormat'), parameters('applicationInsightsResourceName'))), '2022-09-01').outputs.resourceId.value]"
             },
             "applicationInsightsInstrumentationKey": {
               "type": "string",
+              "metadata": {
+                "description": "The instrumentation key of the deployed Application Insights resource."
+              },
               "value": "[reference(resourceId('Microsoft.Resources/deployments', format(parameters('avmDeploymentNameFormat'), parameters('applicationInsightsResourceName'))), '2022-09-01').outputs.instrumentationKey.value]"
             },
             "applicationInsightsConnectionString": {
               "type": "string",
+              "metadata": {
+                "description": "The connection string of the deployed Application Insights resource."
+              },
               "value": "[reference(resourceId('Microsoft.Resources/deployments', format(parameters('avmDeploymentNameFormat'), parameters('applicationInsightsResourceName'))), '2022-09-01').outputs.connectionString.value]"
             },
             "storageAccountName": {
               "type": "string",
+              "metadata": {
+                "description": "The resource name of the deployed Storage Account resource."
+              },
               "value": "[reference(resourceId('Microsoft.Resources/deployments', format(parameters('avmDeploymentNameFormat'), parameters('storageAccountResourceName'))), '2022-09-01').outputs.name.value]"
             }
           }
@@ -32706,7 +32910,7 @@
             "value": "[variables('varStorageAccountResourceName')]"
           },
           "tags": {
-            "value": "[variables('tags')]"
+            "value": "[parameters('tags')]"
           },
           "location": {
             "value": "[parameters('storageAccountLocation')]"
@@ -38487,7 +38691,7 @@
             "value": "[variables('varCosmosDbAccountResourceName')]"
           },
           "tags": {
-            "value": "[variables('tags')]"
+            "value": "[parameters('tags')]"
           },
           "location": {
             "value": "[parameters('cosmosDbAccountLocation')]"
@@ -42294,7 +42498,7 @@
             "value": "[variables('varSqlServerResourceName')]"
           },
           "tags": {
-            "value": "[variables('tags')]"
+            "value": "[parameters('tags')]"
           },
           "location": {
             "value": "[parameters('sqlServerLocation')]"
@@ -48356,7 +48560,7 @@
             "value": "[variables('varScriptCopyDataResourceName')]"
           },
           "tags": {
-            "value": "[variables('tags')]"
+            "value": "[parameters('tags')]"
           },
           "location": {
             "value": "[parameters('scriptCopyDataLocation')]"
@@ -48938,7 +49142,7 @@
             "value": "[variables('varScriptIndexDataResourceName')]"
           },
           "tags": {
-            "value": "[variables('tags')]"
+            "value": "[parameters('tags')]"
           },
           "location": {
             "value": "[parameters('scriptIndexDataLocation')]"
@@ -49519,7 +49723,7 @@
             "value": "[variables('varFunctionsManagedEnvironmentResourceName')]"
           },
           "tags": {
-            "value": "[variables('tags')]"
+            "value": "[parameters('tags')]"
           },
           "location": {
             "value": "[parameters('functionsManagedEnvironmentLocation')]"
@@ -50210,7 +50414,7 @@
           "ragStorageAccountName": {
             "value": "[reference('moduleAIFoundry').outputs.storageAccountName.value]"
           },
-          "solutionLocation": {
+          "ragFunctionLocation": {
             "value": "[parameters('functionRagLocation')]"
           },
           "sqlDatabaseName": {
@@ -50226,7 +50430,7 @@
             "value": "[reference('avmSQLServer').outputs.fullyQualifiedDomainName.value]"
           },
           "tags": {
-            "value": "[variables('tags')]"
+            "value": "[parameters('tags')]"
           }
         },
         "template": {
@@ -50236,75 +50440,141 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "1887470498753408449"
+              "templateHash": "12371174693530223044"
             }
           },
           "parameters": {
             "ragFunctionName": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the Rag Function resource to be created."
+              }
             },
-            "solutionLocation": {
-              "type": "string"
+            "ragFunctionLocation": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The location of the Rag Function resource to be created."
+              }
             },
             "tags": {
-              "type": "object"
+              "type": "object",
+              "metadata": {
+                "description": "Required. The tags to be applied to the Rag Function resource."
+              }
             },
             "ragDockerImageName": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the Rag Function Docker image to be used."
+              }
             },
             "ragStorageAccountName": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the storage account to be used by the Rag Function resource."
+              }
             },
             "sqlDatabaseName": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the SQL database to be used by the Rag Function resource."
+              }
             },
             "sqlServerFullyQualifiedDomainName": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The fully qualified domain name of the SQL server to be used by the Rag Function resource."
+              }
             },
             "sqlServerAdministratorLogin": {
-              "type": "securestring"
+              "type": "securestring",
+              "metadata": {
+                "description": "Required. The administrator login credentials of the SQL server to be used by the Rag Function resource."
+              }
             },
             "sqlServerAdministratorPassword": {
-              "type": "securestring"
+              "type": "securestring",
+              "metadata": {
+                "description": "Required. The administrator password credentials of the SQL server to be used by the Rag Function resource."
+              }
             },
             "gptModelVersionPreview": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The GPT Model preview version to be used by the Rag Function resource."
+              }
             },
             "gptModelName": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The GPT Model name to be used by the Rag Function resource."
+              }
             },
             "aiFoundryAIServicesName": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the existing AI Foundry AI Services resource to be used by the Rag Function resource."
+              }
             },
             "aiFoundrySearchServicesName": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the existing AI Foundry Search Services resource to be used by the Rag Function resource."
+              }
             },
             "aiFoundryOpenAIServicesEndpoint": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The AI Foundry AI Services endpoint to be used by the Rag Function resource."
+              }
             },
             "aiFoundryAIHubProjectConnectionString": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The AI Foundry AI Project connection string to be used by the Rag Function resource."
+              }
             },
             "aiFoundryAISearchServiceConnectionString": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The AI Foundry Search Services connection string to be used by the Rag Function resource."
+              }
             },
             "functionsManagedEnvironmentResourceId": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The resource ID of the Managed Environment to deploy the Rag Function resource."
+              }
             },
             "functionRagCpu": {
-              "type": "int"
+              "type": "int",
+              "metadata": {
+                "description": "Required. The CPU resource allocation for the Rag Function resource."
+              }
             },
             "functionRagMemory": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The memory resource allocation for the Rag Function resource."
+              }
             },
             "functionRagAppScaleLimit": {
-              "type": "int"
+              "type": "int",
+              "metadata": {
+                "description": "Required. The scale limit for the Rag Function resource."
+              }
             },
             "applicationInsightsConnectionString": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The connection string for the Application Insights resource to be used by the Rag Function resource."
+              }
             },
             "applicationInsightsInstrumentationKey": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The instrumentation key for the Application Insights resource to be used by the Rag Function resource."
+              }
             }
           },
           "resources": [
@@ -50312,7 +50582,7 @@
               "type": "Microsoft.Web/sites",
               "apiVersion": "2023-12-01",
               "name": "[parameters('ragFunctionName')]",
-              "location": "[parameters('solutionLocation')]",
+              "location": "[parameters('ragFunctionLocation')]",
               "tags": "[parameters('tags')]",
               "kind": "functionapp,linux,container,azurecontainerapps",
               "identity": {
@@ -50407,14 +50677,23 @@
           "outputs": {
             "resourceId": {
               "type": "string",
+              "metadata": {
+                "description": "The resource ID of the Rag Function resource created by this module."
+              },
               "value": "[resourceId('Microsoft.Web/sites', parameters('ragFunctionName'))]"
             },
             "principalId": {
               "type": "string",
+              "metadata": {
+                "description": "The principal ID of the Rag Function resource created by this module."
+              },
               "value": "[reference(resourceId('Microsoft.Web/sites', parameters('ragFunctionName')), '2023-12-01', 'full').identity.principalId]"
             },
             "defaultHostName": {
               "type": "string",
+              "metadata": {
+                "description": "The default host name of the Rag Function resource created by this module."
+              },
               "value": "[reference(resourceId('Microsoft.Web/sites', parameters('ragFunctionName')), '2023-12-01').defaultHostName]"
             }
           }
@@ -50426,7 +50705,7 @@
         "moduleAIFoundry"
       ]
     },
-    "rbacAiprojectAideveloper": {
+    "rbacAiProjectAiDeveloper": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format(variables('localModuleDeploymentNameFormat'), 'rbac-aiproject-aideveloper')]",
@@ -50439,11 +50718,8 @@
           "aiServicesProjectResourceName": {
             "value": "[reference('moduleAIFoundry').outputs.aiProjectName.value]"
           },
-          "identityPrincipalId": {
+          "ragFunctionPrincipalId": {
             "value": "[reference('moduleFunctionRAG').outputs.principalId.value]"
-          },
-          "aiServicesProjectResourceId": {
-            "value": "[reference('moduleAIFoundry').outputs.aiProjectResourceId.value]"
           },
           "ragFunctionResourceId": {
             "value": "[reference('moduleFunctionRAG').outputs.resourceId.value]"
@@ -50456,21 +50732,27 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "11300847197933478156"
+              "templateHash": "12407621259036179092"
             }
           },
           "parameters": {
             "aiServicesProjectResourceName": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the AI Project resource to assign the AI Developer RBAC role."
+              }
             },
             "ragFunctionResourceId": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The resource ID of the Rag Function resource to grant the AI Developer RBAC role."
+              }
             },
-            "aiServicesProjectResourceId": {
-              "type": "string"
-            },
-            "identityPrincipalId": {
-              "type": "string"
+            "ragFunctionPrincipalId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The principal ID of the Rag Function resource to assign the AI Developer role."
+              }
             }
           },
           "resources": [
@@ -50478,10 +50760,10 @@
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
               "scope": "[format('Microsoft.MachineLearningServices/workspaces/{0}', parameters('aiServicesProjectResourceName'))]",
-              "name": "[guid(parameters('ragFunctionResourceId'), parameters('aiServicesProjectResourceId'), resourceId('Microsoft.Authorization/roleDefinitions', '64702f94-c441-49e6-a78b-ef80e0188fee'))]",
+              "name": "[guid(parameters('ragFunctionResourceId'), resourceId('Microsoft.MachineLearningServices/workspaces', parameters('aiServicesProjectResourceName')), resourceId('Microsoft.Authorization/roleDefinitions', '64702f94-c441-49e6-a78b-ef80e0188fee'))]",
               "properties": {
                 "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', '64702f94-c441-49e6-a78b-ef80e0188fee')]",
-                "principalId": "[parameters('identityPrincipalId')]"
+                "principalId": "[parameters('ragFunctionPrincipalId')]"
               }
             }
           ]
@@ -50506,7 +50788,7 @@
             "value": "[variables('varWebAppServerFarmResourceName')]"
           },
           "tags": {
-            "value": "[variables('tags')]"
+            "value": "[parameters('tags')]"
           },
           "location": {
             "value": "[parameters('webAppServerFarmLocation')]"
@@ -51081,7 +51363,7 @@
             "value": "[variables('varWebAppResourceName')]"
           },
           "tags": {
-            "value": "[variables('tags')]"
+            "value": "[parameters('tags')]"
           },
           "location": {
             "value": "[parameters('webAppLocation')]"
@@ -51116,7 +51398,7 @@
           "aiServicesResourceName": {
             "value": "[reference('moduleAIFoundry').outputs.aiServicesName.value]"
           },
-          "managedIdentityDefaultHostName": {
+          "chartsFunctionDefaultHostName": {
             "value": "[reference('functionCharts').defaultHostName]"
           },
           "chartsFunctionFunctionName": {
@@ -51137,7 +51419,7 @@
           "ragFunctionFunctionName": {
             "value": "[parameters('functionRagFunctionName')]"
           },
-          "avmCosmosDbResourceName": {
+          "cosmosDbResourceName": {
             "value": "[reference('avmCosmosDB').outputs.name.value]"
           }
         },
@@ -51148,75 +51430,141 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "12885800773931245679"
+              "templateHash": "5966937356569889005"
             }
           },
           "parameters": {
             "deploymentName": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The deployment name of the AI Hub resource."
+              }
             },
             "webAppName": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the Web Site resource to deploy."
+              }
             },
             "location": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The location of the Web Site resource to deploy."
+              }
             },
             "tags": {
-              "type": "object"
+              "type": "object",
+              "metadata": {
+                "description": "Required. The tags to be applied to the Web Site resource."
+              }
             },
             "serverFarmResourceId": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The resource ID of the App Service Plan resource to deploy the Web Site."
+              }
             },
             "appInsightsResourceId": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The resource ID of the Application Insights resource to associate with the Web Site."
+              }
             },
             "aiFoundryAIServicesName": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the existing AI Foundry AI Services resource to configure in the Web App."
+              }
             },
             "webAppImageName": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The docker image name to associate with the Web Site."
+              }
             },
             "appInsightsInstrumentationKey": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The instrumentation key of the Application Insights resource to associate with the Web Site."
+              }
             },
             "aiServicesEndpoint": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The endpoint of the AI Services resource to associate with the Web Site."
+              }
             },
             "gptModelVersionPreview": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The preview version of the GPT model to use in the Web App."
+              }
             },
             "gptModelName": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the GPT model to use in the Web App."
+              }
             },
             "aiServicesResourceName": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the AI Services resource to associate with the Web Site."
+              }
             },
-            "managedIdentityDefaultHostName": {
-              "type": "string"
+            "chartsFunctionDefaultHostName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The default host name of the Charts Function resource to use in the Web App."
+              }
             },
             "chartsFunctionFunctionName": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The function name of the Charts Function resource to use in the Web App."
+              }
             },
             "webAppAppConfigReact": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The React configuration to use in the Web App."
+              }
             },
             "cosmosDbSqlDbName": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The Cosmos DB Sql database name to use in the Web App."
+              }
             },
             "cosmosDbSqlDbNameCollectionName": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The Cosmos DB Sql database collection to use in the Web App."
+              }
             },
             "ragFunctionDefaultHostName": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The default host name of the Rag Function resource to use in the Web App."
+              }
             },
             "ragFunctionFunctionName": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the Rag Function resource to use in the Web App."
+              }
             },
-            "avmCosmosDbResourceName": {
-              "type": "string"
+            "cosmosDbResourceName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the Cosmos DB resource to use in the Web App."
+              }
             },
             "enableTelemetry": {
-              "type": "bool"
+              "type": "bool",
+              "metadata": {
+                "description": "Required. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "resources": [
@@ -51272,12 +51620,12 @@
                       "AZURE_OPENAI_PREVIEW_API_VERSION": "[parameters('gptModelVersionPreview')]",
                       "USE_CHAT_HISTORY_ENABLED": "True",
                       "USE_GRAPHRAG": "False",
-                      "CHART_DASHBOARD_URL": "[format('https://{0}/api/{1}?data_type=charts', parameters('managedIdentityDefaultHostName'), parameters('chartsFunctionFunctionName'))]",
-                      "CHART_DASHBOARD_FILTERS_URL": "[format('https://{0}/api/{1}?data_type=filters', parameters('managedIdentityDefaultHostName'), parameters('chartsFunctionFunctionName'))]",
+                      "CHART_DASHBOARD_URL": "[format('https://{0}/api/{1}?data_type=charts', parameters('chartsFunctionDefaultHostName'), parameters('chartsFunctionFunctionName'))]",
+                      "CHART_DASHBOARD_FILTERS_URL": "[format('https://{0}/api/{1}?data_type=filters', parameters('chartsFunctionDefaultHostName'), parameters('chartsFunctionFunctionName'))]",
                       "GRAPHRAG_URL": "TBD",
                       "RAG_URL": "[format('https://{0}/api/{1}', parameters('ragFunctionDefaultHostName'), parameters('ragFunctionFunctionName'))]",
                       "REACT_APP_LAYOUT_CONFIG": "[parameters('webAppAppConfigReact')]",
-                      "AzureCosmosDB_ACCOUNT": "[parameters('avmCosmosDbResourceName')]",
+                      "AzureCosmosDB_ACCOUNT": "[parameters('cosmosDbResourceName')]",
                       "AzureCosmosDB_CONVERSATIONS_CONTAINER": "[parameters('cosmosDbSqlDbNameCollectionName')]",
                       "AzureCosmosDB_DATABASE": "[parameters('cosmosDbSqlDbName')]",
                       "AzureCosmosDB_ENABLE_FEEDBACK": "True",
@@ -56602,6 +56950,9 @@
           "outputs": {
             "webAppSystemAssignedPrincipalId": {
               "type": "string",
+              "metadata": {
+                "description": "The principal ID of the Web App resource."
+              },
               "value": "[tryGet(tryGet(reference(resourceId('Microsoft.Resources/deployments', parameters('deploymentName')), '2022-09-01').outputs, 'systemAssignedMIPrincipalId'), 'value')]"
             }
           }
@@ -56639,15 +56990,21 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "1748979427586323820"
+              "templateHash": "16788739449120161090"
             }
           },
           "parameters": {
             "cosmosDBAccountName": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the Cosmos DB resource to assign the Contributor RBAC role."
+              }
             },
             "principalId": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The principal ID of the resource to grant the Contributor RBAC role."
+              }
             }
           },
           "resources": [

@@ -1,29 +1,45 @@
 // NOTE: This module is required to pass keys from previously deployed resources leveraging the existing keyword
 // This behavior will be updated in future versions to leverage more secure solutions such as Key Vault or managed identities
-
+@description('Required. The deployment name of the AI Hub resource.')
 param deploymentName string
+@description('Required. The name of the AI Services resource whose keys will be used to connect to the AI Hub.')
 param aiServicesName string
+@description('Required. The name of the Search Services resource whose keys will be used to connect to the AI Hub.')
 param searchServiceName string
+@description('Required. The name of the AI Hub resource to be created.')
 param aiHubName string
+@description('Required. The SKU of the AI Hub resource to be created.')
 param sku string
+@description('Required. The location of the AI Hub resource to be created.')
 param location string
+@description('Required. The tags to be applied to the AI Hub resource.')
 param tags object
+@description('Required. The resource ID of the Key Vault resource to be associated with the AI Hub.')
 param keyVaultResourceId string
+@description('Required. The resource ID of the container registry to be associated with the AI Hub.')
 param containerRegistryResourceId string
+@description('Required. The resource ID of the Application Insights resource to be associated with the AI Hub.')
 param applicationInsightsResourceId string
+@description('Required. The resource ID of the storage account to be associated with the AI Hub.')
 param storageAccountResourceId string
+@description('Required. The endpoint of the Cognitive Service to be associated with the AI Hub.')
 param cognitiveServicesEndpoint string
+@description('Required. The resource ID of the Cognitive Service to be associated with the AI Hub.')
 param cognitiveServicesResourceId string
+@description('Required. The endpoint of the Search Services to be associated with the AI Hub.')
 param searchServicesEndpoint string
+@description('Required. The resource ID of the Search Services to be associated with the AI Hub.')
 param searchServicesResourceId string
+@description('Required. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
+@description('Required. The resource ID of the Log Analytics workspace used to capture diagnostic logs of the AI Hub.')
 param logAnalyticsWorkspaceResourceId string
 
-resource deployed_avm_cognitive_services_accounts 'Microsoft.CognitiveServices/accounts@2024-10-01' existing = {
+resource existingAiServicesResource 'Microsoft.CognitiveServices/accounts@2024-10-01' existing = {
   name: aiServicesName
 }
 
-resource deployed_avm_search_search_services 'Microsoft.Search/searchServices@2024-06-01-preview' existing = {
+resource existingSearchServiceResource 'Microsoft.Search/searchServices@2024-06-01-preview' existing = {
   name: searchServiceName
 }
 
@@ -58,7 +74,7 @@ module avmMachineLearningServicesWorkspacesAiHub 'br/public:avm/res/machine-lear
         connectionProperties: {
           authType: 'ApiKey'
           credentials: {
-            key: deployed_avm_cognitive_services_accounts.listKeys().key1
+            key: existingAiServicesResource.listKeys().key1
           }
         }
       }
@@ -74,7 +90,7 @@ module avmMachineLearningServicesWorkspacesAiHub 'br/public:avm/res/machine-lear
         connectionProperties: {
           authType: 'ApiKey'
           credentials: {
-            key: deployed_avm_search_search_services.listAdminKeys().primaryKey
+            key: existingSearchServiceResource.listAdminKeys().primaryKey
           }
         }
       }
@@ -82,4 +98,5 @@ module avmMachineLearningServicesWorkspacesAiHub 'br/public:avm/res/machine-lear
   }
 }
 
+@description('The resource ID of the AI Hub resource created by this module.')
 output resourceId string = avmMachineLearningServicesWorkspacesAiHub.outputs.resourceId

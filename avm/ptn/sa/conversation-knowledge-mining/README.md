@@ -221,7 +221,7 @@ param solutionPrefix = 'ckmpoc'
 | [`aiFoundryStorageAccountSkuName`](#parameter-aifoundrystorageaccountskuname) | string | The SKU for the AI Foundry Storage Account. If empty, Standard_LRS will be used. |
 | [`cosmosDbAccountLocation`](#parameter-cosmosdbaccountlocation) | string | Location for the Cosmos DB Account resource deployment. |
 | [`cosmosDbAccountResourceName`](#parameter-cosmosdbaccountresourcename) | string | The name of the Cosmos DB Account resource. It will override the default given name. |
-| [`databasesLocation`](#parameter-databaseslocation) | string | Secondary location for databases creation. |
+| [`databasesLocation`](#parameter-databaseslocation) | string | Location for all the deployed databases Azure resources. Defaulted to East US 2. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`functionChartAppScaleLimit`](#parameter-functionchartappscalelimit) | int | The maximum number of workers that the Charts function can scale out. |
 | [`functionChartCpu`](#parameter-functionchartcpu) | int | The required CPU in cores of the Charts function. |
@@ -261,7 +261,7 @@ param solutionPrefix = 'ckmpoc'
 | [`scriptCopyDataResourceName`](#parameter-scriptcopydataresourcename) | string | The name of the Script Copy Data resource. It will override the default given name. |
 | [`scriptIndexDataLocation`](#parameter-scriptindexdatalocation) | string | Location for the Script Index Data resource deployment. |
 | [`scriptIndexDataResourceName`](#parameter-scriptindexdataresourcename) | string | The name of the Script Index Data resource. It will override the default given name. |
-| [`solutionLocation`](#parameter-solutionlocation) | string | Location for the solution deployment. Defaulted to the resource group location. |
+| [`solutionLocation`](#parameter-solutionlocation) | string | Location for all the deployed Azure resources except databases. Defaulted to East US. |
 | [`sqlServerAdministratorLogin`](#parameter-sqlserveradministratorlogin) | securestring | The administrator login credential for the SQL Server. |
 | [`sqlServerAdministratorPassword`](#parameter-sqlserveradministratorpassword) | securestring | The administrator password credential for the SQL Server. |
 | [`sqlServerDatabaseName`](#parameter-sqlserverdatabasename) | string | The name of the SQL Server database. |
@@ -274,6 +274,7 @@ param solutionPrefix = 'ckmpoc'
 | [`storageAccountLocation`](#parameter-storageaccountlocation) | string | Location for the Storage Account resource deployment. |
 | [`storageAccountResourceName`](#parameter-storageaccountresourcename) | string | The name of the Storage Account resource. It will override the default given name. |
 | [`storageAccountSkuName`](#parameter-storageaccountskuname) | string | The SKU for the Storage Account. If empty, Standard_LRS will be used. |
+| [`tags`](#parameter-tags) | object | The tags to apply to all deployed Azure resources. |
 | [`webAppDockerImageContainerRegistryUrl`](#parameter-webappdockerimagecontainerregistryurl) | string | The url of the Container Registry where the docker image for Conversation Knowledge Mining webapp is located. |
 | [`webAppDockerImageName`](#parameter-webappdockerimagename) | string | The name of the docker image for the Rag function. |
 | [`webAppDockerImageTag`](#parameter-webappdockerimagetag) | string | The tag of the docker image for the Rag function. |
@@ -697,7 +698,7 @@ The name of the Cosmos DB Account resource. It will override the default given n
 
 ### Parameter: `databasesLocation`
 
-Secondary location for databases creation.
+Location for all the deployed databases Azure resources. Defaulted to East US 2.
 
 - Required: No
 - Type: string
@@ -1193,7 +1194,7 @@ The name of the Script Index Data resource. It will override the default given n
 
 ### Parameter: `solutionLocation`
 
-Location for the solution deployment. Defaulted to the resource group location.
+Location for all the deployed Azure resources except databases. Defaulted to East US.
 
 - Required: No
 - Type: string
@@ -1328,6 +1329,22 @@ The SKU for the Storage Account. If empty, Standard_LRS will be used.
     'Standard_RAGRS'
     'Standard_ZRS'
   ]
+  ```
+- MinValue: 0
+- MaxValue: 730
+
+### Parameter: `tags`
+
+The tags to apply to all deployed Azure resources.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      app: '[parameters(\'solutionPrefix\')]'
+      location: '[parameters(\'solutionLocation\')]'
+  }
   ```
 - MinValue: 0
 - MaxValue: 730

@@ -1,7 +1,8 @@
 // NOTE: This assignment should be part of the CosmosDB module, but this is not available today in the AVM Cosmos DB module
 // Future releases will include this assignment in the AVM module that deploys the Cosmos DB
-
+@description('Required. The name of the Cosmos DB resource to assign the Contributor RBAC role.')
 param cosmosDBAccountName string
+@description('Required. The principal ID of the resource to grant the Contributor RBAC role.')
 param principalId string
 
 resource existingCosmosDB 'Microsoft.DocumentDB/databaseAccounts@2024-05-15' existing = {
