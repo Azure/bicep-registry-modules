@@ -138,27 +138,28 @@ runs:
 
           Write-Output '::endgroup::'
 
-    # - name: "Validate publish"
-    #   uses: azure/powershell@v2
-    #   if: ${{ steps.publish_step.outputs.version != '' && steps.publish_step.outputs.publishedModuleName != '' }}
-    #   with:
-    #     azPSVersion: "latest"
-    #     inlineScript: |
-    #       # Grouping task logs
-    #       Write-Output '::group::Validate publish'
+    - name: "Validate publish"
+      uses: azure/powershell@v2
+      # if: ${{ steps.publish_step.outputs.version != '' && steps.publish_step.outputs.publishedModuleName != '' }}
+      if: ${{ steps.publish_step.output.publishOutput != '' }}
+      with:
+        azPSVersion: "latest"
+        inlineScript: |
+          # Grouping task logs
+          Write-Output '::group::Validate publish'
 
-    #       # Load used functions
-    #       . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines'  'publish' 'Confirm-ModuleIsPublished.ps1')
+          # Load used functions
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines'  'publish' 'Confirm-ModuleIsPublished.ps1')
 
-    #       $functionInput = @{
-    #         Version             = "${{ steps.publish_step.outputs.version }}"
-    #         PublishedModuleName = "${{ steps.publish_step.outputs.publishedModuleName }}"
-    #         GitTagName          = "${{ steps.publish_step.outputs.gitTagName }}"
-    #       }
+          $functionInput = @{
+            Version             = "${{ steps.publish_step.outputs.version }}"
+            PublishedModuleName = "${{ steps.publish_step.outputs.publishedModuleName }}"
+            GitTagName          = "${{ steps.publish_step.outputs.gitTagName }}"
+          }
 
-    #       Write-Verbose "Invoke function with" -Verbose
-    #       Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
+          Write-Verbose "Invoke function with" -Verbose
+          Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
-    #       Confirm-ModuleIsPublished @functionInput
+          Confirm-ModuleIsPublished @functionInput
 
-    #       Write-Output '::endgroup::'
+          Write-Output '::endgroup::'
