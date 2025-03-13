@@ -115,7 +115,7 @@ function Publish-ModuleFromPathToPBR {
         $publishInput = @(
             $moduleBicepFilePath
             '--target', ('br:{0}/public/bicep/{1}:{2}' -f $plainPublicRegistryServer, $publishedModuleName, $targetVersion)
-            '--documentationUri', $documentationUri
+            '--documentation-uri', $documentationUri
             '--with-source'
             '--force'
         )

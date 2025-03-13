@@ -133,6 +133,8 @@ param secretsExportConfiguration secretsExportConfigurationType?
 @description('Optional. The failover groups configuration.')
 param failoverGroups failoverGroupType[] = []
 
+var enableReferencedModulesTelemetry = false
+
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
@@ -377,7 +379,7 @@ module server_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
-      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',
@@ -496,11 +498,11 @@ module server_audit_settings 'audit-settings/main.bicep' = if (!empty(auditSetti
 module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfiguration != null) {
   name: '${uniqueString(deployment().name, location)}-secrets-kv'
   scope: resourceGroup(
-    split((secretsExportConfiguration.?keyVaultResourceId ?? '//'), '/')[2],
-    split((secretsExportConfiguration.?keyVaultResourceId ?? '////'), '/')[4]
+    split(secretsExportConfiguration.?keyVaultResourceId!, '/')[2],
+    split(secretsExportConfiguration.?keyVaultResourceId!, '/')[4]
   )
   params: {
-    keyVaultName: last(split(secretsExportConfiguration.?keyVaultResourceId ?? '//', '/'))
+    keyVaultName: last(split(secretsExportConfiguration.?keyVaultResourceId!, '/'))
     secretsToSet: union(
       [],
       contains(secretsExportConfiguration!, 'sqlAdminPasswordSecretName')
@@ -528,6 +530,7 @@ module failover_groups 'failover-group/main.bicep' = [
     name: '${uniqueString(deployment().name, location)}-Sql-FailoverGroup-${index}'
     params: {
       name: failoverGroup.name
+      tags: failoverGroup.?tags ?? tags
       serverName: server.name
       databases: failoverGroup.databases
       partnerServers: failoverGroup.partnerServers
@@ -956,6 +959,9 @@ type securityAlerPolicyType = {
 type failoverGroupType = {
   @description('Required. The name of the failover group.')
   name: string
+
+  @description('Optional. Tags of the resource.')
+  tags: object?
 
   @description('Required. List of databases in the failover group.')
   databases: string[]
