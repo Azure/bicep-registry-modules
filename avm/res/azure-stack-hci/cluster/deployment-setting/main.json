@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "7982158538530558379"
+      "templateHash": "9536857013030923630"
     },
     "name": "Azure Stack HCI Cluster Deployment Settings",
     "description": "This module deploys an Azure Stack HCI Cluster Deployment Settings resource."
@@ -242,7 +242,7 @@
     "keyVaultName": {
       "type": "string",
       "metadata": {
-        "description": "Required. The name of the key vault to be used for storing secrets for the HCI cluster. This currently needs to be unique per HCI cluster."
+        "description": "Required. The name of the key vault to be used for storing secrets for the HCI cluster."
       }
     },
     "cloudId": {
