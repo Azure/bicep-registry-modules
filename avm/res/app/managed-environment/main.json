@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "3352799626260610831"
+      "templateHash": "5593642318846770915"
     },
     "name": "App ManagedEnvironments",
     "description": "This module deploys an App Managed Environment (also known as a Container App Environment)."
@@ -383,12 +383,6 @@
         "description": "Optional. Certificate to use for the custom domain. PFX or PEM."
       }
     },
-    "certificateKeyVaultProperties": {
-      "$ref": "#/definitions/certificateKeyVaultPropertiesType",
-      "metadata": {
-        "description": "Optional. A key vault reference to the certificate to use for the custom domain."
-      }
-    },
     "dnsSuffix": {
       "type": "string",
       "defaultValue": "",
@@ -525,7 +519,7 @@
           "certificatePassword": "[parameters('certificatePassword')]",
           "certificateValue": "[if(not(empty(parameters('certificateValue'))), parameters('certificateValue'), null())]",
           "dnsSuffix": "[parameters('dnsSuffix')]",
-          "certificateKeyVaultProperties": "[if(not(empty(parameters('certificateKeyVaultProperties'))), createObject('identity', parameters('certificateKeyVaultProperties').identityResourceId, 'keyVaultUrl', parameters('certificateKeyVaultProperties').keyVaultUrl), null())]"
+          "certificateKeyVaultProperties": "[if(not(empty(tryGet(parameters('certificateObject'), 'certificateKeyVaultProperties'))), createObject('identity', tryGet(parameters('certificateObject'), 'certificateKeyVaultProperties', 'identityResourceId'), 'keyVaultUrl', tryGet(parameters('certificateObject'), 'certificateKeyVaultProperties', 'keyVaultUrl')), null())]"
         },
         "openTelemetryConfiguration": "[if(not(empty(parameters('openTelemetryConfiguration'))), parameters('openTelemetryConfiguration'), null())]",
         "peerTrafficConfiguration": {
@@ -602,7 +596,7 @@
             "value": "[parameters('name')]"
           },
           "certificateKeyVaultProperties": {
-            "value": "[parameters('certificateKeyVaultProperties')]"
+            "value": "[tryGet(parameters('certificateObject'), 'certificateKeyVaultProperties')]"
           },
           "certificateType": {
             "value": "[tryGet(parameters('certificateObject'), 'certificateType')]"

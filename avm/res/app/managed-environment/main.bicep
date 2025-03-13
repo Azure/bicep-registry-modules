@@ -66,9 +66,6 @@ param certificatePassword string = ''
 @secure()
 param certificateValue string = ''
 
-@description('Optional. A key vault reference to the certificate to use for the custom domain.')
-param certificateKeyVaultProperties certificateKeyVaultPropertiesType
-
 @description('Optional. DNS suffix for the environment domain.')
 param dnsSuffix string = ''
 
@@ -176,10 +173,10 @@ resource managedEnvironment 'Microsoft.App/managedEnvironments@2024-10-02-previe
       certificatePassword: certificatePassword
       certificateValue: !empty(certificateValue) ? certificateValue : null
       dnsSuffix: dnsSuffix
-      certificateKeyVaultProperties: !empty(certificateKeyVaultProperties)
+      certificateKeyVaultProperties: !empty(certificateObject.?certificateKeyVaultProperties)
         ? {
-            identity: certificateKeyVaultProperties!.identityResourceId
-            keyVaultUrl: certificateKeyVaultProperties!.keyVaultUrl
+            identity: certificateObject!.?certificateKeyVaultProperties!.identityResourceId
+            keyVaultUrl: certificateObject!.?certificateKeyVaultProperties!.keyVaultUrl
           }
         : null
     }
@@ -264,7 +261,7 @@ module managedEnvironment_certificate 'certificates/main.bicep' = if (!empty(cer
   params: {
     name: certificateObject.?name ?? 'cert-${name}'
     managedEnvironmentName: managedEnvironment.name
-    certificateKeyVaultProperties: certificateKeyVaultProperties
+    certificateKeyVaultProperties: certificateObject.?certificateKeyVaultProperties
     certificateType: certificateObject.?certificateType
     certificateValue: certificateObject.?certificateValue
     certificatePassword: certificateObject.?certificatePassword

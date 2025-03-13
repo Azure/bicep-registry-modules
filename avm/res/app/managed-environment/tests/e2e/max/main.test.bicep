@@ -77,10 +77,6 @@ module testDeployment '../../../main.bicep' = [
           keyVaultUrl: '${nestedDependencies.outputs.keyVaultUri}secrets/${split(nestedDependencies.outputs.certificateSecretUrl, '/')[4]}'
         }
       }
-      certificateKeyVaultProperties: {
-        identityResourceId: nestedDependencies.outputs.managedIdentityResourceId
-        keyVaultUrl: '${nestedDependencies.outputs.keyVaultUri}secrets/${split(nestedDependencies.outputs.certificateSecretUrl, '/')[4]}'
-      }
       dockerBridgeCidr: '172.16.0.1/28'
       peerTrafficEncryption: true
       platformReservedCidr: '172.17.17.0/24'
