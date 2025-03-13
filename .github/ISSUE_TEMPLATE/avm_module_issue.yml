@@ -134,6 +134,7 @@ body:
         - "avm/res/hybrid-compute/gateway"
         - "avm/res/hybrid-compute/license"
         - "avm/res/hybrid-compute/machine"
+        - "avm/res/hybrid-container-service/provisioned-cluster-instance"
         - "avm/res/insights/action-group"
         - "avm/res/insights/activity-log-alert"
         - "avm/res/insights/component"
