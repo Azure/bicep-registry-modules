@@ -68,8 +68,9 @@ function Publish-ModuleFromPathToPBR {
 
         # 2. Test if module qualifies for publishing
         if (-not (Get-ModulesToPublish -ModuleFolderPath $moduleFolderPath)) {
-            Write-Verbose 'No changes detected. Skipping publishing' -Verbose
-            return
+            Write-Verbose "No changes detected for versioned module $moduleFolderRelativePath. Skipping publishing" -Verbose
+            # return
+            continue
         }
 
         # 3. Calculate the version that we would publish with
