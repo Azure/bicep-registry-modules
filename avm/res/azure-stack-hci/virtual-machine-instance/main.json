@@ -1,0 +1,595 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.33.93.31351",
+      "templateHash": "8580380500147953641"
+    },
+    "name": "Azure Stack HCI Virtual Machine Instance",
+    "description": "This module deploys an Azure Stack HCI virtual machine."
+  },
+  "definitions": {
+    "dynamicMemoryConfigType": {
+      "type": "object",
+      "properties": {
+        "maximumMemoryMB": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. Maximum memory in MB."
+          }
+        },
+        "minimumMemoryMB": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. Minimum memory in MB."
+          }
+        },
+        "targetMemoryBuffer": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. Target memory buffer percentage."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Type definition for dynamic memory configuration."
+      }
+    },
+    "hardwareProfileType": {
+      "type": "object",
+      "properties": {
+        "dynamicMemoryConfig": {
+          "$ref": "#/definitions/dynamicMemoryConfigType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Dynamic memory configuration."
+          }
+        },
+        "memoryMB": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. Memory in MB."
+          }
+        },
+        "processors": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. Number of processors."
+          }
+        },
+        "vmSize": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Size of the virtual machine."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Type definition for hardware profile."
+      }
+    },
+    "httpProxyConfigType": {
+      "type": "object",
+      "properties": {
+        "httpProxy": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. HTTP proxy URL."
+          }
+        },
+        "httpsProxy": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. HTTPS proxy URL."
+          }
+        },
+        "noProxy": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. List of addresses that should bypass the proxy."
+          }
+        },
+        "trustedCa": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Trusted CA certificate."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Type definition for HTTP proxy configuration."
+      }
+    },
+    "networkInterfaceType": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. ID of the network interface."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Type definition for network interface."
+      }
+    },
+    "networkProfileType": {
+      "type": "object",
+      "properties": {
+        "networkInterfaces": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/networkInterfaceType"
+          },
+          "metadata": {
+            "description": "Required. List of network interfaces."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Type definition for network profile."
+      }
+    },
+    "sshPublicKeyType": {
+      "type": "object",
+      "properties": {
+        "keyData": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. SSH public key data."
+          }
+        },
+        "path": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Path for the SSH public key."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Type definition for SSH public key."
+      }
+    },
+    "sshConfigType": {
+      "type": "object",
+      "properties": {
+        "publicKeys": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/sshPublicKeyType"
+          },
+          "metadata": {
+            "description": "Required. List of SSH public keys."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Type definition for SSH configuration."
+      }
+    },
+    "linuxConfigurationType": {
+      "type": "object",
+      "properties": {
+        "disablePasswordAuthentication": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Whether to disable password authentication."
+          }
+        },
+        "provisionVMAgent": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Whether to provision VM agent."
+          }
+        },
+        "provisionVMConfigAgent": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Whether to provision VM config agent."
+          }
+        },
+        "ssh": {
+          "$ref": "#/definitions/sshConfigType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. SSH configuration."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Type definition for Linux configuration."
+      }
+    },
+    "windowsConfigurationType": {
+      "type": "object",
+      "properties": {
+        "enableAutomaticUpdates": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Whether to enable automatic updates."
+          }
+        },
+        "provisionVMAgent": {
+          "type": "bool",
+          "metadata": {
+            "description": "Required. Whether to provision VM agent."
+          }
+        },
+        "provisionVMConfigAgent": {
+          "type": "bool",
+          "metadata": {
+            "description": "Required. Whether to provision VM config agent."
+          }
+        },
+        "ssh": {
+          "$ref": "#/definitions/sshConfigType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. SSH configuration."
+          }
+        },
+        "timeZone": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Time zone."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Type definition for Windows configuration."
+      }
+    },
+    "osProfileType": {
+      "type": "object",
+      "properties": {
+        "adminPassword": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Admin password."
+          }
+        },
+        "adminUsername": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Admin username."
+          }
+        },
+        "computerName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Computer name."
+          }
+        },
+        "linuxConfiguration": {
+          "$ref": "#/definitions/linuxConfigurationType",
+          "metadata": {
+            "description": "Required. Linux configuration."
+          }
+        },
+        "windowsConfiguration": {
+          "$ref": "#/definitions/windowsConfigurationType",
+          "metadata": {
+            "description": "Required. Windows configuration."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Type definition for OS profile."
+      }
+    },
+    "uefiSettingsType": {
+      "type": "object",
+      "properties": {
+        "secureBootEnabled": {
+          "type": "bool",
+          "metadata": {
+            "description": "Required. Whether secure boot is enabled."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Type definition for UEFI settings."
+      }
+    },
+    "securityProfileType": {
+      "type": "object",
+      "properties": {
+        "enableTPM": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Whether TPM is enabled."
+          }
+        },
+        "securityType": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Security type."
+          }
+        },
+        "uefiSettings": {
+          "$ref": "#/definitions/uefiSettingsType",
+          "metadata": {
+            "description": "Required. UEFI settings."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Type definition for security profile."
+      }
+    },
+    "dataDiskType": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. ID of the data disk."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Type definition for data disk."
+      }
+    },
+    "imageReferenceType": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. ID of the image."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Type definition for image reference."
+      }
+    },
+    "osDiskType": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. ID of the OS disk."
+          }
+        },
+        "osType": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. OS type."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Type definition for OS disk."
+      }
+    },
+    "storageProfileType": {
+      "type": "object",
+      "properties": {
+        "dataDisks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/dataDiskType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. List of data disks."
+          }
+        },
+        "imageReference": {
+          "$ref": "#/definitions/imageReferenceType",
+          "metadata": {
+            "description": "Required. Image reference."
+          }
+        },
+        "osDisk": {
+          "$ref": "#/definitions/osDiskType",
+          "metadata": {
+            "description": "Required. OS disk."
+          }
+        },
+        "vmConfigStoragePathId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. VM config storage path ID."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Type definition for storage profile."
+      }
+    }
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Name of the virtual machine instance."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. Location for all Resources."
+      }
+    },
+    "customLocation": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Resource ID of the associated custom location."
+      }
+    },
+    "arcMachineResourceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Existing Arc Machine resource name."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    },
+    "hardwareProfile": {
+      "$ref": "#/definitions/hardwareProfileType",
+      "metadata": {
+        "description": "Required. Hardware profile configuration."
+      }
+    },
+    "httpProxyConfig": {
+      "$ref": "#/definitions/httpProxyConfigType",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. HTTP proxy configuration."
+      }
+    },
+    "networkProfile": {
+      "$ref": "#/definitions/networkProfileType",
+      "metadata": {
+        "description": "Required. Network profile configuration."
+      }
+    },
+    "osProfile": {
+      "$ref": "#/definitions/osProfileType",
+      "metadata": {
+        "description": "Required. OS profile configuration."
+      }
+    },
+    "securityProfile": {
+      "$ref": "#/definitions/securityProfileType",
+      "defaultValue": {
+        "uefiSettings": {
+          "secureBootEnabled": true
+        }
+      },
+      "metadata": {
+        "description": "Optional. Security profile configuration."
+      }
+    },
+    "storageProfile": {
+      "$ref": "#/definitions/storageProfileType",
+      "metadata": {
+        "description": "Required. Storage profile configuration."
+      }
+    }
+  },
+  "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2024-03-01",
+      "name": "[format('46d3xbcp.res.azurestackhci-virtualmachineinstance.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
+    "existingMachine": {
+      "existing": true,
+      "type": "Microsoft.HybridCompute/machines",
+      "apiVersion": "2024-07-10",
+      "name": "[parameters('arcMachineResourceName')]"
+    },
+    "virtualMachineInstance": {
+      "type": "Microsoft.AzureStackHCI/virtualMachineInstances",
+      "apiVersion": "2024-08-01-preview",
+      "scope": "[format('Microsoft.HybridCompute/machines/{0}', parameters('arcMachineResourceName'))]",
+      "name": "[parameters('name')]",
+      "extendedLocation": {
+        "type": "CustomLocation",
+        "name": "[parameters('customLocation')]"
+      },
+      "identity": {
+        "type": "SystemAssigned"
+      },
+      "properties": {
+        "hardwareProfile": {
+          "memoryMB": "[parameters('hardwareProfile').memoryMB]",
+          "processors": "[parameters('hardwareProfile').processors]",
+          "vmSize": "[if(empty(tryGet(parameters('hardwareProfile'), 'vmSize')), 'Custom', tryGet(parameters('hardwareProfile'), 'vmSize'))]",
+          "dynamicMemoryConfig": "[tryGet(parameters('hardwareProfile'), 'dynamicMemoryConfig')]"
+        },
+        "httpProxyConfig": "[if(empty(parameters('httpProxyConfig')), null(), parameters('httpProxyConfig'))]",
+        "networkProfile": "[parameters('networkProfile')]",
+        "osProfile": "[parameters('osProfile')]",
+        "securityProfile": "[if(empty(parameters('securityProfile')), null(), parameters('securityProfile'))]",
+        "storageProfile": "[parameters('storageProfile')]"
+      }
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the virtual machine instance."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the virtual machine instance."
+      },
+      "value": "[extensionResourceId(resourceId('Microsoft.HybridCompute/machines', parameters('arcMachineResourceName')), 'Microsoft.AzureStackHCI/virtualMachineInstances', parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group of the virtual machine instance."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}
