@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "5165165585899213815"
+      "templateHash": "10325289701022606903"
     },
     "name": "Azure Stack HCI Cluster",
     "description": "This module deploys an Azure Stack HCI Cluster on the provided Arc Machines."
@@ -771,6 +771,34 @@
       "metadata": {
         "description": "Optional. Tags of the default ARB application."
       }
+    },
+    "kvSubscriptionId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Key vault subscription ID."
+      }
+    },
+    "kvResourceGroup": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Key vault resource group."
+      }
+    },
+    "storageAccountSubscriptionId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Storage account subscription ID."
+      }
+    },
+    "storageAccountResourceGroup": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Storage account resource group."
+      }
     }
   },
   "variables": {
@@ -851,6 +879,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-secrets', uniqueString(deployment().name, parameters('location')))]",
+      "subscriptionId": "[coalesce(parameters('kvSubscriptionId'), subscription().subscriptionId)]",
+      "resourceGroup": "[coalesce(parameters('kvResourceGroup'), resourceGroup().name)]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -910,6 +940,12 @@
           },
           "defaultARBApplicationTags": {
             "value": "[parameters('defaultARBApplicationTags')]"
+          },
+          "storageAccountResourceGroup": {
+            "value": "[coalesce(parameters('storageAccountResourceGroup'), resourceGroup().name)]"
+          },
+          "storageAccountSubscriptionId": {
+            "value": "[coalesce(parameters('storageAccountSubscriptionId'), subscription().subscriptionId)]"
           }
         },
         "template": {
@@ -920,7 +956,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "10708445161227912080"
+              "templateHash": "10957791056607239548"
             }
           },
           "parameters": {
@@ -1039,6 +1075,18 @@
               "metadata": {
                 "description": "Optional. Tags of the default ARB application."
               }
+            },
+            "storageAccountSubscriptionId": {
+              "type": "string",
+              "metadata": {
+                "description": "Optional. Storage account subscription ID."
+              }
+            },
+            "storageAccountResourceGroup": {
+              "type": "string",
+              "metadata": {
+                "description": "Optional. Storage account resource group."
+              }
             }
           },
           "resources": {
@@ -1046,6 +1094,8 @@
               "existing": true,
               "type": "Microsoft.Storage/storageAccounts",
               "apiVersion": "2023-01-01",
+              "subscriptionId": "[parameters('storageAccountSubscriptionId')]",
+              "resourceGroup": "[parameters('storageAccountResourceGroup')]",
               "name": "[parameters('storageAccountName')]"
             },
             "keyVault": {
@@ -1086,7 +1136,7 @@
               "name": "[format('{0}/{1}', parameters('keyVaultName'), format('{0}-WitnessStorageKey-{1}', parameters('clusterName'), parameters('cloudId')))]",
               "properties": {
                 "contentType": "[parameters('witnessStoragekeyContentType')]",
-                "value": "[base64(listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2023-01-01').keys[0].value)]",
+                "value": "[base64(listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('storageAccountSubscriptionId'), parameters('storageAccountResourceGroup')), 'Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2023-01-01').keys[0].value)]",
                 "attributes": {
                   "enabled": true
                 }

@@ -81,6 +81,18 @@ param witnessStoragekeyTags object?
 @description('Optional. Tags of the default ARB application.')
 param defaultARBApplicationTags object?
 
+@description('Optional. Key vault subscription ID.')
+param kvSubscriptionId string?
+
+@description('Optional. Key vault resource group.')
+param kvResourceGroup string?
+
+@description('Optional. Storage account subscription ID.')
+param storageAccountSubscriptionId string?
+
+@description('Optional. Storage account resource group.')
+param storageAccountResourceGroup string?
+
 // ============= //
 //   Variables   //
 // ============= //
@@ -160,6 +172,7 @@ resource cluster 'Microsoft.AzureStackHCI/clusters@2024-04-01' = {
 
 module secrets './secrets.bicep' = if (useSharedKeyVault) {
   name: '${uniqueString(deployment().name, location)}-secrets'
+  scope: resourceGroup(kvSubscriptionId ?? subscription().subscriptionId, kvResourceGroup ?? resourceGroup().name)
   params: {
     clusterName: name
     cloudId: cluster.properties.cloudId
@@ -179,6 +192,8 @@ module secrets './secrets.bicep' = if (useSharedKeyVault) {
     localAdminCredentialTags: localAdminCredentialTags
     witnessStoragekeyTags: witnessStoragekeyTags
     defaultARBApplicationTags: defaultARBApplicationTags
+    storageAccountResourceGroup: storageAccountResourceGroup ?? resourceGroup().name
+    storageAccountSubscriptionId: storageAccountSubscriptionId ?? subscription().subscriptionId
   }
 }
 

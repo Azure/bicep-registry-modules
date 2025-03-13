@@ -937,10 +937,14 @@ param tags = {
 | [`deploymentOperations`](#parameter-deploymentoperations) | array | The cluster deployment operations to execute. Defaults to "[Validate, Deploy]". |
 | [`deploymentSettings`](#parameter-deploymentsettings) | object | The deployment settings of the cluster. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`kvResourceGroup`](#parameter-kvresourcegroup) | string | Key vault resource group. |
+| [`kvSubscriptionId`](#parameter-kvsubscriptionid) | string | Key vault subscription ID. |
 | [`localAdminCredentialContentType`](#parameter-localadmincredentialcontenttype) | string | Content type of the local admin credential. |
 | [`localAdminCredentialTags`](#parameter-localadmincredentialtags) | object | Tags of the local admin credential. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`storageAccountResourceGroup`](#parameter-storageaccountresourcegroup) | string | Storage account resource group. |
+| [`storageAccountSubscriptionId`](#parameter-storageaccountsubscriptionid) | string | Storage account subscription ID. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`useSharedKeyVault`](#parameter-usesharedkeyvault) | bool | Specify whether to use the shared key vault for the HCI cluster. |
 | [`witnessStoragekeyContentType`](#parameter-witnessstoragekeycontenttype) | string | Content type of the witness storage key. |
@@ -1327,6 +1331,20 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
+### Parameter: `kvResourceGroup`
+
+Key vault resource group.
+
+- Required: No
+- Type: string
+
+### Parameter: `kvSubscriptionId`
+
+Key vault subscription ID.
+
+- Required: No
+- Type: string
+
 ### Parameter: `localAdminCredentialContentType`
 
 Content type of the local admin credential.
@@ -1454,6 +1472,20 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
+
+### Parameter: `storageAccountResourceGroup`
+
+Storage account resource group.
+
+- Required: No
+- Type: string
+
+### Parameter: `storageAccountSubscriptionId`
+
+Storage account subscription ID.
+
+- Required: No
+- Type: string
 
 ### Parameter: `tags`
 
