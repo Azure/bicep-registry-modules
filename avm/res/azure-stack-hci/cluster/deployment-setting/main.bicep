@@ -117,7 +117,7 @@ param customLocationName string
 @description('Required. The name of the storage account to be used as the witness for the HCI Windows Failover Cluster.')
 param clusterWitnessStorageAccountName string
 
-@description('Required. The name of the key vault to be used for storing secrets for the HCI cluster. This currently needs to be unique per HCI cluster.')
+@description('Required. The name of the key vault to be used for storing secrets for the HCI cluster.')
 param keyVaultName string
 
 @description('Optional. If using a shared key vault or non-legacy secret naming, pass the properties.cloudId guid from the pre-created HCI cluster resource.')

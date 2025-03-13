@@ -81,6 +81,18 @@ param witnessStoragekeyTags object?
 @description('Optional. Tags of the default ARB application.')
 param defaultARBApplicationTags object?
 
+@description('Optional. Key vault subscription ID, which is used for for storing secrets for the HCI cluster.')
+param keyvaultSubscriptionId string?
+
+@description('Optional. Key vault resource group, which is used for for storing secrets for the HCI cluster.')
+param keyvaultResourceGroup string?
+
+@description('Optional. Storage account subscription ID, which is used as the witness for the HCI Windows Failover Cluster.')
+param witnessStorageAccountSubscriptionId string?
+
+@description('Optional. Storage account resource group, which is used as the witness for the HCI Windows Failover Cluster.')
+param witnessStorageAccountResourceGroup string?
+
 // ============= //
 //   Variables   //
 // ============= //
@@ -160,6 +172,10 @@ resource cluster 'Microsoft.AzureStackHCI/clusters@2024-04-01' = {
 
 module secrets './secrets.bicep' = if (useSharedKeyVault) {
   name: '${uniqueString(deployment().name, location)}-secrets'
+  scope: resourceGroup(
+    keyvaultSubscriptionId ?? subscription().subscriptionId,
+    keyvaultResourceGroup ?? resourceGroup().name
+  )
   params: {
     clusterName: name
     cloudId: cluster.properties.cloudId
@@ -179,6 +195,8 @@ module secrets './secrets.bicep' = if (useSharedKeyVault) {
     localAdminCredentialTags: localAdminCredentialTags
     witnessStoragekeyTags: witnessStoragekeyTags
     defaultARBApplicationTags: defaultARBApplicationTags
+    witnessStorageAccountResourceGroup: witnessStorageAccountResourceGroup ?? resourceGroup().name
+    witnessStorageAccountSubscriptionId: witnessStorageAccountSubscriptionId ?? subscription().subscriptionId
   }
 }
 
@@ -469,9 +487,6 @@ type deploymentSettingsType = {
 
   @description('Required. The name of the key vault to be used for storing secrets for the HCI cluster. This currently needs to be unique per HCI cluster.')
   keyVaultName: string
-
-  @description('Optional. If using a shared key vault or non-legacy secret naming, pass the properties.cloudId guid from the pre-created HCI cluster resource.')
-  cloudId: string?
 }
 
 @export()
