@@ -943,10 +943,10 @@ param tags = {
 | [`localAdminCredentialTags`](#parameter-localadmincredentialtags) | object | Tags of the local admin credential. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`storageAccountResourceGroup`](#parameter-storageaccountresourcegroup) | string | Storage account resource group, which is used as the witness for the HCI Windows Failover Cluster. |
-| [`storageAccountSubscriptionId`](#parameter-storageaccountsubscriptionid) | string | Storage account subscription ID, which is used as the witness for the HCI Windows Failover Cluster. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`useSharedKeyVault`](#parameter-usesharedkeyvault) | bool | Specify whether to use the shared key vault for the HCI cluster. |
+| [`witnessStorageAccountResourceGroup`](#parameter-witnessstorageaccountresourcegroup) | string | Storage account resource group, which is used as the witness for the HCI Windows Failover Cluster. |
+| [`witnessStorageAccountSubscriptionId`](#parameter-witnessstorageaccountsubscriptionid) | string | Storage account subscription ID, which is used as the witness for the HCI Windows Failover Cluster. |
 | [`witnessStoragekeyContentType`](#parameter-witnessstoragekeycontenttype) | string | Content type of the witness storage key. |
 | [`witnessStoragekeyTags`](#parameter-witnessstoragekeytags) | object | Tags of the witness storage key. |
 
@@ -1465,20 +1465,6 @@ The principal type of the assigned principal ID.
   ]
   ```
 
-### Parameter: `storageAccountResourceGroup`
-
-Storage account resource group, which is used as the witness for the HCI Windows Failover Cluster.
-
-- Required: No
-- Type: string
-
-### Parameter: `storageAccountSubscriptionId`
-
-Storage account subscription ID, which is used as the witness for the HCI Windows Failover Cluster.
-
-- Required: No
-- Type: string
-
 ### Parameter: `tags`
 
 Tags of the resource.
@@ -1493,6 +1479,20 @@ Specify whether to use the shared key vault for the HCI cluster.
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `witnessStorageAccountResourceGroup`
+
+Storage account resource group, which is used as the witness for the HCI Windows Failover Cluster.
+
+- Required: No
+- Type: string
+
+### Parameter: `witnessStorageAccountSubscriptionId`
+
+Storage account subscription ID, which is used as the witness for the HCI Windows Failover Cluster.
+
+- Required: No
+- Type: string
 
 ### Parameter: `witnessStoragekeyContentType`
 

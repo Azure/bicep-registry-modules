@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "3793211016074656906"
+      "templateHash": "3963124488380176930"
     },
     "name": "Azure Stack HCI Cluster",
     "description": "This module deploys an Azure Stack HCI Cluster on the provided Arc Machines."
@@ -779,14 +779,14 @@
         "description": "Optional. Key vault resource group, which is used for for storing secrets for the HCI cluster."
       }
     },
-    "storageAccountSubscriptionId": {
+    "witnessStorageAccountSubscriptionId": {
       "type": "string",
       "nullable": true,
       "metadata": {
         "description": "Optional. Storage account subscription ID, which is used as the witness for the HCI Windows Failover Cluster."
       }
     },
-    "storageAccountResourceGroup": {
+    "witnessStorageAccountResourceGroup": {
       "type": "string",
       "nullable": true,
       "metadata": {
@@ -934,11 +934,11 @@
           "defaultARBApplicationTags": {
             "value": "[parameters('defaultARBApplicationTags')]"
           },
-          "storageAccountResourceGroup": {
-            "value": "[coalesce(parameters('storageAccountResourceGroup'), resourceGroup().name)]"
+          "witnessStorageAccountResourceGroup": {
+            "value": "[coalesce(parameters('witnessStorageAccountResourceGroup'), resourceGroup().name)]"
           },
-          "storageAccountSubscriptionId": {
-            "value": "[coalesce(parameters('storageAccountSubscriptionId'), subscription().subscriptionId)]"
+          "witnessStorageAccountSubscriptionId": {
+            "value": "[coalesce(parameters('witnessStorageAccountSubscriptionId'), subscription().subscriptionId)]"
           }
         },
         "template": {
@@ -949,7 +949,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "9688558427636867344"
+              "templateHash": "5238695736774441169"
             }
           },
           "parameters": {
@@ -1069,13 +1069,13 @@
                 "description": "Optional. Tags of the default ARB application."
               }
             },
-            "storageAccountSubscriptionId": {
+            "witnessStorageAccountSubscriptionId": {
               "type": "string",
               "metadata": {
                 "description": "Optional. Storage account subscription ID, which is used as the witness for the HCI Windows Failover Cluster."
               }
             },
-            "storageAccountResourceGroup": {
+            "witnessStorageAccountResourceGroup": {
               "type": "string",
               "metadata": {
                 "description": "Optional. Storage account resource group, which is used as the witness for the HCI Windows Failover Cluster.."
@@ -1087,8 +1087,8 @@
               "existing": true,
               "type": "Microsoft.Storage/storageAccounts",
               "apiVersion": "2023-01-01",
-              "subscriptionId": "[parameters('storageAccountSubscriptionId')]",
-              "resourceGroup": "[parameters('storageAccountResourceGroup')]",
+              "subscriptionId": "[parameters('witnessStorageAccountSubscriptionId')]",
+              "resourceGroup": "[parameters('witnessStorageAccountResourceGroup')]",
               "name": "[parameters('storageAccountName')]"
             },
             "keyVault": {
@@ -1129,7 +1129,7 @@
               "name": "[format('{0}/{1}', parameters('keyVaultName'), format('{0}-WitnessStorageKey-{1}', parameters('clusterName'), parameters('cloudId')))]",
               "properties": {
                 "contentType": "[parameters('witnessStoragekeyContentType')]",
-                "value": "[base64(listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('storageAccountSubscriptionId'), parameters('storageAccountResourceGroup')), 'Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2023-01-01').keys[0].value)]",
+                "value": "[base64(listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('witnessStorageAccountSubscriptionId'), parameters('witnessStorageAccountResourceGroup')), 'Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2023-01-01').keys[0].value)]",
                 "attributes": {
                   "enabled": true
                 }

@@ -88,10 +88,10 @@ param keyvaultSubscriptionId string?
 param keyvaultResourceGroup string?
 
 @description('Optional. Storage account subscription ID, which is used as the witness for the HCI Windows Failover Cluster.')
-param storageAccountSubscriptionId string?
+param witnessStorageAccountSubscriptionId string?
 
 @description('Optional. Storage account resource group, which is used as the witness for the HCI Windows Failover Cluster.')
-param storageAccountResourceGroup string?
+param witnessStorageAccountResourceGroup string?
 
 // ============= //
 //   Variables   //
@@ -195,8 +195,8 @@ module secrets './secrets.bicep' = if (useSharedKeyVault) {
     localAdminCredentialTags: localAdminCredentialTags
     witnessStoragekeyTags: witnessStoragekeyTags
     defaultARBApplicationTags: defaultARBApplicationTags
-    storageAccountResourceGroup: storageAccountResourceGroup ?? resourceGroup().name
-    storageAccountSubscriptionId: storageAccountSubscriptionId ?? subscription().subscriptionId
+    witnessStorageAccountResourceGroup: witnessStorageAccountResourceGroup ?? resourceGroup().name
+    witnessStorageAccountSubscriptionId: witnessStorageAccountSubscriptionId ?? subscription().subscriptionId
   }
 }
 
