@@ -135,8 +135,12 @@ resource queryRule 'Microsoft.Insights/scheduledQueryRules@2023-03-15-preview' =
     description: alertDescription
     displayName: alertDisplayName ?? name
     enabled: enabled
-    autoMitigate: (kind == 'LogAlert') ? autoMitigate : null
-    muteActionsDuration: (kind == 'LogAlert') ? suppressForMinutes : null
+    ...(kind == 'LogAlert' && empty(ruleResolveConfiguration)
+      ? {
+          autoMitigate: autoMitigate
+          muteActionsDuration: suppressForMinutes
+        }
+      : {})
     resolveConfiguration: (kind == 'LogAlert') ? ruleResolveConfiguration : null
     evaluationFrequency: (kind == 'LogAlert') ? evaluationFrequency : null
     overrideQueryTimeRange: (kind == 'LogAlert') ? queryTimeRange : null
