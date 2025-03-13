@@ -27,11 +27,6 @@ param password string = newGuid()
 module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
   params: {
-    workloadName: serviceShort
-    tags: {
-      environment: 'test'
-    }
-    location: resourceLocation
     vmSize: 'Standard_D2s_v4'
     adminUsername: 'azureuser'
     adminPassword: password

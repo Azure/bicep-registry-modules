@@ -126,12 +126,7 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
   params: {
     adminPassword: '<adminPassword>'
     adminUsername: 'azureuser'
-    location: '<location>'
-    tags: {
-      environment: 'test'
-    }
     vmSize: 'Standard_D2s_v4'
-    workloadName: '<workloadName>'
   }
 }
 ```
@@ -154,19 +149,8 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
     "adminUsername": {
       "value": "azureuser"
     },
-    "location": {
-      "value": "<location>"
-    },
-    "tags": {
-      "value": {
-        "environment": "test"
-      }
-    },
     "vmSize": {
       "value": "Standard_D2s_v4"
-    },
-    "workloadName": {
-      "value": "<workloadName>"
     }
   }
 }
@@ -184,12 +168,7 @@ using 'br/public:avm/ptn/app-service-lza/hosting-environment:<version>'
 
 param adminPassword = '<adminPassword>'
 param adminUsername = 'azureuser'
-param location = '<location>'
-param tags = {
-  environment: 'test'
-}
 param vmSize = 'Standard_D2s_v4'
-param workloadName = '<workloadName>'
 ```
 
 </details>
@@ -211,7 +190,6 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
     adminPassword: '<adminPassword>'
     adminUsername: 'azureuser'
     enableEgressLockdown: true
-    location: '<location>'
     tags: {
       environment: 'test'
     }
@@ -242,9 +220,6 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
     "enableEgressLockdown": {
       "value": true
     },
-    "location": {
-      "value": "<location>"
-    },
     "tags": {
       "value": {
         "environment": "test"
@@ -273,7 +248,6 @@ using 'br/public:avm/ptn/app-service-lza/hosting-environment:<version>'
 param adminPassword = '<adminPassword>'
 param adminUsername = 'azureuser'
 param enableEgressLockdown = true
-param location = '<location>'
 param tags = {
   environment: 'test'
 }
@@ -297,6 +271,8 @@ param workloadName = '<workloadName>'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`appserviceDiagnosticSettings`](#parameter-appservicediagnosticsettings) | array | Diagnostic Settings for the App Service Plan. |
+| [`aseDiagnosticSettings`](#parameter-asediagnosticsettings) | array | Diagnostic Settings for the ASE. |
 | [`autoApproveAfdPrivateEndpoint`](#parameter-autoapproveafdprivateendpoint) | bool | Set to true if you want to auto-approve the private endpoint connection to the Azure Front Door. |
 | [`bastionResourceId`](#parameter-bastionresourceid) | string | The resource ID of the bastion host. If set, the spoke virtual network will be peered with the hub virtual network and the bastion host will be allowed to connect to the jump box. Default is empty. |
 | [`deployAseV3`](#parameter-deployasev3) | bool | Default is false. Set to true if you want to deploy ASE v3 instead of Multitenant App Service Plan. |
@@ -305,7 +281,10 @@ param workloadName = '<workloadName>'
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`environmentName`](#parameter-environmentname) | string | The name of the environmentName (e.g. "dev", "test", "prod", "preprod", "staging", "uat", "dr", "qa"). Up to 8 characters long. |
 | [`firewallInternalIp`](#parameter-firewallinternalip) | string | Internal IP of the Azure firewall deployed in Hub. Used for creating UDR to route all vnet egress traffic through Firewall. If empty no UDR. |
+| [`frontDoorDiagnosticSettings`](#parameter-frontdoordiagnosticsettings) | array | Diagnostic Settings for Front Door. |
+| [`keyVaultDiagnosticSettings`](#parameter-keyvaultdiagnosticsettings) | array | Diagnostic Settings for the KeyVault. |
 | [`location`](#parameter-location) | string | Azure region where the resources will be deployed in. |
+| [`servicePlanDiagnosticSettings`](#parameter-serviceplandiagnosticsettings) | array | Diagnostic Settings for the App Service Plan. |
 | [`subnetSpokeAppSvcAddressSpace`](#parameter-subnetspokeappsvcaddressspace) | string | CIDR of the subnet that will hold the app services plan. ATTENTION: ASEv3 needs a /24 network. |
 | [`subnetSpokeJumpboxAddressSpace`](#parameter-subnetspokejumpboxaddressspace) | string | CIDR of the subnet that will hold the jumpbox. |
 | [`subnetSpokePrivateEndpointAddressSpace`](#parameter-subnetspokeprivateendpointaddressspace) | string | CIDR of the subnet that will hold the private endpoints of the supporting services. |
@@ -335,6 +314,300 @@ Required if jumpbox deployed. The username of the admin user of the jumpbox VM.
 - Required: No
 - Type: string
 - Default: `'azureuser'`
+
+### Parameter: `appserviceDiagnosticSettings`
+
+Diagnostic Settings for the App Service Plan.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`eventHubAuthorizationRuleResourceId`](#parameter-appservicediagnosticsettingseventhubauthorizationruleresourceid) | string | Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to. |
+| [`eventHubName`](#parameter-appservicediagnosticsettingseventhubname) | string | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`logAnalyticsDestinationType`](#parameter-appservicediagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
+| [`logCategoriesAndGroups`](#parameter-appservicediagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
+| [`marketplacePartnerResourceId`](#parameter-appservicediagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
+| [`metricCategories`](#parameter-appservicediagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
+| [`name`](#parameter-appservicediagnosticsettingsname) | string | The name of the diagnostic setting. |
+| [`storageAccountResourceId`](#parameter-appservicediagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`workspaceResourceId`](#parameter-appservicediagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+
+### Parameter: `appserviceDiagnosticSettings.eventHubAuthorizationRuleResourceId`
+
+Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.
+
+- Required: No
+- Type: string
+
+### Parameter: `appserviceDiagnosticSettings.eventHubName`
+
+Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
+
+### Parameter: `appserviceDiagnosticSettings.logAnalyticsDestinationType`
+
+A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AzureDiagnostics'
+    'Dedicated'
+  ]
+  ```
+
+### Parameter: `appserviceDiagnosticSettings.logCategoriesAndGroups`
+
+The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-appservicediagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
+| [`categoryGroup`](#parameter-appservicediagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs. |
+| [`enabled`](#parameter-appservicediagnosticsettingslogcategoriesandgroupsenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+
+### Parameter: `appserviceDiagnosticSettings.logCategoriesAndGroups.category`
+
+Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.
+
+- Required: No
+- Type: string
+
+### Parameter: `appserviceDiagnosticSettings.logCategoriesAndGroups.categoryGroup`
+
+Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.
+
+- Required: No
+- Type: string
+
+### Parameter: `appserviceDiagnosticSettings.logCategoriesAndGroups.enabled`
+
+Enable or disable the category explicitly. Default is `true`.
+
+- Required: No
+- Type: bool
+
+### Parameter: `appserviceDiagnosticSettings.marketplacePartnerResourceId`
+
+The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.
+
+- Required: No
+- Type: string
+
+### Parameter: `appserviceDiagnosticSettings.metricCategories`
+
+The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-appservicediagnosticsettingsmetriccategoriescategory) | string | Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enabled`](#parameter-appservicediagnosticsettingsmetriccategoriesenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+
+### Parameter: `appserviceDiagnosticSettings.metricCategories.category`
+
+Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `appserviceDiagnosticSettings.metricCategories.enabled`
+
+Enable or disable the category explicitly. Default is `true`.
+
+- Required: No
+- Type: bool
+
+### Parameter: `appserviceDiagnosticSettings.name`
+
+The name of the diagnostic setting.
+
+- Required: No
+- Type: string
+
+### Parameter: `appserviceDiagnosticSettings.storageAccountResourceId`
+
+Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
+
+### Parameter: `appserviceDiagnosticSettings.workspaceResourceId`
+
+Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
+
+### Parameter: `aseDiagnosticSettings`
+
+Diagnostic Settings for the ASE.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`eventHubAuthorizationRuleResourceId`](#parameter-asediagnosticsettingseventhubauthorizationruleresourceid) | string | Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to. |
+| [`eventHubName`](#parameter-asediagnosticsettingseventhubname) | string | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`logAnalyticsDestinationType`](#parameter-asediagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
+| [`logCategoriesAndGroups`](#parameter-asediagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
+| [`marketplacePartnerResourceId`](#parameter-asediagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
+| [`metricCategories`](#parameter-asediagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
+| [`name`](#parameter-asediagnosticsettingsname) | string | The name of the diagnostic setting. |
+| [`storageAccountResourceId`](#parameter-asediagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`workspaceResourceId`](#parameter-asediagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+
+### Parameter: `aseDiagnosticSettings.eventHubAuthorizationRuleResourceId`
+
+Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.
+
+- Required: No
+- Type: string
+
+### Parameter: `aseDiagnosticSettings.eventHubName`
+
+Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
+
+### Parameter: `aseDiagnosticSettings.logAnalyticsDestinationType`
+
+A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AzureDiagnostics'
+    'Dedicated'
+  ]
+  ```
+
+### Parameter: `aseDiagnosticSettings.logCategoriesAndGroups`
+
+The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-asediagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
+| [`categoryGroup`](#parameter-asediagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs. |
+| [`enabled`](#parameter-asediagnosticsettingslogcategoriesandgroupsenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+
+### Parameter: `aseDiagnosticSettings.logCategoriesAndGroups.category`
+
+Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.
+
+- Required: No
+- Type: string
+
+### Parameter: `aseDiagnosticSettings.logCategoriesAndGroups.categoryGroup`
+
+Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.
+
+- Required: No
+- Type: string
+
+### Parameter: `aseDiagnosticSettings.logCategoriesAndGroups.enabled`
+
+Enable or disable the category explicitly. Default is `true`.
+
+- Required: No
+- Type: bool
+
+### Parameter: `aseDiagnosticSettings.marketplacePartnerResourceId`
+
+The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.
+
+- Required: No
+- Type: string
+
+### Parameter: `aseDiagnosticSettings.metricCategories`
+
+The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-asediagnosticsettingsmetriccategoriescategory) | string | Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enabled`](#parameter-asediagnosticsettingsmetriccategoriesenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+
+### Parameter: `aseDiagnosticSettings.metricCategories.category`
+
+Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `aseDiagnosticSettings.metricCategories.enabled`
+
+Enable or disable the category explicitly. Default is `true`.
+
+- Required: No
+- Type: bool
+
+### Parameter: `aseDiagnosticSettings.name`
+
+The name of the diagnostic setting.
+
+- Required: No
+- Type: string
+
+### Parameter: `aseDiagnosticSettings.storageAccountResourceId`
+
+Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
+
+### Parameter: `aseDiagnosticSettings.workspaceResourceId`
+
+Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
 
 ### Parameter: `autoApproveAfdPrivateEndpoint`
 
@@ -400,6 +673,300 @@ Internal IP of the Azure firewall deployed in Hub. Used for creating UDR to rout
 - Type: string
 - Default: `''`
 
+### Parameter: `frontDoorDiagnosticSettings`
+
+Diagnostic Settings for Front Door.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`eventHubAuthorizationRuleResourceId`](#parameter-frontdoordiagnosticsettingseventhubauthorizationruleresourceid) | string | Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to. |
+| [`eventHubName`](#parameter-frontdoordiagnosticsettingseventhubname) | string | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`logAnalyticsDestinationType`](#parameter-frontdoordiagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
+| [`logCategoriesAndGroups`](#parameter-frontdoordiagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
+| [`marketplacePartnerResourceId`](#parameter-frontdoordiagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
+| [`metricCategories`](#parameter-frontdoordiagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
+| [`name`](#parameter-frontdoordiagnosticsettingsname) | string | The name of the diagnostic setting. |
+| [`storageAccountResourceId`](#parameter-frontdoordiagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`workspaceResourceId`](#parameter-frontdoordiagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+
+### Parameter: `frontDoorDiagnosticSettings.eventHubAuthorizationRuleResourceId`
+
+Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.
+
+- Required: No
+- Type: string
+
+### Parameter: `frontDoorDiagnosticSettings.eventHubName`
+
+Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
+
+### Parameter: `frontDoorDiagnosticSettings.logAnalyticsDestinationType`
+
+A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AzureDiagnostics'
+    'Dedicated'
+  ]
+  ```
+
+### Parameter: `frontDoorDiagnosticSettings.logCategoriesAndGroups`
+
+The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-frontdoordiagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
+| [`categoryGroup`](#parameter-frontdoordiagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs. |
+| [`enabled`](#parameter-frontdoordiagnosticsettingslogcategoriesandgroupsenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+
+### Parameter: `frontDoorDiagnosticSettings.logCategoriesAndGroups.category`
+
+Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.
+
+- Required: No
+- Type: string
+
+### Parameter: `frontDoorDiagnosticSettings.logCategoriesAndGroups.categoryGroup`
+
+Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.
+
+- Required: No
+- Type: string
+
+### Parameter: `frontDoorDiagnosticSettings.logCategoriesAndGroups.enabled`
+
+Enable or disable the category explicitly. Default is `true`.
+
+- Required: No
+- Type: bool
+
+### Parameter: `frontDoorDiagnosticSettings.marketplacePartnerResourceId`
+
+The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.
+
+- Required: No
+- Type: string
+
+### Parameter: `frontDoorDiagnosticSettings.metricCategories`
+
+The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-frontdoordiagnosticsettingsmetriccategoriescategory) | string | Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enabled`](#parameter-frontdoordiagnosticsettingsmetriccategoriesenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+
+### Parameter: `frontDoorDiagnosticSettings.metricCategories.category`
+
+Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `frontDoorDiagnosticSettings.metricCategories.enabled`
+
+Enable or disable the category explicitly. Default is `true`.
+
+- Required: No
+- Type: bool
+
+### Parameter: `frontDoorDiagnosticSettings.name`
+
+The name of the diagnostic setting.
+
+- Required: No
+- Type: string
+
+### Parameter: `frontDoorDiagnosticSettings.storageAccountResourceId`
+
+Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
+
+### Parameter: `frontDoorDiagnosticSettings.workspaceResourceId`
+
+Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
+
+### Parameter: `keyVaultDiagnosticSettings`
+
+Diagnostic Settings for the KeyVault.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`eventHubAuthorizationRuleResourceId`](#parameter-keyvaultdiagnosticsettingseventhubauthorizationruleresourceid) | string | Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to. |
+| [`eventHubName`](#parameter-keyvaultdiagnosticsettingseventhubname) | string | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`logAnalyticsDestinationType`](#parameter-keyvaultdiagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
+| [`logCategoriesAndGroups`](#parameter-keyvaultdiagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
+| [`marketplacePartnerResourceId`](#parameter-keyvaultdiagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
+| [`metricCategories`](#parameter-keyvaultdiagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
+| [`name`](#parameter-keyvaultdiagnosticsettingsname) | string | The name of the diagnostic setting. |
+| [`storageAccountResourceId`](#parameter-keyvaultdiagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`workspaceResourceId`](#parameter-keyvaultdiagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+
+### Parameter: `keyVaultDiagnosticSettings.eventHubAuthorizationRuleResourceId`
+
+Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.
+
+- Required: No
+- Type: string
+
+### Parameter: `keyVaultDiagnosticSettings.eventHubName`
+
+Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
+
+### Parameter: `keyVaultDiagnosticSettings.logAnalyticsDestinationType`
+
+A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AzureDiagnostics'
+    'Dedicated'
+  ]
+  ```
+
+### Parameter: `keyVaultDiagnosticSettings.logCategoriesAndGroups`
+
+The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-keyvaultdiagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
+| [`categoryGroup`](#parameter-keyvaultdiagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs. |
+| [`enabled`](#parameter-keyvaultdiagnosticsettingslogcategoriesandgroupsenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+
+### Parameter: `keyVaultDiagnosticSettings.logCategoriesAndGroups.category`
+
+Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.
+
+- Required: No
+- Type: string
+
+### Parameter: `keyVaultDiagnosticSettings.logCategoriesAndGroups.categoryGroup`
+
+Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.
+
+- Required: No
+- Type: string
+
+### Parameter: `keyVaultDiagnosticSettings.logCategoriesAndGroups.enabled`
+
+Enable or disable the category explicitly. Default is `true`.
+
+- Required: No
+- Type: bool
+
+### Parameter: `keyVaultDiagnosticSettings.marketplacePartnerResourceId`
+
+The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.
+
+- Required: No
+- Type: string
+
+### Parameter: `keyVaultDiagnosticSettings.metricCategories`
+
+The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-keyvaultdiagnosticsettingsmetriccategoriescategory) | string | Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enabled`](#parameter-keyvaultdiagnosticsettingsmetriccategoriesenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+
+### Parameter: `keyVaultDiagnosticSettings.metricCategories.category`
+
+Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `keyVaultDiagnosticSettings.metricCategories.enabled`
+
+Enable or disable the category explicitly. Default is `true`.
+
+- Required: No
+- Type: bool
+
+### Parameter: `keyVaultDiagnosticSettings.name`
+
+The name of the diagnostic setting.
+
+- Required: No
+- Type: string
+
+### Parameter: `keyVaultDiagnosticSettings.storageAccountResourceId`
+
+Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
+
+### Parameter: `keyVaultDiagnosticSettings.workspaceResourceId`
+
+Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
+
 ### Parameter: `location`
 
 Azure region where the resources will be deployed in.
@@ -407,6 +974,153 @@ Azure region where the resources will be deployed in.
 - Required: No
 - Type: string
 - Default: `[deployment().location]`
+
+### Parameter: `servicePlanDiagnosticSettings`
+
+Diagnostic Settings for the App Service Plan.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`eventHubAuthorizationRuleResourceId`](#parameter-serviceplandiagnosticsettingseventhubauthorizationruleresourceid) | string | Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to. |
+| [`eventHubName`](#parameter-serviceplandiagnosticsettingseventhubname) | string | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`logAnalyticsDestinationType`](#parameter-serviceplandiagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
+| [`logCategoriesAndGroups`](#parameter-serviceplandiagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
+| [`marketplacePartnerResourceId`](#parameter-serviceplandiagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
+| [`metricCategories`](#parameter-serviceplandiagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
+| [`name`](#parameter-serviceplandiagnosticsettingsname) | string | The name of the diagnostic setting. |
+| [`storageAccountResourceId`](#parameter-serviceplandiagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+| [`workspaceResourceId`](#parameter-serviceplandiagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
+
+### Parameter: `servicePlanDiagnosticSettings.eventHubAuthorizationRuleResourceId`
+
+Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.
+
+- Required: No
+- Type: string
+
+### Parameter: `servicePlanDiagnosticSettings.eventHubName`
+
+Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
+
+### Parameter: `servicePlanDiagnosticSettings.logAnalyticsDestinationType`
+
+A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AzureDiagnostics'
+    'Dedicated'
+  ]
+  ```
+
+### Parameter: `servicePlanDiagnosticSettings.logCategoriesAndGroups`
+
+The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-serviceplandiagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
+| [`categoryGroup`](#parameter-serviceplandiagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs. |
+| [`enabled`](#parameter-serviceplandiagnosticsettingslogcategoriesandgroupsenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+
+### Parameter: `servicePlanDiagnosticSettings.logCategoriesAndGroups.category`
+
+Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.
+
+- Required: No
+- Type: string
+
+### Parameter: `servicePlanDiagnosticSettings.logCategoriesAndGroups.categoryGroup`
+
+Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.
+
+- Required: No
+- Type: string
+
+### Parameter: `servicePlanDiagnosticSettings.logCategoriesAndGroups.enabled`
+
+Enable or disable the category explicitly. Default is `true`.
+
+- Required: No
+- Type: bool
+
+### Parameter: `servicePlanDiagnosticSettings.marketplacePartnerResourceId`
+
+The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.
+
+- Required: No
+- Type: string
+
+### Parameter: `servicePlanDiagnosticSettings.metricCategories`
+
+The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-serviceplandiagnosticsettingsmetriccategoriescategory) | string | Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enabled`](#parameter-serviceplandiagnosticsettingsmetriccategoriesenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
+
+### Parameter: `servicePlanDiagnosticSettings.metricCategories.category`
+
+Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `servicePlanDiagnosticSettings.metricCategories.enabled`
+
+Enable or disable the category explicitly. Default is `true`.
+
+- Required: No
+- Type: bool
+
+### Parameter: `servicePlanDiagnosticSettings.name`
+
+The name of the diagnostic setting.
+
+- Required: No
+- Type: string
+
+### Parameter: `servicePlanDiagnosticSettings.storageAccountResourceId`
+
+Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
+
+### Parameter: `servicePlanDiagnosticSettings.workspaceResourceId`
+
+Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.
+
+- Required: No
+- Type: string
 
 ### Parameter: `subnetSpokeAppSvcAddressSpace`
 
@@ -584,6 +1298,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/web/hosting-environment:0.3.0` | Remote reference |
 | `br/public:avm/res/web/serverfarm:0.2.4` | Remote reference |
 | `br/public:avm/res/web/site:0.9.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

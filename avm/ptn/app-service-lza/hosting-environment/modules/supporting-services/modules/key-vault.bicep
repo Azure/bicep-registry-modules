@@ -4,6 +4,8 @@ targetScope = 'resourceGroup'
 //    PARAMETERS
 // ------------------
 
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+
 @description('The location where the resources will be created.')
 param location string = resourceGroup().location
 
@@ -28,11 +30,8 @@ param spokePrivateEndpointSubnetName string
 @description('Optional. The name of the private endpoint to be created for Key Vault. If left empty, it defaults to "<resourceName>-pep')
 param keyVaultPrivateEndpointName string = 'keyvault-pep'
 
-@description('Required. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace.')
-param diagnosticWorkspaceId string
-
-@description('Optional. The name of the diagnostic setting, if deployed. If left empty, it defaults to "<resourceName>-diagnosticSettings".')
-param diagnosticSettingsName string = 'keyvault-diagnosticSettings'
+@description('Optional. Diagnostic Settings for the Key Vault.')
+param diagnosticSettings diagnosticSettingFullType[]
 
 param appServiceManagedIdentityPrincipalId string
 
@@ -117,20 +116,7 @@ module keyvault 'br/public:avm/res/key-vault/vault:0.12.1' = {
         subnetResourceId: spokePrivateEndpointSubnet.id
       }
     ]
-    diagnosticSettings: [
-      {
-        name: diagnosticSettingsName
-        workspaceResourceId: diagnosticWorkspaceId
-        logCategoriesAndGroups: [
-          { categoryGroup: 'allLogs' }
-        ]
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
-      }
-    ]
+    diagnosticSettings: diagnosticSettings
     roleAssignments: [
       {
         principalId: appServiceManagedIdentityPrincipalId

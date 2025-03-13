@@ -1,3 +1,8 @@
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+
+@description('Optional. Diagnostic Settings for FrontDoor')
+param diagnosticSettings diagnosticSettingFullType[]
+
 @description('Required. Name of the AFD profile.')
 param afdName string
 
@@ -50,10 +55,6 @@ param wafPolicyState string = 'Enabled'
   'Prevention'
 ])
 param wafPolicyMode string = 'Prevention'
-
-@description('Required. The resource ID of the Log Analytics workspace to send logs to.')
-@secure()
-param logAnalyticsWorkspaceResourceId string
 
 // Create an Array of all Endpoint which includes customDomain Id and afdEndpoint Id
 // This array is needed to be attached to Microsoft.Cdn/profiles/securitypolicies
@@ -173,20 +174,7 @@ module frontDoor 'br/public:avm/res/cdn/profile:0.12.1' = {
     managedIdentities: {
       systemAssigned: true
     }
-    diagnosticSettings: [
-      {
-        name: 'FrontdoorAccessLog'
-        workspaceResourceId: logAnalyticsWorkspaceResourceId
-        logCategoriesAndGroups: [
-          {
-            category: 'FrontdoorAccessLog'
-          }
-          {
-            category: 'FrontdoorWebApplicationFirewallLog'
-          }
-        ]
-      }
-    ]
+    diagnosticSettings: diagnosticSettings
     afdEndpoints: [
       {
         name: endpointName

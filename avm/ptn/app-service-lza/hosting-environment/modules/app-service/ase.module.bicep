@@ -1,3 +1,5 @@
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+
 @description('Required. Name of the App Service Environment.')
 @minLength(1)
 param name string
@@ -75,8 +77,8 @@ param subnetResourceId string
 @description('Optional. Switch to make the App Service Environment zone redundant. If enabled, the minimum App Service plan instance count will be three, otherwise 1. If enabled, the `dedicatedHostCount` must be set to `-1`.')
 param zoneRedundant bool = false
 
-@description('Required. The name of the existing Log Analytics workspace to which the diagnostic settings will be sent. If left empty, no diagnostics settings will be defined.')
-param logAnalyticsWorkspaceResourceId string = ''
+@description('Optional. Diagnostic Settings for the ASE.')
+param diagnosticSettings diagnosticSettingFullType[]
 
 param virtualNetworkLinks array
 
@@ -102,17 +104,7 @@ module ase 'br/public:avm/res/web/hosting-environment:0.3.0' = {
     customDnsSuffixKeyVaultReferenceIdentity: customDnsSuffixKeyVaultReferenceIdentity
     dnsSuffix: !empty(dnsSuffix) ? dnsSuffix : null
     upgradePreference: upgradePreference
-    diagnosticSettings: [
-      {
-        name: 'ase'
-        workspaceResourceId: logAnalyticsWorkspaceResourceId
-        logCategoriesAndGroups: [
-          {
-            category: 'AllLogs'
-          }
-        ]
-      }
-    ]
+    diagnosticSettings: diagnosticSettings
     lock: { kind: lock, name: '${name}-${lock}-lock' }
   }
 }

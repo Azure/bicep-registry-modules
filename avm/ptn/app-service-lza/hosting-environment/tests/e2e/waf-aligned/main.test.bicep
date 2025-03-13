@@ -31,7 +31,6 @@ module testDeployment '../../../main.bicep' = {
     tags: {
       environment: 'test'
     }
-    location: resourceLocation
     vmSize: 'Standard_D2s_v4'
     adminUsername: 'azureuser'
     adminPassword: password

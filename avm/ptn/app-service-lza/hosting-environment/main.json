@@ -1,14 +1,139 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "5907965356909864113"
+      "templateHash": "4539213741338313781"
     },
     "name": "App Service Landing Zone Accelerator",
     "description": "This Azure App Service pattern module represents an Azure App Service deployment aligned with the cloud adoption framework"
+  },
+  "definitions": {
+    "diagnosticSettingFullType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the diagnostic setting."
+          }
+        },
+        "logCategoriesAndGroups": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "category": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
+                }
+              },
+              "categoryGroup": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
+                }
+              },
+              "enabled": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
+          }
+        },
+        "metricCategories": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "category": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
+                }
+              },
+              "enabled": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
+          }
+        },
+        "logAnalyticsDestinationType": {
+          "type": "string",
+          "allowedValues": [
+            "AzureDiagnostics",
+            "Dedicated"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
+          }
+        },
+        "workspaceResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "storageAccountResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "eventHubAuthorizationRuleResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
+          }
+        },
+        "eventHubName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "marketplacePartnerResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    }
   },
   "parameters": {
     "workloadName": {
@@ -207,14 +332,64 @@
       "metadata": {
         "description": "Optional. Default is windows. The OS of the jump box virtual machine to create."
       }
+    },
+    "appserviceDiagnosticSettings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/diagnosticSettingFullType"
+      },
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. Diagnostic Settings for the App Service Plan."
+      }
+    },
+    "servicePlanDiagnosticSettings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/diagnosticSettingFullType"
+      },
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. Diagnostic Settings for the App Service Plan."
+      }
+    },
+    "aseDiagnosticSettings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/diagnosticSettingFullType"
+      },
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. Diagnostic Settings for the ASE."
+      }
+    },
+    "frontDoorDiagnosticSettings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/diagnosticSettingFullType"
+      },
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. Diagnostic Settings for Front Door."
+      }
+    },
+    "keyVaultDiagnosticSettings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/diagnosticSettingFullType"
+      },
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. Diagnostic Settings for the KeyVault."
+      }
     }
   },
   "variables": {
     "resourceSuffix": "[format('{0}-{1}-{2}', parameters('workloadName'), parameters('environmentName'), parameters('location'))]",
     "resourceGroupName": "[format('rg-spoke-{0}', variables('resourceSuffix'))]"
   },
-  "resources": [
-    {
+  "resources": {
+    "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
@@ -235,7 +410,7 @@
         }
       }
     },
-    {
+    "resourceGroup": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-deployment', uniqueString(deployment().name, parameters('location'), variables('resourceGroupName')))]",
@@ -726,7 +901,7 @@
         }
       }
     },
-    {
+    "naming": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "NamingDeployment",
@@ -749,7 +924,7 @@
             "value": 6
           },
           "uniqueSeed": {
-            "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', format('{0}-deployment', uniqueString(deployment().name, parameters('location'), variables('resourceGroupName')))), '2022-09-01').outputs.resourceId.value]"
+            "value": "[reference('resourceGroup').outputs.resourceId.value]"
           }
         },
         "template": {
@@ -1282,10 +1457,10 @@
         }
       },
       "dependsOn": [
-        "[subscriptionResourceId('Microsoft.Resources/deployments', format('{0}-deployment', uniqueString(deployment().name, parameters('location'), variables('resourceGroupName'))))]"
+        "resourceGroup"
       ]
     },
-    {
+    "spoke": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-spokedeployment', uniqueString(deployment().name, parameters('location')))]",
@@ -1297,7 +1472,7 @@
         "mode": "Incremental",
         "parameters": {
           "naming": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'NamingDeployment'), '2022-09-01').outputs.names.value]"
+            "value": "[reference('naming').outputs.names.value]"
           },
           "workload": {
             "value": "[parameters('workloadName')]"
@@ -1306,7 +1481,7 @@
             "value": "[parameters('enableTelemetry')]"
           },
           "resourceGroupName": {
-            "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', format('{0}-deployment', uniqueString(deployment().name, parameters('location'), variables('resourceGroupName')))), '2022-09-01').outputs.name.value]"
+            "value": "[reference('resourceGroup').outputs.name.value]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -1374,6 +1549,18 @@
           "vmAuthenticationType": {
             "value": "[parameters('vmAuthenticationType')]"
           },
+          "appserviceDiagnosticSettings": {
+            "value": "[parameters('appserviceDiagnosticSettings')]"
+          },
+          "servicePlanDiagnosticSettings": {
+            "value": "[parameters('servicePlanDiagnosticSettings')]"
+          },
+          "aseDiagnosticSettings": {
+            "value": "[parameters('aseDiagnosticSettings')]"
+          },
+          "frontDoorDiagnosticSettings": {
+            "value": "[parameters('frontDoorDiagnosticSettings')]"
+          },
           "tags": {
             "value": "[parameters('tags')]"
           }
@@ -1386,7 +1573,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "15841720442198103435"
+              "templateHash": "13081067330900554961"
             }
           },
           "definitions": {
@@ -1406,6 +1593,128 @@
               "metadata": {
                 "__bicep_imported_from!": {
                   "sourceTemplate": "../naming/naming.module.bicep"
+                }
+              }
+            },
+            "diagnosticSettingFullType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name of the diagnostic setting."
+                  }
+                },
+                "logCategoriesAndGroups": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "category": {
+                        "type": "string",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
+                        }
+                      },
+                      "categoryGroup": {
+                        "type": "string",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
+                        }
+                      },
+                      "enabled": {
+                        "type": "bool",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                        }
+                      }
+                    }
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
+                  }
+                },
+                "metricCategories": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "category": {
+                        "type": "string",
+                        "metadata": {
+                          "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
+                        }
+                      },
+                      "enabled": {
+                        "type": "bool",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                        }
+                      }
+                    }
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
+                  }
+                },
+                "logAnalyticsDestinationType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "AzureDiagnostics",
+                    "Dedicated"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
+                  }
+                },
+                "workspaceResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+                  }
+                },
+                "storageAccountResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+                  }
+                },
+                "eventHubAuthorizationRuleResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
+                  }
+                },
+                "eventHubName": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+                  }
+                },
+                "marketplacePartnerResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
                 }
               }
             },
@@ -1756,6 +2065,44 @@
             },
             "resourceGroupName": {
               "type": "string"
+            },
+            "appserviceDiagnosticSettings": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/diagnosticSettingFullType"
+              },
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. Diagnostic Settings for the App Service."
+              }
+            },
+            "servicePlanDiagnosticSettings": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/diagnosticSettingFullType"
+              },
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. Diagnostic Settings for the App Service Plan."
+              }
+            },
+            "aseDiagnosticSettings": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/diagnosticSettingFullType"
+              },
+              "metadata": {
+                "description": "Optional. Diagnostic Settings for the ASE."
+              }
+            },
+            "frontDoorDiagnosticSettings": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/diagnosticSettingFullType"
+              },
+              "metadata": {
+                "description": "Optional. Diagnostic Settings for Front Door."
+              }
             }
           },
           "variables": {
@@ -8279,16 +8626,144 @@
                   },
                   "sku": {
                     "value": "[parameters('webAppPlanSku')]"
-                  }
+                  },
+                  "appserviceDiagnosticSettings": "[if(not(empty(parameters('appserviceDiagnosticSettings'))), createObject('value', parameters('appserviceDiagnosticSettings')), createObject('value', createArray(createObject('name', 'appservice-diagnosticSettings', 'workspaceResourceId', reference('logAnalyticsWs').outputs.resourceId.value, 'logCategoriesAndGroups', createArray(createObject('categoryGroup', 'allLogs')), 'metricCategories', createArray(createObject('category', 'AllMetrics'))))))]",
+                  "servicePlanDiagnosticSettings": "[if(not(empty(parameters('servicePlanDiagnosticSettings'))), createObject('value', parameters('servicePlanDiagnosticSettings')), createObject('value', createArray(createObject('name', 'servicePlan-diagnosticSettings', 'workspaceResourceId', reference('logAnalyticsWs').outputs.resourceId.value, 'metricCategories', createArray(createObject('category', 'AllMetrics'))))))]",
+                  "aseDiagnosticSettings": "[if(not(empty(parameters('aseDiagnosticSettings'))), createObject('value', parameters('aseDiagnosticSettings')), createObject('value', createArray(createObject('name', 'ase-diagnosticSettings', 'workspaceResourceId', reference('logAnalyticsWs').outputs.resourceId.value, 'logCategoriesAndGroups', createArray(createObject('categoryGroup', 'allLogs'))))))]"
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "languageVersion": "2.0",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
                       "version": "0.33.93.31351",
-                      "templateHash": "10994903953829558851"
+                      "templateHash": "12663836008662414123"
+                    }
+                  },
+                  "definitions": {
+                    "diagnosticSettingFullType": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The name of the diagnostic setting."
+                          }
+                        },
+                        "logCategoriesAndGroups": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "category": {
+                                "type": "string",
+                                "nullable": true,
+                                "metadata": {
+                                  "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
+                                }
+                              },
+                              "categoryGroup": {
+                                "type": "string",
+                                "nullable": true,
+                                "metadata": {
+                                  "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
+                                }
+                              },
+                              "enabled": {
+                                "type": "bool",
+                                "nullable": true,
+                                "metadata": {
+                                  "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                                }
+                              }
+                            }
+                          },
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
+                          }
+                        },
+                        "metricCategories": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "category": {
+                                "type": "string",
+                                "metadata": {
+                                  "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
+                                }
+                              },
+                              "enabled": {
+                                "type": "bool",
+                                "nullable": true,
+                                "metadata": {
+                                  "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                                }
+                              }
+                            }
+                          },
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
+                          }
+                        },
+                        "logAnalyticsDestinationType": {
+                          "type": "string",
+                          "allowedValues": [
+                            "AzureDiagnostics",
+                            "Dedicated"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
+                          }
+                        },
+                        "workspaceResourceId": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+                          }
+                        },
+                        "storageAccountResourceId": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+                          }
+                        },
+                        "eventHubAuthorizationRuleResourceId": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
+                          }
+                        },
+                        "eventHubName": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+                          }
+                        },
+                        "marketplacePartnerResourceId": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
+                        "__bicep_imported_from!": {
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                        }
+                      }
                     }
                   },
                   "parameters": {
@@ -8482,14 +8957,41 @@
                       "metadata": {
                         "description": "Optional. Kind of web app. Defaults to app."
                       }
+                    },
+                    "appserviceDiagnosticSettings": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/diagnosticSettingFullType"
+                      },
+                      "metadata": {
+                        "description": "Optional. Diagnostic Settings for the App Service."
+                      }
+                    },
+                    "servicePlanDiagnosticSettings": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/diagnosticSettingFullType"
+                      },
+                      "metadata": {
+                        "description": "Optional. Diagnostic Settings for the App Service Plan."
+                      }
+                    },
+                    "aseDiagnosticSettings": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/diagnosticSettingFullType"
+                      },
+                      "metadata": {
+                        "description": "Optional. Diagnostic Settings for the ASE."
+                      }
                     }
                   },
                   "variables": {
                     "webAppDnsZoneName": "privatelink.azurewebsites.net",
                     "slotName": "staging"
                   },
-                  "resources": [
-                    {
+                  "resources": {
+                    "ase": {
                       "condition": "[parameters('deployAseV3')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
@@ -8521,18 +9023,143 @@
                           "virtualNetworkLinks": {
                             "value": "[parameters('virtualNetworkLinks')]"
                           },
-                          "logAnalyticsWorkspaceResourceId": {
-                            "value": "[parameters('logAnalyticsWorkspaceResourceId')]"
+                          "diagnosticSettings": {
+                            "value": "[parameters('aseDiagnosticSettings')]"
                           }
                         },
                         "template": {
                           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "languageVersion": "2.0",
                           "contentVersion": "1.0.0.0",
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
                               "version": "0.33.93.31351",
-                              "templateHash": "11987900313536217316"
+                              "templateHash": "10369162590585011201"
+                            }
+                          },
+                          "definitions": {
+                            "diagnosticSettingFullType": {
+                              "type": "object",
+                              "properties": {
+                                "name": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. The name of the diagnostic setting."
+                                  }
+                                },
+                                "logCategoriesAndGroups": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "category": {
+                                        "type": "string",
+                                        "nullable": true,
+                                        "metadata": {
+                                          "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
+                                        }
+                                      },
+                                      "categoryGroup": {
+                                        "type": "string",
+                                        "nullable": true,
+                                        "metadata": {
+                                          "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
+                                        }
+                                      },
+                                      "enabled": {
+                                        "type": "bool",
+                                        "nullable": true,
+                                        "metadata": {
+                                          "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                                        }
+                                      }
+                                    }
+                                  },
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
+                                  }
+                                },
+                                "metricCategories": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "object",
+                                    "properties": {
+                                      "category": {
+                                        "type": "string",
+                                        "metadata": {
+                                          "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
+                                        }
+                                      },
+                                      "enabled": {
+                                        "type": "bool",
+                                        "nullable": true,
+                                        "metadata": {
+                                          "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                                        }
+                                      }
+                                    }
+                                  },
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
+                                  }
+                                },
+                                "logAnalyticsDestinationType": {
+                                  "type": "string",
+                                  "allowedValues": [
+                                    "AzureDiagnostics",
+                                    "Dedicated"
+                                  ],
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
+                                  }
+                                },
+                                "workspaceResourceId": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+                                  }
+                                },
+                                "storageAccountResourceId": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+                                  }
+                                },
+                                "eventHubAuthorizationRuleResourceId": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
+                                  }
+                                },
+                                "eventHubName": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+                                  }
+                                },
+                                "marketplacePartnerResourceId": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
+                                  }
+                                }
+                              },
+                              "metadata": {
+                                "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
+                                "__bicep_imported_from!": {
+                                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                                }
+                              }
                             }
                           },
                           "parameters": {
@@ -8683,19 +9310,27 @@
                                 "description": "Optional. Switch to make the App Service Environment zone redundant. If enabled, the minimum App Service plan instance count will be three, otherwise 1. If enabled, the `dedicatedHostCount` must be set to `-1`."
                               }
                             },
-                            "logAnalyticsWorkspaceResourceId": {
-                              "type": "string",
-                              "defaultValue": "",
+                            "diagnosticSettings": {
+                              "type": "array",
+                              "items": {
+                                "$ref": "#/definitions/diagnosticSettingFullType"
+                              },
                               "metadata": {
-                                "description": "Required. The name of the existing Log Analytics workspace to which the diagnostic settings will be sent. If left empty, no diagnostics settings will be defined."
+                                "description": "Optional. Diagnostic Settings for the ASE."
                               }
                             },
                             "virtualNetworkLinks": {
                               "type": "array"
                             }
                           },
-                          "resources": [
-                            {
+                          "resources": {
+                            "aseExisting": {
+                              "existing": true,
+                              "type": "Microsoft.Web/hostingEnvironments",
+                              "apiVersion": "2023-12-01",
+                              "name": "[parameters('name')]"
+                            },
+                            "ase": {
                               "type": "Microsoft.Resources/deployments",
                               "apiVersion": "2022-09-01",
                               "name": "[format('{0}-ase-avm', uniqueString(deployment().name, parameters('location')))]",
@@ -8749,17 +9384,7 @@
                                     "value": "[parameters('upgradePreference')]"
                                   },
                                   "diagnosticSettings": {
-                                    "value": [
-                                      {
-                                        "name": "ase",
-                                        "workspaceResourceId": "[parameters('logAnalyticsWorkspaceResourceId')]",
-                                        "logCategoriesAndGroups": [
-                                          {
-                                            "category": "AllLogs"
-                                          }
-                                        ]
-                                      }
-                                    ]
+                                    "value": "[parameters('diagnosticSettings')]"
                                   },
                                   "lock": {
                                     "value": {
@@ -9461,7 +10086,7 @@
                                 }
                               }
                             },
-                            {
+                            "asePrivateDnsZone": {
                               "type": "Microsoft.Resources/deployments",
                               "apiVersion": "2022-09-01",
                               "name": "[format('{0}-ase-dnszone', uniqueString(deployment().name, parameters('location')))]",
@@ -9472,7 +10097,7 @@
                                 "mode": "Incremental",
                                 "parameters": {
                                   "name": {
-                                    "value": "[format('{0}.appserviceenvironment.net', reference(resourceId('Microsoft.Resources/deployments', format('{0}-ase-avm', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.name.value)]"
+                                    "value": "[format('{0}.appserviceenvironment.net', reference('ase').outputs.name.value)]"
                                   },
                                   "virtualNetworkLinks": {
                                     "value": "[parameters('virtualNetworkLinks')]"
@@ -9486,7 +10111,7 @@
                                         "name": "*",
                                         "aRecords": [
                                           {
-                                            "ipv4Address": "[reference(resourceId('Microsoft.Web/hostingEnvironments', parameters('name')), '2023-12-01').networkingConfiguration.properties.internalInboundIpAddresses[0]]"
+                                            "ipv4Address": "[reference('aseExisting').networkingConfiguration.properties.internalInboundIpAddresses[0]]"
                                           }
                                         ],
                                         "ttl": 3600
@@ -9495,7 +10120,7 @@
                                         "name": "*.scm",
                                         "aRecords": [
                                           {
-                                            "ipv4Address": "[reference(resourceId('Microsoft.Web/hostingEnvironments', parameters('name')), '2023-12-01').networkingConfiguration.properties.internalInboundIpAddresses[0]]"
+                                            "ipv4Address": "[reference('aseExisting').networkingConfiguration.properties.internalInboundIpAddresses[0]]"
                                           }
                                         ],
                                         "ttl": 3600
@@ -9504,7 +10129,7 @@
                                         "name": "@",
                                         "aRecords": [
                                           {
-                                            "ipv4Address": "[reference(resourceId('Microsoft.Web/hostingEnvironments', parameters('name')), '2023-12-01').networkingConfiguration.properties.internalInboundIpAddresses[0]]"
+                                            "ipv4Address": "[reference('aseExisting').networkingConfiguration.properties.internalInboundIpAddresses[0]]"
                                           }
                                         ],
                                         "ttl": 3600
@@ -12530,17 +13155,18 @@
                                 }
                               },
                               "dependsOn": [
-                                "[resourceId('Microsoft.Resources/deployments', format('{0}-ase-avm', uniqueString(deployment().name, parameters('location'))))]"
+                                "ase",
+                                "aseExisting"
                               ]
                             }
-                          ],
+                          },
                           "outputs": {
                             "resourceId": {
                               "type": "string",
                               "metadata": {
                                 "description": "The resource ID of the App Service Environment."
                               },
-                              "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-ase-avm', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.resourceId.value]"
+                              "value": "[reference('ase').outputs.resourceId.value]"
                             },
                             "resourceGroupName": {
                               "type": "string",
@@ -12554,27 +13180,27 @@
                               "metadata": {
                                 "description": "The name of the App Service Environment."
                               },
-                              "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-ase-avm', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.name.value]"
+                              "value": "[reference('ase').outputs.name.value]"
                             },
                             "location": {
                               "type": "string",
                               "metadata": {
                                 "description": "The location the resource was deployed into."
                               },
-                              "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-ase-avm', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.location.value]"
+                              "value": "[reference('ase').outputs.location.value]"
                             },
                             "internalInboundIpAddress": {
                               "type": "string",
                               "metadata": {
                                 "description": "The Internal ingress IP of the ASE."
                               },
-                              "value": "[reference(resourceId('Microsoft.Web/hostingEnvironments', parameters('name')), '2023-12-01').networkingConfiguration.properties.internalInboundIpAddresses[0]]"
+                              "value": "[reference('aseExisting').networkingConfiguration.properties.internalInboundIpAddresses[0]]"
                             }
                           }
                         }
                       }
                     },
-                    {
+                    "appInsights": {
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
                       "name": "[format('{0}-appInsights', uniqueString(deployment().name, parameters('location')))]",
@@ -13225,7 +13851,7 @@
                         }
                       }
                     },
-                    {
+                    "plan": {
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
                       "name": "[format('{0}-plan', uniqueString(deployment().name, parameters('location'), 'webapp'))]",
@@ -13262,13 +13888,9 @@
                           "targetWorkerSize": {
                             "value": "[parameters('targetWorkerSize')]"
                           },
-                          "appServiceEnvironmentId": "[if(parameters('deployAseV3'), createObject('value', reference(resourceId('Microsoft.Resources/deployments', format('{0}-ase', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.resourceId.value), createObject('value', ''))]",
+                          "appServiceEnvironmentId": "[if(parameters('deployAseV3'), createObject('value', reference('ase').outputs.resourceId.value), createObject('value', ''))]",
                           "diagnosticSettings": {
-                            "value": [
-                              {
-                                "workspaceResourceId": "[parameters('logAnalyticsWorkspaceResourceId')]"
-                              }
-                            ]
+                            "value": "[parameters('servicePlanDiagnosticSettings')]"
                           }
                         },
                         "template": {
@@ -13769,10 +14391,10 @@
                         }
                       },
                       "dependsOn": [
-                        "[resourceId('Microsoft.Resources/deployments', format('{0}-ase', uniqueString(deployment().name, parameters('location'))))]"
+                        "ase"
                       ]
                     },
-                    {
+                    "webApp": {
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
                       "name": "[format('{0}-webapp', uniqueString(deployment().name, parameters('location')))]",
@@ -13790,10 +14412,10 @@
                             "value": "[parameters('location')]"
                           },
                           "serverFarmResourceId": {
-                            "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-plan', uniqueString(deployment().name, parameters('location'), 'webapp'))), '2022-09-01').outputs.resourceId.value]"
+                            "value": "[reference('plan').outputs.resourceId.value]"
                           },
                           "appInsightResourceId": {
-                            "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-appInsights', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.resourceId.value]"
+                            "value": "[reference('appInsights').outputs.resourceId.value]"
                           },
                           "siteConfig": {
                             "value": "[parameters('siteConfig')]"
@@ -13802,23 +14424,13 @@
                             "value": false
                           },
                           "diagnosticSettings": {
-                            "value": [
-                              {
-                                "name": "webApp",
-                                "metricCategories": [
-                                  {
-                                    "category": "AllMetrics"
-                                  }
-                                ],
-                                "workspaceResourceId": "[parameters('logAnalyticsWorkspaceResourceId')]"
-                              }
-                            ]
+                            "value": "[parameters('appserviceDiagnosticSettings')]"
                           },
                           "virtualNetworkSubnetId": "[if(not(parameters('deployAseV3')), createObject('value', parameters('subnetIdForVnetInjection')), createObject('value', ''))]",
                           "managedIdentities": {
                             "value": {
                               "userAssignedResourceIds": [
-                                "[format('{0}', reference(resourceId('Microsoft.Resources/deployments', format('{0}-uami', uniqueString(deployment().name, parameters('location'), 'webapp'))), '2022-09-01').outputs.resourceId.value)]"
+                                "[format('{0}', reference('webAppUserAssignedManagedIdentity').outputs.resourceId.value)]"
                               ]
                             }
                           },
@@ -13829,7 +14441,7 @@
                               }
                             ]
                           },
-                          "privateEndpoints": "[if(and(not(empty(parameters('subnetPrivateEndpointResourceId'))), not(parameters('deployAseV3'))), createObject('value', createArray(createObject('name', 'webApp', 'subnetResourceId', parameters('subnetPrivateEndpointResourceId'), 'privateDnsZoneGroup', createObject('name', 'webApp', 'privateDnsZoneGroupConfigs', createArray(createObject('name', variables('webAppDnsZoneName'), 'privateDnsZoneResourceId', reference(resourceId('Microsoft.Resources/deployments', format('{0}-dnszone', uniqueString(deployment().name, parameters('location'), 'webapp'))), '2022-09-01').outputs.resourceId.value)))))), createObject('value', createArray()))]",
+                          "privateEndpoints": "[if(and(not(empty(parameters('subnetPrivateEndpointResourceId'))), not(parameters('deployAseV3'))), createObject('value', createArray(createObject('name', 'webApp', 'subnetResourceId', parameters('subnetPrivateEndpointResourceId'), 'privateDnsZoneGroup', createObject('name', 'webApp', 'privateDnsZoneGroupConfigs', createArray(createObject('name', variables('webAppDnsZoneName'), 'privateDnsZoneResourceId', reference('webAppPrivateDnsZone').outputs.resourceId.value)))))), createObject('value', createArray()))]",
                           "tags": {
                             "value": "[parameters('tags')]"
                           }
@@ -19026,13 +19638,13 @@
                         }
                       },
                       "dependsOn": [
-                        "[resourceId('Microsoft.Resources/deployments', format('{0}-appInsights', uniqueString(deployment().name, parameters('location'))))]",
-                        "[resourceId('Microsoft.Resources/deployments', format('{0}-plan', uniqueString(deployment().name, parameters('location'), 'webapp')))]",
-                        "[resourceId('Microsoft.Resources/deployments', format('{0}-dnszone', uniqueString(deployment().name, parameters('location'), 'webapp')))]",
-                        "[resourceId('Microsoft.Resources/deployments', format('{0}-uami', uniqueString(deployment().name, parameters('location'), 'webapp')))]"
+                        "appInsights",
+                        "plan",
+                        "webAppPrivateDnsZone",
+                        "webAppUserAssignedManagedIdentity"
                       ]
                     },
-                    {
+                    "webAppPrivateDnsZone": {
                       "condition": "[and(not(empty(parameters('subnetPrivateEndpointResourceId'))), not(parameters('deployAseV3')))]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
@@ -22079,7 +22691,7 @@
                         }
                       }
                     },
-                    {
+                    "webAppUserAssignedManagedIdentity": {
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
                       "name": "[format('{0}-uami', uniqueString(deployment().name, parameters('location'), 'webapp'))]",
@@ -22544,7 +23156,7 @@
                         }
                       }
                     },
-                    {
+                    "peWebAppSlot": {
                       "condition": "[and(not(empty(parameters('subnetPrivateEndpointResourceId'))), not(parameters('deployAseV3')))]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
@@ -22564,7 +23176,7 @@
                           "tags": {
                             "value": "[parameters('tags')]"
                           },
-                          "privateDnsZoneGroup": "[if(and(not(empty(parameters('subnetPrivateEndpointResourceId'))), not(parameters('deployAseV3'))), createObject('value', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', reference(resourceId('Microsoft.Resources/deployments', format('{0}-dnszone', uniqueString(deployment().name, parameters('location'), 'webapp'))), '2022-09-01').outputs.resourceId.value)))), createObject('value', null()))]",
+                          "privateDnsZoneGroup": "[if(and(not(empty(parameters('subnetPrivateEndpointResourceId'))), not(parameters('deployAseV3'))), createObject('value', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', reference('webAppPrivateDnsZone').outputs.resourceId.value)))), createObject('value', null()))]",
                           "subnetResourceId": {
                             "value": "[parameters('subnetPrivateEndpointResourceId')]"
                           },
@@ -22573,7 +23185,7 @@
                               {
                                 "name": "webApp",
                                 "properties": {
-                                  "privateLinkServiceId": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-webapp', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.resourceId.value]",
+                                  "privateLinkServiceId": "[reference('webApp').outputs.resourceId.value]",
                                   "groupIds": [
                                     "[format('sites-{0}', variables('slotName'))]"
                                   ]
@@ -23330,45 +23942,45 @@
                         }
                       },
                       "dependsOn": [
-                        "[resourceId('Microsoft.Resources/deployments', format('{0}-webapp', uniqueString(deployment().name, parameters('location'))))]",
-                        "[resourceId('Microsoft.Resources/deployments', format('{0}-dnszone', uniqueString(deployment().name, parameters('location'), 'webapp')))]"
+                        "webApp",
+                        "webAppPrivateDnsZone"
                       ]
                     }
-                  ],
+                  },
                   "outputs": {
                     "webAppName": {
                       "type": "string",
-                      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-webapp', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.name.value]"
+                      "value": "[reference('webApp').outputs.name.value]"
                     },
                     "webAppHostName": {
                       "type": "string",
-                      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-webapp', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.defaultHostname.value]"
+                      "value": "[reference('webApp').outputs.defaultHostname.value]"
                     },
                     "webAppResourceId": {
                       "type": "string",
-                      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-webapp', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.resourceId.value]"
+                      "value": "[reference('webApp').outputs.resourceId.value]"
                     },
                     "webAppLocation": {
                       "type": "string",
-                      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-webapp', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.location.value]"
+                      "value": "[reference('webApp').outputs.location.value]"
                     },
                     "webAppSystemAssignedPrincipalId": {
                       "type": "string",
-                      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-uami', uniqueString(deployment().name, parameters('location'), 'webapp'))), '2022-09-01').outputs.principalId.value]"
+                      "value": "[reference('webAppUserAssignedManagedIdentity').outputs.principalId.value]"
                     },
                     "internalInboundIpAddress": {
                       "type": "string",
                       "metadata": {
                         "description": "The Internal ingress IP of the ASE."
                       },
-                      "value": "[if(parameters('deployAseV3'), reference(resourceId('Microsoft.Resources/deployments', format('{0}-ase', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.internalInboundIpAddress.value, '')]"
+                      "value": "[if(parameters('deployAseV3'), reference('ase').outputs.internalInboundIpAddress.value, '')]"
                     },
                     "aseName": {
                       "type": "string",
                       "metadata": {
                         "description": "The name of the ASE."
                       },
-                      "value": "[if(parameters('deployAseV3'), reference(resourceId('Microsoft.Resources/deployments', format('{0}-ase', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.name.value, '')]"
+                      "value": "[if(parameters('deployAseV3'), reference('ase').outputs.name.value, '')]"
                     }
                   }
                 }
@@ -23415,24 +24027,156 @@
                   "skuName": {
                     "value": "Premium_AzureFrontDoor"
                   },
-                  "logAnalyticsWorkspaceResourceId": {
-                    "value": "[reference('logAnalyticsWs').outputs.resourceId.value]"
-                  },
+                  "diagnosticSettings": "[if(not(empty(parameters('frontDoorDiagnosticSettings'))), createObject('value', parameters('frontDoorDiagnosticSettings')), createObject('value', createArray(createObject('name', 'frontdoor-diagnosticSettings', 'workspaceResourceId', reference('logAnalyticsWs').outputs.resourceId.value, 'logCategoriesAndGroups', createArray(createObject('category', 'FrontdoorAccessLog'), createObject('category', 'FrontdoorWebApplicationFirewallLog'))))))]",
                   "tags": {
                     "value": "[parameters('tags')]"
                   }
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "languageVersion": "2.0",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
                       "version": "0.33.93.31351",
-                      "templateHash": "4480387080268346458"
+                      "templateHash": "11892431856935419843"
+                    }
+                  },
+                  "definitions": {
+                    "diagnosticSettingFullType": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The name of the diagnostic setting."
+                          }
+                        },
+                        "logCategoriesAndGroups": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "category": {
+                                "type": "string",
+                                "nullable": true,
+                                "metadata": {
+                                  "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
+                                }
+                              },
+                              "categoryGroup": {
+                                "type": "string",
+                                "nullable": true,
+                                "metadata": {
+                                  "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
+                                }
+                              },
+                              "enabled": {
+                                "type": "bool",
+                                "nullable": true,
+                                "metadata": {
+                                  "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                                }
+                              }
+                            }
+                          },
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
+                          }
+                        },
+                        "metricCategories": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "category": {
+                                "type": "string",
+                                "metadata": {
+                                  "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
+                                }
+                              },
+                              "enabled": {
+                                "type": "bool",
+                                "nullable": true,
+                                "metadata": {
+                                  "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                                }
+                              }
+                            }
+                          },
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
+                          }
+                        },
+                        "logAnalyticsDestinationType": {
+                          "type": "string",
+                          "allowedValues": [
+                            "AzureDiagnostics",
+                            "Dedicated"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
+                          }
+                        },
+                        "workspaceResourceId": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+                          }
+                        },
+                        "storageAccountResourceId": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+                          }
+                        },
+                        "eventHubAuthorizationRuleResourceId": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
+                          }
+                        },
+                        "eventHubName": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+                          }
+                        },
+                        "marketplacePartnerResourceId": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
+                        "__bicep_imported_from!": {
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                        }
+                      }
                     }
                   },
                   "parameters": {
+                    "diagnosticSettings": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/diagnosticSettingFullType"
+                      },
+                      "metadata": {
+                        "description": "Optional. Diagnostic Settings for FrontDoor"
+                      }
+                    },
                     "afdName": {
                       "type": "string",
                       "metadata": {
@@ -23515,16 +24259,10 @@
                       "metadata": {
                         "description": "optional, default value Prevention. "
                       }
-                    },
-                    "logAnalyticsWorkspaceResourceId": {
-                      "type": "securestring",
-                      "metadata": {
-                        "description": "Required. The resource ID of the Log Analytics workspace to send logs to."
-                      }
                     }
                   },
-                  "resources": [
-                    {
+                  "resources": {
+                    "waf": {
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
                       "name": "[format('wafPolicy-{0}', uniqueString(resourceGroup().id))]",
@@ -24091,7 +24829,7 @@
                         }
                       }
                     },
-                    {
+                    "frontDoor": {
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
                       "name": "[format('frontDoorDeployment-{0}', uniqueString(resourceGroup().id))]",
@@ -24119,20 +24857,7 @@
                             }
                           },
                           "diagnosticSettings": {
-                            "value": [
-                              {
-                                "name": "FrontdoorAccessLog",
-                                "workspaceResourceId": "[parameters('logAnalyticsWorkspaceResourceId')]",
-                                "logCategoriesAndGroups": [
-                                  {
-                                    "category": "FrontdoorAccessLog"
-                                  },
-                                  {
-                                    "category": "FrontdoorWebApplicationFirewallLog"
-                                  }
-                                ]
-                              }
-                            ]
+                            "value": "[parameters('diagnosticSettings')]"
                           },
                           "afdEndpoints": {
                             "value": [
@@ -24204,7 +24929,7 @@
                             "value": [
                               {
                                 "name": "webApplicationFirewall",
-                                "wafPolicyResourceId": "[reference(resourceId('Microsoft.Resources/deployments', format('wafPolicy-{0}', uniqueString(resourceGroup().id))), '2022-09-01').outputs.resourceId.value]",
+                                "wafPolicyResourceId": "[reference('waf').outputs.resourceId.value]",
                                 "associations": [
                                   {
                                     "domains": [
@@ -28456,38 +29181,38 @@
                         }
                       },
                       "dependsOn": [
-                        "[resourceId('Microsoft.Resources/deployments', format('wafPolicy-{0}', uniqueString(resourceGroup().id)))]"
+                        "waf"
                       ]
                     }
-                  ],
+                  },
                   "outputs": {
                     "afdProfileName": {
                       "type": "string",
                       "metadata": {
                         "description": "The name of the CDN profile."
                       },
-                      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('frontDoorDeployment-{0}', uniqueString(resourceGroup().id))), '2022-09-01').outputs.name.value]"
+                      "value": "[reference('frontDoor').outputs.name.value]"
                     },
                     "afdProfileResourceId": {
                       "type": "string",
                       "metadata": {
                         "description": "The resource ID of the CDN profile."
                       },
-                      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('frontDoorDeployment-{0}', uniqueString(resourceGroup().id))), '2022-09-01').outputs.resourceId.value]"
+                      "value": "[reference('frontDoor').outputs.resourceId.value]"
                     },
                     "endpointName": {
                       "type": "string",
                       "metadata": {
                         "description": "Name of the endpoint."
                       },
-                      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('frontDoorDeployment-{0}', uniqueString(resourceGroup().id))), '2022-09-01').outputs.endpointName.value]"
+                      "value": "[reference('frontDoor').outputs.endpointName.value]"
                     },
                     "afdEndpointHostName": {
                       "type": "string",
                       "metadata": {
                         "description": "HostName of the endpoint."
                       },
-                      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('frontDoorDeployment-{0}', uniqueString(resourceGroup().id))), '2022-09-01').outputs.uri.value]"
+                      "value": "[reference('frontDoor').outputs.uri.value]"
                     },
                     "resourceGroupName": {
                       "type": "string",
@@ -28501,7 +29226,7 @@
                       "metadata": {
                         "description": "The type of the CDN profile."
                       },
-                      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('frontDoorDeployment-{0}', uniqueString(resourceGroup().id))), '2022-09-01').outputs.profileType.value]"
+                      "value": "[reference('frontDoor').outputs.profileType.value]"
                     }
                   }
                 }
@@ -42775,11 +43500,11 @@
         }
       },
       "dependsOn": [
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'NamingDeployment')]",
-        "[subscriptionResourceId('Microsoft.Resources/deployments', format('{0}-deployment', uniqueString(deployment().name, parameters('location'), variables('resourceGroupName'))))]"
+        "naming",
+        "resourceGroup"
       ]
     },
-    {
+    "supportingServices": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-supportingServicesDeployment', uniqueString(deployment().name, parameters('location')))]",
@@ -42794,22 +43519,25 @@
             "value": "[parameters('enableTelemetry')]"
           },
           "naming": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'NamingDeployment'), '2022-09-01').outputs.names.value]"
+            "value": "[reference('naming').outputs.names.value]"
           },
           "location": {
             "value": "[parameters('location')]"
           },
           "spokeVNetResourceId": {
-            "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', format('{0}-spokedeployment', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.vnetSpokeResourceId.value]"
+            "value": "[reference('spoke').outputs.vnetSpokeResourceId.value]"
           },
           "spokePrivateEndpointSubnetName": {
-            "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', format('{0}-spokedeployment', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.spokePrivateEndpointSubnetName.value]"
+            "value": "[reference('spoke').outputs.spokePrivateEndpointSubnetName.value]"
           },
           "appServiceManagedIdentityPrincipalId": {
-            "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', format('{0}-spokedeployment', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.appServiceManagedIdentityPrincipalId.value]"
+            "value": "[reference('spoke').outputs.appServiceManagedIdentityPrincipalId.value]"
           },
-          "logAnalyticsWorspaceResourceId": {
-            "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', format('{0}-spokedeployment', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.logAnalyticsWorkspaceResourceId.value]"
+          "logAnalyticsWorkspaceResourceId": {
+            "value": "[reference('spoke').outputs.logAnalyticsWorkspaceResourceId.value]"
+          },
+          "keyVaultDiagnosticSettings": {
+            "value": "[parameters('keyVaultDiagnosticSettings')]"
           },
           "hubVNetResourceId": {
             "value": "[parameters('vnetHubResourceId')]"
@@ -42826,7 +43554,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "1311083094741550532"
+              "templateHash": "10006194836262291646"
             }
           },
           "definitions": {
@@ -42846,6 +43574,128 @@
               "metadata": {
                 "__bicep_imported_from!": {
                   "sourceTemplate": "../naming/naming.module.bicep"
+                }
+              }
+            },
+            "diagnosticSettingFullType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name of the diagnostic setting."
+                  }
+                },
+                "logCategoriesAndGroups": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "category": {
+                        "type": "string",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
+                        }
+                      },
+                      "categoryGroup": {
+                        "type": "string",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
+                        }
+                      },
+                      "enabled": {
+                        "type": "bool",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                        }
+                      }
+                    }
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
+                  }
+                },
+                "metricCategories": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "category": {
+                        "type": "string",
+                        "metadata": {
+                          "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
+                        }
+                      },
+                      "enabled": {
+                        "type": "bool",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                        }
+                      }
+                    }
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
+                  }
+                },
+                "logAnalyticsDestinationType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "AzureDiagnostics",
+                    "Dedicated"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
+                  }
+                },
+                "workspaceResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+                  }
+                },
+                "storageAccountResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+                  }
+                },
+                "eventHubAuthorizationRuleResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
+                  }
+                },
+                "eventHubName": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+                  }
+                },
+                "marketplacePartnerResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
                 }
               }
             },
@@ -43031,7 +43881,7 @@
                 "description": "The name of the existing subnet in the spoke virtual to which the private endpoint will be connected."
               }
             },
-            "logAnalyticsWorspaceResourceId": {
+            "logAnalyticsWorkspaceResourceId": {
               "type": "string",
               "defaultValue": "",
               "metadata": {
@@ -43040,6 +43890,13 @@
             },
             "appServiceManagedIdentityPrincipalId": {
               "type": "string"
+            },
+            "keyVaultDiagnosticSettings": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/diagnosticSettingFullType"
+              },
+              "defaultValue": []
             }
           },
           "resources": {
@@ -43074,21 +43931,144 @@
                   "spokePrivateEndpointSubnetName": {
                     "value": "[parameters('spokePrivateEndpointSubnetName')]"
                   },
-                  "diagnosticWorkspaceId": {
-                    "value": "[parameters('logAnalyticsWorspaceResourceId')]"
-                  },
+                  "diagnosticSettings": "[if(not(empty(parameters('keyVaultDiagnosticSettings'))), createObject('value', parameters('keyVaultDiagnosticSettings')), createObject('value', createArray(createObject('name', 'keyvault-diagnosticSettings', 'workspaceResourceId', parameters('logAnalyticsWorkspaceResourceId'), 'logCategoriesAndGroups', createArray(createObject('categoryGroup', 'allLogs')), 'metricCategories', createArray(createObject('category', 'AllMetrics'))))))]",
                   "appServiceManagedIdentityPrincipalId": {
                     "value": "[parameters('appServiceManagedIdentityPrincipalId')]"
                   }
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "languageVersion": "2.0",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
                       "version": "0.33.93.31351",
-                      "templateHash": "9095690242387815718"
+                      "templateHash": "15730684328847172682"
+                    }
+                  },
+                  "definitions": {
+                    "diagnosticSettingFullType": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The name of the diagnostic setting."
+                          }
+                        },
+                        "logCategoriesAndGroups": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "category": {
+                                "type": "string",
+                                "nullable": true,
+                                "metadata": {
+                                  "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
+                                }
+                              },
+                              "categoryGroup": {
+                                "type": "string",
+                                "nullable": true,
+                                "metadata": {
+                                  "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
+                                }
+                              },
+                              "enabled": {
+                                "type": "bool",
+                                "nullable": true,
+                                "metadata": {
+                                  "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                                }
+                              }
+                            }
+                          },
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
+                          }
+                        },
+                        "metricCategories": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "category": {
+                                "type": "string",
+                                "metadata": {
+                                  "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
+                                }
+                              },
+                              "enabled": {
+                                "type": "bool",
+                                "nullable": true,
+                                "metadata": {
+                                  "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                                }
+                              }
+                            }
+                          },
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
+                          }
+                        },
+                        "logAnalyticsDestinationType": {
+                          "type": "string",
+                          "allowedValues": [
+                            "AzureDiagnostics",
+                            "Dedicated"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
+                          }
+                        },
+                        "workspaceResourceId": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+                          }
+                        },
+                        "storageAccountResourceId": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+                          }
+                        },
+                        "eventHubAuthorizationRuleResourceId": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
+                          }
+                        },
+                        "eventHubName": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+                          }
+                        },
+                        "marketplacePartnerResourceId": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
+                        "__bicep_imported_from!": {
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                        }
+                      }
                     }
                   },
                   "parameters": {
@@ -43143,17 +44123,13 @@
                         "description": "Optional. The name of the private endpoint to be created for Key Vault. If left empty, it defaults to \"<resourceName>-pep"
                       }
                     },
-                    "diagnosticWorkspaceId": {
-                      "type": "string",
+                    "diagnosticSettings": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/diagnosticSettingFullType"
+                      },
                       "metadata": {
-                        "description": "Required. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace."
-                      }
-                    },
-                    "diagnosticSettingsName": {
-                      "type": "string",
-                      "defaultValue": "keyvault-diagnosticSettings",
-                      "metadata": {
-                        "description": "Optional. The name of the diagnostic setting, if deployed. If left empty, it defaults to \"<resourceName>-diagnosticSettings\"."
+                        "description": "Optional. Diagnostic Settings for the Key Vault."
                       }
                     },
                     "appServiceManagedIdentityPrincipalId": {
@@ -43168,8 +44144,24 @@
                     "spokeVNetName": "[variables('spokeVNetIdTokens')[8]]",
                     "virtualNetworkLinks": "[concat(createArray(createObject('virtualNetworkResourceId', parameters('spokeVNetResourceId'), 'registrationEnabled', false())), if(not(empty(parameters('hubVNetResourceId'))), createArray(createObject('virtualNetworkResourceId', parameters('hubVNetResourceId'), 'registrationEnabled', false())), createArray()))]"
                   },
-                  "resources": [
-                    {
+                  "resources": {
+                    "vnetSpoke": {
+                      "existing": true,
+                      "type": "Microsoft.Network/virtualNetworks",
+                      "apiVersion": "2022-01-01",
+                      "subscriptionId": "[variables('spokeSubscriptionId')]",
+                      "resourceGroup": "[variables('spokeResourceGroupName')]",
+                      "name": "[variables('spokeVNetName')]"
+                    },
+                    "spokePrivateEndpointSubnet": {
+                      "existing": true,
+                      "type": "Microsoft.Network/virtualNetworks/subnets",
+                      "apiVersion": "2022-07-01",
+                      "subscriptionId": "[variables('spokeSubscriptionId')]",
+                      "resourceGroup": "[variables('spokeResourceGroupName')]",
+                      "name": "[format('{0}/{1}', variables('spokeVNetName'), parameters('spokePrivateEndpointSubnetName'))]"
+                    },
+                    "vaultdnszone": {
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
                       "name": "[format('keyvaultDnsZoneDeployment-{0}', uniqueString(resourceGroup().id))]",
@@ -46213,7 +47205,7 @@
                         }
                       }
                     },
-                    {
+                    "keyvault": {
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
                       "name": "[format('vault-{0}', uniqueString(resourceGroup().id))]",
@@ -46269,7 +47261,7 @@
                                 "privateDnsZoneGroup": {
                                   "privateDnsZoneGroupConfigs": [
                                     {
-                                      "privateDnsZoneResourceId": "[reference(resourceId('Microsoft.Resources/deployments', format('keyvaultDnsZoneDeployment-{0}', uniqueString(resourceGroup().id))), '2022-09-01').outputs.resourceId.value]"
+                                      "privateDnsZoneResourceId": "[reference('vaultdnszone').outputs.resourceId.value]"
                                     }
                                   ]
                                 },
@@ -46278,22 +47270,7 @@
                             ]
                           },
                           "diagnosticSettings": {
-                            "value": [
-                              {
-                                "name": "[parameters('diagnosticSettingsName')]",
-                                "workspaceResourceId": "[parameters('diagnosticWorkspaceId')]",
-                                "logCategoriesAndGroups": [
-                                  {
-                                    "categoryGroup": "allLogs"
-                                  }
-                                ],
-                                "metricCategories": [
-                                  {
-                                    "category": "AllMetrics"
-                                  }
-                                ]
-                              }
-                            ]
+                            "value": "[parameters('diagnosticSettings')]"
                           },
                           "roleAssignments": {
                             "value": [
@@ -49422,24 +50399,24 @@
                         }
                       },
                       "dependsOn": [
-                        "[resourceId('Microsoft.Resources/deployments', format('keyvaultDnsZoneDeployment-{0}', uniqueString(resourceGroup().id)))]"
+                        "vaultdnszone"
                       ]
                     }
-                  ],
+                  },
                   "outputs": {
                     "keyVaultResourceId": {
                       "type": "string",
                       "metadata": {
                         "description": "The resource ID of the key vault."
                       },
-                      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('vault-{0}', uniqueString(resourceGroup().id))), '2022-09-01').outputs.resourceId.value]"
+                      "value": "[reference('keyvault').outputs.resourceId.value]"
                     },
                     "keyVaultName": {
                       "type": "string",
                       "metadata": {
                         "description": "The name of the key vault."
                       },
-                      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('vault-{0}', uniqueString(resourceGroup().id))), '2022-09-01').outputs.name.value]"
+                      "value": "[reference('keyvault').outputs.name.value]"
                     }
                   }
                 }
@@ -49468,46 +50445,46 @@
         }
       },
       "dependsOn": [
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName')), 'Microsoft.Resources/deployments', 'NamingDeployment')]",
-        "[subscriptionResourceId('Microsoft.Resources/deployments', format('{0}-spokedeployment', uniqueString(deployment().name, parameters('location'))))]"
+        "naming",
+        "spoke"
       ]
     }
-  ],
+  },
   "outputs": {
     "spokeResourceGroupName": {
       "type": "string",
       "metadata": {
         "description": "The name of the Spoke resource group."
       },
-      "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', format('{0}-deployment', uniqueString(deployment().name, parameters('location'), variables('resourceGroupName')))), '2022-09-01').outputs.name.value]"
+      "value": "[reference('resourceGroup').outputs.name.value]"
     },
     "spokeVNetResourceId": {
       "type": "string",
       "metadata": {
         "description": "The  resource ID of the Spoke Virtual Network."
       },
-      "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', format('{0}-spokedeployment', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.vnetSpokeResourceId.value]"
+      "value": "[reference('spoke').outputs.vnetSpokeResourceId.value]"
     },
     "spokeVnetName": {
       "type": "string",
       "metadata": {
         "description": "The name of the Spoke Virtual Network."
       },
-      "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', format('{0}-spokedeployment', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.vnetSpokeName.value]"
+      "value": "[reference('spoke').outputs.vnetSpokeName.value]"
     },
     "keyVaultResourceId": {
       "type": "string",
       "metadata": {
         "description": "The resource ID of the key vault."
       },
-      "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-supportingServicesDeployment', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.keyVaultResourceId.value]"
+      "value": "[reference('supportingServices').outputs.keyVaultResourceId.value]"
     },
     "keyVaultName": {
       "type": "string",
       "metadata": {
         "description": "The name of the Azure key vault."
       },
-      "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-supportingServicesDeployment', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.keyVaultName.value]"
+      "value": "[reference('supportingServices').outputs.keyVaultName.value]"
     }
   }
 }

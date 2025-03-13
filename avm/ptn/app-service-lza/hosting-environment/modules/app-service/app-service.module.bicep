@@ -1,3 +1,5 @@
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+
 @description('Optional, default is false. Set to true if you want to deploy ASE v3 instead of Multitenant App Service Plan.')
 param deployAseV3 bool = false
 
@@ -112,6 +114,15 @@ param siteConfig object = {
 ])
 param kind string = 'app'
 
+@description('Optional. Diagnostic Settings for the App Service.')
+param appserviceDiagnosticSettings diagnosticSettingFullType[]
+
+@description('Optional. Diagnostic Settings for the App Service Plan.')
+param servicePlanDiagnosticSettings diagnosticSettingFullType[]
+
+@description('Optional. Diagnostic Settings for the ASE.')
+param aseDiagnosticSettings diagnosticSettingFullType[]
+
 var webAppDnsZoneName = 'privatelink.azurewebsites.net'
 var slotName = 'staging'
 
@@ -182,7 +193,7 @@ module ase './ase.module.bicep' = if (deployAseV3) {
     zoneRedundant: zoneRedundant
     allowNewPrivateEndpointConnections: true
     virtualNetworkLinks: virtualNetworkLinks
-    logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId
+    diagnosticSettings: aseDiagnosticSettings
   }
 }
 
@@ -216,11 +227,7 @@ module plan 'br/public:avm/res/web/serverfarm:0.2.4' = {
     targetWorkerCount: (targetWorkerCount < 3 && zoneRedundant) ? 3 : targetWorkerCount
     targetWorkerSize: targetWorkerSize
     appServiceEnvironmentId: deployAseV3 ? ase.outputs.resourceId : ''
-    diagnosticSettings: [
-      {
-        workspaceResourceId: logAnalyticsWorkspaceResourceId
-      }
-    ]
+    diagnosticSettings: servicePlanDiagnosticSettings
   }
 }
 
@@ -234,17 +241,7 @@ module webApp 'br/public:avm/res/web/site:0.9.0' = {
     appInsightResourceId: appInsights.outputs.resourceId
     siteConfig: siteConfig
     clientAffinityEnabled: false
-    diagnosticSettings: [
-      {
-        name: 'webApp'
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-          }
-        ]
-        workspaceResourceId: logAnalyticsWorkspaceResourceId
-      }
-    ]
+    diagnosticSettings: appserviceDiagnosticSettings
     virtualNetworkSubnetId: !(deployAseV3) ? subnetIdForVnetInjection : ''
     managedIdentities: {
       userAssignedResourceIds: ['${webAppUserAssignedManagedIdentity.outputs.resourceId}']

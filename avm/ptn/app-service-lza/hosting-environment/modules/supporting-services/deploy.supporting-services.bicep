@@ -4,6 +4,7 @@ import { NamingOutput } from '../naming/naming.module.bicep'
 // ------------------
 //    PARAMETERS
 // ------------------
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 
 param naming NamingOutput
 
@@ -28,9 +29,11 @@ param spokeVNetResourceId string
 param spokePrivateEndpointSubnetName string
 
 @description('Optional. Resource ID of the diagnostic log analytics workspace. If left empty, no diagnostics settings will be defined.')
-param logAnalyticsWorspaceResourceId string = ''
+param logAnalyticsWorkspaceResourceId string = ''
 
 param appServiceManagedIdentityPrincipalId string
+
+param keyVaultDiagnosticSettings diagnosticSettingFullType[] = []
 
 // ------------------
 // RESOURCES
@@ -47,7 +50,24 @@ module keyVault 'modules/key-vault.bicep' = {
     hubVNetResourceId: hubVNetResourceId
     spokeVNetResourceId: spokeVNetResourceId
     spokePrivateEndpointSubnetName: spokePrivateEndpointSubnetName
-    diagnosticWorkspaceId: logAnalyticsWorspaceResourceId
+    diagnosticSettings: !empty(keyVaultDiagnosticSettings)
+      ? keyVaultDiagnosticSettings
+      : [
+          {
+            name: 'keyvault-diagnosticSettings'
+            workspaceResourceId: logAnalyticsWorkspaceResourceId
+            logCategoriesAndGroups: [
+              {
+                categoryGroup: 'allLogs'
+              }
+            ]
+            metricCategories: [
+              {
+                category: 'AllMetrics'
+              }
+            ]
+          }
+        ]
     appServiceManagedIdentityPrincipalId: appServiceManagedIdentityPrincipalId
   }
 }

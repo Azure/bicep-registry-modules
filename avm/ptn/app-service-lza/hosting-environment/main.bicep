@@ -5,6 +5,7 @@ metadata description = 'This Azure App Service pattern module represents an Azur
 // ================ //
 // Parameters       //
 // ================ //
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 
 @maxLength(10)
 @description('Optional. suffix (max 10 characters long) that will be used to name the resources in a pattern like <resourceAbbreviation>-<workloadName>.')
@@ -101,6 +102,21 @@ param autoApproveAfdPrivateEndpoint bool = true
 @allowed(['linux', 'windows', 'none'])
 param vmJumpboxOSType string = 'windows'
 
+@description('Optional. Diagnostic Settings for the App Service Plan.')
+param appserviceDiagnosticSettings diagnosticSettingFullType[] = []
+
+@description('Optional. Diagnostic Settings for the App Service Plan.')
+param servicePlanDiagnosticSettings diagnosticSettingFullType[] = []
+
+@description('Optional. Diagnostic Settings for the ASE.')
+param aseDiagnosticSettings diagnosticSettingFullType[] = []
+
+@description('Optional. Diagnostic Settings for Front Door.')
+param frontDoorDiagnosticSettings diagnosticSettingFullType[] = []
+
+@description('Optional. Diagnostic Settings for the KeyVault.')
+param keyVaultDiagnosticSettings diagnosticSettingFullType[] = []
+
 var resourceSuffix = '${workloadName}-${environmentName}-${location}'
 var resourceGroupName = 'rg-spoke-${resourceSuffix}'
 
@@ -155,6 +171,10 @@ module spoke './modules/spoke/deploy.spoke.bicep' = {
     vmSize: vmSize
     bastionResourceId: bastionResourceId
     vmAuthenticationType: vmAuthenticationType
+    appserviceDiagnosticSettings: appserviceDiagnosticSettings
+    servicePlanDiagnosticSettings: servicePlanDiagnosticSettings
+    aseDiagnosticSettings: aseDiagnosticSettings
+    frontDoorDiagnosticSettings: frontDoorDiagnosticSettings
     tags: tags
   }
 }
@@ -169,7 +189,8 @@ module supportingServices './modules/supporting-services/deploy.supporting-servi
     spokeVNetResourceId: spoke.outputs.vnetSpokeResourceId
     spokePrivateEndpointSubnetName: spoke.outputs.spokePrivateEndpointSubnetName
     appServiceManagedIdentityPrincipalId: spoke.outputs.appServiceManagedIdentityPrincipalId
-    logAnalyticsWorspaceResourceId: spoke.outputs.logAnalyticsWorkspaceResourceId
+    logAnalyticsWorkspaceResourceId: spoke.outputs.logAnalyticsWorkspaceResourceId
+    keyVaultDiagnosticSettings: keyVaultDiagnosticSettings
     hubVNetResourceId: vnetHubResourceId
     tags: tags
   }

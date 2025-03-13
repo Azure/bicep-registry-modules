@@ -2,6 +2,8 @@ targetScope = 'subscription'
 
 import { NamingOutput } from '../naming/naming.module.bicep'
 
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+
 param naming NamingOutput
 
 @description('Required. Azure region where the resources will be deployed in')
@@ -109,6 +111,18 @@ param bastionResourceId string = ''
 
 param resourceGroupName string
 
+@description('Optional. Diagnostic Settings for the App Service.')
+param appserviceDiagnosticSettings diagnosticSettingFullType[] = []
+
+@description('Optional. Diagnostic Settings for the App Service Plan.')
+param servicePlanDiagnosticSettings diagnosticSettingFullType[] = []
+
+@description('Optional. Diagnostic Settings for the ASE.')
+param aseDiagnosticSettings diagnosticSettingFullType[]
+
+@description('Optional. Diagnostic Settings for Front Door.')
+param frontDoorDiagnosticSettings diagnosticSettingFullType[]
+
 var resourceNames = {
   vnetSpoke: take('${naming.virtualNetwork.name}-spoke', 80)
   pepNsg: take('${naming.networkSecurityGroup.name}-pep', 80)
@@ -185,6 +199,50 @@ module webApp '../app-service/app-service.module.bicep' = {
     subnetPrivateEndpointResourceId: networking.outputs.snetPeResourceId
     virtualNetworkLinks: virtualNetworkLinks
     sku: webAppPlanSku
+    appserviceDiagnosticSettings: !empty(appserviceDiagnosticSettings)
+      ? appserviceDiagnosticSettings
+      : [
+          {
+            name: 'appservice-diagnosticSettings'
+            workspaceResourceId: logAnalyticsWs.outputs.resourceId
+            logCategoriesAndGroups: [
+              {
+                categoryGroup: 'allLogs'
+              }
+            ]
+            metricCategories: [
+              {
+                category: 'AllMetrics'
+              }
+            ]
+          }
+        ]
+    servicePlanDiagnosticSettings: !empty(servicePlanDiagnosticSettings)
+      ? servicePlanDiagnosticSettings
+      : [
+          {
+            name: 'servicePlan-diagnosticSettings'
+            workspaceResourceId: logAnalyticsWs.outputs.resourceId
+            metricCategories: [
+              {
+                category: 'AllMetrics'
+              }
+            ]
+          }
+        ]
+    aseDiagnosticSettings: !empty(aseDiagnosticSettings)
+      ? aseDiagnosticSettings
+      : [
+          {
+            name: 'ase-diagnosticSettings'
+            workspaceResourceId: logAnalyticsWs.outputs.resourceId
+            logCategoriesAndGroups: [
+              {
+                categoryGroup: 'allLogs'
+              }
+            ]
+          }
+        ]
   }
 }
 
@@ -208,7 +266,22 @@ module afd '../front-door/front-door.module.bicep' = {
       }
     ]
     skuName: 'Premium_AzureFrontDoor'
-    logAnalyticsWorkspaceResourceId: logAnalyticsWs.outputs.resourceId
+    diagnosticSettings: !empty(frontDoorDiagnosticSettings)
+      ? frontDoorDiagnosticSettings
+      : [
+          {
+            name: 'frontdoor-diagnosticSettings'
+            workspaceResourceId: logAnalyticsWs.outputs.resourceId
+            logCategoriesAndGroups: [
+              {
+                category: 'FrontdoorAccessLog'
+              }
+              {
+                category: 'FrontdoorWebApplicationFirewallLog'
+              }
+            ]
+          }
+        ]
     tags: tags
   }
 }
