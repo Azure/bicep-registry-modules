@@ -62,7 +62,7 @@ module testDeployment '../../../main.bicep' = [
           nestedDependencies.outputs.actionGroupResourceId
         ]
         actionProperties: {
-          propertyA: 'valueA'
+          'Icm.propertyA': 'valueA'
         }
         customProperties: {
           propertyB: 'valueB'
