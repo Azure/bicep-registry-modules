@@ -55,6 +55,7 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       allowConfigFileUpdates: true
       enterpriseGradeCdnStatus: 'Disabled'
+      virtualNetworkResourceId: nestedDependencies.outputs.virtualNetworkResourceId
       privateEndpoints: [
         {
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
