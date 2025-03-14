@@ -626,7 +626,7 @@ param tags = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`createPrivateDnsZone`](#parameter-createprivatednszone) | string | Due the nature of Azure Static Apps, a partition ID is added to the app URL upon creation. Enabling the creation of the private DNS Zone will provision a DNS Zone with the correct partition ID, this is required for private endpoint connectivity to be enabled. You can choose to disable this option and create your own private DNS Zone by leveraging the output of the partitionId within this module. Default is `Enabled`, However the Private DNS Zone will only be created following if a `privateEndpoint` configuration is supplied. |
-| [`virtualNetworkResourceId`](#parameter-virtualnetworkresourceid) | string | The Virtual Network Resource Id to use for the private DNS Zone Vnet Link. Only used if `createPrivateDnsZone` is set to `Enabled` and a Private Endpoint Configuration hs been supplied. |
+| [`virtualNetworkResourceId`](#parameter-virtualnetworkresourceid) | string | The Virtual Network Resource Id to use for the private DNS Zone Vnet Link. Required if `createPrivateDnsZone` is set to `Enabled` and a Private Endpoint Configuration is supplied. |
 
 **Optional parameters**
 
@@ -659,7 +659,7 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`customPrivateDnsZoneResourceId`](#parameter-customprivatednszoneresourceid) | string | If you choose to create your own private DNS Zone, you can provide the resource ID of the private DNS Zone here. This is required if you have disabled the `createPrivateDnsZone` and have supplied a `privateEndpoint` configuration. |
+| [`customPrivateDnsZoneResourceId`](#parameter-customprivatednszoneresourceid) | string | If you choose to create your own private DNS Zone, you can provide the resource ID of the private DNS Zone here. Required if `createPrivateDnsZone` is enabled and a `privateEndpoint` configuration is supplied. |
 
 ### Parameter: `name`
 
@@ -685,7 +685,7 @@ Due the nature of Azure Static Apps, a partition ID is added to the app URL upon
 
 ### Parameter: `virtualNetworkResourceId`
 
-The Virtual Network Resource Id to use for the private DNS Zone Vnet Link. Only used if `createPrivateDnsZone` is set to `Enabled` and a Private Endpoint Configuration hs been supplied.
+The Virtual Network Resource Id to use for the private DNS Zone Vnet Link. Required if `createPrivateDnsZone` is set to `Enabled` and a Private Endpoint Configuration is supplied.
 
 - Required: No
 - Type: string
@@ -1442,7 +1442,7 @@ Template Options for the static site.
 
 ### Parameter: `customPrivateDnsZoneResourceId`
 
-If you choose to create your own private DNS Zone, you can provide the resource ID of the private DNS Zone here. This is required if you have disabled the `createPrivateDnsZone` and have supplied a `privateEndpoint` configuration.
+If you choose to create your own private DNS Zone, you can provide the resource ID of the private DNS Zone here. Required if `createPrivateDnsZone` is enabled and a `privateEndpoint` configuration is supplied.
 
 - Required: No
 - Type: string

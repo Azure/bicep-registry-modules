@@ -103,10 +103,10 @@ param publicNetworkAccess string = ''
 ])
 param createPrivateDnsZone string = 'Enabled'
 
-@description('Conditional. The Virtual Network Resource Id to use for the private DNS Zone Vnet Link. Only used if `createPrivateDnsZone` is set to `Enabled` and a Private Endpoint Configuration hs been supplied.')
+@description('Conditional. The Virtual Network Resource Id to use for the private DNS Zone Vnet Link. Required if `createPrivateDnsZone` is set to `Enabled` and a Private Endpoint Configuration is supplied.')
 param virtualNetworkResourceId string = ''
 
-@description('Condiitonal. If you choose to create your own private DNS Zone, you can provide the resource ID of the private DNS Zone here. This is required if you have disabled the `createPrivateDnsZone` and have supplied a `privateEndpoint` configuration.')
+@description('Condiitonal. If you choose to create your own private DNS Zone, you can provide the resource ID of the private DNS Zone here. Required if `createPrivateDnsZone` is enabled and a `privateEndpoint` configuration is supplied.')
 param customPrivateDnsZoneResourceId string = ''
 
 var enableReferencedModulesTelemetry = false

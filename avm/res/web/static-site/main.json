@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "11291446617249507055"
+      "templateHash": "3301666551456348616"
     },
     "name": "Static Web Apps",
     "description": "This module deploys a Static Web App."
@@ -663,14 +663,14 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Conditional. The Virtual Network Resource Id to use for the private DNS Zone Vnet Link. Only used if `createPrivateDnsZone` is set to `Enabled` and a Private Endpoint Configuration hs been supplied."
+        "description": "Conditional. The Virtual Network Resource Id to use for the private DNS Zone Vnet Link. Required if `createPrivateDnsZone` is set to `Enabled` and a Private Endpoint Configuration is supplied."
       }
     },
     "customPrivateDnsZoneResourceId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Condiitonal. If you choose to create your own private DNS Zone, you can provide the resource ID of the private DNS Zone here. This is required if you have disabled the `createPrivateDnsZone` and have supplied a `privateEndpoint` configuration."
+        "description": "Condiitonal. If you choose to create your own private DNS Zone, you can provide the resource ID of the private DNS Zone here. Required if `createPrivateDnsZone` is enabled and a `privateEndpoint` configuration is supplied."
       }
     }
   },
