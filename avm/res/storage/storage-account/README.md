@@ -3448,6 +3448,7 @@ param tags = {
 | [`queueServices`](#parameter-queueservices) | object | Queue service and queues to create. |
 | [`requireInfrastructureEncryption`](#parameter-requireinfrastructureencryption) | bool | A Boolean indicating whether or not the service applies a secondary layer of encryption with platform managed keys for data at rest. For security reasons, it is recommended to set it to true. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`sasExpirationAction`](#parameter-sasexpirationaction) | string | The SAS expiration action. Allowed values are Block and Log. |
 | [`sasExpirationPeriod`](#parameter-sasexpirationperiod) | string | The SAS expiration period. DD.HH:MM:SS. |
 | [`secretsExportConfiguration`](#parameter-secretsexportconfiguration) | object | Key vault reference and secret settings for the module's secrets export. |
 | [`skuName`](#parameter-skuname) | string | Storage Account Sku Name. |
@@ -4750,6 +4751,21 @@ The principal type of the assigned principal ID.
     'Group'
     'ServicePrincipal'
     'User'
+  ]
+  ```
+
+### Parameter: `sasExpirationAction`
+
+The SAS expiration action. Allowed values are Block and Log.
+
+- Required: No
+- Type: string
+- Default: `'Log'`
+- Allowed:
+  ```Bicep
+  [
+    'Block'
+    'Log'
   ]
   ```
 
