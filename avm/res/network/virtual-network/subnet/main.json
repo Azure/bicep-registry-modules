@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "1989433230243572453"
+      "templateHash": "9582601842367775904"
     },
     "name": "Virtual Network Subnets",
     "description": "This module deploys a Virtual Network Subnet."
@@ -105,7 +105,7 @@
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Conditional. The address prefix for the subnet. Required if `addressPrefixes` is empty."
+        "description": "Conditional. The address prefix for the Subnet. Required if addressPrefixes is empty."
       }
     },
     "networkSecurityGroupResourceId": {

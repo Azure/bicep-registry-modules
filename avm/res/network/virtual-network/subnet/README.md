@@ -29,7 +29,7 @@ This module deploys a Virtual Network Subnet.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`addressPrefix`](#parameter-addressprefix) | string | The address prefix for the subnet. Required if `addressPrefixes` is empty. |
+| [`addressPrefix`](#parameter-addressprefix) | string | The address prefix for the Subnet. Required if addressPrefixes is empty. |
 | [`addressPrefixes`](#parameter-addressprefixes) | array | List of address prefixes for the subnet. Required if `addressPrefix` is empty. |
 | [`virtualNetworkName`](#parameter-virtualnetworkname) | string | The name of the parent virtual network. Required if the template is used in a standalone deployment. |
 
@@ -59,7 +59,7 @@ The Name of the subnet resource.
 
 ### Parameter: `addressPrefix`
 
-The address prefix for the subnet. Required if `addressPrefixes` is empty.
+The address prefix for the Subnet. Required if addressPrefixes is empty.
 
 - Required: No
 - Type: string
