@@ -1875,7 +1875,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       sku: '2022-datacenter-azure-edition'
       version: 'latest'
     }
-    name: 'cvmsswinmin001'
+    name: 'cvmsswinuni001'
     nicConfigurations: [
       {
         ipConfigurations: [
@@ -1883,7 +1883,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
             name: 'ipconfig1'
             properties: {
               publicIPAddressConfiguration: {
-                name: 'pip-cvmsswinmin'
+                name: 'pip-cvmsswinuni'
               }
               subnet: {
                 id: '<id>'
@@ -1939,7 +1939,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
       }
     },
     "name": {
-      "value": "cvmsswinmin001"
+      "value": "cvmsswinuni001"
     },
     "nicConfigurations": {
       "value": [
@@ -1949,7 +1949,7 @@ module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-s
               "name": "ipconfig1",
               "properties": {
                 "publicIPAddressConfiguration": {
-                  "name": "pip-cvmsswinmin"
+                  "name": "pip-cvmsswinuni"
                 },
                 "subnet": {
                   "id": "<id>"
@@ -2009,7 +2009,7 @@ param imageReference = {
   sku: '2022-datacenter-azure-edition'
   version: 'latest'
 }
-param name = 'cvmsswinmin001'
+param name = 'cvmsswinuni001'
 param nicConfigurations = [
   {
     ipConfigurations: [
@@ -2017,7 +2017,7 @@ param nicConfigurations = [
         name: 'ipconfig1'
         properties: {
           publicIPAddressConfiguration: {
-            name: 'pip-cvmsswinmin'
+            name: 'pip-cvmsswinuni'
           }
           subnet: {
             id: '<id>'
