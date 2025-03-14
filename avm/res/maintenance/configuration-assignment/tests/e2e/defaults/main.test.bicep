@@ -24,12 +24,18 @@ param namePrefix string = '#_namePrefix_#'
 // Dependencies //
 // ============ //
 
+#disable-next-line no-hardcoded-location
+var enforcedLocation = 'uksouth'
+
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-  name: resourceGroupName
-  location: resourceLocation
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' existing = {
+  name: 'dep-avmx-compute.virtualMachines-cvmwinwaf-rg'
 }
+
+// resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' existing = {
+//   name: 'avmxcvmwinwaf'
+// }
 
 // ============== //
 // Test Execution //
@@ -39,10 +45,12 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     scope: resourceGroup
-    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      location: resourceLocation
+      location: enforcedLocation
+      maintenanceConfigurationResourceId: '/subscriptions/cfa4dc0b-3d25-4e58-a70a-7085359080c5/resourcegroups/dep-avmx-compute.virtualmachines-cvmwinwaf-rg/providers/microsoft.maintenance/maintenanceconfigurations/dep-avmx-mc-cvmwinwaf'
+      resourceId: '/subscriptions/cfa4dc0b-3d25-4e58-a70a-7085359080c5/resourceGroups/dep-avmx-compute.virtualmachines-cvmwinwaf-rg/providers/Microsoft.Compute/virtualMachines/avmxcvmwinwaf'
     }
   }
 ]
