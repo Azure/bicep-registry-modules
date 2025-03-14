@@ -71,6 +71,7 @@ body:
         - "avm/ptn/network/hub-networking"
         - "avm/ptn/network/private-link-private-dns-zones"
         - "avm/ptn/policy-insights/remediation"
+        - "avm/ptn/sa/conversation-knowledge-mining"
         - "avm/ptn/security/security-center"
         - "avm/ptn/virtual-machine-images/azure-image-builder"
         - "avm/res/aad/domain-service"
