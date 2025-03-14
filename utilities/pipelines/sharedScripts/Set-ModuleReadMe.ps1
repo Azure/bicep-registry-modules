@@ -520,7 +520,7 @@ function Set-DefinitionSection {
             ((-not [String]::IsNullOrEmpty($formattedMaxValue)) ? $formattedMaxValue : $null),
             ((-not [String]::IsNullOrEmpty($formattedRoleNames)) ? $formattedRoleNames : $null),
             ((-not [String]::IsNullOrEmpty($formattedExample)) ? $formattedExample : $null),
-            (($definition.discriminator.propertyName) ? ('- Type-deciding property: `{0}`' -f $definition.discriminator.propertyName) : $null),
+            (($definition.discriminator.propertyName) ? ('- Discriminator: `{0}`' -f $definition.discriminator.propertyName) : $null),
                 ''
             ) | Where-Object { $null -ne $_ }
 
