@@ -211,7 +211,7 @@ type alertWebtestType = {
   @description('Required. The type of the alert criteria.')
   'odata.type': 'Microsoft.Azure.Monitor.WebtestLocationAvailabilityCriteria'
 
-  @description('Required. The Application Insights resource Id.')
+  @description('Required. The Application Insights resource ID.')
   componentResourceId: string
 
   @description('Required. The number of failed locations.')
