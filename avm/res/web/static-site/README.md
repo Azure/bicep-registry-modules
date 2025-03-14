@@ -478,6 +478,7 @@ module staticSite 'br/public:avm/res/web/static-site:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
+    virtualNetworkResourceId: '<virtualNetworkResourceId>'
   }
 }
 ```
@@ -553,6 +554,9 @@ module staticSite 'br/public:avm/res/web/static-site:<version>' = {
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
+    },
+    "virtualNetworkResourceId": {
+      "value": "<virtualNetworkResourceId>"
     }
   }
 }
@@ -608,6 +612,7 @@ param tags = {
   'hidden-title': 'This is visible in the resource name'
   Role: 'DeploymentValidation'
 }
+param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 ```
 
 </details>
