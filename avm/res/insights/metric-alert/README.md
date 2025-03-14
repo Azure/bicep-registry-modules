@@ -524,7 +524,7 @@ Maps to the 'odata.type' field. Specifies the type of the alert criteria.
 
 - Required: Yes
 - Type: object
-- Type-deciding property: odata.type
+- Discriminator: `odata.type`
 
 <h4>The available variants are:</h4>
 
@@ -543,14 +543,14 @@ To use this variant, set the property `odata.type` to `Microsoft.Azure.Monitor.W
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`componentResourceId`](#parameter-criteriaodatatype-microsoftazuremonitorwebtestlocationavailabilitycriteriacomponentresourceid) | string | The Application Insights resource Id. |
+| [`componentResourceId`](#parameter-criteriaodatatype-microsoftazuremonitorwebtestlocationavailabilitycriteriacomponentresourceid) | string | The Application Insights resource ID. |
 | [`failedLocationCount`](#parameter-criteriaodatatype-microsoftazuremonitorwebtestlocationavailabilitycriteriafailedlocationcount) | int | The number of failed locations. |
 | [`odata.type`](#parameter-criteriaodatatype-microsoftazuremonitorwebtestlocationavailabilitycriteriaodatatype) | string | The type of the alert criteria. |
-| [`webTestResourceId`](#parameter-criteriaodatatype-microsoftazuremonitorwebtestlocationavailabilitycriteriawebtestresourceid) | string | The Application Insights web test resource Id. |
+| [`webTestResourceId`](#parameter-criteriaodatatype-microsoftazuremonitorwebtestlocationavailabilitycriteriawebtestresourceid) | string | The Application Insights web test resource ID. |
 
 ### Parameter: `criteria.odata.type-Microsoft.Azure.Monitor.WebtestLocationAvailabilityCriteria.componentResourceId`
 
-The Application Insights resource Id.
+The Application Insights resource ID.
 
 - Required: Yes
 - Type: string
@@ -577,7 +577,7 @@ The type of the alert criteria.
 
 ### Parameter: `criteria.odata.type-Microsoft.Azure.Monitor.WebtestLocationAvailabilityCriteria.webTestResourceId`
 
-The Application Insights web test resource Id.
+The Application Insights web test resource ID.
 
 - Required: Yes
 - Type: string

@@ -1841,7 +1841,7 @@ The schedule information for the role assignment.
 
 - Required: Yes
 - Type: object
-- Type-deciding property: durationType
+- Discriminator: `durationType`
 
 <h4>The available variants are:</h4>
 
@@ -2191,7 +2191,7 @@ The type of template for the role assignment condition.
 
 - Required: No
 - Type: object
-- Type-deciding property: templateName
+- Discriminator: `templateName`
 
 <h4>The available variants are:</h4>
 

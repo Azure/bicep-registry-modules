@@ -791,7 +791,7 @@ The distribution targets where the image output needs to go to.
 
 - Required: Yes
 - Type: array
-- Type-deciding property: type
+- Discriminator: `type`
 
 <h4>The available variants are:</h4>
 
@@ -810,13 +810,8 @@ To use this variant, set the property `type` to `SharedImage`.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`type`](#parameter-distributionstype-sharedimagetype) | string | The type of distribution. |
-
-**Conditional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
 | [`sharedImageGalleryImageDefinitionResourceId`](#parameter-distributionstype-sharedimagesharedimagegalleryimagedefinitionresourceid) | string | Resource ID of Compute Gallery Image Definition to distribute image to, e.g.: /subscriptions/<subscriptionID>/resourceGroups/<SIG resourcegroup>/providers/Microsoft.Compute/galleries/<SIG name>/images/<image definition>. |
+| [`type`](#parameter-distributionstype-sharedimagetype) | string | The type of distribution. |
 
 **Optional parameters**
 
@@ -828,6 +823,13 @@ To use this variant, set the property `type` to `SharedImage`.
 | [`runOutputName`](#parameter-distributionstype-sharedimagerunoutputname) | string | The name to be used for the associated RunOutput. If not provided, a name will be calculated. |
 | [`sharedImageGalleryImageDefinitionTargetVersion`](#parameter-distributionstype-sharedimagesharedimagegalleryimagedefinitiontargetversion) | string | Version of the Compute Gallery Image. Supports the following Version Syntax: Major.Minor.Build (i.e., '1.1.1' or '10.1.2'). If not provided, a version will be calculated. |
 | [`storageAccountType`](#parameter-distributionstype-sharedimagestorageaccounttype) | string | The storage account type of the image. Defaults to [Standard_LRS]. |
+
+### Parameter: `distributions.type-SharedImage.sharedImageGalleryImageDefinitionResourceId`
+
+Resource ID of Compute Gallery Image Definition to distribute image to, e.g.: /subscriptions/<subscriptionID>/resourceGroups/<SIG resourcegroup>/providers/Microsoft.Compute/galleries/<SIG name>/images/<image definition>.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `distributions.type-SharedImage.type`
 
@@ -841,13 +843,6 @@ The type of distribution.
     'SharedImage'
   ]
   ```
-
-### Parameter: `distributions.type-SharedImage.sharedImageGalleryImageDefinitionResourceId`
-
-Resource ID of Compute Gallery Image Definition to distribute image to, e.g.: /subscriptions/<subscriptionID>/resourceGroups/<SIG resourcegroup>/providers/Microsoft.Compute/galleries/<SIG name>/images/<image definition>.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `distributions.type-SharedImage.artifactTags`
 

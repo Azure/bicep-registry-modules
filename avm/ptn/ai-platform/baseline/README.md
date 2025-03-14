@@ -1608,7 +1608,7 @@ The outbound rule. The name of the rule is the object key.
 
 - Required: Yes
 - Type: object
-- Type-deciding property: type
+- Discriminator: `type`
 
 <h4>The available variants are:</h4>
 

@@ -1710,7 +1710,7 @@ The properties of the connection, specific to the auth type.
 
 - Required: Yes
 - Type: secureObject
-- Type-deciding property: authType
+- Discriminator: `authType`
 
 <h4>The available variants are:</h4>
 
@@ -1718,6 +1718,7 @@ The properties of the connection, specific to the auth type.
 | :-- | :-- |
 | [`AAD`](#variant-connectionsconnectionpropertiesauthtype-aad) |  |
 | [`AccessKey`](#variant-connectionsconnectionpropertiesauthtype-accesskey) |  |
+| [`AccountKey`](#variant-connectionsconnectionpropertiesauthtype-accountkey) |  |
 | [`ApiKey`](#variant-connectionsconnectionpropertiesauthtype-apikey) |  |
 | [`CustomKeys`](#variant-connectionsconnectionpropertiesauthtype-customkeys) |  |
 | [`ManagedIdentity`](#variant-connectionsconnectionpropertiesauthtype-managedidentity) |  |
@@ -1801,6 +1802,51 @@ The connection access key ID.
 ### Parameter: `connections.connectionProperties.authType-AccessKey.credentials.secretAccessKey`
 
 The connection secret access key.
+
+- Required: Yes
+- Type: string
+
+### Variant: `connections.connectionProperties.authType-AccountKey`
+
+
+To use this variant, set the property `authType` to `AccountKey`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`authType`](#parameter-connectionsconnectionpropertiesauthtype-accountkeyauthtype) | string | The authentication type of the connection target. |
+| [`credentials`](#parameter-connectionsconnectionpropertiesauthtype-accountkeycredentials) | object | The credentials for the connection. |
+
+### Parameter: `connections.connectionProperties.authType-AccountKey.authType`
+
+The authentication type of the connection target.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AccountKey'
+  ]
+  ```
+
+### Parameter: `connections.connectionProperties.authType-AccountKey.credentials`
+
+The credentials for the connection.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`key`](#parameter-connectionsconnectionpropertiesauthtype-accountkeycredentialskey) | string | The connection key. |
+
+### Parameter: `connections.connectionProperties.authType-AccountKey.credentials.key`
+
+The connection key.
 
 - Required: Yes
 - Type: string
@@ -2786,7 +2832,7 @@ The outbound rule. The name of the rule is the object key.
 
 - Required: Yes
 - Type: object
-- Type-deciding property: type
+- Discriminator: `type`
 
 <h4>The available variants are:</h4>
 

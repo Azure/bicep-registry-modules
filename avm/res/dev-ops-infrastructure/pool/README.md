@@ -722,7 +722,7 @@ Defines how the machine will be handled once it executed a job.
 
 - Required: Yes
 - Type: object
-- Type-deciding property: kind
+- Discriminator: `kind`
 
 <h4>The available variants are:</h4>
 
@@ -1137,7 +1137,7 @@ Determines how the stand-by scheme should be provided.
 
 - Required: No
 - Type: object
-- Type-deciding property: kind
+- Discriminator: `kind`
 
 <h4>The available variants are:</h4>
 
@@ -1602,7 +1602,7 @@ Determines how the stand-by scheme should be provided.
 
 - Required: No
 - Type: object
-- Type-deciding property: kind
+- Discriminator: `kind`
 
 <h4>The available variants are:</h4>
 

@@ -2815,7 +2815,7 @@ The kind of data collection rule.
 
 - Required: Yes
 - Type: object
-- Type-deciding property: kind
+- Discriminator: `kind`
 
 <h4>The available variants are:</h4>
 

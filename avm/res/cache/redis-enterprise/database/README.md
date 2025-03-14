@@ -401,7 +401,7 @@ The persistence settings of the service.
       type: 'disabled'
   }
   ```
-- Type-deciding property: type
+- Discriminator: `type`
 
 <h4>The available variants are:</h4>
 

@@ -2387,7 +2387,7 @@ Specifies one of the following four configurations: Active-Active with (clusterM
 
 - Required: Yes
 - Type: object
-- Type-deciding property: clusterMode
+- Discriminator: `clusterMode`
 
 <h4>The available variants are:</h4>
 

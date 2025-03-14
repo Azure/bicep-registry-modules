@@ -1328,7 +1328,7 @@ The networking configuration.
 
 - Required: Yes
 - Type: object
-- Type-deciding property: networkType
+- Discriminator: `networkType`
 
 <h4>The available variants are:</h4>
 
@@ -1514,7 +1514,7 @@ The compute type networking type.
 
 - Required: Yes
 - Type: object
-- Type-deciding property: computeNetworkType
+- Discriminator: `computeNetworkType`
 
 <h4>The available variants are:</h4>
 
@@ -1670,7 +1670,7 @@ The self-hosted runner configuration. This can be either GitHub or Azure DevOps.
 
 - Required: Yes
 - Type: object
-- Type-deciding property: selfHostedType
+- Discriminator: `selfHostedType`
 
 <h4>The available variants are:</h4>
 

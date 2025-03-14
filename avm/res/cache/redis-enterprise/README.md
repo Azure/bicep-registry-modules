@@ -1729,7 +1729,7 @@ The persistence settings of the service.
 
 - Required: No
 - Type: object
-- Type-deciding property: type
+- Discriminator: `type`
 
 <h4>The available variants are:</h4>
 

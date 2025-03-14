@@ -397,7 +397,7 @@ The type of the PIM role assignment whether its active or eligible.
 
 - Required: Yes
 - Type: object
-- Type-deciding property: roleAssignmentType
+- Discriminator: `roleAssignmentType`
 
 <h4>The available variants are:</h4>
 
@@ -445,7 +445,7 @@ The schedule information for the role assignment.
 
 - Required: Yes
 - Type: object
-- Type-deciding property: durationType
+- Discriminator: `durationType`
 
 <h4>The available variants are:</h4>
 
@@ -618,7 +618,7 @@ The schedule information for the role assignment.
 
 - Required: Yes
 - Type: object
-- Type-deciding property: durationType
+- Discriminator: `durationType`
 
 <h4>The available variants are:</h4>
 

@@ -159,7 +159,7 @@ The properties of the connection, specific to the auth type.
 
 - Required: Yes
 - Type: secureObject
-- Type-deciding property: authType
+- Discriminator: `authType`
 
 <h4>The available variants are:</h4>
 
@@ -167,6 +167,7 @@ The properties of the connection, specific to the auth type.
 | :-- | :-- |
 | [`AAD`](#variant-connectionpropertiesauthtype-aad) |  |
 | [`AccessKey`](#variant-connectionpropertiesauthtype-accesskey) |  |
+| [`AccountKey`](#variant-connectionpropertiesauthtype-accountkey) |  |
 | [`ApiKey`](#variant-connectionpropertiesauthtype-apikey) |  |
 | [`CustomKeys`](#variant-connectionpropertiesauthtype-customkeys) |  |
 | [`ManagedIdentity`](#variant-connectionpropertiesauthtype-managedidentity) |  |
@@ -250,6 +251,51 @@ The connection access key ID.
 ### Parameter: `connectionProperties.authType-AccessKey.credentials.secretAccessKey`
 
 The connection secret access key.
+
+- Required: Yes
+- Type: string
+
+### Variant: `connectionProperties.authType-AccountKey`
+
+
+To use this variant, set the property `authType` to `AccountKey`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`authType`](#parameter-connectionpropertiesauthtype-accountkeyauthtype) | string | The authentication type of the connection target. |
+| [`credentials`](#parameter-connectionpropertiesauthtype-accountkeycredentials) | object | The credentials for the connection. |
+
+### Parameter: `connectionProperties.authType-AccountKey.authType`
+
+The authentication type of the connection target.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AccountKey'
+  ]
+  ```
+
+### Parameter: `connectionProperties.authType-AccountKey.credentials`
+
+The credentials for the connection.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`key`](#parameter-connectionpropertiesauthtype-accountkeycredentialskey) | string | The connection key. |
+
+### Parameter: `connectionProperties.authType-AccountKey.credentials.key`
+
+The connection key.
 
 - Required: Yes
 - Type: string
