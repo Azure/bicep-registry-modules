@@ -193,6 +193,7 @@ module staticSite 'br/public:avm/res/web/static-site:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
+    virtualNetworkResourceId: '<virtualNetworkResourceId>'
   }
 }
 ```
@@ -319,6 +320,9 @@ module staticSite 'br/public:avm/res/web/static-site:<version>' = {
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
       }
+    },
+    "virtualNetworkResourceId": {
+      "value": "<virtualNetworkResourceId>"
     }
   }
 }
@@ -415,6 +419,7 @@ param tags = {
   'hidden-title': 'This is visible in the resource name'
   Role: 'DeploymentValidation'
 }
+param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 ```
 
 </details>
@@ -616,6 +621,13 @@ param tags = {
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | The name of the static site. |
 
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`createPrivateDnsZone`](#parameter-createprivatednszone) | string | Due the nature of Azure Static Apps, a partition ID is added to the app URL upon creation. Enabling the creation of the private DNS Zone will provision a DNS Zone with the correct partition ID, this is required for private endpoint connectivity to be enabled. You can choose to disable this option and create your own private DNS Zone by leveraging the output of the partitionId within this module. Default is `Enabled`, However the Private DNS Zone will only be created following if a `privateEndpoint` configuration is supplied. |
+| [`virtualNetworkResourceId`](#parameter-virtualnetworkresourceid) | string | The Virtual Network Resource Id to use for the private DNS Zone Vnet Link. Only used if `createPrivateDnsZone` is set to `Enabled` and a Private Endpoint Configuration hs been supplied. |
+
 **Optional parameters**
 
 | Parameter | Type | Description |
@@ -647,7 +659,6 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`createPrivateDnsZone`](#parameter-createprivatednszone) | string | Due the nature of Azure Static Apps, a partition ID is added to the app URL upon creation. Enabling the creation of the private DNS Zone will provision a DNS Zone with the correct partition ID, this is required for private endpoint connectivity to be enabled. You can choose to disable this option and create your own private DNS Zone by leveraging the output of the partitionId within this module. Default is `Enabled`, However the Private Dns Zone will only be created following if a `privateEndpoint` configuration is supplied. |
 | [`customPrivateDnsZoneResourceId`](#parameter-customprivatednszoneresourceid) | string | If you choose to create your own private DNS Zone, you can provide the resource ID of the private DNS Zone here. This is required if you have disabled the `createPrivateDnsZone` and have supplied a `privateEndpoint` configuration. |
 
 ### Parameter: `name`
@@ -656,6 +667,29 @@ The name of the static site.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `createPrivateDnsZone`
+
+Due the nature of Azure Static Apps, a partition ID is added to the app URL upon creation. Enabling the creation of the private DNS Zone will provision a DNS Zone with the correct partition ID, this is required for private endpoint connectivity to be enabled. You can choose to disable this option and create your own private DNS Zone by leveraging the output of the partitionId within this module. Default is `Enabled`, However the Private DNS Zone will only be created following if a `privateEndpoint` configuration is supplied.
+
+- Required: No
+- Type: string
+- Default: `'Enabled'`
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
+### Parameter: `virtualNetworkResourceId`
+
+The Virtual Network Resource Id to use for the private DNS Zone Vnet Link. Only used if `createPrivateDnsZone` is set to `Enabled` and a Private Endpoint Configuration hs been supplied.
+
+- Required: No
+- Type: string
+- Default: `''`
 
 ### Parameter: `allowConfigFileUpdates`
 
@@ -1405,21 +1439,6 @@ Template Options for the static site.
 
 - Required: No
 - Type: object
-
-### Parameter: `createPrivateDnsZone`
-
-Due the nature of Azure Static Apps, a partition ID is added to the app URL upon creation. Enabling the creation of the private DNS Zone will provision a DNS Zone with the correct partition ID, this is required for private endpoint connectivity to be enabled. You can choose to disable this option and create your own private DNS Zone by leveraging the output of the partitionId within this module. Default is `Enabled`, However the Private Dns Zone will only be created following if a `privateEndpoint` configuration is supplied.
-
-- Required: No
-- Type: string
-- Default: `'Enabled'`
-- Allowed:
-  ```Bicep
-  [
-    'Disabled'
-    'Enabled'
-  ]
-  ```
 
 ### Parameter: `customPrivateDnsZoneResourceId`
 
