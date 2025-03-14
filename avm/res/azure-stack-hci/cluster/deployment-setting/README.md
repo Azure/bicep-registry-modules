@@ -30,7 +30,7 @@ This module deploys an Azure Stack HCI Cluster Deployment Settings resource.
 | [`domainFqdn`](#parameter-domainfqdn) | string | The domain name of the Active Directory Domain Services. Example: "contoso.com". |
 | [`domainOUPath`](#parameter-domainoupath) | string | The ADDS OU path - ex "OU=HCI,DC=contoso,DC=com". |
 | [`endingIPAddress`](#parameter-endingipaddress) | string | The ending IP address for the Infrastructure Network IP pool. There must be at least 6 IPs between startingIPAddress and endingIPAddress and this pool should be not include the node IPs. |
-| [`keyVaultName`](#parameter-keyvaultname) | string | The name of the key vault to be used for storing secrets for the HCI cluster. This currently needs to be unique per HCI cluster. |
+| [`keyVaultName`](#parameter-keyvaultname) | string | The name of the key vault to be used for storing secrets for the HCI cluster. |
 | [`networkIntents`](#parameter-networkintents) | array | An array of Network ATC Network Intent objects that define the Compute, Management, and Storage network configuration for the cluster. |
 | [`startingIPAddress`](#parameter-startingipaddress) | string | The starting IP address for the Infrastructure Network IP pool. There must be at least 6 IPs between startingIPAddress and endingIPAddress and this pool should be not include the node IPs. |
 | [`storageConnectivitySwitchless`](#parameter-storageconnectivityswitchless) | bool | Specify whether the Storage Network connectivity is switched or switchless. |
@@ -144,7 +144,7 @@ The ending IP address for the Infrastructure Network IP pool. There must be at l
 
 ### Parameter: `keyVaultName`
 
-The name of the key vault to be used for storing secrets for the HCI cluster. This currently needs to be unique per HCI cluster.
+The name of the key vault to be used for storing secrets for the HCI cluster.
 
 - Required: Yes
 - Type: string
