@@ -217,6 +217,6 @@ type alertWebtestType = {
   @description('Required. The number of failed locations.')
   failedLocationCount: int
 
-  @description('Required. The Application Insights web test resource Id.')
+  @description('Required. The Application Insights web test resource ID.')
   webTestResourceId: string
 }
