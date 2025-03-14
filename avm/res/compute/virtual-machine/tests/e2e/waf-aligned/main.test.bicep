@@ -313,10 +313,6 @@ module testDeployment '../../../main.bicep' = [
           Role: 'DeploymentValidation'
         }
       }
-      lock: {
-        kind: 'None'
-        name: 'myCustomLockName'
-      }
       proximityPlacementGroupResourceId: nestedDependencies.outputs.proximityPlacementGroupResourceId
       roleAssignments: [
         {
