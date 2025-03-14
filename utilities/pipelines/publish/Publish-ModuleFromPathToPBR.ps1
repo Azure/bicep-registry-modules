@@ -52,15 +52,13 @@ function Publish-ModuleFromPathToPBR {
     $resultSet = [ordered]@{}
 
     # 1. Get list of all versioned modules (including top level and child modules) and iterate on it
-    Write-Verbose "topModuleFolderPath: $topModuleFolderPath" -Verbose
     $list = Get-VersionedModuleList -Path $topModuleFolderPath
     $versionedModuleCount = $list.count
-    Write-Verbose "number of versioned modules: $versionedModuleCount" -Verbose
+    Write-Verbose "Number of versioned modules in [$topModuleFolderPath]: [$versionedModuleCount]" -Verbose
 
     foreach ($moduleFolderPath in $list) {
 
         $moduleBicepFilePath = Join-Path $moduleFolderPath 'main.bicep'
-
         Write-Verbose "moduleFolderPath: $moduleFolderPath" -Verbose
         Write-Verbose "moduleBicepFilePath: $moduleBicepFilePath" -Verbose
         $moduleFolderRelativePath = ($moduleFolderPath -replace ('{0}[\/|\\]' -f [Regex]::Escape($repoRoot)), '') -replace '\\', '/'
@@ -76,7 +74,6 @@ function Publish-ModuleFromPathToPBR {
         $targetVersion = Get-ModuleTargetVersion -ModuleFolderPath $moduleFolderPath
 
         # 4. Get Target Published Module Name
-        # $publishedModuleName = Get-BRMRepositoryName -TemplateFilePath $TemplateFilePath
         $publishedModuleName = Get-BRMRepositoryName -TemplateFilePath $moduleBicepFilePath
 
         # 5.Create release tag
