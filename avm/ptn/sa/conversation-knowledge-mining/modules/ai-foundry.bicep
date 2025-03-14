@@ -91,15 +91,7 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.18.2' = {
     enableTelemetry: enableTelemetry
     diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspaceResourceId }]
     skuName: storageAccountSkuName
-    kind: 'StorageV2'
-    accessTier: 'Hot'
-    minimumTlsVersion: 'TLS1_2'
-    allowBlobPublicAccess: false
-    allowCrossTenantReplication: false
     allowSharedKeyAccess: false
-    requireInfrastructureEncryption: true
-    enableHierarchicalNamespace: false
-    largeFileSharesState: 'Disabled'
     enableNfsV3: false
     networkAcls: {
       bypass: 'AzureServices'
@@ -136,16 +128,11 @@ module avmInsightsComponent 'br/public:avm/res/insights/component:0.6.0' = {
     enableTelemetry: enableTelemetry
     diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspaceResourceId }]
     kind: 'web'
-    applicationType: 'web'
     disableIpMasking: false
-    disableLocalAuth: false
     flowType: 'Bluefield'
-    forceCustomerStorageForProfiler: false
     retentionInDays: applicationInsightsRetentionInDays
     // MISSING: ImmediatePurgeDataOn30Days: true
     // MISSING: IngestionMode: 'ApplicationInsights'
-    publicNetworkAccessForIngestion: 'Enabled'
-    publicNetworkAccessForQuery: 'Enabled'
     requestSource: 'rest'
   }
 }
@@ -160,14 +147,8 @@ module avmContainerRegistryRegistry 'br/public:avm/res/container-registry/regist
     enableTelemetry: enableTelemetry
     diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspaceResourceId }]
     acrSku: containerRegistrySkuName
-    acrAdminUserEnabled: false
-    dataEndpointEnabled: false
-    networkRuleBypassOptions: 'AzureServices'
-    networkRuleSetDefaultAction: 'Deny'
     quarantinePolicyStatus: 'enabled'
-    retentionPolicyStatus: 'enabled'
     retentionPolicyDays: 7
-    trustPolicyStatus: 'disabled'
     publicNetworkAccess: 'Disabled'
     zoneRedundancy: 'Disabled'
   }
@@ -251,13 +232,9 @@ module avmSearchSearchServices 'br/public:avm/res/search/search-service:0.9.1' =
     diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspaceResourceId }]
     sku: searchServiceSkuName
     replicaCount: 1
-    partitionCount: 1
-    hostingMode: 'default'
-    publicNetworkAccess: 'Enabled'
     networkRuleSet: {
       ipRules: []
     }
-    cmkEnforcement: 'Unspecified'
     disableLocalAuth: false
     authOptions: {
       apiKeyOnly: {}

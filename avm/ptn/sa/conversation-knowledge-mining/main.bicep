@@ -665,9 +665,6 @@ module avmKeyVault 'br/public:avm/res/key-vault/vault:0.12.1' = {
     diagnosticSettings: [{ workspaceResourceId: avmLogAnalyticsWorkspace.outputs.resourceId }]
     sku: keyVaultSku
     createMode: keyVaultCreateMode
-    enableVaultForDeployment: true
-    enableVaultForDiskEncryption: true
-    enableVaultForTemplateDeployment: true
     enableSoftDelete: keyVaultSoftDeleteEnabled
     softDeleteRetentionInDays: keyVaultSoftDeleteRetentionInDays
     enablePurgeProtection: keyVaultPurgeProtectionEnabled
@@ -761,15 +758,7 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.18.2' = {
     enableTelemetry: enableTelemetry
     diagnosticSettings: [{ workspaceResourceId: avmLogAnalyticsWorkspace.outputs.resourceId }]
     skuName: storageAccountSkuName
-    kind: 'StorageV2'
-    accessTier: 'Hot'
-    minimumTlsVersion: 'TLS1_2'
-    allowBlobPublicAccess: false
-    allowCrossTenantReplication: false
     allowSharedKeyAccess: false
-    requireInfrastructureEncryption: true
-    enableHierarchicalNamespace: false
-    largeFileSharesState: 'Disabled'
     enableNfsV3: false
     networkAcls: {
       bypass: 'AzureServices'
@@ -824,7 +813,6 @@ module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.11.2' = {
     location: cosmosDbAccountLocation
     enableTelemetry: enableTelemetry
     diagnosticSettings: [{ workspaceResourceId: avmLogAnalyticsWorkspace.outputs.resourceId }]
-    defaultConsistencyLevel: 'Session'
     locations: [
       {
         locationName: cosmosDbAccountLocation
@@ -832,9 +820,7 @@ module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.11.2' = {
         isZoneRedundant: false
       }
     ]
-    databaseAccountOfferType: 'Standard'
     automaticFailover: false
-    enableMultipleWriteLocations: false
     disableLocalAuth: false
     capabilitiesToAdd: ['EnableServerless']
     serverVersion: '4.0'
@@ -1119,7 +1105,6 @@ module avmServerFarmWebapp 'br/public:avm/res/web/serverfarm:0.4.1' = {
     enableTelemetry: enableTelemetry
     diagnosticSettings: [{ workspaceResourceId: avmLogAnalyticsWorkspace.outputs.resourceId }]
     skuName: webAppServerFarmSku
-    reserved: true
     kind: 'linux'
   }
 }
