@@ -7,7 +7,7 @@ param name string
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-@description('Required. An Array of 1 or more IP Address Prefixes for the Virtual Network.')
+@description('Required. An Array of one or more IP Address Prefixes for the Virtual Network.')
 param addressPrefixes array
 
 @description('Optional. The BGP community associated with the virtual network.')

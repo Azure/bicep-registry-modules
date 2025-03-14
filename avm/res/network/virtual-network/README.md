@@ -1113,7 +1113,7 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`addressPrefixes`](#parameter-addressprefixes) | array | An Array of 1 or more IP Address Prefixes for the Virtual Network. |
+| [`addressPrefixes`](#parameter-addressprefixes) | array | An Array of one or more IP Address Prefixes for the Virtual Network. |
 | [`name`](#parameter-name) | string | The name of the Virtual Network (vNet). |
 
 **Optional parameters**
@@ -1138,7 +1138,7 @@ param tags = {
 
 ### Parameter: `addressPrefixes`
 
-An Array of 1 or more IP Address Prefixes for the Virtual Network.
+An Array of one or more IP Address Prefixes for the Virtual Network.
 
 - Required: Yes
 - Type: array
