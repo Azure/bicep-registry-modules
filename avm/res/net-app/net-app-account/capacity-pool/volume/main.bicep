@@ -101,6 +101,12 @@ param smbNonBrowsable string = 'Disabled'
 @description('Optional. Define if a volume is KerberosEnabled.')
 param kerberosEnabled bool = false
 
+@description('Optional. Defines the security style of the Volume.')
+param securityStyle string = ''
+
+@description('Optional.Unix Permissions for NFS volume.')
+param unixPermissions string = ''
+
 var remoteCapacityPoolName = !empty(dataProtection.?replication.?remoteVolumeResourceId)
   ? split(dataProtection.?replication.?remoteVolumeResourceId!, '/')[10]
   : ''
@@ -196,6 +202,8 @@ resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2024-07-0
     coolAccess: coolAccess
     coolAccessRetrievalPolicy: coolAccessRetrievalPolicy
     coolnessPeriod: coolnessPeriod
+    securityStyle: !empty(securityStyle) ? securityStyle : null
+    unixPermissions: !empty(unixPermissions) ? unixPermissions : null
     encryptionKeySource: encryptionKeySource
     ...(encryptionKeySource != 'Microsoft.NetApp'
       ? {
@@ -212,26 +220,26 @@ resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2024-07-0
           replication: !empty(dataProtection.?replication)
             ? {
                 endpointType: dataProtection.?replication!.endpointType
-                remoteVolumeRegion: !empty(dataProtection.?replication.?remoteVolumeResourceId)
-                  ? remoteNetAppAccount::remoteCapacityPool::remoteVolume.id
+                remoteVolumeRegion: !empty(dataProtection.?replication.?remoteVolumeRegion)
+                  ? dataProtection.?replication.?remoteVolumeRegion
                   : null
                 remoteVolumeResourceId: dataProtection.?replication!.?remoteVolumeResourceId
                 replicationSchedule: dataProtection.?replication!.replicationSchedule
                 remotePath: dataProtection.?replication!.?remotePath
               }
-            : {}
+            : null
           backup: !empty(dataProtection.?backup)
             ? {
                 backupPolicyId: netAppAccount::backupPolicy.id
                 policyEnforced: dataProtection.?backup.policyEnforced ?? false
                 backupVaultId: netAppAccount::backupVault.id
               }
-            : {}
+            : null
           snapshot: !empty(dataProtection.?snapshot)
             ? {
                 snapshotPolicyId: netAppAccount::snapshotPolicy.id
               }
-            : {}
+            : null
         }
       : null
     networkFeatures: networkFeatures

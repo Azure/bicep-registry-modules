@@ -123,6 +123,8 @@ module capacityPool_volumes 'volume/main.bicep' = [
       smbEncryption: volume.?smbEncryption
       smbNonBrowsable: volume.?smbNonBrowsable
       volumeType: volume.?volumeType
+      securityStyle: volume.?securityStyle
+      unixPermissions: volume.?unixPermissions
     }
   }
 ]
