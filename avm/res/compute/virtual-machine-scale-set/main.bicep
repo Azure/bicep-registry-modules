@@ -326,6 +326,22 @@ var publicKeysFormatted = [
   }
 ]
 
+var networkInterfaceConfigurations = [
+  for (nicConfiguration, index) in nicConfigurations: {
+    name: '${name}${nicConfiguration.nicSuffix}configuration-${index}'
+    properties: {
+      primary: (index == 0) ? true : any(null)
+      enableAcceleratedNetworking: nicConfiguration.?enableAcceleratedNetworking ?? true
+      networkSecurityGroup: contains(nicConfiguration, 'nsgId')
+        ? {
+            id: nicConfiguration.nsgId
+          }
+        : null
+      ipConfigurations: nicConfiguration.ipConfigurations
+    }
+  }
+]
+
 var linuxConfiguration = {
   disablePasswordAuthentication: disablePasswordAuthentication
   ssh: {
@@ -581,24 +597,10 @@ resource vmss 'Microsoft.Compute/virtualMachineScaleSets@2024-07-01' = {
           }
         ]
       }
-      networkProfile: {
-        networkApiVersion: (orchestrationMode == 'Flexible') ? '2020-11-01' : null
-        networkInterfaceConfigurations: [
-          for (nicConfiguration, index) in nicConfigurations: {
-            name: '${name}${nicConfiguration.nicSuffix}configuration-${index}'
-            properties: {
-              primary: (index == 0) ? true : any(null)
-              enableAcceleratedNetworking: nicConfiguration.?enableAcceleratedNetworking ?? true
-              networkSecurityGroup: contains(nicConfiguration, 'nsgId')
-                ? {
-                    id: nicConfiguration.nsgId
-                  }
-                : null
-              ipConfigurations: nicConfiguration.ipConfigurations
-            }
-          }
-        ]
-      }
+      networkProfile: union(
+        orchestrationMode == 'Flexible' ? { networkApiVersion: '2020-11-01' } : {},
+        { networkInterfaceConfigurations: networkInterfaceConfigurations }
+      )
       diagnosticsProfile: {
         bootDiagnostics: {
           enabled: !empty(bootDiagnosticStorageAccountName) ? true : bootDiagnosticEnabled

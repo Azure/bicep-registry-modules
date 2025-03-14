@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using only defaults for Windows'
-metadata description = 'This instance deploys the module with the minimum set of required parameters.'
+metadata name = 'Deploying VMSS in uniform orchestration mode with Windows image.'
+metadata description = 'This instance deploys the module with the minimum set of required parameters in uniform orchestration mode.'
 
 // ========== //
 // Parameters //
@@ -16,7 +16,7 @@ param resourceGroupName string = 'dep-${namePrefix}-compute.virtualmachinescales
 var enforcedLocation = 'italynorth'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'cvmsswinmin'
+param serviceShort string = 'cvmsswinuni'
 
 @description('Optional. The password to leverage for the login.')
 @secure()
@@ -72,8 +72,10 @@ module testDeployment '../../../main.bicep' = [
           storageAccountType: 'Premium_LRS'
         }
       }
+      orchestrationMode: 'Uniform'
       osType: 'Windows'
       skuName: 'Standard_B12ms'
+      patchMode: 'AutomaticByOS'
       nicConfigurations: [
         {
           ipConfigurations: [
