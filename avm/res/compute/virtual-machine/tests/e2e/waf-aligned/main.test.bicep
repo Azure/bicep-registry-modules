@@ -314,7 +314,7 @@ module testDeployment '../../../main.bicep' = [
         }
       }
       lock: {
-        kind: 'CanNotDelete'
+        kind: 'None'
         name: 'myCustomLockName'
       }
       proximityPlacementGroupResourceId: nestedDependencies.outputs.proximityPlacementGroupResourceId
