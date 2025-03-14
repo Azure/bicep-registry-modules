@@ -72,7 +72,12 @@ param resourceId string
 //   }
 // }
 
+resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' existing = {
+  name: last(split(resourceId, '/'))!
+}
+
 resource configurationAssignment 'Microsoft.Maintenance/configurationAssignments@2023-04-01' = {
+  scope: vm
   location: location
   name: name
   properties: {

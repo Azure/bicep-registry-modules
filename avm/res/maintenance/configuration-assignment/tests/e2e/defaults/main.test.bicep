@@ -29,18 +29,14 @@ var enforcedLocation = 'uksouth'
 
 // General resources
 // =================
+
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' existing = {
   name: 'dep-avmx-compute.virtualMachines-cvmwinwaf-rg'
 }
 
-// resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' existing = {
-//   name: 'avmxcvmwinwaf'
-// }
-
 // ============== //
 // Test Execution //
 // ============== //
-
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
