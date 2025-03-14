@@ -38,6 +38,7 @@ function Publish-ModuleFromPathToPBR {
     )
 
     # Load used functions
+    . (Join-Path $RepoRoot 'utilities' 'pipelines' 'publish' 'helper' 'Get-VersionedModuleList.ps1')
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'publish' 'helper' 'Get-ModulesToPublish.ps1')
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'publish' 'helper' 'Get-ModuleTargetVersion.ps1')
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'publish' 'helper' 'New-ModuleReleaseTag.ps1')
@@ -45,69 +46,87 @@ function Publish-ModuleFromPathToPBR {
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'sharedScripts' 'Get-BRMRepositoryName.ps1')
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'sharedScripts' 'tokenReplacement' 'Convert-TokensInFileList.ps1')
 
-    $moduleFolderPath = Split-Path $TemplateFilePath -Parent
-    $moduleBicepFilePath = Join-Path $moduleFolderPath 'main.bicep'
+    $topModuleFolderPath = Split-Path $TemplateFilePath -Parent
+    # $moduleFolderPath = Split-Path $TemplateFilePath -Parent
 
-    # 1. Test if module qualifies for publishing
-    if (-not (Get-ModulesToPublish -ModuleFolderPath $moduleFolderPath)) {
-        Write-Verbose 'No changes detected. Skipping publishing' -Verbose
-        return
-    }
+    $resultSet = [ordered]@{}
 
-    # 2. Calculate the version that we would publish with
-    $targetVersion = Get-ModuleTargetVersion -ModuleFolderPath $moduleFolderPath
+    # 1. Get list of all versioned modules (including top level and child modules) and iterate on it
+    $list = Get-VersionedModuleList -Path $topModuleFolderPath
+    $versionedModuleCount = $list.count
+    Write-Verbose "Number of versioned modules in [$topModuleFolderPath]: [$versionedModuleCount]" -Verbose
 
-    # 3. Get Target Published Module Name
-    $publishedModuleName = Get-BRMRepositoryName -TemplateFilePath $TemplateFilePath
+    foreach ($moduleFolderPath in $list) {
 
-    # 4.Create release tag
-    $gitTagName = New-ModuleReleaseTag -ModuleFolderPath $moduleFolderPath -TargetVersion $targetVersion
+        $moduleBicepFilePath = Join-Path $moduleFolderPath 'main.bicep'
+        Write-Verbose "moduleFolderPath: $moduleFolderPath" -Verbose
+        Write-Verbose "moduleBicepFilePath: $moduleBicepFilePath" -Verbose
+        $moduleFolderRelativePath = ($moduleFolderPath -replace ('{0}[\/|\\]' -f [Regex]::Escape($repoRoot)), '') -replace '\\', '/'
+        Write-Verbose "moduleFolderRelativePath:  $moduleFolderRelativePath" -Verbose
 
-    # 5. Get the documentation link
-    $documentationUri = Get-ModuleReadmeLink -TagName $gitTagName -ModuleFolderPath $moduleFolderPath
-
-    # 6. Replace telemetry version value (in Bicep)
-    $tokenConfiguration = @{
-        FilePathList   = @($moduleBicepFilePath)
-        AbsoluteTokens = @{
-            '-..--..-' = $targetVersion
+        # 2. Test if module qualifies for publishing, continuing to the next versioned module in the list otherwise
+        if (-not (Get-ModulesToPublish -ModuleFolderPath $moduleFolderPath)) {
+            Write-Verbose "No changes detected for versioned module $moduleFolderRelativePath. Skipping publishing" -Verbose
+            continue
         }
-    }
-    Write-Verbose "Convert Tokens Input:`n $($tokenConfiguration | ConvertTo-Json -Depth 10)" -Verbose
-    $null = Convert-TokensInFileList @tokenConfiguration
 
-    # Double-check that tokens are correctly replaced
-    $templateContent = bicep build $moduleBicepFilePath --stdout
-    $incorrectLines = @()
-    for ($index = 0; $index -lt $templateContent.Count; $index++) {
-        if ($templateContent[$index] -match '\-\.\.-\-\.\.\-') {
-            $incorrectLines += ('You have the token [{0}] in line [{1}] of the compiled Bicep file [{2}]. Please seek advice from the AVM team.' -f $matches[0], ($index + 1), $moduleBicepFilePath)
+        # 3. Calculate the version that we would publish with
+        $targetVersion = Get-ModuleTargetVersion -ModuleFolderPath $moduleFolderPath
+
+        # 4. Get Target Published Module Name
+        $publishedModuleName = Get-BRMRepositoryName -TemplateFilePath $moduleBicepFilePath
+
+        # 5.Create release tag
+        $gitTagName = New-ModuleReleaseTag -ModuleFolderPath $moduleFolderPath -TargetVersion $targetVersion
+
+        # 6. Get the documentation link
+        $documentationUri = Get-ModuleReadmeLink -TagName $gitTagName -ModuleFolderPath $moduleFolderPath
+
+        # 7. Replace telemetry version value (in Bicep)
+        $tokenConfiguration = @{
+            FilePathList   = @($moduleBicepFilePath)
+            AbsoluteTokens = @{
+                '-..--..-' = $targetVersion
+            }
         }
+        Write-Verbose "Convert Tokens Input:`n $($tokenConfiguration | ConvertTo-Json -Depth 10)" -Verbose
+        $null = Convert-TokensInFileList @tokenConfiguration
+
+        # Double-check that tokens are correctly replaced
+        $templateContent = bicep build $moduleBicepFilePath --stdout
+        $incorrectLines = @()
+        for ($index = 0; $index -lt $templateContent.Count; $index++) {
+            if ($templateContent[$index] -match '\-\.\.-\-\.\.\-') {
+                $incorrectLines += ('You have the token [{0}] in line [{1}] of the compiled Bicep file [{2}]. Please seek advice from the AVM team.' -f $matches[0], ($index + 1), $moduleBicepFilePath)
+            }
+        }
+        if ($incorrectLines) {
+            throw ($incorrectLines | ConvertTo-Json)
+        }
+
+        ###################
+        ## 8.  Publish   ##
+        ###################
+        $plainPublicRegistryServer = ConvertFrom-SecureString $PublicRegistryServer -AsPlainText
+
+        $publishInput = @(
+            $moduleBicepFilePath
+            '--target', ('br:{0}/public/bicep/{1}:{2}' -f $plainPublicRegistryServer, $publishedModuleName, $targetVersion)
+            '--documentation-uri', $documentationUri
+            '--with-source'
+            '--force'
+        )
+        # TODO move to its own task to show that as skipped if no file qualifies for new version
+        Write-Verbose "Publish Input:`n $($publishInput | ConvertTo-Json -Depth 10)" -Verbose
+
+        bicep publish @publishInput
+
+        $resultSet[$moduleFolderRelativePath] = @{
+            version             = $targetVersion
+            publishedModuleName = $publishedModuleName
+            gitTagName          = $gitTagName
+        }
+
     }
-    if ($incorrectLines) {
-        throw ($incorrectLines | ConvertTo-Json)
-    }
-
-    ###################
-    ## 7.  Publish   ##
-    ###################
-    $plainPublicRegistryServer = ConvertFrom-SecureString $PublicRegistryServer -AsPlainText
-
-    $publishInput = @(
-        $moduleBicepFilePath
-        '--target', ('br:{0}/public/bicep/{1}:{2}' -f $plainPublicRegistryServer, $publishedModuleName, $targetVersion)
-        '--documentation-uri', $documentationUri
-        '--with-source'
-        '--force'
-    )
-    # TODO move to its own task to show that as skipped if no file qualifies for new version
-    Write-Verbose "Publish Input:`n $($publishInput | ConvertTo-Json -Depth 10)" -Verbose
-
-    bicep publish @publishInput
-
-    return @{
-        version             = $targetVersion
-        publishedModuleName = $publishedModuleName
-        gitTagName          = $gitTagName
-    }
+    return $resultSet
 }
