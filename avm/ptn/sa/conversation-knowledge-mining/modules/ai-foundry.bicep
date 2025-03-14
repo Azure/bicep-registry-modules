@@ -119,7 +119,7 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.18.2' = {
     roleAssignments: [
       {
         principalId: managedIdentityPrincipalId
-        roleDefinitionIdOrName: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe' //NOTE: Built-in role 'Storage Blob Data Contributor'
+        roleDefinitionIdOrName: 'Storage Blob Data Contributor'
       }
     ]
   }

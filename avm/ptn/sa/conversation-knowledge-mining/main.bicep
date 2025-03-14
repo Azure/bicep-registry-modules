@@ -678,7 +678,7 @@ module avmKeyVault 'br/public:avm/res/key-vault/vault:0.12.1' = {
         {
           principalId: avmManagedIdentity.outputs.principalId
           principalType: 'ServicePrincipal'
-          roleDefinitionIdOrName: '00482a5a-887f-4fb3-b363-3b7fe8e74483' //NOTE: Built-in role 'Key Vault Administrator'
+          roleDefinitionIdOrName: 'Key Vault Administrator'
         }
       ],
       keyVaultRoleAssignments
@@ -798,13 +798,13 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.18.2' = {
     roleAssignments: [
       {
         principalId: avmManagedIdentity.outputs.principalId
-        roleDefinitionIdOrName: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe' //NOTE: Built-in role 'Storage Blob Data Contributor'
+        roleDefinitionIdOrName: 'Storage Blob Data Contributor'
       }
       {
         principalId: functionCharts.identity.principalId
         //#disable-next-line BCP321
         //principalId: avmFunctionCharts.outputs.?systemAssignedMIPrincipalId
-        roleDefinitionIdOrName: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe' //NOTE: Built-in role 'Storage Blob Data Contributor'
+        roleDefinitionIdOrName: 'Storage Blob Data Contributor'
       }
     ]
     secretsExportConfiguration: {
