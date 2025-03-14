@@ -35,6 +35,7 @@ function Get-VersionedModuleList {
         $moduleFolderPath = Split-Path $versionJsonPath -Parent
         $resultSet += $moduleFolderPath
     }
+    $resultSet = $resultSet | Sort-Object
 
     return $resultSet
 }
