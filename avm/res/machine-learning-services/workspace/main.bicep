@@ -7,6 +7,9 @@ metadata description = 'This module deploys a Machine Learning Services Workspac
 @sys.description('Required. The name of the machine learning workspace.')
 param name string
 
+@sys.description('Optional. The friendly name of the machine learning workspace.')
+param friendlyName string?
+
 @sys.description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
@@ -31,7 +34,7 @@ param kind string = 'Default'
 @sys.description('Conditional. The resource ID of the associated Storage Account. Required if \'kind\' is \'Default\', \'FeatureStore\' or \'Hub\'.')
 param associatedStorageAccountResourceId string?
 
-@sys.description('Conditional. The resource ID of the associated Key Vault. Required if \'kind\' is \'Default\', \'FeatureStore\' or \'Hub\'.')
+@sys.description('Conditional. The resource ID of the associated Key Vault. Required if \'kind\' is \'Default\' or \'FeatureStore\'. If not provided, the key vault will be managed by Microsoft.')
 param associatedKeyVaultResourceId string?
 
 @sys.description('Conditional. The resource ID of the associated Application Insights. Required if \'kind\' is \'Default\' or \'FeatureStore\'.')
@@ -39,6 +42,9 @@ param associatedApplicationInsightsResourceId string?
 
 @sys.description('Optional. The resource ID of the associated Container Registry.')
 param associatedContainerRegistryResourceId string?
+
+@sys.description('Optional. Enable service-side encryption.')
+param enableServiceSideCMKEncryption bool?
 
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @sys.description('Optional. The lock settings of the service.')
@@ -79,16 +85,23 @@ param managedIdentities managedIdentityAllType = {
 @sys.description('Conditional. Settings for feature store type workspaces. Required if \'kind\' is set to \'FeatureStore\'.')
 param featureStoreSettings featureStoreSettingType?
 
+@sys.description('Optional. List of IPv4 addresse ranges that are allowed to access the workspace.')
+param ipAllowlist string[]?
+
 @sys.description('Optional. Managed Network settings for a machine learning workspace.')
 param managedNetworkSettings managedNetworkSettingType?
+
+@sys.description('Optional. Trigger the provisioning of the managed virtual network when creating the workspace.')
+param provisionNetworkNow bool?
 
 @sys.description('Optional. Settings for serverless compute created in the workspace.')
 param serverlessComputeSettings serverlessComputeSettingType?
 
 @sys.description('Optional. The authentication mode used by the workspace when connecting to the default storage account.')
 @allowed([
-  'accessKey'
-  'identity'
+  'AccessKey'
+  'Identity'
+  'UserDelegationSAS'
 ])
 param systemDatastoresAuthMode string?
 
@@ -233,8 +246,7 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
   )
 }
 
-// Preview API version for 'systemDatastoresAuthMode'
-resource workspace 'Microsoft.MachineLearningServices/workspaces@2024-04-01-preview' = {
+resource workspace 'Microsoft.MachineLearningServices/workspaces@2024-10-01-preview' = {
   name: name
   location: location
   tags: tags
@@ -244,7 +256,7 @@ resource workspace 'Microsoft.MachineLearningServices/workspaces@2024-04-01-prev
   }
   identity: identity
   properties: {
-    friendlyName: name
+    friendlyName: friendlyName ?? name
     storageAccount: associatedStorageAccountResourceId
     keyVault: associatedKeyVaultResourceId
     applicationInsights: associatedApplicationInsightsResourceId
@@ -268,14 +280,17 @@ resource workspace 'Microsoft.MachineLearningServices/workspaces@2024-04-01-prev
           }
         }
       : null
+    enableServiceSideCMKEncryption: enableServiceSideCMKEncryption
     imageBuildCompute: imageBuildCompute
     primaryUserAssignedIdentity: primaryUserAssignedIdentity
     systemDatastoresAuthMode: systemDatastoresAuthMode
     publicNetworkAccess: publicNetworkAccess
+    ipAllowlist: ipAllowlist
     serviceManagedResourcesSettings: serviceManagedResourcesSettings
     featureStoreSettings: featureStoreSettings
     hubResourceId: hubResourceId
     managedNetwork: managedNetworkSettings
+    provisionNetworkNow: provisionNetworkNow
     serverlessComputeSettings: serverlessComputeSettings
     workspaceHubConfig: workspaceHubConfig
     // Parameters only added if not empty
@@ -544,6 +559,9 @@ type managedNetworkSettingType = {
     @sys.description('Required. The outbound rule. The name of the rule is the object key.')
     *: outboundRuleType
   }?
+
+  @sys.description('Optional. The firewall SKU used for FQDN rules.')
+  firewallSku: 'Basic' | 'Standard'?
 }
 
 @export()

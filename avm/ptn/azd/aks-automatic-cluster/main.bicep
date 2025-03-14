@@ -44,6 +44,7 @@ module aks 'br/public:avm/res/container-service/managed-cluster:0.5.3' = {
   params: {
     name: name
     location: location
+    enableTelemetry: enableTelemetry
     autoNodeOsUpgradeProfileUpgradeChannel: 'NodeImage'
     disableLocalAccounts: true
     enableKeyvaultSecretsProvider: true
