@@ -7,7 +7,7 @@ param name string
 @description('Conditional. The name of the parent virtual network. Required if the template is used in a standalone deployment.')
 param virtualNetworkName string
 
-@description('Conditional. The address prefix for the Subnet. Required if addressPrefixes is empty.')
+@description('Conditional. The address prefix for the subnet. Required if `addressPrefixes` is empty.')
 param addressPrefix string?
 
 @description('Optional. The resource ID of the network security group to assign to the subnet.')

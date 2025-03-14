@@ -10,7 +10,7 @@ param location string = resourceGroup().location
 @description('Required. An Array of 1 or more IP Address Prefixes for the Virtual Network.')
 param addressPrefixes array
 
-@description('Optional. The BGP community associated with the Virtual Network.')
+@description('Optional. The BGP community associated with the virtual network.')
 param virtualNetworkBgpCommunity string?
 
 @description('Optional. An Array of subnets to deploy to the Virtual Network.')
