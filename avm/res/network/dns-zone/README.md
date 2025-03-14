@@ -1658,8 +1658,6 @@ The tag for this CAA record..
 
 - Required: Yes
 - Type: string
-- MinValue: 0
-- MaxValue: 255
 
 ### Parameter: `caa.caaRecords.value`
 
@@ -1667,8 +1665,6 @@ The value for this CAA record.
 
 - Required: Yes
 - Type: string
-- MinValue: 0
-- MaxValue: 255
 
 ### Parameter: `caa.metadata`
 

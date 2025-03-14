@@ -1628,7 +1628,6 @@ Resource tags.
 
 - Required: No
 - Type: object
-- MaxValue: 240
 
 ## Outputs
 

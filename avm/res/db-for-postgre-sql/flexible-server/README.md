@@ -1499,8 +1499,6 @@ The configurations to create in the server.
 - Required: No
 - Type: array
 - Default: `[]`
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `createMode`
 
@@ -1520,8 +1518,6 @@ The mode to create a new PostgreSQL server.
     'Update'
   ]
   ```
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `customerManagedKey`
 
@@ -1529,8 +1525,6 @@ The customer managed key definition.
 
 - Required: No
 - Type: object
-- MinValue: 7
-- MaxValue: 35
 
 **Required parameters**
 
@@ -1552,8 +1546,6 @@ The name of the customer managed key to use for encryption.
 
 - Required: Yes
 - Type: string
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `customerManagedKey.keyVaultResourceId`
 
@@ -1561,8 +1553,6 @@ The resource ID of a key vault to reference a customer managed key for encryptio
 
 - Required: Yes
 - Type: string
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `customerManagedKey.keyVersion`
 
@@ -1570,8 +1560,6 @@ The version of the customer managed key to reference for encryption. If not prov
 
 - Required: No
 - Type: string
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `customerManagedKey.userAssignedIdentityResourceId`
 
@@ -1579,8 +1567,6 @@ User assigned identity to use when fetching the customer managed key. Required i
 
 - Required: No
 - Type: string
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `databases`
 
@@ -1589,8 +1575,6 @@ The databases to create in the server.
 - Required: No
 - Type: array
 - Default: `[]`
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `delegatedSubnetResourceId`
 
@@ -1599,8 +1583,6 @@ Delegated subnet arm resource ID. Used when the desired connectivity mode is 'Pr
 - Required: No
 - Type: string
 - Default: `''`
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `diagnosticSettings`
 
@@ -1608,8 +1590,6 @@ The diagnostic settings of the service.
 
 - Required: No
 - Type: array
-- MinValue: 7
-- MaxValue: 35
 
 **Optional parameters**
 
@@ -1631,8 +1611,6 @@ Resource ID of the diagnostic event hub authorization rule for the Event Hubs na
 
 - Required: No
 - Type: string
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `diagnosticSettings.eventHubName`
 
@@ -1640,8 +1618,6 @@ Name of the diagnostic event hub within the namespace to which logs are streamed
 
 - Required: No
 - Type: string
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `diagnosticSettings.logAnalyticsDestinationType`
 
@@ -1656,8 +1632,6 @@ A string indicating whether the export to Log Analytics should use the default d
     'Dedicated'
   ]
   ```
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups`
 
@@ -1665,8 +1639,6 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 
 - Required: No
 - Type: array
-- MinValue: 7
-- MaxValue: 35
 
 **Optional parameters**
 
@@ -1682,8 +1654,6 @@ Name of a Diagnostic Log category for a resource type this setting is applied to
 
 - Required: No
 - Type: string
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.categoryGroup`
 
@@ -1691,8 +1661,6 @@ Name of a Diagnostic Log category group for a resource type this setting is appl
 
 - Required: No
 - Type: string
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.enabled`
 
@@ -1700,8 +1668,6 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `diagnosticSettings.marketplacePartnerResourceId`
 
@@ -1709,8 +1675,6 @@ The full ARM resource ID of the Marketplace resource to which you would like to 
 
 - Required: No
 - Type: string
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `diagnosticSettings.metricCategories`
 
@@ -1718,8 +1682,6 @@ The name of metrics that will be streamed. "allMetrics" includes all possible me
 
 - Required: No
 - Type: array
-- MinValue: 7
-- MaxValue: 35
 
 **Required parameters**
 
@@ -1739,8 +1701,6 @@ Name of a Diagnostic Metric category for a resource type this setting is applied
 
 - Required: Yes
 - Type: string
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `diagnosticSettings.metricCategories.enabled`
 
@@ -1748,8 +1708,6 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `diagnosticSettings.name`
 
@@ -1757,8 +1715,6 @@ The name of the diagnostic setting.
 
 - Required: No
 - Type: string
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `diagnosticSettings.storageAccountResourceId`
 
@@ -1766,8 +1722,6 @@ Resource ID of the diagnostic storage account. For security reasons, it is recom
 
 - Required: No
 - Type: string
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `diagnosticSettings.workspaceResourceId`
 
@@ -1775,8 +1729,6 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 - Required: No
 - Type: string
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `enableAdvancedThreatProtection`
 
@@ -1785,8 +1737,6 @@ Enable/Disable advanced threat protection.
 - Required: No
 - Type: bool
 - Default: `True`
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `enableTelemetry`
 
@@ -1795,8 +1745,6 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `firewallRules`
 
@@ -1805,8 +1753,6 @@ The firewall rules to create in the PostgreSQL flexible server.
 - Required: No
 - Type: array
 - Default: `[]`
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `geoRedundantBackup`
 
@@ -1822,8 +1768,6 @@ A value indicating whether Geo-Redundant backup is enabled on the server. Should
     'Enabled'
   ]
   ```
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `highAvailability`
 
@@ -1840,8 +1784,6 @@ The mode for high availability.
     'ZoneRedundant'
   ]
   ```
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `location`
 
@@ -1850,8 +1792,6 @@ Location for all resources.
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `lock`
 
@@ -1859,8 +1799,6 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
-- MinValue: 7
-- MaxValue: 35
 
 **Optional parameters**
 
@@ -1883,8 +1821,6 @@ Specify the type of lock.
     'ReadOnly'
   ]
   ```
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `lock.name`
 
@@ -1892,8 +1828,6 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `maintenanceWindow`
 
@@ -1910,8 +1844,6 @@ Properties for the maintenence window. If provided, 'customWindow' property must
       startMinute: 0
   }
   ```
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `privateDnsZoneArmResourceId`
 
@@ -1920,8 +1852,6 @@ Private dns zone arm resource ID. Used when the desired connectivity mode is 'Pr
 - Required: No
 - Type: string
 - Default: `''`
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `privateEndpoints`
 
@@ -1929,8 +1859,6 @@ Configuration details for private endpoints. Used when the desired connectivity 
 
 - Required: No
 - Type: array
-- MinValue: 7
-- MaxValue: 35
 
 **Required parameters**
 
@@ -1965,8 +1893,6 @@ Resource ID of the subnet where the endpoint needs to be created.
 
 - Required: Yes
 - Type: string
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `privateEndpoints.applicationSecurityGroupResourceIds`
 
@@ -1974,8 +1900,6 @@ Application security groups in which the Private Endpoint IP configuration is in
 
 - Required: No
 - Type: array
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `privateEndpoints.customDnsConfigs`
 
@@ -1983,8 +1907,6 @@ Custom DNS configurations.
 
 - Required: No
 - Type: array
-- MinValue: 7
-- MaxValue: 35
 
 **Required parameters**
 
@@ -2004,8 +1926,6 @@ A list of private IP addresses of the private endpoint.
 
 - Required: Yes
 - Type: array
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `privateEndpoints.customDnsConfigs.fqdn`
 
@@ -2013,8 +1933,6 @@ FQDN that resolves to private endpoint IP address.
 
 - Required: No
 - Type: string
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `privateEndpoints.customNetworkInterfaceName`
 
@@ -2022,8 +1940,6 @@ The custom name of the network interface attached to the Private Endpoint.
 
 - Required: No
 - Type: string
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `privateEndpoints.enableTelemetry`
 
@@ -2031,8 +1947,6 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `privateEndpoints.ipConfigurations`
 
@@ -2040,8 +1954,6 @@ A list of IP configurations of the Private Endpoint. This will be used to map to
 
 - Required: No
 - Type: array
-- MinValue: 7
-- MaxValue: 35
 
 **Required parameters**
 
@@ -2056,8 +1968,6 @@ The name of the resource that is unique within a resource group.
 
 - Required: Yes
 - Type: string
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `privateEndpoints.ipConfigurations.properties`
 
@@ -2065,8 +1975,6 @@ Properties of private endpoint IP configurations.
 
 - Required: Yes
 - Type: object
-- MinValue: 7
-- MaxValue: 35
 
 **Required parameters**
 
@@ -2082,8 +1990,6 @@ The ID of a group obtained from the remote resource that this private endpoint s
 
 - Required: Yes
 - Type: string
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `privateEndpoints.ipConfigurations.properties.memberName`
 
@@ -2091,8 +1997,6 @@ The member name of a group obtained from the remote resource that this private e
 
 - Required: Yes
 - Type: string
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `privateEndpoints.ipConfigurations.properties.privateIPAddress`
 
@@ -2100,8 +2004,6 @@ A private IP address obtained from the private endpoint's subnet.
 
 - Required: Yes
 - Type: string
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `privateEndpoints.isManualConnection`
 
@@ -2109,8 +2011,6 @@ If Manual Private Link Connection is required.
 
 - Required: No
 - Type: bool
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `privateEndpoints.location`
 
@@ -2118,8 +2018,6 @@ The location to deploy the Private Endpoint to.
 
 - Required: No
 - Type: string
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `privateEndpoints.lock`
 
@@ -2127,8 +2025,6 @@ Specify the type of lock.
 
 - Required: No
 - Type: object
-- MinValue: 7
-- MaxValue: 35
 
 **Optional parameters**
 
@@ -2151,8 +2047,6 @@ Specify the type of lock.
     'ReadOnly'
   ]
   ```
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `privateEndpoints.lock.name`
 
@@ -2160,8 +2054,6 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `privateEndpoints.manualConnectionRequestMessage`
 
@@ -2169,8 +2061,6 @@ A message passed to the owner of the remote resource with the manual connection 
 
 - Required: No
 - Type: string
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `privateEndpoints.name`
 
@@ -2178,8 +2068,6 @@ The name of the Private Endpoint.
 
 - Required: No
 - Type: string
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup`
 
@@ -2187,8 +2075,6 @@ The private DNS Zone Group to configure for the Private Endpoint.
 
 - Required: No
 - Type: object
-- MinValue: 7
-- MaxValue: 35
 
 **Required parameters**
 
@@ -2208,8 +2094,6 @@ The private DNS Zone Groups to associate the Private Endpoint. A DNS Zone Group 
 
 - Required: Yes
 - Type: array
-- MinValue: 7
-- MaxValue: 35
 
 **Required parameters**
 
@@ -2229,8 +2113,6 @@ The resource id of the private DNS zone.
 
 - Required: Yes
 - Type: string
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.name`
 
@@ -2238,8 +2120,6 @@ The name of the private DNS Zone Group config.
 
 - Required: No
 - Type: string
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup.name`
 
@@ -2247,8 +2127,6 @@ The name of the Private DNS Zone Group.
 
 - Required: No
 - Type: string
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `privateEndpoints.privateLinkServiceConnectionName`
 
@@ -2256,8 +2134,6 @@ The name of the private link connection to create.
 
 - Required: No
 - Type: string
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `privateEndpoints.resourceGroupResourceId`
 
@@ -2265,8 +2141,6 @@ The resource ID of the Resource Group the Private Endpoint will be created in. I
 
 - Required: No
 - Type: string
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `privateEndpoints.roleAssignments`
 
@@ -2274,8 +2148,6 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
-- MinValue: 7
-- MaxValue: 35
 - Roles configurable by name:
   - `'Contributor'`
   - `'DNS Resolver Contributor'`
@@ -2312,8 +2184,6 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `privateEndpoints.roleAssignments.roleDefinitionIdOrName`
 
@@ -2321,8 +2191,6 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `privateEndpoints.roleAssignments.condition`
 
@@ -2330,8 +2198,6 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `privateEndpoints.roleAssignments.conditionVersion`
 
@@ -2345,8 +2211,6 @@ Version of the condition.
     '2.0'
   ]
   ```
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `privateEndpoints.roleAssignments.delegatedManagedIdentityResourceId`
 
@@ -2354,8 +2218,6 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `privateEndpoints.roleAssignments.description`
 
@@ -2363,8 +2225,6 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `privateEndpoints.roleAssignments.name`
 
@@ -2372,8 +2232,6 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `privateEndpoints.roleAssignments.principalType`
 
@@ -2391,8 +2249,6 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `privateEndpoints.service`
 
@@ -2400,8 +2256,6 @@ The subresource to deploy the Private Endpoint for. For example "vault" for a Ke
 
 - Required: No
 - Type: string
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `privateEndpoints.tags`
 
@@ -2409,8 +2263,6 @@ Tags to be applied on all resources/Resource Groups in this deployment.
 
 - Required: No
 - Type: object
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `publicNetworkAccess`
 
@@ -2426,8 +2278,6 @@ Determines whether or not public network access is enabled or disabled.
     'Enabled'
   ]
   ```
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `replica`
 
@@ -2435,8 +2285,6 @@ The replication settings for the server. Can only be set on existing flexible se
 
 - Required: No
 - Type: object
-- MinValue: 7
-- MaxValue: 35
 
 **Conditional parameters**
 
@@ -2459,8 +2307,6 @@ Sets the promote mode for a replica server. This is a write only property. 'stan
     'switchover'
   ]
   ```
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `replica.promoteOption`
 
@@ -2475,8 +2321,6 @@ Sets the promote options for a replica server. This is a write only property.	'f
     'planned'
   ]
   ```
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `replica.role`
 
@@ -2493,8 +2337,6 @@ Used to indicate role of the server in replication set.	'AsyncReplica', 'GeoAsyn
     'Primary'
   ]
   ```
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `roleAssignments`
 
@@ -2502,8 +2344,6 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
-- MinValue: 7
-- MaxValue: 35
 - Roles configurable by name:
   - `'Contributor'`
   - `'Owner'`
@@ -2535,8 +2375,6 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -2544,8 +2382,6 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `roleAssignments.condition`
 
@@ -2553,8 +2389,6 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -2568,8 +2402,6 @@ Version of the condition.
     '2.0'
   ]
   ```
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `roleAssignments.delegatedManagedIdentityResourceId`
 
@@ -2577,8 +2409,6 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `roleAssignments.description`
 
@@ -2586,8 +2416,6 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `roleAssignments.name`
 
@@ -2595,8 +2423,6 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -2614,8 +2440,6 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `serverThreatProtection`
 
@@ -2631,8 +2455,6 @@ Specifies the state of the Threat Protection, whether it is enabled or disabled 
     'Enabled'
   ]
   ```
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `storageSizeGB`
 
@@ -2656,8 +2478,6 @@ Max storage allowed for a server.
     16384
   ]
   ```
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `tags`
 
@@ -2665,8 +2485,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `tenantId`
 
@@ -2674,8 +2492,6 @@ Tenant id of the server.
 
 - Required: No
 - Type: string
-- MinValue: 7
-- MaxValue: 35
 
 ### Parameter: `version`
 
@@ -2695,8 +2511,6 @@ PostgreSQL Server version.
     '16'
   ]
   ```
-- MinValue: 7
-- MaxValue: 35
 
 ## Outputs
 

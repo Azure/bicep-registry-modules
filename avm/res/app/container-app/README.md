@@ -1121,8 +1121,6 @@ HTTPGet specifies the http request to perform.
 
 - Required: No
 - Type: object
-- MinValue: 1
-- MaxValue: 10
 
 **Required parameters**
 
@@ -1145,8 +1143,6 @@ Path to access on the HTTP server.
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 10
 
 ### Parameter: `containers.probes.httpGet.port`
 
@@ -1154,8 +1150,6 @@ Name or number of the port to access on the container.
 
 - Required: Yes
 - Type: int
-- MinValue: 1
-- MaxValue: 10
 
 ### Parameter: `containers.probes.httpGet.host`
 
@@ -1163,8 +1157,6 @@ Host name to connect to. Defaults to the pod IP.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 10
 
 ### Parameter: `containers.probes.httpGet.httpHeaders`
 
@@ -1172,8 +1164,6 @@ HTTP headers to set in the request.
 
 - Required: No
 - Type: array
-- MinValue: 1
-- MaxValue: 10
 
 **Required parameters**
 
@@ -1188,8 +1178,6 @@ Name of the header.
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 10
 
 ### Parameter: `containers.probes.httpGet.httpHeaders.value`
 
@@ -1197,8 +1185,6 @@ Value of the header.
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 10
 
 ### Parameter: `containers.probes.httpGet.scheme`
 
@@ -1213,8 +1199,6 @@ Scheme to use for connecting to the host. Defaults to HTTP.
     'HTTPS'
   ]
   ```
-- MinValue: 1
-- MaxValue: 10
 
 ### Parameter: `containers.probes.initialDelaySeconds`
 
@@ -1249,8 +1233,6 @@ The TCP socket specifies an action involving a TCP port. TCP hooks not yet suppo
 
 - Required: No
 - Type: object
-- MinValue: 1
-- MaxValue: 10
 
 **Required parameters**
 
@@ -1279,8 +1261,6 @@ Host name to connect to, defaults to the pod IP.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 65535
 
 ### Parameter: `containers.probes.terminationGracePeriodSeconds`
 
@@ -1288,8 +1268,6 @@ Optional duration in seconds the pod needs to terminate gracefully upon probe fa
 
 - Required: No
 - Type: int
-- MinValue: 1
-- MaxValue: 10
 
 ### Parameter: `containers.probes.timeoutSeconds`
 
@@ -1314,8 +1292,6 @@ The type of probe.
     'Startup'
   ]
   ```
-- MinValue: 1
-- MaxValue: 240
 
 ### Parameter: `containers.volumeMounts`
 

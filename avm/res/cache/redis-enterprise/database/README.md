@@ -401,6 +401,117 @@ The persistence settings of the service.
       type: 'disabled'
   }
   ```
+- Discriminator: `type`
+
+<h4>The available variants are:</h4>
+
+| Variant | Description |
+| :-- | :-- |
+| [`disabled`](#variant-persistencetype-disabled) |  |
+| [`aof`](#variant-persistencetype-aof) |  |
+| [`rdb`](#variant-persistencetype-rdb) |  |
+
+### Variant: `persistence.type-disabled`
+
+
+To use this variant, set the property `type` to `disabled`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`type`](#parameter-persistencetype-disabledtype) | string | Disabled persistence type. |
+
+### Parameter: `persistence.type-disabled.type`
+
+Disabled persistence type.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'disabled'
+  ]
+  ```
+
+### Variant: `persistence.type-aof`
+
+
+To use this variant, set the property `type` to `aof`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`frequency`](#parameter-persistencetype-aoffrequency) | string | The frequency at which data is written to disk. |
+| [`type`](#parameter-persistencetype-aoftype) | string | AOF persistence type. |
+
+### Parameter: `persistence.type-aof.frequency`
+
+The frequency at which data is written to disk.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '1s'
+  ]
+  ```
+
+### Parameter: `persistence.type-aof.type`
+
+AOF persistence type.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'aof'
+  ]
+  ```
+
+### Variant: `persistence.type-rdb`
+
+
+To use this variant, set the property `type` to `rdb`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`frequency`](#parameter-persistencetype-rdbfrequency) | string | The frequency at which an RDB snapshot of the database is created. |
+| [`type`](#parameter-persistencetype-rdbtype) | string | RDB persistence type. |
+
+### Parameter: `persistence.type-rdb.frequency`
+
+The frequency at which an RDB snapshot of the database is created.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '12h'
+    '1h'
+    '6h'
+  ]
+  ```
+
+### Parameter: `persistence.type-rdb.type`
+
+RDB persistence type.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'rdb'
+  ]
+  ```
 
 ### Parameter: `port`
 
@@ -418,8 +529,6 @@ Key vault reference and secret settings for the module's secrets export.
 
 - Required: No
 - Type: object
-- MinValue: 10000
-- MaxValue: 10000
 
 **Required parameters**
 
@@ -444,8 +553,6 @@ The resource ID of the key vault where to store the secrets of this module.
 
 - Required: Yes
 - Type: string
-- MinValue: 10000
-- MaxValue: 10000
 
 ### Parameter: `secretsExportConfiguration.primaryAccessKeyName`
 
@@ -453,8 +560,6 @@ The primaryAccessKey secret name to create.
 
 - Required: No
 - Type: string
-- MinValue: 10000
-- MaxValue: 10000
 
 ### Parameter: `secretsExportConfiguration.primaryConnectionStringName`
 
@@ -462,8 +567,6 @@ The primaryConnectionString secret name to create.
 
 - Required: No
 - Type: string
-- MinValue: 10000
-- MaxValue: 10000
 
 ### Parameter: `secretsExportConfiguration.primaryStackExchangeRedisConnectionStringName`
 
@@ -471,8 +574,6 @@ The primaryStackExchangeRedisConnectionString secret name to create.
 
 - Required: No
 - Type: string
-- MinValue: 10000
-- MaxValue: 10000
 
 ### Parameter: `secretsExportConfiguration.secondaryAccessKeyName`
 
@@ -480,8 +581,6 @@ The secondaryAccessKey secret name to create.
 
 - Required: No
 - Type: string
-- MinValue: 10000
-- MaxValue: 10000
 
 ### Parameter: `secretsExportConfiguration.secondaryConnectionStringName`
 
@@ -489,8 +588,6 @@ The secondaryConnectionString secret name to create.
 
 - Required: No
 - Type: string
-- MinValue: 10000
-- MaxValue: 10000
 
 ### Parameter: `secretsExportConfiguration.secondaryStackExchangeRedisConnectionStringName`
 
@@ -498,8 +595,6 @@ The secondaryStackExchangeRedisConnectionString secret name to create.
 
 - Required: No
 - Type: string
-- MinValue: 10000
-- MaxValue: 10000
 
 ## Outputs
 

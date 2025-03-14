@@ -115,8 +115,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-- MinValue: 0
-- MaxValue: 365
 
 ### Parameter: `trafficAnalyticsInterval`
 
@@ -132,8 +130,6 @@ The interval in minutes which would decide how frequently TA service should do f
     60
   ]
   ```
-- MinValue: 0
-- MaxValue: 365
 
 ### Parameter: `workspaceResourceId`
 
@@ -142,8 +138,6 @@ Specify the Log Analytics Workspace Resource ID.
 - Required: No
 - Type: string
 - Default: `''`
-- MinValue: 0
-- MaxValue: 365
 
 ## Outputs
 

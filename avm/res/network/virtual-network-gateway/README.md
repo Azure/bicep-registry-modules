@@ -1167,8 +1167,6 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     gatewayType: 'Vpn'
     name: 'nvgmin001'
     virtualNetworkResourceId: '<virtualNetworkResourceId>'
-    // Non-required parameters
-    skuName: 'VpnGw2AZ'
   }
 }
 ```
@@ -1199,10 +1197,6 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     },
     "virtualNetworkResourceId": {
       "value": "<virtualNetworkResourceId>"
-    },
-    // Non-required parameters
-    "skuName": {
-      "value": "VpnGw2AZ"
     }
   }
 }
@@ -1225,8 +1219,6 @@ param clusterSettings = {
 param gatewayType = 'Vpn'
 param name = 'nvgmin001'
 param virtualNetworkResourceId = '<virtualNetworkResourceId>'
-// Non-required parameters
-param skuName = 'VpnGw2AZ'
 ```
 
 </details>
@@ -2395,6 +2387,203 @@ Specifies one of the following four configurations: Active-Active with (clusterM
 
 - Required: Yes
 - Type: object
+- Discriminator: `clusterMode`
+
+<h4>The available variants are:</h4>
+
+| Variant | Description |
+| :-- | :-- |
+| [`activeActiveNoBgp`](#variant-clustersettingsclustermode-activeactivenobgp) | The type for an active-active no BGP cluster configuration. |
+| [`activeActiveBgp`](#variant-clustersettingsclustermode-activeactivebgp) | The type for an active-active BGP cluster configuration. |
+| [`activePassiveBgp`](#variant-clustersettingsclustermode-activepassivebgp) | The type for an active-passive BGP cluster configuration. |
+| [`activePassiveNoBgp`](#variant-clustersettingsclustermode-activepassivenobgp) | The type for an active-passive no BGP cluster configuration. |
+
+### Variant: `clusterSettings.clusterMode-activeActiveNoBgp`
+The type for an active-active no BGP cluster configuration.
+
+To use this variant, set the property `clusterMode` to `activeActiveNoBgp`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`clusterMode`](#parameter-clustersettingsclustermode-activeactivenobgpclustermode) | string | The cluster mode deciding the configuration. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`existingSecondaryPublicIPResourceId`](#parameter-clustersettingsclustermode-activeactivenobgpexistingsecondarypublicipresourceid) | string | The secondary Public IP resource ID to associate to the Virtual Network Gateway in the Active-Active mode. If empty, then a new secondary Public IP will be created as part of this module and applied to the Virtual Network Gateway. |
+| [`secondPipName`](#parameter-clustersettingsclustermode-activeactivenobgpsecondpipname) | string | Specifies the name of the secondary Public IP to be created for the Virtual Network Gateway in the Active-Active mode. This will only take effect if no existing secondary Public IP is provided. If neither an existing secondary Public IP nor this parameter is specified, a new secondary Public IP will be created with a default name, using the gateway's name with the '-pip2' suffix. |
+
+### Parameter: `clusterSettings.clusterMode-activeActiveNoBgp.clusterMode`
+
+The cluster mode deciding the configuration.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'activeActiveNoBgp'
+  ]
+  ```
+
+### Parameter: `clusterSettings.clusterMode-activeActiveNoBgp.existingSecondaryPublicIPResourceId`
+
+The secondary Public IP resource ID to associate to the Virtual Network Gateway in the Active-Active mode. If empty, then a new secondary Public IP will be created as part of this module and applied to the Virtual Network Gateway.
+
+- Required: No
+- Type: string
+
+### Parameter: `clusterSettings.clusterMode-activeActiveNoBgp.secondPipName`
+
+Specifies the name of the secondary Public IP to be created for the Virtual Network Gateway in the Active-Active mode. This will only take effect if no existing secondary Public IP is provided. If neither an existing secondary Public IP nor this parameter is specified, a new secondary Public IP will be created with a default name, using the gateway's name with the '-pip2' suffix.
+
+- Required: No
+- Type: string
+
+### Variant: `clusterSettings.clusterMode-activeActiveBgp`
+The type for an active-active BGP cluster configuration.
+
+To use this variant, set the property `clusterMode` to `activeActiveBgp`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`clusterMode`](#parameter-clustersettingsclustermode-activeactivebgpclustermode) | string | The cluster mode deciding the configuration. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`asn`](#parameter-clustersettingsclustermode-activeactivebgpasn) | int | The Autonomous System Number value. If it's not provided, a default '65515' value will be assigned to the ASN. |
+| [`customBgpIpAddresses`](#parameter-clustersettingsclustermode-activeactivebgpcustombgpipaddresses) | array | The list of custom BGP IP Address (APIPA) peering addresses which belong to IP configuration. |
+| [`existingSecondaryPublicIPResourceId`](#parameter-clustersettingsclustermode-activeactivebgpexistingsecondarypublicipresourceid) | string | The secondary Public IP resource ID to associate to the Virtual Network Gateway in the Active-Active mode. If empty, then a new secondary Public IP will be created as part of this module and applied to the Virtual Network Gateway. |
+| [`secondCustomBgpIpAddresses`](#parameter-clustersettingsclustermode-activeactivebgpsecondcustombgpipaddresses) | array | The list of the second custom BGP IP Address (APIPA) peering addresses which belong to IP configuration. |
+| [`secondPipName`](#parameter-clustersettingsclustermode-activeactivebgpsecondpipname) | string | Specifies the name of the secondary Public IP to be created for the Virtual Network Gateway in the Active-Active mode. This will only take effect if no existing secondary Public IP is provided. If neither an existing secondary Public IP nor this parameter is specified, a new secondary Public IP will be created with a default name, using the gateway's name with the '-pip2' suffix. |
+
+### Parameter: `clusterSettings.clusterMode-activeActiveBgp.clusterMode`
+
+The cluster mode deciding the configuration.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'activeActiveBgp'
+  ]
+  ```
+
+### Parameter: `clusterSettings.clusterMode-activeActiveBgp.asn`
+
+The Autonomous System Number value. If it's not provided, a default '65515' value will be assigned to the ASN.
+
+- Required: No
+- Type: int
+- MinValue: 0
+- MaxValue: 4294967295
+
+### Parameter: `clusterSettings.clusterMode-activeActiveBgp.customBgpIpAddresses`
+
+The list of custom BGP IP Address (APIPA) peering addresses which belong to IP configuration.
+
+- Required: No
+- Type: array
+
+### Parameter: `clusterSettings.clusterMode-activeActiveBgp.existingSecondaryPublicIPResourceId`
+
+The secondary Public IP resource ID to associate to the Virtual Network Gateway in the Active-Active mode. If empty, then a new secondary Public IP will be created as part of this module and applied to the Virtual Network Gateway.
+
+- Required: No
+- Type: string
+
+### Parameter: `clusterSettings.clusterMode-activeActiveBgp.secondCustomBgpIpAddresses`
+
+The list of the second custom BGP IP Address (APIPA) peering addresses which belong to IP configuration.
+
+- Required: No
+- Type: array
+
+### Parameter: `clusterSettings.clusterMode-activeActiveBgp.secondPipName`
+
+Specifies the name of the secondary Public IP to be created for the Virtual Network Gateway in the Active-Active mode. This will only take effect if no existing secondary Public IP is provided. If neither an existing secondary Public IP nor this parameter is specified, a new secondary Public IP will be created with a default name, using the gateway's name with the '-pip2' suffix.
+
+- Required: No
+- Type: string
+
+### Variant: `clusterSettings.clusterMode-activePassiveBgp`
+The type for an active-passive BGP cluster configuration.
+
+To use this variant, set the property `clusterMode` to `activePassiveBgp`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`clusterMode`](#parameter-clustersettingsclustermode-activepassivebgpclustermode) | string | The cluster mode deciding the configuration. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`asn`](#parameter-clustersettingsclustermode-activepassivebgpasn) | int | The Autonomous System Number value. If it's not provided, a default '65515' value will be assigned to the ASN. |
+| [`customBgpIpAddresses`](#parameter-clustersettingsclustermode-activepassivebgpcustombgpipaddresses) | array | The list of custom BGP IP Address (APIPA) peering addresses which belong to IP configuration. |
+
+### Parameter: `clusterSettings.clusterMode-activePassiveBgp.clusterMode`
+
+The cluster mode deciding the configuration.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'activePassiveBgp'
+  ]
+  ```
+
+### Parameter: `clusterSettings.clusterMode-activePassiveBgp.asn`
+
+The Autonomous System Number value. If it's not provided, a default '65515' value will be assigned to the ASN.
+
+- Required: No
+- Type: int
+- MinValue: 0
+- MaxValue: 4294967295
+
+### Parameter: `clusterSettings.clusterMode-activePassiveBgp.customBgpIpAddresses`
+
+The list of custom BGP IP Address (APIPA) peering addresses which belong to IP configuration.
+
+- Required: No
+- Type: array
+
+### Variant: `clusterSettings.clusterMode-activePassiveNoBgp`
+The type for an active-passive no BGP cluster configuration.
+
+To use this variant, set the property `clusterMode` to `activePassiveNoBgp`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`clusterMode`](#parameter-clustersettingsclustermode-activepassivenobgpclustermode) | string | The cluster mode deciding the configuration. |
+
+### Parameter: `clusterSettings.clusterMode-activePassiveNoBgp.clusterMode`
+
+The cluster mode deciding the configuration.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'activePassiveNoBgp'
+  ]
+  ```
 
 ### Parameter: `gatewayType`
 
@@ -2729,7 +2918,7 @@ NatRules for virtual network gateway. NAT is supported on the the following SKUs
 | :-- | :-- | :-- |
 | [`externalMappings`](#parameter-natrulesexternalmappings) | array | An address prefix range of destination IPs on the outside network that source IPs will be mapped to. In other words, your post-NAT address prefix range. |
 | [`internalMappings`](#parameter-natrulesinternalmappings) | array | An address prefix range of source IPs on the inside network that will be mapped to a set of external IPs. In other words, your pre-NAT address prefix range. |
-| [`ipConfigurationId`](#parameter-natrulesipconfigurationid) | string | A NAT rule must be configured to a specific Virtual Network Gateway instance. This is applicable to Dynamic NAT only. Static NAT rules are automatically applied to both Virtual Network Gateway instances. |
+| [`ipConfigurationResourceId`](#parameter-natrulesipconfigurationresourceid) | string | A NAT rule must be configured to a specific Virtual Network Gateway instance. This is applicable to Dynamic NAT only. Static NAT rules are automatically applied to both Virtual Network Gateway instances. |
 | [`mode`](#parameter-natrulesmode) | string | The type of NAT rule for Virtual Network NAT. IngressSnat mode (also known as Ingress Source NAT) is applicable to traffic entering the Azure hub's site-to-site Virtual Network gateway. EgressSnat mode (also known as Egress Source NAT) is applicable to traffic leaving the Azure hub's Site-to-site Virtual Network gateway. |
 | [`type`](#parameter-natrulestype) | string | The type of NAT rule for Virtual Network NAT. Static one-to-one NAT establishes a one-to-one relationship between an internal address and an external address while Dynamic NAT assigns an IP and port based on availability. |
 
@@ -2747,6 +2936,32 @@ An address prefix range of destination IPs on the outside network that source IP
 - Required: No
 - Type: array
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`addressSpace`](#parameter-natrulesexternalmappingsaddressspace) | string | Address space for Vpn NatRule mapping. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`portRange`](#parameter-natrulesexternalmappingsportrange) | string | Port range for Vpn NatRule mapping. |
+
+### Parameter: `natRules.externalMappings.addressSpace`
+
+Address space for Vpn NatRule mapping.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `natRules.externalMappings.portRange`
+
+Port range for Vpn NatRule mapping.
+
+- Required: No
+- Type: string
+
 ### Parameter: `natRules.internalMappings`
 
 An address prefix range of source IPs on the inside network that will be mapped to a set of external IPs. In other words, your pre-NAT address prefix range.
@@ -2754,7 +2969,33 @@ An address prefix range of source IPs on the inside network that will be mapped 
 - Required: No
 - Type: array
 
-### Parameter: `natRules.ipConfigurationId`
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`addressSpace`](#parameter-natrulesinternalmappingsaddressspace) | string | Address space for Vpn NatRule mapping. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`portRange`](#parameter-natrulesinternalmappingsportrange) | string | Port range for Vpn NatRule mapping. |
+
+### Parameter: `natRules.internalMappings.addressSpace`
+
+Address space for Vpn NatRule mapping.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `natRules.internalMappings.portRange`
+
+Port range for Vpn NatRule mapping.
+
+- Required: No
+- Type: string
+
+### Parameter: `natRules.ipConfigurationResourceId`
 
 A NAT rule must be configured to a specific Virtual Network Gateway instance. This is applicable to Dynamic NAT only. Static NAT rules are automatically applied to both Virtual Network Gateway instances.
 
@@ -3076,7 +3317,7 @@ The SKU of the Gateway.
 
 - Required: No
 - Type: string
-- Default: `[if(equals(parameters('gatewayType'), 'VPN'), 'VpnGw1AZ', 'ErGw1AZ')]`
+- Default: `[if(equals(parameters('gatewayType'), 'Vpn'), 'VpnGw1AZ', 'ErGw1AZ')]`
 - Allowed:
   ```Bicep
   [

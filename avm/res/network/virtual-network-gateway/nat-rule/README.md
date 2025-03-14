@@ -34,7 +34,7 @@ This module deploys a Virtual Network Gateway NAT Rule.
 | :-- | :-- | :-- |
 | [`externalMappings`](#parameter-externalmappings) | array | An address prefix range of destination IPs on the outside network that source IPs will be mapped to. In other words, your post-NAT address prefix range. |
 | [`internalMappings`](#parameter-internalmappings) | array | An address prefix range of source IPs on the inside network that will be mapped to a set of external IPs. In other words, your pre-NAT address prefix range. |
-| [`ipConfigurationId`](#parameter-ipconfigurationid) | string | A NAT rule must be configured to a specific Virtual Network Gateway instance. This is applicable to Dynamic NAT only. Static NAT rules are automatically applied to both Virtual Network Gateway instances. |
+| [`ipConfigurationResourceId`](#parameter-ipconfigurationresourceid) | string | A NAT rule must be configured to a specific Virtual Network Gateway instance. This is applicable to Dynamic NAT only. Static NAT rules are automatically applied to both Virtual Network Gateway instances. |
 | [`mode`](#parameter-mode) | string | The type of NAT rule for Virtual Network NAT. IngressSnat mode (also known as Ingress Source NAT) is applicable to traffic entering the Azure hub's site-to-site Virtual Network gateway. EgressSnat mode (also known as Egress Source NAT) is applicable to traffic leaving the Azure hub's Site-to-site Virtual Network gateway. |
 | [`type`](#parameter-type) | string | The type of NAT rule for Virtual Network NAT. Static one-to-one NAT establishes a one-to-one relationship between an internal address and an external address while Dynamic NAT assigns an IP and port based on availability. |
 
@@ -58,7 +58,32 @@ An address prefix range of destination IPs on the outside network that source IP
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`addressSpace`](#parameter-externalmappingsaddressspace) | string | Address space for Vpn NatRule mapping. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`portRange`](#parameter-externalmappingsportrange) | string | Port range for Vpn NatRule mapping. |
+
+### Parameter: `externalMappings.addressSpace`
+
+Address space for Vpn NatRule mapping.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `externalMappings.portRange`
+
+Port range for Vpn NatRule mapping.
+
+- Required: No
+- Type: string
 
 ### Parameter: `internalMappings`
 
@@ -66,9 +91,34 @@ An address prefix range of source IPs on the inside network that will be mapped 
 
 - Required: No
 - Type: array
-- Default: `[]`
 
-### Parameter: `ipConfigurationId`
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`addressSpace`](#parameter-internalmappingsaddressspace) | string | Address space for Vpn NatRule mapping. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`portRange`](#parameter-internalmappingsportrange) | string | Port range for Vpn NatRule mapping. |
+
+### Parameter: `internalMappings.addressSpace`
+
+Address space for Vpn NatRule mapping.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `internalMappings.portRange`
+
+Port range for Vpn NatRule mapping.
+
+- Required: No
+- Type: string
+
+### Parameter: `ipConfigurationResourceId`
 
 A NAT rule must be configured to a specific Virtual Network Gateway instance. This is applicable to Dynamic NAT only. Static NAT rules are automatically applied to both Virtual Network Gateway instances.
 

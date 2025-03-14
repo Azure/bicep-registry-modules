@@ -61,7 +61,7 @@ param vpnGatewayGeneration string = 'None'
   'ErGw2AZ'
   'ErGw3AZ'
 ])
-param skuName string = (gatewayType == 'VPN') ? 'VpnGw1AZ' : 'ErGw1AZ'
+param skuName string = (gatewayType == 'Vpn') ? 'VpnGw1AZ' : 'ErGw1AZ'
 
 @description('Optional. Specifies the VPN type.')
 @allowed([
@@ -420,7 +420,7 @@ module virtualNetworkGateway_natRules 'nat-rule/main.bicep' = [
       virtualNetworkGatewayName: virtualNetworkGateway.name
       externalMappings: natRule.?externalMappings
       internalMappings: natRule.?internalMappings
-      ipConfigurationId: natRule.?ipConfigurationId
+      ipConfigurationResourceId: natRule.?ipConfigurationResourceId
       mode: natRule.?mode
       type: natRule.?type
     }
@@ -551,6 +551,8 @@ output secondaryCustomBgpIpAddress string? = join(
 //   Definitions   //
 // =============== //
 
+import { mappingType } from 'nat-rule/main.bicep'
+
 @export()
 @description('The type for a cluster configuration.')
 @discriminator('clusterMode')
@@ -563,13 +565,13 @@ type natRuleType = {
   name: string
 
   @description('Optional. An address prefix range of destination IPs on the outside network that source IPs will be mapped to. In other words, your post-NAT address prefix range.')
-  externalMappings: array?
+  externalMappings: mappingType[]?
 
   @description('Optional. An address prefix range of source IPs on the inside network that will be mapped to a set of external IPs. In other words, your pre-NAT address prefix range.')
-  internalMappings: array?
+  internalMappings: mappingType[]?
 
   @description('Optional. A NAT rule must be configured to a specific Virtual Network Gateway instance. This is applicable to Dynamic NAT only. Static NAT rules are automatically applied to both Virtual Network Gateway instances.')
-  ipConfigurationId: string?
+  ipConfigurationResourceId: string?
 
   @description('Optional. The type of NAT rule for Virtual Network NAT. IngressSnat mode (also known as Ingress Source NAT) is applicable to traffic entering the Azure hub\'s site-to-site Virtual Network gateway. EgressSnat mode (also known as Egress Source NAT) is applicable to traffic leaving the Azure hub\'s Site-to-site Virtual Network gateway.')
   mode: ('EgressSnat' | 'IngressSnat')?
@@ -580,11 +582,13 @@ type natRuleType = {
 
 @description('The type for an active-passive no BGP cluster configuration.')
 type activePassiveNoBgpType = {
+  @description('Required. The cluster mode deciding the configuration.')
   clusterMode: 'activePassiveNoBgp'
 }
 
 @description('The type for an active-active no BGP cluster configuration.')
 type activeActiveNoBgpType = {
+  @description('Required. The cluster mode deciding the configuration.')
   clusterMode: 'activeActiveNoBgp'
 
   @description('Optional. The secondary Public IP resource ID to associate to the Virtual Network Gateway in the Active-Active mode. If empty, then a new secondary Public IP will be created as part of this module and applied to the Virtual Network Gateway.')
@@ -596,6 +600,7 @@ type activeActiveNoBgpType = {
 
 @description('The type for an active-passive BGP cluster configuration.')
 type activePassiveBgpType = {
+  @description('Required. The cluster mode deciding the configuration.')
   clusterMode: 'activePassiveBgp'
 
   @description('Optional. The Autonomous System Number value. If it\'s not provided, a default \'65515\' value will be assigned to the ASN.')
@@ -609,6 +614,7 @@ type activePassiveBgpType = {
 
 @description('The type for an active-active BGP cluster configuration.')
 type activeActiveBgpType = {
+  @description('Required. The cluster mode deciding the configuration.')
   clusterMode: 'activeActiveBgp'
 
   @description('Optional. The secondary Public IP resource ID to associate to the Virtual Network Gateway in the Active-Active mode. If empty, then a new secondary Public IP will be created as part of this module and applied to the Virtual Network Gateway.')

@@ -1841,6 +1841,119 @@ The schedule information for the role assignment.
 
 - Required: Yes
 - Type: object
+- Discriminator: `durationType`
+
+<h4>The available variants are:</h4>
+
+| Variant | Description |
+| :-- | :-- |
+| [`NoExpiration`](#variant-pimroleassignmentsscheduleinfodurationtype-noexpiration) |  |
+| [`AfterDuration`](#variant-pimroleassignmentsscheduleinfodurationtype-afterduration) |  |
+| [`AfterDateTime`](#variant-pimroleassignmentsscheduleinfodurationtype-afterdatetime) |  |
+
+### Variant: `pimRoleAssignments.scheduleInfo.durationType-NoExpiration`
+
+
+To use this variant, set the property `durationType` to `NoExpiration`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`durationType`](#parameter-pimroleassignmentsscheduleinfodurationtype-noexpirationdurationtype) | string | The type of the duration. |
+
+### Parameter: `pimRoleAssignments.scheduleInfo.durationType-NoExpiration.durationType`
+
+The type of the duration.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'NoExpiration'
+  ]
+  ```
+
+### Variant: `pimRoleAssignments.scheduleInfo.durationType-AfterDuration`
+
+
+To use this variant, set the property `durationType` to `AfterDuration`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`duration`](#parameter-pimroleassignmentsscheduleinfodurationtype-afterdurationduration) | string | The duration for the role assignment. |
+| [`durationType`](#parameter-pimroleassignmentsscheduleinfodurationtype-afterdurationdurationtype) | string | The type of the duration. |
+| [`startTime`](#parameter-pimroleassignmentsscheduleinfodurationtype-afterdurationstarttime) | string | The start time for the role assignment. |
+
+### Parameter: `pimRoleAssignments.scheduleInfo.durationType-AfterDuration.duration`
+
+The duration for the role assignment.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `pimRoleAssignments.scheduleInfo.durationType-AfterDuration.durationType`
+
+The type of the duration.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AfterDuration'
+  ]
+  ```
+
+### Parameter: `pimRoleAssignments.scheduleInfo.durationType-AfterDuration.startTime`
+
+The start time for the role assignment.
+
+- Required: Yes
+- Type: string
+
+### Variant: `pimRoleAssignments.scheduleInfo.durationType-AfterDateTime`
+
+
+To use this variant, set the property `durationType` to `AfterDateTime`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`durationType`](#parameter-pimroleassignmentsscheduleinfodurationtype-afterdatetimedurationtype) | string | The type of the duration. |
+| [`endDateTime`](#parameter-pimroleassignmentsscheduleinfodurationtype-afterdatetimeenddatetime) | string | The end date and time for the role assignment. |
+| [`startTime`](#parameter-pimroleassignmentsscheduleinfodurationtype-afterdatetimestarttime) | string | The start date and time for the role assignment. |
+
+### Parameter: `pimRoleAssignments.scheduleInfo.durationType-AfterDateTime.durationType`
+
+The type of the duration.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AfterDateTime'
+  ]
+  ```
+
+### Parameter: `pimRoleAssignments.scheduleInfo.durationType-AfterDateTime.endDateTime`
+
+The end date and time for the role assignment.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `pimRoleAssignments.scheduleInfo.durationType-AfterDateTime.startTime`
+
+The start date and time for the role assignment.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `pimRoleAssignments.justification`
 
@@ -2078,6 +2191,168 @@ The type of template for the role assignment condition.
 
 - Required: No
 - Type: object
+- Discriminator: `templateName`
+
+<h4>The available variants are:</h4>
+
+| Variant | Description |
+| :-- | :-- |
+| [`excludeRoles`](#variant-roleassignmentsroleassignmentconditionroleconditiontypetemplatename-excluderoles) |  |
+| [`constrainRoles`](#variant-roleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainroles) |  |
+| [`constrainRolesAndPrincipalTypes`](#variant-roleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolesandprincipaltypes) |  |
+| [`constrainRolesAndPrincipals`](#variant-roleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolesandprincipals) |  |
+
+### Variant: `roleAssignments.roleAssignmentCondition.roleConditionType.templateName-excludeRoles`
+
+
+To use this variant, set the property `templateName` to `excludeRoles`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`ExludededRoles`](#parameter-roleassignmentsroleassignmentconditionroleconditiontypetemplatename-excluderolesexludededroles) | array | The list of roles that are not allowed to be assigned by the delegate. |
+| [`templateName`](#parameter-roleassignmentsroleassignmentconditionroleconditiontypetemplatename-excluderolestemplatename) | string | Name of the RBAC condition template. |
+
+### Parameter: `roleAssignments.roleAssignmentCondition.roleConditionType.templateName-excludeRoles.ExludededRoles`
+
+The list of roles that are not allowed to be assigned by the delegate.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `roleAssignments.roleAssignmentCondition.roleConditionType.templateName-excludeRoles.templateName`
+
+Name of the RBAC condition template.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'excludeRoles'
+  ]
+  ```
+
+### Variant: `roleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRoles`
+
+
+To use this variant, set the property `templateName` to `constrainRoles`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`rolesToAssign`](#parameter-roleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolesrolestoassign) | array | The list of roles that are allowed to be assigned by the delegate. |
+| [`templateName`](#parameter-roleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolestemplatename) | string | Name of the RBAC condition template. |
+
+### Parameter: `roleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRoles.rolesToAssign`
+
+The list of roles that are allowed to be assigned by the delegate.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `roleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRoles.templateName`
+
+Name of the RBAC condition template.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'constrainRoles'
+  ]
+  ```
+
+### Variant: `roleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRolesAndPrincipalTypes`
+
+
+To use this variant, set the property `templateName` to `constrainRolesAndPrincipalTypes`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principleTypesToAssign`](#parameter-roleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolesandprincipaltypesprincipletypestoassign) | array | The list of principle types that are allowed to be assigned roles by the delegate. |
+| [`rolesToAssign`](#parameter-roleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolesandprincipaltypesrolestoassign) | array | The list of roles that are allowed to be assigned by the delegate. |
+| [`templateName`](#parameter-roleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolesandprincipaltypestemplatename) | string | Name of the RBAC condition template. |
+
+### Parameter: `roleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRolesAndPrincipalTypes.principleTypesToAssign`
+
+The list of principle types that are allowed to be assigned roles by the delegate.
+
+- Required: Yes
+- Type: array
+- Allowed:
+  ```Bicep
+  [
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
+
+### Parameter: `roleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRolesAndPrincipalTypes.rolesToAssign`
+
+The list of roles that are allowed to be assigned by the delegate.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `roleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRolesAndPrincipalTypes.templateName`
+
+Name of the RBAC condition template.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'constrainRolesAndPrincipalTypes'
+  ]
+  ```
+
+### Variant: `roleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRolesAndPrincipals`
+
+
+To use this variant, set the property `templateName` to `constrainRolesAndPrincipals`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalsToAssignTo`](#parameter-roleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolesandprincipalsprincipalstoassignto) | array | The list of principals that are allowed to be assigned roles by the delegate. |
+| [`rolesToAssign`](#parameter-roleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolesandprincipalsrolestoassign) | array | The list of roles that are allowed to be assigned by the delegate. |
+| [`templateName`](#parameter-roleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolesandprincipalstemplatename) | string | Name of the RBAC condition template. |
+
+### Parameter: `roleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRolesAndPrincipals.principalsToAssignTo`
+
+The list of principals that are allowed to be assigned roles by the delegate.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `roleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRolesAndPrincipals.rolesToAssign`
+
+The list of roles that are allowed to be assigned by the delegate.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `roleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRolesAndPrincipals.templateName`
+
+Name of the RBAC condition template.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'constrainRolesAndPrincipals'
+  ]
+  ```
 
 ### Parameter: `subscriptionAliasEnabled`
 

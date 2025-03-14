@@ -1110,8 +1110,6 @@ HTTPGet specifies the http request to perform.
 
 - Required: No
 - Type: object
-- MinValue: 1
-- MaxValue: 10
 
 **Required parameters**
 
@@ -1134,8 +1132,6 @@ Path to access on the HTTP server.
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 10
 
 ### Parameter: `containers.probes.httpGet.port`
 
@@ -1152,8 +1148,6 @@ Host name to connect to, defaults to the pod IP.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 65535
 
 ### Parameter: `containers.probes.httpGet.httpHeaders`
 
@@ -1161,8 +1155,6 @@ Custom headers to set in the request.
 
 - Required: No
 - Type: array
-- MinValue: 1
-- MaxValue: 65535
 
 **Required parameters**
 
@@ -1177,8 +1169,6 @@ The header field name.
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 65535
 
 ### Parameter: `containers.probes.httpGet.httpHeaders.value`
 
@@ -1186,8 +1176,6 @@ The header field value.
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 65535
 
 ### Parameter: `containers.probes.httpGet.scheme`
 
@@ -1202,8 +1190,6 @@ Scheme to use for connecting to the host. Defaults to HTTP.
     'HTTPS'
   ]
   ```
-- MinValue: 1
-- MaxValue: 65535
 
 ### Parameter: `containers.probes.initialDelaySeconds`
 
@@ -1238,8 +1224,6 @@ TCPSocket specifies an action involving a TCP port.
 
 - Required: No
 - Type: object
-- MinValue: 1
-- MaxValue: 10
 
 **Required parameters**
 
@@ -1254,8 +1238,6 @@ Host name to connect to, defaults to the pod IP.
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 10
 
 ### Parameter: `containers.probes.tcpSocket.port`
 

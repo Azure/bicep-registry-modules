@@ -210,7 +210,6 @@ Describes the license state. Default is Deactivated.
     'Deactivated'
   ]
   ```
-- MinValue: 8
 
 ### Parameter: `licenseDetailTarget`
 
@@ -226,7 +225,6 @@ Describes the license target server. Default is Windows Server 2012 R2.
     'Windows Server 2012 R2'
   ]
   ```
-- MinValue: 8
 
 ### Parameter: `licenseDetailType`
 
@@ -242,7 +240,6 @@ Provide the core type (vCore or pCore) needed for this ESU licens. Default is vC
     'vCore'
   ]
   ```
-- MinValue: 8
 
 ### Parameter: `licenseType`
 
@@ -257,7 +254,6 @@ The type of the license resource. The value is ESU.
     'ESU'
   ]
   ```
-- MinValue: 8
 
 ### Parameter: `licenseVolumeLicenseDetails`
 
@@ -266,7 +262,6 @@ A list of volume license details.
 - Required: No
 - Type: array
 - Default: `[]`
-- MinValue: 8
 
 **Required parameters**
 
@@ -281,7 +276,6 @@ The invoice id for the volume license.
 
 - Required: Yes
 - Type: string
-- MinValue: 8
 
 ### Parameter: `licenseVolumeLicenseDetails.programYear`
 
@@ -297,7 +291,6 @@ Describes the program year the volume license is for.
     'Year 3'
   ]
   ```
-- MinValue: 8
 
 ### Parameter: `location`
 
@@ -306,7 +299,6 @@ The location of the Azure Arc License to be created.
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
-- MinValue: 8
 
 ### Parameter: `tags`
 
@@ -314,7 +306,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-- MinValue: 8
 
 ### Parameter: `tenantId`
 
@@ -323,7 +314,6 @@ The tenant ID of the license resource. Default is the tenant ID of the current s
 - Required: No
 - Type: string
 - Default: `[tenant().tenantId]`
-- MinValue: 8
 
 ## Outputs
 
