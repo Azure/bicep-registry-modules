@@ -162,9 +162,24 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
     autoScaleMax: 6
     autoScaleMin: 3
     capacity: 3
-    clusterPrincipalAssignments: []
+    clusterPrincipalAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'App'
+        role: 'AllDatabasesViewer'
+        tenantId: '<tenantId>'
+      }
+    ]
     databases: [
       {
+        databasePrincipalAssignments: [
+          {
+            principalId: '<principalId>'
+            principalType: 'App'
+            role: 'Viewer'
+            tenantId: '<tenantId>'
+          }
+        ]
         kind: 'ReadWrite'
         name: 'myReadWriteDatabase'
         readWriteProperties: {
@@ -264,11 +279,26 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
       "value": 3
     },
     "clusterPrincipalAssignments": {
-      "value": []
+      "value": [
+        {
+          "principalId": "<principalId>",
+          "principalType": "App",
+          "role": "AllDatabasesViewer",
+          "tenantId": "<tenantId>"
+        }
+      ]
     },
     "databases": {
       "value": [
         {
+          "databasePrincipalAssignments": [
+            {
+              "principalId": "<principalId>",
+              "principalType": "App",
+              "role": "Viewer",
+              "tenantId": "<tenantId>"
+            }
+          ],
           "kind": "ReadWrite",
           "name": "myReadWriteDatabase",
           "readWriteProperties": {
@@ -380,9 +410,24 @@ param allowedIpRangeList = [
 param autoScaleMax = 6
 param autoScaleMin = 3
 param capacity = 3
-param clusterPrincipalAssignments = []
+param clusterPrincipalAssignments = [
+  {
+    principalId: '<principalId>'
+    principalType: 'App'
+    role: 'AllDatabasesViewer'
+    tenantId: '<tenantId>'
+  }
+]
 param databases = [
   {
+    databasePrincipalAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'App'
+        role: 'Viewer'
+        tenantId: '<tenantId>'
+      }
+    ]
     kind: 'ReadWrite'
     name: 'myReadWriteDatabase'
     readWriteProperties: {
