@@ -34,6 +34,17 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' existing 
   name: 'dep-avmx-compute.virtualMachines-cvmwinwaf-rg'
 }
 
+// module nestedDependencies 'dependencies.bicep' = {
+//   scope: resourceGroup
+//   name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
+//   params: {
+//     virtualMachineName: 'dep-${namePrefix}-vm-${serviceShort}'
+//     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+//     maintenanceConfigurationName: 'dep-${namePrefix}-mc-${serviceShort}'
+//     location: enforcedLocation
+//   }
+// }
+
 // ============== //
 // Test Execution //
 // ============== //
