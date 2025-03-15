@@ -131,6 +131,17 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2022-08-01' = {
       computerName: virtualMachineName
       linuxConfiguration: {
         disablePasswordAuthentication: false
+        patchSettings: {
+          // assessmentMode: 'string'
+          // automaticByPlatformSettings: {
+          //   bypassPlatformSafetyChecksOnUserSchedule: true
+          //   rebootSetting: 'string'
+          // }
+          patchMode: 'AutomaticByPlatform'
+        }
+        //   enableAutomaticUpdates: true
+        // patchMode: 'AutomaticByPlatform'
+        // bypassPlatformSafetyChecksOnUserSchedule: true
       }
     }
   }
