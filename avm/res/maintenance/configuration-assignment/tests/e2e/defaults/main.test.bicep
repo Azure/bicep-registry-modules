@@ -29,21 +29,21 @@ var enforcedLocation = 'uksouth'
 
 // General resources
 // =================
-
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' existing = {
-  name: 'dep-avmx-compute.virtualMachines-cvmwinwaf-rg'
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+  name: resourceGroupName
+  location: enforcedLocation
 }
 
-// module nestedDependencies 'dependencies.bicep' = {
-//   scope: resourceGroup
-//   name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
-//   params: {
-//     virtualMachineName: 'dep-${namePrefix}-vm-${serviceShort}'
-//     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
-//     maintenanceConfigurationName: 'dep-${namePrefix}-mc-${serviceShort}'
-//     location: enforcedLocation
-//   }
-// }
+module nestedDependencies 'dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
+  params: {
+    virtualMachineName: 'dep-${namePrefix}-vm-${serviceShort}'
+    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    maintenanceConfigurationName: 'dep-${namePrefix}-mc-${serviceShort}'
+    location: enforcedLocation
+  }
+}
 
 // ============== //
 // Test Execution //
@@ -56,8 +56,8 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: enforcedLocation
-      maintenanceConfigurationResourceId: '/subscriptions/cfa4dc0b-3d25-4e58-a70a-7085359080c5/resourcegroups/dep-avmx-compute.virtualmachines-cvmwinwaf-rg/providers/microsoft.maintenance/maintenanceconfigurations/dep-avmx-mc-cvmwinwaf'
-      resourceId: '/subscriptions/cfa4dc0b-3d25-4e58-a70a-7085359080c5/resourceGroups/dep-avmx-compute.virtualmachines-cvmwinwaf-rg/providers/Microsoft.Compute/virtualMachines/avmxcvmwinwaf'
+      maintenanceConfigurationResourceId: nestedDependencies.outputs.maintenanceConfigurationResourceId
+      resourceId: nestedDependencies.outputs.virtualMachineResourceId
     }
   }
 ]
