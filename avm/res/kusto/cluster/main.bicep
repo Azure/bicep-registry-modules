@@ -127,7 +127,7 @@ import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-ty
 param diagnosticSettings diagnosticSettingFullType[]?
 
 @description('Optional. The Principal Assignments for the Kusto Cluster.')
-param principalAssignments principalAssignmentType[]?
+param clusterPrincipalAssignments clusterPrincipalAssignmentType[]?
 
 @description('Optional. The Kusto Cluster databases.')
 param databases databaseType[]?
@@ -227,10 +227,10 @@ resource kustoCluster 'Microsoft.Kusto/clusters@2024-04-13' = {
           keyName: customerManagedKey!.keyName
           keyVaultUri: cMKKeyVault.properties.vaultUri
           keyVersion: !empty(customerManagedKey.?keyVersion ?? '')
-            ? customerManagedKey!.keyVersion
+            ? customerManagedKey!.?keyVersion
             : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
           userIdentity: !empty(customerManagedKey.?userAssignedIdentityResourceId)
-            ? customerManagedKey!.userAssignedIdentityResourceId
+            ? customerManagedKey!.?userAssignedIdentityResourceId
             : null
         }
       : null
@@ -325,14 +325,11 @@ resource kustoCluster_roleAssignments 'Microsoft.Authorization/roleAssignments@2
 ]
 
 module kustoCluster_principalAssignments 'principal-assignment/main.bicep' = [
-  for (principalAssignment, index) in (principalAssignments ?? []): {
+  for (principalAssignment, index) in (clusterPrincipalAssignments ?? []): {
     name: '${uniqueString(deployment().name, location)}-KustoCluster-PrincipalAssignment-${index}'
     params: {
       kustoClusterName: kustoCluster.name
-      principalId: principalAssignment.principalId
-      principalType: principalAssignment.principalType
-      role: principalAssignment.role
-      tenantId: principalAssignment.?tenantId
+      clusterPrincipalAssignment: principalAssignment
     }
   }
 ]
@@ -398,6 +395,8 @@ module kustoCluster_databases 'database/main.bicep' = [
       kustoClusterName: kustoCluster.name
       databaseKind: database.kind
       databaseReadWriteProperties: database.kind == 'ReadWrite' ? database.readWriteProperties : null
+      databasePrincipalReadOnlyFollowingAssignments: database.databasePrincipalAssignments ?? null
+      databaseReadWritePrincipalAssignments: database.databasePrincipalAssignments ?? null
     }
   }
 ]
@@ -427,7 +426,7 @@ output privateEndpoints array = [
     name: kustoCluster_privateEndpoints[i].outputs.name
     resourceId: kustoCluster_privateEndpoints[i].outputs.resourceId
     groupId: kustoCluster_privateEndpoints[i].outputs.groupId
-    customDnsConfig: kustoCluster_privateEndpoints[i].outputs.customDnsConfig
+    customDnsConfig: kustoCluster_privateEndpoints[i].outputs.?customDnsConfig
     networkInterfaceIds: kustoCluster_privateEndpoints[i].outputs.networkInterfaceIds
   }
 ]
@@ -443,6 +442,12 @@ output databases array = [
 // =============== //
 //   Definitions   //
 // =============== //
+
+import { clusterPrincipalAssignmentType } from './principal-assignment/main.bicep'
+
+import { databasePrincipalAssignmentType } from './database/principal-assignment/main.bicep'
+
+import { databaseReadWriteType } from './database/main.bicep'
 
 @export()
 type acceptedAudienceType = {
@@ -481,28 +486,16 @@ type virtualNetworkConfigurationType = {
 }
 
 @export()
-type principalAssignmentType = {
-  @description('Required. The principal id assigned to the Kusto Cluster principal. It can be a user email, application id, or security group name.')
-  principalId: string
-
-  @description('Required. The principal type of the principal id.')
-  principalType: 'App' | 'Group' | 'User'
-
-  @description('Required. The Kusto Cluster role to be assigned to the principal id.')
-  role: 'AllDatabasesAdmin' | 'AllDatabasesViewer'
-
-  @description('Optional. The tenant id of the principal.')
-  tenantId: string?
-}
-
-import { databaseReadWriteType } from './database/main.bicep'
-
-@export()
 type databaseType = {
   @description('Required. The name of the Kusto Cluster database.')
   name: string
+
   @description('Required. The object type of the databse.')
   kind: 'ReadWrite' | 'ReadOnlyFollowing'
+
   @description('Conditional. Required if the database kind is ReadWrite. Contains the properties of the database.')
   readWriteProperties: databaseReadWriteType?
+
+  @description('Optional. The principal assignments for the Kusto Cluster database.')
+  databasePrincipalAssignments: databasePrincipalAssignmentType[]?
 }

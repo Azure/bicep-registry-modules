@@ -1,0 +1,119 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.33.13.18514",
+      "templateHash": "2292703608588518690"
+    },
+    "name": "Kusto Cluster Database Principal Assignments",
+    "description": "This module deploys a Kusto Cluster Database Principal Assignment."
+  },
+  "definitions": {
+    "databasePrincipalAssignmentType": {
+      "type": "object",
+      "properties": {
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The principal id assigned to the Kusto Cluster database principal. It can be a user email, application id, or security group name."
+          }
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "App",
+            "Group",
+            "User"
+          ],
+          "metadata": {
+            "description": "Required. The principal type of the principal id."
+          }
+        },
+        "role": {
+          "type": "string",
+          "allowedValues": [
+            "Admin",
+            "Ingestor",
+            "Monitor",
+            "UnrestrictedViewer",
+            "User",
+            "Viewer"
+          ],
+          "metadata": {
+            "description": "Required. The Kusto Cluster database role to be assigned to the principal id."
+          }
+        },
+        "tenantId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The tenant id of the principal."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    }
+  },
+  "parameters": {
+    "kustoClusterDatabaseName": {
+      "type": "string",
+      "minLength": 4,
+      "maxLength": 22,
+      "metadata": {
+        "description": "Conditional. The name of the parent Kusto Cluster Database. Required if the template is used in a standalone deployment."
+      }
+    },
+    "databasePrincipalAssignment": {
+      "$ref": "#/definitions/databasePrincipalAssignmentType",
+      "metadata": {
+        "description": "Required. The principal assignement for the Kusto Cluster Database."
+      }
+    }
+  },
+  "resources": {
+    "kustoClusterDatabase": {
+      "existing": true,
+      "type": "Microsoft.Kusto/clusters/databases",
+      "apiVersion": "2024-04-13",
+      "name": "[parameters('kustoClusterDatabaseName')]"
+    },
+    "kustoDatabasePrincipalAssignment": {
+      "type": "Microsoft.Kusto/clusters/databases/principalAssignments",
+      "apiVersion": "2024-04-13",
+      "name": "[format('{0}/{1}/{2}', split(parameters('kustoClusterDatabaseName'), '/')[0], split(parameters('kustoClusterDatabaseName'), '/')[1], parameters('databasePrincipalAssignment').principalId)]",
+      "properties": {
+        "principalId": "[parameters('databasePrincipalAssignment').principalId]",
+        "principalType": "[parameters('databasePrincipalAssignment').principalType]",
+        "role": "[parameters('databasePrincipalAssignment').role]",
+        "tenantId": "[parameters('databasePrincipalAssignment').tenantId]"
+      }
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the deployed Kusto Cluster Database Principal Assignment."
+      },
+      "value": "[parameters('databasePrincipalAssignment').principalId]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource id of the deployed Kusto Cluster Database Principal Assignment."
+      },
+      "value": "[resourceId('Microsoft.Kusto/clusters/databases', split(parameters('kustoClusterDatabaseName'), '/')[0], split(parameters('kustoClusterDatabaseName'), '/')[1])]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group name of the deployed Kusto Cluster Database Principal Assignment."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}
