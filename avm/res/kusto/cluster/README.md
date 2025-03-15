@@ -20,6 +20,7 @@ This module deploys a Kusto Cluster.
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.Kusto/clusters` | [2024-04-13](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Kusto/2024-04-13/clusters) |
 | `Microsoft.Kusto/clusters/databases` | [2024-04-13](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Kusto/2024-04-13/clusters/databases) |
+| `Microsoft.Kusto/clusters/databases/principalAssignments` | [2024-04-13](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Kusto/2024-04-13/clusters/databases/principalAssignments) |
 | `Microsoft.Kusto/clusters/principalAssignments` | [2023-08-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Kusto/2023-08-15/clusters/principalAssignments) |
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
@@ -161,6 +162,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
     autoScaleMax: 6
     autoScaleMin: 3
     capacity: 3
+    clusterPrincipalAssignments: []
     databases: [
       {
         kind: 'ReadWrite'
@@ -191,13 +193,6 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
         '<managedIdentityResourceId>'
       ]
     }
-    principalAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'App'
-        role: 'AllDatabasesViewer'
-      }
-    ]
     publicIPType: 'DualStack'
     roleAssignments: [
       {
@@ -268,6 +263,9 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
     "capacity": {
       "value": 3
     },
+    "clusterPrincipalAssignments": {
+      "value": []
+    },
     "databases": {
       "value": [
         {
@@ -326,15 +324,6 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
         ]
       }
     },
-    "principalAssignments": {
-      "value": [
-        {
-          "principalId": "<principalId>",
-          "principalType": "App",
-          "role": "AllDatabasesViewer"
-        }
-      ]
-    },
     "publicIPType": {
       "value": "DualStack"
     },
@@ -391,6 +380,7 @@ param allowedIpRangeList = [
 param autoScaleMax = 6
 param autoScaleMin = 3
 param capacity = 3
+param clusterPrincipalAssignments = []
 param databases = [
   {
     kind: 'ReadWrite'
@@ -421,13 +411,6 @@ param managedIdentities = {
     '<managedIdentityResourceId>'
   ]
 }
-param principalAssignments = [
-  {
-    principalId: '<principalId>'
-    principalType: 'App'
-    role: 'AllDatabasesViewer'
-  }
-]
 param publicIPType = 'DualStack'
 param roleAssignments = [
   {
@@ -979,6 +962,7 @@ param tier = 'Standard'
 | [`autoScaleMax`](#parameter-autoscalemax) | int | When auto-scale is enabled, the maximum number of instances in the Kusto Cluster. |
 | [`autoScaleMin`](#parameter-autoscalemin) | int | When auto-scale is enabled, the minimum number of instances in the Kusto Cluster. |
 | [`capacity`](#parameter-capacity) | int | The number of instances of the Kusto Cluster. |
+| [`clusterPrincipalAssignments`](#parameter-clusterprincipalassignments) | array | The Principal Assignments for the Kusto Cluster. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
 | [`databases`](#parameter-databases) | array | The Kusto Cluster databases. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
@@ -997,7 +981,6 @@ param tier = 'Standard'
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
-| [`principalAssignments`](#parameter-principalassignments) | array | The Principal Assignments for the Kusto Cluster. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`publicIPType`](#parameter-publiciptype) | string | Indicates what public IP type to create - IPv4 (default), or DualStack (both IPv4 and IPv6). |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
@@ -1088,6 +1071,75 @@ The number of instances of the Kusto Cluster.
 - MinValue: 2
 - MaxValue: 999
 
+### Parameter: `clusterPrincipalAssignments`
+
+The Principal Assignments for the Kusto Cluster.
+
+- Required: No
+- Type: array
+- MinValue: 2
+- MaxValue: 999
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-clusterprincipalassignmentsprincipalid) | string | The principal id assigned to the Kusto Cluster principal. It can be a user email, application id, or security group name. |
+| [`principalType`](#parameter-clusterprincipalassignmentsprincipaltype) | string | The principal type of the principal id. |
+| [`role`](#parameter-clusterprincipalassignmentsrole) | string | The Kusto Cluster role to be assigned to the principal id. |
+| [`tenantId`](#parameter-clusterprincipalassignmentstenantid) | string | The tenant id of the principal. |
+
+### Parameter: `clusterPrincipalAssignments.principalId`
+
+The principal id assigned to the Kusto Cluster principal. It can be a user email, application id, or security group name.
+
+- Required: Yes
+- Type: string
+- MinValue: 2
+- MaxValue: 999
+
+### Parameter: `clusterPrincipalAssignments.principalType`
+
+The principal type of the principal id.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'App'
+    'Group'
+    'User'
+  ]
+  ```
+- MinValue: 2
+- MaxValue: 999
+
+### Parameter: `clusterPrincipalAssignments.role`
+
+The Kusto Cluster role to be assigned to the principal id.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AllDatabasesAdmin'
+    'AllDatabasesViewer'
+  ]
+  ```
+- MinValue: 2
+- MaxValue: 999
+
+### Parameter: `clusterPrincipalAssignments.tenantId`
+
+The tenant id of the principal.
+
+- Required: Yes
+- Type: string
+- MinValue: 2
+- MaxValue: 999
+
 ### Parameter: `customerManagedKey`
 
 The customer managed key definition.
@@ -1168,6 +1220,12 @@ The Kusto Cluster databases.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`readWriteProperties`](#parameter-databasesreadwriteproperties) | object | Required if the database kind is ReadWrite. Contains the properties of the database. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`databasePrincipalAssignments`](#parameter-databasesdatabaseprincipalassignments) | array | The principal assignments for the Kusto Cluster database. |
 
 ### Parameter: `databases.kind`
 
@@ -1279,6 +1337,79 @@ The user identity.
 The time the data should be kept before it stops being accessible to queries in TimeSpan.
 
 - Required: No
+- Type: string
+- MinValue: 2
+- MaxValue: 999
+
+### Parameter: `databases.databasePrincipalAssignments`
+
+The principal assignments for the Kusto Cluster database.
+
+- Required: No
+- Type: array
+- MinValue: 2
+- MaxValue: 999
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-databasesdatabaseprincipalassignmentsprincipalid) | string | The principal id assigned to the Kusto Cluster database principal. It can be a user email, application id, or security group name. |
+| [`principalType`](#parameter-databasesdatabaseprincipalassignmentsprincipaltype) | string | The principal type of the principal id. |
+| [`role`](#parameter-databasesdatabaseprincipalassignmentsrole) | string | The Kusto Cluster database role to be assigned to the principal id. |
+| [`tenantId`](#parameter-databasesdatabaseprincipalassignmentstenantid) | string | The tenant id of the principal. |
+
+### Parameter: `databases.databasePrincipalAssignments.principalId`
+
+The principal id assigned to the Kusto Cluster database principal. It can be a user email, application id, or security group name.
+
+- Required: Yes
+- Type: string
+- MinValue: 2
+- MaxValue: 999
+
+### Parameter: `databases.databasePrincipalAssignments.principalType`
+
+The principal type of the principal id.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'App'
+    'Group'
+    'User'
+  ]
+  ```
+- MinValue: 2
+- MaxValue: 999
+
+### Parameter: `databases.databasePrincipalAssignments.role`
+
+The Kusto Cluster database role to be assigned to the principal id.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Admin'
+    'Ingestor'
+    'Monitor'
+    'UnrestrictedViewer'
+    'User'
+    'Viewer'
+  ]
+  ```
+- MinValue: 2
+- MaxValue: 999
+
+### Parameter: `databases.databasePrincipalAssignments.tenantId`
+
+The tenant id of the principal.
+
+- Required: Yes
 - Type: string
 - MinValue: 2
 - MaxValue: 999
@@ -1721,80 +1852,6 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 
 - Required: No
 - Type: array
-- MinValue: 2
-- MaxValue: 999
-
-### Parameter: `principalAssignments`
-
-The Principal Assignments for the Kusto Cluster.
-
-- Required: No
-- Type: array
-- MinValue: 2
-- MaxValue: 999
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`principalId`](#parameter-principalassignmentsprincipalid) | string | The principal id assigned to the Kusto Cluster principal. It can be a user email, application id, or security group name. |
-| [`principalType`](#parameter-principalassignmentsprincipaltype) | string | The principal type of the principal id. |
-| [`role`](#parameter-principalassignmentsrole) | string | The Kusto Cluster role to be assigned to the principal id. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`tenantId`](#parameter-principalassignmentstenantid) | string | The tenant id of the principal. |
-
-### Parameter: `principalAssignments.principalId`
-
-The principal id assigned to the Kusto Cluster principal. It can be a user email, application id, or security group name.
-
-- Required: Yes
-- Type: string
-- MinValue: 2
-- MaxValue: 999
-
-### Parameter: `principalAssignments.principalType`
-
-The principal type of the principal id.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'App'
-    'Group'
-    'User'
-  ]
-  ```
-- MinValue: 2
-- MaxValue: 999
-
-### Parameter: `principalAssignments.role`
-
-The Kusto Cluster role to be assigned to the principal id.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'AllDatabasesAdmin'
-    'AllDatabasesViewer'
-  ]
-  ```
-- MinValue: 2
-- MaxValue: 999
-
-### Parameter: `principalAssignments.tenantId`
-
-The tenant id of the principal.
-
-- Required: No
-- Type: string
 - MinValue: 2
 - MaxValue: 999
 

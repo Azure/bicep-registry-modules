@@ -62,11 +62,12 @@ module testDeployment '../../../main.bicep' = [
       autoScaleMin: 3
       autoScaleMax: 6
       enableAutoScale: true
-      principalAssignments: [
+      clusterPrincipalAssignments: [
         {
           principalId: nestedDependencies.outputs.managedIdentityClientId
           principalType: 'App'
           role: 'AllDatabasesViewer'
+          tenantId: tenant().tenantId
         }
       ]
       allowedFqdnList: [
@@ -125,6 +126,14 @@ module testDeployment '../../../main.bicep' = [
             softDeletePeriod: 'P7D'
             hotCachePeriod: 'P1D'
           }
+          databasePrincipalAssignments: [
+            {
+              principalId: nestedDependencies.outputs.managedIdentityClientId
+              principalType: 'App'
+              role: 'Viewer'
+              tenantId: tenant().tenantId
+            }
+          ]
         }
       ]
     }
