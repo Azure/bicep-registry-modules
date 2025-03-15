@@ -95,7 +95,7 @@ resource maintenanceConfiguration 'Microsoft.Maintenance/maintenanceConfiguratio
   }
 }
 
-resource virtualMachine 'Microsoft.Compute/virtualMachines@2022-08-01' = {
+resource virtualMachine 'Microsoft.Compute/virtualMachines@2024-07-01' = {
   name: virtualMachineName
   location: location
   properties: {
@@ -132,11 +132,11 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2022-08-01' = {
       linuxConfiguration: {
         disablePasswordAuthentication: false
         patchSettings: {
-          // assessmentMode: 'string'
-          // automaticByPlatformSettings: {
-          //   bypassPlatformSafetyChecksOnUserSchedule: true
-          //   rebootSetting: 'string'
-          // }
+          assessmentMode: 'AutomaticByPlatform'
+          automaticByPlatformSettings: {
+            rebootSetting: 'IfRequired'
+            bypassPlatformSafetyChecksOnUserSchedule: true
+          }
           patchMode: 'AutomaticByPlatform'
         }
         //   enableAutomaticUpdates: true
