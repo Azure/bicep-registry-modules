@@ -20,7 +20,7 @@ This module deploys a Kusto Cluster Principal Assignment.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`clusterPrincipalAssignment`](#parameter-clusterprincipalassignment) | object | The principal id assigned to the Kusto Cluster principal. It can be a user email, application id, or security group name. |
+| [`clusterPrincipalAssignment`](#parameter-clusterprincipalassignment) | object | The principal assignement for the Kusto Cluster. |
 
 **Conditional parameters**
 
@@ -30,7 +30,7 @@ This module deploys a Kusto Cluster Principal Assignment.
 
 ### Parameter: `clusterPrincipalAssignment`
 
-The principal id assigned to the Kusto Cluster principal. It can be a user email, application id, or security group name.
+The principal assignement for the Kusto Cluster.
 
 - Required: Yes
 - Type: object

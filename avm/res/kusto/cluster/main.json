@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "10268478266040321522"
+      "templateHash": "3437627226840652878"
     },
     "name": "Kusto Cluster",
     "description": "This module deploys a Kusto Cluster."
@@ -119,7 +119,7 @@
             "ReadWrite"
           ],
           "metadata": {
-            "description": "Required. The object type of the databse."
+            "description": "Required. The object type of the database."
           }
         },
         "readWriteProperties": {
@@ -1341,7 +1341,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.13.18514",
-              "templateHash": "1431076878535087844"
+              "templateHash": "1274862068735507323"
             },
             "name": "Kusto Cluster Principal Assignments",
             "description": "This module deploys a Kusto Cluster Principal Assignment."
@@ -1401,7 +1401,7 @@
             "clusterPrincipalAssignment": {
               "$ref": "#/definitions/clusterPrincipalAssignmentType",
               "metadata": {
-                "description": "Required. The principal id assigned to the Kusto Cluster principal. It can be a user email, application id, or security group name."
+                "description": "Required. The principal assignement for the Kusto Cluster."
               }
             }
           },

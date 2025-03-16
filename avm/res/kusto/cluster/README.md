@@ -1233,7 +1233,7 @@ The Kusto Cluster databases.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`kind`](#parameter-databaseskind) | string | The object type of the databse. |
+| [`kind`](#parameter-databaseskind) | string | The object type of the database. |
 | [`name`](#parameter-databasesname) | string | The name of the Kusto Cluster database. |
 
 **Conditional parameters**
@@ -1250,7 +1250,7 @@ The Kusto Cluster databases.
 
 ### Parameter: `databases.kind`
 
-The object type of the databse.
+The object type of the database.
 
 - Required: Yes
 - Type: string

@@ -6,7 +6,7 @@ metadata description = 'This module deploys a Kusto Cluster Principal Assignment
 @description('Conditional. The name of the parent Kusto Cluster. Required if the template is used in a standalone deployment.')
 param kustoClusterName string
 
-@description('Required. The principal id assigned to the Kusto Cluster principal. It can be a user email, application id, or security group name.')
+@description('Required. The principal assignement for the Kusto Cluster.')
 param clusterPrincipalAssignment clusterPrincipalAssignmentType
 
 // ============== //

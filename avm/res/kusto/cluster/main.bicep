@@ -395,7 +395,7 @@ module kustoCluster_databases 'database/main.bicep' = [
       kustoClusterName: kustoCluster.name
       databaseKind: database.kind
       databaseReadWriteProperties: database.kind == 'ReadWrite' ? database.readWriteProperties : null
-      databasePrincipalAssignments: database.databasePrincipalAssignments
+      databasePrincipalAssignments: database.databasePrincipalAssignments ?? []
     }
   }
 ]
@@ -489,7 +489,7 @@ type databaseType = {
   @description('Required. The name of the Kusto Cluster database.')
   name: string
 
-  @description('Required. The object type of the databse.')
+  @description('Required. The object type of the database.')
   kind: 'ReadWrite' | 'ReadOnlyFollowing'
 
   @description('Conditional. Required if the database kind is ReadWrite. Contains the properties of the database.')
