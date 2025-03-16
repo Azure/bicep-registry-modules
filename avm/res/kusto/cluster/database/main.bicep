@@ -20,11 +20,8 @@ param databaseKind string = 'ReadWrite'
 @description('Optional. The properties of the database if using read-write. Only used if databaseKind is ReadWrite.')
 param databaseReadWriteProperties databaseReadWriteType
 
-@description('Optional. The principal assignments if using read-write.')
-param databaseReadWritePrincipalAssignments databasePrincipalAssignmentType[]?
-
-@description('Optional. The principal assignments if using read-only following.')
-param databasePrincipalReadOnlyFollowingAssignments databasePrincipalAssignmentType[]?
+@description('Optional. The principal assignments for the Kusto database.')
+param databasePrincipalAssignments databasePrincipalAssignmentType[]?
 
 // ============== //
 // Resources      //
@@ -50,20 +47,10 @@ resource database_readOnly 'Microsoft.Kusto/clusters/databases@2024-04-13' = if 
 }
 
 module database_readWrite_PrincipalAssignment './principal-assignment/main.bicep' = [
-  for (principalAssignment, index) in (databaseReadWritePrincipalAssignments ?? []) : {
-    name: '${uniqueString(deployment().name, location)}-KustoDatabase-RW-PrincipalAssignment-${index}'
+  for (principalAssignment, index) in (databasePrincipalAssignments ?? []) : {
+    name: '${uniqueString(deployment().name, location)}-KustoDatabase-PrincipalAssignment-${index}'
     params: {
-      kustoClusterDatabaseName: database_readWrite.name
-      databasePrincipalAssignment: principalAssignment
-    }
-  }
-]
-
-module database_readOnly_PrincipalAssignment './principal-assignment/main.bicep' = [
-  for (principalAssignment, index) in (databasePrincipalReadOnlyFollowingAssignments ?? []) : {
-    name: '${uniqueString(deployment().name, location)}-KustoDatabase-ROF-PrincipalAssignment-${index}'
-    params: {
-      kustoClusterDatabaseName: database_readOnly.name
+      kustoClusterDatabaseName: databaseKind == 'ReadOnlyFollowing' ? database_readOnly.name : database_readWrite.name
       databasePrincipalAssignment: principalAssignment
     }
   }

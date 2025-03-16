@@ -130,7 +130,7 @@ module testDeployment '../../../main.bicep' = [
             {
               principalId: nestedDependencies.outputs.managedIdentityClientId
               principalType: 'App'
-              role: 'Viewer'
+              role: 'Admin'
               tenantId: tenant().tenantId
             }
           ]

@@ -395,8 +395,7 @@ module kustoCluster_databases 'database/main.bicep' = [
       kustoClusterName: kustoCluster.name
       databaseKind: database.kind
       databaseReadWriteProperties: database.kind == 'ReadWrite' ? database.readWriteProperties : null
-      databasePrincipalReadOnlyFollowingAssignments: database.databasePrincipalAssignments ?? null
-      databaseReadWritePrincipalAssignments: database.databasePrincipalAssignments ?? null
+      databasePrincipalAssignments: database.databasePrincipalAssignments
     }
   }
 ]

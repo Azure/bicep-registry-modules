@@ -176,7 +176,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
           {
             principalId: '<principalId>'
             principalType: 'App'
-            role: 'Viewer'
+            role: 'Admin'
             tenantId: '<tenantId>'
           }
         ]
@@ -295,7 +295,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
             {
               "principalId": "<principalId>",
               "principalType": "App",
-              "role": "Viewer",
+              "role": "Admin",
               "tenantId": "<tenantId>"
             }
           ],
@@ -424,7 +424,7 @@ param databases = [
       {
         principalId: '<principalId>'
         principalType: 'App'
-        role: 'Viewer'
+        role: 'Admin'
         tenantId: '<tenantId>'
       }
     ]
