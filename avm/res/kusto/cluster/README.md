@@ -172,14 +172,6 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
     ]
     databases: [
       {
-        databasePrincipalAssignments: [
-          {
-            principalId: '<principalId>'
-            principalType: 'App'
-            role: 'Admin'
-            tenantId: '<tenantId>'
-          }
-        ]
         kind: 'ReadWrite'
         name: 'myReadWriteDatabase'
         readWriteProperties: {
@@ -291,14 +283,6 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
     "databases": {
       "value": [
         {
-          "databasePrincipalAssignments": [
-            {
-              "principalId": "<principalId>",
-              "principalType": "App",
-              "role": "Admin",
-              "tenantId": "<tenantId>"
-            }
-          ],
           "kind": "ReadWrite",
           "name": "myReadWriteDatabase",
           "readWriteProperties": {
@@ -420,14 +404,6 @@ param clusterPrincipalAssignments = [
 ]
 param databases = [
   {
-    databasePrincipalAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'App'
-        role: 'Admin'
-        tenantId: '<tenantId>'
-      }
-    ]
     kind: 'ReadWrite'
     name: 'myReadWriteDatabase'
     readWriteProperties: {
