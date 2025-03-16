@@ -47,7 +47,7 @@ resource database_readOnly 'Microsoft.Kusto/clusters/databases@2024-04-13' = if 
 }
 
 module database_readWrite_PrincipalAssignment './principal-assignment/main.bicep' = [
-  for (principalAssignment, index) in (databasePrincipalAssignments ?? []) : {
+  for (principalAssignment, index) in (databasePrincipalAssignments ?? []): {
     name: '${uniqueString(deployment().name, location)}-KustoDatabase-PrincipalAssignment-${index}'
     params: {
       kustoClusterDatabaseName: databaseKind == 'ReadOnlyFollowing' ? database_readOnly.name : database_readWrite.name

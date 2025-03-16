@@ -126,6 +126,14 @@ module testDeployment '../../../main.bicep' = [
             softDeletePeriod: 'P7D'
             hotCachePeriod: 'P1D'
           }
+          databasePrincipalAssignments: [
+            {
+              principalId: nestedDependencies.outputs.managedIdentityClientId
+              principalType: 'App'
+              role: 'Viewer'
+              tenantId: tenant().tenantId
+            }
+          ]
         }
       ]
     }
