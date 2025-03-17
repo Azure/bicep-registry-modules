@@ -36,10 +36,17 @@ module testDeployment '../../../main.bicep' = {
   params: {
     name: '${namePrefix}${serviceShort}001'
     location: enforcedLocation
-    tenantId: tenant().tenantId
-    oidcIssuerEnabled: true
-    workloadIdentityEnabled: true
-    enableAzureRBAC: true
+    aadProfile: {
+      tenantID: tenant().tenantId
+      adminGroupObjectIDs: []
+      enableAzureRBAC: true
+    }
+    oidcIssuerProfile: { enabled: true }
+    securityProfile: {
+      workloadIdentity: {
+        enabled: true
+      }
+    }
     enableTelemetry: true
     roleAssignments: [
       {
