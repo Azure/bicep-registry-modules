@@ -156,6 +156,11 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
         vmSize: 'Standard_A4_v2'
       }
     ]
+    connectClustersTags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
     controlPlane: {
       controlPlaneEndpoint: {
         hostIP: '<hostIP>'
@@ -219,6 +224,13 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
         }
       ]
     },
+    "connectClustersTags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    },
     "controlPlane": {
       "value": {
         "controlPlaneEndpoint": {
@@ -278,6 +290,11 @@ param agentPoolProfiles = [
     vmSize: 'Standard_A4_v2'
   }
 ]
+param connectClustersTags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
 param controlPlane = {
   controlPlaneEndpoint: {
     hostIP: '<hostIP>'
@@ -316,25 +333,23 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`aadAdminGroupObjectIds`](#parameter-aadadmingroupobjectids) | array | The Azure AD admin group object IDs. |
-| [`agentAutoUpgrade`](#parameter-agentautoupgrade) | string | Enable automatic agent upgrades. |
+| [`aadProfile`](#parameter-aadprofile) | object | AAD profile for the connected cluster. |
 | [`agentPoolProfiles`](#parameter-agentpoolprofiles) | array | The agent pool properties for the provisioned cluster. |
+| [`arcAgentProfile`](#parameter-arcagentprofile) | object | Arc agentry configuration for the provisioned cluster. |
 | [`connectClustersTags`](#parameter-connectclusterstags) | object | Tags for the cluster resource. |
 | [`controlPlane`](#parameter-controlplane) | object | The profile for control plane of the provisioned cluster. |
-| [`enableAzureRBAC`](#parameter-enableazurerbac) | bool | Enable Azure RBAC. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`kubernetesVersion`](#parameter-kubernetesversion) | string | The Kubernetes version for the cluster. |
 | [`licenseProfile`](#parameter-licenseprofile) | object | The license profile of the provisioned cluster. |
 | [`linuxProfile`](#parameter-linuxprofile) | object | The profile for Linux VMs in the provisioned cluster. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`networkProfile`](#parameter-networkprofile) | object | The network configuration profile for the provisioned cluster. |
-| [`oidcIssuerEnabled`](#parameter-oidcissuerenabled) | bool | Enable OIDC issuer. |
+| [`oidcIssuerProfile`](#parameter-oidcissuerprofile) | object | Open ID Connect (OIDC) Issuer Profile for the connected cluster. |
+| [`securityProfile`](#parameter-securityprofile) | object | Security profile for the connected cluster. |
 | [`sshPrivateKeyPemSecretName`](#parameter-sshprivatekeypemsecretname) | string | The name of the secret in the key vault that contains the SSH private key PEM. |
 | [`sshPublicKeySecretName`](#parameter-sshpublickeysecretname) | string | The name of the secret in the key vault that contains the SSH public key. |
 | [`storageProfile`](#parameter-storageprofile) | object | The storage configuration profile for the provisioned cluster. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
-| [`tenantId`](#parameter-tenantid) | string | The Azure AD tenant ID. |
-| [`workloadIdentityEnabled`](#parameter-workloadidentityenabled) | bool | Enable workload identity. |
 
 ### Parameter: `cloudProviderProfile`
 
@@ -390,28 +405,41 @@ The name of the key vault. The key vault name. Required if no existing SSH keys.
 - Required: No
 - Type: string
 
-### Parameter: `aadAdminGroupObjectIds`
+### Parameter: `aadProfile`
 
-The Azure AD admin group object IDs.
+AAD profile for the connected cluster.
 
 - Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`adminGroupObjectIDs`](#parameter-aadprofileadmingroupobjectids) | array | The list of AAD group object IDs that will have admin role of the cluster. |
+| [`enableAzureRBAC`](#parameter-aadprofileenableazurerbac) | bool | Whether to enable Azure RBAC for Kubernetes authorization. |
+| [`tenantID`](#parameter-aadprofiletenantid) | string | The AAD tenant ID. |
+
+### Parameter: `aadProfile.adminGroupObjectIDs`
+
+The list of AAD group object IDs that will have admin role of the cluster.
+
+- Required: Yes
 - Type: array
-- Default: `[]`
 
-### Parameter: `agentAutoUpgrade`
+### Parameter: `aadProfile.enableAzureRBAC`
 
-Enable automatic agent upgrades.
+Whether to enable Azure RBAC for Kubernetes authorization.
 
-- Required: No
+- Required: Yes
+- Type: bool
+
+### Parameter: `aadProfile.tenantID`
+
+The AAD tenant ID.
+
+- Required: Yes
 - Type: string
-- Default: `'Enabled'`
-- Allowed:
-  ```Bicep
-  [
-    'Disabled'
-    'Enabled'
-  ]
-  ```
 
 ### Parameter: `agentPoolProfiles`
 
@@ -534,6 +562,97 @@ The taints to be applied to nodes in the pool.
 - Required: No
 - Type: array
 
+### Parameter: `arcAgentProfile`
+
+Arc agentry configuration for the provisioned cluster.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      agentAutoUpgrade: 'Enabled'
+  }
+  ```
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`agentAutoUpgrade`](#parameter-arcagentprofileagentautoupgrade) | string | Indicates whether the Arc agents on the be upgraded automatically to the latest version. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`agentErrors`](#parameter-arcagentprofileagenterrors) | array | The errors encountered by the Arc agent. |
+| [`desiredAgentVersion`](#parameter-arcagentprofiledesiredagentversion) | string | The desired version of the Arc agent. |
+| [`systemComponents`](#parameter-arcagentprofilesystemcomponents) | array | List of system extensions that are installed on the cluster resource. |
+
+### Parameter: `arcAgentProfile.agentAutoUpgrade`
+
+Indicates whether the Arc agents on the be upgraded automatically to the latest version.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
+### Parameter: `arcAgentProfile.agentErrors`
+
+The errors encountered by the Arc agent.
+
+- Required: No
+- Type: array
+
+### Parameter: `arcAgentProfile.desiredAgentVersion`
+
+The desired version of the Arc agent.
+
+- Required: No
+- Type: string
+
+### Parameter: `arcAgentProfile.systemComponents`
+
+List of system extensions that are installed on the cluster resource.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`majorVersion`](#parameter-arcagentprofilesystemcomponentsmajorversion) | int | The major version of the system component. |
+| [`type`](#parameter-arcagentprofilesystemcomponentstype) | string | The type of the system component. |
+| [`userSpecifiedVersion`](#parameter-arcagentprofilesystemcomponentsuserspecifiedversion) | string | The user specified version of the system component. |
+
+### Parameter: `arcAgentProfile.systemComponents.majorVersion`
+
+The major version of the system component.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `arcAgentProfile.systemComponents.type`
+
+The type of the system component.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `arcAgentProfile.systemComponents.userSpecifiedVersion`
+
+The user specified version of the system component.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `connectClustersTags`
 
 Tags for the cluster resource.
@@ -600,14 +719,6 @@ The VM size for control plane nodes.
 
 - Required: Yes
 - Type: string
-
-### Parameter: `enableAzureRBAC`
-
-Enable Azure RBAC.
-
-- Required: No
-- Type: bool
-- Default: `False`
 
 ### Parameter: `enableTelemetry`
 
@@ -758,13 +869,85 @@ The CIDR range for the pods in the kubernetes cluster.
 - Required: Yes
 - Type: string
 
-### Parameter: `oidcIssuerEnabled`
+### Parameter: `oidcIssuerProfile`
 
-Enable OIDC issuer.
+Open ID Connect (OIDC) Issuer Profile for the connected cluster.
 
 - Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      enabled: false
+  }
+  ```
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enabled`](#parameter-oidcissuerprofileenabled) | bool | Whether the OIDC issuer is enabled. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`selfHostedIssuerUrl`](#parameter-oidcissuerprofileselfhostedissuerurl) | string | The URL of the self-hosted OIDC issuer. |
+
+### Parameter: `oidcIssuerProfile.enabled`
+
+Whether the OIDC issuer is enabled.
+
+- Required: Yes
 - Type: bool
-- Default: `False`
+
+### Parameter: `oidcIssuerProfile.selfHostedIssuerUrl`
+
+The URL of the self-hosted OIDC issuer.
+
+- Required: No
+- Type: string
+
+### Parameter: `securityProfile`
+
+Security profile for the connected cluster.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      workloadIdentity: {
+        enabled: false
+      }
+  }
+  ```
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`workloadIdentity`](#parameter-securityprofileworkloadidentity) | object | The workload identity configuration. |
+
+### Parameter: `securityProfile.workloadIdentity`
+
+The workload identity configuration.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enabled`](#parameter-securityprofileworkloadidentityenabled) | bool | Whether workload identity is enabled. |
+
+### Parameter: `securityProfile.workloadIdentity.enabled`
+
+Whether workload identity is enabled.
+
+- Required: Yes
+- Type: bool
 
 ### Parameter: `sshPrivateKeyPemSecretName`
 
@@ -854,21 +1037,6 @@ Tags of the resource.
 - Required: No
 - Type: object
 
-### Parameter: `tenantId`
-
-The Azure AD tenant ID.
-
-- Required: No
-- Type: string
-
-### Parameter: `workloadIdentityEnabled`
-
-Enable workload identity.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
 ## Outputs
 
 | Output | Type | Description |
@@ -884,7 +1052,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/kubernetes/connected-cluster:0.1.0` | Remote reference |
+| `br/public:avm/res/kubernetes/connected-cluster:0.1.1` | Remote reference |
 
 ## Data Collection
 

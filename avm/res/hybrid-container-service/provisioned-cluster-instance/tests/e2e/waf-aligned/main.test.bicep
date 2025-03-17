@@ -216,6 +216,11 @@ module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:0.1.0' 
     dnsServers: ['172.20.0.1']
     routeName: 'default'
     vlanId: null
+    tags: {
+      'hidden-title': 'This is visible in the resource name'
+      Environment: 'Non-Prod'
+      Role: 'DeploymentValidation'
+    }
   }
 }
 
@@ -255,6 +260,11 @@ module testDeployment '../../../main.bicep' = {
         vmSize: 'Standard_A4_v2'
       }
     ]
+    connectClustersTags: {
+      'hidden-title': 'This is visible in the resource name'
+      Environment: 'Non-Prod'
+      Role: 'DeploymentValidation'
+    }
     tags: {
       'hidden-title': 'This is visible in the resource name'
       Environment: 'Non-Prod'

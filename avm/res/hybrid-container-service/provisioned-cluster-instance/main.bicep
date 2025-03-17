@@ -84,27 +84,27 @@ param cloudProviderProfile cloudProviderProfileType
 @description('Optional. Tags for the cluster resource.')
 param connectClustersTags object = {}
 
-@description('Optional. The Azure AD tenant ID.')
-param tenantId string?
+import { aadProfileType } from 'br/public:avm/res/kubernetes/connected-cluster:0.1.1'
+@description('Optional. AAD profile for the connected cluster.')
+param aadProfile aadProfileType?
 
-@description('Optional. The Azure AD admin group object IDs.')
-param aadAdminGroupObjectIds array = []
+import { arcAgentProfileType } from 'br/public:avm/res/kubernetes/connected-cluster:0.1.1'
+@description('Optional. Arc agentry configuration for the provisioned cluster.')
+param arcAgentProfile arcAgentProfileType = {
+  agentAutoUpgrade: 'Enabled'
+}
 
-@description('Optional. Enable Azure RBAC.')
-param enableAzureRBAC bool = false
+import { oidcIssuerProfileType } from 'br/public:avm/res/kubernetes/connected-cluster:0.1.1'
+@description('Optional. Open ID Connect (OIDC) Issuer Profile for the connected cluster.')
+param oidcIssuerProfile oidcIssuerProfileType = { enabled: false }
 
-@description('Optional. Enable automatic agent upgrades.')
-@allowed([
-  'Enabled'
-  'Disabled'
-])
-param agentAutoUpgrade string = 'Enabled'
-
-@description('Optional. Enable OIDC issuer.')
-param oidcIssuerEnabled bool = false
-
-@description('Optional. Enable workload identity.')
-param workloadIdentityEnabled bool = false
+import { securityProfileType } from 'br/public:avm/res/kubernetes/connected-cluster:0.1.1'
+@description('Optional. Security profile for the connected cluster.')
+param securityProfile securityProfileType = {
+  workloadIdentity: {
+    enabled: false
+  }
+}
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
@@ -188,19 +188,17 @@ resource sshPrivateKeyPem 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = if (e
 
 var enableReferencedModulesTelemetry = false
 
-module connectedCluster 'br/public:avm/res/kubernetes/connected-cluster:0.1.0' = {
+module connectedCluster 'br/public:avm/res/kubernetes/connected-cluster:0.1.1' = {
   name: 'connectedCluster'
   params: {
     name: name
     location: location
+    arcAgentProfile: arcAgentProfile
+    oidcIssuerProfile: oidcIssuerProfile
+    securityProfile: securityProfile
+    aadProfile: aadProfile
     enableTelemetry: enableReferencedModulesTelemetry
     tags: connectClustersTags
-    tenantId: tenantId
-    aadAdminGroupObjectIds: aadAdminGroupObjectIds
-    enableAzureRBAC: enableAzureRBAC
-    agentAutoUpgrade: agentAutoUpgrade
-    oidcIssuerEnabled: oidcIssuerEnabled
-    workloadIdentityEnabled: workloadIdentityEnabled
   }
 }
 
