@@ -62,6 +62,9 @@ module testDeployment '../../../main.bicep' = [
           'Windows'
           'Linux'
         ]
+        resourceTypes: [
+          'Virtual Machines'
+        ]
       }
       // resourceId: nestedDependencies.outputs.virtualMachineResourceId
     }
