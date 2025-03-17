@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using only defaults'
-metadata description = 'This instance deploys the module with the minimum set of required parameters. This instance uses filters to define a dynamic scope and assign it to the input maintenance configuration. The dynamic scope will be resolved at run time. '
+metadata name = 'Multi resource group'
+metadata description = 'This instance deploys the module leveraging virtual machine and maintenance configuration dependencies from two different resource groups. This instance assigns an existing Linux virtual machine to the input maintenance configuration.'
 
 // ========== //
 // Parameters //
@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-maintenance.maintenanceconfi
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'mcamin'
+param serviceShort string = 'mcamrg'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -29,13 +29,28 @@ var enforcedLocation = 'uksouth'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup_vm 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
   location: enforcedLocation
 }
 
-module nestedDependencies 'dependencies.bicep' = {
-  scope: resourceGroup
+resource resourceGroup_mc 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+  name: 'dep-${namePrefix}-maintenance.maintenanceconfigurations-${serviceShort}-mc-rg'
+  location: enforcedLocation
+}
+
+module nestedDependencies_vm 'dependencies_vm.bicep' = {
+  scope: resourceGroup_vm
+  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
+  params: {
+    virtualMachineName: 'dep-${namePrefix}-vm-${serviceShort}'
+    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    location: enforcedLocation
+  }
+}
+
+module nestedDependencies_mc 'dependencies_mc.bicep' = {
+  scope: resourceGroup_vm
   name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
     maintenanceConfigurationName: 'dep-${namePrefix}-mc-${serviceShort}'
@@ -49,20 +64,12 @@ module nestedDependencies 'dependencies.bicep' = {
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
-    scope: resourceGroup
+    scope: resourceGroup_vm
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      maintenanceConfigurationResourceId: nestedDependencies.outputs.maintenanceConfigurationResourceId
-      filter: {
-        osTypes: [
-          'Linux'
-          'Windows'
-        ]
-        resourceTypes: [
-          'Virtual Machines'
-        ]
-      }
+      maintenanceConfigurationResourceId: nestedDependencies_mc.outputs.maintenanceConfigurationResourceId
+      resourceId: nestedDependencies_vm.outputs.virtualMachineResourceId
     }
   }
 ]
