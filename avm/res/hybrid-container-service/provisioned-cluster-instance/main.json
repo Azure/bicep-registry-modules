@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "7744073653843315323"
+      "templateHash": "14493889745036537795"
     },
     "name": "Hybrid Container Service Provisioned Cluster Instance",
     "description": "Deploy a provisioned cluster instance."
@@ -23,6 +23,13 @@
       "defaultValue": "[resourceGroup().location]",
       "metadata": {
         "description": "Optional. Location for all Resources."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags of the resource."
       }
     },
     "enableTelemetry": {
@@ -243,7 +250,8 @@
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
       "apiVersion": "2018-11-30",
       "name": "temp",
-      "location": "[parameters('location')]"
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]"
     },
     "generateSSHKey": {
       "condition": "[empty(parameters('sshPublicKey'))]",
@@ -251,6 +259,7 @@
       "apiVersion": "2020-10-01",
       "name": "generateSSHKey",
       "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
       "kind": "AzurePowerShell",
       "identity": {
         "type": "UserAssigned",
@@ -726,6 +735,13 @@
         "description": "The resource group of the Aks Arc."
       },
       "value": "[resourceGroup().name]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location the resource was deployed into."
+      },
+      "value": "[parameters('location')]"
     }
   }
 }

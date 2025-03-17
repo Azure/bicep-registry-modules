@@ -7,6 +7,9 @@ param name string
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
+@description('Optional. Tags of the resource.')
+param tags object?
+
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
@@ -40,67 +43,6 @@ param sshPublicKey string?
 
 @description('Conditional. The name of the key vault. The key vault name. Required if no existing SSH keys.')
 param keyVaultName string?
-
-resource kv 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (empty(sshPublicKey) && !empty(keyVaultName)) {
-  name: keyVaultName!
-}
-
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
-  name: 'temp'
-  location: location
-}
-
-resource generateSSHKey 'Microsoft.Resources/deploymentScripts@2020-10-01' = if (empty(sshPublicKey)) {
-  name: 'generateSSHKey'
-  location: location
-  kind: 'AzurePowerShell'
-  identity: {
-    type: 'UserAssigned'
-    userAssignedIdentities: {
-      '${managedIdentity.id}': {}
-    }
-  }
-  properties: {
-    azPowerShellVersion: '8.0'
-    retentionInterval: 'P1D'
-    scriptContent: '''
-      # Create temp directory in a known location
-      $tempDir = "/tmp/sshkeys"
-      New-Item -ItemType Directory -Path $tempDir -Force
-      Set-Location $tempDir
-      # Generate SSH key pair using ssh-keygen
-      ssh-keygen -t rsa -b 4096 -f ./key -N '""' -q
-      # Read the generated keys
-      $publicKey = Get-Content -Path "./key.pub" -Raw
-      $privateKey = Get-Content -Path "./key" -Raw
-      # Clean up temp files
-      Remove-Item -Path "./key*" -Force
-      Remove-Item -Path $tempDir -Force -Recurse
-      # Set output
-      $DeploymentScriptOutputs = @{}
-      $DeploymentScriptOutputs['publicKey'] = $publicKey
-      $DeploymentScriptOutputs['privateKey'] = $privateKey
-    '''
-  }
-}
-
-resource sshPublicKeyPem 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = if (empty(sshPublicKey)) {
-  parent: kv
-  name: sshPublicKeySecretName
-  properties: {
-    value: generateSSHKey.properties.outputs.publicKey
-  }
-}
-
-resource sshPrivateKeyPem 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = if (empty(sshPublicKey)) {
-  parent: kv
-  name: sshPrivateKeyPemSecretName
-  properties: {
-    value: generateSSHKey.properties.outputs.privateKey
-  }
-}
-
-var sshPublicKeyData = empty(sshPublicKey) ? generateSSHKey.properties.outputs.publicKey : sshPublicKey
 
 @description('Required. The id of the Custom location that used to create hybrid aks.')
 param customLocationId string
@@ -178,6 +120,69 @@ param oidcIssuerEnabled bool = false
 
 @description('Optional. Enable workload identity.')
 param workloadIdentityEnabled bool = false
+
+resource kv 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (empty(sshPublicKey) && !empty(keyVaultName)) {
+  name: keyVaultName!
+}
+
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+  name: 'temp'
+  location: location
+  tags: tags
+}
+
+resource generateSSHKey 'Microsoft.Resources/deploymentScripts@2020-10-01' = if (empty(sshPublicKey)) {
+  name: 'generateSSHKey'
+  location: location
+  tags: tags
+  kind: 'AzurePowerShell'
+  identity: {
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${managedIdentity.id}': {}
+    }
+  }
+  properties: {
+    azPowerShellVersion: '8.0'
+    retentionInterval: 'P1D'
+    scriptContent: '''
+      # Create temp directory in a known location
+      $tempDir = "/tmp/sshkeys"
+      New-Item -ItemType Directory -Path $tempDir -Force
+      Set-Location $tempDir
+      # Generate SSH key pair using ssh-keygen
+      ssh-keygen -t rsa -b 4096 -f ./key -N '""' -q
+      # Read the generated keys
+      $publicKey = Get-Content -Path "./key.pub" -Raw
+      $privateKey = Get-Content -Path "./key" -Raw
+      # Clean up temp files
+      Remove-Item -Path "./key*" -Force
+      Remove-Item -Path $tempDir -Force -Recurse
+      # Set output
+      $DeploymentScriptOutputs = @{}
+      $DeploymentScriptOutputs['publicKey'] = $publicKey
+      $DeploymentScriptOutputs['privateKey'] = $privateKey
+    '''
+  }
+}
+
+resource sshPublicKeyPem 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = if (empty(sshPublicKey)) {
+  parent: kv
+  name: sshPublicKeySecretName
+  properties: {
+    value: generateSSHKey.properties.outputs.publicKey
+  }
+}
+
+resource sshPrivateKeyPem 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = if (empty(sshPublicKey)) {
+  parent: kv
+  name: sshPrivateKeyPemSecretName
+  properties: {
+    value: generateSSHKey.properties.outputs.privateKey
+  }
+}
+
+var sshPublicKeyData = empty(sshPublicKey) ? generateSSHKey.properties.outputs.publicKey : sshPublicKey
 
 var enableReferencedModulesTelemetry = false
 
@@ -261,6 +266,10 @@ resource provisionedCluster 'Microsoft.HybridContainerService/provisionedCluster
   }
 }
 
+// ============ //
+// Outputs      //
+// ============ //
+
 @description('The name of the Aks Arc.')
 output name string = provisionedCluster.name
 
@@ -269,3 +278,6 @@ output resourceId string = provisionedCluster.id
 
 @description('The resource group of the Aks Arc.')
 output resourceGroupName string = resourceGroup().name
+
+@description('The location the resource was deployed into.')
+output location string = location

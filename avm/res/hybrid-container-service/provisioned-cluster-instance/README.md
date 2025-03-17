@@ -134,6 +134,11 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
     ]
     controlPlaneCount: 2
     location: '<location>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
   }
 }
 ```
@@ -183,6 +188,13 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
     },
     "location": {
       "value": "<location>"
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
     }
   }
 }
@@ -220,6 +232,11 @@ param agentPoolProfiles = [
 ]
 param controlPlaneCount = 2
 param location = '<location>'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
 ```
 
 </details>
@@ -264,6 +281,7 @@ param location = '<location>'
 | [`smbCsiDriverEnabled`](#parameter-smbcsidriverenabled) | bool | Enable or disable SMB CSI driver. |
 | [`sshPrivateKeyPemSecretName`](#parameter-sshprivatekeypemsecretname) | string | The name of the secret in the key vault that contains the SSH private key PEM. |
 | [`sshPublicKeySecretName`](#parameter-sshpublickeysecretname) | string | The name of the secret in the key vault that contains the SSH public key. |
+| [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`tenantId`](#parameter-tenantid) | string | The Azure AD tenant ID. |
 | [`workloadIdentityEnabled`](#parameter-workloadidentityenabled) | bool | Enable workload identity. |
 
@@ -476,6 +494,13 @@ The name of the secret in the key vault that contains the SSH public key.
 - Type: string
 - Default: `'AksArcAgentSshPublicKey'`
 
+### Parameter: `tags`
+
+Tags of the resource.
+
+- Required: No
+- Type: object
+
 ### Parameter: `tenantId`
 
 The Azure AD tenant ID.
@@ -495,6 +520,7 @@ Enable workload identity.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the Aks Arc. |
 | `resourceGroupName` | string | The resource group of the Aks Arc. |
 | `resourceId` | string | The ID of the Aks Arc. |
