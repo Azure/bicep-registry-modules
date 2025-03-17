@@ -46,15 +46,13 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' existing = {
-  // = if (resourceId != null) {
+resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' existing = if (resourceId != null) {
   name: last(split(resourceId!, '/'))!
 }
 
 resource configurationAssignment 'Microsoft.Maintenance/configurationAssignments@2023-04-01' = {
   // scope: resourceId != null ? vm : resourceGroup()
-  scope: vm
-  // ?? resourceGroup()
+  scope: vm ?? resourceGroup()
   location: location
   name: name
   properties: {
