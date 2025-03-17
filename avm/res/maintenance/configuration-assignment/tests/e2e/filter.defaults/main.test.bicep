@@ -46,25 +46,24 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 // Test Execution //
 // ============== //
-// @batchSize(1)
-// module testDeployment '../../../main.bicep' = [
-//   for iteration in ['init', 'idem']: {
-//     scope: resourceGroup
-//     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
-//     params: {
-//       name: '${namePrefix}${serviceShort}001'
-//       location: enforcedLocation
-//       maintenanceConfigurationResourceId: nestedDependencies.outputs.maintenanceConfigurationResourceId
-//       // filter: {
-//       //   osTypes: [
-//       //     'Linux'
-//       //     'Windows'
-//       //   ]
-//       //   resourceTypes: [
-//       //     'Virtual Machines'
-//       //     'Server - Azure Arc'
-//       //   ]
-//       // }
-//     }
-//   }
-// ]
+@batchSize(1)
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
+      maintenanceConfigurationResourceId: nestedDependencies.outputs.maintenanceConfigurationResourceId
+      filter: {
+        osTypes: [
+          'Linux'
+          'Windows'
+        ]
+        resourceTypes: [
+          'Virtual Machines'
+          'Server - Azure Arc'
+        ]
+      }
+    }
+  }
+]

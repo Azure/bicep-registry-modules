@@ -46,42 +46,42 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' existing = if (resourceId != null) {
+resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' existing = if (!empty(resourceId)) {
   name: last(split(resourceId!, '/'))!
-  scope: resourceGroup(split(resourceId!, '/')[2], split(resourceId!, '/')[4])
+  // scope: resourceGroup(split(resourceId!, '/')[2], split(resourceId!, '/')[4])
 }
 
-resource configurationAssignment 'Microsoft.Maintenance/configurationAssignments@2023-04-01' = {
-  // scope: vm
+resource configurationAssignment 'Microsoft.Maintenance/configurationAssignments@2023-04-01' = if (!empty(resourceId)) {
+  scope: vm
   // scope: resourceGroup(split(resourceId!, '/')[2], split(resourceId!, '/')[4])
   location: location
   name: name
   properties: {
-    filter: filter
+    // filter: filter
     maintenanceConfigurationId: maintenanceConfigurationResourceId
     // resourceId: resourceId
     resourceId: vm.id
   }
 }
 
-// resource configurationAssignment_dynamic 'Microsoft.Maintenance/configurationAssignments@2023-04-01' = if (filter != null) {
-//   location: location
-//   name: name
-//   properties: {
-//     filter: filter
-//     maintenanceConfigurationId: maintenanceConfigurationResourceId
-//   }
-// }
+resource configurationAssignment_dynamic 'Microsoft.Maintenance/configurationAssignments@2023-04-01' = if (empty(resourceId)) {
+  location: location
+  name: name
+  properties: {
+    filter: filter
+    maintenanceConfigurationId: maintenanceConfigurationResourceId
+  }
+}
 
 // =========== //
 //   Outputs   //
 // =========== //
 
 @description('The name of the Maintenance configuration assignment.')
-output name string = configurationAssignment.name
+output name string = configurationAssignment.name ?? configurationAssignment_dynamic.name
 
 @description('The resource ID of the Maintenance configuration assignment.')
-output resourceId string = configurationAssignment.id
+output resourceId string = configurationAssignment.id ?? configurationAssignment_dynamic.id
 
 @description('The name of the resource group the Maintenance configuration assignment was created in.')
 output resourceGroupName string = resourceGroup().name
