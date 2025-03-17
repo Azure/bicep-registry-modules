@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "9536857013030923630"
+      "templateHash": "8375880528238701715"
     },
     "name": "Azure Stack HCI Cluster Deployment Settings",
     "description": "This module deploys an Azure Stack HCI Cluster Deployment Settings resource."
@@ -348,7 +348,7 @@
                       "name": "storageNetworks",
                       "count": "[length(parameters('storageNetworks'))]",
                       "input": {
-                        "name": "[format('StorageNetwork{0}', add(copyIndex('storageNetworks'), 1))]",
+                        "name": "[coalesce(parameters('storageNetworks')[copyIndex('storageNetworks')].name, format('StorageNetwork{0}', add(copyIndex('storageNetworks'), 1)))]",
                         "networkAdapterName": "[parameters('storageNetworks')[copyIndex('storageNetworks')].adapterName]",
                         "vlanId": "[parameters('storageNetworks')[copyIndex('storageNetworks')].vlan]",
                         "storageAdapterIPInfo": "[tryGet(parameters('storageNetworks')[copyIndex('storageNetworks')], 'storageAdapterIPInfo')]"
