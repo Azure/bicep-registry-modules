@@ -55,7 +55,6 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      location: enforcedLocation
       maintenanceConfigurationResourceId: nestedDependencies.outputs.maintenanceConfigurationResourceId
       resourceId: nestedDependencies.outputs.virtualMachineResourceId
     }
