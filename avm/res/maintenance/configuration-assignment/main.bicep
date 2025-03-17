@@ -52,7 +52,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' existing = if (resour
 
 resource configurationAssignment 'Microsoft.Maintenance/configurationAssignments@2023-04-01' = {
   // scope: resourceId != null ? vm : resourceGroup()
-  scope: vm ?? resourceGroup()
+  scope: vm ?? null
   location: location
   name: name
   properties: {
