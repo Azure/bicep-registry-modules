@@ -104,7 +104,7 @@ param kerberosEnabled bool = false
 @description('Optional. Defines the security style of the Volume.')
 param securityStyle string = ''
 
-@description('Optional.Unix Permissions for NFS volume.')
+@description('Optional. Unix Permissions for NFS volume.')
 param unixPermissions string = ''
 
 var remoteCapacityPoolName = !empty(dataProtection.?replication.?remoteVolumeResourceId)
