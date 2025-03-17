@@ -48,18 +48,19 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 
 resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' existing = if (resourceId != null) {
   name: last(split(resourceId!, '/'))!
+  scope: resourceGroup(split(resourceId!, '/')[2], split(resourceId!, '/')[4])
 }
 
 resource configurationAssignment 'Microsoft.Maintenance/configurationAssignments@2023-04-01' = {
-  // scope: resourceId != null ? vm : resourceGroup()
-  scope: resourceId != null ? vm : resourceGroup()
+  // scope: vm
+  // scope: resourceGroup(split(resourceId!, '/')[2], split(resourceId!, '/')[4])
   location: location
   name: name
   properties: {
     filter: filter
     maintenanceConfigurationId: maintenanceConfigurationResourceId
     // resourceId: resourceId
-    resourceId: resourceId != null ? resourceId : resourceGroup().id
+    resourceId: vm.id
   }
 }
 
