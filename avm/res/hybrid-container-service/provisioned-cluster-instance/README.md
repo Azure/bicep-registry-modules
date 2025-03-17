@@ -429,8 +429,6 @@ The agent pool properties for the provisioned cluster.
       maxPods: 110
       minCount: 1
       name: 'nodepool1'
-      nodeLabels: {}
-      nodeTaints: []
       osSKU: 'CBLMariner'
       osType: 'Linux'
       vmSize: 'Standard_A4_v2'
@@ -448,11 +446,16 @@ The agent pool properties for the provisioned cluster.
 | [`maxPods`](#parameter-agentpoolprofilesmaxpods) | int | The maximum number of pods per node. |
 | [`minCount`](#parameter-agentpoolprofilesmincount) | int | The minimum number of nodes for auto-scaling. |
 | [`name`](#parameter-agentpoolprofilesname) | string | The name of the agent pool. |
-| [`nodeLabels`](#parameter-agentpoolprofilesnodelabels) | object | The node labels to be applied to nodes in the pool. |
-| [`nodeTaints`](#parameter-agentpoolprofilesnodetaints) | array | The taints to be applied to nodes in the pool. |
 | [`osSKU`](#parameter-agentpoolprofilesossku) | string | The OS SKU for the nodes. |
 | [`osType`](#parameter-agentpoolprofilesostype) | string | The OS type for the nodes. |
 | [`vmSize`](#parameter-agentpoolprofilesvmsize) | string | The VM size for the nodes. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`nodeLabels`](#parameter-agentpoolprofilesnodelabels) | object | The node labels to be applied to nodes in the pool. |
+| [`nodeTaints`](#parameter-agentpoolprofilesnodetaints) | array | The taints to be applied to nodes in the pool. |
 
 ### Parameter: `agentPoolProfiles.count`
 
@@ -496,20 +499,6 @@ The name of the agent pool.
 - Required: Yes
 - Type: string
 
-### Parameter: `agentPoolProfiles.nodeLabels`
-
-The node labels to be applied to nodes in the pool.
-
-- Required: Yes
-- Type: object
-
-### Parameter: `agentPoolProfiles.nodeTaints`
-
-The taints to be applied to nodes in the pool.
-
-- Required: Yes
-- Type: array
-
 ### Parameter: `agentPoolProfiles.osSKU`
 
 The OS SKU for the nodes.
@@ -530,6 +519,20 @@ The VM size for the nodes.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `agentPoolProfiles.nodeLabels`
+
+The node labels to be applied to nodes in the pool.
+
+- Required: No
+- Type: object
+
+### Parameter: `agentPoolProfiles.nodeTaints`
+
+The taints to be applied to nodes in the pool.
+
+- Required: No
+- Type: array
 
 ### Parameter: `connectClustersTags`
 

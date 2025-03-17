@@ -37,8 +37,6 @@ param agentPoolProfiles agentPoolProfilesType = [
     maxCount: 5
     minCount: 1
     maxPods: 110
-    nodeLabels: {}
-    nodeTaints: []
     osSKU: 'CBLMariner'
     osType: 'Linux'
     vmSize: 'Standard_A4_v2'
@@ -277,10 +275,10 @@ type agentPoolProfilesType = {
   maxPods: int
   @description('Required. The name of the agent pool.')
   name: string
-  @description('Required. The node labels to be applied to nodes in the pool.')
-  nodeLabels: { *: string }
-  @description('Required. The taints to be applied to nodes in the pool.')
-  nodeTaints: string[]
+  @description('Optional. The node labels to be applied to nodes in the pool.')
+  nodeLabels: object?
+  @description('Optional. The taints to be applied to nodes in the pool.')
+  nodeTaints: string[]?
   @description('Required. The OS SKU for the nodes.')
   osSKU: string
   @description('Required. The OS type for the nodes.')

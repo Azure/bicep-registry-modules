@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "6649923602272446201"
+      "templateHash": "15340848757506820128"
     },
     "name": "Hybrid Container Service Provisioned Cluster Instance",
     "description": "Deploy a provisioned cluster instance."
@@ -55,12 +55,9 @@
           },
           "nodeLabels": {
             "type": "object",
-            "properties": {},
-            "additionalProperties": {
-              "type": "string"
-            },
+            "nullable": true,
             "metadata": {
-              "description": "Required. The node labels to be applied to nodes in the pool."
+              "description": "Optional. The node labels to be applied to nodes in the pool."
             }
           },
           "nodeTaints": {
@@ -68,8 +65,9 @@
             "items": {
               "type": "string"
             },
+            "nullable": true,
             "metadata": {
-              "description": "Required. The taints to be applied to nodes in the pool."
+              "description": "Optional. The taints to be applied to nodes in the pool."
             }
           },
           "osSKU": {
@@ -361,8 +359,6 @@
           "maxCount": 5,
           "minCount": 1,
           "maxPods": 110,
-          "nodeLabels": {},
-          "nodeTaints": [],
           "osSKU": "CBLMariner",
           "osType": "Linux",
           "vmSize": "Standard_A4_v2"
