@@ -27,10 +27,17 @@ module testDeployment '../../../main.bicep' = {
   params: {
     name: '${namePrefix}${serviceShort}001'
     location: enforcedLocation
-    tenantId: tenant().tenantId
-    oidcIssuerEnabled: true
-    workloadIdentityEnabled: true
-    enableAzureRBAC: true
+    oidcIssuerProfile: { enabled: true }
+    securityProfile: {
+      workloadIdentity: {
+        enabled: true
+      }
+    }
+    aadProfile: {
+      tenantID: tenant().tenantId
+      adminGroupObjectIDs: []
+      enableAzureRBAC: true
+    }
     tags: {
       'hidden-title': 'This is visible in the resource name'
       Environment: 'Non-Prod'
