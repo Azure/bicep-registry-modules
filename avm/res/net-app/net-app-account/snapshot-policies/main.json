@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "7661114070380487495"
+      "version": "0.33.13.18514",
+      "templateHash": "7486219490853787459"
     },
     "name": "Azure NetApp Files Snapshot Policy",
     "description": "This module deploys a Snapshot Policy for an Azure NetApp File."

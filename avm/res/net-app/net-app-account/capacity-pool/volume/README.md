@@ -51,6 +51,7 @@ This module deploys an Azure NetApp Files Capacity Pool Volume.
 | [`networkFeatures`](#parameter-networkfeatures) | string | Network feature for the volume. |
 | [`protocolTypes`](#parameter-protocoltypes) | array | Set of protocol types. Default value is `['NFSv3']`. If you are creating a dual-stack volume, set either `['NFSv3','CIFS']` or `['NFSv4.1','CIFS']`. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`securityStyle`](#parameter-securitystyle) | string | Defines the security style of the Volume. |
 | [`serviceLevel`](#parameter-servicelevel) | string | The pool service level. Must match the one of the parent capacity pool. |
 | [`smbContinuouslyAvailable`](#parameter-smbcontinuouslyavailable) | bool | Enables continuously available share property for SMB volume. Only applicable for SMB volume. |
 | [`smbEncryption`](#parameter-smbencryption) | bool | Enables SMB encryption. Only applicable for SMB/DualProtocol volume. |
@@ -636,6 +637,14 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
+
+### Parameter: `securityStyle`
+
+Defines the security style of the Volume.
+
+- Required: No
+- Type: string
+- Default: `''`
 
 ### Parameter: `serviceLevel`
 
