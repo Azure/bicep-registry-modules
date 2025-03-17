@@ -56,6 +56,7 @@ This module deploys an Azure NetApp Files Capacity Pool Volume.
 | [`smbContinuouslyAvailable`](#parameter-smbcontinuouslyavailable) | bool | Enables continuously available share property for SMB volume. Only applicable for SMB volume. |
 | [`smbEncryption`](#parameter-smbencryption) | bool | Enables SMB encryption. Only applicable for SMB/DualProtocol volume. |
 | [`smbNonBrowsable`](#parameter-smbnonbrowsable) | string | Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProtocol volume. |
+| [`unixPermissions`](#parameter-unixpermissions) | string | Unix Permissions for NFS volume. |
 | [`volumeType`](#parameter-volumetype) | string | The type of the volume. DataProtection volumes are used for replication. |
 
 ### Parameter: `coolAccess`
@@ -693,6 +694,14 @@ Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProto
     'Enabled'
   ]
   ```
+
+### Parameter: `unixPermissions`
+
+Unix Permissions for NFS volume.
+
+- Required: No
+- Type: string
+- Default: `''`
 
 ### Parameter: `volumeType`
 

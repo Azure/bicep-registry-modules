@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "3392644895367321083"
+      "templateHash": "13498497694263475174"
     },
     "name": "Azure NetApp Files Capacity Pools",
     "description": "This module deploys an Azure NetApp Files Capacity Pool."
@@ -824,7 +824,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.13.18514",
-              "templateHash": "17876037175807254477"
+              "templateHash": "1926035564354589255"
             },
             "name": "Azure NetApp Files Capacity Pool Volumes",
             "description": "This module deploys an Azure NetApp Files Capacity Pool Volume."
@@ -1371,7 +1371,7 @@
               "type": "string",
               "defaultValue": "",
               "metadata": {
-                "description": "Optional.Unix Permissions for NFS volume."
+                "description": "Optional. Unix Permissions for NFS volume."
               }
             }
           },
