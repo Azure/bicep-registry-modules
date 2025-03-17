@@ -47,7 +47,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 }
 
 resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' existing = if (resourceId != null) {
-  name: last(split(resourceId!, '/'))! ?? 'null'
+  name: (resourceId != null) ? last(split(resourceId!, '/'))! : 'null'
   // scope: resourceGroup(split(resourceId!, '/')[2], split(resourceId!, '/')[4])
 }
 
