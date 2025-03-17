@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "10944045247049922620"
+      "templateHash": "6649923602272446201"
     },
     "name": "Hybrid Container Service Provisioned Cluster Instance",
     "description": "Deploy a provisioned cluster instance."
@@ -38,7 +38,7 @@
           "minCount": {
             "type": "int",
             "metadata": {
-              "description": "Reqired. The minimum number of nodes for auto-scaling."
+              "description": "Required. The minimum number of nodes for auto-scaling."
             }
           },
           "maxPods": {
@@ -170,7 +170,7 @@
             "True"
           ],
           "metadata": {
-            "description": "Required. Azure Hybrid Benefit configuration. Allowed values: \"False\", \"NotApplicable\", \"True\"."
+            "description": "Required. Azure Hybrid Benefit configuration."
           }
         }
       },
@@ -265,7 +265,7 @@
             }
           },
           "metadata": {
-            "description": "Reqired. NFS CSI driver configuration."
+            "description": "Required. NFS CSI driver configuration."
           }
         },
         "smbCsiDriver": {
@@ -329,13 +329,6 @@
       "defaultValue": "AksArcAgentSshPublicKey",
       "metadata": {
         "description": "Optional. The name of the secret in the key vault that contains the SSH public key."
-      }
-    },
-    "sshPublicKey": {
-      "type": "string",
-      "nullable": true,
-      "metadata": {
-        "description": "Conditional. The SSH public key that will be used to access the kubernetes cluster nodes. If not specified, a new SSH key pair will be generated. Required if no existing SSH keys."
       }
     },
     "keyVaultName": {
@@ -520,7 +513,7 @@
       }
     },
     "kv": {
-      "condition": "[and(empty(parameters('sshPublicKey')), not(empty(parameters('keyVaultName'))))]",
+      "condition": "[and(empty(parameters('linuxProfile')), not(empty(parameters('keyVaultName'))))]",
       "existing": true,
       "type": "Microsoft.KeyVault/vaults",
       "apiVersion": "2023-07-01",
@@ -534,7 +527,7 @@
       "tags": "[parameters('tags')]"
     },
     "generateSSHKey": {
-      "condition": "[empty(parameters('sshPublicKey'))]",
+      "condition": "[empty(parameters('linuxProfile'))]",
       "type": "Microsoft.Resources/deploymentScripts",
       "apiVersion": "2020-10-01",
       "name": "generateSSHKey",
@@ -557,7 +550,7 @@
       ]
     },
     "sshPublicKeyPem": {
-      "condition": "[empty(parameters('sshPublicKey'))]",
+      "condition": "[empty(parameters('linuxProfile'))]",
       "type": "Microsoft.KeyVault/vaults/secrets",
       "apiVersion": "2023-07-01",
       "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('sshPublicKeySecretName'))]",
@@ -569,7 +562,7 @@
       ]
     },
     "sshPrivateKeyPem": {
-      "condition": "[empty(parameters('sshPublicKey'))]",
+      "condition": "[empty(parameters('linuxProfile'))]",
       "type": "Microsoft.KeyVault/vaults/secrets",
       "apiVersion": "2023-07-01",
       "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('sshPrivateKeyPemSecretName'))]",
@@ -602,7 +595,7 @@
         "controlPlane": "[parameters('controlPlane')]",
         "kubernetesVersion": "[coalesce(parameters('kubernetesVersion'), '')]",
         "licenseProfile": "[parameters('licenseProfile')]",
-        "linuxProfile": "[coalesce(parameters('linuxProfile'), createObject('ssh', createObject('publicKeys', createArray(createObject('keyData', if(empty(parameters('sshPublicKey')), reference('generateSSHKey').outputs.publicKey, parameters('sshPublicKey')))))))]",
+        "linuxProfile": "[coalesce(parameters('linuxProfile'), createObject('ssh', createObject('publicKeys', createArray(createObject('keyData', reference('generateSSHKey').outputs.publicKey)))))]",
         "networkProfile": "[parameters('networkProfile')]",
         "storageProfile": "[parameters('storageProfile')]"
       },

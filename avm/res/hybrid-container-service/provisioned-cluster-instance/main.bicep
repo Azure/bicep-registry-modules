@@ -19,9 +19,6 @@ param sshPrivateKeyPemSecretName string = 'AksArcAgentSshPrivateKeyPem'
 @description('Optional. The name of the secret in the key vault that contains the SSH public key.')
 param sshPublicKeySecretName string = 'AksArcAgentSshPublicKey'
 
-@description('Conditional. The SSH public key that will be used to access the kubernetes cluster nodes. If not specified, a new SSH key pair will be generated. Required if no existing SSH keys.')
-param sshPublicKey string?
-
 @description('Conditional. The name of the key vault. The key vault name. Required if no existing SSH keys.')
 param keyVaultName string?
 
@@ -130,7 +127,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource kv 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (empty(sshPublicKey) && !empty(keyVaultName)) {
+resource kv 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (empty(linuxProfile) && !empty(keyVaultName)) {
   name: keyVaultName!
 }
 
@@ -140,7 +137,7 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-
   tags: tags
 }
 
-resource generateSSHKey 'Microsoft.Resources/deploymentScripts@2020-10-01' = if (empty(sshPublicKey)) {
+resource generateSSHKey 'Microsoft.Resources/deploymentScripts@2020-10-01' = if (empty(linuxProfile)) {
   name: 'generateSSHKey'
   location: location
   tags: tags
@@ -175,7 +172,7 @@ resource generateSSHKey 'Microsoft.Resources/deploymentScripts@2020-10-01' = if 
   }
 }
 
-resource sshPublicKeyPem 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = if (empty(sshPublicKey)) {
+resource sshPublicKeyPem 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = if (empty(linuxProfile)) {
   parent: kv
   name: sshPublicKeySecretName
   properties: {
@@ -183,15 +180,13 @@ resource sshPublicKeyPem 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = if (em
   }
 }
 
-resource sshPrivateKeyPem 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = if (empty(sshPublicKey)) {
+resource sshPrivateKeyPem 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = if (empty(linuxProfile)) {
   parent: kv
   name: sshPrivateKeyPemSecretName
   properties: {
     value: generateSSHKey.properties.outputs.privateKey
   }
 }
-
-var sshPublicKeyData = empty(sshPublicKey) ? generateSSHKey.properties.outputs.publicKey : sshPublicKey
 
 var enableReferencedModulesTelemetry = false
 
@@ -237,7 +232,7 @@ resource provisionedCluster 'Microsoft.HybridContainerService/provisionedCluster
       ssh: {
         publicKeys: [
           {
-            keyData: sshPublicKeyData
+            keyData: generateSSHKey.properties.outputs.publicKey
           }
         ]
       }
@@ -276,7 +271,7 @@ type agentPoolProfilesType = {
   enableAutoScaling: bool
   @description('Required. The maximum number of nodes for auto-scaling.')
   maxCount: int
-  @description('Reqired. The minimum number of nodes for auto-scaling.')
+  @description('Required. The minimum number of nodes for auto-scaling.')
   minCount: int
   @description('Required. The maximum number of pods per node.')
   maxPods: int
@@ -321,7 +316,7 @@ type controlPlaneType = {
 @export()
 @description('The type for license profile configuration.')
 type licenseProfileType = {
-  @description('Required. Azure Hybrid Benefit configuration. Allowed values: "False", "NotApplicable", "True".')
+  @description('Required. Azure Hybrid Benefit configuration.')
   azureHybridBenefit: 'False' | 'NotApplicable' | 'True'
 }
 
@@ -357,7 +352,7 @@ type networkProfileType = {
 @export()
 @description('The type for storage profile configuration.')
 type storageProfileType = {
-  @description('Reqired. NFS CSI driver configuration.')
+  @description('Required. NFS CSI driver configuration.')
   nfsCsiDriver: {
     @description('Required. Whether the NFS CSI driver is enabled.')
     enabled: bool

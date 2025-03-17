@@ -311,7 +311,6 @@ param tags = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`keyVaultName`](#parameter-keyvaultname) | string | The name of the key vault. The key vault name. Required if no existing SSH keys. |
-| [`sshPublicKey`](#parameter-sshpublickey) | string | The SSH public key that will be used to access the kubernetes cluster nodes. If not specified, a new SSH key pair will be generated. Required if no existing SSH keys. |
 
 **Optional parameters**
 
@@ -391,13 +390,6 @@ The name of the key vault. The key vault name. Required if no existing SSH keys.
 - Required: No
 - Type: string
 
-### Parameter: `sshPublicKey`
-
-The SSH public key that will be used to access the kubernetes cluster nodes. If not specified, a new SSH key pair will be generated. Required if no existing SSH keys.
-
-- Required: No
-- Type: string
-
 ### Parameter: `aadAdminGroupObjectIds`
 
 The Azure AD admin group object IDs.
@@ -446,10 +438,98 @@ The agent pool properties for the provisioned cluster.
   ]
   ```
 
-**RequiredReqired parameters**
+**Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`count`](#parameter-agentpoolprofilescount) | int | The number of nodes for the pool. |
+| [`enableAutoScaling`](#parameter-agentpoolprofilesenableautoscaling) | bool | Whether to enable auto-scaling for the pool. |
+| [`maxCount`](#parameter-agentpoolprofilesmaxcount) | int | The maximum number of nodes for auto-scaling. |
+| [`maxPods`](#parameter-agentpoolprofilesmaxpods) | int | The maximum number of pods per node. |
+| [`minCount`](#parameter-agentpoolprofilesmincount) | int | The minimum number of nodes for auto-scaling. |
+| [`name`](#parameter-agentpoolprofilesname) | string | The name of the agent pool. |
+| [`nodeLabels`](#parameter-agentpoolprofilesnodelabels) | object | The node labels to be applied to nodes in the pool. |
+| [`nodeTaints`](#parameter-agentpoolprofilesnodetaints) | array | The taints to be applied to nodes in the pool. |
+| [`osSKU`](#parameter-agentpoolprofilesossku) | string | The OS SKU for the nodes. |
+| [`osType`](#parameter-agentpoolprofilesostype) | string | The OS type for the nodes. |
+| [`vmSize`](#parameter-agentpoolprofilesvmsize) | string | The VM size for the nodes. |
+
+### Parameter: `agentPoolProfiles.count`
+
+The number of nodes for the pool.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `agentPoolProfiles.enableAutoScaling`
+
+Whether to enable auto-scaling for the pool.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `agentPoolProfiles.maxCount`
+
+The maximum number of nodes for auto-scaling.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `agentPoolProfiles.maxPods`
+
+The maximum number of pods per node.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `agentPoolProfiles.minCount`
+
+The minimum number of nodes for auto-scaling.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `agentPoolProfiles.name`
+
+The name of the agent pool.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `agentPoolProfiles.nodeLabels`
+
+The node labels to be applied to nodes in the pool.
+
+- Required: Yes
+- Type: object
+
+### Parameter: `agentPoolProfiles.nodeTaints`
+
+The taints to be applied to nodes in the pool.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `agentPoolProfiles.osSKU`
+
+The OS SKU for the nodes.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `agentPoolProfiles.osType`
+
+The OS type for the nodes.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `agentPoolProfiles.vmSize`
+
+The VM size for the nodes.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `connectClustersTags`
 
@@ -558,11 +638,11 @@ The license profile of the provisioned cluster.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`azureHybridBenefit`](#parameter-licenseprofileazurehybridbenefit) | string | Azure Hybrid Benefit configuration. Allowed values: "False", "NotApplicable", "True". |
+| [`azureHybridBenefit`](#parameter-licenseprofileazurehybridbenefit) | string | Azure Hybrid Benefit configuration. |
 
 ### Parameter: `licenseProfile.azureHybridBenefit`
 
-Azure Hybrid Benefit configuration. Allowed values: "False", "NotApplicable", "True".
+Azure Hybrid Benefit configuration.
 
 - Required: Yes
 - Type: string
@@ -717,10 +797,52 @@ The storage configuration profile for the provisioned cluster.
   }
   ```
 
-**RequiredReqired parameters**
+**Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`nfsCsiDriver`](#parameter-storageprofilenfscsidriver) | object | NFS CSI driver configuration. |
+| [`smbCsiDriver`](#parameter-storageprofilesmbcsidriver) | object | SMB CSI driver configuration. |
+
+### Parameter: `storageProfile.nfsCsiDriver`
+
+NFS CSI driver configuration.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enabled`](#parameter-storageprofilenfscsidriverenabled) | bool | Whether the NFS CSI driver is enabled. |
+
+### Parameter: `storageProfile.nfsCsiDriver.enabled`
+
+Whether the NFS CSI driver is enabled.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `storageProfile.smbCsiDriver`
+
+SMB CSI driver configuration.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enabled`](#parameter-storageprofilesmbcsidriverenabled) | bool | Whether the SMB CSI driver is enabled. |
+
+### Parameter: `storageProfile.smbCsiDriver.enabled`
+
+Whether the SMB CSI driver is enabled.
+
+- Required: Yes
+- Type: bool
 
 ### Parameter: `tags`
 
