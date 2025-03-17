@@ -50,7 +50,7 @@ module nestedDependencies_vm 'dependencies_vm.bicep' = {
 }
 
 module nestedDependencies_mc 'dependencies_mc.bicep' = {
-  scope: resourceGroup_vm
+  scope: resourceGroup_mc
   name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies_mc'
   params: {
     maintenanceConfigurationName: 'dep-${namePrefix}-mc-${serviceShort}'
