@@ -17,8 +17,11 @@ param location string = resourceGroup().location
 @description('Required. The maintenance configuration resource ID.')
 param maintenanceConfigurationResourceId string
 
-@description('Required. The unique resource ID to assign the configuration to.')
-param resourceId string
+@description('Conditional. The unique resource ID to assign the configuration to.')
+param filter filterType?
+
+@description('Conditional. The unique resource ID to assign the configuration to.')
+param resourceId string?
 
 // =============== //
 //   Deployments   //
@@ -72,18 +75,27 @@ param resourceId string
 //   }
 // }
 
-// resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' existing = {
-//   name: last(split(resourceId, '/'))!
-// }
+resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' existing = if (resourceId != null) {
+  name: last(split(resourceId, '/'))!
+}
 
-resource configurationAssignment 'Microsoft.Maintenance/configurationAssignments@2023-04-01' = {
-  // scope: vm
+resource configurationAssignment 'Microsoft.Maintenance/configurationAssignments@2023-04-01' = if (resourceId != null) {
+  scope: vm
   location: location
   name: name
   properties: {
     // filter
     maintenanceConfigurationId: maintenanceConfigurationResourceId
     resourceId: resourceId
+  }
+}
+
+resource configurationAssignment_dynamic 'Microsoft.Maintenance/configurationAssignments@2023-04-01' = if (filter != null) {
+  location: location
+  name: name
+  properties: {
+    filter: filter
+    maintenanceConfigurationId: maintenanceConfigurationResourceId
   }
 }
 
@@ -123,10 +135,10 @@ resource configurationAssignment 'Microsoft.Maintenance/configurationAssignments
 // =========== //
 
 @description('The name of the Maintenance Configuration.')
-output name string = configurationAssignment.name
+output name string = configurationAssignment_dynamic.name
 
 @description('The resource ID of the Maintenance Configuration.')
-output resourceId string = configurationAssignment.id
+output resourceId string = configurationAssignment_dynamic.id
 
 @description('The name of the resource group the Maintenance Configuration was created in.')
 output resourceGroupName string = resourceGroup().name
@@ -138,4 +150,21 @@ output resourceGroupName string = resourceGroup().name
 //   Definitions   //
 // =============== //
 
-// filter
+@export()
+@description('The type for a managed configuration dynamic assignment filter.')
+type filterType = {
+  @description('Optional. List of allowed resource group names.')
+  resourceGroups: string[]?
+
+  @description('Optional. List of allowed resource types.')
+  resourceTypes: string[]?
+
+  @description('Optional. List of locations to scope the query to.')
+  locations: string[]?
+
+  @description('Optional. List of allowed operating systems.')
+  osTypes: ('Linux' | 'Windows')[]?
+
+  @description('Optional. Tags to be applied on all resources/Resource Groups in this deployment.')
+  tagSettings: object?
+}

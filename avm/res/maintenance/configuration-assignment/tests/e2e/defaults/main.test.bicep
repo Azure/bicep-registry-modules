@@ -57,7 +57,13 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       location: enforcedLocation
       maintenanceConfigurationResourceId: nestedDependencies.outputs.maintenanceConfigurationResourceId
-      resourceId: nestedDependencies.outputs.virtualMachineResourceId
+      filter: {
+        osTypes: [
+          'Windows'
+          'Linux'
+        ]
+      }
+      // resourceId: nestedDependencies.outputs.virtualMachineResourceId
     }
   }
 ]
