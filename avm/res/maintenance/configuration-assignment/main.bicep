@@ -57,7 +57,7 @@ resource configurationAssignment 'Microsoft.Maintenance/configurationAssignments
   properties: {
     filter: filter
     maintenanceConfigurationId: maintenanceConfigurationResourceId
-    resourceId: resourceId
+    resourceId: resourceId ?? ''
   }
 }
 
