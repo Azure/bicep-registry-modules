@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "5969965201513978183"
+      "templateHash": "2044049769528912416"
     },
     "name": "Maintenance Configuration Assignments",
     "description": "This module deploys a Maintenance Configuration Assignment."
@@ -101,14 +101,14 @@
       "$ref": "#/definitions/filterType",
       "nullable": true,
       "metadata": {
-        "description": "Conditional. The unique resource ID to assign the configuration to."
+        "description": "Optional. The unique resource ID to assign the configuration to."
       }
     },
     "resourceId": {
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Conditional. The unique resource ID to assign the configuration to."
+        "description": "Optional. The unique resource ID to assign the configuration to."
       }
     }
   },

@@ -17,10 +17,10 @@ param location string = resourceGroup().location
 @description('Required. The maintenance configuration resource ID.')
 param maintenanceConfigurationResourceId string
 
-@description('Conditional. The unique resource ID to assign the configuration to.')
+@description('Optional. The unique resource ID to assign the configuration to.')
 param filter filterType?
 
-@description('Conditional. The unique resource ID to assign the configuration to.')
+@description('Optional. The unique resource ID to assign the configuration to.')
 param resourceId string?
 
 // =============== //

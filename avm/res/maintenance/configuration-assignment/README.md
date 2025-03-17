@@ -44,16 +44,6 @@ module configurationAssignment 'br/public:avm/res/maintenance/configuration-assi
     maintenanceConfigurationResourceId: '<maintenanceConfigurationResourceId>'
     name: 'mcamin001'
     // Non-required parameters
-    filter: {
-      osTypes: [
-        'Linux'
-        'Windows'
-      ]
-      resourceTypes: [
-        'Server - Azure Arc'
-        'Virtual Machines'
-      ]
-    }
     location: '<location>'
   }
 }
@@ -79,18 +69,6 @@ module configurationAssignment 'br/public:avm/res/maintenance/configuration-assi
       "value": "mcamin001"
     },
     // Non-required parameters
-    "filter": {
-      "value": {
-        "osTypes": [
-          "Linux",
-          "Windows"
-        ],
-        "resourceTypes": [
-          "Server - Azure Arc",
-          "Virtual Machines"
-        ]
-      }
-    },
     "location": {
       "value": "<location>"
     }
@@ -112,16 +90,6 @@ using 'br/public:avm/res/maintenance/configuration-assignment:<version>'
 param maintenanceConfigurationResourceId = '<maintenanceConfigurationResourceId>'
 param name = 'mcamin001'
 // Non-required parameters
-param filter = {
-  osTypes: [
-    'Linux'
-    'Windows'
-  ]
-  resourceTypes: [
-    'Server - Azure Arc'
-    'Virtual Machines'
-  ]
-}
 param location = '<location>'
 ```
 
@@ -211,19 +179,14 @@ param resourceId = '<resourceId>'
 | [`maintenanceConfigurationResourceId`](#parameter-maintenanceconfigurationresourceid) | string | The maintenance configuration resource ID. |
 | [`name`](#parameter-name) | string | Maintenance configuration assignment Name. |
 
-**Conditional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`filter`](#parameter-filter) | object | The unique resource ID to assign the configuration to. |
-| [`resourceId`](#parameter-resourceid) | string | The unique resource ID to assign the configuration to. |
-
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`filter`](#parameter-filter) | object | The unique resource ID to assign the configuration to. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
+| [`resourceId`](#parameter-resourceid) | string | The unique resource ID to assign the configuration to. |
 
 ### Parameter: `maintenanceConfigurationResourceId`
 
@@ -238,6 +201,14 @@ Maintenance configuration assignment Name.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
+- Default: `True`
 
 ### Parameter: `filter`
 
@@ -298,21 +269,6 @@ Tags to be applied on all resources/Resource Groups in this deployment.
 - Required: No
 - Type: object
 
-### Parameter: `resourceId`
-
-The unique resource ID to assign the configuration to.
-
-- Required: No
-- Type: string
-
-### Parameter: `enableTelemetry`
-
-Enable/Disable usage telemetry for module.
-
-- Required: No
-- Type: bool
-- Default: `True`
-
 ### Parameter: `location`
 
 Location for all Resources.
@@ -320,6 +276,13 @@ Location for all Resources.
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
+
+### Parameter: `resourceId`
+
+The unique resource ID to assign the configuration to.
+
+- Required: No
+- Type: string
 
 ## Outputs
 

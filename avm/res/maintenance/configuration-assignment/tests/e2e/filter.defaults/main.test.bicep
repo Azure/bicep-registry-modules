@@ -55,16 +55,16 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       location: enforcedLocation
       maintenanceConfigurationResourceId: nestedDependencies.outputs.maintenanceConfigurationResourceId
-      filter: {
-        osTypes: [
-          'Linux'
-          'Windows'
-        ]
-        resourceTypes: [
-          'Virtual Machines'
-          'Server - Azure Arc'
-        ]
-      }
+      // filter: {
+      //   osTypes: [
+      //     'Linux'
+      //     'Windows'
+      //   ]
+      //   resourceTypes: [
+      //     'Virtual Machines'
+      //     'Server - Azure Arc'
+      //   ]
+      // }
     }
   }
 ]
