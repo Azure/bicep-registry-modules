@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using only defaults'
-metadata description = 'This instance deploys the module with the minimum set of required parameters.'
+metadata name = 'WAF-aligned'
+metadata description = 'This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework. This instance assigns an existing Linux virtual machine to the input maintenance configuration.'
 
 // ========== //
 // Parameters //
@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-maintenance.maintenanceconfi
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'mcamin'
+param serviceShort string = 'mcawaf'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -57,16 +57,7 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       location: enforcedLocation
       maintenanceConfigurationResourceId: nestedDependencies.outputs.maintenanceConfigurationResourceId
-      filter: {
-        osTypes: [
-          'Windows'
-          'Linux'
-        ]
-        resourceTypes: [
-          'Virtual Machines'
-        ]
-      }
-      // resourceId: nestedDependencies.outputs.virtualMachineResourceId
+      resourceId: nestedDependencies.outputs.virtualMachineResourceId
     }
   }
 ]

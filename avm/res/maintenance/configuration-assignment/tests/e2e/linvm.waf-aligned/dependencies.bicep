@@ -139,9 +139,6 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2024-07-01' = {
           }
           patchMode: 'AutomaticByPlatform'
         }
-        //   enableAutomaticUpdates: true
-        // patchMode: 'AutomaticByPlatform'
-        // bypassPlatformSafetyChecksOnUserSchedule: true
       }
     }
   }
