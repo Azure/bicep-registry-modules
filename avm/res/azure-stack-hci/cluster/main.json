@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "11407718084128760252"
+      "templateHash": "16430185328734041481"
     },
     "name": "Azure Stack HCI Cluster",
     "description": "This module deploys an Azure Stack HCI Cluster on the provided Arc Machines."
@@ -182,6 +182,13 @@
     "storageNetworksType": {
       "type": "object",
       "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the storage network."
+          }
+        },
         "adapterName": {
           "type": "string",
           "metadata": {
@@ -444,6 +451,9 @@
         },
         "networkIntents": {
           "type": "array",
+          "items": {
+            "$ref": "#/definitions/networkIntentType"
+          },
           "metadata": {
             "description": "Required. An array of Network ATC Network Intent objects that define the Compute, Management, and Storage network configuration for the cluster."
           }
@@ -463,6 +473,9 @@
         },
         "storageNetworks": {
           "type": "array",
+          "items": {
+            "$ref": "#/definitions/storageNetworksType"
+          },
           "metadata": {
             "description": "Required. An array of JSON objects that define the storage network configuration for the cluster. Each object should contain the adapterName, VLAN properties, and (optionally) IP configurations."
           }
@@ -483,13 +496,6 @@
           "type": "string",
           "metadata": {
             "description": "Required. The name of the key vault to be used for storing secrets for the HCI cluster. This currently needs to be unique per HCI cluster."
-          }
-        },
-        "cloudId": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. If using a shared key vault or non-legacy secret naming, pass the properties.cloudId guid from the pre-created HCI cluster resource."
           }
         }
       }
@@ -710,7 +716,7 @@
       }
     },
     "servicePrincipalSecret": {
-      "type": "string",
+      "type": "securestring",
       "nullable": true,
       "metadata": {
         "description": "Conditional. The service principal secret for ARB. Required if useSharedKeyVault is true."
@@ -770,6 +776,34 @@
       "nullable": true,
       "metadata": {
         "description": "Optional. Tags of the default ARB application."
+      }
+    },
+    "keyvaultSubscriptionId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Key vault subscription ID, which is used for for storing secrets for the HCI cluster."
+      }
+    },
+    "keyvaultResourceGroup": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Key vault resource group, which is used for for storing secrets for the HCI cluster."
+      }
+    },
+    "witnessStorageAccountSubscriptionId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Storage account subscription ID, which is used as the witness for the HCI Windows Failover Cluster."
+      }
+    },
+    "witnessStorageAccountResourceGroup": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Storage account resource group, which is used as the witness for the HCI Windows Failover Cluster."
       }
     }
   },
@@ -851,6 +885,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-secrets', uniqueString(deployment().name, parameters('location')))]",
+      "subscriptionId": "[coalesce(parameters('keyvaultSubscriptionId'), subscription().subscriptionId)]",
+      "resourceGroup": "[coalesce(parameters('keyvaultResourceGroup'), resourceGroup().name)]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -910,6 +946,12 @@
           },
           "defaultARBApplicationTags": {
             "value": "[parameters('defaultARBApplicationTags')]"
+          },
+          "witnessStorageAccountResourceGroup": {
+            "value": "[coalesce(parameters('witnessStorageAccountResourceGroup'), resourceGroup().name)]"
+          },
+          "witnessStorageAccountSubscriptionId": {
+            "value": "[coalesce(parameters('witnessStorageAccountSubscriptionId'), subscription().subscriptionId)]"
           }
         },
         "template": {
@@ -920,7 +962,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "10708445161227912080"
+              "templateHash": "5238695736774441169"
             }
           },
           "parameters": {
@@ -1039,6 +1081,18 @@
               "metadata": {
                 "description": "Optional. Tags of the default ARB application."
               }
+            },
+            "witnessStorageAccountSubscriptionId": {
+              "type": "string",
+              "metadata": {
+                "description": "Optional. Storage account subscription ID, which is used as the witness for the HCI Windows Failover Cluster."
+              }
+            },
+            "witnessStorageAccountResourceGroup": {
+              "type": "string",
+              "metadata": {
+                "description": "Optional. Storage account resource group, which is used as the witness for the HCI Windows Failover Cluster.."
+              }
             }
           },
           "resources": {
@@ -1046,6 +1100,8 @@
               "existing": true,
               "type": "Microsoft.Storage/storageAccounts",
               "apiVersion": "2023-01-01",
+              "subscriptionId": "[parameters('witnessStorageAccountSubscriptionId')]",
+              "resourceGroup": "[parameters('witnessStorageAccountResourceGroup')]",
               "name": "[parameters('storageAccountName')]"
             },
             "keyVault": {
@@ -1086,7 +1142,7 @@
               "name": "[format('{0}/{1}', parameters('keyVaultName'), format('{0}-WitnessStorageKey-{1}', parameters('clusterName'), parameters('cloudId')))]",
               "properties": {
                 "contentType": "[parameters('witnessStoragekeyContentType')]",
-                "value": "[base64(listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2023-01-01').keys[0].value)]",
+                "value": "[base64(listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('witnessStorageAccountSubscriptionId'), parameters('witnessStorageAccountResourceGroup')), 'Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2023-01-01').keys[0].value)]",
                 "attributes": {
                   "enabled": true
                 }
@@ -1236,7 +1292,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "7982158538530558379"
+              "templateHash": "8375880528238701715"
             },
             "name": "Azure Stack HCI Cluster Deployment Settings",
             "description": "This module deploys an Azure Stack HCI Cluster Deployment Settings resource."
@@ -1472,7 +1528,7 @@
             "keyVaultName": {
               "type": "string",
               "metadata": {
-                "description": "Required. The name of the key vault to be used for storing secrets for the HCI cluster. This currently needs to be unique per HCI cluster."
+                "description": "Required. The name of the key vault to be used for storing secrets for the HCI cluster."
               }
             },
             "cloudId": {
@@ -1578,7 +1634,7 @@
                               "name": "storageNetworks",
                               "count": "[length(parameters('storageNetworks'))]",
                               "input": {
-                                "name": "[format('StorageNetwork{0}', add(copyIndex('storageNetworks'), 1))]",
+                                "name": "[coalesce(parameters('storageNetworks')[copyIndex('storageNetworks')].name, format('StorageNetwork{0}', add(copyIndex('storageNetworks'), 1)))]",
                                 "networkAdapterName": "[parameters('storageNetworks')[copyIndex('storageNetworks')].adapterName]",
                                 "vlanId": "[parameters('storageNetworks')[copyIndex('storageNetworks')].vlan]",
                                 "storageAdapterIPInfo": "[tryGet(parameters('storageNetworks')[copyIndex('storageNetworks')], 'storageAdapterIPInfo')]"
