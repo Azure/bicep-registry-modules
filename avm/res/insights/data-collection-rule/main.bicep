@@ -1,6 +1,5 @@
 metadata name = 'Data Collection Rules'
 metadata description = 'This module deploys a Data Collection Rule.'
-metadata owner = 'Azure/module-maintainers'
 
 // ============== //
 //   Parameters   //
@@ -154,9 +153,9 @@ output location string = dataCollectionRuleProperties.kind == 'All'
   : dataCollectionRule.location
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = dataCollectionRuleProperties.kind == 'All'
-  ? dataCollectionRuleAll.?identity.?principalId ?? ''
-  : dataCollectionRule.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = dataCollectionRuleProperties.kind == 'All'
+  ? dataCollectionRuleAll.?identity.?principalId
+  : dataCollectionRule.?identity.?principalId
 
 // =============== //
 //   Definitions   //

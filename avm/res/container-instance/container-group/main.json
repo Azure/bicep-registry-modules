@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "10455329917126813819"
+      "version": "0.33.13.18514",
+      "templateHash": "12728818246906272603"
     },
     "name": "Container Instances Container Groups",
-    "description": "This module deploys a Container Instance Container Group.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Container Instance Container Group."
   },
   "definitions": {
     "containerType": {
@@ -663,9 +662,9 @@
       "existing": true,
       "type": "Microsoft.KeyVault/vaults/keys",
       "apiVersion": "2023-02-01",
-      "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '//'), '/')[2]]",
-      "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '////'), '/')[4]]",
-      "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]"
+      "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
+      "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'))]"
     },
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
@@ -692,18 +691,18 @@
       "existing": true,
       "type": "Microsoft.KeyVault/vaults",
       "apiVersion": "2023-02-01",
-      "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '//'), '/')[2]]",
-      "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '////'), '/')[4]]",
-      "name": "[last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/'))]"
+      "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
+      "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
     },
     "cMKUserAssignedIdentity": {
       "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId')))]",
       "existing": true,
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
       "apiVersion": "2023-01-31",
-      "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '//'), '/')[2]]",
-      "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '////'), '/')[4]]",
-      "name": "[last(split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), 'dummyMsi'), '/'))]"
+      "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]]",
+      "name": "[last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/'))]"
     },
     "containergroup": {
       "type": "Microsoft.ContainerInstance/containerGroups",
@@ -712,7 +711,7 @@
       "location": "[parameters('location')]",
       "identity": "[variables('identity')]",
       "tags": "[parameters('tags')]",
-      "properties": "[union(createObject('containers', parameters('containers'), 'encryptionProperties', if(not(empty(parameters('customerManagedKey'))), createObject('identity', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), ''))), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '//'), '/')[2], split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '////'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), 'dummyMsi'), '/'))), null()), 'keyName', parameters('customerManagedKey').keyName, 'keyVersion', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'keyVersion'), ''))), parameters('customerManagedKey').keyVersion, if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), null(), last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/')))), 'vaultBaseUrl', reference('cMKKeyVault').vaultUri), null()), 'imageRegistryCredentials', parameters('imageRegistryCredentials'), 'initContainers', parameters('initContainers'), 'restartPolicy', parameters('restartPolicy'), 'osType', parameters('osType'), 'ipAddress', createObject('type', parameters('ipAddressType'), 'autoGeneratedDomainNameLabelScope', if(not(empty(parameters('dnsNameServers'))), parameters('autoGeneratedDomainNameLabelScope'), null()), 'dnsNameLabel', parameters('dnsNameLabel'), 'ports', parameters('ipAddressPorts')), 'sku', parameters('sku'), 'subnetIds', if(not(empty(parameters('subnetResourceId'))), createArray(createObject('id', parameters('subnetResourceId'))), null()), 'volumes', parameters('volumes')), if(not(empty(parameters('dnsNameServers'))), createObject('dnsConfig', createObject('nameServers', parameters('dnsNameServers'), 'searchDomains', parameters('dnsSearchDomains'))), createObject()))]",
+      "properties": "[union(createObject('containers', parameters('containers'), 'encryptionProperties', if(not(empty(parameters('customerManagedKey'))), createObject('identity', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), ''))), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2], split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/'))), null()), 'keyName', parameters('customerManagedKey').keyName, 'keyVersion', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'keyVersion'), ''))), parameters('customerManagedKey').keyVersion, if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), null(), last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/')))), 'vaultBaseUrl', reference('cMKKeyVault').vaultUri), null()), 'imageRegistryCredentials', parameters('imageRegistryCredentials'), 'initContainers', parameters('initContainers'), 'restartPolicy', parameters('restartPolicy'), 'osType', parameters('osType'), 'ipAddress', createObject('type', parameters('ipAddressType'), 'autoGeneratedDomainNameLabelScope', if(not(empty(parameters('dnsNameServers'))), parameters('autoGeneratedDomainNameLabelScope'), null()), 'dnsNameLabel', parameters('dnsNameLabel'), 'ports', parameters('ipAddressPorts')), 'sku', parameters('sku'), 'subnetIds', if(not(empty(parameters('subnetResourceId'))), createArray(createObject('id', parameters('subnetResourceId'))), null()), 'volumes', parameters('volumes')), if(not(empty(parameters('dnsNameServers'))), createObject('dnsConfig', createObject('nameServers', parameters('dnsNameServers'), 'searchDomains', parameters('dnsSearchDomains'))), createObject()))]",
       "dependsOn": [
         "cMKKeyVault::cMKKey",
         "cMKKeyVault"

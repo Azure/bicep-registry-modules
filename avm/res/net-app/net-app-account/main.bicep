@@ -1,6 +1,5 @@
 metadata name = 'Azure NetApp Files'
 metadata description = 'This module deploys an Azure NetApp File.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the NetApp account.')
 param name string
@@ -11,7 +10,7 @@ param adName string = ''
 @description('Optional. Enable AES encryption on the SMB Server.')
 param aesEncryption bool = false
 
-import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyType?
 
@@ -38,13 +37,13 @@ param encryptDCConnections bool = false
 param smbServerNamePrefix string = ''
 
 @description('Optional. Capacity pools to create.')
-param capacityPools array = []
+param capacityPools capacityPoolType[]?
 
-import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityOnlyUserAssignedType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -60,7 +59,7 @@ param ldapSigning bool = false
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -72,6 +71,15 @@ param tags object?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
+
+@description('Optional. The netapp backup vault to create & configure.')
+param backupVault backupVaultType?
+
+@description('Optional. The snapshot policies to create.')
+param snapshotPolicies snapshotPolicyType[]?
+
+@description('Optional. The backup policies to create.')
+param backupPolicies backupPolicyType[]?
 
 var activeDirectoryConnectionProperties = [
   {
@@ -149,26 +157,26 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
 }
 
 resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
-  name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
+  name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
   scope: resourceGroup(
-    split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
-    split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
+    split(customerManagedKey.?keyVaultResourceId!, '/')[2],
+    split(customerManagedKey.?keyVaultResourceId!, '/')[4]
   )
 
   resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
-    name: customerManagedKey.?keyName ?? 'dummyKey'
+    name: customerManagedKey.?keyName!
   }
 }
 
 resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
-  name: last(split(customerManagedKey.?userAssignedIdentityResourceId ?? 'dummyMsi', '/'))
+  name: last(split(customerManagedKey.?userAssignedIdentityResourceId!, '/'))
   scope: resourceGroup(
-    split((customerManagedKey.?userAssignedIdentityResourceId ?? '//'), '/')[2],
-    split((customerManagedKey.?userAssignedIdentityResourceId ?? '////'), '/')[4]
+    split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[2],
+    split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[4]
   )
 }
 
-resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2024-03-01' = {
+resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2024-07-01' = {
   name: name
   tags: tags
   identity: identity
@@ -220,14 +228,54 @@ resource netAppAccount_roleAssignments 'Microsoft.Authorization/roleAssignments@
   }
 ]
 
+module netAppAccount_backupPolicies 'backup-policies/main.bicep' = [
+  for (backupPolicy, index) in (backupPolicies ?? []): {
+    name: '${uniqueString(deployment().name, location)}-ANFAccount-backupPolicy-${index}'
+    params: {
+      netAppAccountName: netAppAccount.name
+      name: backupPolicy.?name
+      dailyBackupsToKeep: backupPolicy.?dailyBackupsToKeep
+      monthlyBackupsToKeep: backupPolicy.?monthlyBackupsToKeep
+      weeklyBackupsToKeep: backupPolicy.?weeklyBackupsToKeep
+      enabled: backupPolicy.?enabled
+      location: backupPolicy.?location ?? location
+    }
+  }
+]
+
+module netAppAccount_snapshotPolicies 'snapshot-policies/main.bicep' = [
+  for (snapshotPolicy, index) in (snapshotPolicies ?? []): {
+    name: '${uniqueString(deployment().name, location)}-ANFAccount-snapshotPolicy-${index}'
+    params: {
+      netAppAccountName: netAppAccount.name
+      name: snapshotPolicy.?name
+      location: snapshotPolicy.?location ?? location
+      snapEnabled: snapshotPolicy.?snapEnabled
+      dailySchedule: snapshotPolicy.?dailySchedule
+      hourlySchedule: snapshotPolicy.?hourlySchedule
+      monthlySchedule: snapshotPolicy.?monthlySchedule
+      weeklySchedule: snapshotPolicy.?weeklySchedule
+    }
+  }
+]
+
+module netAppAccount_backupVault 'backup-vault/main.bicep' = if (!empty(backupVault)) {
+  name: '${uniqueString(deployment().name, location)}-ANFAccount-BackupVault'
+  params: {
+    netAppAccountName: netAppAccount.name
+    name: backupVault.?name
+    location: backupVault.?location ?? location
+  }
+}
+
 module netAppAccount_capacityPools 'capacity-pool/main.bicep' = [
-  for (capacityPool, index) in capacityPools: {
+  for (capacityPool, index) in (capacityPools ?? []): {
     name: '${uniqueString(deployment().name, location)}-ANFAccount-CapPool-${index}'
     params: {
       netAppAccountName: netAppAccount.name
       name: capacityPool.name
-      location: location
       size: capacityPool.size
+      location: capacityPool.?location ?? location
       serviceLevel: capacityPool.?serviceLevel ?? 'Standard'
       qosType: capacityPool.?qosType ?? 'Auto'
       volumes: capacityPool.?volumes ?? []
@@ -236,8 +284,26 @@ module netAppAccount_capacityPools 'capacity-pool/main.bicep' = [
       encryptionType: capacityPool.?encryptionType ?? 'Single'
       tags: capacityPool.?tags ?? tags
     }
+    dependsOn: [
+      netAppAccount_backupPolicies
+      netAppAccount_snapshotPolicies
+      netAppAccount_backupVault
+    ]
   }
 ]
+
+module netAppAccount_backupVaultBackups 'backup-vault/main.bicep' = if (!empty(backupVault.?backups)) {
+  name: '${uniqueString(deployment().name, location)}-ANFAccount-BackupVault-Backups'
+  params: {
+    netAppAccountName: netAppAccount.name
+    name: backupVault.?name
+    backups: backupVault.?backups
+    location: backupVault.?location ?? location
+  }
+  dependsOn: [
+    netAppAccount_capacityPools
+  ]
+}
 
 @description('The name of the NetApp account.')
 output name string = netAppAccount.name
@@ -251,5 +317,115 @@ output resourceGroupName string = resourceGroup().name
 @description('The location the resource was deployed into.')
 output location string = netAppAccount.location
 
-@description('The resource IDs of the volume created in the capacity pool.')
-output volumeResourceId string = (capacityPools != []) ? netAppAccount_capacityPools[0].outputs.volumeResourceId : ''
+@description('The resource IDs of the created capacity pools & their volumes.')
+output capacityPoolResourceIds {
+  resourceId: string
+  volumeResourceIds: string[]
+}[] = [
+  for (capacityPools, index) in (capacityPools ?? []): {
+    resourceId: netAppAccount_capacityPools[index].outputs.resourceId
+    volumeResourceIds: netAppAccount_capacityPools[index].outputs.volumeResourceIds
+  }
+]
+
+// ================ //
+// Definitions      //
+// ================ //
+
+import { backupType } from 'backup-vault/main.bicep'
+@export()
+@description('The type for a backup vault.')
+type backupVaultType = {
+  @description('Optional. The name of the backup vault.')
+  name: string?
+
+  @description('Optional. The list of backups to create.')
+  backups: backupType[]?
+
+  @description('Optional. Location of the backup vault.')
+  location: string?
+}
+
+import { volumeType } from 'capacity-pool/main.bicep'
+@export()
+@description('The type for a capacity pool.')
+type capacityPoolType = {
+  @description('Required. The name of the capacity pool.')
+  name: string
+
+  @description('Optional. Location of the pool volume.')
+  location: string?
+
+  @description('Optional. Tags for the capcity pool.')
+  tags: object?
+
+  @description('Optional. The pool service level.')
+  serviceLevel: ('Premium' | 'Standard' | 'StandardZRS' | 'Ultra')?
+
+  @description('Required. Provisioned size of the pool in Tebibytes (TiB).')
+  @minValue(1)
+  @maxValue(2048)
+  size: int
+
+  @description('Optional. The qos type of the pool.')
+  qosType: ('Auto' | 'Manual')?
+
+  @description('Optional. List of volumes to create in the capacity pool.')
+  volumes: volumeType[]?
+
+  @description('Optional. If enabled (true) the pool can contain cool Access enabled volumes.')
+  coolAccess: bool?
+
+  @description('Optional. Array of role assignments to create.')
+  roleAssignments: roleAssignmentType[]?
+
+  @description('Optional. Encryption type of the capacity pool, set encryption type for data at rest for this pool and all volumes in it. This value can only be set when creating new pool.')
+  encryptionType: ('Single' | 'Double')?
+}
+
+import { dailyScheduleType, hourlyScheduleType, monthlyScheduleType, weeklyScheduleType } from 'snapshot-policies/main.bicep'
+@export()
+@description('The type for a snapshot policy.')
+type snapshotPolicyType = {
+  @description('Required. The name of the snapshot policy.')
+  name: string
+
+  @description('Optional. Location of the snapshot policy.')
+  location: string?
+
+  @description('Optional. Daily schedule for the snapshot policy.')
+  dailySchedule: dailyScheduleType?
+
+  @description('Optional. Hourly schedule for the snapshot policy.')
+  hourlySchedule: hourlyScheduleType?
+
+  @description('Optional. Monthly schedule for the snapshot policy.')
+  monthlySchedule: monthlyScheduleType?
+
+  @description('Optional. Weekly schedule for the snapshot policy.')
+  weeklySchedule: weeklyScheduleType?
+}
+
+@export()
+@description('The type for a backup policy.')
+type backupPolicyType = {
+  @description('Optional. The name of the backup policy.')
+  name: string?
+
+  @description('Optional. The location of the backup policy.')
+  location: string?
+
+  @description('Optional. The daily backups to keep.')
+  @minValue(2)
+  @maxValue(1019)
+  dailyBackupsToKeep: int?
+
+  @description('Optional. The monthly backups to keep.')
+  monthlyBackupsToKeep: int?
+
+  @description('Optional. The weekly backups to keep.')
+  weeklyBackupsToKeep: int?
+
+  @description('Optional. Indicates whether the backup policy is enabled.')
+  enabled: bool?
+}

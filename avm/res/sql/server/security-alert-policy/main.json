@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "3334922704579421997"
+      "version": "0.33.93.31351",
+      "templateHash": "8937041272173907173"
     },
     "name": "Azure SQL Server Security Alert Policies",
-    "description": "This module deploys an Azure SQL Server Security Alert Policy.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Azure SQL Server Security Alert Policy."
   },
   "parameters": {
     "name": {

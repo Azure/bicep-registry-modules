@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "5539048151819308545"
+      "version": "0.32.4.45862",
+      "templateHash": "11605312251380139630"
     },
     "name": "Traffic Manager Profiles",
-    "description": "This module deploys a Traffic Manager Profile.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Traffic Manager Profile."
   },
   "definitions": {
     "lockType": {

@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "7938168042291038223"
+      "version": "0.33.93.31351",
+      "templateHash": "1201097929477904425"
     },
     "name": "Machine Learning Services Workspaces",
-    "description": "This module deploys a Machine Learning Services Workspace.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Machine Learning Services Workspace."
   },
   "definitions": {
     "featureStoreSettingType": {
@@ -252,6 +251,17 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. Outbound rules for the managed network of a machine learning workspace."
+          }
+        },
+        "firewallSku": {
+          "type": "string",
+          "allowedValues": [
+            "Basic",
+            "Standard"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The firewall SKU used for FQDN rules."
           }
         }
       },
@@ -536,6 +546,31 @@
         }
       }
     },
+    "_2.accountKeyAuthTypeWorkspaceConnectionPropertyType": {
+      "type": "object",
+      "properties": {
+        "authType": {
+          "type": "string",
+          "allowedValues": [
+            "AccountKey"
+          ],
+          "metadata": {
+            "description": "Required. The authentication type of the connection target."
+          }
+        },
+        "credentials": {
+          "$ref": "#/definitions/_2.workspaceConnectionAccountKeyType",
+          "metadata": {
+            "description": "Required. The credentials for the connection."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "connection/main.bicep"
+        }
+      }
+    },
     "_2.apiKeyAuthWorkspaceConnectionPropertyType": {
       "type": "object",
       "properties": {
@@ -800,6 +835,22 @@
         }
       }
     },
+    "_2.workspaceConnectionAccountKeyType": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The connection key."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "connection/main.bicep"
+        }
+      }
+    },
     "_2.workspaceConnectionApiKeyType": {
       "type": "object",
       "properties": {
@@ -1031,6 +1082,7 @@
         "Dynamics",
         "DynamicsAx",
         "DynamicsCrm",
+        "Elasticsearch",
         "Eloqua",
         "FileServer",
         "FtpServer",
@@ -1050,6 +1102,7 @@
         "Informix",
         "Jira",
         "Magento",
+        "ManagedOnlineEndpoint",
         "MariaDb",
         "Marketo",
         "MicrosoftAccess",
@@ -1066,6 +1119,7 @@
         "OracleServiceCloud",
         "PayPal",
         "Phoenix",
+        "Pinecone",
         "PostgreSql",
         "Presto",
         "PythonFeed",
@@ -1115,6 +1169,9 @@
           },
           "AccessKey": {
             "$ref": "#/definitions/_2.accessKeyAuthTypeWorkspaceConnectionPropertyType"
+          },
+          "AccountKey": {
+            "$ref": "#/definitions/_2.accountKeyAuthTypeWorkspaceConnectionPropertyType"
           },
           "ApiKey": {
             "$ref": "#/definitions/_2.apiKeyAuthWorkspaceConnectionPropertyType"
@@ -1593,6 +1650,13 @@
         "description": "Required. The name of the machine learning workspace."
       }
     },
+    "friendlyName": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The friendly name of the machine learning workspace."
+      }
+    },
     "location": {
       "type": "string",
       "defaultValue": "[resourceGroup().location]",
@@ -1636,7 +1700,7 @@
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Conditional. The resource ID of the associated Key Vault. Required if 'kind' is 'Default', 'FeatureStore' or 'Hub'."
+        "description": "Conditional. The resource ID of the associated Key Vault. Required if 'kind' is 'Default' or 'FeatureStore'. If not provided, the key vault will be managed by Microsoft."
       }
     },
     "associatedApplicationInsightsResourceId": {
@@ -1651,6 +1715,13 @@
       "nullable": true,
       "metadata": {
         "description": "Optional. The resource ID of the associated Container Registry."
+      }
+    },
+    "enableServiceSideCMKEncryption": {
+      "type": "bool",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Enable service-side encryption."
       }
     },
     "lock": {
@@ -1741,11 +1812,28 @@
         "description": "Conditional. Settings for feature store type workspaces. Required if 'kind' is set to 'FeatureStore'."
       }
     },
+    "ipAllowlist": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. List of IPv4 addresse ranges that are allowed to access the workspace."
+      }
+    },
     "managedNetworkSettings": {
       "$ref": "#/definitions/managedNetworkSettingType",
       "nullable": true,
       "metadata": {
         "description": "Optional. Managed Network settings for a machine learning workspace."
+      }
+    },
+    "provisionNetworkNow": {
+      "type": "bool",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Trigger the provisioning of the managed virtual network when creating the workspace."
       }
     },
     "serverlessComputeSettings": {
@@ -1759,8 +1847,9 @@
       "type": "string",
       "nullable": true,
       "allowedValues": [
-        "accessKey",
-        "identity"
+        "AccessKey",
+        "Identity",
+        "UserDelegationSAS"
       ],
       "metadata": {
         "description": "Optional. The authentication mode used by the workspace when connecting to the default storage account."
@@ -1852,6 +1941,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
+    "enableReferencedModulesTelemetry": false,
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "builtInRoleNames": {
@@ -1872,9 +1962,9 @@
       "existing": true,
       "type": "Microsoft.KeyVault/vaults/keys",
       "apiVersion": "2023-02-01",
-      "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '//'), '/')[2]]",
-      "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '////'), '/')[4]]",
-      "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]"
+      "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
+      "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'))]"
     },
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
@@ -1901,22 +1991,22 @@
       "existing": true,
       "type": "Microsoft.KeyVault/vaults",
       "apiVersion": "2023-02-01",
-      "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '//'), '/')[2]]",
-      "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '////'), '/')[4]]",
-      "name": "[last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/'))]"
+      "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
+      "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
     },
     "cMKUserAssignedIdentity": {
       "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId')))]",
       "existing": true,
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
       "apiVersion": "2023-01-31",
-      "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '//'), '/')[2]]",
-      "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '////'), '/')[4]]",
-      "name": "[last(split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), 'dummyMsi'), '/'))]"
+      "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]]",
+      "name": "[last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/'))]"
     },
     "workspace": {
       "type": "Microsoft.MachineLearningServices/workspaces",
-      "apiVersion": "2024-04-01-preview",
+      "apiVersion": "2024-10-01-preview",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -1925,7 +2015,7 @@
         "tier": "[parameters('sku')]"
       },
       "identity": "[variables('identity')]",
-      "properties": "[shallowMerge(createArray(createObject('friendlyName', parameters('name'), 'storageAccount', parameters('associatedStorageAccountResourceId'), 'keyVault', parameters('associatedKeyVaultResourceId'), 'applicationInsights', parameters('associatedApplicationInsightsResourceId'), 'containerRegistry', parameters('associatedContainerRegistryResourceId'), 'hbiWorkspace', parameters('hbiWorkspace'), 'description', parameters('description'), 'discoveryUrl', parameters('discoveryUrl'), 'encryption', if(not(empty(parameters('customerManagedKey'))), createObject('status', 'Enabled', 'identity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), createObject('userAssignedIdentity', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '//'), '/')[2], split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '////'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), 'dummyMsi'), '/')))), null()), 'keyVaultProperties', createObject('keyVaultArmId', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '//'), '/')[2], split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '////'), '/')[4]), 'Microsoft.KeyVault/vaults', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/'))), 'keyIdentifier', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'keyVersion'), ''))), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, parameters('customerManagedKey').keyVersion), reference('cMKKeyVault::cMKKey').keyUriWithVersion))), null()), 'imageBuildCompute', parameters('imageBuildCompute'), 'primaryUserAssignedIdentity', parameters('primaryUserAssignedIdentity'), 'systemDatastoresAuthMode', parameters('systemDatastoresAuthMode'), 'publicNetworkAccess', parameters('publicNetworkAccess'), 'serviceManagedResourcesSettings', parameters('serviceManagedResourcesSettings'), 'featureStoreSettings', parameters('featureStoreSettings'), 'hubResourceId', parameters('hubResourceId'), 'managedNetwork', parameters('managedNetworkSettings'), 'serverlessComputeSettings', parameters('serverlessComputeSettings'), 'workspaceHubConfig', parameters('workspaceHubConfig')), if(not(empty(parameters('sharedPrivateLinkResources'))), createObject('sharedPrivateLinkResources', parameters('sharedPrivateLinkResources')), createObject())))]",
+      "properties": "[shallowMerge(createArray(createObject('friendlyName', coalesce(parameters('friendlyName'), parameters('name')), 'storageAccount', parameters('associatedStorageAccountResourceId'), 'keyVault', parameters('associatedKeyVaultResourceId'), 'applicationInsights', parameters('associatedApplicationInsightsResourceId'), 'containerRegistry', parameters('associatedContainerRegistryResourceId'), 'hbiWorkspace', parameters('hbiWorkspace'), 'description', parameters('description'), 'discoveryUrl', parameters('discoveryUrl'), 'encryption', if(not(empty(parameters('customerManagedKey'))), createObject('status', 'Enabled', 'identity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), createObject('userAssignedIdentity', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2], split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')))), null()), 'keyVaultProperties', createObject('keyVaultArmId', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2], split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]), 'Microsoft.KeyVault/vaults', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))), 'keyIdentifier', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'keyVersion'), ''))), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, parameters('customerManagedKey').keyVersion), reference('cMKKeyVault::cMKKey').keyUriWithVersion))), null()), 'enableServiceSideCMKEncryption', parameters('enableServiceSideCMKEncryption'), 'imageBuildCompute', parameters('imageBuildCompute'), 'primaryUserAssignedIdentity', parameters('primaryUserAssignedIdentity'), 'systemDatastoresAuthMode', parameters('systemDatastoresAuthMode'), 'publicNetworkAccess', parameters('publicNetworkAccess'), 'ipAllowlist', parameters('ipAllowlist'), 'serviceManagedResourcesSettings', parameters('serviceManagedResourcesSettings'), 'featureStoreSettings', parameters('featureStoreSettings'), 'hubResourceId', parameters('hubResourceId'), 'managedNetwork', parameters('managedNetworkSettings'), 'provisionNetworkNow', parameters('provisionNetworkNow'), 'serverlessComputeSettings', parameters('serverlessComputeSettings'), 'workspaceHubConfig', parameters('workspaceHubConfig')), if(not(empty(parameters('sharedPrivateLinkResources'))), createObject('sharedPrivateLinkResources', parameters('sharedPrivateLinkResources')), createObject())))]",
       "kind": "[parameters('kind')]",
       "dependsOn": [
         "cMKKeyVault::cMKKey"
@@ -2069,12 +2159,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "81380678032212878"
+              "version": "0.33.93.31351",
+              "templateHash": "13679175688936595005"
             },
             "name": "Machine Learning Services Workspaces Computes",
-            "description": "This module deploys a Machine Learning Services Workspaces Compute.\n\nAttaching a compute is not idempotent and will fail in case you try to redeploy over an existing compute in AML (see parameter `deployCompute`).",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Machine Learning Services Workspaces Compute.\n\nAttaching a compute is not idempotent and will fail in case you try to redeploy over an existing compute in AML (see parameter `deployCompute`)."
           },
           "definitions": {
             "managedIdentityAllType": {
@@ -2230,7 +2319,7 @@
             "compute": {
               "condition": "[equals(parameters('deployCompute'), true())]",
               "type": "Microsoft.MachineLearningServices/workspaces/computes",
-              "apiVersion": "2022-10-01",
+              "apiVersion": "2024-10-01",
               "name": "[format('{0}/{1}', parameters('machineLearningWorkspaceName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "tags": "[if(empty(parameters('resourceId')), parameters('tags'), null())]",
@@ -2263,17 +2352,18 @@
             },
             "systemAssignedMIPrincipalId": {
               "type": "string",
+              "nullable": true,
               "metadata": {
                 "description": "The principal ID of the system assigned identity."
               },
-              "value": "[coalesce(tryGet(tryGet(reference('compute', '2022-10-01', 'full'), 'identity'), 'principalId'), '')]"
+              "value": "[tryGet(tryGet(reference('compute', '2024-10-01', 'full'), 'identity'), 'principalId')]"
             },
             "location": {
               "type": "string",
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('compute', '2022-10-01', 'full').location]"
+              "value": "[reference('compute', '2024-10-01', 'full').location]"
             }
           }
         }
@@ -2335,12 +2425,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "13769328885723173591"
+              "version": "0.33.93.31351",
+              "templateHash": "14592202711795767071"
             },
             "name": "Machine Learning Services Workspaces Connections",
-            "description": "This module creates a connection in a Machine Learning Services workspace.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module creates a connection in a Machine Learning Services workspace."
           },
           "definitions": {
             "metadataType": {
@@ -2391,6 +2480,7 @@
                 "Dynamics",
                 "DynamicsAx",
                 "DynamicsCrm",
+                "Elasticsearch",
                 "Eloqua",
                 "FileServer",
                 "FtpServer",
@@ -2410,6 +2500,7 @@
                 "Informix",
                 "Jira",
                 "Magento",
+                "ManagedOnlineEndpoint",
                 "MariaDb",
                 "Marketo",
                 "MicrosoftAccess",
@@ -2426,6 +2517,7 @@
                 "OracleServiceCloud",
                 "PayPal",
                 "Phoenix",
+                "Pinecone",
                 "PostgreSql",
                 "Presto",
                 "PythonFeed",
@@ -2510,7 +2602,7 @@
                   }
                 },
                 "credentials": {
-                  "$ref": "#/definitions/workspaceConnectionAccountKey",
+                  "$ref": "#/definitions/workspaceConnectionAccountKeyType",
                   "metadata": {
                     "description": "Required. The credentials for the connection."
                   }
@@ -2726,7 +2818,7 @@
                 }
               }
             },
-            "workspaceConnectionAccountKey": {
+            "workspaceConnectionAccountKeyType": {
               "type": "object",
               "properties": {
                 "key": {
@@ -2906,6 +2998,9 @@
                   "AccessKey": {
                     "$ref": "#/definitions/accessKeyAuthTypeWorkspaceConnectionPropertyType"
                   },
+                  "AccountKey": {
+                    "$ref": "#/definitions/accountKeyAuthTypeWorkspaceConnectionPropertyType"
+                  },
                   "ApiKey": {
                     "$ref": "#/definitions/apiKeyAuthWorkspaceConnectionPropertyType"
                   },
@@ -3019,7 +3114,7 @@
             },
             "connection": {
               "type": "Microsoft.MachineLearningServices/workspaces/connections",
-              "apiVersion": "2024-04-01",
+              "apiVersion": "2024-10-01",
               "name": "[format('{0}/{1}', parameters('machineLearningWorkspaceName'), parameters('name'))]",
               "properties": "[union(createObject('category', parameters('category'), 'expiryTime', parameters('expiryTime'), 'isSharedToAll', parameters('isSharedToAll'), 'metadata', parameters('metadata'), 'sharedUserList', parameters('sharedUserList'), 'target', parameters('target'), 'value', parameters('value')), parameters('connectionProperties'))]"
             }
@@ -3077,7 +3172,7 @@
             "value": "[coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId]"
           },
           "enableTelemetry": {
-            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           },
           "location": {
             "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'location'), reference(split(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location)]"
@@ -3841,14 +3936,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('workspace', '2024-04-01-preview', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('workspace', '2024-10-01-preview', 'full'), 'identity'), 'principalId')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('workspace', '2024-04-01-preview', 'full').location]"
+      "value": "[reference('workspace', '2024-10-01-preview', 'full').location]"
     }
   }
 }

@@ -1,6 +1,5 @@
 metadata name = 'Azure Kubernetes Service (AKS) Managed Clusters'
 metadata description = 'This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Specifies the name of the AKS cluster.')
 param name string
@@ -11,7 +10,7 @@ param location string = resourceGroup().location
 @description('Optional. Specifies the DNS prefix specified when creating the managed cluster.')
 param dnsPrefix string = name
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both.')
 param managedIdentities managedIdentityAllType?
 
@@ -171,6 +170,15 @@ param webApplicationRoutingEnabled bool = false
 @description('Optional. Specifies the resource ID of connected DNS zone. It will be ignored if `webApplicationRoutingEnabled` is set to `false`.')
 param dnsZoneResourceId string?
 
+@description('Optional. Ingress type for the default NginxIngressController custom resource. It will be ignored if `webApplicationRoutingEnabled` is set to `false`.')
+@allowed([
+  'AnnotationControlled'
+  'External'
+  'Internal'
+  'None'
+])
+param defaultIngressControllerType string?
+
 @description('Optional. Specifies whether assing the DNS zone contributor role to the cluster service principal. It will be ignored if `webApplicationRoutingEnabled` is set to `false` or `dnsZoneResourceId` not provided.')
 param enableDnsZoneContributorRoleAssignment bool = true
 
@@ -329,12 +337,15 @@ param enableStorageProfileSnapshotController bool = false
 @description('Optional. The support plan for the Managed Cluster.')
 param supportPlan string = 'KubernetesOfficial'
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
 @description('Optional. Specifies whether the OMS agent is enabled.')
 param omsAgentEnabled bool = true
+
+@description('Optional. Specifies whether the OMS agent is using managed identity authentication.')
+param omsAgentUseAADAuth bool = false
 
 @description('Optional. Resource ID of the monitoring log analytics workspace.')
 param monitoringWorkspaceResourceId string?
@@ -342,11 +353,11 @@ param monitoringWorkspaceResourceId string?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -410,6 +421,8 @@ param istioServiceMeshCertificateAuthority istioServiceMeshCertificateAuthorityT
 // =========== //
 // Variables   //
 // =========== //
+
+var enableReferencedModulesTelemetry = false
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -534,7 +547,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 // Main Resources //
 // ============== //
 
-resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-preview' = {
+resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-09-02-preview' = {
   name: name
   location: location
   tags: tags
@@ -573,6 +586,7 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-p
       osDiskSizeGB: profile.?osDiskSizeGB
       osDiskType: profile.?osDiskType
       osType: profile.?osType ?? 'Linux'
+      osSKU: profile.?osSKU
       #disable-next-line use-resource-id-functions // Not possible to reference as nested
       podSubnetID: profile.?podSubnetResourceId
       #disable-next-line use-resource-id-functions // Not possible to reference as nested
@@ -580,6 +594,11 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-p
       scaleDownMode: profile.?scaleDownMode ?? 'Delete'
       scaleSetEvictionPolicy: profile.?scaleSetEvictionPolicy ?? 'Delete'
       scaleSetPriority: profile.?scaleSetPriority
+      securityProfile: {
+        enableSecureBoot: profile.?enableSecureBoot ?? false
+        enableVTPM: profile.?enableVTPM ?? false
+        sshAccess: skuName == 'Automatic' ? 'Disabled' : 'LocalUser'
+      }
       spotMaxPrice: profile.?spotMaxPrice
       tags: profile.?tags
       type: profile.?type
@@ -622,6 +641,11 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-p
               any(dnsZoneResourceId)
             ]
           : null
+        nginx: !empty(defaultIngressControllerType)
+          ? {
+              defaultIngressControllerType: any(defaultIngressControllerType)
+            }
+          : null
       }
     }
     addonProfiles: {
@@ -643,6 +667,11 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-p
         config: omsAgentEnabled && !empty(monitoringWorkspaceResourceId)
           ? {
               logAnalyticsWorkspaceResourceID: monitoringWorkspaceResourceId!
+              ...(omsAgentUseAADAuth
+                ? {
+                    useAADAuth: 'true'
+                  }
+                : {})
             }
           : null
       }
@@ -893,7 +922,7 @@ module managedCluster_agentPools 'agent-pool/main.bicep' = [
       orchestratorVersion: agentPool.?orchestratorVersion ?? kubernetesVersion
       osDiskSizeGB: agentPool.?osDiskSizeGB
       osDiskType: agentPool.?osDiskType
-      osSku: agentPool.?osSku
+      osSKU: agentPool.?osSKU
       osType: agentPool.?osType
       podSubnetResourceId: agentPool.?podSubnetResourceId
       proximityPlacementGroupResourceId: agentPool.?proximityPlacementGroupResourceId
@@ -911,13 +940,13 @@ module managedCluster_agentPools 'agent-pool/main.bicep' = [
   }
 ]
 
-module managedCluster_extension 'br/public:avm/res/kubernetes-configuration/extension:0.2.0' = if (!empty(fluxExtension)) {
+module managedCluster_extension 'br/public:avm/res/kubernetes-configuration/extension:0.3.5' = if (!empty(fluxExtension)) {
   name: '${uniqueString(deployment().name, location)}-ManagedCluster-FluxExtension'
   params: {
     clusterName: managedCluster.name
     configurationProtectedSettings: fluxExtension.?configurationProtectedSettings
     configurationSettings: fluxExtension.?configurationSettings
-    enableTelemetry: enableTelemetry
+    enableTelemetry: enableReferencedModulesTelemetry
     extensionType: 'microsoft.flux'
     fluxConfigurations: fluxExtension.?configurations
     location: location
@@ -1129,7 +1158,7 @@ type agentPoolType = {
   osDiskType: string?
 
   @description('Optional. The OS SKU of the agent pool.')
-  osSku: string?
+  osSKU: string?
 
   @description('Optional. The OS type of the agent pool.')
   osType: ('Linux' | 'Windows')?
@@ -1148,6 +1177,12 @@ type agentPoolType = {
 
   @description('Optional. The scale set priority of the agent pool.')
   scaleSetPriority: ('Low' | 'Regular' | 'Spot')?
+
+  @description('Optional. Secure Boot is a feature of Trusted Launch which ensures that only signed operating systems and drivers can boot. For more details, see aka.ms/aks/trustedlaunch.')
+  enableSecureBoot: bool?
+
+  @description('Optional. vTPM is a Trusted Launch feature for configuring a dedicated secure vault for keys and measurements held locally on the node. For more details, see aka.ms/aks/trustedlaunch.')
+  enableVTPM: bool?
 
   @description('Optional. The spot max price of the agent pool.')
   spotMaxPrice: int?

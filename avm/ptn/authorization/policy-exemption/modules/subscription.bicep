@@ -1,6 +1,5 @@
 metadata name = 'Policy Exemptions (Subscription scope)'
 metadata description = 'This module deploys a policy exemption at a Subscription scope.'
-metadata owner = 'Azure/module-maintainers'
 
 targetScope = 'subscription'
 

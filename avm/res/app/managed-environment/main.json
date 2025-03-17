@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "2437611645646369754"
+      "version": "0.33.93.31351",
+      "templateHash": "16135611596956127909"
     },
     "name": "App ManagedEnvironments",
-    "description": "This module deploys an App Managed Environment (also known as a Container App Environment).",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an App Managed Environment (also known as a Container App Environment)."
   },
   "definitions": {
     "managedIdentitiesType": {
@@ -310,6 +309,17 @@
         "description": "Optional. Whether or not to encrypt peer traffic."
       }
     },
+    "publicNetworkAccess": {
+      "type": "string",
+      "defaultValue": "Disabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
+      "metadata": {
+        "description": "Optional. Whether to allow or block all public traffic."
+      }
+    },
     "zoneRedundant": {
       "type": "bool",
       "defaultValue": true,
@@ -399,11 +409,11 @@
   "resources": {
     "managedEnvironment::storage": {
       "copy": {
-        "name": "storage",
+        "name": "managedEnvironment::storage",
         "count": "[length(coalesce(parameters('storages'), createArray()))]"
       },
       "type": "Microsoft.App/managedEnvironments/storages",
-      "apiVersion": "2024-02-02-preview",
+      "apiVersion": "2024-10-02-preview",
       "name": "[format('{0}/{1}', parameters('name'), coalesce(parameters('storages'), createArray())[copyIndex()].shareName)]",
       "properties": {
         "nfsAzureFile": "[if(equals(coalesce(parameters('storages'), createArray())[copyIndex()].kind, 'NFS'), createObject('accessMode', coalesce(parameters('storages'), createArray())[copyIndex()].accessMode, 'server', format('{0}.file.{1}', coalesce(parameters('storages'), createArray())[copyIndex()].storageAccountName, environment().suffixes.storage), 'shareName', format('/{0}/{1}', coalesce(parameters('storages'), createArray())[copyIndex()].storageAccountName, coalesce(parameters('storages'), createArray())[copyIndex()].shareName)), null())]",
@@ -444,7 +454,7 @@
     },
     "managedEnvironment": {
       "type": "Microsoft.App/managedEnvironments",
-      "apiVersion": "2024-02-02-preview",
+      "apiVersion": "2024-10-02-preview",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -474,6 +484,7 @@
             "enabled": "[parameters('peerTrafficEncryption')]"
           }
         },
+        "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
         "vnetConfiguration": {
           "internal": "[parameters('internal')]",
           "infrastructureSubnetId": "[if(not(empty(parameters('infrastructureSubnetId'))), parameters('infrastructureSubnetId'), null())]",
@@ -539,7 +550,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('managedEnvironment', '2024-02-02-preview', 'full').location]"
+      "value": "[reference('managedEnvironment', '2024-10-02-preview', 'full').location]"
     },
     "name": {
       "type": "string",
@@ -557,10 +568,11 @@
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",
+      "nullable": true,
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[coalesce(tryGet(tryGet(reference('managedEnvironment', '2024-02-02-preview', 'full'), 'identity'), 'principalId'), '')]"
+      "value": "[tryGet(tryGet(reference('managedEnvironment', '2024-10-02-preview', 'full'), 'identity'), 'principalId')]"
     },
     "defaultDomain": {
       "type": "string",
@@ -575,6 +587,13 @@
         "description": "The IP address of the Managed Environment."
       },
       "value": "[reference('managedEnvironment').staticIp]"
+    },
+    "domainVerificationId": {
+      "type": "string",
+      "metadata": {
+        "description": "The domain verification id for custom domains."
+      },
+      "value": "[reference('managedEnvironment').customDomainConfiguration.customDomainVerificationId]"
     }
   }
 }

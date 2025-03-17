@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "10995240226253882039"
+      "version": "0.32.4.45862",
+      "templateHash": "289840400836213033"
     },
     "name": "Azd AKS",
-    "description": "Creates an Azure Kubernetes Service (AKS) cluster with a system agent pool as well as an additional user agent pool.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case.",
-    "owner": "Azure/module-maintainers"
+    "description": "Creates an Azure Kubernetes Service (AKS) cluster with a system agent pool as well as an additional user agent pool.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case."
   },
   "definitions": {
     "scopeMapsType": {
@@ -44,6 +43,67 @@
         }
       },
       "nullable": true
+    },
+    "aadProfileType": {
+      "type": "object",
+      "properties": {
+        "aadProfileClientAppID": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The client AAD application ID."
+          }
+        },
+        "aadProfileServerAppID": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The server AAD application ID."
+          }
+        },
+        "aadProfileServerAppSecret": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The server AAD application secret."
+          }
+        },
+        "aadProfileManaged": {
+          "type": "bool",
+          "metadata": {
+            "description": "Required. Specifies whether to enable managed AAD integration."
+          }
+        },
+        "aadProfileEnableAzureRBAC": {
+          "type": "bool",
+          "metadata": {
+            "description": "Required. Specifies whether to enable Azure RBAC for Kubernetes authorization."
+          }
+        },
+        "aadProfileAdminGroupObjectIDs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the AAD group object IDs that will have admin role of the cluster."
+          }
+        },
+        "aadProfileTenantId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the tenant ID of the Azure Active Directory used by the AKS cluster for authentication."
+          }
+        }
+      },
+      "nullable": true,
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/container-service/managed-cluster:0.5.2"
+        }
+      }
     },
     "agentPoolType": {
       "type": "object",
@@ -347,7 +407,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/container-service/managed-cluster:0.4.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/container-service/managed-cluster:0.5.2"
         }
       }
     }
@@ -419,7 +479,7 @@
     },
     "nodeResourceGroupName": {
       "type": "string",
-      "defaultValue": "",
+      "defaultValue": "[format('rg-mc-{0}', parameters('name'))]",
       "metadata": {
         "description": "Optional. The name of the resource group for the managed resources of the AKS cluster."
       }
@@ -694,6 +754,20 @@
       "metadata": {
         "description": "Optional. Specifies if the vault is enabled for a template deployment."
       }
+    },
+    "enableAzureRbac": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Enable RBAC using AAD."
+      }
+    },
+    "aadProfile": {
+      "$ref": "#/definitions/aadProfileType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Enable Azure Active Directory integration."
+      }
     }
   },
   "variables": {
@@ -742,7 +816,8 @@
       "upgradeSettings": {
         "maxSurge": "33%"
       }
-    }
+    },
+    "roleAssignments": "[if(or(parameters('enableAzureRbac'), parameters('disableLocalAccounts')), createArray(createObject('name', parameters('aksClusterRoleAssignmentName'), 'principalId', parameters('principalId'), 'principalType', parameters('principalType'), 'roleDefinitionIdOrName', variables('aksClusterAdminRole'))), createArray())]"
   },
   "resources": {
     "avmTelemetry": {
@@ -880,6 +955,9 @@
           "primaryAgentPoolProfiles": {
             "value": "[variables('systemPoolsConfig')]"
           },
+          "aadProfile": {
+            "value": "[parameters('aadProfile')]"
+          },
           "dnsPrefix": {
             "value": "[parameters('dnsPrefix')]"
           },
@@ -890,14 +968,7 @@
             "value": "[parameters('enableTelemetry')]"
           },
           "roleAssignments": {
-            "value": [
-              {
-                "name": "[parameters('aksClusterRoleAssignmentName')]",
-                "principalId": "[parameters('principalId')]",
-                "principalType": "[parameters('principalType')]",
-                "roleDefinitionIdOrName": "[variables('aksClusterAdminRole')]"
-              }
-            ]
+            "value": "[variables('roleAssignments')]"
           }
         },
         "template": {
@@ -907,8 +978,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "9290728353306822069"
+              "version": "0.32.4.45862",
+              "templateHash": "2970915888312217759"
             },
             "name": "Azure Kubernetes Service (AKS) Managed Clusters",
             "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.",
@@ -1493,7 +1564,7 @@
                   "type": "string",
                   "nullable": true,
                   "metadata": {
-                    "description": "Required. The name of the extension."
+                    "description": "Optional. The name of the extension."
                   }
                 },
                 "releaseNamespace": {
@@ -1514,7 +1585,7 @@
                   "type": "string",
                   "nullable": true,
                   "metadata": {
-                    "description": "Required. The release train of the extension."
+                    "description": "Optional. The release train of the extension."
                   }
                 },
                 "configurationProtectedSettings": {
@@ -1607,6 +1678,102 @@
                   }
                 }
               },
+              "nullable": true,
+              "metadata": {
+                "__bicep_export!": true
+              }
+            },
+            "istioServiceMeshCertificateAuthorityType": {
+              "type": "object",
+              "properties": {
+                "keyVaultResourceId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The resource ID of a key vault to reference a Certificate Authority from."
+                  }
+                },
+                "certChainObjectName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The Certificate chain object name in Azure Key Vault."
+                  }
+                },
+                "certObjectName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The Intermediate certificate object name in Azure Key Vault."
+                  }
+                },
+                "keyObjectName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The Intermediate certificate private key object name in Azure Key Vault."
+                  }
+                },
+                "rootCertObjectName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. Root certificate object name in Azure Key Vault."
+                  }
+                }
+              },
+              "nullable": true
+            },
+            "aadProfileType": {
+              "type": "object",
+              "properties": {
+                "aadProfileClientAppID": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The client AAD application ID."
+                  }
+                },
+                "aadProfileServerAppID": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The server AAD application ID."
+                  }
+                },
+                "aadProfileServerAppSecret": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The server AAD application secret."
+                  }
+                },
+                "aadProfileManaged": {
+                  "type": "bool",
+                  "metadata": {
+                    "description": "Required. Specifies whether to enable managed AAD integration."
+                  }
+                },
+                "aadProfileEnableAzureRBAC": {
+                  "type": "bool",
+                  "metadata": {
+                    "description": "Required. Specifies whether to enable Azure RBAC for Kubernetes authorization."
+                  }
+                },
+                "aadProfileAdminGroupObjectIDs": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specifies the AAD group object IDs that will have admin role of the cluster."
+                  }
+                },
+                "aadProfileTenantId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specifies the tenant ID of the Azure Active Directory used by the AKS cluster for authentication."
+                  }
+                }
+              },
+              "nullable": true,
               "metadata": {
                 "__bicep_export!": true
               }
@@ -1677,7 +1844,8 @@
               "nullable": true,
               "allowedValues": [
                 "azure",
-                "calico"
+                "calico",
+                "cilium"
               ],
               "metadata": {
                 "description": "Optional. Specifies the network policy used for building Kubernetes network. - calico or azure."
@@ -1746,6 +1914,17 @@
                 "description": "Optional. Specifies outbound (egress) routing method."
               }
             },
+            "skuName": {
+              "type": "string",
+              "defaultValue": "Base",
+              "allowedValues": [
+                "Base",
+                "Automatic"
+              ],
+              "metadata": {
+                "description": "Optional. Name of a managed cluster SKU."
+              }
+            },
             "skuTier": {
               "type": "string",
               "defaultValue": "Standard",
@@ -1779,56 +1958,18 @@
                 "description": "Optional. Specifies the SSH RSA public key string for the Linux nodes."
               }
             },
+            "aadProfile": {
+              "$ref": "#/definitions/aadProfileType",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Enable Azure Active Directory integration."
+              }
+            },
             "aksServicePrincipalProfile": {
               "type": "object",
               "nullable": true,
               "metadata": {
                 "description": "Conditional. Information about a service principal identity for the cluster to use for manipulating Azure APIs. Required if no managed identities are assigned to the cluster."
-              }
-            },
-            "aadProfileClientAppID": {
-              "type": "string",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. The client AAD application ID."
-              }
-            },
-            "aadProfileServerAppID": {
-              "type": "string",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. The server AAD application ID."
-              }
-            },
-            "aadProfileServerAppSecret": {
-              "type": "string",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. The server AAD application secret."
-              }
-            },
-            "aadProfileTenantId": {
-              "type": "string",
-              "defaultValue": "[subscription().tenantId]",
-              "metadata": {
-                "description": "Optional. Specifies the tenant ID of the Azure Active Directory used by the AKS cluster for authentication."
-              }
-            },
-            "aadProfileAdminGroupObjectIDs": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              },
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. Specifies the AAD group object IDs that will have admin role of the cluster."
-              }
-            },
-            "aadProfileManaged": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Specifies whether to enable managed AAD integration."
               }
             },
             "enableRBAC": {
@@ -1838,13 +1979,6 @@
                 "description": "Optional. Whether to enable Kubernetes Role-Based Access Control."
               }
             },
-            "aadProfileEnableAzureRBAC": {
-              "type": "bool",
-              "defaultValue": "[parameters('enableRBAC')]",
-              "metadata": {
-                "description": "Optional. Specifies whether to enable Azure RBAC for Kubernetes authorization."
-              }
-            },
             "disableLocalAccounts": {
               "type": "bool",
               "defaultValue": true,
@@ -1852,11 +1986,25 @@
                 "description": "Optional. If set to true, getting static credentials will be disabled for this cluster. This must only be used on Managed Clusters that are AAD enabled."
               }
             },
+            "nodeProvisioningProfile": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Node provisioning settings that apply to the whole cluster."
+              }
+            },
             "nodeResourceGroup": {
               "type": "string",
               "defaultValue": "[format('{0}_aks_{1}_nodes', resourceGroup().name, parameters('name'))]",
               "metadata": {
                 "description": "Optional. Name of the resource group containing agent pool nodes."
+              }
+            },
+            "nodeResourceGroupProfile": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The node resource group configuration profile."
               }
             },
             "authorizedIPRanges": {
@@ -2441,6 +2589,40 @@
               "metadata": {
                 "description": "Optional. A comma-separated list of Kubernetes cluster metrics annotations."
               }
+            },
+            "istioServiceMeshEnabled": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Specifies whether the Istio ServiceMesh add-on is enabled or not."
+              }
+            },
+            "istioServiceMeshRevisions": {
+              "type": "array",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The list of revisions of the Istio control plane. When an upgrade is not in progress, this holds one value. When canary upgrade is in progress, this can only hold two consecutive values."
+              }
+            },
+            "istioServiceMeshInternalIngressGatewayEnabled": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Specifies whether the Internal Istio Ingress Gateway is enabled or not."
+              }
+            },
+            "istioServiceMeshExternalIngressGatewayEnabled": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Specifies whether the External Istio Ingress Gateway is enabled or not."
+              }
+            },
+            "istioServiceMeshCertificateAuthority": {
+              "$ref": "#/definitions/istioServiceMeshCertificateAuthorityType",
+              "metadata": {
+                "description": "Optional. The Istio Certificate Authority definition."
+              }
             }
           },
           "variables": {
@@ -2483,16 +2665,13 @@
               "apiVersion": "2023-02-01",
               "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '//'), '/')[2]]",
               "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '////'), '/')[4]]",
-              "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]",
-              "dependsOn": [
-                "cMKKeyVault"
-              ]
+              "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]"
             },
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.containerservice-managedcluster.{0}.{1}', replace('0.4.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.containerservice-managedcluster.{0}.{1}', replace('0.5.2', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -2525,7 +2704,7 @@
               "tags": "[parameters('tags')]",
               "identity": "[variables('identity')]",
               "sku": {
-                "name": "Base",
+                "name": "[parameters('skuName')]",
                 "tier": "[parameters('skuTier')]"
               },
               "properties": {
@@ -2583,6 +2762,8 @@
                 "enableRBAC": "[parameters('enableRBAC')]",
                 "disableLocalAccounts": "[parameters('disableLocalAccounts')]",
                 "nodeResourceGroup": "[parameters('nodeResourceGroup')]",
+                "nodeResourceGroupProfile": "[parameters('nodeResourceGroupProfile')]",
+                "nodeProvisioningProfile": "[parameters('nodeProvisioningProfile')]",
                 "enablePodSecurityPolicy": "[parameters('enablePodSecurityPolicy')]",
                 "workloadAutoScalerProfile": {
                   "keda": {
@@ -2595,8 +2776,8 @@
                 "networkProfile": {
                   "networkDataplane": "[parameters('networkDataplane')]",
                   "networkPlugin": "[parameters('networkPlugin')]",
-                  "networkPluginMode": "[parameters('networkPluginMode')]",
-                  "networkPolicy": "[parameters('networkPolicy')]",
+                  "networkPluginMode": "[if(equals(parameters('networkDataplane'), 'cilium'), 'overlay', parameters('networkPluginMode'))]",
+                  "networkPolicy": "[if(equals(parameters('networkDataplane'), 'cilium'), 'cilium', parameters('networkPolicy'))]",
                   "podCidr": "[parameters('podCidr')]",
                   "serviceCidr": "[parameters('serviceCidr')]",
                   "dnsServiceIP": "[parameters('dnsServiceIP')]",
@@ -2609,15 +2790,7 @@
                   }
                 },
                 "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
-                "aadProfile": {
-                  "clientAppID": "[parameters('aadProfileClientAppID')]",
-                  "serverAppID": "[parameters('aadProfileServerAppID')]",
-                  "serverAppSecret": "[parameters('aadProfileServerAppSecret')]",
-                  "managed": "[parameters('aadProfileManaged')]",
-                  "enableAzureRBAC": "[parameters('aadProfileEnableAzureRBAC')]",
-                  "adminGroupObjectIDs": "[parameters('aadProfileAdminGroupObjectIDs')]",
-                  "tenantID": "[parameters('aadProfileTenantId')]"
-                },
+                "aadProfile": "[if(not(empty(parameters('aadProfile'))), createObject('clientAppID', tryGet(parameters('aadProfile'), 'aadProfileClientAppID'), 'serverAppID', tryGet(parameters('aadProfile'), 'aadProfileServerAppID'), 'serverAppSecret', tryGet(parameters('aadProfile'), 'aadProfileServerAppSecret'), 'managed', tryGet(parameters('aadProfile'), 'aadProfileManaged'), 'enableAzureRBAC', tryGet(parameters('aadProfile'), 'aadProfileEnableAzureRBAC'), 'adminGroupObjectIDs', tryGet(parameters('aadProfile'), 'aadProfileAdminGroupObjectIDs'), 'tenantID', tryGet(parameters('aadProfile'), 'aadProfileTenantId')), null())]",
                 "autoScalerProfile": {
                   "balance-similar-node-groups": "[toLower(string(parameters('autoScalerProfileBalanceSimilarNodeGroups')))]",
                   "expander": "[parameters('autoScalerProfileExpander')]",
@@ -2677,7 +2850,8 @@
                     "enabled": "[parameters('enableStorageProfileSnapshotController')]"
                   }
                 },
-                "supportPlan": "[parameters('supportPlan')]"
+                "supportPlan": "[parameters('supportPlan')]",
+                "serviceMeshProfile": "[if(parameters('istioServiceMeshEnabled'), createObject('istio', createObject('revisions', if(not(empty(parameters('istioServiceMeshRevisions'))), parameters('istioServiceMeshRevisions'), null()), 'components', createObject('ingressGateways', createArray(createObject('enabled', parameters('istioServiceMeshInternalIngressGatewayEnabled'), 'mode', 'Internal'), createObject('enabled', parameters('istioServiceMeshExternalIngressGatewayEnabled'), 'mode', 'External'))), 'certificateAuthority', if(not(empty(parameters('istioServiceMeshCertificateAuthority'))), createObject('plugin', createObject('certChainObjectName', tryGet(parameters('istioServiceMeshCertificateAuthority'), 'certChainObjectName'), 'certObjectName', tryGet(parameters('istioServiceMeshCertificateAuthority'), 'certObjectName'), 'keyObjectName', tryGet(parameters('istioServiceMeshCertificateAuthority'), 'keyObjectName'), 'keyVaultId', tryGet(parameters('istioServiceMeshCertificateAuthority'), 'keyVaultResourceId'), 'rootCertObjectName', tryGet(parameters('istioServiceMeshCertificateAuthority'), 'rootCertObjectName'))), null())), 'mode', 'Istio'), null())]"
               }
             },
             "managedCluster_lock": {
@@ -2776,7 +2950,6 @@
                 "principalType": "ServicePrincipal"
               },
               "dependsOn": [
-                "dnsZone",
                 "managedCluster"
               ]
             },
@@ -2810,8 +2983,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.30.23.60470",
-                      "templateHash": "2505380725266419010"
+                      "version": "0.32.4.45862",
+                      "templateHash": "14523573481456452623"
                     },
                     "name": "Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations",
                     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Maintenance Configurations.",
@@ -3007,8 +3180,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.30.23.60470",
-                      "templateHash": "13856766172443517827"
+                      "version": "0.32.4.45862",
+                      "templateHash": "8195372149835761348"
                     },
                     "name": "Azure Kubernetes Service (AKS) Managed Cluster Agent Pools",
                     "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool.",
@@ -3357,10 +3530,7 @@
                         "vmSize": "[parameters('vmSize')]",
                         "vnetSubnetID": "[parameters('vnetSubnetResourceId')]",
                         "workloadRuntime": "[parameters('workloadRuntime')]"
-                      },
-                      "dependsOn": [
-                        "managedCluster"
-                      ]
+                      }
                     }
                   },
                   "outputs": {
@@ -3425,7 +3595,7 @@
                     "value": "[parameters('location')]"
                   },
                   "name": {
-                    "value": "flux"
+                    "value": "[coalesce(tryGet(parameters('fluxExtension'), 'name'), 'flux')]"
                   },
                   "releaseNamespace": {
                     "value": "[coalesce(tryGet(parameters('fluxExtension'), 'releaseNamespace'), 'flux-system')]"

@@ -12,7 +12,7 @@ This module deploys a Arc Machine Extension. This module should be used as a sta
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.HybridCompute/machines/extensions` | [2024-03-31-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.HybridCompute/2024-03-31-preview/machines/extensions) |
+| `Microsoft.HybridCompute/machines/extensions` | [2024-07-10](https://learn.microsoft.com/en-us/azure/templates/Microsoft.HybridCompute/2024-07-10/machines/extensions) |
 
 ## Parameters
 

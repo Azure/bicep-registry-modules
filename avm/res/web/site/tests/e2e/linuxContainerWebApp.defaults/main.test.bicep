@@ -51,7 +51,6 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      location: resourceLocation
       kind: 'app,linux,container'
       serverFarmResourceId: nestedDependencies.outputs.serverFarmResourceId
       siteConfig: {
@@ -66,9 +65,5 @@ module testDeployment '../../../main.bicep' = [
         linuxFxVersion: 'DOCKER|mcr.microsoft.com/appsvc/staticsite:latest'
       }
     }
-
-    dependsOn: [
-      nestedDependencies
-    ]
   }
 ]

@@ -1,6 +1,5 @@
 metadata name = 'Policy Assignments (Management Group scope)'
 metadata description = 'This module deploys a Policy Assignment at a Management Group scope.'
-metadata owner = 'Azure/module-maintainers'
 
 targetScope = 'managementGroup'
 

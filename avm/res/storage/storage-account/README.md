@@ -384,10 +384,10 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     // Non-required parameters
     location: '<location>'
     secretsExportConfiguration: {
-      accessKey1: 'custom-key1-name'
-      accessKey2: 'custom-key2-name'
-      connectionString1: 'custom-connectionString1-name'
-      connectionString2: 'custom-connectionString2-name'
+      accessKey1Name: 'custom-key1-name'
+      accessKey2Name: 'custom-key2-name'
+      connectionString1Name: 'custom-connectionString1-name'
+      connectionString2Name: 'custom-connectionString2-name'
       keyVaultResourceId: '<keyVaultResourceId>'
     }
   }
@@ -416,10 +416,10 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     },
     "secretsExportConfiguration": {
       "value": {
-        "accessKey1": "custom-key1-name",
-        "accessKey2": "custom-key2-name",
-        "connectionString1": "custom-connectionString1-name",
-        "connectionString2": "custom-connectionString2-name",
+        "accessKey1Name": "custom-key1-name",
+        "accessKey2Name": "custom-key2-name",
+        "connectionString1Name": "custom-connectionString1-name",
+        "connectionString2Name": "custom-connectionString2-name",
         "keyVaultResourceId": "<keyVaultResourceId>"
       }
     }
@@ -442,10 +442,10 @@ param name = 'kvref'
 // Non-required parameters
 param location = '<location>'
 param secretsExportConfiguration = {
-  accessKey1: 'custom-key1-name'
-  accessKey2: 'custom-key2-name'
-  connectionString1: 'custom-connectionString1-name'
-  connectionString2: 'custom-connectionString2-name'
+  accessKey1Name: 'custom-key1-name'
+  accessKey2Name: 'custom-key2-name'
+  connectionString1Name: 'custom-connectionString1-name'
+  connectionString2Name: 'custom-connectionString2-name'
   keyVaultResourceId: '<keyVaultResourceId>'
 }
 ```
@@ -507,6 +507,29 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
           publicAccess: 'None'
         }
       ]
+      corsRules: [
+        {
+          allowedHeaders: [
+            'x-ms-meta-data'
+            'x-ms-meta-source-path'
+            'x-ms-meta-target-path'
+          ]
+          allowedMethods: [
+            'GET'
+            'PUT'
+          ]
+          allowedOrigins: [
+            'http://*.contoso.com'
+            'http://www.fabrikam.com'
+          ]
+          exposedHeaders: [
+            'x-ms-meta-data'
+            'x-ms-meta-source-path'
+            'x-ms-meta-target-path'
+          ]
+          maxAgeInSeconds: 200
+        }
+      ]
       deleteRetentionPolicyDays: 9
       deleteRetentionPolicyEnabled: true
       diagnosticSettings: [
@@ -543,6 +566,29 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     enableNfsV3: true
     enableSftp: true
     fileServices: {
+      corsRules: [
+        {
+          allowedHeaders: [
+            'x-ms-meta-data'
+            'x-ms-meta-source-path'
+            'x-ms-meta-target-path'
+          ]
+          allowedMethods: [
+            'GET'
+            'PUT'
+          ]
+          allowedOrigins: [
+            'http://*.contoso.com'
+            'http://www.fabrikam.com'
+          ]
+          exposedHeaders: [
+            'x-ms-meta-data'
+            'x-ms-meta-source-path'
+            'x-ms-meta-target-path'
+          ]
+          maxAgeInSeconds: 200
+        }
+      ]
       diagnosticSettings: [
         {
           eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -757,6 +803,29 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
       }
     ]
     queueServices: {
+      corsRules: [
+        {
+          allowedHeaders: [
+            'x-ms-meta-data'
+            'x-ms-meta-source-path'
+            'x-ms-meta-target-path'
+          ]
+          allowedMethods: [
+            'GET'
+            'PUT'
+          ]
+          allowedOrigins: [
+            'http://*.contoso.com'
+            'http://www.fabrikam.com'
+          ]
+          exposedHeaders: [
+            'x-ms-meta-data'
+            'x-ms-meta-source-path'
+            'x-ms-meta-target-path'
+          ]
+          maxAgeInSeconds: 200
+        }
+      ]
       diagnosticSettings: [
         {
           eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -825,6 +894,29 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     sasExpirationPeriod: '180.00:00:00'
     skuName: 'Standard_LRS'
     tableServices: {
+      corsRules: [
+        {
+          allowedHeaders: [
+            'x-ms-meta-data'
+            'x-ms-meta-source-path'
+            'x-ms-meta-target-path'
+          ]
+          allowedMethods: [
+            'GET'
+            'PUT'
+          ]
+          allowedOrigins: [
+            'http://*.contoso.com'
+            'http://www.fabrikam.com'
+          ]
+          exposedHeaders: [
+            'x-ms-meta-data'
+            'x-ms-meta-source-path'
+            'x-ms-meta-target-path'
+          ]
+          maxAgeInSeconds: 200
+        }
+      ]
       diagnosticSettings: [
         {
           eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -949,6 +1041,29 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
             "publicAccess": "None"
           }
         ],
+        "corsRules": [
+          {
+            "allowedHeaders": [
+              "x-ms-meta-data",
+              "x-ms-meta-source-path",
+              "x-ms-meta-target-path"
+            ],
+            "allowedMethods": [
+              "GET",
+              "PUT"
+            ],
+            "allowedOrigins": [
+              "http://*.contoso.com",
+              "http://www.fabrikam.com"
+            ],
+            "exposedHeaders": [
+              "x-ms-meta-data",
+              "x-ms-meta-source-path",
+              "x-ms-meta-target-path"
+            ],
+            "maxAgeInSeconds": 200
+          }
+        ],
         "deleteRetentionPolicyDays": 9,
         "deleteRetentionPolicyEnabled": true,
         "diagnosticSettings": [
@@ -995,6 +1110,29 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     },
     "fileServices": {
       "value": {
+        "corsRules": [
+          {
+            "allowedHeaders": [
+              "x-ms-meta-data",
+              "x-ms-meta-source-path",
+              "x-ms-meta-target-path"
+            ],
+            "allowedMethods": [
+              "GET",
+              "PUT"
+            ],
+            "allowedOrigins": [
+              "http://*.contoso.com",
+              "http://www.fabrikam.com"
+            ],
+            "exposedHeaders": [
+              "x-ms-meta-data",
+              "x-ms-meta-source-path",
+              "x-ms-meta-target-path"
+            ],
+            "maxAgeInSeconds": 200
+          }
+        ],
         "diagnosticSettings": [
           {
             "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
@@ -1227,6 +1365,29 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     },
     "queueServices": {
       "value": {
+        "corsRules": [
+          {
+            "allowedHeaders": [
+              "x-ms-meta-data",
+              "x-ms-meta-source-path",
+              "x-ms-meta-target-path"
+            ],
+            "allowedMethods": [
+              "GET",
+              "PUT"
+            ],
+            "allowedOrigins": [
+              "http://*.contoso.com",
+              "http://www.fabrikam.com"
+            ],
+            "exposedHeaders": [
+              "x-ms-meta-data",
+              "x-ms-meta-source-path",
+              "x-ms-meta-target-path"
+            ],
+            "maxAgeInSeconds": 200
+          }
+        ],
         "diagnosticSettings": [
           {
             "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
@@ -1305,6 +1466,29 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     },
     "tableServices": {
       "value": {
+        "corsRules": [
+          {
+            "allowedHeaders": [
+              "x-ms-meta-data",
+              "x-ms-meta-source-path",
+              "x-ms-meta-target-path"
+            ],
+            "allowedMethods": [
+              "GET",
+              "PUT"
+            ],
+            "allowedOrigins": [
+              "http://*.contoso.com",
+              "http://www.fabrikam.com"
+            ],
+            "exposedHeaders": [
+              "x-ms-meta-data",
+              "x-ms-meta-source-path",
+              "x-ms-meta-target-path"
+            ],
+            "maxAgeInSeconds": 200
+          }
+        ],
         "diagnosticSettings": [
           {
             "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
@@ -1425,6 +1609,29 @@ param blobServices = {
       publicAccess: 'None'
     }
   ]
+  corsRules: [
+    {
+      allowedHeaders: [
+        'x-ms-meta-data'
+        'x-ms-meta-source-path'
+        'x-ms-meta-target-path'
+      ]
+      allowedMethods: [
+        'GET'
+        'PUT'
+      ]
+      allowedOrigins: [
+        'http://*.contoso.com'
+        'http://www.fabrikam.com'
+      ]
+      exposedHeaders: [
+        'x-ms-meta-data'
+        'x-ms-meta-source-path'
+        'x-ms-meta-target-path'
+      ]
+      maxAgeInSeconds: 200
+    }
+  ]
   deleteRetentionPolicyDays: 9
   deleteRetentionPolicyEnabled: true
   diagnosticSettings: [
@@ -1461,6 +1668,29 @@ param enableHierarchicalNamespace = true
 enableNfsV3: true
 param enableSftp = true
 param fileServices = {
+  corsRules: [
+    {
+      allowedHeaders: [
+        'x-ms-meta-data'
+        'x-ms-meta-source-path'
+        'x-ms-meta-target-path'
+      ]
+      allowedMethods: [
+        'GET'
+        'PUT'
+      ]
+      allowedOrigins: [
+        'http://*.contoso.com'
+        'http://www.fabrikam.com'
+      ]
+      exposedHeaders: [
+        'x-ms-meta-data'
+        'x-ms-meta-source-path'
+        'x-ms-meta-target-path'
+      ]
+      maxAgeInSeconds: 200
+    }
+  ]
   diagnosticSettings: [
     {
       eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -1675,6 +1905,29 @@ param privateEndpoints = [
   }
 ]
 param queueServices = {
+  corsRules: [
+    {
+      allowedHeaders: [
+        'x-ms-meta-data'
+        'x-ms-meta-source-path'
+        'x-ms-meta-target-path'
+      ]
+      allowedMethods: [
+        'GET'
+        'PUT'
+      ]
+      allowedOrigins: [
+        'http://*.contoso.com'
+        'http://www.fabrikam.com'
+      ]
+      exposedHeaders: [
+        'x-ms-meta-data'
+        'x-ms-meta-source-path'
+        'x-ms-meta-target-path'
+      ]
+      maxAgeInSeconds: 200
+    }
+  ]
   diagnosticSettings: [
     {
       eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -1743,6 +1996,29 @@ param roleAssignments = [
 param sasExpirationPeriod = '180.00:00:00'
 param skuName = 'Standard_LRS'
 param tableServices = {
+  corsRules: [
+    {
+      allowedHeaders: [
+        'x-ms-meta-data'
+        'x-ms-meta-source-path'
+        'x-ms-meta-target-path'
+      ]
+      allowedMethods: [
+        'GET'
+        'PUT'
+      ]
+      allowedOrigins: [
+        'http://*.contoso.com'
+        'http://www.fabrikam.com'
+      ]
+      exposedHeaders: [
+        'x-ms-meta-data'
+        'x-ms-meta-source-path'
+        'x-ms-meta-target-path'
+      ]
+      maxAgeInSeconds: 200
+    }
+  ]
   diagnosticSettings: [
     {
       eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -3942,7 +4218,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 | [`name`](#parameter-privateendpointsname) | string | The name of the private endpoint. |
 | [`privateDnsZoneGroup`](#parameter-privateendpointsprivatednszonegroup) | object | The private DNS zone group to configure for the private endpoint. |
 | [`privateLinkServiceConnectionName`](#parameter-privateendpointsprivatelinkserviceconnectionname) | string | The name of the private link connection to create. |
-| [`resourceGroupName`](#parameter-privateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different resource group than the main resource. |
+| [`resourceGroupResourceId`](#parameter-privateendpointsresourcegroupresourceid) | string | The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-privateendpointstags) | object | Tags to be applied on all resources/resource groups in this deployment. |
 
@@ -4201,9 +4477,9 @@ The name of the private link connection to create.
 - Required: No
 - Type: string
 
-### Parameter: `privateEndpoints.resourceGroupName`
+### Parameter: `privateEndpoints.resourceGroupResourceId`
 
-Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.
+The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used.
 
 - Required: No
 - Type: string
@@ -4502,10 +4778,10 @@ Key vault reference and secret settings for the module's secrets export.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`accessKey1`](#parameter-secretsexportconfigurationaccesskey1) | string | The accessKey1 secret name to create. |
-| [`accessKey2`](#parameter-secretsexportconfigurationaccesskey2) | string | The accessKey2 secret name to create. |
-| [`connectionString1`](#parameter-secretsexportconfigurationconnectionstring1) | string | The connectionString1 secret name to create. |
-| [`connectionString2`](#parameter-secretsexportconfigurationconnectionstring2) | string | The connectionString2 secret name to create. |
+| [`accessKey1Name`](#parameter-secretsexportconfigurationaccesskey1name) | string | The accessKey1 secret name to create. |
+| [`accessKey2Name`](#parameter-secretsexportconfigurationaccesskey2name) | string | The accessKey2 secret name to create. |
+| [`connectionString1Name`](#parameter-secretsexportconfigurationconnectionstring1name) | string | The connectionString1 secret name to create. |
+| [`connectionString2Name`](#parameter-secretsexportconfigurationconnectionstring2name) | string | The connectionString2 secret name to create. |
 
 ### Parameter: `secretsExportConfiguration.keyVaultResourceId`
 
@@ -4514,28 +4790,28 @@ The key vault name where to store the keys and connection strings generated by t
 - Required: Yes
 - Type: string
 
-### Parameter: `secretsExportConfiguration.accessKey1`
+### Parameter: `secretsExportConfiguration.accessKey1Name`
 
 The accessKey1 secret name to create.
 
 - Required: No
 - Type: string
 
-### Parameter: `secretsExportConfiguration.accessKey2`
+### Parameter: `secretsExportConfiguration.accessKey2Name`
 
 The accessKey2 secret name to create.
 
 - Required: No
 - Type: string
 
-### Parameter: `secretsExportConfiguration.connectionString1`
+### Parameter: `secretsExportConfiguration.connectionString1Name`
 
 The connectionString1 secret name to create.
 
 - Required: No
 - Type: string
 
-### Parameter: `secretsExportConfiguration.connectionString2`
+### Parameter: `secretsExportConfiguration.connectionString2Name`
 
 The connectionString2 secret name to create.
 
@@ -4606,9 +4882,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.9.0` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.10.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Notes
 

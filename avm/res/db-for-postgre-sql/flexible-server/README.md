@@ -1345,6 +1345,7 @@ param tags = {
 | [`databases`](#parameter-databases) | array | The databases to create in the server. |
 | [`delegatedSubnetResourceId`](#parameter-delegatedsubnetresourceid) | string | Delegated subnet arm resource ID. Used when the desired connectivity mode is 'Private Access' - virtual network integration. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`enableAdvancedThreatProtection`](#parameter-enableadvancedthreatprotection) | bool | Enable/Disable advanced threat protection. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`firewallRules`](#parameter-firewallrules) | array | The firewall rules to create in the PostgreSQL flexible server. |
 | [`geoRedundantBackup`](#parameter-georedundantbackup) | string | A value indicating whether Geo-Redundant backup is enabled on the server. Should be disabled if 'cMKKeyName' is not empty. |
@@ -1354,7 +1355,7 @@ param tags = {
 | [`maintenanceWindow`](#parameter-maintenancewindow) | object | Properties for the maintenence window. If provided, 'customWindow' property must exist and set to 'Enabled'. |
 | [`privateDnsZoneArmResourceId`](#parameter-privatednszonearmresourceid) | string | Private dns zone arm resource ID. Used when the desired connectivity mode is 'Private Access' and required when 'delegatedSubnetResourceId' is used. The Private DNS Zone must be linked to the Virtual Network referenced in 'delegatedSubnetResourceId'. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. Used when the desired connectivity mode is 'Public Access' and 'delegatedSubnetResourceId' is NOT used. |
-| [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Determines whether or not public network access is enabled or not. |
+| [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Determines whether or not public network access is enabled or disabled. |
 | [`replica`](#parameter-replica) | object | The replication settings for the server. Can only be set on existing flexible servers. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`serverThreatProtection`](#parameter-serverthreatprotection) | string | Specifies the state of the Threat Protection, whether it is enabled or disabled or a state has not been applied yet on the specific server. |
@@ -1777,6 +1778,16 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 - MinValue: 7
 - MaxValue: 35
 
+### Parameter: `enableAdvancedThreatProtection`
+
+Enable/Disable advanced threat protection.
+
+- Required: No
+- Type: bool
+- Default: `True`
+- MinValue: 7
+- MaxValue: 35
+
 ### Parameter: `enableTelemetry`
 
 Enable/Disable usage telemetry for module.
@@ -1943,7 +1954,7 @@ Configuration details for private endpoints. Used when the desired connectivity 
 | [`name`](#parameter-privateendpointsname) | string | The name of the Private Endpoint. |
 | [`privateDnsZoneGroup`](#parameter-privateendpointsprivatednszonegroup) | object | The private DNS Zone Group to configure for the Private Endpoint. |
 | [`privateLinkServiceConnectionName`](#parameter-privateendpointsprivatelinkserviceconnectionname) | string | The name of the private link connection to create. |
-| [`resourceGroupName`](#parameter-privateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different Resource Group than the main resource. |
+| [`resourceGroupResourceId`](#parameter-privateendpointsresourcegroupresourceid) | string | The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
 | [`service`](#parameter-privateendpointsservice) | string | The subresource to deploy the Private Endpoint for. For example "vault" for a Key Vault Private Endpoint. |
 | [`tags`](#parameter-privateendpointstags) | object | Tags to be applied on all resources/Resource Groups in this deployment. |
@@ -2248,9 +2259,9 @@ The name of the private link connection to create.
 - MinValue: 7
 - MaxValue: 35
 
-### Parameter: `privateEndpoints.resourceGroupName`
+### Parameter: `privateEndpoints.resourceGroupResourceId`
 
-Specify if you want to deploy the Private Endpoint into a different Resource Group than the main resource.
+The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used.
 
 - Required: No
 - Type: string
@@ -2403,7 +2414,7 @@ Tags to be applied on all resources/Resource Groups in this deployment.
 
 ### Parameter: `publicNetworkAccess`
 
-Determines whether or not public network access is enabled or not.
+Determines whether or not public network access is enabled or disabled.
 
 - Required: No
 - Type: string
@@ -2694,6 +2705,7 @@ PostgreSQL Server version.
 | `fqdn` | string | The FQDN of the PostgreSQL Flexible server. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the deployed PostgreSQL Flexible server. |
+| `privateEndpoints` | array | The private endpoints of the PostgreSQL Flexible server. |
 | `resourceGroupName` | string | The resource group of the deployed PostgreSQL Flexible server. |
 | `resourceId` | string | The resource ID of the deployed PostgreSQL Flexible server. |
 
@@ -2703,8 +2715,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.8.0` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.10.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

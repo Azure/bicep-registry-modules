@@ -1,6 +1,5 @@
 metadata name = 'Site Web Config'
 metadata description = 'This module deploys web settings configuration available under sites/config name: web.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the parent site resource.')
 param appName string

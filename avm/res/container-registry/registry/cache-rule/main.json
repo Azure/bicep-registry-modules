@@ -1,26 +1,26 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "14613404195108533908"
+      "version": "0.33.93.31351",
+      "templateHash": "3783697279882479947"
     },
     "name": "Container Registries Cache",
-    "description": "Cache for Azure Container Registry (Preview) feature allows users to cache container images in a private container registry. Cache for ACR, is a preview feature available in Basic, Standard, and Premium service tiers ([ref](https://learn.microsoft.com/en-us/azure/container-registry/tutorial-registry-cache)).",
-    "owner": "Azure/module-maintainers"
+    "description": "Cache for Azure Container Registry (Preview) feature allows users to cache container images in a private container registry. Cache for ACR, is a preview feature available in Basic, Standard, and Premium service tiers ([ref](https://learn.microsoft.com/en-us/azure/container-registry/tutorial-registry-cache))."
   },
   "parameters": {
     "registryName": {
       "type": "string",
       "metadata": {
-        "description": "Required. The name of the parent registry. Required if the template is used in a standalone deployment."
+        "description": "Conditional. The name of the parent registry. Required if the template is used in a standalone deployment."
       }
     },
     "name": {
       "type": "string",
-      "defaultValue": "[replace(replace(parameters('sourceRepository'), '/', '-'), '.', '-')]",
+      "defaultValue": "[replace(replace(replace(parameters('sourceRepository'), '/', '-'), '.', '-'), '*', '')]",
       "metadata": {
         "description": "Optional. The name of the cache rule. Will be derived from the source repository name if not defined."
       }
@@ -40,13 +40,20 @@
     },
     "credentialSetResourceId": {
       "type": "string",
+      "nullable": true,
       "metadata": {
-        "description": "Required. The resource ID of the credential store which is associated with the cache rule."
+        "description": "Optional. The resource ID of the credential store which is associated with the cache rule."
       }
     }
   },
-  "resources": [
-    {
+  "resources": {
+    "registry": {
+      "existing": true,
+      "type": "Microsoft.ContainerRegistry/registries",
+      "apiVersion": "2023-06-01-preview",
+      "name": "[parameters('registryName')]"
+    },
+    "cacheRule": {
       "type": "Microsoft.ContainerRegistry/registries/cacheRules",
       "apiVersion": "2023-06-01-preview",
       "name": "[format('{0}/{1}', parameters('registryName'), parameters('name'))]",
@@ -56,7 +63,7 @@
         "credentialSetResourceId": "[parameters('credentialSetResourceId')]"
       }
     }
-  ],
+  },
   "outputs": {
     "name": {
       "type": "string",

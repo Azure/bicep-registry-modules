@@ -1,6 +1,5 @@
 metadata name = 'Web Tests'
 metadata description = 'This module deploys a Web Test.'
-metadata owner = 'Azure/module-maintainers'
 
 @sys.description('Required. Name of the webtest.')
 param name string
@@ -71,11 +70,13 @@ param validationRules object = {}
 @sys.description('Optional. An XML configuration specification for a WebTest.')
 param configuration object?
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @sys.description('Optional. The lock settings of the service.')
-param lock lockType
+param lock lockType?
 
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @sys.description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+param roleAssignments roleAssignmentType[]?
 
 @sys.description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -186,41 +187,3 @@ output resourceGroupName string = resourceGroup().name
 
 @sys.description('The location the resource was deployed into.')
 output location string = webtest.location
-
-// =============== //
-//   Definitions   //
-// =============== //
-
-type lockType = {
-  @sys.description('Optional. Specify the name of lock.')
-  name: string?
-
-  @sys.description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?
-
-type roleAssignmentType = {
-  @sys.description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
-  name: string?
-
-  @sys.description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
-
-  @sys.description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
-
-  @sys.description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
-
-  @sys.description('Optional. The description of the role assignment.')
-  description: string?
-
-  @sys.description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
-
-  @sys.description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
-
-  @sys.description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?

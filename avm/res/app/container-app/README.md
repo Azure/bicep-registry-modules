@@ -8,13 +8,14 @@ This module deploys a Container App.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.App/containerApps` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-03-01/containerApps) |
+| `Microsoft.App/containerApps` | [2024-10-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-10-02-preview/containerApps) |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 
@@ -58,8 +59,6 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     ]
     environmentResourceId: '<environmentResourceId>'
     name: 'acamin001'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -94,10 +93,6 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     },
     "name": {
       "value": "acamin001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -126,8 +121,6 @@ param containers = [
 ]
 param environmentResourceId = '<environmentResourceId>'
 param name = 'acamin001'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -161,7 +154,6 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     name: 'acapriv001'
     // Non-required parameters
     disableIngress: true
-    location: '<location>'
   }
 }
 ```
@@ -200,9 +192,6 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     // Non-required parameters
     "disableIngress": {
       "value": true
-    },
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -233,7 +222,6 @@ param environmentResourceId = '<environmentResourceId>'
 param name = 'acapriv001'
 // Non-required parameters
 param disableIngress = true
-param location = '<location>'
 ```
 
 </details>
@@ -322,19 +310,35 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
-    secrets: {
-      secureList: [
-        {
-          name: 'containerappstoredsecret'
-          value: '<value>'
-        }
-        {
-          identity: '<identity>'
-          keyVaultUrl: '<keyVaultUrl>'
-          name: 'keyvaultstoredsecret'
-        }
-      ]
+    runtime: {
+      java: {
+        enableJavaAgent: true
+        enableMetrics: false
+        loggerSettings: [
+          {
+            level: 'info'
+            logger: 'test'
+          }
+        ]
+      }
     }
+    scaleSettings: {
+      cooldownPeriod: 500
+      maxReplicas: 11
+      minReplicas: 4
+      pollingInterval: 45
+    }
+    secrets: [
+      {
+        name: 'containerappstoredsecret'
+        value: '<value>'
+      }
+      {
+        identity: '<identity>'
+        keyVaultUrl: '<keyVaultUrl>'
+        name: 'keyvaultstoredsecret'
+      }
+    ]
     tags: {
       Env: 'test'
       'hidden-title': 'This is visible in the resource name'
@@ -439,20 +443,40 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
         }
       ]
     },
-    "secrets": {
+    "runtime": {
       "value": {
-        "secureList": [
-          {
-            "name": "containerappstoredsecret",
-            "value": "<value>"
-          },
-          {
-            "identity": "<identity>",
-            "keyVaultUrl": "<keyVaultUrl>",
-            "name": "keyvaultstoredsecret"
-          }
-        ]
+        "java": {
+          "enableJavaAgent": true,
+          "enableMetrics": false,
+          "loggerSettings": [
+            {
+              "level": "info",
+              "logger": "test"
+            }
+          ]
+        }
       }
+    },
+    "scaleSettings": {
+      "value": {
+        "cooldownPeriod": 500,
+        "maxReplicas": 11,
+        "minReplicas": 4,
+        "pollingInterval": 45
+      }
+    },
+    "secrets": {
+      "value": [
+        {
+          "name": "containerappstoredsecret",
+          "value": "<value>"
+        },
+        {
+          "identity": "<identity>",
+          "keyVaultUrl": "<keyVaultUrl>",
+          "name": "keyvaultstoredsecret"
+        }
+      ]
     },
     "tags": {
       "value": {
@@ -544,19 +568,35 @@ param roleAssignments = [
     roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
   }
 ]
-param secrets = {
-  secureList: [
-    {
-      name: 'containerappstoredsecret'
-      value: '<value>'
-    }
-    {
-      identity: '<identity>'
-      keyVaultUrl: '<keyVaultUrl>'
-      name: 'keyvaultstoredsecret'
-    }
-  ]
+param runtime = {
+  java: {
+    enableJavaAgent: true
+    enableMetrics: false
+    loggerSettings: [
+      {
+        level: 'info'
+        logger: 'test'
+      }
+    ]
+  }
 }
+param scaleSettings = {
+  cooldownPeriod: 500
+  maxReplicas: 11
+  minReplicas: 4
+  pollingInterval: 45
+}
+param secrets = [
+  {
+    name: 'containerappstoredsecret'
+    value: '<value>'
+  }
+  {
+    identity: '<identity>'
+    keyVaultUrl: '<keyVaultUrl>'
+    name: 'keyvaultstoredsecret'
+  }
+]
 param tags = {
   Env: 'test'
   'hidden-title': 'This is visible in the resource name'
@@ -604,7 +644,6 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     ingressExternal: false
     ingressTargetPort: 80
     ingressTransport: 'tcp'
-    location: '<location>'
   }
 }
 ```
@@ -661,9 +700,6 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     },
     "ingressTransport": {
       "value": "tcp"
-    },
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -704,7 +740,6 @@ param ingressAllowInsecure = false
 param ingressExternal = false
 param ingressTargetPort = 80
 param ingressTransport = 'tcp'
-param location = '<location>'
 ```
 
 </details>
@@ -756,11 +791,6 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     // Non-required parameters
     ingressAllowInsecure: false
     ingressExternal: false
-    location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     managedIdentities: {
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
@@ -829,15 +859,6 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     "ingressExternal": {
       "value": false
     },
-    "location": {
-      "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
     "managedIdentities": {
       "value": {
         "userAssignedResourceIds": [
@@ -898,11 +919,6 @@ param name = 'acawaf001'
 // Non-required parameters
 param ingressAllowInsecure = false
 param ingressExternal = false
-param location = '<location>'
-param lock = {
-  kind: 'CanNotDelete'
-  name: 'myCustomLockName'
-}
 param managedIdentities = {
   userAssignedResourceIds: [
     '<managedIdentityResourceId>'
@@ -954,10 +970,9 @@ param tags = {
 | [`registries`](#parameter-registries) | array | Collection of private container registry credentials for containers used by the Container app. |
 | [`revisionSuffix`](#parameter-revisionsuffix) | string | User friendly suffix that is appended to the revision name. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`scaleMaxReplicas`](#parameter-scalemaxreplicas) | int | Maximum number of container replicas. Defaults to 10 if not set. |
-| [`scaleMinReplicas`](#parameter-scaleminreplicas) | int | Minimum number of container replicas. Defaults to 3 if not set. |
-| [`scaleRules`](#parameter-scalerules) | array | Scaling rules. |
-| [`secrets`](#parameter-secrets) | secureObject | The secrets of the Container App. |
+| [`runtime`](#parameter-runtime) | object | Runtime configuration for the Container App. |
+| [`scaleSettings`](#parameter-scalesettings) | object | The scaling settings of the service. |
+| [`secrets`](#parameter-secrets) | array | The secrets of the Container App. |
 | [`service`](#parameter-service) | object | Dev ContainerApp service type. |
 | [`serviceBinds`](#parameter-servicebinds) | array | List of container app services bound to the app. |
 | [`stickySessionsAffinity`](#parameter-stickysessionsaffinity) | string | Bool indicating if the Container App should enable session affinity. |
@@ -1086,7 +1101,7 @@ List of probes for the container.
 | [`initialDelaySeconds`](#parameter-containersprobesinitialdelayseconds) | int | Number of seconds after the container has started before liveness probes are initiated. |
 | [`periodSeconds`](#parameter-containersprobesperiodseconds) | int | How often (in seconds) to perform the probe. Default to 10 seconds. |
 | [`successThreshold`](#parameter-containersprobessuccessthreshold) | int | Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness and startup. |
-| [`tcpSocket`](#parameter-containersprobestcpsocket) | object | TCPSocket specifies an action involving a TCP port. TCP hooks not yet supported. |
+| [`tcpSocket`](#parameter-containersprobestcpsocket) | object | The TCP socket specifies an action involving a TCP port. TCP hooks not yet supported. |
 | [`terminationGracePeriodSeconds`](#parameter-containersprobesterminationgraceperiodseconds) | int | Optional duration in seconds the pod needs to terminate gracefully upon probe failure. The grace period is the duration in seconds after the processes running in the pod are sent a termination signal and the time when the processes are forcibly halted with a kill signal. Set this value longer than the expected cleanup time for your process. If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this value overrides the value provided by the pod spec. Value must be non-negative integer. The value zero indicates stop immediately via the kill signal (no opportunity to shut down). This is an alpha field and requires enabling ProbeTerminationGracePeriod feature gate. Maximum value is 3600 seconds (1 hour). |
 | [`timeoutSeconds`](#parameter-containersprobestimeoutseconds) | int | Number of seconds after which the probe times out. Defaults to 1 second. |
 | [`type`](#parameter-containersprobestype) | string | The type of probe. |
@@ -1230,7 +1245,7 @@ Minimum consecutive successes for the probe to be considered successful after ha
 
 ### Parameter: `containers.probes.tcpSocket`
 
-TCPSocket specifies an action involving a TCP port. TCP hooks not yet supported.
+The TCP socket specifies an action involving a TCP port. TCP hooks not yet supported.
 
 - Required: No
 - Type: object
@@ -1650,7 +1665,7 @@ The managed identity definition for this resource.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
-| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
 
 ### Parameter: `managedIdentities.systemAssigned`
 
@@ -1661,7 +1676,7 @@ Enables system assigned managed identity on the resource.
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
-The resource ID(s) to assign to the resource.
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
 
 - Required: No
 - Type: array
@@ -1794,37 +1809,275 @@ The principal type of the assigned principal ID.
   ]
   ```
 
-### Parameter: `scaleMaxReplicas`
+### Parameter: `runtime`
 
-Maximum number of container replicas. Defaults to 10 if not set.
-
-- Required: No
-- Type: int
-- Default: `10`
-
-### Parameter: `scaleMinReplicas`
-
-Minimum number of container replicas. Defaults to 3 if not set.
+Runtime configuration for the Container App.
 
 - Required: No
-- Type: int
-- Default: `3`
+- Type: object
 
-### Parameter: `scaleRules`
+**Optional parameters**
 
-Scaling rules.
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`dotnet`](#parameter-runtimedotnet) | object | Runtime configuration for ASP.NET Core. |
+| [`java`](#parameter-runtimejava) | object | Runtime configuration for Java. |
+
+### Parameter: `runtime.dotnet`
+
+Runtime configuration for ASP.NET Core.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`autoConfigureDataProtection`](#parameter-runtimedotnetautoconfiguredataprotection) | bool | Enable to auto configure the ASP.NET Core Data Protection feature. |
+
+### Parameter: `runtime.dotnet.autoConfigureDataProtection`
+
+Enable to auto configure the ASP.NET Core Data Protection feature.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `runtime.java`
+
+Runtime configuration for Java.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enableJavaAgent`](#parameter-runtimejavaenablejavaagent) | bool | Enable Java agent injection for the Java app. |
+| [`enableMetrics`](#parameter-runtimejavaenablemetrics) | bool | Enable JMX core metrics for the Java app. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`loggerSettings`](#parameter-runtimejavaloggersettings) | array | Java agent logging configuration. |
+
+### Parameter: `runtime.java.enableJavaAgent`
+
+Enable Java agent injection for the Java app.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `runtime.java.enableMetrics`
+
+Enable JMX core metrics for the Java app.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `runtime.java.loggerSettings`
+
+Java agent logging configuration.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`level`](#parameter-runtimejavaloggersettingslevel) | string | Java agent logging level. |
+| [`logger`](#parameter-runtimejavaloggersettingslogger) | string | Name of the logger. |
+
+### Parameter: `runtime.java.loggerSettings.level`
+
+Java agent logging level.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'debug'
+    'error'
+    'info'
+    'off'
+    'trace'
+    'warn'
+  ]
+  ```
+
+### Parameter: `runtime.java.loggerSettings.logger`
+
+Name of the logger.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `scaleSettings`
+
+The scaling settings of the service.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      maxReplicas: 10
+      minReplicas: 3
+  }
+  ```
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`maxReplicas`](#parameter-scalesettingsmaxreplicas) | int | The maximum number of replicas. |
+| [`minReplicas`](#parameter-scalesettingsminreplicas) | int | The minimum number of replicas. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`cooldownPeriod`](#parameter-scalesettingscooldownperiod) | int | The cooldown period in seconds. |
+| [`pollingInterval`](#parameter-scalesettingspollinginterval) | int | The polling interval in seconds. |
+| [`rules`](#parameter-scalesettingsrules) | array | The scaling rules. |
+
+### Parameter: `scaleSettings.maxReplicas`
+
+The maximum number of replicas.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `scaleSettings.minReplicas`
+
+The minimum number of replicas.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `scaleSettings.cooldownPeriod`
+
+The cooldown period in seconds.
+
+- Required: No
+- Type: int
+
+### Parameter: `scaleSettings.pollingInterval`
+
+The polling interval in seconds.
+
+- Required: No
+- Type: int
+
+### Parameter: `scaleSettings.rules`
+
+The scaling rules.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-scalesettingsrulesname) | string | The name of the scaling rule. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`azureQueue`](#parameter-scalesettingsrulesazurequeue) | object | The Azure Queue based scaling rule. |
+| [`custom`](#parameter-scalesettingsrulescustom) | object | The custom scaling rule. |
+| [`http`](#parameter-scalesettingsruleshttp) | object | The HTTP requests based scaling rule. |
+| [`tcp`](#parameter-scalesettingsrulestcp) | object | The TCP based scaling rule. |
+
+### Parameter: `scaleSettings.rules.name`
+
+The name of the scaling rule.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `scaleSettings.rules.azureQueue`
+
+The Azure Queue based scaling rule.
+
+- Required: No
+- Type: object
+
+### Parameter: `scaleSettings.rules.custom`
+
+The custom scaling rule.
+
+- Required: No
+- Type: object
+
+### Parameter: `scaleSettings.rules.http`
+
+The HTTP requests based scaling rule.
+
+- Required: No
+- Type: object
+
+### Parameter: `scaleSettings.rules.tcp`
+
+The TCP based scaling rule.
+
+- Required: No
+- Type: object
 
 ### Parameter: `secrets`
 
 The secrets of the Container App.
 
 - Required: No
-- Type: secureObject
-- Default: `{}`
+- Type: array
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`keyVaultUrl`](#parameter-secretskeyvaulturl) | string | Azure Key Vault URL pointing to the secret referenced by the Container App Job. Required if `value` is null. |
+| [`value`](#parameter-secretsvalue) | securestring | The secret value, if not fetched from Key Vault. Required if `keyVaultUrl` is not null. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`identity`](#parameter-secretsidentity) | string | Resource ID of a managed identity to authenticate with Azure Key Vault, or System to use a system-assigned identity. |
+| [`name`](#parameter-secretsname) | string | The name of the secret. |
+
+### Parameter: `secrets.keyVaultUrl`
+
+Azure Key Vault URL pointing to the secret referenced by the Container App Job. Required if `value` is null.
+
+- Required: No
+- Type: string
+
+### Parameter: `secrets.value`
+
+The secret value, if not fetched from Key Vault. Required if `keyVaultUrl` is not null.
+
+- Required: No
+- Type: securestring
+
+### Parameter: `secrets.identity`
+
+Resource ID of a managed identity to authenticate with Azure Key Vault, or System to use a system-assigned identity.
+
+- Required: No
+- Type: string
+
+### Parameter: `secrets.name`
+
+The name of the secret.
+
+- Required: No
+- Type: string
 
 ### Parameter: `service`
 
@@ -1942,6 +2195,14 @@ Workload profile name to pin for container app execution.
 | `resourceGroupName` | string | The name of the resource group the Container App was deployed into. |
 | `resourceId` | string | The resource ID of the Container App. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.4.1` | Remote reference |
 
 ## Data Collection
 

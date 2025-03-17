@@ -19,7 +19,7 @@ This module deploys a Static Web App.
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
-| `Microsoft.Web/staticSites` | [2021-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2021-03-01/staticSites) |
+| `Microsoft.Web/staticSites` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/staticSites) |
 | `Microsoft.Web/staticSites/config` | [2022-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2022-03-01/staticSites/config) |
 | `Microsoft.Web/staticSites/customDomains` | [2022-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2022-03-01/staticSites/customDomains) |
 | `Microsoft.Web/staticSites/linkedBackends` | [2022-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2022-03-01/staticSites/linkedBackends) |
@@ -49,10 +49,7 @@ This instance deploys the module with the minimum set of required parameters.
 module staticSite 'br/public:avm/res/web/static-site:<version>' = {
   name: 'staticSiteDeployment'
   params: {
-    // Required parameters
     name: 'wssmin001'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -69,13 +66,8 @@ module staticSite 'br/public:avm/res/web/static-site:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
     "name": {
       "value": "wssmin001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -91,10 +83,7 @@ module staticSite 'br/public:avm/res/web/static-site:<version>' = {
 ```bicep-params
 using 'br/public:avm/res/web/static-site:<version>'
 
-// Required parameters
 param name = 'wssmin001'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -167,6 +156,7 @@ module staticSite 'br/public:avm/res/web/static-site:<version>' = {
         subnetResourceId: '<subnetResourceId>'
       }
     ]
+    publicNetworkAccess: 'Enabled'
     roleAssignments: [
       {
         name: 'ba1328f0-c7ab-47bf-afbf-0637b9c02bbe'
@@ -283,6 +273,9 @@ module staticSite 'br/public:avm/res/web/static-site:<version>' = {
         }
       ]
     },
+    "publicNetworkAccess": {
+      "value": "Enabled"
+    },
     "roleAssignments": {
       "value": [
         {
@@ -385,6 +378,7 @@ param privateEndpoints = [
     subnetResourceId: '<subnetResourceId>'
   }
 ]
+param publicNetworkAccess = 'Enabled'
 param roleAssignments = [
   {
     name: 'ba1328f0-c7ab-47bf-afbf-0637b9c02bbe'
@@ -444,11 +438,6 @@ module staticSite 'br/public:avm/res/web/static-site:<version>' = {
     }
     linkedBackend: {
       resourceId: '<resourceId>'
-    }
-    location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
     }
     privateEndpoints: [
       {
@@ -518,15 +507,6 @@ module staticSite 'br/public:avm/res/web/static-site:<version>' = {
         "resourceId": "<resourceId>"
       }
     },
-    "location": {
-      "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
     "privateEndpoints": {
       "value": [
         {
@@ -589,11 +569,6 @@ param functionAppSettings = {
 param linkedBackend = {
   resourceId: '<resourceId>'
 }
-param location = '<location>'
-param lock = {
-  kind: 'CanNotDelete'
-  name: 'myCustomLockName'
-}
 param privateEndpoints = [
   {
     privateDnsZoneGroup: {
@@ -649,6 +624,7 @@ param tags = {
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Note, requires the 'sku' to be 'Standard'. |
 | [`provider`](#parameter-provider) | string | The provider that submitted the last deployment to the primary environment of the static site. |
+| [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set. |
 | [`repositoryToken`](#parameter-repositorytoken) | securestring | The Personal Access Token for accessing the GitHub repository. |
 | [`repositoryUrl`](#parameter-repositoryurl) | string | The name of the GitHub repository. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
@@ -799,7 +775,7 @@ The managed identity definition for this resource.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
-| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
 
 ### Parameter: `managedIdentities.systemAssigned`
 
@@ -810,7 +786,7 @@ Enables system assigned managed identity on the resource.
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
-The resource ID(s) to assign to the resource.
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
 
 - Required: No
 - Type: array
@@ -832,22 +808,22 @@ Configuration details for private endpoints. For security reasons, it is recomme
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`applicationSecurityGroupResourceIds`](#parameter-privateendpointsapplicationsecuritygroupresourceids) | array | Application security groups in which the private endpoint IP configuration is included. |
+| [`applicationSecurityGroupResourceIds`](#parameter-privateendpointsapplicationsecuritygroupresourceids) | array | Application security groups in which the Private Endpoint IP configuration is included. |
 | [`customDnsConfigs`](#parameter-privateendpointscustomdnsconfigs) | array | Custom DNS configurations. |
-| [`customNetworkInterfaceName`](#parameter-privateendpointscustomnetworkinterfacename) | string | The custom name of the network interface attached to the private endpoint. |
+| [`customNetworkInterfaceName`](#parameter-privateendpointscustomnetworkinterfacename) | string | The custom name of the network interface attached to the Private Endpoint. |
 | [`enableTelemetry`](#parameter-privateendpointsenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`ipConfigurations`](#parameter-privateendpointsipconfigurations) | array | A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints. |
+| [`ipConfigurations`](#parameter-privateendpointsipconfigurations) | array | A list of IP configurations of the Private Endpoint. This will be used to map to the first-party Service endpoints. |
 | [`isManualConnection`](#parameter-privateendpointsismanualconnection) | bool | If Manual Private Link Connection is required. |
-| [`location`](#parameter-privateendpointslocation) | string | The location to deploy the private endpoint to. |
+| [`location`](#parameter-privateendpointslocation) | string | The location to deploy the Private Endpoint to. |
 | [`lock`](#parameter-privateendpointslock) | object | Specify the type of lock. |
 | [`manualConnectionRequestMessage`](#parameter-privateendpointsmanualconnectionrequestmessage) | string | A message passed to the owner of the remote resource with the manual connection request. |
-| [`name`](#parameter-privateendpointsname) | string | The name of the private endpoint. |
-| [`privateDnsZoneGroup`](#parameter-privateendpointsprivatednszonegroup) | object | The private DNS zone group to configure for the private endpoint. |
+| [`name`](#parameter-privateendpointsname) | string | The name of the Private Endpoint. |
+| [`privateDnsZoneGroup`](#parameter-privateendpointsprivatednszonegroup) | object | The private DNS Zone Group to configure for the Private Endpoint. |
 | [`privateLinkServiceConnectionName`](#parameter-privateendpointsprivatelinkserviceconnectionname) | string | The name of the private link connection to create. |
-| [`resourceGroupName`](#parameter-privateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different resource group than the main resource. |
+| [`resourceGroupResourceId`](#parameter-privateendpointsresourcegroupresourceid) | string | The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
-| [`service`](#parameter-privateendpointsservice) | string | The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory". |
-| [`tags`](#parameter-privateendpointstags) | object | Tags to be applied on all resources/resource groups in this deployment. |
+| [`service`](#parameter-privateendpointsservice) | string | The subresource to deploy the Private Endpoint for. For example "vault" for a Key Vault Private Endpoint. |
+| [`tags`](#parameter-privateendpointstags) | object | Tags to be applied on all resources/Resource Groups in this deployment. |
 
 ### Parameter: `privateEndpoints.subnetResourceId`
 
@@ -858,7 +834,7 @@ Resource ID of the subnet where the endpoint needs to be created.
 
 ### Parameter: `privateEndpoints.applicationSecurityGroupResourceIds`
 
-Application security groups in which the private endpoint IP configuration is included.
+Application security groups in which the Private Endpoint IP configuration is included.
 
 - Required: No
 - Type: array
@@ -898,7 +874,7 @@ FQDN that resolves to private endpoint IP address.
 
 ### Parameter: `privateEndpoints.customNetworkInterfaceName`
 
-The custom name of the network interface attached to the private endpoint.
+The custom name of the network interface attached to the Private Endpoint.
 
 - Required: No
 - Type: string
@@ -912,7 +888,7 @@ Enable/Disable usage telemetry for module.
 
 ### Parameter: `privateEndpoints.ipConfigurations`
 
-A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints.
+A list of IP configurations of the Private Endpoint. This will be used to map to the first-party Service endpoints.
 
 - Required: No
 - Type: array
@@ -976,7 +952,7 @@ If Manual Private Link Connection is required.
 
 ### Parameter: `privateEndpoints.location`
 
-The location to deploy the private endpoint to.
+The location to deploy the Private Endpoint to.
 
 - Required: No
 - Type: string
@@ -1026,14 +1002,14 @@ A message passed to the owner of the remote resource with the manual connection 
 
 ### Parameter: `privateEndpoints.name`
 
-The name of the private endpoint.
+The name of the Private Endpoint.
 
 - Required: No
 - Type: string
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup`
 
-The private DNS zone group to configure for the private endpoint.
+The private DNS Zone Group to configure for the Private Endpoint.
 
 - Required: No
 - Type: object
@@ -1042,7 +1018,7 @@ The private DNS zone group to configure for the private endpoint.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`privateDnsZoneGroupConfigs`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigs) | array | The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones. |
+| [`privateDnsZoneGroupConfigs`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigs) | array | The private DNS Zone Groups to associate the Private Endpoint. A DNS Zone Group can support up to 5 DNS zones. |
 
 **Optional parameters**
 
@@ -1052,7 +1028,7 @@ The private DNS zone group to configure for the private endpoint.
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs`
 
-The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.
+The private DNS Zone Groups to associate the Private Endpoint. A DNS Zone Group can support up to 5 DNS zones.
 
 - Required: Yes
 - Type: array
@@ -1067,7 +1043,7 @@ The private DNS zone groups to associate the private endpoint. A DNS zone group 
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigsname) | string | The name of the private DNS zone group config. |
+| [`name`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigsname) | string | The name of the private DNS Zone Group config. |
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.privateDnsZoneResourceId`
 
@@ -1078,7 +1054,7 @@ The resource id of the private DNS zone.
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.name`
 
-The name of the private DNS zone group config.
+The name of the private DNS Zone Group config.
 
 - Required: No
 - Type: string
@@ -1097,9 +1073,9 @@ The name of the private link connection to create.
 - Required: No
 - Type: string
 
-### Parameter: `privateEndpoints.resourceGroupName`
+### Parameter: `privateEndpoints.resourceGroupResourceId`
 
-Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.
+The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used.
 
 - Required: No
 - Type: string
@@ -1120,7 +1096,7 @@ Array of role assignments to create.
   - `'Owner'`
   - `'Private DNS Zone Contributor'`
   - `'Reader'`
-  - `'Role Based Access Control Administrator (Preview)'`
+  - `'Role Based Access Control Administrator'`
 
 **Required parameters**
 
@@ -1214,14 +1190,14 @@ The principal type of the assigned principal ID.
 
 ### Parameter: `privateEndpoints.service`
 
-The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory".
+The subresource to deploy the Private Endpoint for. For example "vault" for a Key Vault Private Endpoint.
 
 - Required: No
 - Type: string
 
 ### Parameter: `privateEndpoints.tags`
 
-Tags to be applied on all resources/resource groups in this deployment.
+Tags to be applied on all resources/Resource Groups in this deployment.
 
 - Required: No
 - Type: object
@@ -1233,6 +1209,22 @@ The provider that submitted the last deployment to the primary environment of th
 - Required: No
 - Type: string
 - Default: `'None'`
+
+### Parameter: `publicNetworkAccess`
+
+Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set.
+
+- Required: No
+- Type: string
+- Default: `''`
+- Allowed:
+  ```Bicep
+  [
+    ''
+    'Disabled'
+    'Enabled'
+  ]
+  ```
 
 ### Parameter: `repositoryToken`
 
@@ -1415,7 +1407,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.7.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.10.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

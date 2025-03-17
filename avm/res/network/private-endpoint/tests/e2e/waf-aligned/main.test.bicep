@@ -54,12 +54,7 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      location: resourceLocation
       subnetResourceId: nestedDependencies.outputs.subnetResourceId
-      lock: {
-        kind: 'CanNotDelete'
-        name: 'myCustomLockName'
-      }
       privateDnsZoneGroup: {
         privateDnsZoneGroupConfigs: [
           {

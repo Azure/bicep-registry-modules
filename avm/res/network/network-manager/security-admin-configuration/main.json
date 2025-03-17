@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "1513499222839675769"
+      "templateHash": "15398119849930180416"
     },
     "name": "Network Manager Security Admin Configurations",
-    "description": "This module deploys an Network Manager Security Admin Configuration.\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Network Manager Security Admin Configuration.\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules."
   },
   "definitions": {
     "applyOnNetworkIntentPolicyBasedServicesType": {
@@ -19,9 +18,12 @@
         "All",
         "AllowRulesOnly",
         "None"
-      ]
+      ],
+      "metadata": {
+        "__bicep_export!": true
+      }
     },
-    "ruleCollectionType": {
+    "securityAdminConfigurationRuleCollectionType": {
       "type": "array",
       "items": {
         "type": "object",
@@ -40,161 +42,13 @@
             }
           },
           "appliesToGroups": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "networkGroupResourceId": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The resource ID of the network group."
-                  }
-                }
-              }
-            },
+            "$ref": "#/definitions/appliesToGroupsType",
             "metadata": {
               "description": "Required. List of network groups for configuration. An admin rule collection must be associated to at least one network group."
             }
           },
           "rules": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The name of the rule."
-                  }
-                },
-                "access": {
-                  "type": "string",
-                  "allowedValues": [
-                    "Allow",
-                    "AlwaysAllow",
-                    "Deny"
-                  ],
-                  "metadata": {
-                    "description": "Required. Indicates the access allowed for this particular rule. \"Allow\" means traffic matching this rule will be allowed. \"Deny\" means traffic matching this rule will be blocked. \"AlwaysAllow\" means that traffic matching this rule will be allowed regardless of other rules with lower priority or user-defined NSGs."
-                  }
-                },
-                "description": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. A description of the rule."
-                  }
-                },
-                "destinationPortRanges": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  },
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. List of destination port ranges. This specifies on which ports traffic will be allowed or denied by this rule. Provide an (*) to allow traffic on any port. Port ranges are between 1-65535."
-                  }
-                },
-                "destinations": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "addressPrefixType": {
-                        "type": "string",
-                        "allowedValues": [
-                          "IPPrefix",
-                          "ServiceTag"
-                        ],
-                        "metadata": {
-                          "description": "Required. Address prefix type."
-                        }
-                      },
-                      "addressPrefix": {
-                        "type": "string",
-                        "metadata": {
-                          "description": "Required. Address prefix."
-                        }
-                      }
-                    }
-                  },
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The destnations filter can be an IP Address or a service tag. Each filter contains the properties AddressPrefixType (IPPrefix or ServiceTag) and AddressPrefix (using CIDR notation (e.g. 192.168.99.0/24 or 2001:1234::/64) or a service tag (e.g. AppService.WestEurope)). Combining CIDR and Service tags in one rule filter is not permitted."
-                  }
-                },
-                "direction": {
-                  "type": "string",
-                  "allowedValues": [
-                    "Inbound",
-                    "Outbound"
-                  ],
-                  "metadata": {
-                    "description": "Required. Indicates if the traffic matched against the rule in inbound or outbound."
-                  }
-                },
-                "priority": {
-                  "type": "int",
-                  "minValue": 1,
-                  "maxValue": 4096,
-                  "metadata": {
-                    "description": "Required. The priority of the rule. The value can be between 1 and 4096. The priority number must be unique for each rule in the collection. The lower the priority number, the higher the priority of the rule."
-                  }
-                },
-                "protocol": {
-                  "type": "string",
-                  "allowedValues": [
-                    "Ah",
-                    "Any",
-                    "Esp",
-                    "Icmp",
-                    "Tcp",
-                    "Udp"
-                  ],
-                  "metadata": {
-                    "description": "Required. Network protocol this rule applies to."
-                  }
-                },
-                "sourcePortRanges": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  },
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. List of destination port ranges. This specifies on which ports traffic will be allowed or denied by this rule. Provide an (*) to allow traffic on any port. Port ranges are between 1-65535."
-                  }
-                },
-                "sources": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "addressPrefixType": {
-                        "type": "string",
-                        "allowedValues": [
-                          "IPPrefix",
-                          "ServiceTag"
-                        ],
-                        "metadata": {
-                          "description": "Required. Address prefix type."
-                        }
-                      },
-                      "addressPrefix": {
-                        "type": "string",
-                        "metadata": {
-                          "description": "Required. Address prefix."
-                        }
-                      }
-                    }
-                  },
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The source filter can be an IP Address or a service tag. Each filter contains the properties AddressPrefixType (IPPrefix or ServiceTag) and AddressPrefix (using CIDR notation (e.g. 192.168.99.0/24 or 2001:1234::/64) or a service tag (e.g. AppService.WestEurope)). Combining CIDR and Service tags in one rule filter is not permitted."
-                  }
-                }
-              }
-            },
+            "$ref": "#/definitions/rulesType",
             "nullable": true,
             "metadata": {
               "description": "Optional. List of rules for the admin rules collection. Security admin rules allows enforcing security policy criteria that matches the conditions set. Warning: A rule collection without rule will cause a deployment configuration for security admin goal state in network manager to fail."
@@ -202,7 +56,211 @@
           }
         }
       },
-      "nullable": true
+      "nullable": true,
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "_1.destinationPortRangesType": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "nullable": true,
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "rule-collection/rule/main.bicep"
+        }
+      }
+    },
+    "_1.destinationsType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "addressPrefixType": {
+            "type": "string",
+            "allowedValues": [
+              "IPPrefix",
+              "ServiceTag"
+            ],
+            "metadata": {
+              "description": "Required. Address prefix type."
+            }
+          },
+          "addressPrefix": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. Address prefix."
+            }
+          }
+        }
+      },
+      "nullable": true,
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "rule-collection/rule/main.bicep"
+        }
+      }
+    },
+    "_1.sourcePortRangesType": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "nullable": true,
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "rule-collection/rule/main.bicep"
+        }
+      }
+    },
+    "_1.sourcesType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "addressPrefixType": {
+            "type": "string",
+            "allowedValues": [
+              "IPPrefix",
+              "ServiceTag"
+            ],
+            "metadata": {
+              "description": "Required. Address prefix type."
+            }
+          },
+          "addressPrefix": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. Address prefix."
+            }
+          }
+        }
+      },
+      "nullable": true,
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "rule-collection/rule/main.bicep"
+        }
+      }
+    },
+    "appliesToGroupsType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "networkGroupResourceId": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The resource ID of the network group."
+            }
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "rule-collection/main.bicep"
+        }
+      }
+    },
+    "rulesType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The name of the rule."
+            }
+          },
+          "access": {
+            "type": "string",
+            "allowedValues": [
+              "Allow",
+              "AlwaysAllow",
+              "Deny"
+            ],
+            "metadata": {
+              "description": "Required. Indicates the access allowed for this particular rule. \"Allow\" means traffic matching this rule will be allowed. \"Deny\" means traffic matching this rule will be blocked. \"AlwaysAllow\" means that traffic matching this rule will be allowed regardless of other rules with lower priority or user-defined NSGs."
+            }
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. A description of the rule."
+            }
+          },
+          "destinationPortRanges": {
+            "$ref": "#/definitions/_1.destinationPortRangesType",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. List of destination port ranges. This specifies on which ports traffic will be allowed or denied by this rule. Provide an (*) to allow traffic on any port. Port ranges are between 1-65535."
+            }
+          },
+          "destinations": {
+            "$ref": "#/definitions/_1.destinationsType",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The destnations filter can be an IP Address or a service tag. Each filter contains the properties AddressPrefixType (IPPrefix or ServiceTag) and AddressPrefix (using CIDR notation (e.g. 192.168.99.0/24 or 2001:1234::/64) or a service tag (e.g. AppService.WestEurope)). Combining CIDR and Service tags in one rule filter is not permitted."
+            }
+          },
+          "direction": {
+            "type": "string",
+            "allowedValues": [
+              "Inbound",
+              "Outbound"
+            ],
+            "metadata": {
+              "description": "Required. Indicates if the traffic matched against the rule in inbound or outbound."
+            }
+          },
+          "priority": {
+            "type": "int",
+            "minValue": 1,
+            "maxValue": 4096,
+            "metadata": {
+              "description": "Required. The priority of the rule. The value can be between 1 and 4096. The priority number must be unique for each rule in the collection. The lower the priority number, the higher the priority of the rule."
+            }
+          },
+          "protocol": {
+            "type": "string",
+            "allowedValues": [
+              "Ah",
+              "Any",
+              "Esp",
+              "Icmp",
+              "Tcp",
+              "Udp"
+            ],
+            "metadata": {
+              "description": "Required. Network protocol this rule applies to."
+            }
+          },
+          "sourcePortRanges": {
+            "$ref": "#/definitions/_1.sourcePortRangesType",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. List of destination port ranges. This specifies on which ports traffic will be allowed or denied by this rule. Provide an (*) to allow traffic on any port. Port ranges are between 1-65535."
+            }
+          },
+          "sources": {
+            "$ref": "#/definitions/_1.sourcesType",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The source filter can be an IP Address or a service tag. Each filter contains the properties AddressPrefixType (IPPrefix or ServiceTag) and AddressPrefix (using CIDR notation (e.g. 192.168.99.0/24 or 2001:1234::/64) or a service tag (e.g. AppService.WestEurope)). Combining CIDR and Service tags in one rule filter is not permitted."
+            }
+          }
+        }
+      },
+      "nullable": true,
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "rule-collection/main.bicep"
+        }
+      }
     }
   },
   "parameters": {
@@ -221,7 +279,7 @@
     },
     "description": {
       "type": "string",
-      "nullable": true,
+      "defaultValue": "",
       "maxLength": 500,
       "metadata": {
         "description": "Optional. A description of the security admin configuration."
@@ -233,8 +291,19 @@
         "description": "Required. Enum list of network intent policy based services."
       }
     },
+    "networkGroupAddressSpaceAggregationOption": {
+      "type": "string",
+      "defaultValue": "None",
+      "allowedValues": [
+        "None",
+        "Manual"
+      ],
+      "metadata": {
+        "description": "Optional. Determine update behavior for changes to network groups referenced within the rules in this configuration."
+      }
+    },
     "ruleCollections": {
-      "$ref": "#/definitions/ruleCollectionType",
+      "$ref": "#/definitions/securityAdminConfigurationRuleCollectionType",
       "metadata": {
         "description": "Optional. A security admin configuration contains a set of rule collections that are applied to network groups. Each rule collection contains one or more security admin rules."
       }
@@ -244,16 +313,17 @@
     "networkManager": {
       "existing": true,
       "type": "Microsoft.Network/networkManagers",
-      "apiVersion": "2023-11-01",
+      "apiVersion": "2024-05-01",
       "name": "[parameters('networkManagerName')]"
     },
     "securityAdminConfigurations": {
       "type": "Microsoft.Network/networkManagers/securityAdminConfigurations",
-      "apiVersion": "2023-11-01",
+      "apiVersion": "2024-05-01",
       "name": "[format('{0}/{1}', parameters('networkManagerName'), parameters('name'))]",
       "properties": {
-        "description": "[coalesce(parameters('description'), '')]",
-        "applyOnNetworkIntentPolicyBasedServices": "[parameters('applyOnNetworkIntentPolicyBasedServices')]"
+        "description": "[parameters('description')]",
+        "applyOnNetworkIntentPolicyBasedServices": "[parameters('applyOnNetworkIntentPolicyBasedServices')]",
+        "networkGroupAddressSpaceAggregationOption": "[parameters('networkGroupAddressSpaceAggregationOption')]"
       }
     },
     "securityAdminConfigurations_ruleCollections": {
@@ -280,7 +350,7 @@
             "value": "[coalesce(parameters('ruleCollections'), createArray())[copyIndex()].name]"
           },
           "description": {
-            "value": "[coalesce(tryGet(coalesce(parameters('ruleCollections'), createArray())[copyIndex()], 'description'), '')]"
+            "value": "[tryGet(coalesce(parameters('ruleCollections'), createArray())[copyIndex()], 'description')]"
           },
           "appliesToGroups": {
             "value": "[coalesce(parameters('ruleCollections'), createArray())[copyIndex()].appliesToGroups]"
@@ -297,11 +367,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "2660798758480993366"
+              "templateHash": "17868772067986931575"
             },
             "name": "Network Manager Security Admin Configuration Rule Collections",
-            "description": "This module deploys an Network Manager Security Admin Configuration Rule Collection.\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules. Security admin rules allows enforcing security policy criteria that matches the conditions set. Warning: A rule collection without rule will cause a deployment configuration for security admin goal state in network manager to fail.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Network Manager Security Admin Configuration Rule Collection.\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules. Security admin rules allows enforcing security policy criteria that matches the conditions set. Warning: A rule collection without rule will cause a deployment configuration for security admin goal state in network manager to fail."
           },
           "definitions": {
             "appliesToGroupsType": {
@@ -316,6 +385,9 @@
                     }
                   }
                 }
+              },
+              "metadata": {
+                "__bicep_export!": true
               }
             },
             "rulesType": {
@@ -348,38 +420,14 @@
                     }
                   },
                   "destinationPortRanges": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    },
+                    "$ref": "#/definitions/destinationPortRangesType",
                     "nullable": true,
                     "metadata": {
                       "description": "Optional. List of destination port ranges. This specifies on which ports traffic will be allowed or denied by this rule. Provide an (*) to allow traffic on any port. Port ranges are between 1-65535."
                     }
                   },
                   "destinations": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "addressPrefixType": {
-                          "type": "string",
-                          "allowedValues": [
-                            "IPPrefix",
-                            "ServiceTag"
-                          ],
-                          "metadata": {
-                            "description": "Required. Address prefix type."
-                          }
-                        },
-                        "addressPrefix": {
-                          "type": "string",
-                          "metadata": {
-                            "description": "Required. Address prefix."
-                          }
-                        }
-                      }
-                    },
+                    "$ref": "#/definitions/destinationsType",
                     "nullable": true,
                     "metadata": {
                       "description": "Optional. The destnations filter can be an IP Address or a service tag. Each filter contains the properties AddressPrefixType (IPPrefix or ServiceTag) and AddressPrefix (using CIDR notation (e.g. 192.168.99.0/24 or 2001:1234::/64) or a service tag (e.g. AppService.WestEurope)). Combining CIDR and Service tags in one rule filter is not permitted."
@@ -418,38 +466,14 @@
                     }
                   },
                   "sourcePortRanges": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    },
+                    "$ref": "#/definitions/sourcePortRangesType",
                     "nullable": true,
                     "metadata": {
                       "description": "Optional. List of destination port ranges. This specifies on which ports traffic will be allowed or denied by this rule. Provide an (*) to allow traffic on any port. Port ranges are between 1-65535."
                     }
                   },
                   "sources": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "addressPrefixType": {
-                          "type": "string",
-                          "allowedValues": [
-                            "IPPrefix",
-                            "ServiceTag"
-                          ],
-                          "metadata": {
-                            "description": "Required. Address prefix type."
-                          }
-                        },
-                        "addressPrefix": {
-                          "type": "string",
-                          "metadata": {
-                            "description": "Required. Address prefix."
-                          }
-                        }
-                      }
-                    },
+                    "$ref": "#/definitions/sourcesType",
                     "nullable": true,
                     "metadata": {
                       "description": "Optional. The source filter can be an IP Address or a service tag. Each filter contains the properties AddressPrefixType (IPPrefix or ServiceTag) and AddressPrefix (using CIDR notation (e.g. 192.168.99.0/24 or 2001:1234::/64) or a service tag (e.g. AppService.WestEurope)). Combining CIDR and Service tags in one rule filter is not permitted."
@@ -457,7 +481,94 @@
                   }
                 }
               },
-              "nullable": true
+              "nullable": true,
+              "metadata": {
+                "__bicep_export!": true
+              }
+            },
+            "destinationPortRangesType": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "nullable": true,
+              "metadata": {
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "rule/main.bicep"
+                }
+              }
+            },
+            "destinationsType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "addressPrefixType": {
+                    "type": "string",
+                    "allowedValues": [
+                      "IPPrefix",
+                      "ServiceTag"
+                    ],
+                    "metadata": {
+                      "description": "Required. Address prefix type."
+                    }
+                  },
+                  "addressPrefix": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. Address prefix."
+                    }
+                  }
+                }
+              },
+              "nullable": true,
+              "metadata": {
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "rule/main.bicep"
+                }
+              }
+            },
+            "sourcePortRangesType": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "nullable": true,
+              "metadata": {
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "rule/main.bicep"
+                }
+              }
+            },
+            "sourcesType": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "addressPrefixType": {
+                    "type": "string",
+                    "allowedValues": [
+                      "IPPrefix",
+                      "ServiceTag"
+                    ],
+                    "metadata": {
+                      "description": "Required. Address prefix type."
+                    }
+                  },
+                  "addressPrefix": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. Address prefix."
+                    }
+                  }
+                }
+              },
+              "nullable": true,
+              "metadata": {
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "rule/main.bicep"
+                }
+              }
             }
           },
           "parameters": {
@@ -482,7 +593,7 @@
             },
             "description": {
               "type": "string",
-              "nullable": true,
+              "defaultValue": "",
               "maxLength": 500,
               "metadata": {
                 "description": "Optional. A description of the admin rule collection."
@@ -505,27 +616,27 @@
             "networkManager::securityAdminConfiguration": {
               "existing": true,
               "type": "Microsoft.Network/networkManagers/securityAdminConfigurations",
-              "apiVersion": "2023-11-01",
+              "apiVersion": "2024-05-01",
               "name": "[format('{0}/{1}', parameters('networkManagerName'), parameters('securityAdminConfigurationName'))]"
             },
             "networkManager": {
               "existing": true,
               "type": "Microsoft.Network/networkManagers",
-              "apiVersion": "2023-11-01",
+              "apiVersion": "2024-05-01",
               "name": "[parameters('networkManagerName')]"
             },
             "ruleCollection": {
               "type": "Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections",
-              "apiVersion": "2023-11-01",
+              "apiVersion": "2024-05-01",
               "name": "[format('{0}/{1}/{2}', parameters('networkManagerName'), parameters('securityAdminConfigurationName'), parameters('name'))]",
               "properties": {
-                "description": "[coalesce(parameters('description'), '')]",
+                "description": "[parameters('description')]",
                 "appliesToGroups": "[map(parameters('appliesToGroups'), lambda('group', createObject('networkGroupId', lambdaVariables('group').networkGroupResourceId)))]"
               }
             },
-            "securityAdminConfigurations_rules": {
+            "ruleCollection_rules": {
               "copy": {
-                "name": "securityAdminConfigurations_rules",
+                "name": "ruleCollection_rules",
                 "count": "[length(coalesce(parameters('rules'), createArray()))]"
               },
               "type": "Microsoft.Resources/deployments",
@@ -553,7 +664,7 @@
                     "value": "[coalesce(parameters('rules'), createArray())[copyIndex()].access]"
                   },
                   "description": {
-                    "value": "[coalesce(tryGet(coalesce(parameters('rules'), createArray())[copyIndex()], 'description'), '')]"
+                    "value": "[tryGet(coalesce(parameters('rules'), createArray())[copyIndex()], 'description')]"
                   },
                   "destinationPortRanges": {
                     "value": "[coalesce(tryGet(coalesce(parameters('rules'), createArray())[copyIndex()], 'destinationPortRanges'), createArray())]"
@@ -585,11 +696,10 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "17715910169740786334"
+                      "templateHash": "3195100427454268317"
                     },
                     "name": "Network Manager Security Admin Configuration Rule Collection Rules",
-                    "description": "This module deploys an Azure Virtual Network Manager (AVNM) Security Admin Configuration Rule Collection Rule.\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys an Azure Virtual Network Manager (AVNM) Security Admin Configuration Rule Collection Rule.\nA security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules."
                   },
                   "definitions": {
                     "destinationPortRangesType": {
@@ -597,7 +707,10 @@
                       "items": {
                         "type": "string"
                       },
-                      "nullable": true
+                      "nullable": true,
+                      "metadata": {
+                        "__bicep_export!": true
+                      }
                     },
                     "destinationsType": {
                       "type": "array",
@@ -622,14 +735,20 @@
                           }
                         }
                       },
-                      "nullable": true
+                      "nullable": true,
+                      "metadata": {
+                        "__bicep_export!": true
+                      }
                     },
                     "sourcePortRangesType": {
                       "type": "array",
                       "items": {
                         "type": "string"
                       },
-                      "nullable": true
+                      "nullable": true,
+                      "metadata": {
+                        "__bicep_export!": true
+                      }
                     },
                     "sourcesType": {
                       "type": "array",
@@ -654,7 +773,10 @@
                           }
                         }
                       },
-                      "nullable": true
+                      "nullable": true,
+                      "metadata": {
+                        "__bicep_export!": true
+                      }
                     }
                   },
                   "parameters": {
@@ -685,7 +807,7 @@
                     },
                     "description": {
                       "type": "string",
-                      "nullable": true,
+                      "defaultValue": "",
                       "maxLength": 500,
                       "metadata": {
                         "description": "Optional. A description of the rule."
@@ -771,29 +893,29 @@
                     "networkManager::securityAdminConfiguration::ruleCollection": {
                       "existing": true,
                       "type": "Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections",
-                      "apiVersion": "2023-11-01",
+                      "apiVersion": "2024-05-01",
                       "name": "[format('{0}/{1}/{2}', parameters('networkManagerName'), parameters('securityAdminConfigurationName'), parameters('ruleCollectionName'))]"
                     },
                     "networkManager::securityAdminConfiguration": {
                       "existing": true,
                       "type": "Microsoft.Network/networkManagers/securityAdminConfigurations",
-                      "apiVersion": "2023-11-01",
+                      "apiVersion": "2024-05-01",
                       "name": "[format('{0}/{1}', parameters('networkManagerName'), parameters('securityAdminConfigurationName'))]"
                     },
                     "networkManager": {
                       "existing": true,
                       "type": "Microsoft.Network/networkManagers",
-                      "apiVersion": "2023-11-01",
+                      "apiVersion": "2024-05-01",
                       "name": "[parameters('networkManagerName')]"
                     },
                     "rule": {
                       "type": "Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections/rules",
-                      "apiVersion": "2023-11-01",
+                      "apiVersion": "2024-05-01",
                       "name": "[format('{0}/{1}/{2}/{3}', parameters('networkManagerName'), parameters('securityAdminConfigurationName'), parameters('ruleCollectionName'), parameters('name'))]",
                       "kind": "Custom",
                       "properties": {
                         "access": "[parameters('access')]",
-                        "description": "[coalesce(parameters('description'), '')]",
+                        "description": "[parameters('description')]",
                         "destinationPortRanges": "[parameters('destinationPortRanges')]",
                         "destinations": "[parameters('destinations')]",
                         "direction": "[parameters('direction')]",

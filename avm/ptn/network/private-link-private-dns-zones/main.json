@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "92251714130346832"
+      "templateHash": "9130976353138630009"
     },
     "name": "avm/ptn/network/private-link-private-dns-zones",
-    "description": "Private Link Private DNS Zones",
-    "owner": "jtracey93"
+    "description": "Private Link Private DNS Zones"
   },
   "definitions": {
     "lockType": {
@@ -239,7 +238,8 @@
       "usgovtexas": "ugt",
       "usgovarizona": "uga",
       "usdodeast": "ude",
-      "usdodcentral": "udc"
+      "usdodcentral": "udc",
+      "indonesiacentral"  : "idc"
     },
     "azureRegionShortNameDisplayNameAsKey": {
       "australia southeast": "australiasoutheast",
@@ -303,7 +303,8 @@
       "usgov texas": "usgovtexas",
       "usgov arizona": "usgovarizona",
       "usdod east": "usdodeast",
-      "usdod central": "usdodcentral"
+      "usdod central": "usdodcentral",
+      "indonesia central": "indonesiacentral"
     },
     "locationLowered": "[toLower(parameters('location'))]",
     "locationLoweredAndSpacesRemoved": "[if(contains(variables('locationLowered'), ' '), variables('azureRegionShortNameDisplayNameAsKey')[variables('locationLowered')], variables('locationLowered'))]",

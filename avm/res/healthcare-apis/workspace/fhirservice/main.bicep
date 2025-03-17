@@ -1,6 +1,5 @@
 metadata name = 'Healthcare API Workspace FHIR Services'
 metadata description = 'This module deploys a Healthcare API Workspace FHIR Service.'
-metadata owner = 'Azure/module-maintainers'
 
 @minLength(3)
 @maxLength(24)
@@ -302,12 +301,7 @@ output resourceId string = fhir.id
 output resourceGroupName string = resourceGroup().name
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = (managedIdentities.?systemAssigned ?? false) && contains(
-    fhir.identity,
-    'principalId'
-  )
-  ? fhir.identity.principalId
-  : ''
+output systemAssignedMIPrincipalId string? = fhir.?identity.?principalId
 
 @description('The location the resource was deployed into.')
 output location string = fhir.location

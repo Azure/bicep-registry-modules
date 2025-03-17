@@ -227,6 +227,15 @@ module testDeployment '../../../main.bicep' = [
           subscriptions: [
             {
               name: 'subscription001'
+              rules: [
+                {
+                  name: '${namePrefix}-test-filter'
+                  filterType: 'SqlFilter'
+                  sqlFilter: {
+                    sqlExpression: 'Test=1'
+                  }
+                }
+              ]
             }
           ]
         }

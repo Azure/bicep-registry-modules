@@ -6,11 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "5171031514480063459"
+      "templateHash": "708993782418157673"
     },
     "name": "Network Watchers Connection Monitors",
-    "description": "This module deploys a Network Watcher Connection Monitor.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Network Watcher Connection Monitor."
   },
   "parameters": {
     "networkWatcherName": {
@@ -73,12 +72,12 @@
     "networkWatcher": {
       "existing": true,
       "type": "Microsoft.Network/networkWatchers",
-      "apiVersion": "2023-04-01",
+      "apiVersion": "2024-05-01",
       "name": "[parameters('networkWatcherName')]"
     },
     "connectionMonitor": {
       "type": "Microsoft.Network/networkWatchers/connectionMonitors",
-      "apiVersion": "2023-04-01",
+      "apiVersion": "2024-05-01",
       "name": "[format('{0}/{1}', parameters('networkWatcherName'), parameters('name'))]",
       "tags": "[parameters('tags')]",
       "location": "[parameters('location')]",
@@ -117,7 +116,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('connectionMonitor', '2023-04-01', 'full').location]"
+      "value": "[reference('connectionMonitor', '2024-05-01', 'full').location]"
     }
   }
 }

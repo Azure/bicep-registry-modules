@@ -1,6 +1,5 @@
 metadata name = 'import-image-to-acr'
 metadata description = 'This modules deployes an image to an Azure Container Registry.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the deployment script resource.')
 param name string
@@ -167,6 +166,7 @@ module imageImport 'br/public:avm/res/resources/deployment-script:0.5.0' = {
     name: name
     location: location
     tags: tags
+    enableTelemetry: enableTelemetry
     managedIdentities: useExistingManagedIdentity
       ? managedIdentities
       : { userAssignedResourceIds: [newManagedIdentity.id] }

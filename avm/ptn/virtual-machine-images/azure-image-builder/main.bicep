@@ -2,7 +2,6 @@ targetScope = 'subscription'
 
 metadata name = 'Custom Images using Azure Image Builder'
 metadata description = 'This module provides you with a packaged solution to create custom images using the Azure Image Builder service publishing to an Azure Compute Gallery.'
-metadata owner = 'AlexanderSehr'
 
 // ================ //
 // Input Parameters //
@@ -587,6 +586,7 @@ module imageTemplate_wait 'br/public:avm/res/resources/deployment-script:0.5.0' 
         deploymentScriptSubnetName
       )
     ]
+    enableTelemetry: enableTelemetry
   }
   dependsOn: [
     imageTemplate_trigger

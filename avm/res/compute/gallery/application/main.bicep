@@ -1,6 +1,5 @@
 metadata name = 'Compute Galleries Applications'
 metadata description = 'This module deploys an Azure Compute Gallery Application.'
-metadata owner = 'Azure/module-maintainers'
 
 @sys.description('Required. Name of the application definition.')
 param name string
@@ -73,11 +72,11 @@ var formattedRoleAssignments = [
   })
 ]
 
-resource gallery 'Microsoft.Compute/galleries@2022-03-03' existing = {
+resource gallery 'Microsoft.Compute/galleries@2024-03-03' existing = {
   name: galleryName
 }
 
-resource application 'Microsoft.Compute/galleries/applications@2022-03-03' = {
+resource application 'Microsoft.Compute/galleries/applications@2024-03-03' = {
   name: name
   parent: gallery
   location: location
