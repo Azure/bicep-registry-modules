@@ -41,7 +41,7 @@ resource resourceGroup_mc 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 
 module nestedDependencies_vm 'dependencies_vm.bicep' = {
   scope: resourceGroup_vm
-  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies_vm'
   params: {
     virtualMachineName: 'dep-${namePrefix}-vm-${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
@@ -51,7 +51,7 @@ module nestedDependencies_vm 'dependencies_vm.bicep' = {
 
 module nestedDependencies_mc 'dependencies_mc.bicep' = {
   scope: resourceGroup_vm
-  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies_mc'
   params: {
     maintenanceConfigurationName: 'dep-${namePrefix}-mc-${serviceShort}'
     location: enforcedLocation
