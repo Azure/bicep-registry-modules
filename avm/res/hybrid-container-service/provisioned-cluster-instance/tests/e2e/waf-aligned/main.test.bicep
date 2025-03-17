@@ -226,8 +226,20 @@ module testDeployment '../../../main.bicep' = {
     name: '${namePrefix}${serviceShort}001'
     location: enforcedLocation
     customLocationId: customLocation.id
-    logicalNetworkId: logicalNetwork.outputs.resourceId
-    controlPlaneCount: 2
+    cloudProviderProfile: {
+      infraNetworkProfile: {
+        vnetSubnetIds: [
+          logicalNetwork.outputs.resourceId
+        ]
+      }
+    }
+    controlPlane: {
+      count: 2
+      vmSize: 'Standard_A4_v2'
+      controlPlaneEndpoint: {
+        hostIP: null
+      }
+    }
     agentPoolProfiles: [
       {
         name: 'nodepool1'

@@ -13,25 +13,6 @@ param tags object?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-#disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.hybcontsvc-provclustinst.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
-      outputs: {
-        telemetry: {
-          type: 'String'
-          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-        }
-      }
-    }
-  }
-}
-
 @description('Optional. The name of the secret in the key vault that contains the SSH private key PEM.')
 param sshPrivateKeyPemSecretName string = 'AksArcAgentSshPrivateKeyPem'
 
@@ -50,8 +31,8 @@ param customLocationId string
 @description('Optional. The Kubernetes version for the cluster.')
 param kubernetesVersion string?
 
-@description('Optional. Agent pool configuration.')
-param agentPoolProfiles array = [
+@description('Optional. The agent pool properties for the provisioned cluster.')
+param agentPoolProfiles agentPoolProfilesType = [
   {
     name: 'nodepool1'
     count: 1
@@ -67,34 +48,43 @@ param agentPoolProfiles array = [
   }
 ]
 
-@description('Required. The id of the logical network that the AKS nodes will be connected to.')
-param logicalNetworkId string
+@description('Optional. The storage configuration profile for the provisioned cluster.')
+param storageProfile storageProfileType = {
+  nfsCsiDriver: {
+    enabled: true
+  }
+  smbCsiDriver: {
+    enabled: true
+  }
+}
 
-@description('Optional. The number of control plane nodes.')
-param controlPlaneCount int = 1
+@description('Optional. The network configuration profile for the provisioned cluster.')
+param networkProfile networkProfileType = {
+  podCidr: '10.244.0.0/16'
+  networkPolicy: 'calico'
+  loadBalancerProfile: {
+    // acctest0002 network only supports a LoadBalancer count of 0
+    count: 0
+  }
+}
 
-@description('Optional. The VM size for control plane nodes.')
-param controlPlaneVmSize string = 'Standard_A4_v2'
+@description('Optional. The profile for Linux VMs in the provisioned cluster.')
+param linuxProfile linuxProfileType?
 
-@description('Optional. The host IP for control plane endpoint.')
-param controlPlaneIP string?
+@description('Optional. The license profile of the provisioned cluster.')
+param licenseProfile licenseProfileType = { azureHybridBenefit: 'False' }
 
-@description('Optional. The CIDR range for the pods in the kubernetes cluster.')
-param podCidr string = '10.244.0.0/16'
+@description('Optional. The profile for control plane of the provisioned cluster.')
+param controlPlane controlPlaneType = {
+  count: 1
+  vmSize: 'Standard_A4_v2'
+  controlPlaneEndpoint: {
+    hostIP: null
+  }
+}
 
-@description('Optional. Azure Hybrid Benefit configuration.')
-@allowed([
-  'False'
-  'NotApplicable'
-  'True'
-])
-param azureHybridBenefit string = 'False'
-
-@description('Optional. Enable or disable NFS CSI driver.')
-param nfsCsiDriverEnabled bool = true
-
-@description('Optional. Enable or disable SMB CSI driver.')
-param smbCsiDriverEnabled bool = true
+@description('Required. The profile for the underlying cloud infrastructure provider for the provisioned cluster.')
+param cloudProviderProfile cloudProviderProfileType
 
 @description('Optional. Tags for the cluster resource.')
 param connectClustersTags object = {}
@@ -120,6 +110,25 @@ param oidcIssuerEnabled bool = false
 
 @description('Optional. Enable workload identity.')
 param workloadIdentityEnabled bool = false
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.hybcontsvc-provclustinst.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
 
 resource kv 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (empty(sshPublicKey) && !empty(keyVaultName)) {
   name: keyVaultName!
@@ -186,7 +195,7 @@ var sshPublicKeyData = empty(sshPublicKey) ? generateSSHKey.properties.outputs.p
 
 var enableReferencedModulesTelemetry = false
 
-module connectedCluster '../../kubernetes/connected-cluster/main.bicep' = {
+module connectedCluster 'br/public:avm/res/kubernetes/connected-cluster:0.1.0' = {
   name: 'connectedCluster'
   params: {
     name: name
@@ -219,26 +228,12 @@ resource provisionedCluster 'Microsoft.HybridContainerService/provisionedCluster
   }
   properties: {
     agentPoolProfiles: agentPoolProfiles
-    cloudProviderProfile: {
-      infraNetworkProfile: {
-        vnetSubnetIds: [
-          logicalNetworkId
-        ]
-      }
-    }
+    cloudProviderProfile: cloudProviderProfile
     clusterVMAccessProfile: {}
-    controlPlane: {
-      count: controlPlaneCount
-      vmSize: controlPlaneVmSize
-      controlPlaneEndpoint: {
-        hostIP: controlPlaneIP
-      }
-    }
+    controlPlane: controlPlane
     kubernetesVersion: kubernetesVersion ?? ''
-    licenseProfile: {
-      azureHybridBenefit: azureHybridBenefit
-    }
-    linuxProfile: {
+    licenseProfile: licenseProfile
+    linuxProfile: linuxProfile ?? {
       ssh: {
         publicKeys: [
           {
@@ -247,22 +242,8 @@ resource provisionedCluster 'Microsoft.HybridContainerService/provisionedCluster
         ]
       }
     }
-    networkProfile: {
-      podCidr: podCidr
-      networkPolicy: 'calico'
-      loadBalancerProfile: {
-        // acctest0002 network only supports a LoadBalancer count of 0
-        count: 0
-      }
-    }
-    storageProfile: {
-      nfsCsiDriver: {
-        enabled: nfsCsiDriverEnabled
-      }
-      smbCsiDriver: {
-        enabled: smbCsiDriverEnabled
-      }
-    }
+    networkProfile: networkProfile
+    storageProfile: storageProfile
   }
 }
 
@@ -281,3 +262,109 @@ output resourceGroupName string = resourceGroup().name
 
 @description('The location the resource was deployed into.')
 output location string = location
+
+// ================ //
+// Definitions      //
+// ================ //
+
+@export()
+@description('The type for agent pool profiles configuration.')
+type agentPoolProfilesType = {
+  @description('Required. The number of nodes for the pool.')
+  count: int
+  @description('Required. Whether to enable auto-scaling for the pool.')
+  enableAutoScaling: bool
+  @description('Required. The maximum number of nodes for auto-scaling.')
+  maxCount: int
+  @description('Reqired. The minimum number of nodes for auto-scaling.')
+  minCount: int
+  @description('Required. The maximum number of pods per node.')
+  maxPods: int
+  @description('Required. The name of the agent pool.')
+  name: string
+  @description('Required. The node labels to be applied to nodes in the pool.')
+  nodeLabels: { *: string }
+  @description('Required. The taints to be applied to nodes in the pool.')
+  nodeTaints: string[]
+  @description('Required. The OS SKU for the nodes.')
+  osSKU: string
+  @description('Required. The OS type for the nodes.')
+  osType: string
+  @description('Required. The VM size for the nodes.')
+  vmSize: string
+}[]
+
+@export()
+@description('The type for cloud provider profile configuration.')
+type cloudProviderProfileType = {
+  @description('Required. The infrastructure network profile configuration.')
+  infraNetworkProfile: {
+    @description('Required. The list of virtual network subnet IDs.')
+    vnetSubnetIds: string[]
+  }
+}
+
+@export()
+@description('The type for control plane configuration.')
+type controlPlaneType = {
+  @description('Required. The control plane endpoint configuration.')
+  controlPlaneEndpoint: {
+    @description('Optional. The host IP address of the control plane endpoint.')
+    hostIP: string?
+  }
+  @description('Required. The number of control plane nodes.')
+  count: int
+  @description('Required. The VM size for control plane nodes.')
+  vmSize: string
+}
+
+@export()
+@description('The type for license profile configuration.')
+type licenseProfileType = {
+  @description('Required. Azure Hybrid Benefit configuration. Allowed values: "False", "NotApplicable", "True".')
+  azureHybridBenefit: 'False' | 'NotApplicable' | 'True'
+}
+
+@export()
+@description('The type for Linux profile configuration.')
+type linuxProfileType = {
+  @description('Required. SSH configuration for Linux nodes.')
+  ssh: {
+    @description('Required. SSH public keys configuration.')
+    publicKeys: [
+      {
+        @description('Required. The SSH public key data.')
+        keyData: string
+      }
+    ]
+  }
+}
+
+@export()
+@description('The type for network profile configuration.')
+type networkProfileType = {
+  @description('Required. Load balancer profile configuration.')
+  loadBalancerProfile: {
+    @description('Required. The number of load balancers. Must be 0 as for now.')
+    count: int
+  }
+  @description('Required. The network policy to use.')
+  networkPolicy: string
+  @description('Required. The CIDR range for the pods in the kubernetes cluster.')
+  podCidr: string
+}
+
+@export()
+@description('The type for storage profile configuration.')
+type storageProfileType = {
+  @description('Reqired. NFS CSI driver configuration.')
+  nfsCsiDriver: {
+    @description('Required. Whether the NFS CSI driver is enabled.')
+    enabled: bool
+  }
+  @description('Required. SMB CSI driver configuration.')
+  smbCsiDriver: {
+    @description('Required. Whether the SMB CSI driver is enabled.')
+    enabled: bool
+  }
+}

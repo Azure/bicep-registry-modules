@@ -47,8 +47,14 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
   name: 'provisionedClusterInstanceDeployment'
   params: {
     // Required parameters
+    cloudProviderProfile: {
+      infraNetworkProfile: {
+        vnetSubnetIds: [
+          '<resourceId>'
+        ]
+      }
+    }
     customLocationId: '<customLocationId>'
-    logicalNetworkId: '<logicalNetworkId>'
     name: 'hcspcimin001'
   }
 }
@@ -67,11 +73,17 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "cloudProviderProfile": {
+      "value": {
+        "infraNetworkProfile": {
+          "vnetSubnetIds": [
+            "<resourceId>"
+          ]
+        }
+      }
+    },
     "customLocationId": {
       "value": "<customLocationId>"
-    },
-    "logicalNetworkId": {
-      "value": "<logicalNetworkId>"
     },
     "name": {
       "value": "hcspcimin001"
@@ -91,8 +103,14 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
 using 'br/public:avm/res/hybrid-container-service/provisioned-cluster-instance:<version>'
 
 // Required parameters
+param cloudProviderProfile = {
+  infraNetworkProfile: {
+    vnetSubnetIds: [
+      '<resourceId>'
+    ]
+  }
+}
 param customLocationId = '<customLocationId>'
-param logicalNetworkId = '<logicalNetworkId>'
 param name = 'hcspcimin001'
 ```
 
@@ -113,8 +131,14 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
   name: 'provisionedClusterInstanceDeployment'
   params: {
     // Required parameters
+    cloudProviderProfile: {
+      infraNetworkProfile: {
+        vnetSubnetIds: [
+          '<resourceId>'
+        ]
+      }
+    }
     customLocationId: '<customLocationId>'
-    logicalNetworkId: '<logicalNetworkId>'
     name: 'hcspciwaf001'
     // Non-required parameters
     agentPoolProfiles: [
@@ -132,7 +156,13 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
         vmSize: 'Standard_A4_v2'
       }
     ]
-    controlPlaneCount: 2
+    controlPlane: {
+      controlPlaneEndpoint: {
+        hostIP: '<hostIP>'
+      }
+      count: 2
+      vmSize: 'Standard_A4_v2'
+    }
     location: '<location>'
     tags: {
       Environment: 'Non-Prod'
@@ -156,11 +186,17 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "cloudProviderProfile": {
+      "value": {
+        "infraNetworkProfile": {
+          "vnetSubnetIds": [
+            "<resourceId>"
+          ]
+        }
+      }
+    },
     "customLocationId": {
       "value": "<customLocationId>"
-    },
-    "logicalNetworkId": {
-      "value": "<logicalNetworkId>"
     },
     "name": {
       "value": "hcspciwaf001"
@@ -183,8 +219,14 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
         }
       ]
     },
-    "controlPlaneCount": {
-      "value": 2
+    "controlPlane": {
+      "value": {
+        "controlPlaneEndpoint": {
+          "hostIP": "<hostIP>"
+        },
+        "count": 2,
+        "vmSize": "Standard_A4_v2"
+      }
     },
     "location": {
       "value": "<location>"
@@ -211,8 +253,14 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
 using 'br/public:avm/res/hybrid-container-service/provisioned-cluster-instance:<version>'
 
 // Required parameters
+param cloudProviderProfile = {
+  infraNetworkProfile: {
+    vnetSubnetIds: [
+      '<resourceId>'
+    ]
+  }
+}
 param customLocationId = '<customLocationId>'
-param logicalNetworkId = '<logicalNetworkId>'
 param name = 'hcspciwaf001'
 // Non-required parameters
 param agentPoolProfiles = [
@@ -230,7 +278,13 @@ param agentPoolProfiles = [
     vmSize: 'Standard_A4_v2'
   }
 ]
-param controlPlaneCount = 2
+param controlPlane = {
+  controlPlaneEndpoint: {
+    hostIP: '<hostIP>'
+  }
+  count: 2
+  vmSize: 'Standard_A4_v2'
+}
 param location = '<location>'
 param tags = {
   Environment: 'Non-Prod'
@@ -248,8 +302,8 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`cloudProviderProfile`](#parameter-cloudproviderprofile) | object | The profile for the underlying cloud infrastructure provider for the provisioned cluster. |
 | [`customLocationId`](#parameter-customlocationid) | string | The id of the Custom location that used to create hybrid aks. |
-| [`logicalNetworkId`](#parameter-logicalnetworkid) | string | The id of the logical network that the AKS nodes will be connected to. |
 | [`name`](#parameter-name) | string | The name of the provisioned cluster instance. |
 
 **Conditional parameters**
@@ -265,36 +319,60 @@ param tags = {
 | :-- | :-- | :-- |
 | [`aadAdminGroupObjectIds`](#parameter-aadadmingroupobjectids) | array | The Azure AD admin group object IDs. |
 | [`agentAutoUpgrade`](#parameter-agentautoupgrade) | string | Enable automatic agent upgrades. |
-| [`agentPoolProfiles`](#parameter-agentpoolprofiles) | array | Agent pool configuration. |
-| [`azureHybridBenefit`](#parameter-azurehybridbenefit) | string | Azure Hybrid Benefit configuration. |
+| [`agentPoolProfiles`](#parameter-agentpoolprofiles) | array | The agent pool properties for the provisioned cluster. |
 | [`connectClustersTags`](#parameter-connectclusterstags) | object | Tags for the cluster resource. |
-| [`controlPlaneCount`](#parameter-controlplanecount) | int | The number of control plane nodes. |
-| [`controlPlaneIP`](#parameter-controlplaneip) | string | The host IP for control plane endpoint. |
-| [`controlPlaneVmSize`](#parameter-controlplanevmsize) | string | The VM size for control plane nodes. |
+| [`controlPlane`](#parameter-controlplane) | object | The profile for control plane of the provisioned cluster. |
 | [`enableAzureRBAC`](#parameter-enableazurerbac) | bool | Enable Azure RBAC. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`kubernetesVersion`](#parameter-kubernetesversion) | string | The Kubernetes version for the cluster. |
+| [`licenseProfile`](#parameter-licenseprofile) | object | The license profile of the provisioned cluster. |
+| [`linuxProfile`](#parameter-linuxprofile) | object | The profile for Linux VMs in the provisioned cluster. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
-| [`nfsCsiDriverEnabled`](#parameter-nfscsidriverenabled) | bool | Enable or disable NFS CSI driver. |
+| [`networkProfile`](#parameter-networkprofile) | object | The network configuration profile for the provisioned cluster. |
 | [`oidcIssuerEnabled`](#parameter-oidcissuerenabled) | bool | Enable OIDC issuer. |
-| [`podCidr`](#parameter-podcidr) | string | The CIDR range for the pods in the kubernetes cluster. |
-| [`smbCsiDriverEnabled`](#parameter-smbcsidriverenabled) | bool | Enable or disable SMB CSI driver. |
 | [`sshPrivateKeyPemSecretName`](#parameter-sshprivatekeypemsecretname) | string | The name of the secret in the key vault that contains the SSH private key PEM. |
 | [`sshPublicKeySecretName`](#parameter-sshpublickeysecretname) | string | The name of the secret in the key vault that contains the SSH public key. |
+| [`storageProfile`](#parameter-storageprofile) | object | The storage configuration profile for the provisioned cluster. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`tenantId`](#parameter-tenantid) | string | The Azure AD tenant ID. |
 | [`workloadIdentityEnabled`](#parameter-workloadidentityenabled) | bool | Enable workload identity. |
 
+### Parameter: `cloudProviderProfile`
+
+The profile for the underlying cloud infrastructure provider for the provisioned cluster.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`infraNetworkProfile`](#parameter-cloudproviderprofileinfranetworkprofile) | object | The infrastructure network profile configuration. |
+
+### Parameter: `cloudProviderProfile.infraNetworkProfile`
+
+The infrastructure network profile configuration.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`vnetSubnetIds`](#parameter-cloudproviderprofileinfranetworkprofilevnetsubnetids) | array | The list of virtual network subnet IDs. |
+
+### Parameter: `cloudProviderProfile.infraNetworkProfile.vnetSubnetIds`
+
+The list of virtual network subnet IDs.
+
+- Required: Yes
+- Type: array
+
 ### Parameter: `customLocationId`
 
 The id of the Custom location that used to create hybrid aks.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `logicalNetworkId`
-
-The id of the logical network that the AKS nodes will be connected to.
 
 - Required: Yes
 - Type: string
@@ -345,7 +423,7 @@ Enable automatic agent upgrades.
 
 ### Parameter: `agentPoolProfiles`
 
-Agent pool configuration.
+The agent pool properties for the provisioned cluster.
 
 - Required: No
 - Type: array
@@ -368,21 +446,10 @@ Agent pool configuration.
   ]
   ```
 
-### Parameter: `azureHybridBenefit`
+**RequiredReqired parameters**
 
-Azure Hybrid Benefit configuration.
-
-- Required: No
-- Type: string
-- Default: `'False'`
-- Allowed:
-  ```Bicep
-  [
-    'False'
-    'NotApplicable'
-    'True'
-  ]
-  ```
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
 
 ### Parameter: `connectClustersTags`
 
@@ -392,28 +459,64 @@ Tags for the cluster resource.
 - Type: object
 - Default: `{}`
 
-### Parameter: `controlPlaneCount`
+### Parameter: `controlPlane`
+
+The profile for control plane of the provisioned cluster.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      controlPlaneEndpoint: {
+        hostIP: null
+      }
+      count: 1
+      vmSize: 'Standard_A4_v2'
+  }
+  ```
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`controlPlaneEndpoint`](#parameter-controlplanecontrolplaneendpoint) | object | The control plane endpoint configuration. |
+| [`count`](#parameter-controlplanecount) | int | The number of control plane nodes. |
+| [`vmSize`](#parameter-controlplanevmsize) | string | The VM size for control plane nodes. |
+
+### Parameter: `controlPlane.controlPlaneEndpoint`
+
+The control plane endpoint configuration.
+
+- Required: Yes
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`hostIP`](#parameter-controlplanecontrolplaneendpointhostip) | string | The host IP address of the control plane endpoint. |
+
+### Parameter: `controlPlane.controlPlaneEndpoint.hostIP`
+
+The host IP address of the control plane endpoint.
+
+- Required: No
+- Type: string
+
+### Parameter: `controlPlane.count`
 
 The number of control plane nodes.
 
-- Required: No
+- Required: Yes
 - Type: int
-- Default: `1`
 
-### Parameter: `controlPlaneIP`
-
-The host IP for control plane endpoint.
-
-- Required: No
-- Type: string
-
-### Parameter: `controlPlaneVmSize`
+### Parameter: `controlPlane.vmSize`
 
 The VM size for control plane nodes.
 
-- Required: No
+- Required: Yes
 - Type: string
-- Default: `'Standard_A4_v2'`
 
 ### Parameter: `enableAzureRBAC`
 
@@ -438,6 +541,73 @@ The Kubernetes version for the cluster.
 - Required: No
 - Type: string
 
+### Parameter: `licenseProfile`
+
+The license profile of the provisioned cluster.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      azureHybridBenefit: 'False'
+  }
+  ```
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`azureHybridBenefit`](#parameter-licenseprofileazurehybridbenefit) | string | Azure Hybrid Benefit configuration. Allowed values: "False", "NotApplicable", "True". |
+
+### Parameter: `licenseProfile.azureHybridBenefit`
+
+Azure Hybrid Benefit configuration. Allowed values: "False", "NotApplicable", "True".
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'False'
+    'NotApplicable'
+    'True'
+  ]
+  ```
+
+### Parameter: `linuxProfile`
+
+The profile for Linux VMs in the provisioned cluster.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`ssh`](#parameter-linuxprofilessh) | object | SSH configuration for Linux nodes. |
+
+### Parameter: `linuxProfile.ssh`
+
+SSH configuration for Linux nodes.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`publicKeys`](#parameter-linuxprofilesshpublickeys) | array | SSH public keys configuration. |
+
+### Parameter: `linuxProfile.ssh.publicKeys`
+
+SSH public keys configuration.
+
+- Required: Yes
+- Type: array
+
 ### Parameter: `location`
 
 Location for all Resources.
@@ -446,13 +616,64 @@ Location for all Resources.
 - Type: string
 - Default: `[resourceGroup().location]`
 
-### Parameter: `nfsCsiDriverEnabled`
+### Parameter: `networkProfile`
 
-Enable or disable NFS CSI driver.
+The network configuration profile for the provisioned cluster.
 
 - Required: No
-- Type: bool
-- Default: `True`
+- Type: object
+- Default:
+  ```Bicep
+  {
+      loadBalancerProfile: {
+        count: 0
+      }
+      networkPolicy: 'calico'
+      podCidr: '10.244.0.0/16'
+  }
+  ```
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`loadBalancerProfile`](#parameter-networkprofileloadbalancerprofile) | object | Load balancer profile configuration. |
+| [`networkPolicy`](#parameter-networkprofilenetworkpolicy) | string | The network policy to use. |
+| [`podCidr`](#parameter-networkprofilepodcidr) | string | The CIDR range for the pods in the kubernetes cluster. |
+
+### Parameter: `networkProfile.loadBalancerProfile`
+
+Load balancer profile configuration.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`count`](#parameter-networkprofileloadbalancerprofilecount) | int | The number of load balancers. Must be 0 as for now. |
+
+### Parameter: `networkProfile.loadBalancerProfile.count`
+
+The number of load balancers. Must be 0 as for now.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `networkProfile.networkPolicy`
+
+The network policy to use.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `networkProfile.podCidr`
+
+The CIDR range for the pods in the kubernetes cluster.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `oidcIssuerEnabled`
 
@@ -461,22 +682,6 @@ Enable OIDC issuer.
 - Required: No
 - Type: bool
 - Default: `False`
-
-### Parameter: `podCidr`
-
-The CIDR range for the pods in the kubernetes cluster.
-
-- Required: No
-- Type: string
-- Default: `'10.244.0.0/16'`
-
-### Parameter: `smbCsiDriverEnabled`
-
-Enable or disable SMB CSI driver.
-
-- Required: No
-- Type: bool
-- Default: `True`
 
 ### Parameter: `sshPrivateKeyPemSecretName`
 
@@ -493,6 +698,29 @@ The name of the secret in the key vault that contains the SSH public key.
 - Required: No
 - Type: string
 - Default: `'AksArcAgentSshPublicKey'`
+
+### Parameter: `storageProfile`
+
+The storage configuration profile for the provisioned cluster.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      nfsCsiDriver: {
+        enabled: true
+      }
+      smbCsiDriver: {
+        enabled: true
+      }
+  }
+  ```
+
+**RequiredReqired parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
 
 ### Parameter: `tags`
 
@@ -531,8 +759,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `avm/res/kubernetes/connected-cluster` | Local reference |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+| `br/public:avm/res/kubernetes/connected-cluster:0.1.0` | Remote reference |
 
 ## Data Collection
 

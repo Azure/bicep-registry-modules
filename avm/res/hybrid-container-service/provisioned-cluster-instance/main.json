@@ -6,10 +6,288 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "14493889745036537795"
+      "templateHash": "10944045247049922620"
     },
     "name": "Hybrid Container Service Provisioned Cluster Instance",
     "description": "Deploy a provisioned cluster instance."
+  },
+  "definitions": {
+    "agentPoolProfilesType": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "int",
+            "metadata": {
+              "description": "Required. The number of nodes for the pool."
+            }
+          },
+          "enableAutoScaling": {
+            "type": "bool",
+            "metadata": {
+              "description": "Required. Whether to enable auto-scaling for the pool."
+            }
+          },
+          "maxCount": {
+            "type": "int",
+            "metadata": {
+              "description": "Required. The maximum number of nodes for auto-scaling."
+            }
+          },
+          "minCount": {
+            "type": "int",
+            "metadata": {
+              "description": "Reqired. The minimum number of nodes for auto-scaling."
+            }
+          },
+          "maxPods": {
+            "type": "int",
+            "metadata": {
+              "description": "Required. The maximum number of pods per node."
+            }
+          },
+          "name": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The name of the agent pool."
+            }
+          },
+          "nodeLabels": {
+            "type": "object",
+            "properties": {},
+            "additionalProperties": {
+              "type": "string"
+            },
+            "metadata": {
+              "description": "Required. The node labels to be applied to nodes in the pool."
+            }
+          },
+          "nodeTaints": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "metadata": {
+              "description": "Required. The taints to be applied to nodes in the pool."
+            }
+          },
+          "osSKU": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The OS SKU for the nodes."
+            }
+          },
+          "osType": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The OS type for the nodes."
+            }
+          },
+          "vmSize": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The VM size for the nodes."
+            }
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for agent pool profiles configuration."
+      }
+    },
+    "cloudProviderProfileType": {
+      "type": "object",
+      "properties": {
+        "infraNetworkProfile": {
+          "type": "object",
+          "properties": {
+            "vnetSubnetIds": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "metadata": {
+                "description": "Required. The list of virtual network subnet IDs."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. The infrastructure network profile configuration."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for cloud provider profile configuration."
+      }
+    },
+    "controlPlaneType": {
+      "type": "object",
+      "properties": {
+        "controlPlaneEndpoint": {
+          "type": "object",
+          "properties": {
+            "hostIP": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The host IP address of the control plane endpoint."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. The control plane endpoint configuration."
+          }
+        },
+        "count": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. The number of control plane nodes."
+          }
+        },
+        "vmSize": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The VM size for control plane nodes."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for control plane configuration."
+      }
+    },
+    "licenseProfileType": {
+      "type": "object",
+      "properties": {
+        "azureHybridBenefit": {
+          "type": "string",
+          "allowedValues": [
+            "False",
+            "NotApplicable",
+            "True"
+          ],
+          "metadata": {
+            "description": "Required. Azure Hybrid Benefit configuration. Allowed values: \"False\", \"NotApplicable\", \"True\"."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for license profile configuration."
+      }
+    },
+    "linuxProfileType": {
+      "type": "object",
+      "properties": {
+        "ssh": {
+          "type": "object",
+          "properties": {
+            "publicKeys": {
+              "type": "array",
+              "prefixItems": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "keyData": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The SSH public key data."
+                      }
+                    }
+                  }
+                }
+              ],
+              "items": false,
+              "metadata": {
+                "description": "Required. SSH public keys configuration."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. SSH configuration for Linux nodes."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for Linux profile configuration."
+      }
+    },
+    "networkProfileType": {
+      "type": "object",
+      "properties": {
+        "loadBalancerProfile": {
+          "type": "object",
+          "properties": {
+            "count": {
+              "type": "int",
+              "metadata": {
+                "description": "Required. The number of load balancers. Must be 0 as for now."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. Load balancer profile configuration."
+          }
+        },
+        "networkPolicy": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The network policy to use."
+          }
+        },
+        "podCidr": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The CIDR range for the pods in the kubernetes cluster."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for network profile configuration."
+      }
+    },
+    "storageProfileType": {
+      "type": "object",
+      "properties": {
+        "nfsCsiDriver": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "bool",
+              "metadata": {
+                "description": "Required. Whether the NFS CSI driver is enabled."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Reqired. NFS CSI driver configuration."
+          }
+        },
+        "smbCsiDriver": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "bool",
+              "metadata": {
+                "description": "Required. Whether the SMB CSI driver is enabled."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. SMB CSI driver configuration."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for storage profile configuration."
+      }
+    }
   },
   "parameters": {
     "name": {
@@ -81,7 +359,7 @@
       }
     },
     "agentPoolProfiles": {
-      "type": "array",
+      "$ref": "#/definitions/agentPoolProfilesType",
       "defaultValue": [
         {
           "name": "nodepool1",
@@ -98,67 +376,69 @@
         }
       ],
       "metadata": {
-        "description": "Optional. Agent pool configuration."
+        "description": "Optional. The agent pool properties for the provisioned cluster."
       }
     },
-    "logicalNetworkId": {
-      "type": "string",
+    "storageProfile": {
+      "$ref": "#/definitions/storageProfileType",
+      "defaultValue": {
+        "nfsCsiDriver": {
+          "enabled": true
+        },
+        "smbCsiDriver": {
+          "enabled": true
+        }
+      },
       "metadata": {
-        "description": "Required. The id of the logical network that the AKS nodes will be connected to."
+        "description": "Optional. The storage configuration profile for the provisioned cluster."
       }
     },
-    "controlPlaneCount": {
-      "type": "int",
-      "defaultValue": 1,
+    "networkProfile": {
+      "$ref": "#/definitions/networkProfileType",
+      "defaultValue": {
+        "podCidr": "10.244.0.0/16",
+        "networkPolicy": "calico",
+        "loadBalancerProfile": {
+          "count": 0
+        }
+      },
       "metadata": {
-        "description": "Optional. The number of control plane nodes."
+        "description": "Optional. The network configuration profile for the provisioned cluster."
       }
     },
-    "controlPlaneVmSize": {
-      "type": "string",
-      "defaultValue": "Standard_A4_v2",
-      "metadata": {
-        "description": "Optional. The VM size for control plane nodes."
-      }
-    },
-    "controlPlaneIP": {
-      "type": "string",
+    "linuxProfile": {
+      "$ref": "#/definitions/linuxProfileType",
       "nullable": true,
       "metadata": {
-        "description": "Optional. The host IP for control plane endpoint."
+        "description": "Optional. The profile for Linux VMs in the provisioned cluster."
       }
     },
-    "podCidr": {
-      "type": "string",
-      "defaultValue": "10.244.0.0/16",
+    "licenseProfile": {
+      "$ref": "#/definitions/licenseProfileType",
+      "defaultValue": {
+        "azureHybridBenefit": "False"
+      },
       "metadata": {
-        "description": "Optional. The CIDR range for the pods in the kubernetes cluster."
+        "description": "Optional. The license profile of the provisioned cluster."
       }
     },
-    "azureHybridBenefit": {
-      "type": "string",
-      "defaultValue": "False",
-      "allowedValues": [
-        "False",
-        "NotApplicable",
-        "True"
-      ],
+    "controlPlane": {
+      "$ref": "#/definitions/controlPlaneType",
+      "defaultValue": {
+        "count": 1,
+        "vmSize": "Standard_A4_v2",
+        "controlPlaneEndpoint": {
+          "hostIP": null
+        }
+      },
       "metadata": {
-        "description": "Optional. Azure Hybrid Benefit configuration."
+        "description": "Optional. The profile for control plane of the provisioned cluster."
       }
     },
-    "nfsCsiDriverEnabled": {
-      "type": "bool",
-      "defaultValue": true,
+    "cloudProviderProfile": {
+      "$ref": "#/definitions/cloudProviderProfileType",
       "metadata": {
-        "description": "Optional. Enable or disable NFS CSI driver."
-      }
-    },
-    "smbCsiDriverEnabled": {
-      "type": "bool",
-      "defaultValue": true,
-      "metadata": {
-        "description": "Optional. Enable or disable SMB CSI driver."
+        "description": "Required. The profile for the underlying cloud infrastructure provider for the provisioned cluster."
       }
     },
     "connectClustersTags": {
@@ -317,49 +597,14 @@
       },
       "properties": {
         "agentPoolProfiles": "[parameters('agentPoolProfiles')]",
-        "cloudProviderProfile": {
-          "infraNetworkProfile": {
-            "vnetSubnetIds": [
-              "[parameters('logicalNetworkId')]"
-            ]
-          }
-        },
+        "cloudProviderProfile": "[parameters('cloudProviderProfile')]",
         "clusterVMAccessProfile": {},
-        "controlPlane": {
-          "count": "[parameters('controlPlaneCount')]",
-          "vmSize": "[parameters('controlPlaneVmSize')]",
-          "controlPlaneEndpoint": {
-            "hostIP": "[parameters('controlPlaneIP')]"
-          }
-        },
+        "controlPlane": "[parameters('controlPlane')]",
         "kubernetesVersion": "[coalesce(parameters('kubernetesVersion'), '')]",
-        "licenseProfile": {
-          "azureHybridBenefit": "[parameters('azureHybridBenefit')]"
-        },
-        "linuxProfile": {
-          "ssh": {
-            "publicKeys": [
-              {
-                "keyData": "[if(empty(parameters('sshPublicKey')), reference('generateSSHKey').outputs.publicKey, parameters('sshPublicKey'))]"
-              }
-            ]
-          }
-        },
-        "networkProfile": {
-          "podCidr": "[parameters('podCidr')]",
-          "networkPolicy": "calico",
-          "loadBalancerProfile": {
-            "count": 0
-          }
-        },
-        "storageProfile": {
-          "nfsCsiDriver": {
-            "enabled": "[parameters('nfsCsiDriverEnabled')]"
-          },
-          "smbCsiDriver": {
-            "enabled": "[parameters('smbCsiDriverEnabled')]"
-          }
-        }
+        "licenseProfile": "[parameters('licenseProfile')]",
+        "linuxProfile": "[coalesce(parameters('linuxProfile'), createObject('ssh', createObject('publicKeys', createArray(createObject('keyData', if(empty(parameters('sshPublicKey')), reference('generateSSHKey').outputs.publicKey, parameters('sshPublicKey')))))))]",
+        "networkProfile": "[parameters('networkProfile')]",
+        "storageProfile": "[parameters('storageProfile')]"
       },
       "dependsOn": [
         "connectedCluster",
@@ -416,7 +661,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "13180712657215340322"
+              "templateHash": "5108918117775836535"
             },
             "name": "Kubernetes Connected Cluster",
             "description": "This module deploys an Azure Arc connected cluster."
@@ -604,7 +849,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.kubernetes-connectedcluster.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.kubernetes-connectedcluster.{0}.{1}', replace('0.1.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {

@@ -214,6 +214,12 @@ module testDeployment '../../../main.bicep' = {
   params: {
     name: '${namePrefix}${serviceShort}001'
     customLocationId: customLocation.id
-    logicalNetworkId: logicalNetwork.outputs.resourceId
+    cloudProviderProfile: {
+      infraNetworkProfile: {
+        vnetSubnetIds: [
+          logicalNetwork.outputs.resourceId
+        ]
+      }
+    }
   }
 }
