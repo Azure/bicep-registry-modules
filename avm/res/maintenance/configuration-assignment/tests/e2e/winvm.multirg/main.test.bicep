@@ -45,6 +45,7 @@ module nestedDependencies_vm 'dependencies_vm.bicep' = {
   params: {
     virtualMachineName: 'dep-${namePrefix}-vm-${serviceShort}'
     computerName: 'dep${namePrefix}${serviceShort}'
+    adminUsername: 'localAdminUser'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     location: resourceLocation
   }

@@ -15,6 +15,10 @@ param computerName string
 @secure()
 param password string = newGuid()
 
+@description('Required. The username to leverage for the VM login.')
+@secure()
+param adminUsername string
+
 var addressPrefix = '10.0.0.0/16'
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
@@ -85,7 +89,7 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2024-07-01' = {
       vmSize: 'Standard_B1ms'
     }
     osProfile: {
-      adminUsername: '${computerName}cake' // Must be less than 20 and not contain special chars for windows
+      adminUsername: adminUsername
       adminPassword: password
       computerName: computerName
       windowsConfiguration: {
