@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "14538498060030024136"
+      "templateHash": "593805007513220871"
     },
     "name": "Maintenance Configuration Assignments",
     "description": "This module deploys a Maintenance Configuration Assignment."
@@ -97,18 +97,18 @@
         "description": "Required. The maintenance configuration resource ID."
       }
     },
-    "filter": {
-      "$ref": "#/definitions/filterType",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. The unique resource ID to assign the configuration to."
-      }
-    },
     "resourceId": {
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Optional. The unique resource ID to assign the configuration to."
+        "description": "Conditional. The unique resource ID to assign the configuration to. Required if filter is not provided."
+      }
+    },
+    "filter": {
+      "$ref": "#/definitions/filterType",
+      "nullable": true,
+      "metadata": {
+        "description": "Conditional. Properties of the dynamic configuration assignment. Requied if resourceId is not provided."
       }
     }
   },
@@ -185,6 +185,13 @@
         "description": "The name of the resource group the Maintenance configuration assignment was created in."
       },
       "value": "[resourceGroup().name]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location the Maintenance configuration assignment was created in."
+      },
+      "value": "[coalesce(reference('configurationAssignment', '2023-04-01', 'full').location, reference('configurationAssignment_dynamic', '2023-04-01', 'full').location)]"
     }
   }
 }

@@ -85,7 +85,7 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2024-07-01' = {
       vmSize: 'Standard_B1ms'
     }
     osProfile: {
-      adminUsername: '${virtualMachineName}cake'
+      adminUsername: '${computerName}cake' // Must be less than 20 and not contain special chars for windows
       adminPassword: password
       computerName: computerName
       windowsConfiguration: {

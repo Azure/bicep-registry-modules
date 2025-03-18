@@ -273,14 +273,19 @@ param resourceId = '<resourceId>'
 | [`maintenanceConfigurationResourceId`](#parameter-maintenanceconfigurationresourceid) | string | The maintenance configuration resource ID. |
 | [`name`](#parameter-name) | string | Maintenance configuration assignment Name. |
 
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`filter`](#parameter-filter) | object | Properties of the dynamic configuration assignment. Requied if resourceId is not provided. |
+| [`resourceId`](#parameter-resourceid) | string | The unique resource ID to assign the configuration to. Required if filter is not provided. |
+
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`filter`](#parameter-filter) | object | The unique resource ID to assign the configuration to. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
-| [`resourceId`](#parameter-resourceid) | string | The unique resource ID to assign the configuration to. |
 
 ### Parameter: `maintenanceConfigurationResourceId`
 
@@ -296,17 +301,9 @@ Maintenance configuration assignment Name.
 - Required: Yes
 - Type: string
 
-### Parameter: `enableTelemetry`
-
-Enable/Disable usage telemetry for module.
-
-- Required: No
-- Type: bool
-- Default: `True`
-
 ### Parameter: `filter`
 
-The unique resource ID to assign the configuration to.
+Properties of the dynamic configuration assignment. Requied if resourceId is not provided.
 
 - Required: No
 - Type: object
@@ -363,6 +360,21 @@ Tags to be applied on all resources/Resource Groups in this deployment.
 - Required: No
 - Type: object
 
+### Parameter: `resourceId`
+
+The unique resource ID to assign the configuration to. Required if filter is not provided.
+
+- Required: No
+- Type: string
+
+### Parameter: `enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
+- Default: `True`
+
 ### Parameter: `location`
 
 Location for all Resources.
@@ -371,17 +383,11 @@ Location for all Resources.
 - Type: string
 - Default: `[resourceGroup().location]`
 
-### Parameter: `resourceId`
-
-The unique resource ID to assign the configuration to.
-
-- Required: No
-- Type: string
-
 ## Outputs
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `location` | string | The location the Maintenance configuration assignment was created in. |
 | `name` | string | The name of the Maintenance configuration assignment. |
 | `resourceGroupName` | string | The name of the resource group the Maintenance configuration assignment was created in. |
 | `resourceId` | string | The resource ID of the Maintenance configuration assignment. |

@@ -17,11 +17,11 @@ param location string = resourceGroup().location
 @description('Required. The maintenance configuration resource ID.')
 param maintenanceConfigurationResourceId string
 
-@description('Optional. The unique resource ID to assign the configuration to.')
-param filter filterType?
-
-@description('Optional. The unique resource ID to assign the configuration to.')
+@description('Conditional. The unique resource ID to assign the configuration to. Required if filter is not provided.')
 param resourceId string?
+
+@description('Conditional. Properties of the dynamic configuration assignment. Requied if resourceId is not provided.')
+param filter filterType?
 
 // =============== //
 //   Deployments   //
@@ -48,18 +48,14 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 
 resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' existing = if (resourceId != null) {
   name: (resourceId != null) ? last(split(resourceId!, '/'))! : 'null'
-  // scope: resourceGroup(split(resourceId!, '/')[2], split(resourceId!, '/')[4])
 }
 
 resource configurationAssignment 'Microsoft.Maintenance/configurationAssignments@2023-04-01' = if (resourceId != null) {
   scope: vm
-  // scope: resourceGroup(split(resourceId!, '/')[2], split(resourceId!, '/')[4])
   location: location
   name: name
   properties: {
-    // filter: filter
     maintenanceConfigurationId: maintenanceConfigurationResourceId
-    // resourceId: resourceId
     resourceId: vm.id
   }
 }
@@ -86,8 +82,8 @@ output resourceId string = configurationAssignment.id ?? configurationAssignment
 @description('The name of the resource group the Maintenance configuration assignment was created in.')
 output resourceGroupName string = resourceGroup().name
 
-// @description('The location the Maintenance configuration assignment was created in.')
-// output location string = configurationAssignment.location
+@description('The location the Maintenance configuration assignment was created in.')
+output location string = configurationAssignment.location ?? configurationAssignment_dynamic.location
 
 // =============== //
 //   Definitions   //
