@@ -52,8 +52,6 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
     // Required parameters
     name: 'nngmin001'
     zone: 1
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -76,10 +74,6 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
     },
     "zone": {
       "value": 1
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -98,8 +92,6 @@ using 'br/public:avm/res/network/nat-gateway:<version>'
 // Required parameters
 param name = 'nngmin001'
 param zone = 1
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -120,9 +112,8 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
   params: {
     // Required parameters
     name: 'nngepip001'
-    zone: 1
+    zone: -1
     // Non-required parameters
-    location: '<location>'
     publicIpResourceIds: '<publicIpResourceIds>'
   }
 }
@@ -145,12 +136,9 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
       "value": "nngepip001"
     },
     "zone": {
-      "value": 1
+      "value": -1
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
     "publicIpResourceIds": {
       "value": "<publicIpResourceIds>"
     }
@@ -170,9 +158,8 @@ using 'br/public:avm/res/network/nat-gateway:<version>'
 
 // Required parameters
 param name = 'nngepip001'
-param zone = 1
+param zone = -1
 // Non-required parameters
-param location = '<location>'
 param publicIpResourceIds = '<publicIpResourceIds>'
 ```
 
@@ -481,9 +468,8 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
   params: {
     // Required parameters
     name: 'nngcprx001'
-    zone: 0
+    zone: -1
     // Non-required parameters
-    location: '<location>'
     publicIPPrefixObjects: [
       {
         name: 'nngcprx001-pippre'
@@ -514,12 +500,9 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
       "value": "nngcprx001"
     },
     "zone": {
-      "value": 0
+      "value": -1
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
     "publicIPPrefixObjects": {
       "value": [
         {
@@ -547,9 +530,8 @@ using 'br/public:avm/res/network/nat-gateway:<version>'
 
 // Required parameters
 param name = 'nngcprx001'
-param zone = 0
+param zone = -1
 // Non-required parameters
-param location = '<location>'
 param publicIPPrefixObjects = [
   {
     name: 'nngcprx001-pippre'
@@ -581,11 +563,6 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
     name: 'nngwaf001'
     zone: 1
     // Non-required parameters
-    location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     publicIPAddressObjects: [
       {
         diagnosticSettings: [
@@ -640,15 +617,6 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
       "value": 1
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
     "publicIPAddressObjects": {
       "value": [
         {
@@ -701,11 +669,6 @@ using 'br/public:avm/res/network/nat-gateway:<version>'
 param name = 'nngwaf001'
 param zone = 1
 // Non-required parameters
-param location = '<location>'
-param lock = {
-  kind: 'CanNotDelete'
-  name: 'myCustomLockName'
-}
 param publicIPAddressObjects = [
   {
     diagnosticSettings: [
@@ -748,7 +711,6 @@ param tags = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | Name of the Azure Bastion resource. |
-| [`zone`](#parameter-zone) | int | A list of availability zones denoting the zone in which Nat Gateway should be deployed. |
 
 **Optional parameters**
 
@@ -764,6 +726,7 @@ param tags = {
 | [`publicIpResourceIds`](#parameter-publicipresourceids) | array | Existing Public IP Address resource IDs to use for the NAT Gateway. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags for the resource. |
+| [`zone`](#parameter-zone) | int | If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone number here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone.To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones) and [Distribute VMs and disks across availability zones](https://learn.microsoft.com/en-us/azure/virtual-machines/disks-high-availability#distribute-vms-and-disks-across-availability-zones). |
 
 ### Parameter: `name`
 
@@ -771,22 +734,6 @@ Name of the Azure Bastion resource.
 
 - Required: Yes
 - Type: string
-
-### Parameter: `zone`
-
-A list of availability zones denoting the zone in which Nat Gateway should be deployed.
-
-- Required: Yes
-- Type: int
-- Allowed:
-  ```Bicep
-  [
-    0
-    1
-    2
-    3
-  ]
-  ```
 
 ### Parameter: `enableTelemetry`
 
@@ -989,6 +936,22 @@ Tags for the resource.
 - Required: No
 - Type: object
 
+### Parameter: `zone`
+
+If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone number here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone.To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones) and [Distribute VMs and disks across availability zones](https://learn.microsoft.com/en-us/azure/virtual-machines/disks-high-availability#distribute-vms-and-disks-across-availability-zones).
+
+- Required: Yes
+- Type: int
+- Allowed:
+  ```Bicep
+  [
+    -1
+    1
+    2
+    3
+  ]
+  ```
+
 ## Outputs
 
 | Output | Type | Description |
@@ -1006,6 +969,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | :-- | :-- |
 | `br/public:avm/res/network/public-ip-address:0.5.1` | Remote reference |
 | `br/public:avm/res/network/public-ip-prefix:0.4.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 
