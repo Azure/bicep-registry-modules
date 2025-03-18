@@ -1,8 +1,8 @@
 metadata name = 'SQL Managed Instance Database Backup Short-Term Retention Policies'
 metadata description = 'This module deploys a SQL Managed Instance Database Backup Short-Term Retention Policy.'
 
-@description('Required. The name of the Short Term Retention backup policy. For example "default".')
-param name string
+@description('Optional. The name of the Short Term Retention backup policy.')
+param name string = 'default'
 
 @description('Conditional. The name of the parent SQL managed instance database. Required if the template is used in a standalone deployment.')
 param databaseName string
