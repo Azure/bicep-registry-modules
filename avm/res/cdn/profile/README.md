@@ -1670,7 +1670,7 @@ Compression settings.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`isCompressionEnabled`](#parameter-afdendpointsroutescacheconfigurationcompressionsettings) | bool | Indicates whether content compression is enabled on AzureFrontDoor. Default value is false. If compression is enabled, content will be served as compressed if user requests for a compressed version. Content won't be compressed on AzureFrontDoor when requested content is smaller than 1 byte or larger than 1 MB. |
+| [`isCompressionEnabled`](#parameter-afdendpointsroutescacheconfigurationcompressionsettingsiscompressionenabled) | bool | Indicates whether content compression is enabled on AzureFrontDoor. Default value is false. If compression is enabled, content will be served as compressed if user requests for a compressed version. Content won't be compressed on AzureFrontDoor when requested content is smaller than 1 byte or larger than 1 MB. |
 
 ### Parameter: `afdEndpoints.routes.cacheConfiguration.compressionSettings.contentTypesToCompress`
 
