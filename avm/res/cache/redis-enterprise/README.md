@@ -1729,6 +1729,117 @@ The persistence settings of the service.
 
 - Required: No
 - Type: object
+- Discriminator: `type`
+
+<h4>The available variants are:</h4>
+
+| Variant | Description |
+| :-- | :-- |
+| [`disabled`](#variant-databasepersistencetype-disabled) |  |
+| [`aof`](#variant-databasepersistencetype-aof) |  |
+| [`rdb`](#variant-databasepersistencetype-rdb) |  |
+
+### Variant: `database.persistence.type-disabled`
+
+
+To use this variant, set the property `type` to `disabled`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`type`](#parameter-databasepersistencetype-disabledtype) | string | Disabled persistence type. |
+
+### Parameter: `database.persistence.type-disabled.type`
+
+Disabled persistence type.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'disabled'
+  ]
+  ```
+
+### Variant: `database.persistence.type-aof`
+
+
+To use this variant, set the property `type` to `aof`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`frequency`](#parameter-databasepersistencetype-aoffrequency) | string | The frequency at which data is written to disk. |
+| [`type`](#parameter-databasepersistencetype-aoftype) | string | AOF persistence type. |
+
+### Parameter: `database.persistence.type-aof.frequency`
+
+The frequency at which data is written to disk.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '1s'
+  ]
+  ```
+
+### Parameter: `database.persistence.type-aof.type`
+
+AOF persistence type.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'aof'
+  ]
+  ```
+
+### Variant: `database.persistence.type-rdb`
+
+
+To use this variant, set the property `type` to `rdb`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`frequency`](#parameter-databasepersistencetype-rdbfrequency) | string | The frequency at which an RDB snapshot of the database is created. |
+| [`type`](#parameter-databasepersistencetype-rdbtype) | string | RDB persistence type. |
+
+### Parameter: `database.persistence.type-rdb.frequency`
+
+The frequency at which an RDB snapshot of the database is created.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '12h'
+    '1h'
+    '6h'
+  ]
+  ```
+
+### Parameter: `database.persistence.type-rdb.type`
+
+RDB persistence type.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'rdb'
+  ]
+  ```
 
 ### Parameter: `database.port`
 
@@ -1745,8 +1856,6 @@ Key vault reference and secret settings for the module's secrets export.
 
 - Required: No
 - Type: object
-- MinValue: 10000
-- MaxValue: 10000
 
 **Required parameters**
 
@@ -1771,8 +1880,6 @@ The resource ID of the key vault where to store the secrets of this module.
 
 - Required: Yes
 - Type: string
-- MinValue: 10000
-- MaxValue: 10000
 
 ### Parameter: `database.secretsExportConfiguration.primaryAccessKeyName`
 
@@ -1780,8 +1887,6 @@ The primaryAccessKey secret name to create.
 
 - Required: No
 - Type: string
-- MinValue: 10000
-- MaxValue: 10000
 
 ### Parameter: `database.secretsExportConfiguration.primaryConnectionStringName`
 
@@ -1789,8 +1894,6 @@ The primaryConnectionString secret name to create.
 
 - Required: No
 - Type: string
-- MinValue: 10000
-- MaxValue: 10000
 
 ### Parameter: `database.secretsExportConfiguration.primaryStackExchangeRedisConnectionStringName`
 
@@ -1798,8 +1901,6 @@ The primaryStackExchangeRedisConnectionString secret name to create.
 
 - Required: No
 - Type: string
-- MinValue: 10000
-- MaxValue: 10000
 
 ### Parameter: `database.secretsExportConfiguration.secondaryAccessKeyName`
 
@@ -1807,8 +1908,6 @@ The secondaryAccessKey secret name to create.
 
 - Required: No
 - Type: string
-- MinValue: 10000
-- MaxValue: 10000
 
 ### Parameter: `database.secretsExportConfiguration.secondaryConnectionStringName`
 
@@ -1816,8 +1915,6 @@ The secondaryConnectionString secret name to create.
 
 - Required: No
 - Type: string
-- MinValue: 10000
-- MaxValue: 10000
 
 ### Parameter: `database.secretsExportConfiguration.secondaryStackExchangeRedisConnectionStringName`
 
@@ -1825,8 +1922,6 @@ The secondaryStackExchangeRedisConnectionString secret name to create.
 
 - Required: No
 - Type: string
-- MinValue: 10000
-- MaxValue: 10000
 
 ### Parameter: `diagnosticSettings`
 

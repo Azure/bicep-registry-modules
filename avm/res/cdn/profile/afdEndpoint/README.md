@@ -168,7 +168,7 @@ Compression settings.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`iscontentTypeToCompressAll`](#parameter-routescacheconfigurationcompressionsettingsiscontenttypetocompressall) | bool | Indicates whether content compression is enabled on AzureFrontDoor. Default value is false. If compression is enabled, content will be served as compressed if user requests for a compressed version. Content won't be compressed on AzureFrontDoor when requested content is smaller than 1 byte or larger than 1 MB. |
+| [`isCompressionEnabled`](#parameter-iscompressionenabled) | bool | Indicates whether content compression is enabled on AzureFrontDoor. Default value is false. If compression is enabled, content will be served as compressed if user requests for a compressed version. Content won't be compressed on AzureFrontDoor when requested content is smaller than 1 byte or larger than 1 MB. |
 
 ### Parameter: `routes.cacheConfiguration.compressionSettings.contentTypesToCompress`
 
@@ -177,7 +177,7 @@ List of content types on which compression applies. The value should be a valid 
 - Required: Yes
 - Type: array
 
-### Parameter: `routes.cacheConfiguration.compressionSettings.iscontentTypeToCompressAll`
+### Parameter: `routes.cacheConfiguration.compressionSettings.isCompressionEnabled`
 
 Indicates whether content compression is enabled on AzureFrontDoor. Default value is false. If compression is enabled, content will be served as compressed if user requests for a compressed version. Content won't be compressed on AzureFrontDoor when requested content is smaller than 1 byte or larger than 1 MB.
 
