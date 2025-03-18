@@ -11,7 +11,7 @@ param login string
 param sid string
 
 @description('Optional. Tenant ID of the managed instance administrator.')
-param tenantId string = ''
+param tenantId string?
 
 resource managedInstance 'Microsoft.Sql/managedInstances@2024-05-01-preview' existing = {
   name: managedInstanceName

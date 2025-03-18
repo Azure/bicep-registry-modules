@@ -57,7 +57,7 @@ param servicePrincipal string = 'None'
 param managedInstanceCreateMode string = 'Default'
 
 @description('Optional. The resource ID of another managed instance whose DNS zone this managed instance will share after creation.')
-param dnsZonePartner string = ''
+param dnsZonePartner string?
 
 @description('Optional. Collation of the managed instance.')
 param collation string = 'SQL_Latin1_General_CP1_CI_AS'
@@ -77,13 +77,13 @@ param publicDataEndpointEnabled bool = false
 param timezoneId string = 'UTC'
 
 @description('Optional. The resource ID of the instance pool this managed server belongs to.')
-param instancePoolResourceId string = ''
+param instancePoolResourceId string?
 
 @description('Optional. Specifies the point in time (ISO8601 format) of the source database that will be restored to create the new database.')
-param restorePointInTime string = ''
+param restorePointInTime string?
 
 @description('Optional. The resource identifier of the source managed instance associated with create operation of this instance.')
-param sourceManagedInstanceId string = ''
+param sourceManagedInstanceId string?
 
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The diagnostic settings of the service.')
@@ -108,7 +108,7 @@ import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types
 param managedIdentities managedIdentityAllType?
 
 @description('Conditional. The resource ID of a user assigned identity to be used by default. Required if "userAssignedIdentities" is not empty.')
-param primaryUserAssignedIdentityId string = ''
+param primaryUserAssignedIdentityId string?
 
 @description('Optional. Databases to create in this server.')
 param databases array = []
@@ -253,14 +253,14 @@ resource managedInstance 'Microsoft.Sql/managedInstances@2024-05-01-preview' = {
     vCores: vCores
     storageSizeInGB: storageSizeInGB
     collation: collation
-    dnsZonePartner: !empty(dnsZonePartner) ? dnsZonePartner : null
+    dnsZonePartner: dnsZonePartner
     publicDataEndpointEnabled: publicDataEndpointEnabled
-    sourceManagedInstanceId: !empty(sourceManagedInstanceId) ? sourceManagedInstanceId : null
-    restorePointInTime: !empty(restorePointInTime) ? restorePointInTime : null
+    sourceManagedInstanceId: sourceManagedInstanceId
+    restorePointInTime: restorePointInTime
     proxyOverride: proxyOverride
     timezoneId: timezoneId
-    instancePoolId: !empty(instancePoolResourceId) ? instancePoolResourceId : null
-    primaryUserAssignedIdentityId: !empty(primaryUserAssignedIdentityId) ? primaryUserAssignedIdentityId : null
+    instancePoolId: instancePoolResourceId
+    primaryUserAssignedIdentityId: primaryUserAssignedIdentityId
     requestedBackupStorageRedundancy: requestedBackupStorageRedundancy
     zoneRedundant: zoneRedundant
     servicePrincipal: {
@@ -339,8 +339,8 @@ module managedInstance_databases 'database/main.bicep' = [
       storageContainerSasToken: database.?storageContainerSasToken ?? ''
       storageContainerUri: database.?storageContainerUri ?? ''
       tags: database.?tags ?? tags
-      backupShortTermRetentionPoliciesObj: database.?backupShortTermRetentionPolicies ?? {}
-      backupLongTermRetentionPoliciesObj: database.?backupLongTermRetentionPolicies ?? {}
+      backupShortTermRetentionPolicy: database.?backupShortTermRetentionPolicy
+      backupLongTermRetentionPolicy: database.?backupLongTermRetentionPolicy
     }
   }
 ]
@@ -379,7 +379,7 @@ module managedInstance_keys 'key/main.bicep' = [
       name: key.name
       managedInstanceName: managedInstance.name
       serverKeyType: key.?serverKeyType ?? 'ServiceManaged'
-      uri: key.?uri ?? ''
+      uri: key.?uri
     }
   }
 ]
@@ -403,7 +403,7 @@ module managedInstance_administrator 'administrator/main.bicep' = if (!empty(adm
     managedInstanceName: managedInstance.name
     login: administratorsObj.name
     sid: administratorsObj.sid
-    tenantId: administratorsObj.?tenantId ?? ''
+    tenantId: administratorsObj.?tenantId
   }
 }
 

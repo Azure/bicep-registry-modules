@@ -15,9 +15,9 @@ param managedInstanceName string
 param serverKeyType string = 'ServiceManaged'
 
 @description('Optional. The URI of the key. If the ServerKeyType is AzureKeyVault, then either the URI or the keyVaultName/keyName combination is required.')
-param uri string = ''
+param uri string?
 
-var splittedKeyUri = split(uri, '/')
+var splittedKeyUri = split(uri ?? '', '/')
 
 // if serverManaged, use serverManaged, if uri provided use concated uri value
 // MUST match the pattern '<keyVaultName>_<keyName>_<keyVersion>'

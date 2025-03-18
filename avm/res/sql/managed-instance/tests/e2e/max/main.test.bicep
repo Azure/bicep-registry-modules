@@ -84,10 +84,10 @@ module testDeployment '../../../main.bicep' = [
       collation: 'SQL_Latin1_General_CP1_CI_AS'
       databases: [
         {
-          backupLongTermRetentionPolicies: {
+          backupLongTermRetentionPolicy: {
             name: 'default'
           }
-          backupShortTermRetentionPolicies: {
+          backupShortTermRetentionPolicy: {
             name: 'default'
           }
           name: '${namePrefix}-${serviceShort}-db-001'
