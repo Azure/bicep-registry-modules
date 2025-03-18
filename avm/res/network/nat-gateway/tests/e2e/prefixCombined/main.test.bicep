@@ -41,8 +41,9 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
+      location: resourceLocation
       name: '${namePrefix}${serviceShort}001'
-      zone: -1
+      zone: 0
       publicIPPrefixObjects: [
         {
           name: '${namePrefix}${serviceShort}001-pippre'

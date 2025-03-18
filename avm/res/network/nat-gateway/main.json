@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "1746994181896269234"
+      "version": "0.33.93.31351",
+      "templateHash": "1228674487075439131"
     },
     "name": "NAT Gateways",
     "description": "This module deploys a NAT Gateway."
@@ -35,87 +35,80 @@
           }
         }
       },
-      "metadata": {
-        "description": "An AVM-aligned type for a lock.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
-        }
-      }
+      "nullable": true
     },
     "roleAssignmentType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
-          }
-        },
-        "roleDefinitionIdOrName": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-          }
-        },
-        "principalId": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-          }
-        },
-        "principalType": {
-          "type": "string",
-          "allowedValues": [
-            "Device",
-            "ForeignGroup",
-            "Group",
-            "ServicePrincipal",
-            "User"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The principal type of the assigned principal ID."
-          }
-        },
-        "description": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The description of the role assignment."
-          }
-        },
-        "condition": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-          }
-        },
-        "conditionVersion": {
-          "type": "string",
-          "allowedValues": [
-            "2.0"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Version of the condition."
-          }
-        },
-        "delegatedManagedIdentityResourceId": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The Resource Id of the delegated managed identity resource."
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+            }
+          },
+          "roleDefinitionIdOrName": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+            }
+          },
+          "principalId": {
+            "type": "string",
+            "metadata": {
+              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+            }
+          },
+          "principalType": {
+            "type": "string",
+            "allowedValues": [
+              "Device",
+              "ForeignGroup",
+              "Group",
+              "ServicePrincipal",
+              "User"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The principal type of the assigned principal ID."
+            }
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The description of the role assignment."
+            }
+          },
+          "condition": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+            }
+          },
+          "conditionVersion": {
+            "type": "string",
+            "allowedValues": [
+              "2.0"
+            ],
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. Version of the condition."
+            }
+          },
+          "delegatedManagedIdentityResourceId": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The Resource Id of the delegated managed identity resource."
+            }
           }
         }
       },
-      "metadata": {
-        "description": "An AVM-aligned type for a role assignment.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
-        }
-      }
+      "nullable": true
     }
   },
   "parameters": {
@@ -128,13 +121,13 @@
     "zone": {
       "type": "int",
       "allowedValues": [
-        -1,
+        0,
         1,
         2,
         3
       ],
       "metadata": {
-        "description": "Optional. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone number here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone.To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones) and [Distribute VMs and disks across availability zones](https://learn.microsoft.com/en-us/azure/virtual-machines/disks-high-availability#distribute-vms-and-disks-across-availability-zones)."
+        "description": "Required. A list of availability zones denoting the zone in which Nat Gateway should be deployed."
       }
     },
     "idleTimeoutInMinutes": {
@@ -181,17 +174,12 @@
     },
     "lock": {
       "$ref": "#/definitions/lockType",
-      "nullable": true,
       "metadata": {
         "description": "Optional. The lock settings of the service."
       }
     },
     "roleAssignments": {
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/roleAssignmentType"
-      },
-      "nullable": true,
+      "$ref": "#/definitions/roleAssignmentType",
       "metadata": {
         "description": "Optional. Array of role assignments to create."
       }
@@ -264,7 +252,7 @@
         "publicIpPrefixes": "[reference('formattedPublicIpPrefixResourceIds').outputs.formattedResourceIds.value]",
         "publicIpAddresses": "[reference('formattedPublicIpResourceIds').outputs.formattedResourceIds.value]"
       },
-      "zones": "[if(not(equals(parameters('zone'), -1)), createArray(string(parameters('zone'))), null())]",
+      "zones": "[if(not(equals(parameters('zone'), 0)), createArray(string(parameters('zone'))), null())]",
       "dependsOn": [
         "formattedPublicIpPrefixResourceIds",
         "formattedPublicIpResourceIds"
@@ -354,7 +342,7 @@
             "value": "[coalesce(tryGet(coalesce(parameters('publicIPAddressObjects'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
           },
           "zones": {
-            "value": "[coalesce(tryGet(coalesce(parameters('publicIPAddressObjects'), createArray())[copyIndex()], 'zones'), if(not(equals(parameters('zone'), -1)), createArray(parameters('zone')), null()))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('publicIPAddressObjects'), createArray())[copyIndex()], 'zones'), if(not(equals(parameters('zone'), 0)), createArray(parameters('zone')), null()))]"
           },
           "enableTelemetry": {
             "value": "[variables('enableReferencedModulesTelemetry')]"
@@ -1018,8 +1006,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "235355553896786544"
+              "version": "0.33.93.31351",
+              "templateHash": "15600590522677918373"
             }
           },
           "parameters": {
@@ -1432,8 +1420,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "235355553896786544"
+              "version": "0.33.93.31351",
+              "templateHash": "15600590522677918373"
             }
           },
           "parameters": {
