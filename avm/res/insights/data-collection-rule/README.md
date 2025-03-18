@@ -32,10 +32,11 @@ The following section provides usage examples for the module, which were used to
 - [Collecting custom text logs](#example-3-collecting-custom-text-logs)
 - [Collecting IIS logs](#example-4-collecting-iis-logs)
 - [Using only defaults](#example-5-using-only-defaults)
-- [Collecting Linux-specific information](#example-6-collecting-linux-specific-information)
-- [Using large parameter set](#example-7-using-large-parameter-set)
-- [WAF-aligned](#example-8-waf-aligned)
-- [Collecting Windows-specific information](#example-9-collecting-windows-specific-information)
+- [Send data to Azure Monitor Logs with Logs ingestion API.](#example-6-send-data-to-azure-monitor-logs-with-logs-ingestion-api)
+- [Collecting Linux-specific information](#example-7-collecting-linux-specific-information)
+- [Using large parameter set](#example-8-using-large-parameter-set)
+- [WAF-aligned](#example-9-waf-aligned)
+- [Collecting Windows-specific information](#example-10-collecting-windows-specific-information)
 
 ### Example 1: _Agent Settings_
 
@@ -1104,7 +1105,219 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 6: _Collecting Linux-specific information_
+### Example 6: _Send data to Azure Monitor Logs with Logs ingestion API._
+
+This instance deploys the module to setup sending data to Azure Monitor Logs with Logs ingestion API.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module dataCollectionRule 'br/public:avm/res/insights/data-collection-rule:<version>' = {
+  name: 'dataCollectionRuleDeployment'
+  params: {
+    // Required parameters
+    dataCollectionRuleProperties: {
+      dataCollectionEndpointResourceId: '<dataCollectionEndpointResourceId>'
+      dataFlows: [
+        {
+          destinations: [
+            '<logAnalyticsWorkspaceName>'
+          ]
+          outputStream: 'Custom-ApacheAccess_CL'
+          streams: [
+            'Custom-ApacheAccess_CL'
+          ]
+          transformKql: 'source\n| extend TimeGenerated = todatetime(Time)\n| parse RawData with \nClientIP:string\n\' \' *\n\' \' *\n\' [\' * \'] \'\' RequestType:string\n\' \' Resource:string\n\' \' *\n\'\' \' ResponseCode:int\n\' \' *\n| project-away Time, RawData\n| where ResponseCode != 200\n'
+        }
+      ]
+      description: 'Send data to Azure Monitor Logs with Logs ingestion API. Based on the example at https://learn.microsoft.com/en-us/azure/azure-monitor/logs/tutorial-logs-ingestion-portal'
+      destinations: {
+        logAnalytics: [
+          {
+            name: '<name>'
+            workspaceResourceId: '<workspaceResourceId>'
+          }
+        ]
+      }
+      kind: 'Direct'
+      streamDeclarations: {
+        'Custom-ApacheAccess_CL': {
+          columns: [
+            {
+              name: 'RawData'
+              type: 'string'
+            }
+            {
+              name: 'Time'
+              type: 'datetime'
+            }
+            {
+              name: 'Application'
+              type: 'string'
+            }
+          ]
+        }
+      }
+    }
+    name: 'idcrdir001'
+    // Non-required parameters
+    location: '<location>'
+    tags: {
+      'hidden-title': 'This is visible in the resource name'
+      kind: 'Direct'
+      resourceType: 'Data Collection Rules'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "dataCollectionRuleProperties": {
+      "value": {
+        "dataCollectionEndpointResourceId": "<dataCollectionEndpointResourceId>",
+        "dataFlows": [
+          {
+            "destinations": [
+              "<logAnalyticsWorkspaceName>"
+            ],
+            "outputStream": "Custom-ApacheAccess_CL",
+            "streams": [
+              "Custom-ApacheAccess_CL"
+            ],
+            "transformKql": "source\n| extend TimeGenerated = todatetime(Time)\n| parse RawData with \nClientIP:string\n\" \" *\n\" \" *\n\" [\" * \"] \"\" RequestType:string\n\" \" Resource:string\n\" \" *\n\"\" \" ResponseCode:int\n\" \" *\n| project-away Time, RawData\n| where ResponseCode != 200\n"
+          }
+        ],
+        "description": "Send data to Azure Monitor Logs with Logs ingestion API. Based on the example at https://learn.microsoft.com/en-us/azure/azure-monitor/logs/tutorial-logs-ingestion-portal",
+        "destinations": {
+          "logAnalytics": [
+            {
+              "name": "<name>",
+              "workspaceResourceId": "<workspaceResourceId>"
+            }
+          ]
+        },
+        "kind": "Direct",
+        "streamDeclarations": {
+          "Custom-ApacheAccess_CL": {
+            "columns": [
+              {
+                "name": "RawData",
+                "type": "string"
+              },
+              {
+                "name": "Time",
+                "type": "datetime"
+              },
+              {
+                "name": "Application",
+                "type": "string"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "name": {
+      "value": "idcrdir001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "tags": {
+      "value": {
+        "hidden-title": "This is visible in the resource name",
+        "kind": "Direct",
+        "resourceType": "Data Collection Rules"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/insights/data-collection-rule:<version>'
+
+// Required parameters
+param dataCollectionRuleProperties = {
+  dataCollectionEndpointResourceId: '<dataCollectionEndpointResourceId>'
+  dataFlows: [
+    {
+      destinations: [
+        '<logAnalyticsWorkspaceName>'
+      ]
+      outputStream: 'Custom-ApacheAccess_CL'
+      streams: [
+        'Custom-ApacheAccess_CL'
+      ]
+      transformKql: 'source\n| extend TimeGenerated = todatetime(Time)\n| parse RawData with \nClientIP:string\n\' \' *\n\' \' *\n\' [\' * \'] \'\' RequestType:string\n\' \' Resource:string\n\' \' *\n\'\' \' ResponseCode:int\n\' \' *\n| project-away Time, RawData\n| where ResponseCode != 200\n'
+    }
+  ]
+  description: 'Send data to Azure Monitor Logs with Logs ingestion API. Based on the example at https://learn.microsoft.com/en-us/azure/azure-monitor/logs/tutorial-logs-ingestion-portal'
+  destinations: {
+    logAnalytics: [
+      {
+        name: '<name>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
+  }
+  kind: 'Direct'
+  streamDeclarations: {
+    'Custom-ApacheAccess_CL': {
+      columns: [
+        {
+          name: 'RawData'
+          type: 'string'
+        }
+        {
+          name: 'Time'
+          type: 'datetime'
+        }
+        {
+          name: 'Application'
+          type: 'string'
+        }
+      ]
+    }
+  }
+}
+param name = 'idcrdir001'
+// Non-required parameters
+param location = '<location>'
+param tags = {
+  'hidden-title': 'This is visible in the resource name'
+  kind: 'Direct'
+  resourceType: 'Data Collection Rules'
+}
+```
+
+</details>
+<p>
+
+### Example 7: _Collecting Linux-specific information_
 
 This instance deploys the module to setup the collection of Linux-specific performance counters and Linux Syslog.
 
@@ -1640,7 +1853,7 @@ param tags = {
 </details>
 <p>
 
-### Example 7: _Using large parameter set_
+### Example 8: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -1993,7 +2206,7 @@ param tags = {
 </details>
 <p>
 
-### Example 8: _WAF-aligned_
+### Example 9: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -2391,7 +2604,7 @@ param tags = {
 </details>
 <p>
 
-### Example 9: _Collecting Windows-specific information_
+### Example 10: _Collecting Windows-specific information_
 
 This instance deploys the module to setup the connection of Windows-specific performance counters and Windows Event Logs.
 
@@ -3029,7 +3242,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.3.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 
