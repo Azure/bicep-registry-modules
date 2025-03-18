@@ -1,10 +1,5 @@
 # Maintenance Configuration Assignments `[Microsoft.Maintenance/configurationAssignments]`
 
-> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
-> 
-> - Only security and bug fixes are being handled by the AVM core team at present.
-> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
-
 This module deploys a Maintenance Configuration Assignment.
 
 ## Navigation
@@ -277,8 +272,8 @@ param resourceId = '<resourceId>'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`filter`](#parameter-filter) | object | Properties of the dynamic configuration assignment. Requied if resourceId is not provided. |
-| [`resourceId`](#parameter-resourceid) | string | The unique resource ID to assign the configuration to. Required if filter is not provided. |
+| [`filter`](#parameter-filter) | object | Properties of the dynamic configuration assignment. Required if resourceId is not provided. |
+| [`resourceId`](#parameter-resourceid) | string | The unique virtual machine resource ID to assign the configuration to. Required if filter is not provided. If resourceId is provided, filter is ignored. If provided, the module scope must be set to the resource group of the virtual machine. |
 
 **Optional parameters**
 
@@ -303,7 +298,7 @@ Maintenance configuration assignment Name.
 
 ### Parameter: `filter`
 
-Properties of the dynamic configuration assignment. Requied if resourceId is not provided.
+Properties of the dynamic configuration assignment. Required if resourceId is not provided.
 
 - Required: No
 - Type: object
@@ -362,7 +357,7 @@ Tags to be applied on all resources/Resource Groups in this deployment.
 
 ### Parameter: `resourceId`
 
-The unique resource ID to assign the configuration to. Required if filter is not provided.
+The unique virtual machine resource ID to assign the configuration to. Required if filter is not provided. If resourceId is provided, filter is ignored. If provided, the module scope must be set to the resource group of the virtual machine.
 
 - Required: No
 - Type: string

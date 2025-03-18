@@ -17,10 +17,10 @@ param location string = resourceGroup().location
 @description('Required. The maintenance configuration resource ID.')
 param maintenanceConfigurationResourceId string
 
-@description('Conditional. The unique resource ID to assign the configuration to. Required if filter is not provided.')
+@description('Conditional. The unique virtual machine resource ID to assign the configuration to. Required if filter is not provided. If resourceId is provided, filter is ignored. If provided, the module scope must be set to the resource group of the virtual machine.')
 param resourceId string?
 
-@description('Conditional. Properties of the dynamic configuration assignment. Requied if resourceId is not provided.')
+@description('Conditional. Properties of the dynamic configuration assignment. Required if resourceId is not provided.')
 param filter filterType?
 
 // =============== //
