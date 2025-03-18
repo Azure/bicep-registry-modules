@@ -2149,8 +2149,6 @@ Network protocol this rule applies to.
     'Udp'
   ]
   ```
-- MinValue: 1
-- MaxValue: 4096
 
 ### Parameter: `securityAdminConfigurations.ruleCollections.rules.description`
 
@@ -2158,8 +2156,6 @@ A description of the rule.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 4096
 
 ### Parameter: `securityAdminConfigurations.ruleCollections.rules.destinationPortRanges`
 
@@ -2167,8 +2163,6 @@ List of destination port ranges. This specifies on which ports traffic will be a
 
 - Required: No
 - Type: array
-- MinValue: 1
-- MaxValue: 4096
 
 ### Parameter: `securityAdminConfigurations.ruleCollections.rules.destinations`
 
@@ -2176,8 +2170,6 @@ The destnations filter can be an IP Address or a service tag. Each filter contai
 
 - Required: No
 - Type: array
-- MinValue: 1
-- MaxValue: 4096
 
 **Required parameters**
 
@@ -2192,8 +2184,6 @@ Address prefix.
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 4096
 
 ### Parameter: `securityAdminConfigurations.ruleCollections.rules.destinations.addressPrefixType`
 
@@ -2208,8 +2198,6 @@ Address prefix type.
     'ServiceTag'
   ]
   ```
-- MinValue: 1
-- MaxValue: 4096
 
 ### Parameter: `securityAdminConfigurations.ruleCollections.rules.sourcePortRanges`
 
@@ -2217,8 +2205,6 @@ List of destination port ranges. This specifies on which ports traffic will be a
 
 - Required: No
 - Type: array
-- MinValue: 1
-- MaxValue: 4096
 
 ### Parameter: `securityAdminConfigurations.ruleCollections.rules.sources`
 
@@ -2226,8 +2212,6 @@ The source filter can be an IP Address or a service tag. Each filter contains th
 
 - Required: No
 - Type: array
-- MinValue: 1
-- MaxValue: 4096
 
 **Required parameters**
 
@@ -2242,8 +2226,6 @@ Address prefix.
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 4096
 
 ### Parameter: `securityAdminConfigurations.ruleCollections.rules.sources.addressPrefixType`
 
@@ -2258,8 +2240,6 @@ Address prefix type.
     'ServiceTag'
   ]
   ```
-- MinValue: 1
-- MaxValue: 4096
 
 ### Parameter: `tags`
 

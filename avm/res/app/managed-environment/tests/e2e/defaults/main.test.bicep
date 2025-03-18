@@ -52,7 +52,6 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       logAnalyticsWorkspaceResourceId: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
-      location: resourceLocation
       workloadProfiles: [
         {
           workloadProfileType: 'D4'

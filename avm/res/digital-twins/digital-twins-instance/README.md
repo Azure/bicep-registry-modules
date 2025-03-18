@@ -1057,6 +1057,402 @@ The properties of the endpoint.
 
 - Required: Yes
 - Type: object
+- Discriminator: `endpointType`
+
+<h4>The available variants are:</h4>
+
+| Variant | Description |
+| :-- | :-- |
+| [`EventGrid`](#variant-endpointspropertiesendpointtype-eventgrid) | The type for an event grid endpoint. |
+| [`EventHub`](#variant-endpointspropertiesendpointtype-eventhub) | The type for an event hub endpoint. |
+| [`ServiceBus`](#variant-endpointspropertiesendpointtype-servicebus) | The type for a service bus endpoint. |
+
+### Variant: `endpoints.properties.endpointType-EventGrid`
+The type for an event grid endpoint.
+
+To use this variant, set the property `endpointType` to `EventGrid`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`endpointType`](#parameter-endpointspropertiesendpointtype-eventgridendpointtype) | string | The type of endpoint to create. |
+| [`eventGridTopicResourceId`](#parameter-endpointspropertiesendpointtype-eventgrideventgridtopicresourceid) | string | The resource ID of the Event Grid Topic to get access keys from. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`deadLetterSecret`](#parameter-endpointspropertiesendpointtype-eventgriddeadlettersecret) | securestring | Dead letter storage secret for key-based authentication. Will be obfuscated during read. |
+| [`deadLetterUri`](#parameter-endpointspropertiesendpointtype-eventgriddeadletteruri) | string | Dead letter storage URL for identity-based authentication. |
+
+### Parameter: `endpoints.properties.endpointType-EventGrid.endpointType`
+
+The type of endpoint to create.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'EventGrid'
+  ]
+  ```
+
+### Parameter: `endpoints.properties.endpointType-EventGrid.eventGridTopicResourceId`
+
+The resource ID of the Event Grid Topic to get access keys from.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `endpoints.properties.endpointType-EventGrid.deadLetterSecret`
+
+Dead letter storage secret for key-based authentication. Will be obfuscated during read.
+
+- Required: No
+- Type: securestring
+
+### Parameter: `endpoints.properties.endpointType-EventGrid.deadLetterUri`
+
+Dead letter storage URL for identity-based authentication.
+
+- Required: No
+- Type: string
+
+### Variant: `endpoints.properties.endpointType-EventHub`
+The type for an event hub endpoint.
+
+To use this variant, set the property `endpointType` to `EventHub`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`authentication`](#parameter-endpointspropertiesendpointtype-eventhubauthentication) | object | Specifies the authentication type being used for connecting to the endpoint. |
+| [`endpointType`](#parameter-endpointspropertiesendpointtype-eventhubendpointtype) | string | The type of endpoint to create. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`deadLetterSecret`](#parameter-endpointspropertiesendpointtype-eventhubdeadlettersecret) | securestring | Dead letter storage secret for key-based authentication. Will be obfuscated during read. |
+| [`deadLetterUri`](#parameter-endpointspropertiesendpointtype-eventhubdeadletteruri) | string | Dead letter storage URL for identity-based authentication. |
+
+### Parameter: `endpoints.properties.endpointType-EventHub.authentication`
+
+Specifies the authentication type being used for connecting to the endpoint.
+
+- Required: Yes
+- Type: object
+- Discriminator: `type`
+
+<h4>The available variants are:</h4>
+
+| Variant | Description |
+| :-- | :-- |
+| [`IdentityBased`](#variant-endpointspropertiesendpointtype-eventhubauthenticationtype-identitybased) |  |
+| [`KeyBased`](#variant-endpointspropertiesendpointtype-eventhubauthenticationtype-keybased) |  |
+
+### Variant: `endpoints.properties.endpointType-EventHub.authentication.type-IdentityBased`
+
+
+To use this variant, set the property `type` to `IdentityBased`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`eventHubResourceId`](#parameter-endpointspropertiesendpointtype-eventhubauthenticationtype-identitybasedeventhubresourceid) | string | The resource ID of the Event Hub Namespace Event Hub. |
+| [`type`](#parameter-endpointspropertiesendpointtype-eventhubauthenticationtype-identitybasedtype) | string | Specifies the authentication type being used for connecting to the endpoint. If 'KeyBased' is selected, a connection string must be specified (at least the primary connection string). If 'IdentityBased' is select, the endpointUri and entityPath properties must be specified. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`managedIdentities`](#parameter-endpointspropertiesendpointtype-eventhubauthenticationtype-identitybasedmanagedidentities) | object | The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both. |
+
+### Parameter: `endpoints.properties.endpointType-EventHub.authentication.type-IdentityBased.eventHubResourceId`
+
+The resource ID of the Event Hub Namespace Event Hub.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `endpoints.properties.endpointType-EventHub.authentication.type-IdentityBased.type`
+
+Specifies the authentication type being used for connecting to the endpoint. If 'KeyBased' is selected, a connection string must be specified (at least the primary connection string). If 'IdentityBased' is select, the endpointUri and entityPath properties must be specified.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'IdentityBased'
+  ]
+  ```
+
+### Parameter: `endpoints.properties.endpointType-EventHub.authentication.type-IdentityBased.managedIdentities`
+
+The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`systemAssigned`](#parameter-endpointspropertiesendpointtype-eventhubauthenticationtype-identitybasedmanagedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
+| [`userAssignedResourceId`](#parameter-endpointspropertiesendpointtype-eventhubauthenticationtype-identitybasedmanagedidentitiesuserassignedresourceid) | string | The resource ID(s) to assign to the resource. |
+
+### Parameter: `endpoints.properties.endpointType-EventHub.authentication.type-IdentityBased.managedIdentities.systemAssigned`
+
+Enables system assigned managed identity on the resource.
+
+- Required: No
+- Type: bool
+
+### Parameter: `endpoints.properties.endpointType-EventHub.authentication.type-IdentityBased.managedIdentities.userAssignedResourceId`
+
+The resource ID(s) to assign to the resource.
+
+- Required: No
+- Type: string
+
+### Variant: `endpoints.properties.endpointType-EventHub.authentication.type-KeyBased`
+
+
+To use this variant, set the property `type` to `KeyBased`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`eventHubAuthorizationRuleName`](#parameter-endpointspropertiesendpointtype-eventhubauthenticationtype-keybasedeventhubauthorizationrulename) | string | The name of the Event Hub Namespace Event Hub Authorization Rule. |
+| [`eventHubResourceId`](#parameter-endpointspropertiesendpointtype-eventhubauthenticationtype-keybasedeventhubresourceid) | string | The resource ID of the Event Hub Namespace Event Hub. |
+| [`type`](#parameter-endpointspropertiesendpointtype-eventhubauthenticationtype-keybasedtype) | string | Specifies the authentication type being used for connecting to the endpoint. If 'KeyBased' is selected, a connection string must be specified (at least the primary connection string). If 'IdentityBased' is select, the endpointUri and entityPath properties must be specified. |
+
+### Parameter: `endpoints.properties.endpointType-EventHub.authentication.type-KeyBased.eventHubAuthorizationRuleName`
+
+The name of the Event Hub Namespace Event Hub Authorization Rule.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `endpoints.properties.endpointType-EventHub.authentication.type-KeyBased.eventHubResourceId`
+
+The resource ID of the Event Hub Namespace Event Hub.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `endpoints.properties.endpointType-EventHub.authentication.type-KeyBased.type`
+
+Specifies the authentication type being used for connecting to the endpoint. If 'KeyBased' is selected, a connection string must be specified (at least the primary connection string). If 'IdentityBased' is select, the endpointUri and entityPath properties must be specified.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'KeyBased'
+  ]
+  ```
+
+### Parameter: `endpoints.properties.endpointType-EventHub.endpointType`
+
+The type of endpoint to create.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'EventHub'
+  ]
+  ```
+
+### Parameter: `endpoints.properties.endpointType-EventHub.deadLetterSecret`
+
+Dead letter storage secret for key-based authentication. Will be obfuscated during read.
+
+- Required: No
+- Type: securestring
+
+### Parameter: `endpoints.properties.endpointType-EventHub.deadLetterUri`
+
+Dead letter storage URL for identity-based authentication.
+
+- Required: No
+- Type: string
+
+### Variant: `endpoints.properties.endpointType-ServiceBus`
+The type for a service bus endpoint.
+
+To use this variant, set the property `endpointType` to `ServiceBus`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`authentication`](#parameter-endpointspropertiesendpointtype-servicebusauthentication) | object | Specifies the authentication type being used for connecting to the endpoint. |
+| [`endpointType`](#parameter-endpointspropertiesendpointtype-servicebusendpointtype) | string | The type of endpoint to create. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`deadLetterSecret`](#parameter-endpointspropertiesendpointtype-servicebusdeadlettersecret) | securestring | Dead letter storage secret for key-based authentication. Will be obfuscated during read. |
+| [`deadLetterUri`](#parameter-endpointspropertiesendpointtype-servicebusdeadletteruri) | string | Dead letter storage URL for identity-based authentication. |
+
+### Parameter: `endpoints.properties.endpointType-ServiceBus.authentication`
+
+Specifies the authentication type being used for connecting to the endpoint.
+
+- Required: Yes
+- Type: object
+- Discriminator: `type`
+
+<h4>The available variants are:</h4>
+
+| Variant | Description |
+| :-- | :-- |
+| [`IdentityBased`](#variant-endpointspropertiesendpointtype-servicebusauthenticationtype-identitybased) |  |
+| [`KeyBased`](#variant-endpointspropertiesendpointtype-servicebusauthenticationtype-keybased) |  |
+
+### Variant: `endpoints.properties.endpointType-ServiceBus.authentication.type-IdentityBased`
+
+
+To use this variant, set the property `type` to `IdentityBased`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`serviceBusNamespaceTopicResourceId`](#parameter-endpointspropertiesendpointtype-servicebusauthenticationtype-identitybasedservicebusnamespacetopicresourceid) | string | The ServiceBus Namespace Topic resource ID. |
+| [`type`](#parameter-endpointspropertiesendpointtype-servicebusauthenticationtype-identitybasedtype) | string | Specifies the authentication type being used for connecting to the endpoint. If 'KeyBased' is selected, a connection string must be specified (at least the primary connection string). If 'IdentityBased' is select, the endpointUri and entityPath properties must be specified. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`managedIdentities`](#parameter-endpointspropertiesendpointtype-servicebusauthenticationtype-identitybasedmanagedidentities) | object | The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both. |
+
+### Parameter: `endpoints.properties.endpointType-ServiceBus.authentication.type-IdentityBased.serviceBusNamespaceTopicResourceId`
+
+The ServiceBus Namespace Topic resource ID.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `endpoints.properties.endpointType-ServiceBus.authentication.type-IdentityBased.type`
+
+Specifies the authentication type being used for connecting to the endpoint. If 'KeyBased' is selected, a connection string must be specified (at least the primary connection string). If 'IdentityBased' is select, the endpointUri and entityPath properties must be specified.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'IdentityBased'
+  ]
+  ```
+
+### Parameter: `endpoints.properties.endpointType-ServiceBus.authentication.type-IdentityBased.managedIdentities`
+
+The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`systemAssigned`](#parameter-endpointspropertiesendpointtype-servicebusauthenticationtype-identitybasedmanagedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
+| [`userAssignedResourceId`](#parameter-endpointspropertiesendpointtype-servicebusauthenticationtype-identitybasedmanagedidentitiesuserassignedresourceid) | string | The resource ID(s) to assign to the resource. |
+
+### Parameter: `endpoints.properties.endpointType-ServiceBus.authentication.type-IdentityBased.managedIdentities.systemAssigned`
+
+Enables system assigned managed identity on the resource.
+
+- Required: No
+- Type: bool
+
+### Parameter: `endpoints.properties.endpointType-ServiceBus.authentication.type-IdentityBased.managedIdentities.userAssignedResourceId`
+
+The resource ID(s) to assign to the resource.
+
+- Required: No
+- Type: string
+
+### Variant: `endpoints.properties.endpointType-ServiceBus.authentication.type-KeyBased`
+
+
+To use this variant, set the property `type` to `KeyBased`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`serviceBusNamespaceTopicAuthorizationRuleName`](#parameter-endpointspropertiesendpointtype-servicebusauthenticationtype-keybasedservicebusnamespacetopicauthorizationrulename) | string | The ServiceBus Namespace Topic Authorization Rule name. |
+| [`serviceBusNamespaceTopicResourceId`](#parameter-endpointspropertiesendpointtype-servicebusauthenticationtype-keybasedservicebusnamespacetopicresourceid) | string | The ServiceBus Namespace Topic resource ID. |
+| [`type`](#parameter-endpointspropertiesendpointtype-servicebusauthenticationtype-keybasedtype) | string | Specifies the authentication type being used for connecting to the endpoint. If 'KeyBased' is selected, a connection string must be specified (at least the primary connection string). If 'IdentityBased' is select, the endpointUri and entityPath properties must be specified. |
+
+### Parameter: `endpoints.properties.endpointType-ServiceBus.authentication.type-KeyBased.serviceBusNamespaceTopicAuthorizationRuleName`
+
+The ServiceBus Namespace Topic Authorization Rule name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `endpoints.properties.endpointType-ServiceBus.authentication.type-KeyBased.serviceBusNamespaceTopicResourceId`
+
+The ServiceBus Namespace Topic resource ID.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `endpoints.properties.endpointType-ServiceBus.authentication.type-KeyBased.type`
+
+Specifies the authentication type being used for connecting to the endpoint. If 'KeyBased' is selected, a connection string must be specified (at least the primary connection string). If 'IdentityBased' is select, the endpointUri and entityPath properties must be specified.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'KeyBased'
+  ]
+  ```
+
+### Parameter: `endpoints.properties.endpointType-ServiceBus.endpointType`
+
+The type of endpoint to create.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'ServiceBus'
+  ]
+  ```
+
+### Parameter: `endpoints.properties.endpointType-ServiceBus.deadLetterSecret`
+
+Dead letter storage secret for key-based authentication. Will be obfuscated during read.
+
+- Required: No
+- Type: securestring
+
+### Parameter: `endpoints.properties.endpointType-ServiceBus.deadLetterUri`
+
+Dead letter storage URL for identity-based authentication.
+
+- Required: No
+- Type: string
 
 ### Parameter: `endpoints.name`
 
