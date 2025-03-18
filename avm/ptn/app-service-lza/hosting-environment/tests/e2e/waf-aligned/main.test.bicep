@@ -9,7 +9,7 @@ targetScope = 'subscription'
 
 @description('Optional. The name of the resource group to deploy for diagnostics settings')
 @maxLength(90)
-param diagnosticsResourceGroupName string = 'diag-${namePrefix}-appservicelza-${serviceShort}-rg'
+param diagnosticsResourceGroupName string = 'diag-appservicelza-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
@@ -35,10 +35,10 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
   params: {
-    storageAccountName: 'dep${namePrefix}diasa${serviceShort}03'
-    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
-    eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}01'
-    eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}01'
+    storageAccountName: 'depdiasa${serviceShort}03'
+    logAnalyticsWorkspaceName: 'dep-law-${serviceShort}'
+    eventHubNamespaceEventHubName: 'dep-evh-${serviceShort}01'
+    eventHubNamespaceName: 'dep-evhns-${serviceShort}01'
     location: resourceLocation
   }
 }
