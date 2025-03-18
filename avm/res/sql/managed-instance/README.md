@@ -142,10 +142,10 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
     collation: 'SQL_Latin1_General_CP1_CI_AS'
     databases: [
       {
-        backupLongTermRetentionPolicies: {
+        backupLongTermRetentionPolicy: {
           name: 'default'
         }
-        backupShortTermRetentionPolicies: {
+        backupShortTermRetentionPolicy: {
           name: 'default'
         }
         diagnosticSettings: [
@@ -279,10 +279,10 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
     "databases": {
       "value": [
         {
-          "backupLongTermRetentionPolicies": {
+          "backupLongTermRetentionPolicy": {
             "name": "default"
           },
-          "backupShortTermRetentionPolicies": {
+          "backupShortTermRetentionPolicy": {
             "name": "default"
           },
           "diagnosticSettings": [
@@ -448,10 +448,10 @@ param subnetResourceId = '<subnetResourceId>'
 param collation = 'SQL_Latin1_General_CP1_CI_AS'
 param databases = [
   {
-    backupLongTermRetentionPolicies: {
+    backupLongTermRetentionPolicy: {
       name: 'default'
     }
-    backupShortTermRetentionPolicies: {
+    backupShortTermRetentionPolicy: {
       name: 'default'
     }
     diagnosticSettings: [
@@ -738,10 +738,10 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
     collation: 'SQL_Latin1_General_CP1_CI_AS'
     databases: [
       {
-        backupLongTermRetentionPolicies: {
+        backupLongTermRetentionPolicy: {
           name: 'default'
         }
-        backupShortTermRetentionPolicies: {
+        backupShortTermRetentionPolicy: {
           name: 'default'
         }
         diagnosticSettings: [
@@ -858,10 +858,10 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
     "databases": {
       "value": [
         {
-          "backupLongTermRetentionPolicies": {
+          "backupLongTermRetentionPolicy": {
             "name": "default"
           },
-          "backupShortTermRetentionPolicies": {
+          "backupShortTermRetentionPolicy": {
             "name": "default"
           },
           "diagnosticSettings": [
@@ -1008,10 +1008,10 @@ param subnetResourceId = '<subnetResourceId>'
 param collation = 'SQL_Latin1_General_CP1_CI_AS'
 param databases = [
   {
-    backupLongTermRetentionPolicies: {
+    backupLongTermRetentionPolicy: {
       name: 'default'
     }
-    backupShortTermRetentionPolicies: {
+    backupShortTermRetentionPolicy: {
       name: 'default'
     }
     diagnosticSettings: [
@@ -1187,7 +1187,6 @@ The resource ID of a user assigned identity to be used by default. Required if "
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `administratorsObj`
 
@@ -1365,7 +1364,6 @@ The resource ID of another managed instance whose DNS zone this managed instance
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `enableTelemetry`
 
@@ -1397,7 +1395,6 @@ The resource ID of the instance pool this managed server belongs to.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `keys`
 
@@ -1573,7 +1570,6 @@ Specifies the point in time (ISO8601 format) of the source database that will be
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `roleAssignments`
 
@@ -1730,7 +1726,6 @@ The resource identifier of the source managed instance associated with create op
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `storageSizeInGB`
 

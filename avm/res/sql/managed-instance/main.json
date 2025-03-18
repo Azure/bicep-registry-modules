@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "18227679302614000352"
+      "templateHash": "1893091319199982693"
     },
     "name": "SQL Managed Instances",
     "description": "This module deploys a SQL Managed Instance."
@@ -377,7 +377,7 @@
     },
     "dnsZonePartner": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The resource ID of another managed instance whose DNS zone this managed instance will share after creation."
       }
@@ -417,21 +417,21 @@
     },
     "instancePoolResourceId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The resource ID of the instance pool this managed server belongs to."
       }
     },
     "restorePointInTime": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Specifies the point in time (ISO8601 format) of the source database that will be restored to create the new database."
       }
     },
     "sourceManagedInstanceId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The resource identifier of the source managed instance associated with create operation of this instance."
       }
@@ -486,7 +486,7 @@
     },
     "primaryUserAssignedIdentityId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Conditional. The resource ID of a user assigned identity to be used by default. Required if \"userAssignedIdentities\" is not empty."
       }
@@ -627,14 +627,14 @@
         "vCores": "[parameters('vCores')]",
         "storageSizeInGB": "[parameters('storageSizeInGB')]",
         "collation": "[parameters('collation')]",
-        "dnsZonePartner": "[if(not(empty(parameters('dnsZonePartner'))), parameters('dnsZonePartner'), null())]",
+        "dnsZonePartner": "[parameters('dnsZonePartner')]",
         "publicDataEndpointEnabled": "[parameters('publicDataEndpointEnabled')]",
-        "sourceManagedInstanceId": "[if(not(empty(parameters('sourceManagedInstanceId'))), parameters('sourceManagedInstanceId'), null())]",
-        "restorePointInTime": "[if(not(empty(parameters('restorePointInTime'))), parameters('restorePointInTime'), null())]",
+        "sourceManagedInstanceId": "[parameters('sourceManagedInstanceId')]",
+        "restorePointInTime": "[parameters('restorePointInTime')]",
         "proxyOverride": "[parameters('proxyOverride')]",
         "timezoneId": "[parameters('timezoneId')]",
-        "instancePoolId": "[if(not(empty(parameters('instancePoolResourceId'))), parameters('instancePoolResourceId'), null())]",
-        "primaryUserAssignedIdentityId": "[if(not(empty(parameters('primaryUserAssignedIdentityId'))), parameters('primaryUserAssignedIdentityId'), null())]",
+        "instancePoolId": "[parameters('instancePoolResourceId')]",
+        "primaryUserAssignedIdentityId": "[parameters('primaryUserAssignedIdentityId')]",
         "requestedBackupStorageRedundancy": "[parameters('requestedBackupStorageRedundancy')]",
         "zoneRedundant": "[parameters('zoneRedundant')]",
         "servicePrincipal": {
@@ -773,11 +773,11 @@
           "tags": {
             "value": "[coalesce(tryGet(parameters('databases')[copyIndex()], 'tags'), parameters('tags'))]"
           },
-          "backupShortTermRetentionPoliciesObj": {
-            "value": "[coalesce(tryGet(parameters('databases')[copyIndex()], 'backupShortTermRetentionPolicies'), createObject())]"
+          "backupShortTermRetentionPolicy": {
+            "value": "[tryGet(parameters('databases')[copyIndex()], 'backupShortTermRetentionPolicy')]"
           },
-          "backupLongTermRetentionPoliciesObj": {
-            "value": "[coalesce(tryGet(parameters('databases')[copyIndex()], 'backupLongTermRetentionPolicies'), createObject())]"
+          "backupLongTermRetentionPolicy": {
+            "value": "[tryGet(parameters('databases')[copyIndex()], 'backupLongTermRetentionPolicy')]"
           }
         },
         "template": {
@@ -788,12 +788,90 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "8671809661473789133"
+              "templateHash": "11382378189282086805"
             },
             "name": "SQL Managed Instance Databases",
             "description": "This module deploys a SQL Managed Instance Database."
           },
           "definitions": {
+            "managedInstanceLongTermRetentionPolicyType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name of the long term retention policy. If not specified, 'default' name will be used."
+                  }
+                },
+                "backupStorageAccessTier": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Archive",
+                    "Hot"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The BackupStorageAccessTier for the LTR backups."
+                  }
+                },
+                "monthlyRetention": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The monthly retention policy for an LTR backup in an ISO 8601 format."
+                  }
+                },
+                "weeklyRetention": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The weekly retention policy for an LTR backup in an ISO 8601 format."
+                  }
+                },
+                "weekOfYear": {
+                  "type": "int",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The week of year to take the yearly backup in an ISO 8601 format."
+                  }
+                },
+                "yearlyRetention": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The yearly retention policy for an LTR backup in an ISO 8601 format."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for the long term backup retention policy."
+              }
+            },
+            "managedInstanceShortTermRetentionPolicyType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name of the short term retention policy. If not specified, 'default' name will be used."
+                  }
+                },
+                "retentionDays": {
+                  "type": "int",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The backup retention period in days. This is how many days Point-in-Time Restore will be supported. If not specified, the default value is 35 days."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for the short term backup retention policy."
+              }
+            },
             "diagnosticSettingLogsOnlyType": {
               "type": "object",
               "properties": {
@@ -972,49 +1050,48 @@
             },
             "sourceDatabaseId": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Conditional. The resource identifier of the source database associated with create operation of this database. Required if createMode is PointInTimeRestore."
               }
             },
             "restorePointInTime": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Conditional. Specifies the point in time (ISO8601 format) of the source database that will be restored to create the new database. Required if createMode is PointInTimeRestore."
               }
             },
             "restorableDroppedDatabaseId": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The restorable dropped database resource ID to restore when creating this database."
               }
             },
             "storageContainerUri": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Conditional. Specifies the uri of the storage container where backups for this restore are stored. Required if createMode is RestoreExternalBackup."
               }
             },
             "storageContainerSasToken": {
               "type": "securestring",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Conditional. Specifies the storage container sas token. Required if createMode is RestoreExternalBackup."
               }
             },
             "recoverableDatabaseId": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Conditional. The resource identifier of the recoverable database associated with create operation of this database. Required if createMode is Recovery."
               }
             },
             "longTermRetentionBackupResourceId": {
               "type": "string",
-              "defaultValue": "",
               "metadata": {
                 "description": "Conditional. The resource ID of the Long Term Retention backup to be used for restore of this managed database. Required if createMode is RestoreLongTermRetentionBackup."
               }
@@ -1036,16 +1113,16 @@
                 "description": "Optional. The lock settings of the service."
               }
             },
-            "backupShortTermRetentionPoliciesObj": {
-              "type": "object",
-              "defaultValue": {},
+            "backupShortTermRetentionPolicy": {
+              "$ref": "#/definitions/managedInstanceShortTermRetentionPolicyType",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The configuration for the backup short term retention policy definition."
               }
             },
-            "backupLongTermRetentionPoliciesObj": {
-              "type": "object",
-              "defaultValue": {},
+            "backupLongTermRetentionPolicy": {
+              "$ref": "#/definitions/managedInstanceLongTermRetentionPolicyType",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The configuration for the backup long term retention policy definition."
               }
@@ -1072,16 +1149,16 @@
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
               "properties": {
-                "collation": "[if(empty(parameters('collation')), null(), parameters('collation'))]",
-                "restorePointInTime": "[if(empty(parameters('restorePointInTime')), null(), parameters('restorePointInTime'))]",
-                "catalogCollation": "[if(empty(parameters('catalogCollation')), null(), parameters('catalogCollation'))]",
-                "createMode": "[if(empty(parameters('createMode')), null(), parameters('createMode'))]",
-                "storageContainerUri": "[if(empty(parameters('storageContainerUri')), null(), parameters('storageContainerUri'))]",
-                "sourceDatabaseId": "[if(empty(parameters('sourceDatabaseId')), null(), parameters('sourceDatabaseId'))]",
-                "restorableDroppedDatabaseId": "[if(empty(parameters('restorableDroppedDatabaseId')), null(), parameters('restorableDroppedDatabaseId'))]",
-                "storageContainerSasToken": "[if(empty(parameters('storageContainerSasToken')), null(), parameters('storageContainerSasToken'))]",
-                "recoverableDatabaseId": "[if(empty(parameters('recoverableDatabaseId')), null(), parameters('recoverableDatabaseId'))]",
-                "longTermRetentionBackupResourceId": "[if(empty(parameters('longTermRetentionBackupResourceId')), null(), parameters('longTermRetentionBackupResourceId'))]"
+                "collation": "[parameters('collation')]",
+                "restorePointInTime": "[parameters('restorePointInTime')]",
+                "catalogCollation": "[parameters('catalogCollation')]",
+                "createMode": "[parameters('createMode')]",
+                "storageContainerUri": "[parameters('storageContainerUri')]",
+                "sourceDatabaseId": "[parameters('sourceDatabaseId')]",
+                "restorableDroppedDatabaseId": "[parameters('restorableDroppedDatabaseId')]",
+                "storageContainerSasToken": "[parameters('storageContainerSasToken')]",
+                "recoverableDatabaseId": "[parameters('recoverableDatabaseId')]",
+                "longTermRetentionBackupResourceId": "[parameters('longTermRetentionBackupResourceId')]"
               }
             },
             "database_lock": {
@@ -1131,7 +1208,7 @@
               ]
             },
             "database_backupShortTermRetentionPolicy": {
-              "condition": "[not(empty(parameters('backupShortTermRetentionPoliciesObj')))]",
+              "condition": "[not(empty(parameters('backupShortTermRetentionPolicy')))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('{0}-BackupShortTRetPol', deployment().name)]",
@@ -1148,10 +1225,10 @@
                     "value": "[last(split(parameters('name'), '/'))]"
                   },
                   "name": {
-                    "value": "[parameters('backupShortTermRetentionPoliciesObj').name]"
+                    "value": "[tryGet(parameters('backupShortTermRetentionPolicy'), 'name')]"
                   },
                   "retentionDays": {
-                    "value": "[coalesce(tryGet(parameters('backupShortTermRetentionPoliciesObj'), 'retentionDays'), 35)]"
+                    "value": "[tryGet(parameters('backupShortTermRetentionPolicy'), 'retentionDays')]"
                   }
                 },
                 "template": {
@@ -1161,7 +1238,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.33.93.31351",
-                      "templateHash": "8412345211159637938"
+                      "templateHash": "11456772619785800996"
                     },
                     "name": "SQL Managed Instance Database Backup Short-Term Retention Policies",
                     "description": "This module deploys a SQL Managed Instance Database Backup Short-Term Retention Policy."
@@ -1169,8 +1246,9 @@
                   "parameters": {
                     "name": {
                       "type": "string",
+                      "defaultValue": "default",
                       "metadata": {
-                        "description": "Required. The name of the Short Term Retention backup policy. For example \"default\"."
+                        "description": "Optional. The name of the Short Term Retention backup policy."
                       }
                     },
                     "databaseName": {
@@ -1233,7 +1311,7 @@
               ]
             },
             "database_backupLongTermRetentionPolicy": {
-              "condition": "[not(empty(parameters('backupLongTermRetentionPoliciesObj')))]",
+              "condition": "[not(empty(parameters('backupLongTermRetentionPolicy')))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('{0}-BackupLongTRetPol', deployment().name)]",
@@ -1250,19 +1328,19 @@
                     "value": "[last(split(parameters('name'), '/'))]"
                   },
                   "name": {
-                    "value": "[parameters('backupLongTermRetentionPoliciesObj').name]"
+                    "value": "[tryGet(parameters('backupLongTermRetentionPolicy'), 'name')]"
                   },
                   "weekOfYear": {
-                    "value": "[coalesce(tryGet(parameters('backupLongTermRetentionPoliciesObj'), 'weekOfYear'), 5)]"
+                    "value": "[tryGet(parameters('backupLongTermRetentionPolicy'), 'weekOfYear')]"
                   },
                   "weeklyRetention": {
-                    "value": "[coalesce(tryGet(parameters('backupLongTermRetentionPoliciesObj'), 'weeklyRetention'), 'P1M')]"
+                    "value": "[tryGet(parameters('backupLongTermRetentionPolicy'), 'weeklyRetention')]"
                   },
                   "monthlyRetention": {
-                    "value": "[coalesce(tryGet(parameters('backupLongTermRetentionPoliciesObj'), 'monthlyRetention'), 'P1Y')]"
+                    "value": "[tryGet(parameters('backupLongTermRetentionPolicy'), 'monthlyRetention')]"
                   },
                   "yearlyRetention": {
-                    "value": "[coalesce(tryGet(parameters('backupLongTermRetentionPoliciesObj'), 'yearlyRetention'), 'P5Y')]"
+                    "value": "[tryGet(parameters('backupLongTermRetentionPolicy'), 'yearlyRetention')]"
                   }
                 },
                 "template": {
@@ -1272,7 +1350,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.33.93.31351",
-                      "templateHash": "8444093423596251832"
+                      "templateHash": "4471544038808802530"
                     },
                     "name": "SQL Managed Instance Database Backup Long-Term Retention Policies",
                     "description": "This module deploys a SQL Managed Instance Database Backup Long-Term Retention Policy."
@@ -1280,8 +1358,9 @@
                   "parameters": {
                     "name": {
                       "type": "string",
+                      "defaultValue": "default",
                       "metadata": {
-                        "description": "Required. The name of the Long Term Retention backup policy. For example \"default\"."
+                        "description": "Optional. The name of the Long Term Retention backup policy."
                       }
                     },
                     "databaseName": {
@@ -1294,6 +1373,17 @@
                       "type": "string",
                       "metadata": {
                         "description": "Conditional. The name of the parent managed instance. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "backupStorageAccessTier": {
+                      "type": "string",
+                      "defaultValue": "Hot",
+                      "allowedValues": [
+                        "Archive",
+                        "Hot"
+                      ],
+                      "metadata": {
+                        "description": "Optional. The BackupStorageAccessTier for the LTR backups."
                       }
                     },
                     "weekOfYear": {
@@ -1331,6 +1421,7 @@
                       "apiVersion": "2024-05-01-preview",
                       "name": "[format('{0}/{1}/{2}', parameters('managedInstanceName'), parameters('databaseName'), parameters('name'))]",
                       "properties": {
+                        "backupStorageAccessTier": "[parameters('backupStorageAccessTier')]",
                         "monthlyRetention": "[parameters('monthlyRetention')]",
                         "weeklyRetention": "[parameters('weeklyRetention')]",
                         "weekOfYear": "[parameters('weekOfYear')]",
@@ -1550,12 +1641,13 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "5940678936282120686"
+              "templateHash": "3808639175649060901"
             },
             "name": "SQL Managed Instance Vulnerability Assessments",
             "description": "This module deploys a SQL Managed Instance Vulnerability Assessment."
@@ -1589,7 +1681,7 @@
             },
             "recurringScansEmails": {
               "type": "array",
-              "defaultValue": [],
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Specifies an array of email addresses to which the scan notification is sent."
               }
@@ -1615,8 +1707,14 @@
               }
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "managedInstance": {
+              "existing": true,
+              "type": "Microsoft.Sql/managedInstances",
+              "apiVersion": "2024-05-01-preview",
+              "name": "[parameters('managedInstanceName')]"
+            },
+            "vulnerabilityAssessment": {
               "type": "Microsoft.Sql/managedInstances/vulnerabilityAssessments",
               "apiVersion": "2024-05-01-preview",
               "name": "[format('{0}/{1}', parameters('managedInstanceName'), parameters('name'))]",
@@ -1630,7 +1728,7 @@
                 }
               }
             },
-            {
+            "storageAccount_sbdc_rbac": {
               "condition": "[and(not(parameters('useStorageAccountAccessKey')), parameters('createStorageRoleAssignment'))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
@@ -1646,7 +1744,7 @@
                     "value": "[last(split(parameters('storageAccountResourceId'), '/'))]"
                   },
                   "managedInstanceIdentityPrincipalId": {
-                    "value": "[reference(resourceId('Microsoft.Sql/managedInstances', parameters('managedInstanceName')), '2024-05-01-preview', 'full').identity.principalId]"
+                    "value": "[reference('managedInstance', '2024-05-01-preview', 'full').identity.principalId]"
                   }
                 },
                 "template": {
@@ -1687,9 +1785,12 @@
                     }
                   ]
                 }
-              }
+              },
+              "dependsOn": [
+                "managedInstance"
+              ]
             }
-          ],
+          },
           "outputs": {
             "name": {
               "type": "string",
@@ -1744,17 +1845,18 @@
             "value": "[coalesce(tryGet(parameters('keys')[copyIndex()], 'serverKeyType'), 'ServiceManaged')]"
           },
           "uri": {
-            "value": "[coalesce(tryGet(parameters('keys')[copyIndex()], 'uri'), '')]"
+            "value": "[tryGet(parameters('keys')[copyIndex()], 'uri')]"
           }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "8472509605530788669"
+              "templateHash": "6745429343908730706"
             },
             "name": "SQL Managed Instance Keys",
             "description": "This module deploys a SQL Managed Instance Key."
@@ -1785,18 +1887,24 @@
             },
             "uri": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The URI of the key. If the ServerKeyType is AzureKeyVault, then either the URI or the keyVaultName/keyName combination is required."
               }
             }
           },
           "variables": {
-            "splittedKeyUri": "[split(parameters('uri'), '/')]",
+            "splittedKeyUri": "[split(coalesce(parameters('uri'), ''), '/')]",
             "serverKeyName": "[if(empty(parameters('uri')), 'ServiceManaged', format('{0}_{1}_{2}', split(variables('splittedKeyUri')[2], '.')[0], variables('splittedKeyUri')[4], variables('splittedKeyUri')[5]))]"
           },
-          "resources": [
-            {
+          "resources": {
+            "managedInstance": {
+              "existing": true,
+              "type": "Microsoft.Sql/managedInstances",
+              "apiVersion": "2024-05-01-preview",
+              "name": "[parameters('managedInstanceName')]"
+            },
+            "key": {
               "type": "Microsoft.Sql/managedInstances/keys",
               "apiVersion": "2024-05-01-preview",
               "name": "[format('{0}/{1}', parameters('managedInstanceName'), if(not(empty(parameters('name'))), parameters('name'), variables('serverKeyName')))]",
@@ -1805,7 +1913,7 @@
                 "uri": "[parameters('uri')]"
               }
             }
-          ],
+          },
           "outputs": {
             "name": {
               "type": "string",
@@ -1966,17 +2074,18 @@
             "value": "[parameters('administratorsObj').sid]"
           },
           "tenantId": {
-            "value": "[coalesce(tryGet(parameters('administratorsObj'), 'tenantId'), '')]"
+            "value": "[tryGet(parameters('administratorsObj'), 'tenantId')]"
           }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "12940665584448652927"
+              "templateHash": "14233064822199769401"
             },
             "name": "SQL Managed Instances Administrator",
             "description": "This module deploys a SQL Managed Instance Administrator."
@@ -2002,14 +2111,20 @@
             },
             "tenantId": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Tenant ID of the managed instance administrator."
               }
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "managedInstance": {
+              "existing": true,
+              "type": "Microsoft.Sql/managedInstances",
+              "apiVersion": "2024-05-01-preview",
+              "name": "[parameters('managedInstanceName')]"
+            },
+            "administrator": {
               "type": "Microsoft.Sql/managedInstances/administrators",
               "apiVersion": "2024-05-01-preview",
               "name": "[format('{0}/{1}', parameters('managedInstanceName'), 'ActiveDirectory')]",
@@ -2020,7 +2135,7 @@
                 "tenantId": "[parameters('tenantId')]"
               }
             }
-          ],
+          },
           "outputs": {
             "name": {
               "type": "string",

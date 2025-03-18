@@ -43,8 +43,8 @@ This module deploys a SQL Managed Instance Database.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`backupLongTermRetentionPoliciesObj`](#parameter-backuplongtermretentionpoliciesobj) | object | The configuration for the backup long term retention policy definition. |
-| [`backupShortTermRetentionPoliciesObj`](#parameter-backupshorttermretentionpoliciesobj) | object | The configuration for the backup short term retention policy definition. |
+| [`backupLongTermRetentionPolicy`](#parameter-backuplongtermretentionpolicy) | object | The configuration for the backup long term retention policy definition. |
+| [`backupShortTermRetentionPolicy`](#parameter-backupshorttermretentionpolicy) | object | The configuration for the backup short term retention policy definition. |
 | [`catalogCollation`](#parameter-catalogcollation) | string | Collation of the managed instance. |
 | [`collation`](#parameter-collation) | string | Collation of the managed instance database. |
 | [`createMode`](#parameter-createmode) | string | Managed database create mode. PointInTimeRestore: Create a database by restoring a point in time backup of an existing database. SourceDatabaseName, SourceManagedInstanceName and PointInTime must be specified. RestoreExternalBackup: Create a database by restoring from external backup files. Collation, StorageContainerUri and StorageContainerSasToken must be specified. Recovery: Creates a database by restoring a geo-replicated backup. RecoverableDatabaseId must be specified as the recoverable database resource ID to restore. RestoreLongTermRetentionBackup: Create a database by restoring from a long term retention backup (longTermRetentionBackupResourceId required). |
@@ -65,9 +65,8 @@ The name of the SQL managed instance database.
 
 The resource ID of the Long Term Retention backup to be used for restore of this managed database. Required if createMode is RestoreLongTermRetentionBackup.
 
-- Required: No
+- Required: Yes
 - Type: string
-- Default: `''`
 
 ### Parameter: `managedInstanceName`
 
@@ -82,7 +81,6 @@ The resource identifier of the recoverable database associated with create opera
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `restorePointInTime`
 
@@ -90,7 +88,6 @@ Specifies the point in time (ISO8601 format) of the source database that will be
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `sourceDatabaseId`
 
@@ -98,7 +95,6 @@ The resource identifier of the source database associated with create operation 
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `storageContainerSasToken`
 
@@ -106,7 +102,6 @@ Specifies the storage container sas token. Required if createMode is RestoreExte
 
 - Required: No
 - Type: securestring
-- Default: `''`
 
 ### Parameter: `storageContainerUri`
 
@@ -114,23 +109,101 @@ Specifies the uri of the storage container where backups for this restore are st
 
 - Required: No
 - Type: string
-- Default: `''`
 
-### Parameter: `backupLongTermRetentionPoliciesObj`
+### Parameter: `backupLongTermRetentionPolicy`
 
 The configuration for the backup long term retention policy definition.
 
 - Required: No
 - Type: object
-- Default: `{}`
 
-### Parameter: `backupShortTermRetentionPoliciesObj`
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`backupStorageAccessTier`](#parameter-backuplongtermretentionpolicybackupstorageaccesstier) | string | The BackupStorageAccessTier for the LTR backups. |
+| [`monthlyRetention`](#parameter-backuplongtermretentionpolicymonthlyretention) | string | The monthly retention policy for an LTR backup in an ISO 8601 format. |
+| [`name`](#parameter-backuplongtermretentionpolicyname) | string | The name of the long term retention policy. If not specified, 'default' name will be used. |
+| [`weeklyRetention`](#parameter-backuplongtermretentionpolicyweeklyretention) | string | The weekly retention policy for an LTR backup in an ISO 8601 format. |
+| [`weekOfYear`](#parameter-backuplongtermretentionpolicyweekofyear) | int | The week of year to take the yearly backup in an ISO 8601 format. |
+| [`yearlyRetention`](#parameter-backuplongtermretentionpolicyyearlyretention) | string | The yearly retention policy for an LTR backup in an ISO 8601 format. |
+
+### Parameter: `backupLongTermRetentionPolicy.backupStorageAccessTier`
+
+The BackupStorageAccessTier for the LTR backups.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Archive'
+    'Hot'
+  ]
+  ```
+
+### Parameter: `backupLongTermRetentionPolicy.monthlyRetention`
+
+The monthly retention policy for an LTR backup in an ISO 8601 format.
+
+- Required: No
+- Type: string
+
+### Parameter: `backupLongTermRetentionPolicy.name`
+
+The name of the long term retention policy. If not specified, 'default' name will be used.
+
+- Required: No
+- Type: string
+
+### Parameter: `backupLongTermRetentionPolicy.weeklyRetention`
+
+The weekly retention policy for an LTR backup in an ISO 8601 format.
+
+- Required: No
+- Type: string
+
+### Parameter: `backupLongTermRetentionPolicy.weekOfYear`
+
+The week of year to take the yearly backup in an ISO 8601 format.
+
+- Required: No
+- Type: int
+
+### Parameter: `backupLongTermRetentionPolicy.yearlyRetention`
+
+The yearly retention policy for an LTR backup in an ISO 8601 format.
+
+- Required: No
+- Type: string
+
+### Parameter: `backupShortTermRetentionPolicy`
 
 The configuration for the backup short term retention policy definition.
 
 - Required: No
 - Type: object
-- Default: `{}`
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-backupshorttermretentionpolicyname) | string | The name of the short term retention policy. If not specified, 'default' name will be used. |
+| [`retentionDays`](#parameter-backupshorttermretentionpolicyretentiondays) | int | The backup retention period in days. This is how many days Point-in-Time Restore will be supported. If not specified, the default value is 35 days. |
+
+### Parameter: `backupShortTermRetentionPolicy.name`
+
+The name of the short term retention policy. If not specified, 'default' name will be used.
+
+- Required: No
+- Type: string
+
+### Parameter: `backupShortTermRetentionPolicy.retentionDays`
+
+The backup retention period in days. This is how many days Point-in-Time Restore will be supported. If not specified, the default value is 35 days.
+
+- Required: No
+- Type: int
 
 ### Parameter: `catalogCollation`
 
@@ -328,7 +401,6 @@ The restorable dropped database resource ID to restore when creating this databa
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `tags`
 

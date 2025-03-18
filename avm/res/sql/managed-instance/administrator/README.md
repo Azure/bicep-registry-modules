@@ -62,7 +62,6 @@ Tenant ID of the managed instance administrator.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ## Outputs
 

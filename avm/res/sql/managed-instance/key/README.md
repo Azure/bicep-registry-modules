@@ -70,7 +70,6 @@ The URI of the key. If the ServerKeyType is AzureKeyVault, then either the URI o
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ## Outputs
 

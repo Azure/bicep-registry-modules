@@ -16,12 +16,6 @@ This module deploys a SQL Managed Instance Database Backup Long-Term Retention P
 
 ## Parameters
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | The name of the Long Term Retention backup policy. For example "default". |
-
 **Conditional parameters**
 
 | Parameter | Type | Description |
@@ -33,17 +27,12 @@ This module deploys a SQL Managed Instance Database Backup Long-Term Retention P
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`backupStorageAccessTier`](#parameter-backupstorageaccesstier) | string | The BackupStorageAccessTier for the LTR backups. |
 | [`monthlyRetention`](#parameter-monthlyretention) | string | The monthly retention policy for an LTR backup in an ISO 8601 format. |
+| [`name`](#parameter-name) | string | The name of the Long Term Retention backup policy. |
 | [`weeklyRetention`](#parameter-weeklyretention) | string | The weekly retention policy for an LTR backup in an ISO 8601 format. |
 | [`weekOfYear`](#parameter-weekofyear) | int | The week of year to take the yearly backup in an ISO 8601 format. |
 | [`yearlyRetention`](#parameter-yearlyretention) | string | The yearly retention policy for an LTR backup in an ISO 8601 format. |
-
-### Parameter: `name`
-
-The name of the Long Term Retention backup policy. For example "default".
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `databaseName`
 
@@ -59,6 +48,21 @@ The name of the parent managed instance. Required if the template is used in a s
 - Required: Yes
 - Type: string
 
+### Parameter: `backupStorageAccessTier`
+
+The BackupStorageAccessTier for the LTR backups.
+
+- Required: No
+- Type: string
+- Default: `'Hot'`
+- Allowed:
+  ```Bicep
+  [
+    'Archive'
+    'Hot'
+  ]
+  ```
+
 ### Parameter: `monthlyRetention`
 
 The monthly retention policy for an LTR backup in an ISO 8601 format.
@@ -66,6 +70,14 @@ The monthly retention policy for an LTR backup in an ISO 8601 format.
 - Required: No
 - Type: string
 - Default: `'P1Y'`
+
+### Parameter: `name`
+
+The name of the Long Term Retention backup policy.
+
+- Required: No
+- Type: string
+- Default: `'default'`
 
 ### Parameter: `weeklyRetention`
 
