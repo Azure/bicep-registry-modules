@@ -6,6 +6,9 @@ param naming object
 @description('Azure region where the resources will be deployed in')
 param location string = resourceGroup().location
 
+@description('Required. Whether to enable deployment telemetry.')
+param enableTelemetry bool
+
 @description('Optional, default is false. Set to true if you want to deploy ASE v3 instead of Multitenant App Service Plan.')
 param deployAseV3 bool = false
 
@@ -77,6 +80,7 @@ module vnetSpoke 'br/public:avm/res/network/virtual-network:0.5.4' = {
   params: {
     name: resourceNames.vnetSpoke
     location: location
+    enableTelemetry: enableTelemetry
     tags: tags
     addressPrefixes: [
       vnetSpokeAddressSpace
@@ -101,6 +105,7 @@ module routeTableToFirewall 'br/public:avm/res/network/route-table:0.4.0' = if (
   params: {
     name: resourceNames.routeTable
     location: location
+    enableTelemetry: enableTelemetry
     tags: tags
     routes: udrRoutes
   }
@@ -112,6 +117,7 @@ module nsgPep 'br/public:avm/res/network/network-security-group:0.5.0' = {
   params: {
     name: resourceNames.pepNsg
     location: location
+    enableTelemetry: enableTelemetry
     tags: tags
     securityRules: [
       {
@@ -145,6 +151,7 @@ module nsgAse 'br/public:avm/res/network/network-security-group:0.5.0' = if (dep
   params: {
     name: resourceNames.aseNsg
     location: location
+    enableTelemetry: enableTelemetry
     tags: tags
     securityRules: [
       {

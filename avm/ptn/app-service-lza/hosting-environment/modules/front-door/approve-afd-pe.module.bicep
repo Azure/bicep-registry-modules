@@ -25,6 +25,7 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
   params: {
     name: idAfdPeAutoApproverName
     location: location
+    enableTelemetry: true
     tags: tags
   }
 }

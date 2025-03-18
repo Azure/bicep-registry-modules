@@ -24,13 +24,16 @@ param password string = newGuid()
 // Test Execution //
 // ============== //
 
-module testDeployment '../../../main.bicep' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
-  params: {
-    vmSize: 'Standard_D2s_v4'
-    adminUsername: 'azureuser'
-    adminPassword: password
+@batchSize(1)
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      vmSize: 'Standard_D2s_v4'
+      adminUsername: 'azureuser'
+      adminPassword: password
+    }
   }
-}
+]
 
-output testDeploymentOutputs object = testDeployment.outputs
+output testDeploymentOutputs object = testDeployment[0].outputs

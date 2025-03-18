@@ -1,5 +1,8 @@
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 
+@description('Required. Whether to enable deployment telemetry.')
+param enableTelemetry bool
+
 @description('Required. Name of the App Service Environment.')
 @minLength(1)
 param name string
@@ -78,8 +81,9 @@ param subnetResourceId string
 param zoneRedundant bool = false
 
 @description('Optional. Diagnostic Settings for the ASE.')
-param diagnosticSettings diagnosticSettingFullType[]
+param diagnosticSettings diagnosticSettingFullType[]?
 
+@description('Required. The resource ID of the existing virtual network links to the private DNS zone. If not specified, no virtual network links will be created.')
 param virtualNetworkLinks array
 
 module ase 'br/public:avm/res/web/hosting-environment:0.3.0' = {
@@ -87,6 +91,7 @@ module ase 'br/public:avm/res/web/hosting-environment:0.3.0' = {
   params: {
     name: name
     location: location
+    enableTelemetry: enableTelemetry
     tags: tags
     subnetResourceId: subnetResourceId
     clusterSettings: clusterSettings
@@ -114,6 +119,7 @@ module asePrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.0' = {
   params: {
     name: '${ase.outputs.name}.appserviceenvironment.net'
     virtualNetworkLinks: virtualNetworkLinks
+    enableTelemetry: enableTelemetry
     tags: tags
     a: [
       {

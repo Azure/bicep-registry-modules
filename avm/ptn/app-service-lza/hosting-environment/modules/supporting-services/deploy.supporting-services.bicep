@@ -33,7 +33,7 @@ param logAnalyticsWorkspaceResourceId string = ''
 
 param appServiceManagedIdentityPrincipalId string
 
-param keyVaultDiagnosticSettings diagnosticSettingFullType[] = []
+param keyVaultDiagnosticSettings diagnosticSettingFullType[]?
 
 // ------------------
 // RESOURCES

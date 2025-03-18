@@ -15,7 +15,7 @@ param keyVaultName string
 @description('Optional. The tags to be assigned to the created resources.')
 param tags object = {}
 
-@description('Required. Whether to enable deplotment telemetry.')
+@description('Required. Whether to enable deployment telemetry.')
 param enableTelemetry bool
 
 @description('The resource ID of the Hub Virtual Network.')
@@ -31,7 +31,7 @@ param spokePrivateEndpointSubnetName string
 param keyVaultPrivateEndpointName string = 'keyvault-pep'
 
 @description('Optional. Diagnostic Settings for the Key Vault.')
-param diagnosticSettings diagnosticSettingFullType[]
+param diagnosticSettings diagnosticSettingFullType[]?
 
 param appServiceManagedIdentityPrincipalId string
 
@@ -120,7 +120,7 @@ module keyvault 'br/public:avm/res/key-vault/vault:0.12.1' = {
     roleAssignments: [
       {
         principalId: appServiceManagedIdentityPrincipalId
-        roleDefinitionIdOrName: '4633458b-17de-408a-b874-0445c86b69e6' //Key Vault Secrets User
+        roleDefinitionIdOrName: 'Key Vault Secrets User'
       }
     ]
   }

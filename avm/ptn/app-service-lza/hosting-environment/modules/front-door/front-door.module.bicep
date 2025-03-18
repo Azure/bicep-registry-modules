@@ -1,7 +1,10 @@
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 
+@description('Required. Whether to enable deployment telemetry.')
+param enableTelemetry bool
+
 @description('Optional. Diagnostic Settings for FrontDoor')
-param diagnosticSettings diagnosticSettingFullType[]
+param diagnosticSettings diagnosticSettingFullType[]?
 
 @description('Required. Name of the AFD profile.')
 param afdName string
@@ -113,6 +116,7 @@ module waf 'br/public:avm/res/network/front-door-web-application-firewall-policy
   params: {
     name: 'waffrontdoor'
     location: 'Global'
+    enableTelemetry: enableTelemetry
     tags: tags
     sku: skuName
     policySettings: {
@@ -170,6 +174,7 @@ module frontDoor 'br/public:avm/res/cdn/profile:0.12.1' = {
     name: afdName
     sku: skuName
     location: 'global'
+    enableTelemetry: enableTelemetry
     originResponseTimeoutSeconds: 120
     managedIdentities: {
       systemAssigned: true
@@ -234,7 +239,6 @@ module frontDoor 'br/public:avm/res/cdn/profile:0.12.1' = {
         ]
       }
     ]
-
     securityPolicies: [
       {
         name: 'webApplicationFirewall'

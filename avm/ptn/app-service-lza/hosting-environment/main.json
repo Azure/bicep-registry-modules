@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "4539213741338313781"
+      "templateHash": "2814630295977960435"
     },
     "name": "App Service Landing Zone Accelerator",
     "description": "This Azure App Service pattern module represents an Azure App Service deployment aligned with the cloud adoption framework"
@@ -1573,7 +1573,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "13081067330900554961"
+              "templateHash": "11018623915298116143"
             }
           },
           "definitions": {
@@ -2071,7 +2071,7 @@
               "items": {
                 "$ref": "#/definitions/diagnosticSettingFullType"
               },
-              "defaultValue": [],
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Diagnostic Settings for the App Service."
               }
@@ -2081,7 +2081,7 @@
               "items": {
                 "$ref": "#/definitions/diagnosticSettingFullType"
               },
-              "defaultValue": [],
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Diagnostic Settings for the App Service Plan."
               }
@@ -2091,6 +2091,7 @@
               "items": {
                 "$ref": "#/definitions/diagnosticSettingFullType"
               },
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Diagnostic Settings for the ASE."
               }
@@ -2100,6 +2101,7 @@
               "items": {
                 "$ref": "#/definitions/diagnosticSettingFullType"
               },
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Diagnostic Settings for Front Door."
               }
@@ -2145,6 +2147,9 @@
                   "naming": {
                     "value": "[parameters('naming')]"
                   },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
+                  },
                   "enableEgressLockdown": {
                     "value": "[parameters('enableEgressLockdown')]"
                   },
@@ -2177,7 +2182,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.33.93.31351",
-                      "templateHash": "559992774371423846"
+                      "templateHash": "17635094983998773577"
                     }
                   },
                   "parameters": {
@@ -2189,6 +2194,12 @@
                       "defaultValue": "[resourceGroup().location]",
                       "metadata": {
                         "description": "Azure region where the resources will be deployed in"
+                      }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "metadata": {
+                        "description": "Required. Whether to enable deployment telemetry."
                       }
                     },
                     "deployAseV3": {
@@ -2281,6 +2292,9 @@
                           },
                           "location": {
                             "value": "[parameters('location')]"
+                          },
+                          "enableTelemetry": {
+                            "value": "[parameters('enableTelemetry')]"
                           },
                           "tags": {
                             "value": "[parameters('tags')]"
@@ -3860,6 +3874,9 @@
                           "location": {
                             "value": "[parameters('location')]"
                           },
+                          "enableTelemetry": {
+                            "value": "[parameters('enableTelemetry')]"
+                          },
                           "tags": {
                             "value": "[parameters('tags')]"
                           },
@@ -4226,6 +4243,9 @@
                           },
                           "location": {
                             "value": "[parameters('location')]"
+                          },
+                          "enableTelemetry": {
+                            "value": "[parameters('enableTelemetry')]"
                           },
                           "tags": {
                             "value": "[parameters('tags')]"
@@ -4882,6 +4902,9 @@
                           },
                           "location": {
                             "value": "[parameters('location')]"
+                          },
+                          "enableTelemetry": {
+                            "value": "[parameters('enableTelemetry')]"
                           },
                           "tags": {
                             "value": "[parameters('tags')]"
@@ -5564,6 +5587,9 @@
                   },
                   "location": {
                     "value": "[parameters('location')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
                   },
                   "tags": {
                     "value": "[parameters('tags')]"
@@ -8579,6 +8605,9 @@
                 },
                 "mode": "Incremental",
                 "parameters": {
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
+                  },
                   "deployAseV3": {
                     "value": "[parameters('deployAseV3')]"
                   },
@@ -8639,7 +8668,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.33.93.31351",
-                      "templateHash": "12663836008662414123"
+                      "templateHash": "2844876062268007962"
                     }
                   },
                   "definitions": {
@@ -8767,6 +8796,12 @@
                     }
                   },
                   "parameters": {
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "metadata": {
+                        "description": "Required. Whether to enable deployment telemetry."
+                      }
+                    },
                     "deployAseV3": {
                       "type": "bool",
                       "defaultValue": false,
@@ -8963,6 +8998,7 @@
                       "items": {
                         "$ref": "#/definitions/diagnosticSettingFullType"
                       },
+                      "nullable": true,
                       "metadata": {
                         "description": "Optional. Diagnostic Settings for the App Service."
                       }
@@ -8972,6 +9008,7 @@
                       "items": {
                         "$ref": "#/definitions/diagnosticSettingFullType"
                       },
+                      "nullable": true,
                       "metadata": {
                         "description": "Optional. Diagnostic Settings for the App Service Plan."
                       }
@@ -8981,6 +9018,7 @@
                       "items": {
                         "$ref": "#/definitions/diagnosticSettingFullType"
                       },
+                      "nullable": true,
                       "metadata": {
                         "description": "Optional. Diagnostic Settings for the ASE."
                       }
@@ -9007,6 +9045,9 @@
                           },
                           "location": {
                             "value": "[parameters('location')]"
+                          },
+                          "enableTelemetry": {
+                            "value": "[parameters('enableTelemetry')]"
                           },
                           "tags": {
                             "value": "[parameters('tags')]"
@@ -9035,7 +9076,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.33.93.31351",
-                              "templateHash": "10369162590585011201"
+                              "templateHash": "9500924265389907428"
                             }
                           },
                           "definitions": {
@@ -9163,6 +9204,12 @@
                             }
                           },
                           "parameters": {
+                            "enableTelemetry": {
+                              "type": "bool",
+                              "metadata": {
+                                "description": "Required. Whether to enable deployment telemetry."
+                              }
+                            },
                             "name": {
                               "type": "string",
                               "minLength": 1,
@@ -9315,12 +9362,16 @@
                               "items": {
                                 "$ref": "#/definitions/diagnosticSettingFullType"
                               },
+                              "nullable": true,
                               "metadata": {
                                 "description": "Optional. Diagnostic Settings for the ASE."
                               }
                             },
                             "virtualNetworkLinks": {
-                              "type": "array"
+                              "type": "array",
+                              "metadata": {
+                                "description": "Required. The resource ID of the existing virtual network links to the private DNS zone. If not specified, no virtual network links will be created."
+                              }
                             }
                           },
                           "resources": {
@@ -9345,6 +9396,9 @@
                                   },
                                   "location": {
                                     "value": "[parameters('location')]"
+                                  },
+                                  "enableTelemetry": {
+                                    "value": "[parameters('enableTelemetry')]"
                                   },
                                   "tags": {
                                     "value": "[parameters('tags')]"
@@ -10101,6 +10155,9 @@
                                   },
                                   "virtualNetworkLinks": {
                                     "value": "[parameters('virtualNetworkLinks')]"
+                                  },
+                                  "enableTelemetry": {
+                                    "value": "[parameters('enableTelemetry')]"
                                   },
                                   "tags": {
                                     "value": "[parameters('tags')]"
@@ -13216,6 +13273,9 @@
                           "location": {
                             "value": "[parameters('location')]"
                           },
+                          "enableTelemetry": {
+                            "value": "[parameters('enableTelemetry')]"
+                          },
                           "tags": {
                             "value": "[parameters('tags')]"
                           },
@@ -13867,6 +13927,9 @@
                           "location": {
                             "value": "[parameters('location')]"
                           },
+                          "enableTelemetry": {
+                            "value": "[parameters('enableTelemetry')]"
+                          },
                           "tags": {
                             "value": "[parameters('tags')]"
                           },
@@ -14410,6 +14473,9 @@
                           },
                           "location": {
                             "value": "[parameters('location')]"
+                          },
+                          "enableTelemetry": {
+                            "value": "[parameters('enableTelemetry')]"
                           },
                           "serverFarmResourceId": {
                             "value": "[reference('plan').outputs.resourceId.value]"
@@ -19661,6 +19727,9 @@
                           "location": {
                             "value": "global"
                           },
+                          "enableTelemetry": {
+                            "value": "[parameters('enableTelemetry')]"
+                          },
                           "virtualNetworkLinks": {
                             "value": "[parameters('virtualNetworkLinks')]"
                           },
@@ -22707,6 +22776,9 @@
                           "location": {
                             "value": "[parameters('location')]"
                           },
+                          "enableTelemetry": {
+                            "value": "[parameters('enableTelemetry')]"
+                          },
                           "tags": {
                             "value": "[parameters('tags')]"
                           }
@@ -23172,6 +23244,9 @@
                           },
                           "location": {
                             "value": "[parameters('location')]"
+                          },
+                          "enableTelemetry": {
+                            "value": "[parameters('enableTelemetry')]"
                           },
                           "tags": {
                             "value": "[parameters('tags')]"
@@ -24001,6 +24076,9 @@
                 },
                 "mode": "Incremental",
                 "parameters": {
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
+                  },
                   "afdName": {
                     "value": "[format('{0}{1}', variables('resourceNames').frontDoor, parameters('workload'))]"
                   },
@@ -24040,7 +24118,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.33.93.31351",
-                      "templateHash": "11892431856935419843"
+                      "templateHash": "15677666642003370693"
                     }
                   },
                   "definitions": {
@@ -24168,11 +24246,18 @@
                     }
                   },
                   "parameters": {
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "metadata": {
+                        "description": "Required. Whether to enable deployment telemetry."
+                      }
+                    },
                     "diagnosticSettings": {
                       "type": "array",
                       "items": {
                         "$ref": "#/definitions/diagnosticSettingFullType"
                       },
+                      "nullable": true,
                       "metadata": {
                         "description": "Optional. Diagnostic Settings for FrontDoor"
                       }
@@ -24277,6 +24362,9 @@
                           },
                           "location": {
                             "value": "Global"
+                          },
+                          "enableTelemetry": {
+                            "value": "[parameters('enableTelemetry')]"
                           },
                           "tags": {
                             "value": "[parameters('tags')]"
@@ -24847,6 +24935,9 @@
                           },
                           "location": {
                             "value": "global"
+                          },
+                          "enableTelemetry": {
+                            "value": "[parameters('enableTelemetry')]"
                           },
                           "originResponseTimeoutSeconds": {
                             "value": 120
@@ -29265,7 +29356,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.33.93.31351",
-                      "templateHash": "2815237975445528071"
+                      "templateHash": "15132068755733756324"
                     }
                   },
                   "parameters": {
@@ -29369,6 +29460,9 @@
                           },
                           "location": {
                             "value": "[parameters('location')]"
+                          },
+                          "enableTelemetry": {
+                            "value": true
                           },
                           "tags": {
                             "value": "[parameters('tags')]"
@@ -43554,7 +43648,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "10006194836262291646"
+              "templateHash": "593280699365059188"
             }
           },
           "definitions": {
@@ -43896,7 +43990,7 @@
               "items": {
                 "$ref": "#/definitions/diagnosticSettingFullType"
               },
-              "defaultValue": []
+              "nullable": true
             }
           },
           "resources": {
@@ -43944,7 +44038,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.33.93.31351",
-                      "templateHash": "15730684328847172682"
+                      "templateHash": "17345579022570505807"
                     }
                   },
                   "definitions": {
@@ -44095,7 +44189,7 @@
                     "enableTelemetry": {
                       "type": "bool",
                       "metadata": {
-                        "description": "Required. Whether to enable deplotment telemetry."
+                        "description": "Required. Whether to enable deployment telemetry."
                       }
                     },
                     "hubVNetResourceId": {
@@ -44128,6 +44222,7 @@
                       "items": {
                         "$ref": "#/definitions/diagnosticSettingFullType"
                       },
+                      "nullable": true,
                       "metadata": {
                         "description": "Optional. Diagnostic Settings for the Key Vault."
                       }
@@ -47276,7 +47371,7 @@
                             "value": [
                               {
                                 "principalId": "[parameters('appServiceManagedIdentityPrincipalId')]",
-                                "roleDefinitionIdOrName": "4633458b-17de-408a-b874-0445c86b69e6"
+                                "roleDefinitionIdOrName": "Key Vault Secrets User"
                               }
                             ]
                           }

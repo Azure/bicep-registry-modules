@@ -112,16 +112,16 @@ param bastionResourceId string = ''
 param resourceGroupName string
 
 @description('Optional. Diagnostic Settings for the App Service.')
-param appserviceDiagnosticSettings diagnosticSettingFullType[] = []
+param appserviceDiagnosticSettings diagnosticSettingFullType[]?
 
 @description('Optional. Diagnostic Settings for the App Service Plan.')
-param servicePlanDiagnosticSettings diagnosticSettingFullType[] = []
+param servicePlanDiagnosticSettings diagnosticSettingFullType[]?
 
 @description('Optional. Diagnostic Settings for the ASE.')
-param aseDiagnosticSettings diagnosticSettingFullType[]
+param aseDiagnosticSettings diagnosticSettingFullType[]?
 
 @description('Optional. Diagnostic Settings for Front Door.')
-param frontDoorDiagnosticSettings diagnosticSettingFullType[]
+param frontDoorDiagnosticSettings diagnosticSettingFullType[]?
 
 var resourceNames = {
   vnetSpoke: take('${naming.virtualNetwork.name}-spoke', 80)
@@ -160,6 +160,7 @@ module networking '../networking/network.module.bicep' = {
   scope: resourceGroup(resourceGroupName)
   params: {
     naming: naming
+    enableTelemetry: enableTelemetry
     enableEgressLockdown: enableEgressLockdown
     vnetSpokeAddressSpace: vnetSpokeAddressSpace
     subnetSpokeAppSvcAddressSpace: subnetSpokeAppSvcAddressSpace
@@ -177,6 +178,7 @@ module logAnalyticsWs 'br/public:avm/res/operational-insights/workspace:0.11.1' 
   params: {
     name: resourceNames.logAnalyticsWs
     location: location
+    enableTelemetry: enableTelemetry
     tags: tags
   }
 }
@@ -185,6 +187,7 @@ module webApp '../app-service/app-service.module.bicep' = {
   name: '${uniqueString(deployment().name, location)}-webApp'
   scope: resourceGroup(resourceGroupName)
   params: {
+    enableTelemetry: enableTelemetry
     deployAseV3: deployAseV3
     aseName: resourceNames.aseName
     appServicePlanName: resourceNames.aspName
@@ -250,6 +253,7 @@ module afd '../front-door/front-door.module.bicep' = {
   name: '${uniqueString(deployment().name, location)}-afd'
   scope: resourceGroup(resourceGroupName)
   params: {
+    enableTelemetry: enableTelemetry
     afdName: '${resourceNames.frontDoor}${workload}'
     endpointName: resourceNames.frontDoorEndPoint
     originGroupName: resourceNames.frontDoorOriginGroup

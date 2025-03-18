@@ -1,5 +1,8 @@
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 
+@description('Required. Whether to enable deployment telemetry.')
+param enableTelemetry bool
+
 @description('Optional, default is false. Set to true if you want to deploy ASE v3 instead of Multitenant App Service Plan.')
 param deployAseV3 bool = false
 
@@ -115,13 +118,13 @@ param siteConfig object = {
 param kind string = 'app'
 
 @description('Optional. Diagnostic Settings for the App Service.')
-param appserviceDiagnosticSettings diagnosticSettingFullType[]
+param appserviceDiagnosticSettings diagnosticSettingFullType[]?
 
 @description('Optional. Diagnostic Settings for the App Service Plan.')
-param servicePlanDiagnosticSettings diagnosticSettingFullType[]
+param servicePlanDiagnosticSettings diagnosticSettingFullType[]?
 
 @description('Optional. Diagnostic Settings for the ASE.')
-param aseDiagnosticSettings diagnosticSettingFullType[]
+param aseDiagnosticSettings diagnosticSettingFullType[]?
 
 var webAppDnsZoneName = 'privatelink.azurewebsites.net'
 var slotName = 'staging'
@@ -130,64 +133,12 @@ var slotName = 'staging'
 // Dependencies //
 // ============ //
 
-// var siteConfigConfigurationMap = {
-//   windowsNet6: {
-//     metadata: [
-//       {
-//         name: 'CURRENT_STACK'
-//         value: 'dotnet'
-//       }
-//     ]
-//     netFrameworkVersion: 'v6.0'
-//     use32BitWorkerProcess: false
-//   }
-//   windowsNet7: {
-//     metadata: [
-//       {
-//         name: 'CURRENT_STACK'
-//         value: 'dotnet'
-//       }
-//     ]
-//     netFrameworkVersion: 'v7.0'
-//     use32BitWorkerProcess: false
-//   }
-//   windowsAspNet486: {
-//     metadata: [
-//       {
-//         name: 'CURRENT_STACK'
-//         value: 'dotnet'
-//       }
-//     ]
-//     netFrameworkVersion: 'v4.0'
-//     use32BitWorkerProcess: false
-//   }
-//   linuxJava17Se: {
-//     linuxFxVersion: 'java|17-java17'
-//     use32BitWorkerProcess: false
-//   }
-//   linuxNet8: {
-//     linuxFxVersion: 'dotnetcore|8.0'
-//     use32BitWorkerProcess: false
-//   }
-//   linuxNet7: {
-//     linuxFxVersion: 'dotnetcore|7.0'
-//     use32BitWorkerProcess: false
-//   }
-//   linuxNet6: {
-//     linuxFxVersion: 'dotnetcore|6.0'
-//     use32BitWorkerProcess: false
-//   }
-//   linuxNode18: {
-//     linuxFxVersion: 'node|18-lts'
-//     use32BitWorkerProcess: false
-//   }
-// }
-
 module ase './ase.module.bicep' = if (deployAseV3) {
   name: '${uniqueString(deployment().name, location)}-ase'
   params: {
     name: aseName
     location: location
+    enableTelemetry: enableTelemetry
     tags: tags
     subnetResourceId: subnetIdForVnetInjection
     zoneRedundant: zoneRedundant
@@ -202,6 +153,7 @@ module appInsights 'br/public:avm/res/insights/component:0.4.1' = {
   params: {
     name: 'appi-${webAppName}'
     location: location
+    enableTelemetry: enableTelemetry
     tags: tags
     workspaceResourceId: logAnalyticsWorkspaceResourceId
     applicationType: 'web'
@@ -217,6 +169,7 @@ module plan 'br/public:avm/res/web/serverfarm:0.2.4' = {
   params: {
     name: appServicePlanName
     location: location
+    enableTelemetry: enableTelemetry
     tags: tags
     skuName: sku
     zoneRedundant: zoneRedundant
@@ -237,6 +190,7 @@ module webApp 'br/public:avm/res/web/site:0.9.0' = {
     kind: !empty(kind) ? 'app,linux' : 'app'
     name: webAppName
     location: location
+    enableTelemetry: enableTelemetry
     serverFarmResourceId: plan.outputs.resourceId
     appInsightResourceId: appInsights.outputs.resourceId
     siteConfig: siteConfig
@@ -277,6 +231,7 @@ module webAppPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.6.0' =
   params: {
     name: webAppDnsZoneName
     location: 'global'
+    enableTelemetry: enableTelemetry
     virtualNetworkLinks: virtualNetworkLinks
     tags: tags
   }
@@ -287,6 +242,7 @@ module webAppUserAssignedManagedIdentity 'br/public:avm/res/managed-identity/use
   params: {
     name: managedIdentityName
     location: location
+    enableTelemetry: enableTelemetry
     tags: tags
   }
 }
@@ -296,6 +252,7 @@ module peWebAppSlot 'br/public:avm/res/network/private-endpoint:0.9.0' = if (!em
   params: {
     name: take('pe-${webAppName}-slot-${slotName}', 64)
     location: location
+    enableTelemetry: enableTelemetry
     tags: tags
     privateDnsZoneGroup: (!empty(subnetPrivateEndpointResourceId) && !deployAseV3)
       ? {
