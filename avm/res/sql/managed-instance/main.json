@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "11478620095267285204"
+      "version": "0.33.93.31351",
+      "templateHash": "5118426229438761673"
     },
     "name": "SQL Managed Instances",
     "description": "This module deploys a SQL Managed Instance."
@@ -723,8 +723,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "395713123829304948"
+              "version": "0.33.93.31351",
+              "templateHash": "9916914331742576786"
             },
             "name": "SQL Managed Instance Databases",
             "description": "This module deploys a SQL Managed Instance Database."
@@ -1075,8 +1075,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "9151142669614640980"
+                      "version": "0.33.93.31351",
+                      "templateHash": "11789855026791761353"
                     },
                     "name": "SQL Managed Instance Database Backup Short-Term Retention Policies",
                     "description": "This module deploys a SQL Managed Instance Database Backup Short-Term Retention Policy."
@@ -1178,8 +1178,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "9138600771118146325"
+                      "version": "0.33.93.31351",
+                      "templateHash": "15161163946707607608"
                     },
                     "name": "SQL Managed Instance Database Backup Long-Term Retention Policies",
                     "description": "This module deploys a SQL Managed Instance Database Backup Long-Term Retention Policy."
@@ -1337,8 +1337,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "4951872822354774865"
+              "version": "0.33.93.31351",
+              "templateHash": "3906978437056667597"
             },
             "name": "SQL Managed Instance Security Alert Policies",
             "description": "This module deploys a SQL Managed Instance Security Alert Policy."
@@ -1447,8 +1447,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "4574749738777689693"
+              "version": "0.33.93.31351",
+              "templateHash": "6198985030638788526"
             },
             "name": "SQL Managed Instance Vulnerability Assessments",
             "description": "This module deploys a SQL Managed Instance Vulnerability Assessment."
@@ -1548,8 +1548,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "14182420641468247209"
+                      "version": "0.33.93.31351",
+                      "templateHash": "3654542058494010457"
                     }
                   },
                   "parameters": {
@@ -1642,8 +1642,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "16370431585132253111"
+              "version": "0.33.93.31351",
+              "templateHash": "15069783172534165943"
             },
             "name": "SQL Managed Instance Keys",
             "description": "This module deploys a SQL Managed Instance Key."
@@ -1750,8 +1750,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "2284212907652474150"
+              "version": "0.33.93.31351",
+              "templateHash": "17764720010984906637"
             },
             "name": "SQL Managed Instance Encryption Protector",
             "description": "This module deploys a SQL Managed Instance Encryption Protector."
@@ -1858,8 +1858,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "11943158488099321617"
+              "version": "0.33.93.31351",
+              "templateHash": "11121672960551017149"
             },
             "name": "SQL Managed Instances Administrator",
             "description": "This module deploys a SQL Managed Instance Administrator."
