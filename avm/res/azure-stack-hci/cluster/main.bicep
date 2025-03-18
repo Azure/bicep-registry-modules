@@ -347,6 +347,9 @@ type storageAdapterIPInfoType = {
 // define custom type for storage network objects
 @export()
 type storageNetworksType = {
+  @description('Optional. The name of the storage network.')
+  name: string?
+
   @description('Required. The name of the storage adapter.')
   adapterName: string
 
@@ -467,7 +470,7 @@ type deploymentSettingsType = {
   dnsServers: string[]
 
   @description('Required. An array of Network ATC Network Intent objects that define the Compute, Management, and Storage network configuration for the cluster.')
-  networkIntents: array
+  networkIntents: networkIntentType[]
 
   @description('Required. Specify whether the Storage Network connectivity is switched or switchless.')
   storageConnectivitySwitchless: bool
@@ -476,7 +479,7 @@ type deploymentSettingsType = {
   enableStorageAutoIp: bool?
 
   @description('Required. An array of JSON objects that define the storage network configuration for the cluster. Each object should contain the adapterName, VLAN properties, and (optionally) IP configurations.')
-  storageNetworks: array
+  storageNetworks: storageNetworksType[]
 
   // other cluster configuration parameters
   @description('Required. The name of the Custom Location associated with the Arc Resource Bridge for this cluster. This value should reflect the physical location and identifier of the HCI cluster. Example: cl-hci-den-clu01.')

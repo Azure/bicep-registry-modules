@@ -8,6 +8,7 @@ This module deploys a Private Link Service.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -60,8 +61,6 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
       }
     ]
     name: 'nplsmin001'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -100,10 +99,6 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
     },
     "name": {
       "value": "nplsmin001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -136,8 +131,6 @@ param loadBalancerFrontendIpConfigurations = [
   }
 ]
 param name = 'nplsmin001'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -448,7 +441,6 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
       'nplswaf.plsfqdn01.azure.privatelinkservice'
       'nplswaf.plsfqdn02.azure.privatelinkservice'
     ]
-    location: '<location>'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -517,9 +509,6 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
         "nplswaf.plsfqdn02.azure.privatelinkservice"
       ]
     },
-    "location": {
-      "value": "<location>"
-    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -578,7 +567,6 @@ param fqdns = [
   'nplswaf.plsfqdn01.azure.privatelinkservice'
   'nplswaf.plsfqdn02.azure.privatelinkservice'
 ]
-param location = '<location>'
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
@@ -852,6 +840,14 @@ Controls the exposure settings for your Private Link service. Service providers 
 | `name` | string | The name of the private link service. |
 | `resourceGroupName` | string | The resource group the private link service was deployed into. |
 | `resourceId` | string | The resource ID of the private link service. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 
