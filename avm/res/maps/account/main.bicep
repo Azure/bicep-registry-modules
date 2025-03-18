@@ -132,15 +132,17 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
 var encryptionProperties = !empty(customerManagedKey)
   ? {
       encryption: {
-        keyEncryptionKeyIdentity: {
-          userAssignedIdentityResourceId: !empty(customerManagedKey.?userAssignedIdentityResourceId)
-            ? cMKUserAssignedIdentity.id
-            : null
-          identityType: !empty(customerManagedKey.?userAssignedIdentityResourceId)
-            ? 'userAssignedIdentity'
-            : 'systemAssignedIdentity'
+        customerManagedKeyEncryption: {
+          keyEncryptionKeyIdentity: {
+            userAssignedIdentityResourceId: !empty(customerManagedKey.?userAssignedIdentityResourceId)
+              ? cMKUserAssignedIdentity.id
+              : null
+            identityType: !empty(customerManagedKey.?userAssignedIdentityResourceId)
+              ? 'userAssignedIdentity'
+              : 'systemAssignedIdentity'
+          }
+          keyEncryptionKeyUrl: customerManagedKey.?keyEncryptionKeyUrl
         }
-        keyEncryptionKeyUrl: customerManagedKey.?keyEncryptionKeyUrl
       }
       requireInfrastructureEncryption: requireInfrastructureEncryption
     }
