@@ -314,32 +314,22 @@ module managedInstance_databases 'database/main.bicep' = [
     params: {
       name: database.name
       managedInstanceName: managedInstance.name
-      catalogCollation: contains(database, 'catalogCollation')
-        ? database.catalogCollation
-        : 'SQL_Latin1_General_CP1_CI_AS'
-      collation: contains(database, 'collation') ? database.collation : 'SQL_Latin1_General_CP1_CI_AS'
-      createMode: contains(database, 'createMode') ? database.createMode : 'Default'
+      catalogCollation: database.?catalogCollation ?? 'SQL_Latin1_General_CP1_CI_AS'
+      collation: database.?collation ?? 'SQL_Latin1_General_CP1_CI_AS'
+      createMode: database.?createMode ?? 'Default'
       diagnosticSettings: database.?diagnosticSettings
-      location: contains(database, 'location') ? database.location : managedInstance.location
+      location: database.?location ?? managedInstance.location
       lock: database.?lock ?? lock
-      longTermRetentionBackupResourceId: contains(database, 'longTermRetentionBackupResourceId')
-        ? database.longTermRetentionBackupResourceId
-        : ''
-      recoverableDatabaseId: contains(database, 'recoverableDatabaseId') ? database.recoverableDatabaseId : ''
-      restorableDroppedDatabaseId: contains(database, 'restorableDroppedDatabaseId')
-        ? database.restorableDroppedDatabaseId
-        : ''
-      restorePointInTime: contains(database, 'restorePointInTime') ? database.restorePointInTime : ''
-      sourceDatabaseId: contains(database, 'sourceDatabaseId') ? database.sourceDatabaseId : ''
-      storageContainerSasToken: contains(database, 'storageContainerSasToken') ? database.storageContainerSasToken : ''
-      storageContainerUri: contains(database, 'storageContainerUri') ? database.storageContainerUri : ''
+      longTermRetentionBackupResourceId: database.?longTermRetentionBackupResourceId ?? ''
+      recoverableDatabaseId: database.?recoverableDatabaseId ?? ''
+      restorableDroppedDatabaseId: database.?restorableDroppedDatabaseId ?? ''
+      restorePointInTime: database.?restorePointInTime ?? ''
+      sourceDatabaseId: database.?sourceDatabaseId ?? ''
+      storageContainerSasToken: database.?storageContainerSasToken ?? ''
+      storageContainerUri: database.?storageContainerUri ?? ''
       tags: database.?tags ?? tags
-      backupShortTermRetentionPoliciesObj: contains(database, 'backupShortTermRetentionPolicies')
-        ? database.backupShortTermRetentionPolicies
-        : {}
-      backupLongTermRetentionPoliciesObj: contains(database, 'backupLongTermRetentionPolicies')
-        ? database.backupLongTermRetentionPolicies
-        : {}
+      backupShortTermRetentionPoliciesObj: database.?backupShortTermRetentionPolicies ?? {}
+      backupLongTermRetentionPoliciesObj: database.?backupLongTermRetentionPolicies ?? {}
     }
   }
 ]
@@ -349,10 +339,8 @@ module managedInstance_securityAlertPolicy 'security-alert-policy/main.bicep' = 
   params: {
     managedInstanceName: managedInstance.name
     name: securityAlertPoliciesObj.name
-    emailAccountAdmins: contains(securityAlertPoliciesObj, 'emailAccountAdmins')
-      ? securityAlertPoliciesObj.emailAccountAdmins
-      : false
-    state: contains(securityAlertPoliciesObj, 'state') ? securityAlertPoliciesObj.state : 'Disabled'
+    emailAccountAdmins: securityAlertPoliciesObj.?emailAccountAdmins ?? false
+    state: securityAlertPoliciesObj.?state ?? 'Disabled'
   }
 }
 
@@ -361,25 +349,12 @@ module managedInstance_vulnerabilityAssessment 'vulnerability-assessment/main.bi
   params: {
     managedInstanceName: managedInstance.name
     name: vulnerabilityAssessmentsObj.name
-    recurringScansEmails: contains(vulnerabilityAssessmentsObj, 'recurringScansEmails')
-      ? vulnerabilityAssessmentsObj.recurringScansEmails
-      : []
-    recurringScansEmailSubscriptionAdmins: contains(
-        vulnerabilityAssessmentsObj,
-        'recurringScansEmailSubscriptionAdmins'
-      )
-      ? vulnerabilityAssessmentsObj.recurringScansEmailSubscriptionAdmins
-      : false
-    recurringScansIsEnabled: contains(vulnerabilityAssessmentsObj, 'recurringScansIsEnabled')
-      ? vulnerabilityAssessmentsObj.recurringScansIsEnabled
-      : false
+    recurringScansEmails: vulnerabilityAssessmentsObj.?recurringScansEmails ?? []
+    recurringScansEmailSubscriptionAdmins: vulnerabilityAssessmentsObj.?recurringScansEmailSubscriptionAdmins ?? false
+    recurringScansIsEnabled: vulnerabilityAssessmentsObj.?recurringScansIsEnabled ?? false
     storageAccountResourceId: vulnerabilityAssessmentsObj.storageAccountResourceId
-    useStorageAccountAccessKey: contains(vulnerabilityAssessmentsObj, 'useStorageAccountAccessKey')
-      ? vulnerabilityAssessmentsObj.useStorageAccountAccessKey
-      : false
-    createStorageRoleAssignment: contains(vulnerabilityAssessmentsObj, 'createStorageRoleAssignment')
-      ? vulnerabilityAssessmentsObj.createStorageRoleAssignment
-      : true
+    useStorageAccountAccessKey: vulnerabilityAssessmentsObj.?useStorageAccountAccessKey ?? false
+    createStorageRoleAssignment: vulnerabilityAssessmentsObj.?createStorageRoleAssignment ?? true
   }
   dependsOn: [
     managedInstance_securityAlertPolicy
@@ -392,8 +367,8 @@ module managedInstance_keys 'key/main.bicep' = [
     params: {
       name: key.name
       managedInstanceName: managedInstance.name
-      serverKeyType: contains(key, 'serverKeyType') ? key.serverKeyType : 'ServiceManaged'
-      uri: contains(key, 'uri') ? key.uri : ''
+      serverKeyType: key.?serverKeyType ?? 'ServiceManaged'
+      uri: key.?uri ?? ''
     }
   }
 ]
@@ -403,12 +378,8 @@ module managedInstance_encryptionProtector 'encryption-protector/main.bicep' = i
   params: {
     managedInstanceName: managedInstance.name
     serverKeyName: encryptionProtectorObj.serverKeyName
-    serverKeyType: contains(encryptionProtectorObj, 'serverKeyType')
-      ? encryptionProtectorObj.serverKeyType
-      : 'ServiceManaged'
-    autoRotationEnabled: contains(encryptionProtectorObj, 'autoRotationEnabled')
-      ? encryptionProtectorObj.autoRotationEnabled
-      : true
+    serverKeyType: encryptionProtectorObj.?serverKeyType ?? 'ServiceManaged'
+    autoRotationEnabled: encryptionProtectorObj.?autoRotationEnabled ?? true
   }
   dependsOn: [
     managedInstance_keys
@@ -421,7 +392,7 @@ module managedInstance_administrator 'administrator/main.bicep' = if (!empty(adm
     managedInstanceName: managedInstance.name
     login: administratorsObj.name
     sid: administratorsObj.sid
-    tenantId: contains(administratorsObj, 'tenantId') ? administratorsObj.tenantId : ''
+    tenantId: administratorsObj.?tenantId ?? ''
   }
 }
 

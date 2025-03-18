@@ -127,9 +127,7 @@ module database_backupShortTermRetentionPolicy 'backup-short-term-retention-poli
     managedInstanceName: managedInstanceName
     databaseName: last(split(database.name, '/'))!
     name: backupShortTermRetentionPoliciesObj.name
-    retentionDays: contains(backupShortTermRetentionPoliciesObj, 'retentionDays')
-      ? backupShortTermRetentionPoliciesObj.retentionDays
-      : 35
+    retentionDays: backupShortTermRetentionPoliciesObj.?retentionDays ?? 35
   }
 }
 
@@ -139,18 +137,10 @@ module database_backupLongTermRetentionPolicy 'backup-long-term-retention-policy
     managedInstanceName: managedInstanceName
     databaseName: last(split(database.name, '/'))!
     name: backupLongTermRetentionPoliciesObj.name
-    weekOfYear: contains(backupLongTermRetentionPoliciesObj, 'weekOfYear')
-      ? backupLongTermRetentionPoliciesObj.weekOfYear
-      : 5
-    weeklyRetention: contains(backupLongTermRetentionPoliciesObj, 'weeklyRetention')
-      ? backupLongTermRetentionPoliciesObj.weeklyRetention
-      : 'P1M'
-    monthlyRetention: contains(backupLongTermRetentionPoliciesObj, 'monthlyRetention')
-      ? backupLongTermRetentionPoliciesObj.monthlyRetention
-      : 'P1Y'
-    yearlyRetention: contains(backupLongTermRetentionPoliciesObj, 'yearlyRetention')
-      ? backupLongTermRetentionPoliciesObj.yearlyRetention
-      : 'P5Y'
+    weekOfYear: backupLongTermRetentionPoliciesObj.?weekOfYear ?? 5
+    weeklyRetention: backupLongTermRetentionPoliciesObj.?weeklyRetention ?? 'P1M'
+    monthlyRetention: backupLongTermRetentionPoliciesObj.?monthlyRetention ?? 'P1Y'
+    yearlyRetention: backupLongTermRetentionPoliciesObj.?yearlyRetention ?? 'P5Y'
   }
 }
 
