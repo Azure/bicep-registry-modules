@@ -177,7 +177,7 @@
                 "description": "Required. List of content types on which compression applies. The value should be a valid MIME type."
               }
             },
-            "iscontentTypeToCompressAll": {
+            "isCompressionEnabled": {
               "type": "bool",
               "nullable": true,
               "metadata": {
@@ -3237,7 +3237,7 @@
                         "description": "Required. List of content types on which compression applies. The value should be a valid MIME type."
                       }
                     },
-                    "iscontentTypeToCompressAll": {
+                    "isCompressionEnabled": {
                       "type": "bool",
                       "nullable": true,
                       "metadata": {
@@ -3669,7 +3669,7 @@
                                 "description": "Required. List of content types on which compression applies. The value should be a valid MIME type."
                               }
                             },
-                            "iscontentTypeToCompressAll": {
+                            "isCompressionEnabled": {
                               "type": "bool",
                               "nullable": true,
                               "metadata": {
