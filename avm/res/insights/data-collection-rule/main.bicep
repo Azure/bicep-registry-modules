@@ -71,6 +71,10 @@ var dataCollectionRulePropertiesUnion = union(
   dataCollectionRuleProperties.kind == 'Linux' || dataCollectionRuleProperties.kind == 'Windows' || dataCollectionRuleProperties.kind == 'All'
     ? {
         dataSources: dataCollectionRuleProperties.dataSources
+      }
+    : {},
+  dataCollectionRuleProperties.kind == 'Linux' || dataCollectionRuleProperties.kind == 'Windows' || dataCollectionRuleProperties.kind == 'All' || dataCollectionRuleProperties.kind == 'Direct'
+    ? {
         dataFlows: dataCollectionRuleProperties.dataFlows
         destinations: dataCollectionRuleProperties.destinations
         dataCollectionEndpointId: dataCollectionRuleProperties.?dataCollectionEndpointResourceId
@@ -168,6 +172,7 @@ type dataCollectionRulePropertiesType =
   | windowsDcrPropertiesType
   | allPlatformsDcrPropertiesType
   | agentSettingsDcrPropertiesType
+  | directDcrPropertiesType
 
 type linuxDcrPropertiesType = {
   @description('Required. The platform type specifies the type of resources this rule can apply to.')
@@ -260,4 +265,24 @@ type agentSettingType = {
 
   @description('Required. The value of the agent setting.')
   value: string
+}
+
+type directDcrPropertiesType = {
+  @description('Required. The platform type specifies the type of resources this rule can apply to.')
+  kind: 'Direct'
+
+  @description('Required. The specification of data flows.')
+  dataFlows: array
+
+  @description('Required. Specification of destinations that can be used in data flows.')
+  destinations: object
+
+  @description('Optional. The resource ID of the data collection endpoint that this rule can be used with.')
+  dataCollectionEndpointResourceId: string?
+
+  @description('Required. Declaration of custom streams used in this rule.')
+  streamDeclarations: object
+
+  @description('Optional. Description of the data collection rule.')
+  description: string?
 }
