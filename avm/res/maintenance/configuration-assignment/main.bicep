@@ -82,8 +82,8 @@ output resourceId string = configurationAssignment.id ?? configurationAssignment
 @description('The name of the resource group the Maintenance configuration assignment was created in.')
 output resourceGroupName string = resourceGroup().name
 
-@description('The location the Maintenance configuration assignment was created in.')
-output location string = configurationAssignment.location ?? configurationAssignment_dynamic.location
+// @description('The location the Maintenance configuration assignment was created in.')
+// output location string = configurationAssignment.location ?? configurationAssignment_dynamic.location
 
 // =============== //
 //   Definitions   //

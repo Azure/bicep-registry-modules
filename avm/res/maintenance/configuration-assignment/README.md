@@ -382,7 +382,6 @@ Location for all Resources.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `location` | string | The location the Maintenance configuration assignment was created in. |
 | `name` | string | The name of the Maintenance configuration assignment. |
 | `resourceGroupName` | string | The name of the resource group the Maintenance configuration assignment was created in. |
 | `resourceId` | string | The resource ID of the Maintenance configuration assignment. |

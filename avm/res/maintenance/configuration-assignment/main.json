@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "6036833068842583587"
+      "templateHash": "4931246391206291327"
     },
     "name": "Maintenance Configuration Assignments",
     "description": "This module deploys a Maintenance Configuration Assignment."
@@ -185,13 +185,6 @@
         "description": "The name of the resource group the Maintenance configuration assignment was created in."
       },
       "value": "[resourceGroup().name]"
-    },
-    "location": {
-      "type": "string",
-      "metadata": {
-        "description": "The location the Maintenance configuration assignment was created in."
-      },
-      "value": "[coalesce(reference('configurationAssignment', '2023-04-01', 'full').location, reference('configurationAssignment_dynamic', '2023-04-01', 'full').location)]"
     }
   }
 }
