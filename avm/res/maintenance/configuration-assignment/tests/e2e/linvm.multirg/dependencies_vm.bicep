@@ -7,6 +7,10 @@ param virtualNetworkName string
 @description('Required. The name of the Virtual Machine to create.')
 param virtualMachineName string
 
+@description('Required. The name of the Virtual Machine to create.')
+@maxLength(15)
+param computerName string
+
 @description('Optional. The password to leverage for the VM login.')
 @secure()
 param password string = newGuid()
@@ -67,9 +71,9 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2024-07-01' = {
     }
     storageProfile: {
       imageReference: {
-        publisher: 'Canonical'
-        offer: '0001-com-ubuntu-server-jammy'
-        sku: '22_04-lts-gen2'
+        publisher: 'MicrosoftWindowsServer'
+        offer: 'WindowsServer'
+        sku: '2022-datacenter-azure-edition'
         version: 'latest'
       }
       osDisk: {
@@ -83,9 +87,9 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2024-07-01' = {
     osProfile: {
       adminUsername: '${virtualMachineName}cake'
       adminPassword: password
-      computerName: virtualMachineName
-      linuxConfiguration: {
-        disablePasswordAuthentication: false
+      computerName: computerName
+      windowsConfiguration: {
+        enableAutomaticUpdates: true
         patchSettings: {
           assessmentMode: 'AutomaticByPlatform'
           automaticByPlatformSettings: {

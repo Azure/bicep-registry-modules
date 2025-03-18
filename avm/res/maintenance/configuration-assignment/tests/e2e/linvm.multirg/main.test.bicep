@@ -35,7 +35,7 @@ resource resourceGroup_vm 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 }
 
 resource resourceGroup_mc 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-  name: 'dep-${namePrefix}-maintenance.maintenanceconfigurations-${serviceShort}-mc-rg'
+  name: '${take(resourceGroupName, 87)}-mc' // Ensure the resource group name is within the 90 character limit
   location: enforcedLocation
 }
 
@@ -44,6 +44,7 @@ module nestedDependencies_vm 'dependencies_vm.bicep' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies_vm'
   params: {
     virtualMachineName: 'dep-${namePrefix}-vm-${serviceShort}'
+    computerName: 'dep${namePrefix}${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     location: enforcedLocation
   }
