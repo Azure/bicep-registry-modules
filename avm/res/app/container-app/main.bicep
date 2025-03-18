@@ -55,14 +55,11 @@ param ingressAllowInsecure bool = true
 @description('Optional. Target Port in containers for traffic from ingress.')
 param ingressTargetPort int = 80
 
-@description('Optional. Maximum number of container replicas. Defaults to 10 if not set.')
-param scaleMaxReplicas int = 10
-
-@description('Optional. Minimum number of container replicas. Defaults to 3 if not set.')
-param scaleMinReplicas int = 3
-
-@description('Optional. Scaling rules.')
-param scaleRules array = []
+@description('Optional. The scaling settings of the service.')
+param scaleSettings scaleType = {
+  maxReplicas: 10
+  minReplicas: 3
+}
 
 @description('Optional. List of container app services bound to the app.')
 param serviceBinds serviceBindingType[]?
@@ -126,7 +123,7 @@ param dapr object = {}
 param maxInactiveRevisions int = 0
 
 @description('Optional. Runtime configuration for the Container App.')
-param runtime runtimeType
+param runtime runtimeType?
 
 @description('Required. List of container definitions for the Container App.')
 param containers containerType[]
@@ -282,11 +279,7 @@ resource containerApp 'Microsoft.App/containerApps@2024-10-02-preview' = {
       containers: containers
       initContainers: !empty(initContainersTemplate) ? initContainersTemplate : null
       revisionSuffix: revisionSuffix
-      scale: {
-        maxReplicas: scaleMaxReplicas
-        minReplicas: scaleMinReplicas
-        rules: !empty(scaleRules) ? scaleRules : null
-      }
+      scale: scaleSettings
       serviceBinds: (includeAddOns && !empty(serviceBinds)) ? serviceBinds : null
       volumes: !empty(volumes) ? volumes : null
     }
@@ -506,6 +499,42 @@ type containerAppProbeTcpSocketType = {
   port: int
 }
 
+@description('The scale settings for the Container App.')
+type scaleType = {
+  @description('Required. The maximum number of replicas.')
+  maxReplicas: int
+
+  @description('Required. The minimum number of replicas.')
+  minReplicas: int
+
+  @description('Optional. The cooldown period in seconds.')
+  cooldownPeriod: int?
+
+  @description('Optional. The polling interval in seconds.')
+  pollingInterval: int?
+
+  @description('Optional. The scaling rules.')
+  rules: scaleRuleType[]?
+}
+
+@description('The scaling rules for the Container App.')
+type scaleRuleType = {
+  @description('Required. The name of the scaling rule.')
+  name: string
+
+  @description('Optional. The custom scaling rule.')
+  custom: object?
+
+  @description('Optional. The Azure Queue based scaling rule.')
+  azureQueue: object?
+
+  @description('Optional. The HTTP requests based scaling rule.')
+  http: object?
+
+  @description('Optional. The TCP based scaling rule.')
+  tcp: object?
+}
+
 @description('The type for a volume mount.')
 type volumeMountType = {
   @description('Required. Path within the container at which the volume should be mounted.Must not contain \':\'.')
@@ -544,7 +573,7 @@ type runtimeType = {
       level: ('debug' | 'error' | 'info' | 'off' | 'trace' | 'warn')
     }[]?
   }?
-}?
+}
 
 @export()
 @description('The type for a secret.')

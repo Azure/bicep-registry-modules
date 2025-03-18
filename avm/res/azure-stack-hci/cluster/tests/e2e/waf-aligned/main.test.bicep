@@ -78,6 +78,12 @@ module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   params: {
     name: nestedDependencies.outputs.clusterName
+    deploymentUser: 'deployUser'
+    deploymentUserPassword: localAdminAndDeploymentUserPass
+    localAdminUser: 'admin-hci'
+    localAdminPassword: localAdminAndDeploymentUserPass
+    servicePrincipalId: arbDeploymentAppId
+    servicePrincipalSecret: arbDeploymentServicePrincipalSecret
     deploymentSettings: {
       customLocationName: '${namePrefix}${serviceShort}-location'
       clusterNodeNames: nestedDependencies.outputs.clusterNodeNames

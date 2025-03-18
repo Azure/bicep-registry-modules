@@ -13,11 +13,13 @@ param location string = resourceGroup().location
 @description('Optional. Tags of the resource.')
 param tags object?
 
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The managed identity definition for this resource.')
-param managedIdentities managedIdentitiesType
+param managedIdentities managedIdentityAllType?
 
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Logs destination.')
 param logsDestination string = 'log-analytics'
@@ -55,6 +57,13 @@ param platformReservedDnsIP string = ''
 @description('Optional. Whether or not to encrypt peer traffic.')
 param peerTrafficEncryption bool = true
 
+@allowed([
+  'Enabled'
+  'Disabled'
+])
+@description('Optional. Whether to allow or block all public traffic.')
+param publicNetworkAccess string = 'Disabled'
+
 @description('Optional. Whether or not this Managed Environment is zone-redundant.')
 param zoneRedundant bool = true
 
@@ -66,11 +75,15 @@ param certificatePassword string = ''
 @secure()
 param certificateValue string = ''
 
+@description('Optional. A key vault reference to the certificate to use for the custom domain.')
+param certificateKeyVaultProperties certificateKeyVaultPropertiesType?
+
 @description('Optional. DNS suffix for the environment domain.')
 param dnsSuffix string = ''
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
-param lock lockType
+param lock lockType?
 
 @description('Optional. Open Telemetry configuration.')
 param openTelemetryConfiguration object = {}
@@ -82,7 +95,7 @@ param workloadProfiles array = []
 param infrastructureResourceGroupName string = take('ME_${name}', 63)
 
 @description('Optional. The list of storages to mount on the environment.')
-param storages storageType
+param storages storageType[]?
 
 @description('Optional. A Managed Environment Certificate.')
 param certificateObject certificateObjectType?
@@ -186,6 +199,7 @@ resource managedEnvironment 'Microsoft.App/managedEnvironments@2024-10-02-previe
         enabled: peerTrafficEncryption
       }
     }
+    publicNetworkAccess: publicNetworkAccess
     vnetConfiguration: {
       internal: internal
       infrastructureSubnetId: !empty(infrastructureSubnetId) ? infrastructureSubnetId : null
@@ -296,6 +310,7 @@ output domainVerificationId string = managedEnvironment.properties.customDomainC
 //   Definitions   //
 // =============== //
 
+<<<<<<< HEAD
 type managedIdentitiesType = {
   @description('Optional. Enables system assigned managed identity on the resource.')
   systemAssigned: bool?
@@ -357,8 +372,18 @@ type certificateObjectType = {
 
   @description('Optional. A key vault reference.')
   certificateKeyVaultProperties: certificateKeyVaultPropertiesType
+@export()
+@description('The type of the certificate key vault properties.')
+type certificateKeyVaultPropertiesType = {
+  @description('Required. The resource ID of the identity. This is the identity that will be used to access the key vault.')
+  identityResourceId: string
+
+  @description('Required. A key vault URL referencing the wildcard certificate that will be used for the custom domain.')
+  keyVaultUrl: string
 }
 
+@export()
+@description('The type of the storage.')
 type storageType = {
   @description('Required. Access mode for storage: "ReadOnly" or "ReadWrite".')
   accessMode: ('ReadOnly' | 'ReadWrite')
@@ -371,4 +396,4 @@ type storageType = {
 
   @description('Required. File share name.')
   shareName: string
-}[]?
+}
