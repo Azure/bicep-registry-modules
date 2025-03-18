@@ -244,7 +244,7 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
         '<actionGroupResourceId>'
       ]
       actionProperties: {
-        propertyA: 'valueA'
+        'Icm.propertyA': 'valueA'
       }
       customProperties: {
         propertyB: 'valueB'
@@ -255,6 +255,12 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
     autoMitigate: false
     evaluationFrequency: 'PT5M'
     location: '<location>'
+    managedIdentities: {
+      systemAssigned: true
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
     queryTimeRange: 'PT5M'
     roleAssignments: [
       {
@@ -347,7 +353,7 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
           "<actionGroupResourceId>"
         ],
         "actionProperties": {
-          "propertyA": "valueA"
+          "Icm.propertyA": "valueA"
         },
         "customProperties": {
           "propertyB": "valueB"
@@ -368,6 +374,14 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
     },
     "location": {
       "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true,
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
     },
     "queryTimeRange": {
       "value": "PT5M"
@@ -464,7 +478,7 @@ param actions = {
     '<actionGroupResourceId>'
   ]
   actionProperties: {
-    propertyA: 'valueA'
+    'Icm.propertyA': 'valueA'
   }
   customProperties: {
     propertyB: 'valueB'
@@ -475,6 +489,12 @@ param alertDisplayName = '<alertDisplayName>'
 param autoMitigate = false
 param evaluationFrequency = 'PT5M'
 param location = '<location>'
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
 param queryTimeRange = 'PT5M'
 param roleAssignments = [
   {
@@ -734,18 +754,19 @@ param windowSize = 'PT5M'
 | [`actions`](#parameter-actions) | object | Actions to invoke when the alert fires. |
 | [`alertDescription`](#parameter-alertdescription) | string | The description of the scheduled query rule. |
 | [`alertDisplayName`](#parameter-alertdisplayname) | string | The display name of the scheduled query rule. |
-| [`autoMitigate`](#parameter-automitigate) | bool | The flag that indicates whether the alert should be automatically resolved or not. Relevant only for rules of the kind LogAlert. |
+| [`autoMitigate`](#parameter-automitigate) | bool | The flag that indicates whether the alert should be automatically resolved or not. Relevant only for rules of the kind LogAlert. Note, ResolveConfiguration can't be used together with AutoMitigate. |
 | [`enabled`](#parameter-enabled) | bool | The flag which indicates whether this scheduled query rule is enabled. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`evaluationFrequency`](#parameter-evaluationfrequency) | string | How often the scheduled query rule is evaluated represented in ISO 8601 duration format. Relevant and required only for rules of the kind LogAlert. |
 | [`kind`](#parameter-kind) | string | Indicates the type of scheduled query rule. |
 | [`location`](#parameter-location) | string | Location for all resources. |
+| [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. You can only configure either a system-assigned or user-assigned identities, not both. |
 | [`queryTimeRange`](#parameter-querytimerange) | string | If specified (in ISO 8601 duration format) then overrides the query time range. Relevant only for rules of the kind LogAlert. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`ruleResolveConfiguration`](#parameter-ruleresolveconfiguration) | object | Defines the configuration for resolving fired alerts. Relevant only for rules of the kind LogAlert. |
+| [`ruleResolveConfiguration`](#parameter-ruleresolveconfiguration) | object | Defines the configuration for resolving fired alerts. Relevant only for rules of the kind LogAlert. Note, ResolveConfiguration can't be used together with AutoMitigate. |
 | [`severity`](#parameter-severity) | int | Severity of the alert. Should be an integer between [0-4]. Value of 0 is severest. Relevant and required only for rules of the kind LogAlert. |
 | [`skipQueryValidation`](#parameter-skipqueryvalidation) | bool | The flag which indicates whether the provided query should be validated or not. Relevant only for rules of the kind LogAlert. |
-| [`suppressForMinutes`](#parameter-suppressforminutes) | string | Mute actions for the chosen period of time (in ISO 8601 duration format) after the alert is fired. If set, autoMitigate must be disabled.Relevant only for rules of the kind LogAlert. |
+| [`suppressForMinutes`](#parameter-suppressforminutes) | string | Mute actions for the chosen period of time (in ISO 8601 duration format) after the alert is fired. If set, autoMitigate must be disabled. Relevant only for rules of the kind LogAlert. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`targetResourceTypes`](#parameter-targetresourcetypes) | array | List of resource type of the target resource(s) on which the alert is created/updated. For example if the scope is a resource group and targetResourceTypes is Microsoft.Compute/virtualMachines, then a different alert will be fired for each virtual machine in the resource group which meet the alert criteria. Relevant only for rules of the kind LogAlert. |
 
@@ -776,7 +797,6 @@ The period of time (in ISO 8601 duration format) on which the Alert query will b
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `actions`
 
@@ -857,7 +877,7 @@ The display name of the scheduled query rule.
 
 ### Parameter: `autoMitigate`
 
-The flag that indicates whether the alert should be automatically resolved or not. Relevant only for rules of the kind LogAlert.
+The flag that indicates whether the alert should be automatically resolved or not. Relevant only for rules of the kind LogAlert. Note, ResolveConfiguration can't be used together with AutoMitigate.
 
 - Required: No
 - Type: bool
@@ -885,7 +905,6 @@ How often the scheduled query rule is evaluated represented in ISO 8601 duration
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `kind`
 
@@ -910,13 +929,40 @@ Location for all resources.
 - Type: string
 - Default: `[resourceGroup().location]`
 
+### Parameter: `managedIdentities`
+
+The managed identity definition for this resource. You can only configure either a system-assigned or user-assigned identities, not both.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
+
+### Parameter: `managedIdentities.systemAssigned`
+
+Enables system assigned managed identity on the resource.
+
+- Required: No
+- Type: bool
+
+### Parameter: `managedIdentities.userAssignedResourceIds`
+
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
+
+- Required: No
+- Type: array
+
 ### Parameter: `queryTimeRange`
 
 If specified (in ISO 8601 duration format) then overrides the query time range. Relevant only for rules of the kind LogAlert.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `roleAssignments`
 
@@ -1023,7 +1069,7 @@ The principal type of the assigned principal ID.
 
 ### Parameter: `ruleResolveConfiguration`
 
-Defines the configuration for resolving fired alerts. Relevant only for rules of the kind LogAlert.
+Defines the configuration for resolving fired alerts. Relevant only for rules of the kind LogAlert. Note, ResolveConfiguration can't be used together with AutoMitigate.
 
 - Required: No
 - Type: object
@@ -1056,11 +1102,10 @@ The flag which indicates whether the provided query should be validated or not. 
 
 ### Parameter: `suppressForMinutes`
 
-Mute actions for the chosen period of time (in ISO 8601 duration format) after the alert is fired. If set, autoMitigate must be disabled.Relevant only for rules of the kind LogAlert.
+Mute actions for the chosen period of time (in ISO 8601 duration format) after the alert is fired. If set, autoMitigate must be disabled. Relevant only for rules of the kind LogAlert.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `tags`
 

@@ -76,6 +76,27 @@ param tags object?
 @sys.description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+@description('Optional. The managed identity definition for this resource. You can only configure either a system-assigned or user-assigned identities, not both.')
+param managedIdentities managedIdentityAllType?
+
+var formattedUserAssignedIdentities = reduce(
+  map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
+  {},
+  (cur, next) => union(cur, next)
+)
+
+var identity = !empty(managedIdentities)
+  ? {
+      type: (managedIdentities.?systemAssigned ?? false)
+        ? (!empty(managedIdentities.?userAssignedResourceIds)
+            ? fail('You can only configure either a system-assigned or user-assigned identities, not both.')
+            : 'SystemAssigned')
+        : (!empty(managedIdentities.?userAssignedResourceIds) ? 'UserAssigned' : 'None')
+      userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
+    }
+  : null
+
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
@@ -124,6 +145,7 @@ resource queryRule 'Microsoft.Insights/scheduledQueryRules@2023-03-15-preview' =
   name: name
   location: location
   tags: tags
+  identity: identity
   kind: kind
   properties: {
     actions: {

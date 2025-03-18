@@ -37,3 +37,6 @@ output logAnalyticsWorkspaceResourceId string = logAnalyticsWorkspace.id
 
 @description('The resource ID of the created Action Group.')
 output actionGroupResourceId string = actionGroup.id
+
+@description('The resource ID of the created Managed Identity.')
+output managedIdentityResourceId string = managedIdentity.id

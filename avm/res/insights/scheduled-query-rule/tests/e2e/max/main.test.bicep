@@ -68,6 +68,12 @@ module testDeployment '../../../main.bicep' = [
           propertyB: 'valueB'
         }
       }
+      managedIdentities: {
+        systemAssigned: true // Should fail
+        userAssignedResourceIds: [
+          nestedDependencies.outputs.managedIdentityResourceId
+        ]
+      }
       criterias: {
         allOf: [
           {
