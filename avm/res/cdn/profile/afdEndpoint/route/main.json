@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "4707556183387904772"
+      "templateHash": "5161695697517629939"
     },
     "name": "CDN Profiles AFD Endpoint Route",
     "description": "This module deploys a CDN Profile AFD Endpoint route."
@@ -122,7 +122,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type of the route."
       }
     },
     "afdRoutecacheConfigurationType": {
@@ -170,6 +171,10 @@
             "description": "Required. Defines how Frontdoor caches requests that include query strings."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of the route cache configuration."
       }
     }
   },
