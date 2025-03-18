@@ -17,7 +17,7 @@ on:
         type: boolean
         description: "Remove deployed module"
         required: false
-        default: false
+        default: true
       customLocation:
         type: string
         description: "Default location overwrite (e.g., eastus)"
