@@ -8,6 +8,7 @@ This module deploys a User Defined Route Table (UDR).
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -43,10 +44,7 @@ This instance deploys the module with the minimum set of required parameters.
 module routeTable 'br/public:avm/res/network/route-table:<version>' = {
   name: 'routeTableDeployment'
   params: {
-    // Required parameters
     name: 'nrtmin001'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -63,13 +61,8 @@ module routeTable 'br/public:avm/res/network/route-table:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
     "name": {
       "value": "nrtmin001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -85,10 +78,7 @@ module routeTable 'br/public:avm/res/network/route-table:<version>' = {
 ```bicep-params
 using 'br/public:avm/res/network/route-table:<version>'
 
-// Required parameters
 param name = 'nrtmin001'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -296,11 +286,6 @@ module routeTable 'br/public:avm/res/network/route-table:<version>' = {
     // Required parameters
     name: 'nrtwaf001'
     // Non-required parameters
-    location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     routes: [
       {
         name: 'default'
@@ -337,15 +322,6 @@ module routeTable 'br/public:avm/res/network/route-table:<version>' = {
       "value": "nrtwaf001"
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
     "routes": {
       "value": [
         {
@@ -382,11 +358,6 @@ using 'br/public:avm/res/network/route-table:<version>'
 // Required parameters
 param name = 'nrtwaf001'
 // Non-required parameters
-param location = '<location>'
-param lock = {
-  kind: 'CanNotDelete'
-  name: 'myCustomLockName'
-}
 param routes = [
   {
     name: 'default'
@@ -637,7 +608,6 @@ Properties of the route.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`addressPrefix`](#parameter-routespropertiesaddressprefix) | string | The destination CIDR to which the route applies. |
-| [`hasBgpOverride`](#parameter-routespropertieshasbgpoverride) | bool | A value indicating whether this route overrides overlapping BGP routes regardless of LPM. |
 | [`nextHopIpAddress`](#parameter-routespropertiesnexthopipaddress) | string | The IP address packets should be forwarded to. Next hop values are only allowed in routes where the next hop type is VirtualAppliance. |
 
 ### Parameter: `routes.properties.nextHopType`
@@ -664,13 +634,6 @@ The destination CIDR to which the route applies.
 - Required: No
 - Type: string
 
-### Parameter: `routes.properties.hasBgpOverride`
-
-A value indicating whether this route overrides overlapping BGP routes regardless of LPM.
-
-- Required: No
-- Type: bool
-
 ### Parameter: `routes.properties.nextHopIpAddress`
 
 The IP address packets should be forwarded to. Next hop values are only allowed in routes where the next hop type is VirtualAppliance.
@@ -693,6 +656,14 @@ Tags of the resource.
 | `name` | string | The name of the route table. |
 | `resourceGroupName` | string | The resource group the route table was deployed into. |
 | `resourceId` | string | The resource ID of the route table. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 
