@@ -124,7 +124,7 @@ module account 'br/public:avm/res/maps/account:<version>' = {
       }
     ]
     customerManagedKey: {
-      keyName: '<keyName>'
+      keyEncryptionKeyUrl: '<keyEncryptionKeyUrl>'
       keyVaultResourceId: '<keyVaultResourceId>'
       userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
     }
@@ -195,7 +195,7 @@ module account 'br/public:avm/res/maps/account:<version>' = {
     },
     "customerManagedKey": {
       "value": {
-        "keyName": "<keyName>",
+        "keyEncryptionKeyUrl": "<keyEncryptionKeyUrl>",
         "keyVaultResourceId": "<keyVaultResourceId>",
         "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
       }
@@ -278,7 +278,7 @@ param corsRules = [
   }
 ]
 param customerManagedKey = {
-  keyName: '<keyName>'
+  keyEncryptionKeyUrl: '<keyEncryptionKeyUrl>'
   keyVaultResourceId: '<keyVaultResourceId>'
   userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
 }
@@ -523,50 +523,34 @@ The customer managed key definition.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`keyName`](#parameter-customermanagedkeykeyname) | string | The name of the customer managed key to use for encryption. |
-| [`keyVaultResourceId`](#parameter-customermanagedkeykeyvaultresourceid) | string | The resource ID of a key vault to reference a customer managed key for encryption from. |
+| [`keyEncryptionKeyUrl`](#parameter-customermanagedkeykeyencryptionkeyurl) | string | key encryption key Url, versioned or unversioned. Ex: https://contosovault.vault.azure.net/keys/contosokek/562a4bb76b524a1493a6afe8e536ee78 or https://contosovault.vault.azure.net/keys/contosokek. |
+| [`keyVaultResourceId`](#parameter-customermanagedkeykeyvaultresourceid) | string | The resource ID of the Key Vault. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`autoRotationEnabled`](#parameter-customermanagedkeyautorotationenabled) | bool | Enable or disable auto-rotating to the latest key version. Default is `true`. If set to `false`, the latest key version at the time of the deployment is used. |
-| [`keyVersion`](#parameter-customermanagedkeykeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationEnabled' setting. |
-| [`userAssignedIdentityResourceId`](#parameter-customermanagedkeyuserassignedidentityresourceid) | string | User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use. |
+| [`userAssignedIdentityResourceId`](#parameter-customermanagedkeyuserassignedidentityresourceid) | string | The resource ID of the user assigned identity to use for encryption. |
 
-### Parameter: `customerManagedKey.keyName`
+### Parameter: `customerManagedKey.keyEncryptionKeyUrl`
 
-The name of the customer managed key to use for encryption.
+key encryption key Url, versioned or unversioned. Ex: https://contosovault.vault.azure.net/keys/contosokek/562a4bb76b524a1493a6afe8e536ee78 or https://contosovault.vault.azure.net/keys/contosokek.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `customerManagedKey.keyVaultResourceId`
 
-The resource ID of a key vault to reference a customer managed key for encryption from.
+The resource ID of the Key Vault.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `customerManagedKey.autoRotationEnabled`
-
-Enable or disable auto-rotating to the latest key version. Default is `true`. If set to `false`, the latest key version at the time of the deployment is used.
-
-- Required: No
-- Type: bool
-
-### Parameter: `customerManagedKey.keyVersion`
-
-The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationEnabled' setting.
-
-- Required: No
-- Type: string
-
 ### Parameter: `customerManagedKey.userAssignedIdentityResourceId`
 
-User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.
+The resource ID of the user assigned identity to use for encryption.
 
-- Required: No
+- Required: Yes
 - Type: string
 
 ### Parameter: `disableLocalAuth`

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "1717114553500711837"
+      "templateHash": "366101945372360450"
     },
     "name": "Azure Maps Account",
     "description": "This module deploys an Azure Maps Account."
@@ -49,48 +49,30 @@
         "__bicep_export!": true
       }
     },
-    "customerManagedKeyWithAutoRotateType": {
+    "customerManagedKeyType": {
       "type": "object",
       "properties": {
         "keyVaultResourceId": {
           "type": "string",
           "metadata": {
-            "description": "Required. The resource ID of a key vault to reference a customer managed key for encryption from."
+            "description": "Required. The resource ID of the Key Vault."
           }
         },
-        "keyName": {
+        "keyEncryptionKeyUrl": {
           "type": "string",
           "metadata": {
-            "description": "Required. The name of the customer managed key to use for encryption."
-          }
-        },
-        "keyVersion": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationEnabled' setting."
-          }
-        },
-        "autoRotationEnabled": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Enable or disable auto-rotating to the latest key version. Default is `true`. If set to `false`, the latest key version at the time of the deployment is used."
+            "description": "Required. key encryption key Url, versioned or unversioned. Ex: https://contosovault.vault.azure.net/keys/contosokek/562a4bb76b524a1493a6afe8e536ee78 or https://contosovault.vault.azure.net/keys/contosokek."
           }
         },
         "userAssignedIdentityResourceId": {
           "type": "string",
-          "nullable": true,
           "metadata": {
-            "description": "Optional. User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use."
+            "description": "Optional. The resource ID of the user assigned identity to use for encryption."
           }
         }
       },
       "metadata": {
-        "description": "An AVM-aligned type for a customer-managed key. To be used if the resource type supports auto-rotation of the customer-managed key.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
-        }
+        "__bicep_export!": true
       }
     },
     "managedIdentityAllType": {
@@ -277,7 +259,7 @@
       }
     },
     "customerManagedKey": {
-      "$ref": "#/definitions/customerManagedKeyWithAutoRotateType",
+      "$ref": "#/definitions/customerManagedKeyType",
       "nullable": true,
       "metadata": {
         "description": "Optional. The customer managed key definition."
@@ -318,6 +300,20 @@
         "name": "formattedRoleAssignments",
         "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+      },
+      {
+        "name": "corsRulesProperty",
+        "count": "[length(parameters('corsRules'))]",
+        "input": {
+          "allowedOrigins": "[parameters('corsRules')[copyIndex('corsRulesProperty')].allowedOrigins]"
+        }
+      },
+      {
+        "name": "locationProperty",
+        "count": "[length(parameters('locations'))]",
+        "input": {
+          "locationName": "[parameters('locations')[copyIndex('locationProperty')]]"
+        }
       }
     ],
     "builtInRoleNames": {
@@ -331,18 +327,18 @@
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
     },
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
-    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]"
+    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
+    "encryptionProperties": "[if(not(empty(parameters('customerManagedKey'))), createObject('encryption', createObject('keyEncryptionKeyIdentity', createObject('userAssignedIdentityResourceId', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '//'), '/')[2], split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '////'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), 'dummyMsi'), '/'))), null()), 'identityType', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), 'userAssignedIdentity', 'systemAssignedIdentity')), 'keyEncryptionKeyUrl', tryGet(parameters('customerManagedKey'), 'keyEncryptionKeyUrl')), 'requireInfrastructureEncryption', parameters('requireInfrastructureEncryption')), createObject())]",
+    "properties": {
+      "linkedResources": "[parameters('linkedResources')]",
+      "cors": {
+        "corsRules": "[variables('corsRulesProperty')]"
+      },
+      "disableLocalAuth": "[parameters('disableLocalAuth')]",
+      "locations": "[variables('locationProperty')]"
+    }
   },
   "resources": {
-    "cMKKeyVault::cMKKey": {
-      "condition": "[and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKey'), 'keyName')))))]",
-      "existing": true,
-      "type": "Microsoft.KeyVault/vaults/keys",
-      "apiVersion": "2023-02-01",
-      "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '//'), '/')[2]]",
-      "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '////'), '/')[4]]",
-      "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]"
-    },
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
@@ -362,15 +358,6 @@
           }
         }
       }
-    },
-    "cMKKeyVault": {
-      "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))]",
-      "existing": true,
-      "type": "Microsoft.KeyVault/vaults",
-      "apiVersion": "2023-02-01",
-      "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '//'), '/')[2]]",
-      "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '////'), '/')[4]]",
-      "name": "[last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/'))]"
     },
     "cMKUserAssignedIdentity": {
       "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId')))]",
@@ -392,34 +379,7 @@
       "identity": "[variables('identity')]",
       "kind": "[parameters('kind')]",
       "tags": "[parameters('tags')]",
-      "properties": {
-        "copy": [
-          {
-            "name": "locations",
-            "count": "[length(parameters('locations'))]",
-            "input": {
-              "locationName": "[parameters('locations')[copyIndex('locations')]]"
-            }
-          }
-        ],
-        "encryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('infrastructureEncryption', parameters('requireInfrastructureEncryption'), 'customerManagedKeyEncryption', createObject('keyEncryptionKeyIdentity', createObject('userAssignedIdentityResourceId', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '//'), '/')[2], split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '////'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), 'dummyMsi'), '/'))), null()), 'identityType', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), 'userAssignedIdentity', 'systemAssignedIdentity')), 'keyEncryptionKeyUrl', reference('cMKKeyVault::cMKKey').keyUri)), null())]",
-        "linkedResources": "[parameters('linkedResources')]",
-        "cors": {
-          "copy": [
-            {
-              "name": "corsRules",
-              "count": "[length(parameters('corsRules'))]",
-              "input": {
-                "allowedOrigins": "[parameters('corsRules')[copyIndex('corsRules')].allowedOrigins]"
-              }
-            }
-          ]
-        },
-        "disableLocalAuth": "[parameters('disableLocalAuth')]"
-      },
-      "dependsOn": [
-        "cMKKeyVault::cMKKey"
-      ]
+      "properties": "[union(variables('encryptionProperties'), variables('properties'))]"
     },
     "mapsAccount_roleAssignments": {
       "copy": {
