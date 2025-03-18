@@ -174,7 +174,7 @@ type linuxDcrPropertiesType = {
   kind: 'Linux'
 
   @description('Required. Specification of data sources that will be collected.')
-  dataSources: object
+  dataSources: object?
 
   @description('Required. The specification of data flows.')
   dataFlows: array
@@ -197,7 +197,7 @@ type windowsDcrPropertiesType = {
   kind: 'Windows'
 
   @description('Required. Specification of data sources that will be collected.')
-  dataSources: object
+  dataSources: object?
 
   @description('Required. The specification of data flows.')
   dataFlows: array
@@ -220,7 +220,7 @@ type allPlatformsDcrPropertiesType = {
   kind: 'All'
 
   @description('Required. Specification of data sources that will be collected.')
-  dataSources: object
+  dataSources: object?
 
   @description('Required. The specification of data flows.')
   dataFlows: array
