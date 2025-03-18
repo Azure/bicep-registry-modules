@@ -256,7 +256,7 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
     evaluationFrequency: 'PT5M'
     location: '<location>'
     managedIdentities: {
-      systemAssigned: true
+      systemAssigned: false
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
@@ -377,7 +377,7 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
     },
     "managedIdentities": {
       "value": {
-        "systemAssigned": true,
+        "systemAssigned": false,
         "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
         ]
@@ -490,7 +490,7 @@ param autoMitigate = false
 param evaluationFrequency = 'PT5M'
 param location = '<location>'
 param managedIdentities = {
-  systemAssigned: true
+  systemAssigned: false
   userAssignedResourceIds: [
     '<managedIdentityResourceId>'
   ]
