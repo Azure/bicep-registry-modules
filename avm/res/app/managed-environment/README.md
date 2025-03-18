@@ -8,7 +8,6 @@ This module deploys an App Managed Environment (also known as a Container App En
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -189,7 +188,6 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    logsDestination: 'log-analytics'
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [
@@ -316,9 +314,6 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
         "name": "myCustomLockName"
       }
     },
-    "logsDestination": {
-      "value": "log-analytics"
-    },
     "managedIdentities": {
       "value": {
         "systemAssigned": true,
@@ -439,7 +434,6 @@ param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
 }
-param logsDestination = 'log-analytics'
 param managedIdentities = {
   systemAssigned: true
   userAssignedResourceIds: [
@@ -1090,7 +1084,7 @@ The managed identity definition for this resource.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
-| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. |
 
 ### Parameter: `managedIdentities.systemAssigned`
 
@@ -1101,7 +1095,7 @@ Enables system assigned managed identity on the resource.
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
-The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
+The resource ID(s) to assign to the resource.
 
 - Required: No
 - Type: array
@@ -1325,14 +1319,6 @@ Whether or not this Managed Environment is zone-redundant.
 | `resourceId` | string | The resource ID of the Managed Environment. |
 | `staticIp` | string | The IP address of the Managed Environment. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
-
-## Cross-referenced modules
-
-This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
-
-| Reference | Type |
-| :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 
