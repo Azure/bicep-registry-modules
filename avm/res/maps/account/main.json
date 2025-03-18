@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "366101945372360450"
+      "templateHash": "9876454007274574344"
     },
     "name": "Azure Maps Account",
     "description": "This module deploys an Azure Maps Account."
@@ -66,6 +66,7 @@
         },
         "userAssignedIdentityResourceId": {
           "type": "string",
+          "nullable": true,
           "metadata": {
             "description": "Optional. The resource ID of the user assigned identity to use for encryption."
           }

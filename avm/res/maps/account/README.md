@@ -550,7 +550,7 @@ The resource ID of the Key Vault.
 
 The resource ID of the user assigned identity to use for encryption.
 
-- Required: Yes
+- Required: No
 - Type: string
 
 ### Parameter: `disableLocalAuth`
