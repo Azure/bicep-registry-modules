@@ -12,7 +12,7 @@ This module deploys a SQL Managed Instance Database Backup Long-Term Retention P
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Sql/managedInstances/databases/backupLongTermRetentionPolicies` | [2022-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2022-05-01-preview/managedInstances/databases/backupLongTermRetentionPolicies) |
+| `Microsoft.Sql/managedInstances/databases/backupLongTermRetentionPolicies` | [2024-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2024-05-01-preview/managedInstances/databases/backupLongTermRetentionPolicies) |
 
 ## Parameters
 

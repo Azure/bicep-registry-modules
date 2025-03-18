@@ -6,12 +6,109 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "9916914331742576786"
+      "templateHash": "8671809661473789133"
     },
     "name": "SQL Managed Instance Databases",
     "description": "This module deploys a SQL Managed Instance Database."
   },
   "definitions": {
+    "diagnosticSettingLogsOnlyType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of diagnostic setting."
+          }
+        },
+        "logCategoriesAndGroups": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "category": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
+                }
+              },
+              "categoryGroup": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
+                }
+              },
+              "enabled": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
+          }
+        },
+        "logAnalyticsDestinationType": {
+          "type": "string",
+          "allowedValues": [
+            "AzureDiagnostics",
+            "Dedicated"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
+          }
+        },
+        "workspaceResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "storageAccountResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "eventHubAuthorizationRuleResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
+          }
+        },
+        "eventHubName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "marketplacePartnerResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a diagnostic setting. To be used if only logs are supported by the resource provider.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    },
     "lockType": {
       "type": "object",
       "properties": {
@@ -35,95 +132,12 @@
           }
         }
       },
-      "nullable": true
-    },
-    "diagnosticSettingType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of diagnostic setting."
-            }
-          },
-          "logCategoriesAndGroups": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "category": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
-                  }
-                },
-                "categoryGroup": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to 'AllLogs' to collect all logs."
-                  }
-                }
-              }
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to '' to disable log collection."
-            }
-          },
-          "logAnalyticsDestinationType": {
-            "type": "string",
-            "allowedValues": [
-              "AzureDiagnostics",
-              "Dedicated"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
-            }
-          },
-          "workspaceResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-            }
-          },
-          "storageAccountResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-            }
-          },
-          "eventHubAuthorizationRuleResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
-            }
-          },
-          "eventHubName": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-            }
-          },
-          "marketplacePartnerResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
-            }
-          }
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
-      },
-      "nullable": true
+      }
     }
   },
   "parameters": {
@@ -224,13 +238,18 @@
       }
     },
     "diagnosticSettings": {
-      "$ref": "#/definitions/diagnosticSettingType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/diagnosticSettingLogsOnlyType"
+      },
+      "nullable": true,
       "metadata": {
-        "description": "Optional. The diagnostic settings of the service."
+        "description": "Optional. The database-level diagnostic settings of the service."
       }
     },
     "lock": {
       "$ref": "#/definitions/lockType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The lock settings of the service."
       }
@@ -261,12 +280,12 @@
     "managedInstance": {
       "existing": true,
       "type": "Microsoft.Sql/managedInstances",
-      "apiVersion": "2023-08-01-preview",
+      "apiVersion": "2024-05-01-preview",
       "name": "[parameters('managedInstanceName')]"
     },
     "database": {
       "type": "Microsoft.Sql/managedInstances/databases",
-      "apiVersion": "2023-08-01-preview",
+      "apiVersion": "2024-05-01-preview",
       "name": "[format('{0}/{1}', parameters('managedInstanceName'), parameters('name'))]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -349,7 +368,9 @@
           "name": {
             "value": "[parameters('backupShortTermRetentionPoliciesObj').name]"
           },
-          "retentionDays": "[if(contains(parameters('backupShortTermRetentionPoliciesObj'), 'retentionDays'), createObject('value', parameters('backupShortTermRetentionPoliciesObj').retentionDays), createObject('value', 35))]"
+          "retentionDays": {
+            "value": "[coalesce(tryGet(parameters('backupShortTermRetentionPoliciesObj'), 'retentionDays'), 35)]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -358,7 +379,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "11789855026791761353"
+              "templateHash": "8412345211159637938"
             },
             "name": "SQL Managed Instance Database Backup Short-Term Retention Policies",
             "description": "This module deploys a SQL Managed Instance Database Backup Short-Term Retention Policy."
@@ -393,7 +414,7 @@
           "resources": [
             {
               "type": "Microsoft.Sql/managedInstances/databases/backupShortTermRetentionPolicies",
-              "apiVersion": "2023-08-01-preview",
+              "apiVersion": "2024-05-01-preview",
               "name": "[format('{0}/{1}/{2}', parameters('managedInstanceName'), parameters('databaseName'), parameters('name'))]",
               "properties": {
                 "retentionDays": "[parameters('retentionDays')]"
@@ -449,10 +470,18 @@
           "name": {
             "value": "[parameters('backupLongTermRetentionPoliciesObj').name]"
           },
-          "weekOfYear": "[if(contains(parameters('backupLongTermRetentionPoliciesObj'), 'weekOfYear'), createObject('value', parameters('backupLongTermRetentionPoliciesObj').weekOfYear), createObject('value', 5))]",
-          "weeklyRetention": "[if(contains(parameters('backupLongTermRetentionPoliciesObj'), 'weeklyRetention'), createObject('value', parameters('backupLongTermRetentionPoliciesObj').weeklyRetention), createObject('value', 'P1M'))]",
-          "monthlyRetention": "[if(contains(parameters('backupLongTermRetentionPoliciesObj'), 'monthlyRetention'), createObject('value', parameters('backupLongTermRetentionPoliciesObj').monthlyRetention), createObject('value', 'P1Y'))]",
-          "yearlyRetention": "[if(contains(parameters('backupLongTermRetentionPoliciesObj'), 'yearlyRetention'), createObject('value', parameters('backupLongTermRetentionPoliciesObj').yearlyRetention), createObject('value', 'P5Y'))]"
+          "weekOfYear": {
+            "value": "[coalesce(tryGet(parameters('backupLongTermRetentionPoliciesObj'), 'weekOfYear'), 5)]"
+          },
+          "weeklyRetention": {
+            "value": "[coalesce(tryGet(parameters('backupLongTermRetentionPoliciesObj'), 'weeklyRetention'), 'P1M')]"
+          },
+          "monthlyRetention": {
+            "value": "[coalesce(tryGet(parameters('backupLongTermRetentionPoliciesObj'), 'monthlyRetention'), 'P1Y')]"
+          },
+          "yearlyRetention": {
+            "value": "[coalesce(tryGet(parameters('backupLongTermRetentionPoliciesObj'), 'yearlyRetention'), 'P5Y')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -461,7 +490,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "15161163946707607608"
+              "templateHash": "8444093423596251832"
             },
             "name": "SQL Managed Instance Database Backup Long-Term Retention Policies",
             "description": "This module deploys a SQL Managed Instance Database Backup Long-Term Retention Policy."
@@ -517,7 +546,7 @@
           "resources": [
             {
               "type": "Microsoft.Sql/managedInstances/databases/backupLongTermRetentionPolicies",
-              "apiVersion": "2022-05-01-preview",
+              "apiVersion": "2024-05-01-preview",
               "name": "[format('{0}/{1}/{2}', parameters('managedInstanceName'), parameters('databaseName'), parameters('name'))]",
               "properties": {
                 "monthlyRetention": "[parameters('monthlyRetention')]",
@@ -584,7 +613,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('database', '2023-08-01-preview', 'full').location]"
+      "value": "[reference('database', '2024-05-01-preview', 'full').location]"
     }
   }
 }
