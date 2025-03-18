@@ -134,7 +134,6 @@ module testDeployment '../../../main.bicep' = [
           storageAccountName: nestedDependencies.outputs.storageAccountName
         }
       ]
-
       lock: {
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
