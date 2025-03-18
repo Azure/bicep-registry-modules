@@ -24,9 +24,6 @@ param namePrefix string = '#_namePrefix_#'
 // Dependencies //
 // ============ //
 
-// #disable-next-line no-hardcoded-location
-// var enforcedLocation = 'uksouth'
-
 // General resources
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
