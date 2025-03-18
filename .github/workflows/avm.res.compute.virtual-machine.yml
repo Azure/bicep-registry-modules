@@ -7,7 +7,7 @@ on:
         type: boolean
         description: "Execute static validation"
         required: false
-        default: false
+        default: true
       deploymentValidation:
         type: boolean
         description: "Execute deployment validation"
