@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
 metadata name = 'Multi resource group'
-metadata description = 'This instance deploys the module leveraging virtual machine and maintenance configuration dependencies from two different resource groups. This instance assigns an existing Linux virtual machine to the input maintenance configuration.'
+metadata description = 'This instance deploys the module leveraging virtual machine and maintenance configuration dependencies from two different resource groups. This instance assigns an existing Windows virtual machine to the input maintenance configuration.'
 
 // ========== //
 // Parameters //
