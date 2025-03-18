@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "2044049769528912416"
+      "templateHash": "14538498060030024136"
     },
     "name": "Maintenance Configuration Assignments",
     "description": "This module deploys a Maintenance Configuration Assignment."
@@ -138,17 +138,29 @@
       "existing": true,
       "type": "Microsoft.Compute/virtualMachines",
       "apiVersion": "2024-07-01",
-      "name": "[last(split(parameters('resourceId'), '/'))]"
+      "name": "[if(not(equals(parameters('resourceId'), null())), last(split(parameters('resourceId'), '/')), 'null')]"
     },
     "configurationAssignment": {
+      "condition": "[not(equals(parameters('resourceId'), null()))]",
+      "type": "Microsoft.Maintenance/configurationAssignments",
+      "apiVersion": "2023-04-01",
+      "scope": "[format('Microsoft.Compute/virtualMachines/{0}', if(not(equals(parameters('resourceId'), null())), last(split(parameters('resourceId'), '/')), 'null'))]",
+      "name": "[parameters('name')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "maintenanceConfigurationId": "[parameters('maintenanceConfigurationResourceId')]",
+        "resourceId": "[resourceId('Microsoft.Compute/virtualMachines', if(not(equals(parameters('resourceId'), null())), last(split(parameters('resourceId'), '/')), 'null'))]"
+      }
+    },
+    "configurationAssignment_dynamic": {
+      "condition": "[equals(parameters('resourceId'), null())]",
       "type": "Microsoft.Maintenance/configurationAssignments",
       "apiVersion": "2023-04-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "properties": {
         "filter": "[parameters('filter')]",
-        "maintenanceConfigurationId": "[parameters('maintenanceConfigurationResourceId')]",
-        "resourceId": "[parameters('resourceId')]"
+        "maintenanceConfigurationId": "[parameters('maintenanceConfigurationResourceId')]"
       }
     }
   },
@@ -158,14 +170,14 @@
       "metadata": {
         "description": "The name of the Maintenance configuration assignment."
       },
-      "value": "[parameters('name')]"
+      "value": "[coalesce(parameters('name'), parameters('name'))]"
     },
     "resourceId": {
       "type": "string",
       "metadata": {
         "description": "The resource ID of the Maintenance configuration assignment."
       },
-      "value": "[resourceId('Microsoft.Maintenance/configurationAssignments', parameters('name'))]"
+      "value": "[coalesce(extensionResourceId(resourceId('Microsoft.Compute/virtualMachines', if(not(equals(parameters('resourceId'), null())), last(split(parameters('resourceId'), '/')), 'null')), 'Microsoft.Maintenance/configurationAssignments', parameters('name')), resourceId('Microsoft.Maintenance/configurationAssignments', parameters('name')))]"
     },
     "resourceGroupName": {
       "type": "string",

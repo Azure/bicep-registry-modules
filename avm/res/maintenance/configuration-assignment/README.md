@@ -31,6 +31,7 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [WAF-aligned](#example-2-waf-aligned)
+- [Multi resource group](#example-3-multi-resource-group)
 
 ### Example 1: _Using only defaults_
 
@@ -49,7 +50,15 @@ module configurationAssignment 'br/public:avm/res/maintenance/configuration-assi
     maintenanceConfigurationResourceId: '<maintenanceConfigurationResourceId>'
     name: 'mcamin001'
     // Non-required parameters
-    location: '<location>'
+    filter: {
+      osTypes: [
+        'Linux'
+        'Windows'
+      ]
+      resourceTypes: [
+        'Virtual Machines'
+      ]
+    }
   }
 }
 ```
@@ -74,8 +83,16 @@ module configurationAssignment 'br/public:avm/res/maintenance/configuration-assi
       "value": "mcamin001"
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
+    "filter": {
+      "value": {
+        "osTypes": [
+          "Linux",
+          "Windows"
+        ],
+        "resourceTypes": [
+          "Virtual Machines"
+        ]
+      }
     }
   }
 }
@@ -95,7 +112,15 @@ using 'br/public:avm/res/maintenance/configuration-assignment:<version>'
 param maintenanceConfigurationResourceId = '<maintenanceConfigurationResourceId>'
 param name = 'mcamin001'
 // Non-required parameters
-param location = '<location>'
+param filter = {
+  osTypes: [
+    'Linux'
+    'Windows'
+  ]
+  resourceTypes: [
+    'Virtual Machines'
+  ]
+}
 ```
 
 </details>
@@ -118,7 +143,6 @@ module configurationAssignment 'br/public:avm/res/maintenance/configuration-assi
     maintenanceConfigurationResourceId: '<maintenanceConfigurationResourceId>'
     name: 'mcawaf001'
     // Non-required parameters
-    location: '<location>'
     resourceId: '<resourceId>'
   }
 }
@@ -144,9 +168,6 @@ module configurationAssignment 'br/public:avm/res/maintenance/configuration-assi
       "value": "mcawaf001"
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
     "resourceId": {
       "value": "<resourceId>"
     }
@@ -168,7 +189,75 @@ using 'br/public:avm/res/maintenance/configuration-assignment:<version>'
 param maintenanceConfigurationResourceId = '<maintenanceConfigurationResourceId>'
 param name = 'mcawaf001'
 // Non-required parameters
-param location = '<location>'
+param resourceId = '<resourceId>'
+```
+
+</details>
+<p>
+
+### Example 3: _Multi resource group_
+
+This instance deploys the module leveraging virtual machine and maintenance configuration dependencies from two different resource groups. This instance assigns an existing Windows virtual machine to the input maintenance configuration.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module configurationAssignment 'br/public:avm/res/maintenance/configuration-assignment:<version>' = {
+  name: 'configurationAssignmentDeployment'
+  params: {
+    // Required parameters
+    maintenanceConfigurationResourceId: '<maintenanceConfigurationResourceId>'
+    name: 'mcamrg001'
+    // Non-required parameters
+    resourceId: '<resourceId>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "maintenanceConfigurationResourceId": {
+      "value": "<maintenanceConfigurationResourceId>"
+    },
+    "name": {
+      "value": "mcamrg001"
+    },
+    // Non-required parameters
+    "resourceId": {
+      "value": "<resourceId>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/maintenance/configuration-assignment:<version>'
+
+// Required parameters
+param maintenanceConfigurationResourceId = '<maintenanceConfigurationResourceId>'
+param name = 'mcamrg001'
+// Non-required parameters
 param resourceId = '<resourceId>'
 ```
 
