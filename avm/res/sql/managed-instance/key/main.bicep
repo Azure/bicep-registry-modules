@@ -25,11 +25,11 @@ var serverKeyName = empty(uri)
   ? 'ServiceManaged'
   : '${split(splittedKeyUri[2], '.')[0]}_${splittedKeyUri[4]}_${splittedKeyUri[5]}'
 
-resource managedInstance 'Microsoft.Sql/managedInstances@2023-08-01-preview' existing = {
+resource managedInstance 'Microsoft.Sql/managedInstances@2024-05-01-preview' existing = {
   name: managedInstanceName
 }
 
-resource key 'Microsoft.Sql/managedInstances/keys@2023-08-01-preview' = {
+resource key 'Microsoft.Sql/managedInstances/keys@2024-05-01-preview' = {
   name: !empty(name) ? name : serverKeyName
   parent: managedInstance
   properties: {

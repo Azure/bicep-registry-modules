@@ -233,7 +233,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource managedInstance 'Microsoft.Sql/managedInstances@2023-08-01-preview' = {
+resource managedInstance 'Microsoft.Sql/managedInstances@2024-05-01-preview' = {
   name: name
   location: location
   tags: tags

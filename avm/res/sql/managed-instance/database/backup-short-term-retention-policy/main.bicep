@@ -13,15 +13,15 @@ param managedInstanceName string
 @description('Optional. The backup retention period in days. This is how many days Point-in-Time Restore will be supported.')
 param retentionDays int = 35
 
-resource managedInstance 'Microsoft.Sql/managedInstances@2023-08-01-preview' existing = {
+resource managedInstance 'Microsoft.Sql/managedInstances@2024-05-01-preview' existing = {
   name: managedInstanceName
 
-  resource managedInstaceDatabase 'databases@2023-08-01-preview' existing = {
+  resource managedInstaceDatabase 'databases@2024-05-01-preview' existing = {
     name: databaseName
   }
 }
 
-resource backupShortTermRetentionPolicy 'Microsoft.Sql/managedInstances/databases/backupShortTermRetentionPolicies@2023-08-01-preview' = {
+resource backupShortTermRetentionPolicy 'Microsoft.Sql/managedInstances/databases/backupShortTermRetentionPolicies@2024-05-01-preview' = {
   name: name
   parent: managedInstance::managedInstaceDatabase
   properties: {

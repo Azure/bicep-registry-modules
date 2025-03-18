@@ -65,11 +65,11 @@ param backupLongTermRetentionPoliciesObj object = {}
 @description('Optional. Tags of the resource.')
 param tags object?
 
-resource managedInstance 'Microsoft.Sql/managedInstances@2023-08-01-preview' existing = {
+resource managedInstance 'Microsoft.Sql/managedInstances@2024-05-01-preview' existing = {
   name: managedInstanceName
 }
 
-resource database 'Microsoft.Sql/managedInstances/databases@2023-08-01-preview' = {
+resource database 'Microsoft.Sql/managedInstances/databases@2024-05-01-preview' = {
   name: name
   parent: managedInstance
   location: location
