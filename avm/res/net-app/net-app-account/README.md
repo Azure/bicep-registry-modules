@@ -1160,6 +1160,7 @@ param tags = {
 | :-- | :-- | :-- |
 | [`adName`](#parameter-adname) | string | Name of the active directory host as part of Kerberos Realm used for Kerberos authentication. |
 | [`aesEncryption`](#parameter-aesencryption) | bool | Enable AES encryption on the SMB Server. |
+| [`allowLocalNfsUsersWithLdap`](#parameter-allowlocalnfsuserswithldap) | bool | If enabled, NFS client local users can also (in addition to LDAP users) access the NFS volumes. |
 | [`backupPolicies`](#parameter-backuppolicies) | array | The backup policies to create. |
 | [`backupVault`](#parameter-backupvault) | object | The netapp backup vault to create & configure. |
 | [`capacityPools`](#parameter-capacitypools) | array | Capacity pools to create. |
@@ -1201,6 +1202,14 @@ Name of the active directory host as part of Kerberos Realm used for Kerberos au
 ### Parameter: `aesEncryption`
 
 Enable AES encryption on the SMB Server.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
+### Parameter: `allowLocalNfsUsersWithLdap`
+
+If enabled, NFS client local users can also (in addition to LDAP users) access the NFS volumes.
 
 - Required: No
 - Type: bool

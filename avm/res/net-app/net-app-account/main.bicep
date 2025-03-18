@@ -33,6 +33,9 @@ param dnsServers string = ''
 @description('Optional. Specifies whether encryption should be used for communication between SMB server and domain controller (DC). SMB3 only.')
 param encryptDCConnections bool = false
 
+@description('Optional. If enabled, NFS client local users can also (in addition to LDAP users) access the NFS volumes.')
+param allowLocalNfsUsersWithLdap bool = false
+
 @description('Optional. Required if domainName is specified. NetBIOS name of the SMB server. A computer account with this prefix will be registered in the AD and used to mount volumes.')
 param smbServerNamePrefix string = ''
 
@@ -96,6 +99,7 @@ var activeDirectoryConnectionProperties = [
     serverRootCACertificate: !empty(domainName) ? serverRootCACertificate : null
     smbServerName: !empty(domainName) ? smbServerNamePrefix : null
     organizationalUnit: !empty(domainJoinOU) ? domainJoinOU : null
+    allowLocalNfsUsersWithLdap: !empty(domainJoinOU) ? allowLocalNfsUsersWithLdap : false
   }
 ]
 

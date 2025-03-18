@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "15910472503328593792"
+      "templateHash": "6539263026449244803"
     },
     "name": "Azure NetApp Files",
     "description": "This module deploys an Azure NetApp File."
@@ -1162,6 +1162,13 @@
         "description": "Optional. Specifies whether encryption should be used for communication between SMB server and domain controller (DC). SMB3 only."
       }
     },
+    "allowLocalNfsUsersWithLdap": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. If enabled, NFS client local users can also (in addition to LDAP users) access the NFS volumes."
+      }
+    },
     "smbServerNamePrefix": {
       "type": "string",
       "defaultValue": "",
@@ -1302,7 +1309,8 @@
         "ldapSigning": "[if(not(empty(parameters('domainName'))), parameters('ldapSigning'), false())]",
         "serverRootCACertificate": "[if(not(empty(parameters('domainName'))), parameters('serverRootCACertificate'), null())]",
         "smbServerName": "[if(not(empty(parameters('domainName'))), parameters('smbServerNamePrefix'), null())]",
-        "organizationalUnit": "[if(not(empty(parameters('domainJoinOU'))), parameters('domainJoinOU'), null())]"
+        "organizationalUnit": "[if(not(empty(parameters('domainJoinOU'))), parameters('domainJoinOU'), null())]",
+        "allowLocalNfsUsersWithLdap": "[if(not(empty(parameters('domainJoinOU'))), parameters('allowLocalNfsUsersWithLdap'), false())]"
       }
     ],
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
