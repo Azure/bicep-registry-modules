@@ -105,7 +105,7 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       customerManagedKey: {
-        keyName: nestedDependencies.outputs.keyName
+        keyEncryptionKeyUrl: nestedDependencies.outputs.keyUri
         keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
         userAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
       }
