@@ -32,9 +32,12 @@ param linkedResources linkedResourceType[] = []
 @description('Optional. Allows toggle functionality on Azure Policy to disable Azure Maps local authentication support. This will disable Shared Keys and Shared Access Signature Token authentication from any usage. Default is true.')
 param disableLocalAuth bool = true
 
-import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The customer managed key definition.')
-param customerManagedKey customerManagedKeyWithAutoRotateType?
+param customerManagedKey customerManagedKeyType?
+
+@description('Optional. Enable infrastructure encryption (double encryption). Note, this setting requires the configuration of Customer-Managed-Keys (CMK) via the corresponding module parameters.')
+@allowed(['enabled', 'disabled'])
+param requireInfrastructureEncryption string = 'disabled'
 
 import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The managed identity definition for this resource.')
@@ -118,24 +121,52 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
-  name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
-  scope: resourceGroup(
-    split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
-    split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
-  )
-
-  resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
-    name: customerManagedKey.?keyName ?? 'dummyKey'
-  }
-}
-
 resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
   name: last(split(customerManagedKey.?userAssignedIdentityResourceId ?? 'dummyMsi', '/'))
   scope: resourceGroup(
     split((customerManagedKey.?userAssignedIdentityResourceId ?? '//'), '/')[2],
     split((customerManagedKey.?userAssignedIdentityResourceId ?? '////'), '/')[4]
   )
+}
+
+var encryptionProperties = !empty(customerManagedKey)
+  ? {
+      encryption: {
+        customerManagedKeyEncryption: {
+          keyEncryptionKeyIdentity: {
+            userAssignedIdentityResourceId: !empty(customerManagedKey.?userAssignedIdentityResourceId)
+              ? cMKUserAssignedIdentity.id
+              : null
+            identityType: !empty(customerManagedKey.?userAssignedIdentityResourceId)
+              ? 'userAssignedIdentity'
+              : 'systemAssignedIdentity'
+          }
+          keyEncryptionKeyUrl: customerManagedKey.?keyEncryptionKeyUrl
+        }
+      }
+      requireInfrastructureEncryption: requireInfrastructureEncryption
+    }
+  : {}
+
+var corsRulesProperty = [
+  for rule in corsRules: {
+    allowedOrigins: rule.allowedOrigins
+  }
+]
+
+var locationProperty = [
+  for dataLocation in locations: {
+    locationName: dataLocation
+  }
+]
+
+var properties = {
+  linkedResources: linkedResources
+  cors: {
+    corsRules: corsRulesProperty
+  }
+  disableLocalAuth: disableLocalAuth
+  locations: locationProperty
 }
 
 resource mapsAccount 'Microsoft.Maps/accounts@2024-07-01-preview' = {
@@ -147,37 +178,7 @@ resource mapsAccount 'Microsoft.Maps/accounts@2024-07-01-preview' = {
   identity: identity
   kind: kind
   tags: tags
-  properties: {
-    encryption: !empty(customerManagedKey)
-      ? {
-          customerManagedKeyEncryption: {
-            keyEncryptionKeyIdentity: {
-              userAssignedIdentityResourceId: !empty(customerManagedKey.?userAssignedIdentityResourceId)
-                ? cMKUserAssignedIdentity.id
-                : null
-              identityType: !empty(customerManagedKey.?userAssignedIdentityResourceId)
-                ? 'UserAssigned'
-                : 'SystemAssigned'
-            }
-            keyEncryptionKeyUrl: cMKKeyVault.properties.vaultUri
-          }
-        }
-      : null
-    linkedResources: linkedResources
-    cors: {
-      corsRules: [
-        for rule in corsRules: {
-          allowedOrigins: rule.allowedOrigins
-        }
-      ]
-    }
-    disableLocalAuth: disableLocalAuth
-    locations: [
-      for dataLocation in locations: {
-        locationName: dataLocation
-      }
-    ]
-  }
+  properties: union(encryptionProperties, properties)
 }
 
 resource mapsAccount_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
@@ -229,4 +230,15 @@ type linkedResourceType = {
   id: string
   @description('Required. A provided name which uniquely identifies the linked resource.')
   uniqueName: string
+}
+
+@export()
+type customerManagedKeyType = {
+  @description('Required. The resource ID of the Key Vault.')
+  keyVaultResourceId: string
+  #disable-next-line no-hardcoded-env-urls
+  @description('Required. key encryption key Url, versioned or unversioned. Ex: https://contosovault.vault.azure.net/keys/contosokek/562a4bb76b524a1493a6afe8e536ee78 or https://contosovault.vault.azure.net/keys/contosokek.')
+  keyEncryptionKeyUrl: string
+  @description('Optional. The resource ID of the user assigned identity to use for encryption.')
+  userAssignedIdentityResourceId: string?
 }

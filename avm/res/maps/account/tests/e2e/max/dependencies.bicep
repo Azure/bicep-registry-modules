@@ -70,6 +70,9 @@ output keyVaultResourceId string = keyVault.id
 @description('The name of the created encryption key.')
 output keyName string = keyVault::key.name
 
+@description('The version of the created encryption key.')
+output keyVersion string = last(split(keyVault::key.properties.keyUriWithVersion, '/'))
+
 @description('The principal ID of the created Managed Identity.')
 output managedIdentityPrincipalId string = managedIdentity.properties.principalId
 
@@ -81,3 +84,6 @@ output storageAccountResourceId string = strorageAccount.id
 
 @description('The name of the storage account.')
 output storageAccountName string = strorageAccount.name
+
+@description('The key uri of the created encryption key.')
+output keyUri string = keyVault::key.properties.keyUri

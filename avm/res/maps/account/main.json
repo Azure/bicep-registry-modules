@@ -1,20 +1,197 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "6420988114089133280"
+      "version": "0.33.93.31351",
+      "templateHash": "6566043250692585368"
     },
     "name": "Azure Maps Account",
     "description": "This module deploys an Azure Maps Account."
+  },
+  "definitions": {
+    "corsRuleType": {
+      "type": "object",
+      "properties": {
+        "allowedOrigins": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "Required. The allowed origins for the CORS rule."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "linkedResourceType": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. ARM resource id in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Storage/accounts/{storageName}'."
+          }
+        },
+        "uniqueName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. A provided name which uniquely identifies the linked resource."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "customerManagedKeyType": {
+      "type": "object",
+      "properties": {
+        "keyVaultResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of the Key Vault."
+          }
+        },
+        "keyEncryptionKeyUrl": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. key encryption key Url, versioned or unversioned. Ex: https://contosovault.vault.azure.net/keys/contosokek/562a4bb76b524a1493a6afe8e536ee78 or https://contosovault.vault.azure.net/keys/contosokek."
+          }
+        },
+        "userAssignedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID of the user assigned identity to use for encryption."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "managedIdentityAllType": {
+      "type": "object",
+      "properties": {
+        "systemAssigned": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enables system assigned managed identity on the resource."
+          }
+        },
+        "userAssignedResourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    },
+    "roleAssignmentType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+          }
+        },
+        "roleDefinitionIdOrName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+          }
+        },
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+          }
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "Device",
+            "ForeignGroup",
+            "Group",
+            "ServicePrincipal",
+            "User"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The principal type of the assigned principal ID."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The description of the role assignment."
+          }
+        },
+        "condition": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+          }
+        },
+        "conditionVersion": {
+          "type": "string",
+          "allowedValues": [
+            "2.0"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Version of the condition."
+          }
+        },
+        "delegatedManagedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Resource Id of the delegated managed identity resource."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a role assignment.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
+        }
+      }
+    }
   },
   "parameters": {
     "name": {
       "type": "string",
       "metadata": {
         "description": "Required. Name of the resource to create."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags of the resource."
       }
     },
     "location": {
@@ -30,14 +207,144 @@
       "metadata": {
         "description": "Optional. Enable/Disable usage telemetry for module."
       }
+    },
+    "sku": {
+      "type": "string",
+      "defaultValue": "G2",
+      "allowedValues": [
+        "G2"
+      ],
+      "metadata": {
+        "description": "Optional. The SKU of the Maps Account. Default is G2."
+      }
+    },
+    "kind": {
+      "type": "string",
+      "defaultValue": "Gen2",
+      "metadata": {
+        "description": "Optional. The kind of the Maps Account. Default is Gen2."
+      }
+    },
+    "locations": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. List of additional data processing regions for the Maps Account, which may result in requests being processed in another geography. Some features or results may be restricted to specific regions. By default, Maps REST APIs process requests according to the account location or the geographic scope."
+      }
+    },
+    "corsRules": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/corsRuleType"
+      },
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. Specifies CORS rules for the Blob service. You can include up to five CorsRule elements in the request. If no CorsRule elements are included in the request body, all CORS rules will be deleted, and CORS will be disabled for the Blob service."
+      }
+    },
+    "linkedResources": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/linkedResourceType"
+      },
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. The array of associated resources to the Maps account. Linked resource in the array cannot individually update, you must update all linked resources in the array together. These resources may be used on operations on the Azure Maps REST API. Access is controlled by the Maps Account Managed Identity(s) permissions to those resource(s)."
+      }
+    },
+    "disableLocalAuth": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Allows toggle functionality on Azure Policy to disable Azure Maps local authentication support. This will disable Shared Keys and Shared Access Signature Token authentication from any usage. Default is true."
+      }
+    },
+    "customerManagedKey": {
+      "$ref": "#/definitions/customerManagedKeyType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The customer managed key definition."
+      }
+    },
+    "requireInfrastructureEncryption": {
+      "type": "string",
+      "defaultValue": "disabled",
+      "allowedValues": [
+        "enabled",
+        "disabled"
+      ],
+      "metadata": {
+        "description": "Optional. Enable infrastructure encryption (double encryption). Note, this setting requires the configuration of Customer-Managed-Keys (CMK) via the corresponding module parameters."
+      }
+    },
+    "managedIdentities": {
+      "$ref": "#/definitions/managedIdentityAllType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The managed identity definition for this resource."
+      }
+    },
+    "roleAssignments": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/roleAssignmentType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Array of role assignments to create."
+      }
     }
   },
-  "resources": [
-    {
+  "variables": {
+    "copy": [
+      {
+        "name": "formattedRoleAssignments",
+        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+        "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+      },
+      {
+        "name": "corsRulesProperty",
+        "count": "[length(parameters('corsRules'))]",
+        "input": {
+          "allowedOrigins": "[parameters('corsRules')[copyIndex('corsRulesProperty')].allowedOrigins]"
+        }
+      },
+      {
+        "name": "locationProperty",
+        "count": "[length(parameters('locations'))]",
+        "input": {
+          "locationName": "[parameters('locations')[copyIndex('locationProperty')]]"
+        }
+      }
+    ],
+    "builtInRoleNames": {
+      "Azure Maps Search and Render Data Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '6be48352-4f82-47c9-ad5e-0acacefdb005')]",
+      "Azure Maps Data Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '423170ca-a8f6-4b0f-8487-9e4eb8f49bfa')]",
+      "Azure Maps Data Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8f5e0ce6-4f7b-4dcf-bddf-e6f48634a204')]",
+      "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+      "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+      "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+      "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+      "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+    },
+    "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
+    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
+    "encryptionProperties": "[if(not(empty(parameters('customerManagedKey'))), createObject('encryption', createObject('customerManagedKeyEncryption', createObject('keyEncryptionKeyIdentity', createObject('userAssignedIdentityResourceId', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '//'), '/')[2], split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '////'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), 'dummyMsi'), '/'))), null()), 'identityType', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), 'userAssignedIdentity', 'systemAssignedIdentity')), 'keyEncryptionKeyUrl', tryGet(parameters('customerManagedKey'), 'keyEncryptionKeyUrl'))), 'requireInfrastructureEncryption', parameters('requireInfrastructureEncryption')), createObject())]",
+    "properties": {
+      "linkedResources": "[parameters('linkedResources')]",
+      "cors": {
+        "corsRules": "[variables('corsRulesProperty')]"
+      },
+      "disableLocalAuth": "[parameters('disableLocalAuth')]",
+      "locations": "[variables('locationProperty')]"
+    }
+  },
+  "resources": {
+    "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[format('46d3xbcp.[[REPLACE WITH TELEMETRY IDENTIFIER]].{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "name": "[format('46d3xbcp.res.maps-account.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -52,6 +359,88 @@
           }
         }
       }
+    },
+    "cMKUserAssignedIdentity": {
+      "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId')))]",
+      "existing": true,
+      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+      "apiVersion": "2023-01-31",
+      "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '//'), '/')[2]]",
+      "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '////'), '/')[4]]",
+      "name": "[last(split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), 'dummyMsi'), '/'))]"
+    },
+    "mapsAccount": {
+      "type": "Microsoft.Maps/accounts",
+      "apiVersion": "2024-07-01-preview",
+      "name": "[parameters('name')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "[parameters('sku')]"
+      },
+      "identity": "[variables('identity')]",
+      "kind": "[parameters('kind')]",
+      "tags": "[parameters('tags')]",
+      "properties": "[union(variables('encryptionProperties'), variables('properties'))]"
+    },
+    "mapsAccount_roleAssignments": {
+      "copy": {
+        "name": "mapsAccount_roleAssignments",
+        "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
+      },
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "scope": "[format('Microsoft.Maps/accounts/{0}', parameters('name'))]",
+      "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Maps/accounts', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
+      "properties": {
+        "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+        "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+        "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+        "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+        "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+        "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+      },
+      "dependsOn": [
+        "mapsAccount"
+      ]
     }
-  ]
+  },
+  "outputs": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the Maps Account."
+      },
+      "value": "[resourceId('Microsoft.Maps/accounts', parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the Maps Account was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Maps Account."
+      },
+      "value": "[parameters('name')]"
+    },
+    "systemAssignedMIPrincipalId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "The principal ID of the system assigned identity."
+      },
+      "value": "[tryGet(tryGet(reference('mapsAccount', '2024-07-01-preview', 'full'), 'identity'), 'principalId')]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location the resource was deployed into."
+      },
+      "value": "[reference('mapsAccount', '2024-07-01-preview', 'full').location]"
+    }
+  }
 }
