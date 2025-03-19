@@ -92,15 +92,11 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.18.2' = {
     diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspaceResourceId }]
     skuName: storageAccountSkuName
     allowSharedKeyAccess: false
-    enableNfsV3: false
     networkAcls: {
       bypass: 'AzureServices'
       defaultAction: 'Allow'
     }
-    supportsHttpsTrafficOnly: true
     blobServices: {
-      automaticSnapshotPolicyEnabled: false
-      deleteRetentionPolicyAllowPermanentDelete: false
       deleteRetentionPolicyDays: 7
       deleteRetentionPolicyEnabled: false
       containerDeleteRetentionPolicyAllowPermanentDelete: false

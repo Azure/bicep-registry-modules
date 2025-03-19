@@ -320,7 +320,7 @@ The name of the AI Foundry AI Hub resource. It will override the default given n
 
 - Required: No
 - Type: string
-- Default: `''`
+- Default: `[format('{0}-aifd-aihb', parameters('solutionPrefix'))]`
 
 ### Parameter: `aiFoundryAiHubSkuName`
 
@@ -353,7 +353,7 @@ The name of the AI Foundry AI Project resource. It will override the default giv
 
 - Required: No
 - Type: string
-- Default: `''`
+- Default: `[format('{0}-aifd-aipj', parameters('solutionPrefix'))]`
 
 ### Parameter: `aiFoundryAiProjectSkuName`
 
@@ -378,7 +378,7 @@ The name of the AI Foundry AI Services Content Understanding resource. It will o
 
 - Required: No
 - Type: string
-- Default: `''`
+- Default: `[format('{0}-aifd-aisr-cu', parameters('solutionPrefix'))]`
 
 ### Parameter: `aiFoundryAiServicesContentUnderstandingSkuName`
 
@@ -433,7 +433,6 @@ GPT model deployment type of the AI Foundry AI Services account.
     'Standard'
   ]
   ```
-- MinValue: 10
 
 ### Parameter: `aiFoundryAIServicesGptModelName`
 
@@ -450,7 +449,6 @@ Name of the GPT model to deploy in the AI Foundry AI Services account.
     'gpt-4o-mini'
   ]
   ```
-- MinValue: 10
 
 ### Parameter: `aiFoundryAiServicesLocation`
 
@@ -459,7 +457,6 @@ Location for the AI Foundry AI Service resource deployment.
 - Required: No
 - Type: string
 - Default: `[parameters('solutionLocation')]`
-- MinValue: 10
 
 ### Parameter: `aiFoundryAiServicesResourceName`
 
@@ -467,8 +464,7 @@ The name of the AI Foundry AI Services resource. It will override the default gi
 
 - Required: No
 - Type: string
-- Default: `''`
-- MinValue: 10
+- Default: `[format('{0}-aifd-aisr', parameters('solutionPrefix'))]`
 
 ### Parameter: `aiFoundryAiServicesSkuName`
 
@@ -499,7 +495,6 @@ The SKU of the AI Foundry AI Services account. Use 'Get-AzCognitiveServicesAccou
     'S9'
   ]
   ```
-- MinValue: 10
 
 ### Parameter: `aiFoundryAiServicesTextEmbeddingModelCapacity`
 
@@ -523,7 +518,6 @@ Name of the Text Embedding model to deploy in the AI Foundry AI Services account
     'text-embedding-ada-002'
   ]
   ```
-- MinValue: 10
 
 ### Parameter: `aiFoundryApplicationInsightsLocation`
 
@@ -532,7 +526,6 @@ Location for the AI Foundry Application Insights resource deployment.
 - Required: No
 - Type: string
 - Default: `[parameters('solutionLocation')]`
-- MinValue: 10
 
 ### Parameter: `aiFoundryApplicationInsightsResourceName`
 
@@ -540,8 +533,7 @@ The name of the AI Foundry Application Insights resource. It will override the d
 
 - Required: No
 - Type: string
-- Default: `''`
-- MinValue: 10
+- Default: `[format('{0}-aifd-appi', parameters('solutionPrefix'))]`
 
 ### Parameter: `aiFoundryApplicationInsightsRetentionInDays`
 
@@ -564,7 +556,6 @@ The retention of Application Insights data in days. If empty, Standard will be u
     730
   ]
   ```
-- MinValue: 10
 
 ### Parameter: `aiFoundryContainerRegistryLocation`
 
@@ -573,7 +564,6 @@ Location for the AI Foundry Container Registry resource deployment.
 - Required: No
 - Type: string
 - Default: `[parameters('solutionLocation')]`
-- MinValue: 10
 
 ### Parameter: `aiFoundryContainerRegistryResourceName`
 
@@ -581,8 +571,7 @@ The name of the AI Foundry Container Registry resource. It will override the def
 
 - Required: No
 - Type: string
-- Default: `''`
-- MinValue: 10
+- Default: `[replace(format('{0}-aifd-creg', parameters('solutionPrefix')), '-', '')]`
 
 ### Parameter: `aiFoundryContainerRegistrySkuName`
 
@@ -599,7 +588,6 @@ The SKU for the AI Foundry Container Registry. If empty, Premium will be used.
     'Standard'
   ]
   ```
-- MinValue: 10
 
 ### Parameter: `aiFoundrySearchServiceLocation`
 
@@ -608,7 +596,6 @@ Location for the AI Foundry Search Service resource deployment.
 - Required: No
 - Type: string
 - Default: `[parameters('solutionLocation')]`
-- MinValue: 10
 
 ### Parameter: `aiFoundrySearchServiceResourceName`
 
@@ -616,8 +603,7 @@ The name of the AI Foundry Search Service resource. It will override the default
 
 - Required: No
 - Type: string
-- Default: `''`
-- MinValue: 10
+- Default: `[format('{0}-aifd-srch', parameters('solutionPrefix'))]`
 
 ### Parameter: `aiFoundrySearchServiceSkuName`
 
@@ -638,7 +624,6 @@ The SKU of the AI Foundry Search Service account.
     'storage_optimized_l2'
   ]
   ```
-- MinValue: 10
 
 ### Parameter: `aiFoundryStorageAccountLocation`
 
@@ -647,7 +632,6 @@ Location for the AI Foundry Storage Account resource deployment.
 - Required: No
 - Type: string
 - Default: `[parameters('solutionLocation')]`
-- MinValue: 10
 
 ### Parameter: `aiFoundryStorageAccountResourceName`
 
@@ -655,8 +639,7 @@ The name of the AI Foundry Storage Account resource. It will override the defaul
 
 - Required: No
 - Type: string
-- Default: `''`
-- MinValue: 10
+- Default: `[replace(format('{0}-aifd-strg', parameters('solutionPrefix')), '-', '')]`
 
 ### Parameter: `aiFoundryStorageAccountSkuName`
 
@@ -676,7 +659,6 @@ The SKU for the AI Foundry Storage Account. If empty, Standard_LRS will be used.
     'Standard_ZRS'
   ]
   ```
-- MinValue: 10
 
 ### Parameter: `cosmosDbAccountLocation`
 
@@ -685,7 +667,6 @@ Location for the Cosmos DB Account resource deployment.
 - Required: No
 - Type: string
 - Default: `[parameters('databasesLocation')]`
-- MinValue: 10
 
 ### Parameter: `cosmosDbAccountResourceName`
 
@@ -693,8 +674,7 @@ The name of the Cosmos DB Account resource. It will override the default given n
 
 - Required: No
 - Type: string
-- Default: `''`
-- MinValue: 10
+- Default: `[format('{0}-cmdb', parameters('solutionPrefix'))]`
 
 ### Parameter: `databasesLocation`
 
@@ -703,7 +683,6 @@ Location for all the deployed databases Azure resources. Defaulted to East US 2.
 - Required: No
 - Type: string
 - Default: `'East US 2'`
-- MinValue: 10
 
 ### Parameter: `enableTelemetry`
 
@@ -712,7 +691,6 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
-- MinValue: 10
 
 ### Parameter: `functionChartAppScaleLimit`
 
@@ -721,7 +699,6 @@ The maximum number of workers that the Charts function can scale out.
 - Required: No
 - Type: int
 - Default: `10`
-- MinValue: 10
 
 ### Parameter: `functionChartCpu`
 
@@ -730,7 +707,6 @@ The required CPU in cores of the Charts function.
 - Required: No
 - Type: int
 - Default: `1`
-- MinValue: 10
 
 ### Parameter: `functionChartDockerImageContainerRegistryUrl`
 
@@ -739,7 +715,6 @@ The url of the Container Registry where the docker image for the Charts function
 - Required: No
 - Type: string
 - Default: `'kmcontainerreg.azurecr.io'`
-- MinValue: 10
 
 ### Parameter: `functionChartDockerImageName`
 
@@ -748,7 +723,6 @@ The name of the docker image for the Charts function.
 - Required: No
 - Type: string
 - Default: `'km-charts-function'`
-- MinValue: 10
 
 ### Parameter: `functionChartDockerImageTag`
 
@@ -757,7 +731,6 @@ The tag of the docker image for the Charts function.
 - Required: No
 - Type: string
 - Default: `'latest'`
-- MinValue: 10
 
 ### Parameter: `functionChartMemory`
 
@@ -766,7 +739,6 @@ The required memory in GiB of the Charts function.
 - Required: No
 - Type: string
 - Default: `'2Gi'`
-- MinValue: 10
 
 ### Parameter: `functionChartsFunctionName`
 
@@ -775,7 +747,6 @@ The name of the function to be used to get the metrics in the Charts function.
 - Required: No
 - Type: string
 - Default: `'get_metrics'`
-- MinValue: 10
 
 ### Parameter: `functionChartsLocation`
 
@@ -784,7 +755,6 @@ Location for the Function Charts resource deployment.
 - Required: No
 - Type: string
 - Default: `[parameters('solutionLocation')]`
-- MinValue: 10
 
 ### Parameter: `functionChartsResourceName`
 
@@ -792,8 +762,7 @@ The name of the Function Charts resource. It will override the default given nam
 
 - Required: No
 - Type: string
-- Default: `''`
-- MinValue: 10
+- Default: `[format('{0}-fchr-azfn', parameters('solutionPrefix'))]`
 
 ### Parameter: `functionRagAppScaleLimit`
 
@@ -802,7 +771,6 @@ The maximum number of workers that the Rag function can scale out.
 - Required: No
 - Type: int
 - Default: `10`
-- MinValue: 10
 
 ### Parameter: `functionRagCpu`
 
@@ -811,7 +779,6 @@ The required CPU in cores of the Rag function.
 - Required: No
 - Type: int
 - Default: `1`
-- MinValue: 10
 
 ### Parameter: `functionRagDockerImageContainerRegistryUrl`
 
@@ -820,7 +787,6 @@ The url of the Container Registry where the docker image for the Rag function is
 - Required: No
 - Type: string
 - Default: `'kmcontainerreg.azurecr.io'`
-- MinValue: 10
 
 ### Parameter: `functionRagDockerImageName`
 
@@ -829,7 +795,6 @@ The name of the docker image for the Rag function.
 - Required: No
 - Type: string
 - Default: `'km-rag-function'`
-- MinValue: 10
 
 ### Parameter: `functionRagDockerImageTag`
 
@@ -838,7 +803,6 @@ The tag of the docker image for the Rag function.
 - Required: No
 - Type: string
 - Default: `'latest'`
-- MinValue: 10
 
 ### Parameter: `functionRagFunctionName`
 
@@ -847,7 +811,6 @@ The name of the function to be used to stream text in the Rag function.
 - Required: No
 - Type: string
 - Default: `'stream_openai_text'`
-- MinValue: 10
 
 ### Parameter: `functionRagLocation`
 
@@ -856,7 +819,6 @@ Location for the Function RAG resource deployment.
 - Required: No
 - Type: string
 - Default: `[parameters('solutionLocation')]`
-- MinValue: 10
 
 ### Parameter: `functionRagMemory`
 
@@ -865,7 +827,6 @@ The required memory in GiB of the Rag function.
 - Required: No
 - Type: string
 - Default: `'2Gi'`
-- MinValue: 10
 
 ### Parameter: `functionRagResourceName`
 
@@ -873,8 +834,7 @@ The name of the Function RAG resource. It will override the default given name.
 
 - Required: No
 - Type: string
-- Default: `''`
-- MinValue: 10
+- Default: `[format('{0}-frag-azfn', parameters('solutionPrefix'))]`
 
 ### Parameter: `functionsManagedEnvironmentLocation`
 
@@ -883,7 +843,6 @@ Location for the Functions Managed Environment resource deployment.
 - Required: No
 - Type: string
 - Default: `[parameters('solutionLocation')]`
-- MinValue: 10
 
 ### Parameter: `functionsManagedEnvironmentResourceName`
 
@@ -891,8 +850,7 @@ The name of the Functions Managed Environment resource. It will override the def
 
 - Required: No
 - Type: string
-- Default: `''`
-- MinValue: 10
+- Default: `[format('{0}-ftme', parameters('solutionPrefix'))]`
 
 ### Parameter: `keyVaultCreateMode`
 
@@ -908,7 +866,6 @@ The Key Vault create mode. Indicates whether the vault need to be recovered from
     'recover'
   ]
   ```
-- MinValue: 10
 
 ### Parameter: `keyVaultLocation`
 
@@ -917,7 +874,6 @@ Location for the Key Vault resource deployment.
 - Required: No
 - Type: string
 - Default: `[parameters('solutionLocation')]`
-- MinValue: 10
 
 ### Parameter: `keyVaultPurgeProtectionEnabled`
 
@@ -926,7 +882,6 @@ If set to true, The Key Vault purge protection will be enabled. If empty, it wil
 - Required: No
 - Type: bool
 - Default: `False`
-- MinValue: 10
 
 ### Parameter: `keyVaultResourceName`
 
@@ -934,8 +889,7 @@ The name of the Key Vault resource. It will override the default given name.
 
 - Required: No
 - Type: string
-- Default: `''`
-- MinValue: 10
+- Default: `[format('{0}-keyv', parameters('solutionPrefix'))]`
 
 ### Parameter: `keyVaultRoleAssignments`
 
@@ -944,7 +898,6 @@ Array of role assignments to include in the Key Vault.
 - Required: No
 - Type: array
 - Default: `[]`
-- MinValue: 10
 
 **Required parameters**
 
@@ -970,7 +923,6 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
-- MinValue: 10
 
 ### Parameter: `keyVaultRoleAssignments.roleDefinitionIdOrName`
 
@@ -978,7 +930,6 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
-- MinValue: 10
 
 ### Parameter: `keyVaultRoleAssignments.condition`
 
@@ -986,7 +937,6 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
-- MinValue: 10
 
 ### Parameter: `keyVaultRoleAssignments.conditionVersion`
 
@@ -1000,7 +950,6 @@ Version of the condition.
     '2.0'
   ]
   ```
-- MinValue: 10
 
 ### Parameter: `keyVaultRoleAssignments.delegatedManagedIdentityResourceId`
 
@@ -1008,7 +957,6 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
-- MinValue: 10
 
 ### Parameter: `keyVaultRoleAssignments.description`
 
@@ -1016,7 +964,6 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
-- MinValue: 10
 
 ### Parameter: `keyVaultRoleAssignments.name`
 
@@ -1024,7 +971,6 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
-- MinValue: 10
 
 ### Parameter: `keyVaultRoleAssignments.principalType`
 
@@ -1042,7 +988,6 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
-- MinValue: 10
 
 ### Parameter: `keyVaultSku`
 
@@ -1058,7 +1003,6 @@ The SKU for the Key Vault. If empty, standard will be used.
     'standard'
   ]
   ```
-- MinValue: 10
 
 ### Parameter: `keyVaultSoftDeleteEnabled`
 
@@ -1067,7 +1011,6 @@ If set to true, The Key Vault soft delete will be enabled.
 - Required: No
 - Type: bool
 - Default: `True`
-- MinValue: 10
 
 ### Parameter: `keyVaultSoftDeleteRetentionInDays`
 
@@ -1096,8 +1039,6 @@ Location for the Log Analytics Workspace resource deployment.
 - Required: No
 - Type: string
 - Default: `[parameters('solutionLocation')]`
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `logAnalyticsWorkspaceResourceName`
 
@@ -1105,9 +1046,7 @@ The name of the Log Analytics Workspace resource. It will override the default g
 
 - Required: No
 - Type: string
-- Default: `''`
-- MinValue: 0
-- MaxValue: 730
+- Default: `[format('{0}-laws', parameters('solutionPrefix'))]`
 
 ### Parameter: `logAnalyticsWorkspaceSkuName`
 
@@ -1129,8 +1068,6 @@ The SKU for the Log Analytics Workspace. If empty, PerGB2018 will be used.
     'Standard'
   ]
   ```
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `managedIdentityLocation`
 
@@ -1139,8 +1076,6 @@ Location for the Managed Identity resource deployment.
 - Required: No
 - Type: string
 - Default: `[parameters('solutionLocation')]`
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `managedIdentityResourceName`
 
@@ -1148,9 +1083,7 @@ The name of the Managed Identity resource. It will override the default given na
 
 - Required: No
 - Type: string
-- Default: `''`
-- MinValue: 0
-- MaxValue: 730
+- Default: `[format('{0}-mgid', parameters('solutionPrefix'))]`
 
 ### Parameter: `scriptCopyDataLocation`
 
@@ -1159,8 +1092,6 @@ Location for the Script Copy Data resource deployment.
 - Required: No
 - Type: string
 - Default: `[parameters('solutionLocation')]`
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `scriptCopyDataResourceName`
 
@@ -1168,9 +1099,7 @@ The name of the Script Copy Data resource. It will override the default given na
 
 - Required: No
 - Type: string
-- Default: `''`
-- MinValue: 0
-- MaxValue: 730
+- Default: `[format('{0}-scrp-cpdt', parameters('solutionPrefix'))]`
 
 ### Parameter: `scriptIndexDataLocation`
 
@@ -1179,8 +1108,6 @@ Location for the Script Index Data resource deployment.
 - Required: No
 - Type: string
 - Default: `[parameters('solutionLocation')]`
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `scriptIndexDataResourceName`
 
@@ -1188,9 +1115,7 @@ The name of the Script Index Data resource. It will override the default given n
 
 - Required: No
 - Type: string
-- Default: `''`
-- MinValue: 0
-- MaxValue: 730
+- Default: `[format('{0}-scrp-idxd', parameters('solutionPrefix'))]`
 
 ### Parameter: `solutionLocation`
 
@@ -1199,8 +1124,6 @@ Location for all the deployed Azure resources except databases. Defaulted to Eas
 - Required: No
 - Type: string
 - Default: `'East US'`
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `sqlServerAdministratorLogin`
 
@@ -1209,8 +1132,6 @@ The administrator login credential for the SQL Server.
 - Required: No
 - Type: securestring
 - Default: `'sqladmin'`
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `sqlServerAdministratorPassword`
 
@@ -1219,8 +1140,6 @@ The administrator password credential for the SQL Server.
 - Required: No
 - Type: securestring
 - Default: `'TestPassword_1234'`
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `sqlServerDatabaseName`
 
@@ -1228,9 +1147,7 @@ The name of the SQL Server database.
 
 - Required: No
 - Type: string
-- Default: `''`
-- MinValue: 0
-- MaxValue: 730
+- Default: `[format('{0}-ckmdb', parameters('sqlServerResourceName'))]`
 
 ### Parameter: `sqlServerDatabaseSkuCapacity`
 
@@ -1239,8 +1156,6 @@ The SKU capacity of the SQL Server database. If empty, it will be set to 2. Find
 - Required: No
 - Type: int
 - Default: `2`
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `sqlServerDatabaseSkuFamily`
 
@@ -1249,8 +1164,6 @@ The SKU Family of the SQL Server database. If empty, it will be set to Gen5. Fin
 - Required: No
 - Type: string
 - Default: `'Gen5'`
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `sqlServerDatabaseSkuName`
 
@@ -1259,8 +1172,6 @@ The SKU name of the SQL Server database. If empty, it will be set to GP_Gen5_2. 
 - Required: No
 - Type: string
 - Default: `'GP_Gen5_2'`
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `sqlServerDatabaseSkuTier`
 
@@ -1269,8 +1180,6 @@ The SKU tier of the SQL Server database. If empty, it will be set to GeneralPurp
 - Required: No
 - Type: string
 - Default: `'GeneralPurpose'`
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `sqlServerLocation`
 
@@ -1279,8 +1188,6 @@ Location for the SQL Server resource deployment.
 - Required: No
 - Type: string
 - Default: `[parameters('databasesLocation')]`
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `sqlServerResourceName`
 
@@ -1288,9 +1195,7 @@ The name of the SQL Server resource. It will override the default given name.
 
 - Required: No
 - Type: string
-- Default: `''`
-- MinValue: 0
-- MaxValue: 730
+- Default: `[format('{0}-sqls', parameters('solutionPrefix'))]`
 
 ### Parameter: `storageAccountLocation`
 
@@ -1299,8 +1204,6 @@ Location for the Storage Account resource deployment.
 - Required: No
 - Type: string
 - Default: `[parameters('solutionLocation')]`
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `storageAccountResourceName`
 
@@ -1308,9 +1211,7 @@ The name of the Storage Account resource. It will override the default given nam
 
 - Required: No
 - Type: string
-- Default: `''`
-- MinValue: 0
-- MaxValue: 730
+- Default: `[replace(format('{0}-strg', parameters('solutionPrefix')), '-', '')]`
 
 ### Parameter: `storageAccountSkuName`
 
@@ -1330,8 +1231,6 @@ The SKU for the Storage Account. If empty, Standard_LRS will be used.
     'Standard_ZRS'
   ]
   ```
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `tags`
 
@@ -1346,8 +1245,6 @@ The tags to apply to all deployed Azure resources.
       location: '[parameters(\'solutionLocation\')]'
   }
   ```
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `webAppDockerImageContainerRegistryUrl`
 
@@ -1356,8 +1253,6 @@ The url of the Container Registry where the docker image for Conversation Knowle
 - Required: No
 - Type: string
 - Default: `'kmcontainerreg.azurecr.io'`
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `webAppDockerImageName`
 
@@ -1366,8 +1261,6 @@ The name of the docker image for the Rag function.
 - Required: No
 - Type: string
 - Default: `'km-app'`
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `webAppDockerImageTag`
 
@@ -1376,8 +1269,6 @@ The tag of the docker image for the Rag function.
 - Required: No
 - Type: string
 - Default: `'latest'`
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `webAppLocation`
 
@@ -1386,8 +1277,6 @@ Location for the Web App resource deployment.
 - Required: No
 - Type: string
 - Default: `[parameters('solutionLocation')]`
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `webAppResourceName`
 
@@ -1395,9 +1284,7 @@ The name of the Web App resource.
 
 - Required: No
 - Type: string
-- Default: `''`
-- MinValue: 0
-- MaxValue: 730
+- Default: `[format('{0}-wapp-wapp', parameters('solutionPrefix'))]`
 
 ### Parameter: `webAppServerFarmLocation`
 
@@ -1406,8 +1293,6 @@ The location for the Web App Server Farm. Defaulted to the solution location.
 - Required: No
 - Type: string
 - Default: `[parameters('solutionLocation')]`
-- MinValue: 0
-- MaxValue: 730
 
 ### Parameter: `webAppServerFarmResourceName`
 
@@ -1415,9 +1300,7 @@ The name of the Web App Server Farm resource. It will override the default given
 
 - Required: No
 - Type: string
-- Default: `''`
-- MinValue: 0
-- MaxValue: 730
+- Default: `[format('{0}-waoo-srvf', parameters('solutionPrefix'))]`
 
 ### Parameter: `webAppServerFarmSku`
 
@@ -1426,8 +1309,6 @@ The SKU for the web app. If empty it will be set to B2.
 - Required: No
 - Type: string
 - Default: `'B2'`
-- MinValue: 0
-- MaxValue: 730
 
 ## Outputs
 

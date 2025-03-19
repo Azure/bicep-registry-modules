@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "4982182534386301900"
+      "templateHash": "10252141787953516632"
     },
     "name": "Conversation Knowledge Mining Solution Accelerator",
     "description": "This module deploys the [Conversation Knowledge Mining Solution Accelerator](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator).\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator product. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -128,7 +128,7 @@
     },
     "aiFoundryAiHubResourceName": {
       "type": "string",
-      "defaultValue": "",
+      "defaultValue": "[format('{0}-aifd-aihb', parameters('solutionPrefix'))]",
       "maxLength": 90,
       "metadata": {
         "description": "Optional. The name of the AI Foundry AI Hub resource. It will override the default given name."
@@ -136,7 +136,7 @@
     },
     "aiFoundryAiProjectResourceName": {
       "type": "string",
-      "defaultValue": "",
+      "defaultValue": "[format('{0}-aifd-aipj', parameters('solutionPrefix'))]",
       "maxLength": 90,
       "metadata": {
         "description": "Optional. The name of the AI Foundry AI Project resource. It will override the default given name."
@@ -144,7 +144,7 @@
     },
     "aiFoundryAiServicesContentUnderstandingResourceName": {
       "type": "string",
-      "defaultValue": "",
+      "defaultValue": "[format('{0}-aifd-aisr-cu', parameters('solutionPrefix'))]",
       "maxLength": 90,
       "metadata": {
         "description": "Optional. The name of the AI Foundry AI Services Content Understanding resource. It will override the default given name."
@@ -152,7 +152,7 @@
     },
     "aiFoundryAiServicesResourceName": {
       "type": "string",
-      "defaultValue": "",
+      "defaultValue": "[format('{0}-aifd-aisr', parameters('solutionPrefix'))]",
       "maxLength": 90,
       "metadata": {
         "description": "Optional. The name of the AI Foundry AI Services resource. It will override the default given name."
@@ -160,7 +160,7 @@
     },
     "aiFoundryApplicationInsightsResourceName": {
       "type": "string",
-      "defaultValue": "",
+      "defaultValue": "[format('{0}-aifd-appi', parameters('solutionPrefix'))]",
       "maxLength": 90,
       "metadata": {
         "description": "Optional. The name of the AI Foundry Application Insights resource. It will override the default given name."
@@ -168,7 +168,7 @@
     },
     "aiFoundryContainerRegistryResourceName": {
       "type": "string",
-      "defaultValue": "",
+      "defaultValue": "[replace(format('{0}-aifd-creg', parameters('solutionPrefix')), '-', '')]",
       "maxLength": 50,
       "metadata": {
         "description": "Optional. The name of the AI Foundry Container Registry resource. It will override the default given name."
@@ -176,7 +176,7 @@
     },
     "aiFoundrySearchServiceResourceName": {
       "type": "string",
-      "defaultValue": "",
+      "defaultValue": "[format('{0}-aifd-srch', parameters('solutionPrefix'))]",
       "maxLength": 60,
       "metadata": {
         "description": "Optional. The name of the AI Foundry Search Service resource. It will override the default given name."
@@ -184,7 +184,7 @@
     },
     "aiFoundryStorageAccountResourceName": {
       "type": "string",
-      "defaultValue": "",
+      "defaultValue": "[replace(format('{0}-aifd-strg', parameters('solutionPrefix')), '-', '')]",
       "maxLength": 24,
       "metadata": {
         "description": "Optional. The name of the AI Foundry Storage Account resource. It will override the default given name."
@@ -192,7 +192,7 @@
     },
     "cosmosDbAccountResourceName": {
       "type": "string",
-      "defaultValue": "",
+      "defaultValue": "[format('{0}-cmdb', parameters('solutionPrefix'))]",
       "maxLength": 50,
       "metadata": {
         "description": "Optional. The name of the Cosmos DB Account resource. It will override the default given name."
@@ -200,7 +200,7 @@
     },
     "functionChartsResourceName": {
       "type": "string",
-      "defaultValue": "",
+      "defaultValue": "[format('{0}-fchr-azfn', parameters('solutionPrefix'))]",
       "maxLength": 90,
       "metadata": {
         "description": "Optional. The name of the Function Charts resource. It will override the default given name."
@@ -208,7 +208,7 @@
     },
     "functionRagResourceName": {
       "type": "string",
-      "defaultValue": "",
+      "defaultValue": "[format('{0}-frag-azfn', parameters('solutionPrefix'))]",
       "maxLength": 90,
       "metadata": {
         "description": "Optional. The name of the Function RAG resource. It will override the default given name."
@@ -216,7 +216,7 @@
     },
     "functionsManagedEnvironmentResourceName": {
       "type": "string",
-      "defaultValue": "",
+      "defaultValue": "[format('{0}-ftme', parameters('solutionPrefix'))]",
       "maxLength": 90,
       "metadata": {
         "description": "Optional. The name of the Functions Managed Environment resource. It will override the default given name."
@@ -224,7 +224,7 @@
     },
     "keyVaultResourceName": {
       "type": "string",
-      "defaultValue": "",
+      "defaultValue": "[format('{0}-keyv', parameters('solutionPrefix'))]",
       "maxLength": 24,
       "metadata": {
         "description": "Optional. The name of the Key Vault resource. It will override the default given name."
@@ -232,7 +232,7 @@
     },
     "logAnalyticsWorkspaceResourceName": {
       "type": "string",
-      "defaultValue": "",
+      "defaultValue": "[format('{0}-laws', parameters('solutionPrefix'))]",
       "maxLength": 63,
       "metadata": {
         "description": "Optional. The name of the Log Analytics Workspace resource. It will override the default given name."
@@ -240,7 +240,7 @@
     },
     "managedIdentityResourceName": {
       "type": "string",
-      "defaultValue": "",
+      "defaultValue": "[format('{0}-mgid', parameters('solutionPrefix'))]",
       "maxLength": 128,
       "metadata": {
         "description": "Optional. The name of the Managed Identity resource. It will override the default given name."
@@ -248,7 +248,7 @@
     },
     "scriptCopyDataResourceName": {
       "type": "string",
-      "defaultValue": "",
+      "defaultValue": "[format('{0}-scrp-cpdt', parameters('solutionPrefix'))]",
       "maxLength": 90,
       "metadata": {
         "description": "Optional. The name of the Script Copy Data resource. It will override the default given name."
@@ -256,7 +256,7 @@
     },
     "scriptIndexDataResourceName": {
       "type": "string",
-      "defaultValue": "",
+      "defaultValue": "[format('{0}-scrp-idxd', parameters('solutionPrefix'))]",
       "maxLength": 90,
       "metadata": {
         "description": "Optional. The name of the Script Index Data resource. It will override the default given name."
@@ -264,7 +264,7 @@
     },
     "sqlServerResourceName": {
       "type": "string",
-      "defaultValue": "",
+      "defaultValue": "[format('{0}-sqls', parameters('solutionPrefix'))]",
       "maxLength": 63,
       "metadata": {
         "description": "Optional. The name of the SQL Server resource. It will override the default given name."
@@ -272,7 +272,7 @@
     },
     "storageAccountResourceName": {
       "type": "string",
-      "defaultValue": "",
+      "defaultValue": "[replace(format('{0}-strg', parameters('solutionPrefix')), '-', '')]",
       "maxLength": 24,
       "metadata": {
         "description": "Optional. The name of the Storage Account resource. It will override the default given name."
@@ -280,7 +280,7 @@
     },
     "webAppResourceName": {
       "type": "string",
-      "defaultValue": "",
+      "defaultValue": "[format('{0}-wapp-wapp', parameters('solutionPrefix'))]",
       "maxLength": 60,
       "metadata": {
         "description": "Optional. The name of the Web App resource."
@@ -288,7 +288,7 @@
     },
     "webAppServerFarmResourceName": {
       "type": "string",
-      "defaultValue": "",
+      "defaultValue": "[format('{0}-waoo-srvf', parameters('solutionPrefix'))]",
       "maxLength": 60,
       "metadata": {
         "description": "Optional. The name of the Web App Server Farm resource. It will override the default given name."
@@ -808,7 +808,7 @@
     },
     "sqlServerDatabaseName": {
       "type": "string",
-      "defaultValue": "",
+      "defaultValue": "[format('{0}-ckmdb', parameters('sqlServerResourceName'))]",
       "maxLength": 128,
       "metadata": {
         "description": "Optional. The name of the SQL Server database."
@@ -977,37 +977,14 @@
     }
   },
   "variables": {
-    "varWorkloadNameFormat": "[format('{0}-{{0}}', parameters('solutionPrefix'))]",
     "avmDeploymentNameFormat": "ckm-deploy-avm-{0}",
     "localModuleDeploymentNameFormat": "ckm-deploy-module-{0}",
-    "varAiFoundryAiHubResourceName": "[if(empty(parameters('aiFoundryAiHubResourceName')), format(variables('varWorkloadNameFormat'), 'aifd-aihb'), parameters('aiFoundryAiHubResourceName'))]",
-    "varAiFoundryAiProjectResourceName": "[if(empty(parameters('aiFoundryAiProjectResourceName')), format(variables('varWorkloadNameFormat'), 'aifd-aipj'), parameters('aiFoundryAiProjectResourceName'))]",
-    "varAiFoundryAiServicesContentUnderstandingResourceName": "[if(empty(parameters('aiFoundryAiServicesContentUnderstandingResourceName')), format(variables('varWorkloadNameFormat'), 'aifd-aisr-cu'), parameters('aiFoundryAiServicesContentUnderstandingResourceName'))]",
-    "varAiFoundryAiServiceResourceName": "[if(empty(parameters('aiFoundryAiServicesResourceName')), format(variables('varWorkloadNameFormat'), 'aifd-aisr'), parameters('aiFoundryAiServicesResourceName'))]",
-    "varAiFoundryApplicationInsightsResourceName": "[if(empty(parameters('aiFoundryApplicationInsightsResourceName')), format(variables('varWorkloadNameFormat'), 'aifd-appi'), parameters('aiFoundryApplicationInsightsResourceName'))]",
-    "varAiFoundryContainerRegistryResourceName": "[if(empty(parameters('aiFoundryContainerRegistryResourceName')), replace(format(variables('varWorkloadNameFormat'), 'aifd-creg'), '-', ''), parameters('aiFoundryContainerRegistryResourceName'))]",
-    "varAiFoundrySearchServiceResourceName": "[if(empty(parameters('aiFoundrySearchServiceResourceName')), format(variables('varWorkloadNameFormat'), 'aifd-srch'), parameters('aiFoundrySearchServiceResourceName'))]",
-    "varAiFoundryStorageAccountResourceName": "[if(empty(parameters('aiFoundryStorageAccountResourceName')), replace(format(variables('varWorkloadNameFormat'), 'aifd-strg'), '-', ''), parameters('aiFoundryStorageAccountResourceName'))]",
-    "varCosmosDbAccountResourceName": "[if(empty(parameters('cosmosDbAccountResourceName')), format(variables('varWorkloadNameFormat'), 'cmdb'), parameters('cosmosDbAccountResourceName'))]",
-    "varFunctionChartsResourceName": "[if(empty(parameters('functionChartsResourceName')), format(variables('varWorkloadNameFormat'), 'fchr-azfn'), parameters('functionChartsResourceName'))]",
-    "varFunctionRagResourceName": "[if(empty(parameters('functionRagResourceName')), format(variables('varWorkloadNameFormat'), 'frag-azfn'), parameters('functionRagResourceName'))]",
-    "varFunctionsManagedEnvironmentResourceName": "[if(empty(parameters('functionsManagedEnvironmentResourceName')), format(variables('varWorkloadNameFormat'), 'ftme'), parameters('functionsManagedEnvironmentResourceName'))]",
-    "varKeyVaultResourceName": "[if(empty(parameters('keyVaultResourceName')), format(variables('varWorkloadNameFormat'), 'keyv'), parameters('keyVaultResourceName'))]",
-    "varLogAnalyticsWorkspaceResourceName": "[if(empty(parameters('logAnalyticsWorkspaceResourceName')), format(variables('varWorkloadNameFormat'), 'laws'), parameters('logAnalyticsWorkspaceResourceName'))]",
-    "varManagedIdentityResourceName": "[if(empty(parameters('managedIdentityResourceName')), format(variables('varWorkloadNameFormat'), 'mgid'), parameters('managedIdentityResourceName'))]",
-    "varScriptCopyDataResourceName": "[if(empty(parameters('scriptCopyDataResourceName')), format(variables('varWorkloadNameFormat'), 'scrp-cpdt'), parameters('scriptCopyDataResourceName'))]",
-    "varScriptIndexDataResourceName": "[if(empty(parameters('scriptIndexDataResourceName')), format(variables('varWorkloadNameFormat'), 'scrp-idxd'), parameters('scriptIndexDataResourceName'))]",
-    "varSqlServerResourceName": "[if(empty(parameters('sqlServerResourceName')), format(variables('varWorkloadNameFormat'), 'sqls'), parameters('sqlServerResourceName'))]",
-    "varSqlServerDatabaseName": "[if(empty(parameters('sqlServerDatabaseName')), format('{0}-ckmdb', variables('varSqlServerResourceName')), parameters('sqlServerDatabaseName'))]",
-    "varStorageAccountResourceName": "[if(empty(parameters('storageAccountResourceName')), replace(format(variables('varWorkloadNameFormat'), 'strg'), '-', ''), parameters('storageAccountResourceName'))]",
-    "varWebAppResourceName": "[if(empty(parameters('webAppResourceName')), format(variables('varWorkloadNameFormat'), 'wapp-wapp'), parameters('webAppResourceName'))]",
-    "varWebAppServerFarmResourceName": "[if(empty(parameters('webAppServerFarmResourceName')), format(variables('varWorkloadNameFormat'), 'waoo-srvf'), parameters('webAppServerFarmResourceName'))]",
     "varKvSecretNameAdlsAccountKey": "ADLS-ACCOUNT-KEY",
     "varKvSecretNameAzureCosmosdbAccountKey": "AZURE-COSMOSDB-ACCOUNT-KEY",
     "varAiFoundryAiServiceGPTModelVersion": "2024-07-18",
     "varAiFoundryAiServiceGPTModelVersionPreview": "2024-02-15-preview",
     "varAiFoundryAiServiceTextEmbeddingModelVersion": "2",
-    "varAiFoundryAiServiceProjectConnectionString": "[format('{0}.api.azureml.ms;{1};{2};{3}', toLower(replace(parameters('aiFoundryAiProjectLocation'), ' ', '')), subscription().subscriptionId, resourceGroup().name, variables('varAiFoundryAiProjectResourceName'))]",
+    "varAiFoundryAiServiceProjectConnectionString": "[format('{0}.api.azureml.ms;{1};{2};{3}', toLower(replace(parameters('aiFoundryAiProjectLocation'), ' ', '')), subscription().subscriptionId, resourceGroup().name, parameters('aiFoundryAiProjectResourceName'))]",
     "varAiFoundryAIServicesModelDeployments": [
       {
         "name": "[parameters('aiFoundryAIServicesGptModelName')]",
@@ -1073,7 +1050,7 @@
     "functionCharts": {
       "type": "Microsoft.Web/sites",
       "apiVersion": "2023-12-01",
-      "name": "[variables('varFunctionChartsResourceName')]",
+      "name": "[parameters('functionChartsResourceName')]",
       "tags": "[parameters('tags')]",
       "location": "[parameters('functionChartsLocation')]",
       "kind": "functionapp,linux,container,azurecontainerapps",
@@ -1097,7 +1074,7 @@
             },
             {
               "name": "SQLDB_DATABASE",
-              "value": "[variables('varSqlServerDatabaseName')]"
+              "value": "[parameters('sqlServerDatabaseName')]"
             },
             {
               "name": "SQLDB_PASSWORD",
@@ -1133,7 +1110,7 @@
     "avmManagedIdentity": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format(variables('avmDeploymentNameFormat'), variables('varManagedIdentityResourceName'))]",
+      "name": "[format(variables('avmDeploymentNameFormat'), parameters('managedIdentityResourceName'))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -1141,7 +1118,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[variables('varManagedIdentityResourceName')]"
+            "value": "[parameters('managedIdentityResourceName')]"
           },
           "tags": {
             "value": "[parameters('tags')]"
@@ -1660,7 +1637,7 @@
     "avmLogAnalyticsWorkspace": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format(variables('avmDeploymentNameFormat'), variables('varLogAnalyticsWorkspaceResourceName'))]",
+      "name": "[format(variables('avmDeploymentNameFormat'), parameters('logAnalyticsWorkspaceResourceName'))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -1668,7 +1645,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[variables('varLogAnalyticsWorkspaceResourceName')]"
+            "value": "[parameters('logAnalyticsWorkspaceResourceName')]"
           },
           "tags": {
             "value": "[parameters('tags')]"
@@ -4688,7 +4665,7 @@
     "avmKeyVault": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format(variables('avmDeploymentNameFormat'), variables('varKeyVaultResourceName'))]",
+      "name": "[format(variables('avmDeploymentNameFormat'), parameters('keyVaultResourceName'))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -4696,7 +4673,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[variables('varKeyVaultResourceName')]"
+            "value": "[parameters('keyVaultResourceName')]"
           },
           "tags": {
             "value": "[parameters('tags')]"
@@ -4720,15 +4697,6 @@
           "createMode": {
             "value": "[parameters('keyVaultCreateMode')]"
           },
-          "enableVaultForDeployment": {
-            "value": true
-          },
-          "enableVaultForDiskEncryption": {
-            "value": true
-          },
-          "enableVaultForTemplateDeployment": {
-            "value": true
-          },
           "enableSoftDelete": {
             "value": "[parameters('keyVaultSoftDeleteEnabled')]"
           },
@@ -4745,7 +4713,7 @@
             "value": true
           },
           "roleAssignments": {
-            "value": "[concat(createArray(createObject('principalId', reference('avmManagedIdentity').outputs.principalId.value, 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', '00482a5a-887f-4fb3-b363-3b7fe8e74483')), parameters('keyVaultRoleAssignments'))]"
+            "value": "[concat(createArray(createObject('principalId', reference('avmManagedIdentity').outputs.principalId.value, 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Key Vault Administrator')), parameters('keyVaultRoleAssignments'))]"
           },
           "secrets": {
             "value": [
@@ -4755,7 +4723,7 @@
               },
               {
                 "name": "ADLS-ACCOUNT-NAME",
-                "value": "[variables('varStorageAccountResourceName')]"
+                "value": "[parameters('storageAccountResourceName')]"
               },
               {
                 "name": "TENANT-ID",
@@ -4763,7 +4731,7 @@
               },
               {
                 "name": "AZURE-COSMOSDB-ACCOUNT",
-                "value": "[variables('varCosmosDbAccountResourceName')]"
+                "value": "[parameters('cosmosDbAccountResourceName')]"
               },
               {
                 "name": "AZURE-COSMOSDB-DATABASE",
@@ -4779,11 +4747,11 @@
               },
               {
                 "name": "SQLDB-SERVER",
-                "value": "[format('{0}{1}', variables('varSqlServerResourceName'), environment().suffixes.sqlServerHostname)]"
+                "value": "[format('{0}{1}', parameters('sqlServerResourceName'), environment().suffixes.sqlServerHostname)]"
               },
               {
                 "name": "SQLDB-DATABASE",
-                "value": "[variables('varSqlServerDatabaseName')]"
+                "value": "[parameters('sqlServerDatabaseName')]"
               },
               {
                 "name": "SQLDB-USERNAME",
@@ -4811,11 +4779,11 @@
               },
               {
                 "name": "AZURE-SEARCH-ENDPOINT",
-                "value": "[format('https://{0}.search.windows.net', variables('varAiFoundrySearchServiceResourceName'))]"
+                "value": "[format('https://{0}.search.windows.net', parameters('aiFoundrySearchServiceResourceName'))]"
               },
               {
                 "name": "AZURE-SEARCH-SERVICE",
-                "value": "[variables('varAiFoundrySearchServiceResourceName')]"
+                "value": "[parameters('aiFoundrySearchServiceResourceName')]"
               },
               {
                 "name": "AZURE-SEARCH-INDEX",
@@ -4823,7 +4791,7 @@
               },
               {
                 "name": "COG-SERVICES-NAME",
-                "value": "[variables('varAiFoundryAiServiceResourceName')]"
+                "value": "[parameters('aiFoundryAiServicesResourceName')]"
               },
               {
                 "name": "AZURE-SUBSCRIPTION-ID",
@@ -7976,7 +7944,7 @@
             "value": "[parameters('aiFoundryAiHubLocation')]"
           },
           "aiHubResourceName": {
-            "value": "[variables('varAiFoundryAiHubResourceName')]"
+            "value": "[parameters('aiFoundryAiHubResourceName')]"
           },
           "aiHubSkuName": {
             "value": "[parameters('aiFoundryAiHubSkuName')]"
@@ -7985,7 +7953,7 @@
             "value": "[parameters('aiFoundryAiProjectLocation')]"
           },
           "aiProjectResourceName": {
-            "value": "[variables('varAiFoundryAiProjectResourceName')]"
+            "value": "[parameters('aiFoundryAiProjectResourceName')]"
           },
           "aiProjectSkuName": {
             "value": "[parameters('aiFoundryAiProjectSkuName')]"
@@ -7997,7 +7965,7 @@
             "value": "[parameters('aiFoundryAiServicesContentUnderstandingLocation')]"
           },
           "aiServicesContentUnderstandingResourceName": {
-            "value": "[variables('varAiFoundryAiServicesContentUnderstandingResourceName')]"
+            "value": "[parameters('aiFoundryAiServicesContentUnderstandingResourceName')]"
           },
           "aiServicesContentUnderstandingSkuName": {
             "value": "[parameters('aiFoundryAiServicesContentUnderstandingSkuName')]"
@@ -8006,7 +7974,7 @@
             "value": "[variables('varAiFoundryAIServicesModelDeployments')]"
           },
           "aiServicesResourceName": {
-            "value": "[variables('varAiFoundryAiServiceResourceName')]"
+            "value": "[parameters('aiFoundryAiServicesResourceName')]"
           },
           "aiServicesSkuName": {
             "value": "[parameters('aiFoundryAiServicesSkuName')]"
@@ -8015,7 +7983,7 @@
             "value": "[parameters('aiFoundryApplicationInsightsLocation')]"
           },
           "applicationInsightsResourceName": {
-            "value": "[variables('varAiFoundryApplicationInsightsResourceName')]"
+            "value": "[parameters('aiFoundryApplicationInsightsResourceName')]"
           },
           "applicationInsightsRetentionInDays": {
             "value": "[parameters('aiFoundryApplicationInsightsRetentionInDays')]"
@@ -8024,7 +7992,7 @@
             "value": "[parameters('aiFoundryContainerRegistryLocation')]"
           },
           "containerRegistryResourceName": {
-            "value": "[variables('varAiFoundryContainerRegistryResourceName')]"
+            "value": "[parameters('aiFoundryContainerRegistryResourceName')]"
           },
           "containerRegistrySkuName": {
             "value": "[parameters('aiFoundryContainerRegistrySkuName')]"
@@ -8045,7 +8013,7 @@
             "value": "[parameters('aiFoundrySearchServiceLocation')]"
           },
           "searchServiceResourceName": {
-            "value": "[variables('varAiFoundrySearchServiceResourceName')]"
+            "value": "[parameters('aiFoundrySearchServiceResourceName')]"
           },
           "searchServiceSkuName": {
             "value": "[parameters('aiFoundrySearchServiceSkuName')]"
@@ -8054,7 +8022,7 @@
             "value": "[parameters('aiFoundryStorageAccountLocation')]"
           },
           "storageAccountResourceName": {
-            "value": "[variables('varAiFoundryStorageAccountResourceName')]"
+            "value": "[parameters('aiFoundryStorageAccountResourceName')]"
           },
           "storageAccountSkuName": {
             "value": "[parameters('aiFoundryStorageAccountSkuName')]"
@@ -8076,7 +8044,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "18261124961722482690"
+              "templateHash": "535134120638097666"
             }
           },
           "parameters": {
@@ -8366,34 +8334,7 @@
                   "skuName": {
                     "value": "[parameters('storageAccountSkuName')]"
                   },
-                  "kind": {
-                    "value": "StorageV2"
-                  },
-                  "accessTier": {
-                    "value": "Hot"
-                  },
-                  "minimumTlsVersion": {
-                    "value": "TLS1_2"
-                  },
-                  "allowBlobPublicAccess": {
-                    "value": false
-                  },
-                  "allowCrossTenantReplication": {
-                    "value": false
-                  },
                   "allowSharedKeyAccess": {
-                    "value": false
-                  },
-                  "requireInfrastructureEncryption": {
-                    "value": true
-                  },
-                  "enableHierarchicalNamespace": {
-                    "value": false
-                  },
-                  "largeFileSharesState": {
-                    "value": "Disabled"
-                  },
-                  "enableNfsV3": {
                     "value": false
                   },
                   "networkAcls": {
@@ -8402,13 +8343,8 @@
                       "defaultAction": "Allow"
                     }
                   },
-                  "supportsHttpsTrafficOnly": {
-                    "value": true
-                  },
                   "blobServices": {
                     "value": {
-                      "automaticSnapshotPolicyEnabled": false,
-                      "deleteRetentionPolicyAllowPermanentDelete": false,
                       "deleteRetentionPolicyDays": 7,
                       "deleteRetentionPolicyEnabled": false,
                       "containerDeleteRetentionPolicyAllowPermanentDelete": false,
@@ -8425,7 +8361,7 @@
                     "value": [
                       {
                         "principalId": "[parameters('managedIdentityPrincipalId')]",
-                        "roleDefinitionIdOrName": "ba92f5b4-2d11-453d-a403-e96b0029c9fe"
+                        "roleDefinitionIdOrName": "Storage Blob Data Contributor"
                       }
                     ]
                   }
@@ -14125,29 +14061,14 @@
                   "kind": {
                     "value": "web"
                   },
-                  "applicationType": {
-                    "value": "web"
-                  },
                   "disableIpMasking": {
-                    "value": false
-                  },
-                  "disableLocalAuth": {
                     "value": false
                   },
                   "flowType": {
                     "value": "Bluefield"
                   },
-                  "forceCustomerStorageForProfiler": {
-                    "value": false
-                  },
                   "retentionInDays": {
                     "value": "[parameters('applicationInsightsRetentionInDays')]"
-                  },
-                  "publicNetworkAccessForIngestion": {
-                    "value": "Enabled"
-                  },
-                  "publicNetworkAccessForQuery": {
-                    "value": "Enabled"
                   },
                   "requestSource": {
                     "value": "rest"
@@ -14875,29 +14796,11 @@
                   "acrSku": {
                     "value": "[parameters('containerRegistrySkuName')]"
                   },
-                  "acrAdminUserEnabled": {
-                    "value": false
-                  },
-                  "dataEndpointEnabled": {
-                    "value": false
-                  },
-                  "networkRuleBypassOptions": {
-                    "value": "AzureServices"
-                  },
-                  "networkRuleSetDefaultAction": {
-                    "value": "Deny"
-                  },
                   "quarantinePolicyStatus": {
-                    "value": "enabled"
-                  },
-                  "retentionPolicyStatus": {
                     "value": "enabled"
                   },
                   "retentionPolicyDays": {
                     "value": 7
-                  },
-                  "trustPolicyStatus": {
-                    "value": "disabled"
                   },
                   "publicNetworkAccess": {
                     "value": "Disabled"
@@ -22590,22 +22493,10 @@
                   "replicaCount": {
                     "value": 1
                   },
-                  "partitionCount": {
-                    "value": 1
-                  },
-                  "hostingMode": {
-                    "value": "default"
-                  },
-                  "publicNetworkAccess": {
-                    "value": "Enabled"
-                  },
                   "networkRuleSet": {
                     "value": {
                       "ipRules": []
                     }
-                  },
-                  "cmkEnforcement": {
-                    "value": "Unspecified"
                   },
                   "disableLocalAuth": {
                     "value": false
@@ -32899,7 +32790,7 @@
     "avmStorageAccount": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format(variables('avmDeploymentNameFormat'), variables('varStorageAccountResourceName'))]",
+      "name": "[format(variables('avmDeploymentNameFormat'), parameters('storageAccountResourceName'))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -32907,7 +32798,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[variables('varStorageAccountResourceName')]"
+            "value": "[parameters('storageAccountResourceName')]"
           },
           "tags": {
             "value": "[parameters('tags')]"
@@ -32928,34 +32819,7 @@
           "skuName": {
             "value": "[parameters('storageAccountSkuName')]"
           },
-          "kind": {
-            "value": "StorageV2"
-          },
-          "accessTier": {
-            "value": "Hot"
-          },
-          "minimumTlsVersion": {
-            "value": "TLS1_2"
-          },
-          "allowBlobPublicAccess": {
-            "value": false
-          },
-          "allowCrossTenantReplication": {
-            "value": false
-          },
           "allowSharedKeyAccess": {
-            "value": false
-          },
-          "requireInfrastructureEncryption": {
-            "value": true
-          },
-          "enableHierarchicalNamespace": {
-            "value": false
-          },
-          "largeFileSharesState": {
-            "value": "Disabled"
-          },
-          "enableNfsV3": {
             "value": false
           },
           "networkAcls": {
@@ -32963,9 +32827,6 @@
               "bypass": "AzureServices",
               "defaultAction": "Allow"
             }
-          },
-          "supportsHttpsTrafficOnly": {
-            "value": true
           },
           "blobServices": {
             "value": {
@@ -32996,11 +32857,11 @@
             "value": [
               {
                 "principalId": "[reference('avmManagedIdentity').outputs.principalId.value]",
-                "roleDefinitionIdOrName": "ba92f5b4-2d11-453d-a403-e96b0029c9fe"
+                "roleDefinitionIdOrName": "Storage Blob Data Contributor"
               },
               {
                 "principalId": "[reference('functionCharts', '2023-12-01', 'full').identity.principalId]",
-                "roleDefinitionIdOrName": "ba92f5b4-2d11-453d-a403-e96b0029c9fe"
+                "roleDefinitionIdOrName": "Storage Blob Data Contributor"
               }
             ]
           },
@@ -38680,7 +38541,7 @@
     "avmCosmosDB": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format(variables('avmDeploymentNameFormat'), variables('varCosmosDbAccountResourceName'))]",
+      "name": "[format(variables('avmDeploymentNameFormat'), parameters('cosmosDbAccountResourceName'))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -38688,7 +38549,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[variables('varCosmosDbAccountResourceName')]"
+            "value": "[parameters('cosmosDbAccountResourceName')]"
           },
           "tags": {
             "value": "[parameters('tags')]"
@@ -38706,9 +38567,6 @@
               }
             ]
           },
-          "defaultConsistencyLevel": {
-            "value": "Session"
-          },
           "locations": {
             "value": [
               {
@@ -38718,13 +38576,7 @@
               }
             ]
           },
-          "databaseAccountOfferType": {
-            "value": "Standard"
-          },
           "automaticFailover": {
-            "value": false
-          },
-          "enableMultipleWriteLocations": {
             "value": false
           },
           "disableLocalAuth": {
@@ -42487,7 +42339,7 @@
     "avmSQLServer": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format(variables('avmDeploymentNameFormat'), variables('varSqlServerResourceName'))]",
+      "name": "[format(variables('avmDeploymentNameFormat'), parameters('sqlServerResourceName'))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -42495,7 +42347,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[variables('varSqlServerResourceName')]"
+            "value": "[parameters('sqlServerResourceName')]"
           },
           "tags": {
             "value": "[parameters('tags')]"
@@ -42530,7 +42382,7 @@
           "databases": {
             "value": [
               {
-                "name": "[variables('varSqlServerDatabaseName')]",
+                "name": "[parameters('sqlServerDatabaseName')]",
                 "diagnosticSettings": [
                   {
                     "workspaceResourceId": "[reference('avmLogAnalyticsWorkspace').outputs.resourceId.value]"
@@ -48546,7 +48398,7 @@
     "avmDeploymentScriptCopyData": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format(variables('avmDeploymentNameFormat'), variables('varScriptCopyDataResourceName'))]",
+      "name": "[format(variables('avmDeploymentNameFormat'), parameters('scriptCopyDataResourceName'))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -48557,7 +48409,7 @@
             "value": "AzureCLI"
           },
           "name": {
-            "value": "[variables('varScriptCopyDataResourceName')]"
+            "value": "[parameters('scriptCopyDataResourceName')]"
           },
           "tags": {
             "value": "[parameters('tags')]"
@@ -49128,7 +48980,7 @@
     "avmDeploymentScriptIndexData": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format(variables('avmDeploymentNameFormat'), variables('varScriptIndexDataResourceName'))]",
+      "name": "[format(variables('avmDeploymentNameFormat'), parameters('scriptIndexDataResourceName'))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -49139,7 +48991,7 @@
             "value": "AzureCLI"
           },
           "name": {
-            "value": "[variables('varScriptIndexDataResourceName')]"
+            "value": "[parameters('scriptIndexDataResourceName')]"
           },
           "tags": {
             "value": "[parameters('tags')]"
@@ -49712,7 +49564,7 @@
     "avmFunctionsManagedEnvironment": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format(variables('avmDeploymentNameFormat'), variables('varFunctionsManagedEnvironmentResourceName'))]",
+      "name": "[format(variables('avmDeploymentNameFormat'), parameters('functionsManagedEnvironmentResourceName'))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -49720,7 +49572,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[variables('varFunctionsManagedEnvironmentResourceName')]"
+            "value": "[parameters('functionsManagedEnvironmentResourceName')]"
           },
           "tags": {
             "value": "[parameters('tags')]"
@@ -50409,7 +50261,7 @@
             "value": "[format('DOCKER|{0}/{1}:{2}', parameters('functionRagDockerImageContainerRegistryUrl'), parameters('functionRagDockerImageName'), parameters('functionRagDockerImageTag'))]"
           },
           "ragFunctionName": {
-            "value": "[variables('varFunctionRagResourceName')]"
+            "value": "[parameters('functionRagResourceName')]"
           },
           "ragStorageAccountName": {
             "value": "[reference('moduleAIFoundry').outputs.storageAccountName.value]"
@@ -50418,7 +50270,7 @@
             "value": "[parameters('functionRagLocation')]"
           },
           "sqlDatabaseName": {
-            "value": "[variables('varSqlServerDatabaseName')]"
+            "value": "[parameters('sqlServerDatabaseName')]"
           },
           "sqlServerAdministratorLogin": {
             "value": "[parameters('sqlServerAdministratorLogin')]"
@@ -50777,7 +50629,7 @@
     "avmServerFarmWebapp": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format(variables('avmDeploymentNameFormat'), variables('varWebAppServerFarmResourceName'))]",
+      "name": "[format(variables('avmDeploymentNameFormat'), parameters('webAppServerFarmResourceName'))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -50785,7 +50637,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[variables('varWebAppServerFarmResourceName')]"
+            "value": "[parameters('webAppServerFarmResourceName')]"
           },
           "tags": {
             "value": "[parameters('tags')]"
@@ -50805,9 +50657,6 @@
           },
           "skuName": {
             "value": "[parameters('webAppServerFarmSku')]"
-          },
-          "reserved": {
-            "value": true
           },
           "kind": {
             "value": "linux"
@@ -51357,10 +51206,10 @@
         "mode": "Incremental",
         "parameters": {
           "deploymentName": {
-            "value": "[format(variables('avmDeploymentNameFormat'), variables('varWebAppResourceName'))]"
+            "value": "[format(variables('avmDeploymentNameFormat'), parameters('webAppResourceName'))]"
           },
           "webAppName": {
-            "value": "[variables('varWebAppResourceName')]"
+            "value": "[parameters('webAppResourceName')]"
           },
           "tags": {
             "value": "[parameters('tags')]"
@@ -57040,7 +56889,7 @@
       "metadata": {
         "description": "The url of the webapp where the deployed Conversation Knowledge Mining solution can be accessed."
       },
-      "value": "[format('{0}.azurewebsites.net', variables('varWebAppResourceName'))]"
+      "value": "[format('{0}.azurewebsites.net', parameters('webAppResourceName'))]"
     }
   }
 }
