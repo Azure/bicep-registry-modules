@@ -49,8 +49,9 @@
         },
         "dataSources": {
           "type": "object",
+          "nullable": true,
           "metadata": {
-            "description": "Required. Specification of data sources that will be collected."
+            "description": "Optional. Specification of data sources that will be collected."
           }
         },
         "dataFlows": {
@@ -102,8 +103,9 @@
         },
         "dataSources": {
           "type": "object",
+          "nullable": true,
           "metadata": {
-            "description": "Required. Specification of data sources that will be collected."
+            "description": "Optional. Specification of data sources that will be collected."
           }
         },
         "dataFlows": {
@@ -155,8 +157,9 @@
         },
         "dataSources": {
           "type": "object",
+          "nullable": true,
           "metadata": {
-            "description": "Required. Specification of data sources that will be collected."
+            "description": "Optional. Specification of data sources that will be collected."
           }
         },
         "dataFlows": {
