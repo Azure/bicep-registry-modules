@@ -8,6 +8,7 @@ This module deploys an App Managed Environment (also known as a Container App En
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -53,7 +54,6 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
     infrastructureSubnetId: '<infrastructureSubnetId>'
     internal: true
-    location: '<location>'
     platformReservedCidr: '172.17.17.0/24'
     platformReservedDnsIP: '172.17.17.17'
     workloadProfiles: [
@@ -100,9 +100,6 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     "internal": {
       "value": true
     },
-    "location": {
-      "value": "<location>"
-    },
     "platformReservedCidr": {
       "value": "172.17.17.0/24"
     },
@@ -141,7 +138,6 @@ param dockerBridgeCidr = '172.16.0.1/28'
 param infrastructureResourceGroupName = '<infrastructureResourceGroupName>'
 param infrastructureSubnetId = '<infrastructureSubnetId>'
 param internal = true
-param location = '<location>'
 param platformReservedCidr = '172.17.17.0/24'
 param platformReservedDnsIP = '172.17.17.17'
 param workloadProfiles = [
@@ -651,31 +647,9 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
     infrastructureSubnetId: '<infrastructureSubnetId>'
     internal: true
-    location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     logsDestination: 'log-analytics'
     platformReservedCidr: '172.17.17.0/24'
     platformReservedDnsIP: '172.17.17.17'
-    roleAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
-      }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-      }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
-      }
-    ]
     tags: {
       Env: 'test'
       'hidden-title': 'This is visible in the resource name'
@@ -724,15 +698,6 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     "internal": {
       "value": true
     },
-    "location": {
-      "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
     "logsDestination": {
       "value": "log-analytics"
     },
@@ -741,25 +706,6 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     },
     "platformReservedDnsIP": {
       "value": "172.17.17.17"
-    },
-    "roleAssignments": {
-      "value": [
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
-        }
-      ]
     },
     "tags": {
       "value": {
@@ -799,31 +745,9 @@ param dockerBridgeCidr = '172.16.0.1/28'
 param infrastructureResourceGroupName = '<infrastructureResourceGroupName>'
 param infrastructureSubnetId = '<infrastructureSubnetId>'
 param internal = true
-param location = '<location>'
-param lock = {
-  kind: 'CanNotDelete'
-  name: 'myCustomLockName'
-}
 param logsDestination = 'log-analytics'
 param platformReservedCidr = '172.17.17.0/24'
 param platformReservedDnsIP = '172.17.17.17'
-param roleAssignments = [
-  {
-    principalId: '<principalId>'
-    principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
-  }
-  {
-    principalId: '<principalId>'
-    principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-  }
-  {
-    principalId: '<principalId>'
-    principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
-  }
-]
 param tags = {
   Env: 'test'
   'hidden-title': 'This is visible in the resource name'
@@ -1104,7 +1028,7 @@ The managed identity definition for this resource.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
-| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
 
 ### Parameter: `managedIdentities.systemAssigned`
 
@@ -1115,7 +1039,7 @@ Enables system assigned managed identity on the resource.
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
-The resource ID(s) to assign to the resource.
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
 
 - Required: No
 - Type: array
@@ -1339,6 +1263,14 @@ Whether or not this Managed Environment is zone-redundant.
 | `resourceId` | string | The resource ID of the Managed Environment. |
 | `staticIp` | string | The IP address of the Managed Environment. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 
