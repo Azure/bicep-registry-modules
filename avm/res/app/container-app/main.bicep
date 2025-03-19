@@ -123,7 +123,7 @@ param dapr object = {}
 param maxInactiveRevisions int = 0
 
 @description('Optional. Runtime configuration for the Container App.')
-param runtime runtimeType
+param runtime runtimeType?
 
 @description('Required. List of container definitions for the Container App.')
 param containers containerType[]
@@ -573,7 +573,7 @@ type runtimeType = {
       level: ('debug' | 'error' | 'info' | 'off' | 'trace' | 'warn')
     }[]?
   }?
-}?
+}
 
 @export()
 @description('The type for a secret.')
