@@ -172,6 +172,7 @@ module testDeployment '../../../main.bicep' = [
           nestedDependencies.outputs.managedIdentityResourceId
         ]
       }
+      maintenanceWindow: 'Custom1'
       timezoneId: 'UTC'
       vCores: 4
       vulnerabilityAssessmentsObj: {

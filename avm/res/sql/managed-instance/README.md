@@ -193,6 +193,7 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
+    maintenanceWindow: 'Custom1'
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [
@@ -347,6 +348,9 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
         "name": "myCustomLockName"
       }
     },
+    "maintenanceWindow": {
+      "value": "Custom1"
+    },
     "managedIdentities": {
       "value": {
         "systemAssigned": true,
@@ -499,6 +503,7 @@ param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
 }
+param maintenanceWindow = 'Custom1'
 param managedIdentities = {
   systemAssigned: true
   userAssignedResourceIds: [
