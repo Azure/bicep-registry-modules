@@ -32,7 +32,7 @@ The following section provides usage examples for the module, which were used to
 - [Collecting custom text logs](#example-3-collecting-custom-text-logs)
 - [Collecting IIS logs](#example-4-collecting-iis-logs)
 - [Using only defaults](#example-5-using-only-defaults)
-- [Send data to Azure Monitor Logs with Logs ingestion API.](#example-6-send-data-to-azure-monitor-logs-with-logs-ingestion-api)
+- [Send data to Azure Monitor Logs with Logs ingestion API](#example-6-send-data-to-azure-monitor-logs-with-logs-ingestion-api)
 - [Collecting Linux-specific information](#example-7-collecting-linux-specific-information)
 - [Using large parameter set](#example-8-using-large-parameter-set)
 - [WAF-aligned](#example-9-waf-aligned)
@@ -1105,7 +1105,7 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 6: _Send data to Azure Monitor Logs with Logs ingestion API._
+### Example 6: _Send data to Azure Monitor Logs with Logs ingestion API_
 
 This instance deploys the module to setup sending data to Azure Monitor Logs with Logs ingestion API.
 
@@ -3038,6 +3038,7 @@ The kind of data collection rule.
 | [`Windows`](#variant-datacollectionrulepropertieskind-windows) |  |
 | [`All`](#variant-datacollectionrulepropertieskind-all) |  |
 | [`AgentSettings`](#variant-datacollectionrulepropertieskind-agentsettings) |  |
+| [`Direct`](#variant-datacollectionrulepropertieskind-direct) |  |
 
 ### Variant: `dataCollectionRuleProperties.kind-Linux`
 
@@ -3350,6 +3351,75 @@ The platform type specifies the type of resources this rule can apply to.
   ```
 
 ### Parameter: `dataCollectionRuleProperties.kind-AgentSettings.description`
+
+Description of the data collection rule.
+
+- Required: No
+- Type: string
+
+### Variant: `dataCollectionRuleProperties.kind-Direct`
+
+
+To use this variant, set the property `kind` to `Direct`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`dataFlows`](#parameter-datacollectionrulepropertieskind-directdataflows) | array | The specification of data flows. |
+| [`destinations`](#parameter-datacollectionrulepropertieskind-directdestinations) | object | Specification of destinations that can be used in data flows. |
+| [`kind`](#parameter-datacollectionrulepropertieskind-directkind) | string | The platform type specifies the type of resources this rule can apply to. |
+| [`streamDeclarations`](#parameter-datacollectionrulepropertieskind-directstreamdeclarations) | object | Declaration of custom streams used in this rule. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`dataCollectionEndpointResourceId`](#parameter-datacollectionrulepropertieskind-directdatacollectionendpointresourceid) | string | The resource ID of the data collection endpoint that this rule can be used with. |
+| [`description`](#parameter-datacollectionrulepropertieskind-directdescription) | string | Description of the data collection rule. |
+
+### Parameter: `dataCollectionRuleProperties.kind-Direct.dataFlows`
+
+The specification of data flows.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `dataCollectionRuleProperties.kind-Direct.destinations`
+
+Specification of destinations that can be used in data flows.
+
+- Required: Yes
+- Type: object
+
+### Parameter: `dataCollectionRuleProperties.kind-Direct.kind`
+
+The platform type specifies the type of resources this rule can apply to.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Direct'
+  ]
+  ```
+
+### Parameter: `dataCollectionRuleProperties.kind-Direct.streamDeclarations`
+
+Declaration of custom streams used in this rule.
+
+- Required: Yes
+- Type: object
+
+### Parameter: `dataCollectionRuleProperties.kind-Direct.dataCollectionEndpointResourceId`
+
+The resource ID of the data collection endpoint that this rule can be used with.
+
+- Required: No
+- Type: string
+
+### Parameter: `dataCollectionRuleProperties.kind-Direct.description`
 
 Description of the data collection rule.
 
