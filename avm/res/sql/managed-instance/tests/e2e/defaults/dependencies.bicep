@@ -147,7 +147,6 @@ resource routeTable 'Microsoft.Network/routeTables@2024-05-01' = {
         properties: {
           addressPrefix: addressPrefix
           nextHopType: 'VnetLocal'
-          hasBgpOverride: false
         }
       }
       {
@@ -155,7 +154,6 @@ resource routeTable 'Microsoft.Network/routeTables@2024-05-01' = {
         properties: {
           addressPrefix: 'Storage'
           nextHopType: 'Internet'
-          hasBgpOverride: false
         }
       }
       {
@@ -163,7 +161,6 @@ resource routeTable 'Microsoft.Network/routeTables@2024-05-01' = {
         properties: {
           addressPrefix: 'SqlManagement'
           nextHopType: 'Internet'
-          hasBgpOverride: false
         }
       }
       {
@@ -171,7 +168,6 @@ resource routeTable 'Microsoft.Network/routeTables@2024-05-01' = {
         properties: {
           addressPrefix: 'AzureMonitor'
           nextHopType: 'Internet'
-          hasBgpOverride: false
         }
       }
       {
@@ -179,7 +175,6 @@ resource routeTable 'Microsoft.Network/routeTables@2024-05-01' = {
         properties: {
           addressPrefix: 'CorpNetSaw'
           nextHopType: 'Internet'
-          hasBgpOverride: false
         }
       }
       {
@@ -187,7 +182,6 @@ resource routeTable 'Microsoft.Network/routeTables@2024-05-01' = {
         properties: {
           addressPrefix: 'CorpNetPublic'
           nextHopType: 'Internet'
-          hasBgpOverride: false
         }
       }
       {
@@ -195,7 +189,6 @@ resource routeTable 'Microsoft.Network/routeTables@2024-05-01' = {
         properties: {
           addressPrefix: 'AzureActiveDirectory'
           nextHopType: 'Internet'
-          hasBgpOverride: false
         }
       }
       {
@@ -203,7 +196,6 @@ resource routeTable 'Microsoft.Network/routeTables@2024-05-01' = {
         properties: {
           addressPrefix: 'AzureCloud.westeurope'
           nextHopType: 'Internet'
-          hasBgpOverride: false
         }
       }
       {
@@ -211,7 +203,6 @@ resource routeTable 'Microsoft.Network/routeTables@2024-05-01' = {
         properties: {
           addressPrefix: 'AzureCloud.northeurope'
           nextHopType: 'Internet'
-          hasBgpOverride: false
         }
       }
       {
@@ -219,7 +210,6 @@ resource routeTable 'Microsoft.Network/routeTables@2024-05-01' = {
         properties: {
           addressPrefix: 'Storage.westeurope'
           nextHopType: 'Internet'
-          hasBgpOverride: false
         }
       }
       {
@@ -227,7 +217,6 @@ resource routeTable 'Microsoft.Network/routeTables@2024-05-01' = {
         properties: {
           addressPrefix: 'Storage.northeurope'
           nextHopType: 'Internet'
-          hasBgpOverride: false
         }
       }
       {
@@ -235,7 +224,6 @@ resource routeTable 'Microsoft.Network/routeTables@2024-05-01' = {
         properties: {
           addressPrefix: 'EventHub.westeurope'
           nextHopType: 'Internet'
-          hasBgpOverride: false
         }
       }
       {
@@ -243,7 +231,6 @@ resource routeTable 'Microsoft.Network/routeTables@2024-05-01' = {
         properties: {
           addressPrefix: 'EventHub.northeurope'
           nextHopType: 'Internet'
-          hasBgpOverride: false
         }
       }
     ]

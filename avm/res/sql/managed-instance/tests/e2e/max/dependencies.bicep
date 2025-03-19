@@ -153,7 +153,6 @@ resource routeTable 'Microsoft.Network/routeTables@2024-05-01' = {
         properties: {
           addressPrefix: addressPrefix
           nextHopType: 'VnetLocal'
-          hasBgpOverride: false
         }
       }
       {
@@ -161,7 +160,6 @@ resource routeTable 'Microsoft.Network/routeTables@2024-05-01' = {
         properties: {
           addressPrefix: 'Storage'
           nextHopType: 'Internet'
-          hasBgpOverride: false
         }
       }
       {
@@ -169,7 +167,6 @@ resource routeTable 'Microsoft.Network/routeTables@2024-05-01' = {
         properties: {
           addressPrefix: 'SqlManagement'
           nextHopType: 'Internet'
-          hasBgpOverride: false
         }
       }
       {
@@ -177,7 +174,6 @@ resource routeTable 'Microsoft.Network/routeTables@2024-05-01' = {
         properties: {
           addressPrefix: 'AzureMonitor'
           nextHopType: 'Internet'
-          hasBgpOverride: false
         }
       }
       {
@@ -185,7 +181,6 @@ resource routeTable 'Microsoft.Network/routeTables@2024-05-01' = {
         properties: {
           addressPrefix: 'CorpNetSaw'
           nextHopType: 'Internet'
-          hasBgpOverride: false
         }
       }
       {
@@ -193,7 +188,6 @@ resource routeTable 'Microsoft.Network/routeTables@2024-05-01' = {
         properties: {
           addressPrefix: 'CorpNetPublic'
           nextHopType: 'Internet'
-          hasBgpOverride: false
         }
       }
       {
@@ -201,7 +195,6 @@ resource routeTable 'Microsoft.Network/routeTables@2024-05-01' = {
         properties: {
           addressPrefix: 'AzureActiveDirectory'
           nextHopType: 'Internet'
-          hasBgpOverride: false
         }
       }
       {
@@ -209,7 +202,6 @@ resource routeTable 'Microsoft.Network/routeTables@2024-05-01' = {
         properties: {
           addressPrefix: 'AzureCloud.${location}'
           nextHopType: 'Internet'
-          hasBgpOverride: false
         }
       }
       {
@@ -217,7 +209,6 @@ resource routeTable 'Microsoft.Network/routeTables@2024-05-01' = {
         properties: {
           addressPrefix: 'Storage.${location}'
           nextHopType: 'Internet'
-          hasBgpOverride: false
         }
       }
       {
@@ -225,7 +216,6 @@ resource routeTable 'Microsoft.Network/routeTables@2024-05-01' = {
         properties: {
           addressPrefix: 'EventHub.${location}'
           nextHopType: 'Internet'
-          hasBgpOverride: false
         }
       }
     ]
