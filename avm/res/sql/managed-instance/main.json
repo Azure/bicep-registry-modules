@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "1893091319199982693"
+      "templateHash": "16394400739500184634"
     },
     "name": "SQL Managed Instances",
     "description": "This module deploys a SQL Managed Instance."
@@ -533,6 +533,18 @@
         "description": "Optional. The administrator configuration."
       }
     },
+    "maintenanceWindow": {
+      "type": "string",
+      "defaultValue": "Custom2",
+      "allowedValues": [
+        "SystemManaged",
+        "Custom1",
+        "Custom2"
+      ],
+      "metadata": {
+        "description": "Optional. The maintenance window for the SQL Managed Instance.\n\nSystemManaged: The system automatically selects a 9-hour maintenance window between 8:00 AM to 5:00 PM local time, Monday - Sunday.\nCustom1: Weekday window: 10:00 PM to 6:00 AM local time, Monday - Thursday.\nCustom2: Weekend window: 10:00 PM to 6:00 AM local time, Friday - Sunday.\n"
+      }
+    },
     "minimalTlsVersion": {
       "type": "string",
       "defaultValue": "1.2",
@@ -583,7 +595,8 @@
       "SqlDb Migration Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '189207d4-bb67-4208-a635-b06afe8b2c57')]",
       "SqlMI Migration Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1d335eef-eee1-47fe-a9e0-53214eba8872')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
-    }
+    },
+    "maintenanceConfigurationId": "[if(equals(parameters('maintenanceWindow'), 'SystemManaged'), null(), subscriptionResourceId('Microsoft.Maintenance/publicMaintenanceConfigurations', format('SQL_{0}_MI_{1}', parameters('location'), last(parameters('maintenanceWindow')))))]"
   },
   "resources": {
     "avmTelemetry": {
@@ -640,7 +653,8 @@
         "servicePrincipal": {
           "type": "[parameters('servicePrincipal')]"
         },
-        "minimalTlsVersion": "[parameters('minimalTlsVersion')]"
+        "minimalTlsVersion": "[parameters('minimalTlsVersion')]",
+        "maintenanceConfigurationId": "[variables('maintenanceConfigurationId')]"
       }
     },
     "managedInstance_lock": {
