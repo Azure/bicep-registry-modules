@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "16430185328734041481"
+      "templateHash": "14547018323351627201"
     },
     "name": "Azure Stack HCI Cluster",
     "description": "This module deploys an Azure Stack HCI Cluster on the provided Arc Machines."
@@ -79,19 +79,19 @@
         "qosPolicyOverrides": {
           "type": "object",
           "properties": {
-            "bandwidthPercentage_SMB": {
+            "bandwidthPercentageSMB": {
               "type": "string",
               "metadata": {
                 "description": "Required. The bandwidthPercentage for the network intent. Recommend 50."
               }
             },
-            "priorityValue8021Action_Cluster": {
+            "priorityValue8021ActionCluster": {
               "type": "string",
               "metadata": {
                 "description": "Required. Recommend 7."
               }
             },
-            "priorityValue8021Action_SMB": {
+            "priorityValue8021ActionSMB": {
               "type": "string",
               "metadata": {
                 "description": "Required. Recommend 3."
@@ -184,9 +184,8 @@
       "properties": {
         "name": {
           "type": "string",
-          "nullable": true,
           "metadata": {
-            "description": "Optional. The name of the storage network."
+            "description": "Required. The name of the storage network."
           }
         },
         "adapterName": {
@@ -1292,7 +1291,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "8375880528238701715"
+              "templateHash": "1370422971386346503"
             },
             "name": "Azure Stack HCI Cluster Deployment Settings",
             "description": "This module deploys an Azure Stack HCI Cluster Deployment Settings resource."
@@ -1634,7 +1633,7 @@
                               "name": "storageNetworks",
                               "count": "[length(parameters('storageNetworks'))]",
                               "input": {
-                                "name": "[coalesce(parameters('storageNetworks')[copyIndex('storageNetworks')].name, format('StorageNetwork{0}', add(copyIndex('storageNetworks'), 1)))]",
+                                "name": "[parameters('storageNetworks')[copyIndex('storageNetworks')].name]",
                                 "networkAdapterName": "[parameters('storageNetworks')[copyIndex('storageNetworks')].adapterName]",
                                 "vlanId": "[parameters('storageNetworks')[copyIndex('storageNetworks')].vlan]",
                                 "storageAdapterIPInfo": "[tryGet(parameters('storageNetworks')[copyIndex('storageNetworks')], 'storageAdapterIPInfo')]"
