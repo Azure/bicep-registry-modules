@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "11382378189282086805"
+      "templateHash": "13748603224311979804"
     },
     "name": "SQL Managed Instance Databases",
     "description": "This module deploys a SQL Managed Instance Database."
@@ -310,6 +310,7 @@
     },
     "longTermRetentionBackupResourceId": {
       "type": "string",
+      "nullable": true,
       "metadata": {
         "description": "Conditional. The resource ID of the Long Term Retention backup to be used for restore of this managed database. Required if createMode is RestoreLongTermRetentionBackup."
       }

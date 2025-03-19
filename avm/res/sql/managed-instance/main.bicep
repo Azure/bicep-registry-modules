@@ -346,19 +346,19 @@ module managedInstance_databases 'database/main.bicep' = [
     params: {
       name: database.name
       managedInstanceName: managedInstance.name
-      catalogCollation: database.?catalogCollation ?? 'SQL_Latin1_General_CP1_CI_AS'
-      collation: database.?collation ?? 'SQL_Latin1_General_CP1_CI_AS'
-      createMode: database.?createMode ?? 'Default'
+      catalogCollation: database.?catalogCollation
+      collation: database.?collation
+      createMode: database.?createMode
       diagnosticSettings: database.?diagnosticSettings
       location: database.?location ?? managedInstance.location
       lock: database.?lock ?? lock
-      longTermRetentionBackupResourceId: database.?longTermRetentionBackupResourceId ?? ''
-      recoverableDatabaseId: database.?recoverableDatabaseId ?? ''
-      restorableDroppedDatabaseId: database.?restorableDroppedDatabaseId ?? ''
-      restorePointInTime: database.?restorePointInTime ?? ''
-      sourceDatabaseId: database.?sourceDatabaseId ?? ''
-      storageContainerSasToken: database.?storageContainerSasToken ?? ''
-      storageContainerUri: database.?storageContainerUri ?? ''
+      longTermRetentionBackupResourceId: database.?longTermRetentionBackupResourceId
+      recoverableDatabaseId: database.?recoverableDatabaseId
+      restorableDroppedDatabaseId: database.?restorableDroppedDatabaseId
+      restorePointInTime: database.?restorePointInTime
+      sourceDatabaseId: database.?sourceDatabaseId
+      storageContainerSasToken: database.?storageContainerSasToken
+      storageContainerUri: database.?storageContainerUri
       tags: database.?tags ?? tags
       backupShortTermRetentionPolicy: database.?backupShortTermRetentionPolicy
       backupLongTermRetentionPolicy: database.?backupLongTermRetentionPolicy
@@ -371,8 +371,8 @@ module managedInstance_securityAlertPolicy 'security-alert-policy/main.bicep' = 
   params: {
     managedInstanceName: managedInstance.name
     name: securityAlertPoliciesObj.name
-    emailAccountAdmins: securityAlertPoliciesObj.?emailAccountAdmins ?? false
-    state: securityAlertPoliciesObj.?state ?? 'Disabled'
+    emailAccountAdmins: securityAlertPoliciesObj.?emailAccountAdmins
+    state: securityAlertPoliciesObj.?state
   }
 }
 
@@ -381,12 +381,12 @@ module managedInstance_vulnerabilityAssessment 'vulnerability-assessment/main.bi
   params: {
     managedInstanceName: managedInstance.name
     name: vulnerabilityAssessmentsObj.name
-    recurringScansEmails: vulnerabilityAssessmentsObj.?recurringScansEmails ?? []
-    recurringScansEmailSubscriptionAdmins: vulnerabilityAssessmentsObj.?recurringScansEmailSubscriptionAdmins ?? false
-    recurringScansIsEnabled: vulnerabilityAssessmentsObj.?recurringScansIsEnabled ?? false
+    recurringScansEmails: vulnerabilityAssessmentsObj.?recurringScansEmails
+    recurringScansEmailSubscriptionAdmins: vulnerabilityAssessmentsObj.?recurringScansEmailSubscriptionAdmins
+    recurringScansIsEnabled: vulnerabilityAssessmentsObj.?recurringScansIsEnabled
     storageAccountResourceId: vulnerabilityAssessmentsObj.storageAccountResourceId
-    useStorageAccountAccessKey: vulnerabilityAssessmentsObj.?useStorageAccountAccessKey ?? false
-    createStorageRoleAssignment: vulnerabilityAssessmentsObj.?createStorageRoleAssignment ?? true
+    useStorageAccountAccessKey: vulnerabilityAssessmentsObj.?useStorageAccountAccessKey
+    createStorageRoleAssignment: vulnerabilityAssessmentsObj.?createStorageRoleAssignment
   }
   dependsOn: [
     managedInstance_securityAlertPolicy
@@ -399,7 +399,7 @@ module managedInstance_keys 'key/main.bicep' = [
     params: {
       name: key.name
       managedInstanceName: managedInstance.name
-      serverKeyType: key.?serverKeyType ?? 'ServiceManaged'
+      serverKeyType: key.?serverKeyType
       uri: key.?uri
     }
   }

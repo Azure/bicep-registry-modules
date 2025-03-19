@@ -46,7 +46,7 @@ param storageContainerSasToken string?
 param recoverableDatabaseId string?
 
 @description('Conditional. The resource ID of the Long Term Retention backup to be used for restore of this managed database. Required if createMode is RestoreLongTermRetentionBackup.')
-param longTermRetentionBackupResourceId string
+param longTermRetentionBackupResourceId string?
 
 import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The database-level diagnostic settings of the service.')

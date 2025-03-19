@@ -65,7 +65,7 @@ The name of the SQL managed instance database.
 
 The resource ID of the Long Term Retention backup to be used for restore of this managed database. Required if createMode is RestoreLongTermRetentionBackup.
 
-- Required: Yes
+- Required: No
 - Type: string
 
 ### Parameter: `managedInstanceName`

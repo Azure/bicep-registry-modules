@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "16394400739500184634"
+      "templateHash": "8028460309428865929"
     },
     "name": "SQL Managed Instances",
     "description": "This module deploys a SQL Managed Instance."
@@ -746,13 +746,13 @@
             "value": "[parameters('name')]"
           },
           "catalogCollation": {
-            "value": "[coalesce(tryGet(parameters('databases')[copyIndex()], 'catalogCollation'), 'SQL_Latin1_General_CP1_CI_AS')]"
+            "value": "[tryGet(parameters('databases')[copyIndex()], 'catalogCollation')]"
           },
           "collation": {
-            "value": "[coalesce(tryGet(parameters('databases')[copyIndex()], 'collation'), 'SQL_Latin1_General_CP1_CI_AS')]"
+            "value": "[tryGet(parameters('databases')[copyIndex()], 'collation')]"
           },
           "createMode": {
-            "value": "[coalesce(tryGet(parameters('databases')[copyIndex()], 'createMode'), 'Default')]"
+            "value": "[tryGet(parameters('databases')[copyIndex()], 'createMode')]"
           },
           "diagnosticSettings": {
             "value": "[tryGet(parameters('databases')[copyIndex()], 'diagnosticSettings')]"
@@ -764,25 +764,25 @@
             "value": "[coalesce(tryGet(parameters('databases')[copyIndex()], 'lock'), parameters('lock'))]"
           },
           "longTermRetentionBackupResourceId": {
-            "value": "[coalesce(tryGet(parameters('databases')[copyIndex()], 'longTermRetentionBackupResourceId'), '')]"
+            "value": "[tryGet(parameters('databases')[copyIndex()], 'longTermRetentionBackupResourceId')]"
           },
           "recoverableDatabaseId": {
-            "value": "[coalesce(tryGet(parameters('databases')[copyIndex()], 'recoverableDatabaseId'), '')]"
+            "value": "[tryGet(parameters('databases')[copyIndex()], 'recoverableDatabaseId')]"
           },
           "restorableDroppedDatabaseId": {
-            "value": "[coalesce(tryGet(parameters('databases')[copyIndex()], 'restorableDroppedDatabaseId'), '')]"
+            "value": "[tryGet(parameters('databases')[copyIndex()], 'restorableDroppedDatabaseId')]"
           },
           "restorePointInTime": {
-            "value": "[coalesce(tryGet(parameters('databases')[copyIndex()], 'restorePointInTime'), '')]"
+            "value": "[tryGet(parameters('databases')[copyIndex()], 'restorePointInTime')]"
           },
           "sourceDatabaseId": {
-            "value": "[coalesce(tryGet(parameters('databases')[copyIndex()], 'sourceDatabaseId'), '')]"
+            "value": "[tryGet(parameters('databases')[copyIndex()], 'sourceDatabaseId')]"
           },
           "storageContainerSasToken": {
-            "value": "[coalesce(tryGet(parameters('databases')[copyIndex()], 'storageContainerSasToken'), '')]"
+            "value": "[tryGet(parameters('databases')[copyIndex()], 'storageContainerSasToken')]"
           },
           "storageContainerUri": {
-            "value": "[coalesce(tryGet(parameters('databases')[copyIndex()], 'storageContainerUri'), '')]"
+            "value": "[tryGet(parameters('databases')[copyIndex()], 'storageContainerUri')]"
           },
           "tags": {
             "value": "[coalesce(tryGet(parameters('databases')[copyIndex()], 'tags'), parameters('tags'))]"
@@ -802,7 +802,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "11382378189282086805"
+              "templateHash": "13748603224311979804"
             },
             "name": "SQL Managed Instance Databases",
             "description": "This module deploys a SQL Managed Instance Database."
@@ -1106,6 +1106,7 @@
             },
             "longTermRetentionBackupResourceId": {
               "type": "string",
+              "nullable": true,
               "metadata": {
                 "description": "Conditional. The resource ID of the Long Term Retention backup to be used for restore of this managed database. Required if createMode is RestoreLongTermRetentionBackup."
               }
@@ -1527,10 +1528,10 @@
             "value": "[parameters('securityAlertPoliciesObj').name]"
           },
           "emailAccountAdmins": {
-            "value": "[coalesce(tryGet(parameters('securityAlertPoliciesObj'), 'emailAccountAdmins'), false())]"
+            "value": "[tryGet(parameters('securityAlertPoliciesObj'), 'emailAccountAdmins')]"
           },
           "state": {
-            "value": "[coalesce(tryGet(parameters('securityAlertPoliciesObj'), 'state'), 'Disabled')]"
+            "value": "[tryGet(parameters('securityAlertPoliciesObj'), 'state')]"
           }
         },
         "template": {
@@ -1635,22 +1636,22 @@
             "value": "[parameters('vulnerabilityAssessmentsObj').name]"
           },
           "recurringScansEmails": {
-            "value": "[coalesce(tryGet(parameters('vulnerabilityAssessmentsObj'), 'recurringScansEmails'), createArray())]"
+            "value": "[tryGet(parameters('vulnerabilityAssessmentsObj'), 'recurringScansEmails')]"
           },
           "recurringScansEmailSubscriptionAdmins": {
-            "value": "[coalesce(tryGet(parameters('vulnerabilityAssessmentsObj'), 'recurringScansEmailSubscriptionAdmins'), false())]"
+            "value": "[tryGet(parameters('vulnerabilityAssessmentsObj'), 'recurringScansEmailSubscriptionAdmins')]"
           },
           "recurringScansIsEnabled": {
-            "value": "[coalesce(tryGet(parameters('vulnerabilityAssessmentsObj'), 'recurringScansIsEnabled'), false())]"
+            "value": "[tryGet(parameters('vulnerabilityAssessmentsObj'), 'recurringScansIsEnabled')]"
           },
           "storageAccountResourceId": {
             "value": "[parameters('vulnerabilityAssessmentsObj').storageAccountResourceId]"
           },
           "useStorageAccountAccessKey": {
-            "value": "[coalesce(tryGet(parameters('vulnerabilityAssessmentsObj'), 'useStorageAccountAccessKey'), false())]"
+            "value": "[tryGet(parameters('vulnerabilityAssessmentsObj'), 'useStorageAccountAccessKey')]"
           },
           "createStorageRoleAssignment": {
-            "value": "[coalesce(tryGet(parameters('vulnerabilityAssessmentsObj'), 'createStorageRoleAssignment'), true())]"
+            "value": "[tryGet(parameters('vulnerabilityAssessmentsObj'), 'createStorageRoleAssignment')]"
           }
         },
         "template": {
@@ -1856,7 +1857,7 @@
             "value": "[parameters('name')]"
           },
           "serverKeyType": {
-            "value": "[coalesce(tryGet(parameters('keys')[copyIndex()], 'serverKeyType'), 'ServiceManaged')]"
+            "value": "[tryGet(parameters('keys')[copyIndex()], 'serverKeyType')]"
           },
           "uri": {
             "value": "[tryGet(parameters('keys')[copyIndex()], 'uri')]"
