@@ -173,7 +173,7 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
       controlPlaneEndpoint: {
         hostIP: '<hostIP>'
       }
-      count: 2
+      count: 1
       vmSize: 'Standard_A4_v2'
     }
     keyVaultName: '<keyVaultName>'
@@ -245,7 +245,7 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
         "controlPlaneEndpoint": {
           "hostIP": "<hostIP>"
         },
-        "count": 2,
+        "count": 1,
         "vmSize": "Standard_A4_v2"
       }
     },
@@ -311,7 +311,7 @@ param controlPlane = {
   controlPlaneEndpoint: {
     hostIP: '<hostIP>'
   }
-  count: 2
+  count: 1
   vmSize: 'Standard_A4_v2'
 }
 param keyVaultName = '<keyVaultName>'

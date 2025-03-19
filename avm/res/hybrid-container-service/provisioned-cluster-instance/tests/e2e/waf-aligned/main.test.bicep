@@ -240,7 +240,7 @@ module testDeployment '../../../main.bicep' = {
       }
     }
     controlPlane: {
-      count: 2
+      count: 1
       vmSize: 'Standard_A4_v2'
       controlPlaneEndpoint: {
         hostIP: null
