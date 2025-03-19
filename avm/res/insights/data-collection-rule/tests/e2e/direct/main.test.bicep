@@ -1,6 +1,6 @@
 targetScope = 'subscription'
 
-metadata name = 'Send data to Azure Monitor Logs with Logs ingestion API.'
+metadata name = 'Send data to Azure Monitor Logs with Logs ingestion API'
 metadata description = 'This instance deploys the module to setup sending data to Azure Monitor Logs with Logs ingestion API.'
 
 // ========== //
