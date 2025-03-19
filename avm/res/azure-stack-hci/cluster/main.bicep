@@ -347,8 +347,8 @@ type storageAdapterIPInfoType = {
 // define custom type for storage network objects
 @export()
 type storageNetworksType = {
-  @description('Optional. The name of the storage network.')
-  name: string?
+  @description('Required. The name of the storage network.')
+  name: string
 
   @description('Required. The name of the storage adapter.')
   adapterName: string

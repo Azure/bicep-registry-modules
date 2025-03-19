@@ -168,10 +168,12 @@ module testDeployment '../../../main.bicep' = {
       storageConnectivitySwitchless: false
       storageNetworks: [
         {
+          name: 'StorageNetwork0'
           adapterName: 'smb0'
           vlan: '711'
         }
         {
+          name: 'StorageNetwork1'
           adapterName: 'smb1'
           vlan: '712'
         }

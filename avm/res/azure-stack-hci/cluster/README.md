@@ -147,10 +147,12 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
       storageNetworks: [
         {
           adapterName: 'smb0'
+          name: 'StorageNetwork0'
           vlan: '711'
         }
         {
           adapterName: 'smb1'
+          name: 'StorageNetwork1'
           vlan: '712'
         }
       ]
@@ -285,10 +287,12 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
         "storageNetworks": [
           {
             "adapterName": "smb0",
+            "name": "StorageNetwork0",
             "vlan": "711"
           },
           {
             "adapterName": "smb1",
+            "name": "StorageNetwork1",
             "vlan": "712"
           }
         ],
@@ -431,10 +435,12 @@ param deploymentSettings = {
   storageNetworks: [
     {
       adapterName: 'smb0'
+      name: 'StorageNetwork0'
       vlan: '711'
     }
     {
       adapterName: 'smb1'
+      name: 'StorageNetwork1'
       vlan: '712'
     }
   ]
@@ -574,10 +580,12 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
       storageNetworks: [
         {
           adapterName: 'smb0'
+          name: 'StorageNetwork0'
           vlan: '711'
         }
         {
           adapterName: 'smb1'
+          name: 'StorageNetwork1'
           vlan: '712'
         }
       ]
@@ -723,10 +731,12 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
         "storageNetworks": [
           {
             "adapterName": "smb0",
+            "name": "StorageNetwork0",
             "vlan": "711"
           },
           {
             "adapterName": "smb1",
+            "name": "StorageNetwork1",
             "vlan": "712"
           }
         ],
@@ -882,10 +892,12 @@ param deploymentSettings = {
   storageNetworks: [
     {
       adapterName: 'smb0'
+      name: 'StorageNetwork0'
       vlan: '711'
     }
     {
       adapterName: 'smb1'
+      name: 'StorageNetwork1'
       vlan: '712'
     }
   ]
@@ -1393,13 +1405,13 @@ An array of JSON objects that define the storage network configuration for the c
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`adapterName`](#parameter-deploymentsettingsstoragenetworksadaptername) | string | The name of the storage adapter. |
+| [`name`](#parameter-deploymentsettingsstoragenetworksname) | string | The name of the storage network. |
 | [`vlan`](#parameter-deploymentsettingsstoragenetworksvlan) | string | The VLAN for the storage adapter. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-deploymentsettingsstoragenetworksname) | string | The name of the storage network. |
 | [`storageAdapterIPInfo`](#parameter-deploymentsettingsstoragenetworksstorageadapteripinfo) | array | The storage adapter IP information for 3-node switchless or manual config deployments. |
 
 ### Parameter: `deploymentSettings.storageNetworks.adapterName`
@@ -1409,18 +1421,18 @@ The name of the storage adapter.
 - Required: Yes
 - Type: string
 
+### Parameter: `deploymentSettings.storageNetworks.name`
+
+The name of the storage network.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `deploymentSettings.storageNetworks.vlan`
 
 The VLAN for the storage adapter.
 
 - Required: Yes
-- Type: string
-
-### Parameter: `deploymentSettings.storageNetworks.name`
-
-The name of the storage network.
-
-- Required: No
 - Type: string
 
 ### Parameter: `deploymentSettings.storageNetworks.storageAdapterIPInfo`
