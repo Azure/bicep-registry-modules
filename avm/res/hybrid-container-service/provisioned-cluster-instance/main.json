@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "8930771530585302517"
+      "templateHash": "4084446257176869266"
     },
     "name": "Hybrid Container Service Provisioned Cluster Instance",
     "description": "Deploy a provisioned cluster instance."
@@ -663,7 +663,7 @@
     "managedIdentity": {
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
       "apiVersion": "2018-11-30",
-      "name": "temp",
+      "name": "[format('temp-{0}', parameters('name'))]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]"
     },
@@ -671,14 +671,14 @@
       "condition": "[empty(parameters('linuxProfile'))]",
       "type": "Microsoft.Resources/deploymentScripts",
       "apiVersion": "2020-10-01",
-      "name": "generateSSHKey",
+      "name": "[format('generateSSHKey-{0}', parameters('name'))]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "kind": "AzurePowerShell",
       "identity": {
         "type": "UserAssigned",
         "userAssignedIdentities": {
-          "[format('{0}', resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', 'temp'))]": {}
+          "[format('{0}', resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('temp-{0}', parameters('name'))))]": {}
         }
       },
       "properties": {

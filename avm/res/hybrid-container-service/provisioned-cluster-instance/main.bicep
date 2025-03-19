@@ -130,13 +130,13 @@ resource kv 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (empty(linuxPro
 }
 
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
-  name: 'temp'
+  name: 'temp-${name}'
   location: location
   tags: tags
 }
 
 resource generateSSHKey 'Microsoft.Resources/deploymentScripts@2020-10-01' = if (empty(linuxProfile)) {
-  name: 'generateSSHKey'
+  name: 'generateSSHKey-${name}'
   location: location
   tags: tags
   kind: 'AzurePowerShell'
