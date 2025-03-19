@@ -719,11 +719,7 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.18.2' = {
     }
     blobServices: {
       corsRules: []
-      automaticSnapshotPolicyEnabled: false
-      deleteRetentionPolicyAllowPermanentDelete: false
-      deleteRetentionPolicyDays: 7
       deleteRetentionPolicyEnabled: false
-      containerDeleteRetentionPolicyAllowPermanentDelete: false
       containerDeleteRetentionPolicyDays: 7
       containerDeleteRetentionPolicyEnabled: false
       diagnosticSettings: [{ workspaceResourceId: avmLogAnalyticsWorkspace.outputs.resourceId }]
@@ -807,7 +803,6 @@ module avmSQLServer 'br/public:avm/res/sql/server:0.13.1' = {
     administratorLoginPassword: sqlServerAdministratorPassword
     publicNetworkAccess: 'Enabled'
     restrictOutboundNetworkAccess: 'Disabled'
-
     firewallRules: [
       {
         name: 'AllowSpecificRange'
@@ -825,10 +820,8 @@ module avmSQLServer 'br/public:avm/res/sql/server:0.13.1' = {
           family: sqlServerDatabaseSkuFamily
           capacity: sqlServerDatabaseSkuCapacity
         }
-        collation: 'SQL_Latin1_General_CP1_CI_AS'
         autoPauseDelay: 60
         minCapacity: '1'
-        readScale: 'Disabled'
         zoneRedundant: false
       }
     ]

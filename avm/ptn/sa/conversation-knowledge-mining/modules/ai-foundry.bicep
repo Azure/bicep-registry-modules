@@ -97,9 +97,7 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.18.2' = {
       defaultAction: 'Allow'
     }
     blobServices: {
-      deleteRetentionPolicyDays: 7
       deleteRetentionPolicyEnabled: false
-      containerDeleteRetentionPolicyAllowPermanentDelete: false
       containerDeleteRetentionPolicyDays: 7
       containerDeleteRetentionPolicyEnabled: false
       diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspaceResourceId }]
