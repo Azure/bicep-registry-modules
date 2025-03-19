@@ -231,6 +231,7 @@ module testDeployment '../../../main.bicep' = {
     name: '${namePrefix}${serviceShort}001'
     location: enforcedLocation
     customLocationId: customLocation.id
+    keyVaultName: nestedDependencies.outputs.keyVaultName
     cloudProviderProfile: {
       infraNetworkProfile: {
         vnetSubnetIds: [

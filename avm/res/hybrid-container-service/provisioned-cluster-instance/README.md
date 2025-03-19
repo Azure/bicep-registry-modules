@@ -56,6 +56,8 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
     }
     customLocationId: '<customLocationId>'
     name: 'hcspcimin001'
+    // Non-required parameters
+    keyVaultName: '<keyVaultName>'
   }
 }
 ```
@@ -87,6 +89,10 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
     },
     "name": {
       "value": "hcspcimin001"
+    },
+    // Non-required parameters
+    "keyVaultName": {
+      "value": "<keyVaultName>"
     }
   }
 }
@@ -112,6 +118,8 @@ param cloudProviderProfile = {
 }
 param customLocationId = '<customLocationId>'
 param name = 'hcspcimin001'
+// Non-required parameters
+param keyVaultName = '<keyVaultName>'
 ```
 
 </details>
@@ -168,6 +176,7 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
       count: 2
       vmSize: 'Standard_A4_v2'
     }
+    keyVaultName: '<keyVaultName>'
     location: '<location>'
     tags: {
       Environment: 'Non-Prod'
@@ -240,6 +249,9 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
         "vmSize": "Standard_A4_v2"
       }
     },
+    "keyVaultName": {
+      "value": "<keyVaultName>"
+    },
     "location": {
       "value": "<location>"
     },
@@ -302,6 +314,7 @@ param controlPlane = {
   count: 2
   vmSize: 'Standard_A4_v2'
 }
+param keyVaultName = '<keyVaultName>'
 param location = '<location>'
 param tags = {
   Environment: 'Non-Prod'
