@@ -128,6 +128,19 @@ param encryptionProtectorObj object = {}
 @description('Optional. The administrator configuration.')
 param administratorsObj object = {}
 
+@allowed([
+  'SystemManaged'
+  'Custom1'
+  'Custom2'
+])
+@description('''Optional. The maintenance window for the SQL Managed Instance.
+
+SystemManaged: The system automatically selects a 9-hour maintenance window between 8:00 AM to 5:00 PM local time, Monday - Sunday.
+Custom1: Weekday window: 10:00 PM to 6:00 AM local time, Monday - Thursday.
+Custom2: Weekend window: 10:00 PM to 6:00 AM local time, Friday - Sunday.
+''')
+param maintenanceWindow string = 'Custom2'
+
 @description('Optional. Minimal TLS version allowed.')
 @allowed([
   'None'
@@ -214,6 +227,13 @@ var formattedRoleAssignments = [
   })
 ]
 
+var maintenanceConfigurationId = maintenanceWindow == 'SystemManaged'
+  ? null
+  : subscriptionResourceId(
+      'Microsoft.Maintenance/publicMaintenanceConfigurations',
+      'SQL_${location}_MI_${last(maintenanceWindow)}'
+    )
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.sql-managedinstance.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
@@ -267,6 +287,7 @@ resource managedInstance 'Microsoft.Sql/managedInstances@2024-05-01-preview' = {
       type: servicePrincipal
     }
     minimalTlsVersion: minimalTlsVersion
+    maintenanceConfigurationId: maintenanceConfigurationId
   }
 }
 
