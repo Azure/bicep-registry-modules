@@ -4,7 +4,7 @@ Get a list of all versioned module references in a given module path
 
 .DESCRIPTION
 Given a module path, this function returns a list of all modules under that path which are versioned.
-A versioned module is a module having a version.json file in the same path of its main.bicep template. This is by default for all top level modules and for child modules selected for publiching.
+A versioned module is a module having a version.json file in the same path of its main.bicep template. This is by default for all top level modules and for child modules selected for publishing.
 
 .PARAMETER Path
 Optional. The path to search in. Defaults to the 'root' folder.
