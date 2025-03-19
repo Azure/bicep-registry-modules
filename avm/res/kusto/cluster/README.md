@@ -1120,8 +1120,6 @@ The Principal Assignments for the Kusto Cluster.
 
 - Required: No
 - Type: array
-- MinValue: 2
-- MaxValue: 999
 
 **Required parameters**
 
@@ -1138,8 +1136,6 @@ The principal id assigned to the Kusto Cluster principal. It can be a user email
 
 - Required: Yes
 - Type: string
-- MinValue: 2
-- MaxValue: 999
 
 ### Parameter: `clusterPrincipalAssignments.principalType`
 
@@ -1155,8 +1151,6 @@ The principal type of the principal id.
     'User'
   ]
   ```
-- MinValue: 2
-- MaxValue: 999
 
 ### Parameter: `clusterPrincipalAssignments.role`
 
@@ -1171,8 +1165,6 @@ The Kusto Cluster role to be assigned to the principal id.
     'AllDatabasesViewer'
   ]
   ```
-- MinValue: 2
-- MaxValue: 999
 
 ### Parameter: `clusterPrincipalAssignments.tenantId`
 
@@ -1180,8 +1172,6 @@ The tenant id of the principal.
 
 - Required: Yes
 - Type: string
-- MinValue: 2
-- MaxValue: 999
 
 ### Parameter: `customerManagedKey`
 
@@ -1358,8 +1348,6 @@ The principal assignments for the Kusto Cluster database.
 
 - Required: No
 - Type: array
-- MinValue: 2
-- MaxValue: 999
 
 **Required parameters**
 
@@ -1376,8 +1364,6 @@ The principal id assigned to the Kusto Cluster database principal. It can be a u
 
 - Required: Yes
 - Type: string
-- MinValue: 2
-- MaxValue: 999
 
 ### Parameter: `databases.databasePrincipalAssignments.principalType`
 
@@ -1393,8 +1379,6 @@ The principal type of the principal id.
     'User'
   ]
   ```
-- MinValue: 2
-- MaxValue: 999
 
 ### Parameter: `databases.databasePrincipalAssignments.role`
 
@@ -1413,8 +1397,6 @@ The Kusto Cluster database role to be assigned to the principal id.
     'Viewer'
   ]
   ```
-- MinValue: 2
-- MaxValue: 999
 
 ### Parameter: `databases.databasePrincipalAssignments.tenantId`
 
@@ -1422,8 +1404,6 @@ The tenant id of the principal.
 
 - Required: Yes
 - Type: string
-- MinValue: 2
-- MaxValue: 999
 
 ### Parameter: `diagnosticSettings`
 
@@ -1791,70 +1771,6 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 
 - Required: No
 - Type: array
-
-### Parameter: `principalAssignments`
-
-The Principal Assignments for the Kusto Cluster.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`principalId`](#parameter-principalassignmentsprincipalid) | string | The principal id assigned to the Kusto Cluster principal. It can be a user email, application id, or security group name. |
-| [`principalType`](#parameter-principalassignmentsprincipaltype) | string | The principal type of the principal id. |
-| [`role`](#parameter-principalassignmentsrole) | string | The Kusto Cluster role to be assigned to the principal id. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`tenantId`](#parameter-principalassignmentstenantid) | string | The tenant id of the principal. |
-
-### Parameter: `principalAssignments.principalId`
-
-The principal id assigned to the Kusto Cluster principal. It can be a user email, application id, or security group name.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `principalAssignments.principalType`
-
-The principal type of the principal id.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'App'
-    'Group'
-    'User'
-  ]
-  ```
-
-### Parameter: `principalAssignments.role`
-
-The Kusto Cluster role to be assigned to the principal id.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'AllDatabasesAdmin'
-    'AllDatabasesViewer'
-  ]
-  ```
-
-### Parameter: `principalAssignments.tenantId`
-
-The tenant id of the principal.
-
-- Required: No
-- Type: string
 
 ### Parameter: `privateEndpoints`
 
