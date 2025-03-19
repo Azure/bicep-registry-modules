@@ -140,15 +140,13 @@ resource metricAlert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
     windowSize: windowSize
     targetResourceType: targetResourceType
     targetResourceRegion: targetResourceRegion
-    criteria: union(
-      {
-        'odata.type': criteria['odata.type']
-      },
-      (contains(criteria, 'allof') ? { allof: criteria.allof } : {}),
-      (contains(criteria, 'componentResourceId') ? { componentId: criteria.componentResourceId } : {}),
-      (contains(criteria, 'failedLocationCount') ? { failedLocationCount: criteria.failedLocationCount } : {}),
-      (contains(criteria, 'webTestResourceId') ? { webTestId: criteria.webTestResourceId } : {})
-    )
+    criteria: {
+      'odata.type': criteria['odata.type']
+      ...(contains(criteria, 'allof') ? { allof: criteria.allof } : {})
+      ...(contains(criteria, 'componentResourceId') ? { componentId: criteria.componentResourceId } : {})
+      ...(contains(criteria, 'failedLocationCount') ? { failedLocationCount: criteria.failedLocationCount } : {})
+      ...(contains(criteria, 'webTestResourceId') ? { webTestId: criteria.webTestResourceId } : {})
+    }
     autoMitigate: autoMitigate
     actions: actionGroups
   }
@@ -186,19 +184,39 @@ output location string = metricAlert.location
 //   Definitions   //
 // =============== //
 
+@export()
 @discriminator('odata.type')
 type alertType = alertWebtestType | alertResourceType | alertMultiResourceType
+
+@description('The alert type for a single resource scenario.')
 type alertResourceType = {
+  @description('Required. The type of the alert criteria.')
   'odata.type': 'Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria'
-  allof: array
+
+  @description('Required. The list of metric criteria for this \'all of\' operation.')
+  allof: object[]
 }
+
+@description('The alert type for multiple resources scenario.')
 type alertMultiResourceType = {
+  @description('Required. The type of the alert criteria.')
   'odata.type': 'Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria'
-  allof: array
+
+  @description('Required. The list of multiple metric criteria for this \'all of\' operation.')
+  allof: object[]
 }
+
+@description('The alert type for a web test scenario.')
 type alertWebtestType = {
+  @description('Required. The type of the alert criteria.')
   'odata.type': 'Microsoft.Azure.Monitor.WebtestLocationAvailabilityCriteria'
+
+  @description('Required. The Application Insights resource ID.')
   componentResourceId: string
+
+  @description('Required. The number of failed locations.')
   failedLocationCount: int
+
+  @description('Required. The Application Insights web test resource ID.')
   webTestResourceId: string
 }

@@ -6,10 +6,34 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "12095124880230146699"
+      "templateHash": "14955935266178407034"
     },
     "name": "VPN Gateway NAT Rules",
     "description": "This module deploys a Virtual Network Gateway NAT Rule."
+  },
+  "definitions": {
+    "mappingType": {
+      "type": "object",
+      "properties": {
+        "addressSpace": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Address space for Vpn NatRule mapping."
+          }
+        },
+        "portRange": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Port range for Vpn NatRule mapping."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a mapping."
+      }
+    }
   },
   "parameters": {
     "name": {
@@ -26,19 +50,25 @@
     },
     "externalMappings": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "$ref": "#/definitions/mappingType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. An address prefix range of destination IPs on the outside network that source IPs will be mapped to. In other words, your post-NAT address prefix range."
       }
     },
     "internalMappings": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "$ref": "#/definitions/mappingType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. An address prefix range of source IPs on the inside network that will be mapped to a set of external IPs. In other words, your pre-NAT address prefix range."
       }
     },
-    "ipConfigurationId": {
+    "ipConfigurationResourceId": {
       "type": "string",
       "nullable": true,
       "metadata": {
@@ -82,7 +112,7 @@
       "properties": {
         "externalMappings": "[parameters('externalMappings')]",
         "internalMappings": "[parameters('internalMappings')]",
-        "ipConfigurationId": "[parameters('ipConfigurationId')]",
+        "ipConfigurationId": "[parameters('ipConfigurationResourceId')]",
         "mode": "[parameters('mode')]",
         "type": "[parameters('type')]"
       }
