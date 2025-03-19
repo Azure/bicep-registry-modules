@@ -17,6 +17,9 @@ param roleAssignments roleAssignmentType[]?
 @description('Optional. The list of email receivers that are part of this action group.')
 param emailReceivers array?
 
+@description('Optional. The list of Event Hub receivers that are part of this action group.')
+param eventHubReceivers array?
+
 @description('Optional. The list of SMS receivers that are part of this action group.')
 param smsReceivers array?
 
@@ -105,6 +108,7 @@ resource actionGroup 'Microsoft.Insights/actionGroups@2023-01-01' = {
     groupShortName: groupShortName
     enabled: enabled
     emailReceivers: emailReceivers
+    eventHubReceivers: eventHubReceivers
     smsReceivers: smsReceivers
     webhookReceivers: webhookReceivers
     itsmReceivers: itsmReceivers

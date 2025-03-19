@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "14522435549795935846"
+      "templateHash": "13338018442688780965"
     },
     "name": "Virtual Network Gateways",
     "description": "This module deploys a Virtual Network Gateway."
@@ -47,6 +47,9 @@
         },
         "externalMappings": {
           "type": "array",
+          "items": {
+            "$ref": "#/definitions/mappingType"
+          },
           "nullable": true,
           "metadata": {
             "description": "Optional. An address prefix range of destination IPs on the outside network that source IPs will be mapped to. In other words, your post-NAT address prefix range."
@@ -54,12 +57,15 @@
         },
         "internalMappings": {
           "type": "array",
+          "items": {
+            "$ref": "#/definitions/mappingType"
+          },
           "nullable": true,
           "metadata": {
             "description": "Optional. An address prefix range of source IPs on the inside network that will be mapped to a set of external IPs. In other words, your pre-NAT address prefix range."
           }
         },
-        "ipConfigurationId": {
+        "ipConfigurationResourceId": {
           "type": "string",
           "nullable": true,
           "metadata": {
@@ -101,7 +107,10 @@
           "type": "string",
           "allowedValues": [
             "activePassiveNoBgp"
-          ]
+          ],
+          "metadata": {
+            "description": "Required. The cluster mode deciding the configuration."
+          }
         }
       },
       "metadata": {
@@ -115,7 +124,10 @@
           "type": "string",
           "allowedValues": [
             "activeActiveNoBgp"
-          ]
+          ],
+          "metadata": {
+            "description": "Required. The cluster mode deciding the configuration."
+          }
         },
         "existingSecondaryPublicIPResourceId": {
           "type": "string",
@@ -143,7 +155,10 @@
           "type": "string",
           "allowedValues": [
             "activePassiveBgp"
-          ]
+          ],
+          "metadata": {
+            "description": "Required. The cluster mode deciding the configuration."
+          }
         },
         "asn": {
           "type": "int",
@@ -176,7 +191,10 @@
           "type": "string",
           "allowedValues": [
             "activeActiveBgp"
-          ]
+          ],
+          "metadata": {
+            "description": "Required. The cluster mode deciding the configuration."
+          }
         },
         "existingSecondaryPublicIPResourceId": {
           "type": "string",
@@ -378,6 +396,30 @@
         }
       }
     },
+    "mappingType": {
+      "type": "object",
+      "properties": {
+        "addressSpace": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Address space for Vpn NatRule mapping."
+          }
+        },
+        "portRange": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Port range for Vpn NatRule mapping."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for a mapping.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "nat-rule/main.bicep"
+        }
+      }
+    },
     "roleAssignmentType": {
       "type": "object",
       "properties": {
@@ -531,7 +573,7 @@
     },
     "skuName": {
       "type": "string",
-      "defaultValue": "[if(equals(parameters('gatewayType'), 'VPN'), 'VpnGw1AZ', 'ErGw1AZ')]",
+      "defaultValue": "[if(equals(parameters('gatewayType'), 'Vpn'), 'VpnGw1AZ', 'ErGw1AZ')]",
       "allowedValues": [
         "Basic",
         "VpnGw1",
@@ -1582,8 +1624,8 @@
           "internalMappings": {
             "value": "[tryGet(coalesce(parameters('natRules'), createArray())[copyIndex()], 'internalMappings')]"
           },
-          "ipConfigurationId": {
-            "value": "[tryGet(coalesce(parameters('natRules'), createArray())[copyIndex()], 'ipConfigurationId')]"
+          "ipConfigurationResourceId": {
+            "value": "[tryGet(coalesce(parameters('natRules'), createArray())[copyIndex()], 'ipConfigurationResourceId')]"
           },
           "mode": {
             "value": "[tryGet(coalesce(parameters('natRules'), createArray())[copyIndex()], 'mode')]"
@@ -1600,10 +1642,34 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.13.18514",
-              "templateHash": "12095124880230146699"
+              "templateHash": "14955935266178407034"
             },
             "name": "VPN Gateway NAT Rules",
             "description": "This module deploys a Virtual Network Gateway NAT Rule."
+          },
+          "definitions": {
+            "mappingType": {
+              "type": "object",
+              "properties": {
+                "addressSpace": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. Address space for Vpn NatRule mapping."
+                  }
+                },
+                "portRange": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Port range for Vpn NatRule mapping."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for a mapping."
+              }
+            }
           },
           "parameters": {
             "name": {
@@ -1620,19 +1686,25 @@
             },
             "externalMappings": {
               "type": "array",
-              "defaultValue": [],
+              "items": {
+                "$ref": "#/definitions/mappingType"
+              },
+              "nullable": true,
               "metadata": {
                 "description": "Optional. An address prefix range of destination IPs on the outside network that source IPs will be mapped to. In other words, your post-NAT address prefix range."
               }
             },
             "internalMappings": {
               "type": "array",
-              "defaultValue": [],
+              "items": {
+                "$ref": "#/definitions/mappingType"
+              },
+              "nullable": true,
               "metadata": {
                 "description": "Optional. An address prefix range of source IPs on the inside network that will be mapped to a set of external IPs. In other words, your pre-NAT address prefix range."
               }
             },
-            "ipConfigurationId": {
+            "ipConfigurationResourceId": {
               "type": "string",
               "nullable": true,
               "metadata": {
@@ -1676,7 +1748,7 @@
               "properties": {
                 "externalMappings": "[parameters('externalMappings')]",
                 "internalMappings": "[parameters('internalMappings')]",
-                "ipConfigurationId": "[parameters('ipConfigurationId')]",
+                "ipConfigurationId": "[parameters('ipConfigurationResourceId')]",
                 "mode": "[parameters('mode')]",
                 "type": "[parameters('type')]"
               }

@@ -53,6 +53,7 @@ param localAdminPassword string?
 @description('Conditional. The service principal ID for ARB. Required if useSharedKeyVault is true.')
 param servicePrincipalId string?
 
+@secure()
 @description('Conditional. The service principal secret for ARB. Required if useSharedKeyVault is true.')
 param servicePrincipalSecret string?
 
@@ -79,6 +80,18 @@ param witnessStoragekeyTags object?
 
 @description('Optional. Tags of the default ARB application.')
 param defaultARBApplicationTags object?
+
+@description('Optional. Key vault subscription ID, which is used for for storing secrets for the HCI cluster.')
+param keyvaultSubscriptionId string?
+
+@description('Optional. Key vault resource group, which is used for for storing secrets for the HCI cluster.')
+param keyvaultResourceGroup string?
+
+@description('Optional. Storage account subscription ID, which is used as the witness for the HCI Windows Failover Cluster.')
+param witnessStorageAccountSubscriptionId string?
+
+@description('Optional. Storage account resource group, which is used as the witness for the HCI Windows Failover Cluster.')
+param witnessStorageAccountResourceGroup string?
 
 // ============= //
 //   Variables   //
@@ -159,6 +172,10 @@ resource cluster 'Microsoft.AzureStackHCI/clusters@2024-04-01' = {
 
 module secrets './secrets.bicep' = if (useSharedKeyVault) {
   name: '${uniqueString(deployment().name, location)}-secrets'
+  scope: resourceGroup(
+    keyvaultSubscriptionId ?? subscription().subscriptionId,
+    keyvaultResourceGroup ?? resourceGroup().name
+  )
   params: {
     clusterName: name
     cloudId: cluster.properties.cloudId
@@ -178,6 +195,8 @@ module secrets './secrets.bicep' = if (useSharedKeyVault) {
     localAdminCredentialTags: localAdminCredentialTags
     witnessStoragekeyTags: witnessStoragekeyTags
     defaultARBApplicationTags: defaultARBApplicationTags
+    witnessStorageAccountResourceGroup: witnessStorageAccountResourceGroup ?? resourceGroup().name
+    witnessStorageAccountSubscriptionId: witnessStorageAccountSubscriptionId ?? subscription().subscriptionId
   }
 }
 
@@ -287,13 +306,13 @@ type networkIntentType = {
   @description('Required. The qosPolicy overrides for the network intent.')
   qosPolicyOverrides: {
     @description('Required. The bandwidthPercentage for the network intent. Recommend 50.')
-    bandwidthPercentage_SMB: string
+    bandwidthPercentageSMB: string
 
     @description('Required. Recommend 7.')
-    priorityValue8021Action_Cluster: string
+    priorityValue8021ActionCluster: string
 
     @description('Required. Recommend 3.')
-    priorityValue8021Action_SMB: string
+    priorityValue8021ActionSMB: string
   }
 
   @description('Required. Specify whether to override the virtualSwitchConfiguration property. Use false by default.')
@@ -328,6 +347,9 @@ type storageAdapterIPInfoType = {
 // define custom type for storage network objects
 @export()
 type storageNetworksType = {
+  @description('Required. The name of the storage network.')
+  name: string
+
   @description('Required. The name of the storage adapter.')
   adapterName: string
 
@@ -448,7 +470,7 @@ type deploymentSettingsType = {
   dnsServers: string[]
 
   @description('Required. An array of Network ATC Network Intent objects that define the Compute, Management, and Storage network configuration for the cluster.')
-  networkIntents: array
+  networkIntents: networkIntentType[]
 
   @description('Required. Specify whether the Storage Network connectivity is switched or switchless.')
   storageConnectivitySwitchless: bool
@@ -457,7 +479,7 @@ type deploymentSettingsType = {
   enableStorageAutoIp: bool?
 
   @description('Required. An array of JSON objects that define the storage network configuration for the cluster. Each object should contain the adapterName, VLAN properties, and (optionally) IP configurations.')
-  storageNetworks: array
+  storageNetworks: storageNetworksType[]
 
   // other cluster configuration parameters
   @description('Required. The name of the Custom Location associated with the Arc Resource Bridge for this cluster. This value should reflect the physical location and identifier of the HCI cluster. Example: cl-hci-den-clu01.')
@@ -468,9 +490,6 @@ type deploymentSettingsType = {
 
   @description('Required. The name of the key vault to be used for storing secrets for the HCI cluster. This currently needs to be unique per HCI cluster.')
   keyVaultName: string
-
-  @description('Optional. If using a shared key vault or non-legacy secret naming, pass the properties.cloudId guid from the pre-created HCI cluster resource.')
-  cloudId: string?
 }
 
 @export()
