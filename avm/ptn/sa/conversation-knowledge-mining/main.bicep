@@ -483,7 +483,7 @@ var varCosmosDbAccountSqlDbContainers = [
 ]
 
 // VARIABLES: Deployment scripts
-var varCKMGithubBaseUrl = 'https://raw.githubusercontent.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator/main/'
+var varCKMGithubBaseUrl = 'https://raw.githubusercontent.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator/46ab5473648f466eb88584441874d5f4e91b21a8/'
 var varStorageContainerName = 'data'
 
 // VARIABLES: Web App settings
