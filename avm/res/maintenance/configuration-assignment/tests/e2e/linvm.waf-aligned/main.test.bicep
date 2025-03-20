@@ -11,6 +11,9 @@ metadata description = 'This instance deploys the module in alignment with the b
 @maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-maintenance.maintenanceconfigurations-${serviceShort}-rg'
 
+@description('Optional. The location for all resources.')
+param enforcedLocation string = deployment().location
+
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'mcawaf'
 
@@ -21,8 +24,8 @@ param namePrefix string = '#_namePrefix_#'
 // Dependencies //
 // ============ //
 
-#disable-next-line no-hardcoded-location
-var enforcedLocation = 'northeurope'
+// #disable-next-line no-hardcoded-location
+// var enforcedLocation = 'northeurope'
 
 // General resources
 // =================

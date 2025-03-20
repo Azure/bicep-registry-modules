@@ -7,6 +7,9 @@ metadata description = 'This instance deploys the module with the minimum set of
 // Parameters //
 // ========== //
 
+@description('Optional. The location for all resources.')
+param enforcedLocation string = deployment().location
+
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-maintenance.maintenanceconfigurations-${serviceShort}-rg'
@@ -21,8 +24,8 @@ param namePrefix string = '#_namePrefix_#'
 // Dependencies //
 // ============ //
 
-#disable-next-line no-hardcoded-location
-var enforcedLocation = 'uksouth'
+// #disable-next-line no-hardcoded-location
+// var enforcedLocation = 'uksouth'
 
 // General resources
 // =================
