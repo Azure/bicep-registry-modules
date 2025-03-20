@@ -54,7 +54,7 @@ function Publish-ModuleFromPathToPBR {
 
     # If no module qualifies for publishing, return
     if (-not $modulesToPublishList) {
-        Write-Verbose "No changes detected for any module in $topModuleFolderPath. Skipping publishing" -Verbose
+        Write-Verbose "No changes detected for any module in $topModuleFolderPath. Skipping publishing." -Verbose
     }
 
     # 2. Iterate on the modules qualifying for publishing
