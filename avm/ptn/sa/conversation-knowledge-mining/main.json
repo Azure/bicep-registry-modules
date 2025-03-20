@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "8284053482338626065"
+      "templateHash": "10777382748454677913"
     },
     "name": "Conversation Knowledge Mining Solution Accelerator",
     "description": "This module deploys the [Conversation Knowledge Mining Solution Accelerator](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator).\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator product. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -564,12 +564,14 @@
         },
         "softDeleteEnabled": {
           "type": "bool",
+          "nullable": true,
           "metadata": {
             "description": "Optional. If set to true, The Key Vault soft delete will be enabled."
           }
         },
         "softDeleteRetentionInDays": {
           "type": "int",
+          "nullable": true,
           "minValue": 7,
           "maxValue": 90,
           "metadata": {
@@ -578,6 +580,7 @@
         },
         "purgeProtectionEnabled": {
           "type": "bool",
+          "nullable": true,
           "metadata": {
             "description": "Optional. If set to true, The Key Vault purge protection will be enabled. If empty, it will be set to false."
           }
@@ -587,6 +590,7 @@
           "items": {
             "$ref": "#/definitions/roleAssignmentType"
           },
+          "nullable": true,
           "metadata": {
             "description": "Optional. Array of role assignments to include in the Key Vault."
           }

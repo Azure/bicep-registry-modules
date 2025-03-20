@@ -1245,18 +1245,18 @@ type ckmKeyVaultType = {
   createMode: ('default' | 'recover')?
 
   @description('Optional. If set to true, The Key Vault soft delete will be enabled.')
-  softDeleteEnabled: bool
+  softDeleteEnabled: bool?
 
   @description('Optional. The number of days to retain the soft deleted vault. If empty, it will be set to 7.')
   @minValue(7)
   @maxValue(90)
-  softDeleteRetentionInDays: int
+  softDeleteRetentionInDays: int?
 
   @description('Optional. If set to true, The Key Vault purge protection will be enabled. If empty, it will be set to false.')
-  purgeProtectionEnabled: bool
+  purgeProtectionEnabled: bool?
 
   @description('Optional. Array of role assignments to include in the Key Vault.')
-  roleAssignments: roleAssignmentType[]
+  roleAssignments: roleAssignmentType[]?
 }
 
 @export()

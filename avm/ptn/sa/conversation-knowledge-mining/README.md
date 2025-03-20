@@ -1111,14 +1111,14 @@ The name of the Key Vault resource.
 
 If set to true, The Key Vault purge protection will be enabled. If empty, it will be set to false.
 
-- Required: Yes
+- Required: No
 - Type: bool
 
 ### Parameter: `keyVaultConfiguration.roleAssignments`
 
 Array of role assignments to include in the Key Vault.
 
-- Required: Yes
+- Required: No
 - Type: array
 
 **Required parameters**
@@ -1229,14 +1229,14 @@ The SKU for the Key Vault resource.
 
 If set to true, The Key Vault soft delete will be enabled.
 
-- Required: Yes
+- Required: No
 - Type: bool
 
 ### Parameter: `keyVaultConfiguration.softDeleteRetentionInDays`
 
 The number of days to retain the soft deleted vault. If empty, it will be set to 7.
 
-- Required: Yes
+- Required: No
 - Type: int
 - MinValue: 7
 - MaxValue: 90
