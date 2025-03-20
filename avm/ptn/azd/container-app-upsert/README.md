@@ -369,7 +369,6 @@ The amount of memory allocated to a single container instance, e.g., 1Gi.
 - Required: No
 - Type: string
 - Default: `'1.0Gi'`
-- MinValue: 1
 
 ### Parameter: `containerMinReplicas`
 
@@ -387,7 +386,6 @@ The name of the container.
 - Required: No
 - Type: string
 - Default: `'main'`
-- MinValue: 1
 
 ### Parameter: `containerRegistryHostSuffix`
 
@@ -396,7 +394,6 @@ Hostname suffix for container registry. Set when deploying to sovereign clouds.
 - Required: No
 - Type: string
 - Default: `'azurecr.io'`
-- MinValue: 1
 
 ### Parameter: `containerRegistryName`
 
@@ -405,7 +402,6 @@ The name of the container registry.
 - Required: No
 - Type: string
 - Default: `''`
-- MinValue: 1
 
 ### Parameter: `daprAppId`
 
@@ -414,7 +410,6 @@ The Dapr app ID.
 - Required: No
 - Type: string
 - Default: `[parameters('containerName')]`
-- MinValue: 1
 
 ### Parameter: `daprAppProtocol`
 
@@ -430,7 +425,6 @@ The protocol used by Dapr to connect to the app, e.g., HTTP or gRPC.
     'http'
   ]
   ```
-- MinValue: 1
 
 ### Parameter: `daprEnabled`
 
@@ -439,7 +433,6 @@ Enable or disable Dapr for the container app.
 - Required: No
 - Type: bool
 - Default: `False`
-- MinValue: 1
 
 ### Parameter: `enableTelemetry`
 
@@ -448,7 +441,6 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
-- MinValue: 1
 
 ### Parameter: `env`
 
@@ -456,7 +448,6 @@ The environment variables for the container.
 
 - Required: No
 - Type: array
-- MinValue: 1
 
 **Required parameters**
 
@@ -477,7 +468,6 @@ Environment variable name.
 
 - Required: Yes
 - Type: string
-- MinValue: 1
 
 ### Parameter: `env.secretRef`
 
@@ -485,7 +475,6 @@ Name of the Container App secret from which to pull the environment variable val
 
 - Required: No
 - Type: string
-- MinValue: 1
 
 ### Parameter: `env.value`
 
@@ -493,7 +482,6 @@ Non-secret environment variable value.
 
 - Required: No
 - Type: string
-- MinValue: 1
 
 ### Parameter: `exists`
 
@@ -502,7 +490,6 @@ Specifies if the resource already exists.
 - Required: No
 - Type: bool
 - Default: `False`
-- MinValue: 1
 
 ### Parameter: `external`
 
@@ -511,7 +498,6 @@ Specifies if the resource ingress is exposed externally.
 - Required: No
 - Type: bool
 - Default: `True`
-- MinValue: 1
 
 ### Parameter: `identityName`
 
@@ -520,7 +506,6 @@ The name of the user-assigned identity.
 - Required: No
 - Type: string
 - Default: `''`
-- MinValue: 1
 
 ### Parameter: `identityPrincipalId`
 
@@ -529,7 +514,6 @@ The principal ID of the principal to assign the role to.
 - Required: No
 - Type: string
 - Default: `''`
-- MinValue: 1
 
 ### Parameter: `identityType`
 
@@ -546,7 +530,6 @@ The type of identity for the resource.
     'UserAssigned'
   ]
   ```
-- MinValue: 1
 
 ### Parameter: `imageName`
 
@@ -555,7 +538,6 @@ The name of the container image.
 - Required: No
 - Type: string
 - Default: `''`
-- MinValue: 1
 
 ### Parameter: `ingressEnabled`
 
@@ -564,7 +546,6 @@ Specifies if Ingress is enabled for the container app.
 - Required: No
 - Type: bool
 - Default: `True`
-- MinValue: 1
 
 ### Parameter: `location`
 
@@ -573,7 +554,6 @@ Location for all Resources.
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
-- MinValue: 1
 
 ### Parameter: `secrets`
 
@@ -582,7 +562,6 @@ The secrets required for the container.
 - Required: No
 - Type: secureObject
 - Default: `{}`
-- MinValue: 1
 
 ### Parameter: `serviceBinds`
 
@@ -591,7 +570,6 @@ The service binds associated with the container.
 - Required: No
 - Type: array
 - Default: `[]`
-- MinValue: 1
 
 ### Parameter: `tags`
 
@@ -599,7 +577,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-- MinValue: 1
 
 ### Parameter: `targetPort`
 
@@ -608,7 +585,6 @@ The target port for the container.
 - Required: No
 - Type: int
 - Default: `80`
-- MinValue: 1
 
 ### Parameter: `userAssignedIdentityResourceId`
 
@@ -617,7 +593,6 @@ The resource id of the user-assigned identity.
 - Required: No
 - Type: string
 - Default: `''`
-- MinValue: 1
 
 ## Outputs
 

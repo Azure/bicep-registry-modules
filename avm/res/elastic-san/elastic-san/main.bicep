@@ -50,23 +50,17 @@ param tags object?
 @sys.description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @sys.description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { diagnosticSettingMetricsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
+import { diagnosticSettingMetricsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingMetricsOnlyType[]?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
-
-// ============== //
-// Variables      //
-// ============== //
-
-var enableReferencedModulesTelemetry = false
 
 // Default to Premium_ZRS unless the user specifically chooses Premium_LRS and specifies an availability zone number.
 var calculatedSku = sku == 'Premium_LRS' ? (availabilityZone != null ? 'Premium_LRS' : 'Premium_ZRS') : 'Premium_ZRS'
@@ -271,7 +265,7 @@ output volumeGroups volumeGroupOutputType[] = [
     name: elasticSan_volumeGroups[i].outputs.name
     location: elasticSan_volumeGroups[i].outputs.location
     resourceGroupName: elasticSan_volumeGroups[i].outputs.resourceGroupName
-    systemAssignedMIPrincipalId: elasticSan_volumeGroups[i].outputs.systemAssignedMIPrincipalId
+    systemAssignedMIPrincipalId: elasticSan_volumeGroups[i].outputs.?systemAssignedMIPrincipalId
     volumes: elasticSan_volumeGroups[i].outputs.volumes
     privateEndpoints: elasticSan_volumeGroups[i].outputs.privateEndpoints
   }
@@ -281,7 +275,7 @@ output volumeGroups volumeGroupOutputType[] = [
 // Definitions      //
 // ================ //
 
-import { managedIdentityAllType, customerManagedKeyType, privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
+import { managedIdentityAllType, customerManagedKeyType, privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 import { volumeType, virtualNetworkRuleType, volumeOutputType } from './volume-group/main.bicep'
 
 @sys.export()
@@ -322,7 +316,7 @@ type volumeGroupOutputType = {
   resourceGroupName: string
 
   @sys.description('The principal ID of the system assigned identity of the deployed Elastic SAN Volume Group.')
-  systemAssignedMIPrincipalId: string
+  systemAssignedMIPrincipalId: string?
 
   @sys.description('Details on the deployed Elastic SAN Volumes.')
   volumes: volumeOutputType[]

@@ -192,9 +192,5 @@ module testDeployment '../../../main.bicep' = [
         name: 'myCustomLockName'
       }
     }
-    dependsOn: [
-      nestedDependencies
-      diagnosticDependencies
-    ]
   }
 ]

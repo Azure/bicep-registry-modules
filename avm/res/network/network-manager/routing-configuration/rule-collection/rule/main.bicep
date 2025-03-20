@@ -61,6 +61,7 @@ output resourceGroupName string = resourceGroup().name
 // =============== //
 
 @export()
+@sys.description('The type for the destination.')
 type destinationType = {
   @sys.description('Required. The destination type can be IP addresses or Service Tag for this route. Address Prefixes are defined using the CIDR format, while Service tags are predefined identifiers that represent a category of IP addresses, which are managed by Azure.')
   type: 'AddressPrefix' | 'ServiceTag'
@@ -70,6 +71,7 @@ type destinationType = {
 }
 
 @export()
+@sys.description('The type of the next hop.')
 type nextHopType = {
   @sys.description('Required. The next hop handles the matching packets for this route. It can be the virtual network, the virtual network gateway, the internet, a virtual appliance, or none. Virtual network gateways cannot be used if the address prefix is IPv6. If the next hop type is VirtualAppliance, the next hop address must be specified.')
   nextHopType: 'Internet' | 'NoNextHop' | 'VirtualAppliance' | 'VirtualNetworkGateway' | 'VnetLocal'

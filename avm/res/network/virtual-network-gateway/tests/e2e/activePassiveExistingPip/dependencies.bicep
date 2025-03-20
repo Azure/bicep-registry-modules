@@ -45,7 +45,6 @@ resource localNetworkGateway 'Microsoft.Network/localNetworkGateways@2023-04-01'
   }
 }
 
-
 resource existingFirstPip 'Microsoft.Network/publicIPAddresses@2023-04-01' = {
   name: existingFirstPipName
   location: location
@@ -70,5 +69,4 @@ output vnetResourceId string = virtualNetwork.id
 output localNetworkGatewayResourceId string = localNetworkGateway.id
 
 @description('The resource ID of the existing Public IP.')
-output existingFirstPipResourceId string = existingFirstPip.id
-
+output existingPrimaryPublicIPResourceId string = existingFirstPip.id
