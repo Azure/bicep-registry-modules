@@ -12,7 +12,7 @@ metadata description = 'This instance deploys the module leveraging virtual mach
 param resourceGroupName string = 'dep-${namePrefix}-maintenance.maintenanceconfigurations-${serviceShort}-rg'
 
 @description('Optional. The location for all resources.')
-param enforcedLocation string = deployment().location
+param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'mcamrg'
@@ -24,39 +24,36 @@ param namePrefix string = '#_namePrefix_#'
 // Dependencies //
 // ============ //
 
-// #disable-next-line no-hardcoded-location
-// var enforcedLocation = 'uaenorth'
-
 // General resources
 // =================
 resource resourceGroup_vm 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
-  location: enforcedLocation
+  location: resourceLocation
 }
 
 resource resourceGroup_mc 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: '${take(resourceGroupName, 87)}-mc' // Ensure the resource group name is within the 90 character limit
-  location: enforcedLocation
+  location: resourceLocation
 }
 
 module nestedDependencies_vm 'dependencies_vm.bicep' = {
   scope: resourceGroup_vm
-  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies_vm'
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies_vm'
   params: {
     virtualMachineName: 'dep-${namePrefix}-vm-${serviceShort}'
     computerName: 'dep${namePrefix}${serviceShort}'
     adminUsername: 'localAdminUser'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
-    location: enforcedLocation
+    location: resourceLocation
   }
 }
 
 module nestedDependencies_mc 'dependencies_mc.bicep' = {
   scope: resourceGroup_mc
-  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies_mc'
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies_mc'
   params: {
     maintenanceConfigurationName: 'dep-${namePrefix}-mc-${serviceShort}'
-    location: enforcedLocation
+    location: resourceLocation
   }
 }
 
@@ -67,7 +64,7 @@ module nestedDependencies_mc 'dependencies_mc.bicep' = {
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     scope: resourceGroup_vm
-    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
       maintenanceConfigurationResourceId: nestedDependencies_mc.outputs.maintenanceConfigurationResourceId
