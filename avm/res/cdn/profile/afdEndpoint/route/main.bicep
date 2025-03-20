@@ -127,6 +127,7 @@ output resourceGroupName string = resourceGroup().name
 // =============== //
 
 @export()
+@description('The type of the route.')
 type routeType = {
   @description('Required. The name of the route.')
   name: string
@@ -165,6 +166,8 @@ type routeType = {
   supportedProtocols: array?
 }
 
+@export()
+@description('The type of the route cache configuration.')
 type afdRoutecacheConfigurationType = {
   @description('Required. Compression settings.')
   compressionSettings: {
