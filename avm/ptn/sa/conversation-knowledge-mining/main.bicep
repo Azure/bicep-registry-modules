@@ -29,28 +29,28 @@ param tags object = {
 
 // PARAMETERS: Resources configuration
 @description('Optional. The configuration to apply for the Conversation Knowledge Mining AI Foundry AI Hub resource.')
-param aiFoundryAiHubConfiguration aiFoundryAiHubType = {
+param aiFoundryAiHubConfiguration ckmAiFoundryAiHubType = {
   name: '${solutionPrefix}-aifd-aihb'
   location: solutionLocation
   sku: 'Basic'
 }
 
 @description('Optional. The configuration to apply for the Conversation Knowledge Mining AI Foundry AI Project resource.')
-param aiFoundryAiProjectConfiguration aiFoundryAiProjectType = {
+param aiFoundryAiProjectConfiguration ckmAiFoundryAiProjectType = {
   name: '${solutionPrefix}-aifd-aipj'
   location: solutionLocation
   sku: 'Standard'
 }
 
 @description('Optional. The configuration to apply for the Conversation Knowledge Mining AI Foundry AI Services Content Understanding resource.')
-param aiFoundryAiServicesContentUnderstandingConfiguration aiFoundryAiServicesContentUnderstandingType = {
+param aiFoundryAiServicesContentUnderstandingConfiguration ckmAiFoundryAiServicesContentUnderstandingType = {
   name: '${solutionPrefix}-aifd-aisr-cu'
   location: 'West US'
   sku: 'S0'
 }
 
 @description('Optional. The configuration to apply for the Conversation Knowledge Mining AI Foundry AI Services resource.')
-param aiFoundryAiServicesConfiguration aiFoundryAiServicesType = {
+param aiFoundryAiServicesConfiguration ckmAiFoundryAiServicesType = {
   name: '${solutionPrefix}-aifd-aisr'
   location: 'East US'
   sku: 'S0'
@@ -63,41 +63,41 @@ param aiFoundryAiServicesConfiguration aiFoundryAiServicesType = {
 }
 
 @description('Optional. The configuration to apply for the Conversation Knowledge Mining AI Foundry Application Insights resource.')
-param aiFoundryApplicationInsightsConfiguration aiFoundryApplicationInsightsType = {
+param aiFoundryApplicationInsightsConfiguration ckmAiFoundryApplicationInsightsType = {
   name: '${solutionPrefix}-aifd-appi'
   location: solutionLocation
   retentionInDays: 30
 }
 
 @description('Optional. The configuration to apply for the Conversation Knowledge Mining AI Foundry Container Registry resource.')
-param aiFoundryContainerRegistryConfiguration aiFoundryContainerRegistryType = {
+param aiFoundryContainerRegistryConfiguration ckmAiFoundryContainerRegistryType = {
   name: replace('${solutionPrefix}-aifd-creg', '-', '') //NOTE: ACR name should not contain hyphens
   location: solutionLocation
   sku: 'Premium'
 }
 
 @description('Optional. The configuration to apply for the Conversation Knowledge Mining AI Foundry Search Services resource.')
-param aiFoundrySearchServiceConfiguration aiFoundrySearchServiceType = {
+param aiFoundrySearchServiceConfiguration ckmAiFoundrySearchServiceType = {
   name: '${solutionPrefix}-aifd-srch'
   location: solutionLocation
   sku: 'basic'
 }
 
 @description('Optional. The configuration to apply for the Conversation Knowledge Mining AI Foundry Storage Account resource.')
-param aiFoundryStorageAccountConfiguration storageAccountType = {
+param aiFoundryStorageAccountConfiguration ckmStorageAccountType = {
   name: replace('${solutionPrefix}-aifd-strg', '-', '')
   location: solutionLocation
   sku: 'Standard_LRS'
 }
 
 @description('Optional. The configuration to apply for the Conversation Knowledge Mining Cosmos DB Account resource.')
-param cosmosDbAccountConfiguration cosmosDbAccountType = {
+param cosmosDbAccountConfiguration ckmCosmosDbAccountType = {
   name: '${solutionPrefix}-cmdb'
   location: databasesLocation
 }
 
 @description('Optional. The configuration to apply for the Conversation Knowledge Mining Charts Function resource.')
-param functionChartsConfiguration functionsType = {
+param functionChartsConfiguration ckmFunctionsType = {
   name: '${solutionPrefix}-azfn-fchr'
   location: solutionLocation
   dockerImageContainerRegistryUrl: 'kmcontainerreg.azurecr.io'
@@ -110,7 +110,7 @@ param functionChartsConfiguration functionsType = {
 }
 
 @description('Optional. The configuration to apply for the Conversation Knowledge Mining Rag Function resource.')
-param functionRagConfiguration functionsType = {
+param functionRagConfiguration ckmFunctionsType = {
   name: '${solutionPrefix}-azfn-frag'
   location: solutionLocation
   dockerImageContainerRegistryUrl: 'kmcontainerreg.azurecr.io'
@@ -123,7 +123,7 @@ param functionRagConfiguration functionsType = {
 }
 
 @description('Optional. The configuration to apply for the Conversation Knowledge Mining Functions Managed Environment resource.')
-param functionsManagedEnvironmentConfiguration functionsManagedEnvironmentType = {
+param functionsManagedEnvironmentConfiguration ckmFunctionsManagedEnvironmentType = {
   name: '${solutionPrefix}-fnme'
   location: solutionLocation
 }
@@ -141,7 +141,7 @@ param keyVaultConfiguration ckmKeyVaultType = {
 }
 
 @description('Optional. The configuration to apply for the Conversation Knowledge Mining Log Analytics Workspace resource.')
-param logAnalyticsWorkspaceConfiguration logAnalyticsWorkspaceType = {
+param logAnalyticsWorkspaceConfiguration ckmLogAnalyticsWorkspaceType = {
   name: '${solutionPrefix}-laws'
   location: solutionLocation
   sku: 'PerGB2018'
@@ -149,13 +149,13 @@ param logAnalyticsWorkspaceConfiguration logAnalyticsWorkspaceType = {
 }
 
 @description('Optional. The configuration to apply for the Conversation Knowledge Mining Managed Identity resource.')
-param managedIdentityConfiguration managedIdentityType = {
+param managedIdentityConfiguration ckmManagedIdentityType = {
   name: '${solutionPrefix}-mgid'
   location: solutionLocation
 }
 
 @description('Optional. The configuration to apply for the Conversation Knowledge Mining Copy Data Script resource.')
-param scriptCopyDataConfiguration scriptType = {
+param scriptCopyDataConfiguration ckmScriptType = {
   name: '${solutionPrefix}-scrp-cpdt'
   location: solutionLocation
   githubBaseUrl: 'https://raw.githubusercontent.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator/7e1f274415e96070fc1f0306651303ce8ea75268/'
@@ -163,7 +163,7 @@ param scriptCopyDataConfiguration scriptType = {
 }
 
 @description('Optional. The configuration to apply for the Conversation Knowledge Mining Copy Data Script resource.')
-param scriptIndexDataConfiguration scriptType = {
+param scriptIndexDataConfiguration ckmScriptType = {
   name: '${solutionPrefix}-scrp-indt'
   location: solutionLocation
   githubBaseUrl: 'https://raw.githubusercontent.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator/7e1f274415e96070fc1f0306651303ce8ea75268/'
@@ -171,7 +171,7 @@ param scriptIndexDataConfiguration scriptType = {
 }
 
 @description('Optional. The configuration to apply for the Conversation Knowledge Mining SQL Server resource.')
-param sqlServerConfiguration sqlServerType = {
+param sqlServerConfiguration ckmSqlServerType = {
   name: '${solutionPrefix}-sqls'
   location: databasesLocation
   sqlServerAdministratorLogin: 'sqladmin'
@@ -184,14 +184,14 @@ param sqlServerConfiguration sqlServerType = {
 }
 
 @description('Optional. The configuration to apply for the Conversation Knowledge Mining Storage Account resource.')
-param storageAccountConfiguration storageAccountType = {
+param storageAccountConfiguration ckmStorageAccountType = {
   name: replace('${solutionPrefix}-strg', '-', '')
   location: solutionLocation
   sku: 'Standard_LRS'
 }
 
 @description('Optional. The configuration to apply for the Conversation Knowledge Mining Web App Server Farm resource.')
-param webAppServerFarmConfiguration webAppServerFarmType = {
+param webAppServerFarmConfiguration ckmWebAppServerFarmType = {
   name: '${solutionPrefix}-wsrv'
   location: solutionLocation
   sku: 'B2'
@@ -1014,7 +1014,7 @@ output webAppUrl string = '${webAppResourceName}.azurewebsites.net'
 
 @export()
 @description('The type for the Conversation Knowledge Mining AI Foundry AI Hub resource configuration.')
-type aiFoundryAiHubType = {
+type ckmAiFoundryAiHubType = {
   @description('Optional. The name of the AI Foundry AI Hub resource.')
   @maxLength(90)
   name: string?
@@ -1029,7 +1029,7 @@ type aiFoundryAiHubType = {
 
 @export()
 @description('The type for the Conversation Knowledge Mining AI Foundry AI Project resource configuration.')
-type aiFoundryAiProjectType = {
+type ckmAiFoundryAiProjectType = {
   @description('Optional. The name of the AI Foundry AI Project resource.')
   @maxLength(90)
   name: string?
@@ -1044,7 +1044,7 @@ type aiFoundryAiProjectType = {
 
 @export()
 @description('The type for the Conversation Knowledge Mining AI Foundry AI Services Content Understanding resource configuration.')
-type aiFoundryAiServicesContentUnderstandingType = {
+type ckmAiFoundryAiServicesContentUnderstandingType = {
   @description('Optional. The name of the AI Foundry AI Services Content Understanding resource.')
   @maxLength(90)
   name: string?
@@ -1074,7 +1074,7 @@ type aiFoundryAiServicesContentUnderstandingType = {
 
 @export()
 @description('The type for the Conversation Knowledge Mining AI Foundry AI Services resource configuration.')
-type aiFoundryAiServicesType = {
+type ckmAiFoundryAiServicesType = {
   @description('Optional. The name of the AI Foundry AI Services resource.')
   @maxLength(90)
   name: string?
@@ -1126,7 +1126,7 @@ type aiFoundryAiServicesType = {
 
 @export()
 @description('The type for the Conversation Knowledge Mining AI Foundry Application Insights resource configuration.')
-type aiFoundryApplicationInsightsType = {
+type ckmAiFoundryApplicationInsightsType = {
   @description('Optional. The name of the AI Foundry Application Insights resource.')
   @maxLength(90)
   name: string?
@@ -1141,7 +1141,7 @@ type aiFoundryApplicationInsightsType = {
 
 @export()
 @description('The type for the Conversation Knowledge Mining AI Foundry Container Registry resource configuration.')
-type aiFoundryContainerRegistryType = {
+type ckmAiFoundryContainerRegistryType = {
   @description('Optional. The name of the AI Foundry Container Registry resource.')
   @maxLength(50)
   name: string?
@@ -1156,7 +1156,7 @@ type aiFoundryContainerRegistryType = {
 
 @export()
 @description('The type for the Conversation Knowledge Mining AI Foundry Search Services resource configuration.')
-type aiFoundrySearchServiceType = {
+type ckmAiFoundrySearchServiceType = {
   @description('Optional. The name of the AI Foundry Search Services resource.')
   @maxLength(60)
   name: string?
@@ -1171,7 +1171,7 @@ type aiFoundrySearchServiceType = {
 
 @export()
 @description('The type for the Conversation Knowledge Mining Cosmos DB Account resource configuration.')
-type cosmosDbAccountType = {
+type ckmCosmosDbAccountType = {
   @description('Optional. The name of the Cosmos DB Account resource.')
   @maxLength(60)
   name: string?
@@ -1183,7 +1183,7 @@ type cosmosDbAccountType = {
 
 @export()
 @description('The type for the Conversation Knowledge Mining Function resource configuration.')
-type functionsType = {
+type ckmFunctionsType = {
   @description('Optional. The name of the Function resource.')
   @maxLength(60)
   name: string?
@@ -1216,7 +1216,7 @@ type functionsType = {
 
 @export()
 @description('The type for the Conversation Knowledge Mining Functions Managed Environment resource configuration.')
-type functionsManagedEnvironmentType = {
+type ckmFunctionsManagedEnvironmentType = {
   @description('Optional. The name of the Functions Managed Environment resource.')
   @maxLength(60)
   name: string?
@@ -1261,7 +1261,7 @@ type ckmKeyVaultType = {
 
 @export()
 @description('The type for the Conversation Knowledge Mining Log Analytics Workspace resource configuration.')
-type logAnalyticsWorkspaceType = {
+type ckmLogAnalyticsWorkspaceType = {
   @description('Optional. The name of the Log Analytics Workspace resource.')
   @maxLength(63)
   name: string?
@@ -1281,7 +1281,7 @@ type logAnalyticsWorkspaceType = {
 
 @export()
 @description('The type for the Conversation Knowledge Mining Managed Identity resource configuration.')
-type managedIdentityType = {
+type ckmManagedIdentityType = {
   @description('Optional. The name of the Managed Identity resource.')
   @maxLength(128)
   name: string?
@@ -1293,7 +1293,7 @@ type managedIdentityType = {
 
 @export()
 @description('The type for the Conversation Knowledge Mining Script resource configuration.')
-type scriptType = {
+type ckmScriptType = {
   @description('Optional. The name of the Script resource.')
   @maxLength(90)
   name: string?
@@ -1311,7 +1311,7 @@ type scriptType = {
 
 @export()
 @description('The type for the Conversation Knowledge Mining SQL Server resource configuration.')
-type sqlServerType = {
+type ckmSqlServerType = {
   @description('Optional. The name of the SQL Server resource.')
   @maxLength(63)
   name: string?
@@ -1349,7 +1349,7 @@ type sqlServerType = {
 
 @export()
 @description('The type for the Conversation Knowledge Mining Storage Account resource configuration.')
-type storageAccountType = {
+type ckmStorageAccountType = {
   @description('Optional. The name of the Storage Account resource.')
   @maxLength(60)
   name: string?
@@ -1364,7 +1364,7 @@ type storageAccountType = {
 
 @export()
 @description('The type for the Conversation Knowledge Mining Web App Server Farm resource configuration.')
-type webAppServerFarmType = {
+type ckmWebAppServerFarmType = {
   @description('Optional. The name of the Web App Server Farm resource.')
   @maxLength(60)
   name: string?

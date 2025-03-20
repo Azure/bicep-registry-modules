@@ -6,13 +6,13 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "10777382748454677913"
+      "templateHash": "12782818729051513077"
     },
     "name": "Conversation Knowledge Mining Solution Accelerator",
     "description": "This module deploys the [Conversation Knowledge Mining Solution Accelerator](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator).\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator product. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
   },
   "definitions": {
-    "aiFoundryAiHubType": {
+    "ckmAiFoundryAiHubType": {
       "type": "object",
       "properties": {
         "name": {
@@ -52,7 +52,7 @@
         "description": "The type for the Conversation Knowledge Mining AI Foundry AI Hub resource configuration."
       }
     },
-    "aiFoundryAiProjectType": {
+    "ckmAiFoundryAiProjectType": {
       "type": "object",
       "properties": {
         "name": {
@@ -92,7 +92,7 @@
         "description": "The type for the Conversation Knowledge Mining AI Foundry AI Project resource configuration."
       }
     },
-    "aiFoundryAiServicesContentUnderstandingType": {
+    "ckmAiFoundryAiServicesContentUnderstandingType": {
       "type": "object",
       "properties": {
         "name": {
@@ -150,7 +150,7 @@
         "description": "The type for the Conversation Knowledge Mining AI Foundry AI Services Content Understanding resource configuration."
       }
     },
-    "aiFoundryAiServicesType": {
+    "ckmAiFoundryAiServicesType": {
       "type": "object",
       "properties": {
         "name": {
@@ -262,7 +262,7 @@
         "description": "The type for the Conversation Knowledge Mining AI Foundry AI Services resource configuration."
       }
     },
-    "aiFoundryApplicationInsightsType": {
+    "ckmAiFoundryApplicationInsightsType": {
       "type": "object",
       "properties": {
         "name": {
@@ -307,7 +307,7 @@
         "description": "The type for the Conversation Knowledge Mining AI Foundry Application Insights resource configuration."
       }
     },
-    "aiFoundryContainerRegistryType": {
+    "ckmAiFoundryContainerRegistryType": {
       "type": "object",
       "properties": {
         "name": {
@@ -346,7 +346,7 @@
         "description": "The type for the Conversation Knowledge Mining AI Foundry Container Registry resource configuration."
       }
     },
-    "aiFoundrySearchServiceType": {
+    "ckmAiFoundrySearchServiceType": {
       "type": "object",
       "properties": {
         "name": {
@@ -389,7 +389,7 @@
         "description": "The type for the Conversation Knowledge Mining AI Foundry Search Services resource configuration."
       }
     },
-    "cosmosDbAccountType": {
+    "ckmCosmosDbAccountType": {
       "type": "object",
       "properties": {
         "name": {
@@ -416,7 +416,7 @@
         "description": "The type for the Conversation Knowledge Mining Cosmos DB Account resource configuration."
       }
     },
-    "functionsType": {
+    "ckmFunctionsType": {
       "type": "object",
       "properties": {
         "name": {
@@ -492,7 +492,7 @@
         "description": "The type for the Conversation Knowledge Mining Function resource configuration."
       }
     },
-    "functionsManagedEnvironmentType": {
+    "ckmFunctionsManagedEnvironmentType": {
       "type": "object",
       "properties": {
         "name": {
@@ -600,7 +600,7 @@
         "description": "The type for the Conversation Knowledge Mining Key Vault resource configuration."
       }
     },
-    "logAnalyticsWorkspaceType": {
+    "ckmLogAnalyticsWorkspaceType": {
       "type": "object",
       "properties": {
         "name": {
@@ -653,7 +653,7 @@
         "description": "The type for the Conversation Knowledge Mining Log Analytics Workspace resource configuration."
       }
     },
-    "managedIdentityType": {
+    "ckmManagedIdentityType": {
       "type": "object",
       "properties": {
         "name": {
@@ -680,7 +680,7 @@
         "description": "The type for the Conversation Knowledge Mining Managed Identity resource configuration."
       }
     },
-    "scriptType": {
+    "ckmScriptType": {
       "type": "object",
       "properties": {
         "name": {
@@ -721,7 +721,7 @@
         "description": "The type for the Conversation Knowledge Mining Script resource configuration."
       }
     },
-    "sqlServerType": {
+    "ckmSqlServerType": {
       "type": "object",
       "properties": {
         "name": {
@@ -798,7 +798,7 @@
         "description": "The type for the Conversation Knowledge Mining SQL Server resource configuration."
       }
     },
-    "storageAccountType": {
+    "ckmStorageAccountType": {
       "type": "object",
       "properties": {
         "name": {
@@ -840,7 +840,7 @@
         "description": "The type for the Conversation Knowledge Mining Storage Account resource configuration."
       }
     },
-    "webAppServerFarmType": {
+    "ckmWebAppServerFarmType": {
       "type": "object",
       "properties": {
         "name": {
@@ -1028,7 +1028,7 @@
       }
     },
     "aiFoundryAiHubConfiguration": {
-      "$ref": "#/definitions/aiFoundryAiHubType",
+      "$ref": "#/definitions/ckmAiFoundryAiHubType",
       "defaultValue": {
         "name": "[format('{0}-aifd-aihb', parameters('solutionPrefix'))]",
         "location": "[parameters('solutionLocation')]",
@@ -1039,7 +1039,7 @@
       }
     },
     "aiFoundryAiProjectConfiguration": {
-      "$ref": "#/definitions/aiFoundryAiProjectType",
+      "$ref": "#/definitions/ckmAiFoundryAiProjectType",
       "defaultValue": {
         "name": "[format('{0}-aifd-aipj', parameters('solutionPrefix'))]",
         "location": "[parameters('solutionLocation')]",
@@ -1050,7 +1050,7 @@
       }
     },
     "aiFoundryAiServicesContentUnderstandingConfiguration": {
-      "$ref": "#/definitions/aiFoundryAiServicesContentUnderstandingType",
+      "$ref": "#/definitions/ckmAiFoundryAiServicesContentUnderstandingType",
       "defaultValue": {
         "name": "[format('{0}-aifd-aisr-cu', parameters('solutionPrefix'))]",
         "location": "West US",
@@ -1061,7 +1061,7 @@
       }
     },
     "aiFoundryAiServicesConfiguration": {
-      "$ref": "#/definitions/aiFoundryAiServicesType",
+      "$ref": "#/definitions/ckmAiFoundryAiServicesType",
       "defaultValue": {
         "name": "[format('{0}-aifd-aisr', parameters('solutionPrefix'))]",
         "location": "East US",
@@ -1078,7 +1078,7 @@
       }
     },
     "aiFoundryApplicationInsightsConfiguration": {
-      "$ref": "#/definitions/aiFoundryApplicationInsightsType",
+      "$ref": "#/definitions/ckmAiFoundryApplicationInsightsType",
       "defaultValue": {
         "name": "[format('{0}-aifd-appi', parameters('solutionPrefix'))]",
         "location": "[parameters('solutionLocation')]",
@@ -1089,7 +1089,7 @@
       }
     },
     "aiFoundryContainerRegistryConfiguration": {
-      "$ref": "#/definitions/aiFoundryContainerRegistryType",
+      "$ref": "#/definitions/ckmAiFoundryContainerRegistryType",
       "defaultValue": {
         "name": "[replace(format('{0}-aifd-creg', parameters('solutionPrefix')), '-', '')]",
         "location": "[parameters('solutionLocation')]",
@@ -1100,7 +1100,7 @@
       }
     },
     "aiFoundrySearchServiceConfiguration": {
-      "$ref": "#/definitions/aiFoundrySearchServiceType",
+      "$ref": "#/definitions/ckmAiFoundrySearchServiceType",
       "defaultValue": {
         "name": "[format('{0}-aifd-srch', parameters('solutionPrefix'))]",
         "location": "[parameters('solutionLocation')]",
@@ -1111,7 +1111,7 @@
       }
     },
     "aiFoundryStorageAccountConfiguration": {
-      "$ref": "#/definitions/storageAccountType",
+      "$ref": "#/definitions/ckmStorageAccountType",
       "defaultValue": {
         "name": "[replace(format('{0}-aifd-strg', parameters('solutionPrefix')), '-', '')]",
         "location": "[parameters('solutionLocation')]",
@@ -1122,7 +1122,7 @@
       }
     },
     "cosmosDbAccountConfiguration": {
-      "$ref": "#/definitions/cosmosDbAccountType",
+      "$ref": "#/definitions/ckmCosmosDbAccountType",
       "defaultValue": {
         "name": "[format('{0}-cmdb', parameters('solutionPrefix'))]",
         "location": "[parameters('databasesLocation')]"
@@ -1132,7 +1132,7 @@
       }
     },
     "functionChartsConfiguration": {
-      "$ref": "#/definitions/functionsType",
+      "$ref": "#/definitions/ckmFunctionsType",
       "defaultValue": {
         "name": "[format('{0}-azfn-fchr', parameters('solutionPrefix'))]",
         "location": "[parameters('solutionLocation')]",
@@ -1149,7 +1149,7 @@
       }
     },
     "functionRagConfiguration": {
-      "$ref": "#/definitions/functionsType",
+      "$ref": "#/definitions/ckmFunctionsType",
       "defaultValue": {
         "name": "[format('{0}-azfn-frag', parameters('solutionPrefix'))]",
         "location": "[parameters('solutionLocation')]",
@@ -1166,7 +1166,7 @@
       }
     },
     "functionsManagedEnvironmentConfiguration": {
-      "$ref": "#/definitions/functionsManagedEnvironmentType",
+      "$ref": "#/definitions/ckmFunctionsManagedEnvironmentType",
       "defaultValue": {
         "name": "[format('{0}-fnme', parameters('solutionPrefix'))]",
         "location": "[parameters('solutionLocation')]"
@@ -1192,7 +1192,7 @@
       }
     },
     "logAnalyticsWorkspaceConfiguration": {
-      "$ref": "#/definitions/logAnalyticsWorkspaceType",
+      "$ref": "#/definitions/ckmLogAnalyticsWorkspaceType",
       "defaultValue": {
         "name": "[format('{0}-laws', parameters('solutionPrefix'))]",
         "location": "[parameters('solutionLocation')]",
@@ -1204,7 +1204,7 @@
       }
     },
     "managedIdentityConfiguration": {
-      "$ref": "#/definitions/managedIdentityType",
+      "$ref": "#/definitions/ckmManagedIdentityType",
       "defaultValue": {
         "name": "[format('{0}-mgid', parameters('solutionPrefix'))]",
         "location": "[parameters('solutionLocation')]"
@@ -1214,7 +1214,7 @@
       }
     },
     "scriptCopyDataConfiguration": {
-      "$ref": "#/definitions/scriptType",
+      "$ref": "#/definitions/ckmScriptType",
       "defaultValue": {
         "name": "[format('{0}-scrp-cpdt', parameters('solutionPrefix'))]",
         "location": "[parameters('solutionLocation')]",
@@ -1226,7 +1226,7 @@
       }
     },
     "scriptIndexDataConfiguration": {
-      "$ref": "#/definitions/scriptType",
+      "$ref": "#/definitions/ckmScriptType",
       "defaultValue": {
         "name": "[format('{0}-scrp-indt', parameters('solutionPrefix'))]",
         "location": "[parameters('solutionLocation')]",
@@ -1238,7 +1238,7 @@
       }
     },
     "sqlServerConfiguration": {
-      "$ref": "#/definitions/sqlServerType",
+      "$ref": "#/definitions/ckmSqlServerType",
       "defaultValue": {
         "name": "[format('{0}-sqls', parameters('solutionPrefix'))]",
         "location": "[parameters('databasesLocation')]",
@@ -1255,7 +1255,7 @@
       }
     },
     "storageAccountConfiguration": {
-      "$ref": "#/definitions/storageAccountType",
+      "$ref": "#/definitions/ckmStorageAccountType",
       "defaultValue": {
         "name": "[replace(format('{0}-strg', parameters('solutionPrefix')), '-', '')]",
         "location": "[parameters('solutionLocation')]",
@@ -1266,7 +1266,7 @@
       }
     },
     "webAppServerFarmConfiguration": {
-      "$ref": "#/definitions/webAppServerFarmType",
+      "$ref": "#/definitions/ckmWebAppServerFarmType",
       "defaultValue": {
         "name": "[format('{0}-wsrv', parameters('solutionPrefix'))]",
         "location": "[parameters('solutionLocation')]",
