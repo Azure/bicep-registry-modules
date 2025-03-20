@@ -51,8 +51,6 @@ function Publish-ModuleFromPathToPBR {
 
     # 1. Get list of all modules qualifying for publishing (updated and versioned)
     $modulesToPublishList = Get-ModulesToPublish -ModuleFolderPath $topModuleFolderPath
-    $modulesToPublishCount = $modulesToPublishList.count
-    Write-Verbose "Number of modules to publish in [$topModuleFolderPath]: [$modulesToPublishCount]" -Verbose
 
     # If no module qualifies for publishing, return
     if (-not $modulesToPublishCount) {
