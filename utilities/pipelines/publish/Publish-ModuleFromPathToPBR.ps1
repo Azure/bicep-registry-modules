@@ -38,7 +38,7 @@ function Publish-ModuleFromPathToPBR {
     )
 
     # Load used functions
-    . (Join-Path $RepoRoot 'utilities' 'pipelines' 'publish' 'helper' 'Get-VersionedModuleList.ps1')
+    # . (Join-Path $RepoRoot 'utilities' 'pipelines' 'publish' 'helper' 'Get-VersionedModuleList.ps1')
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'publish' 'helper' 'Get-ModulesToPublish.ps1')
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'publish' 'helper' 'Get-ModuleTargetVersion.ps1')
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'publish' 'helper' 'New-ModuleReleaseTag.ps1')
