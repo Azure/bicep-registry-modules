@@ -75,9 +75,9 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
           overrideQosPolicy: false
           overrideVirtualSwitchConfiguration: false
           qosPolicyOverrides: {
-            bandwidthPercentage_SMB: '50'
-            priorityValue8021Action_Cluster: '7'
-            priorityValue8021Action_SMB: '3'
+            bandwidthPercentageSMB: '50'
+            priorityValue8021ActionCluster: '7'
+            priorityValue8021ActionSMB: '3'
           }
           trafficType: [
             'Management'
@@ -102,9 +102,9 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
           overrideQosPolicy: false
           overrideVirtualSwitchConfiguration: false
           qosPolicyOverrides: {
-            bandwidthPercentage_SMB: '50'
-            priorityValue8021Action_Cluster: '7'
-            priorityValue8021Action_SMB: '3'
+            bandwidthPercentageSMB: '50'
+            priorityValue8021ActionCluster: '7'
+            priorityValue8021ActionSMB: '3'
           }
           trafficType: [
             'Compute'
@@ -129,9 +129,9 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
           overrideQosPolicy: true
           overrideVirtualSwitchConfiguration: false
           qosPolicyOverrides: {
-            bandwidthPercentage_SMB: '50'
-            priorityValue8021Action_Cluster: '7'
-            priorityValue8021Action_SMB: '3'
+            bandwidthPercentageSMB: '50'
+            priorityValue8021ActionCluster: '7'
+            priorityValue8021ActionSMB: '3'
           }
           trafficType: [
             'Storage'
@@ -147,10 +147,12 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
       storageNetworks: [
         {
           adapterName: 'smb0'
+          name: 'StorageNetwork0'
           vlan: '711'
         }
         {
           adapterName: 'smb1'
+          name: 'StorageNetwork1'
           vlan: '712'
         }
       ]
@@ -213,9 +215,9 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
             "overrideQosPolicy": false,
             "overrideVirtualSwitchConfiguration": false,
             "qosPolicyOverrides": {
-              "bandwidthPercentage_SMB": "50",
-              "priorityValue8021Action_Cluster": "7",
-              "priorityValue8021Action_SMB": "3"
+              "bandwidthPercentageSMB": "50",
+              "priorityValue8021ActionCluster": "7",
+              "priorityValue8021ActionSMB": "3"
             },
             "trafficType": [
               "Management"
@@ -240,9 +242,9 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
             "overrideQosPolicy": false,
             "overrideVirtualSwitchConfiguration": false,
             "qosPolicyOverrides": {
-              "bandwidthPercentage_SMB": "50",
-              "priorityValue8021Action_Cluster": "7",
-              "priorityValue8021Action_SMB": "3"
+              "bandwidthPercentageSMB": "50",
+              "priorityValue8021ActionCluster": "7",
+              "priorityValue8021ActionSMB": "3"
             },
             "trafficType": [
               "Compute"
@@ -267,9 +269,9 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
             "overrideQosPolicy": true,
             "overrideVirtualSwitchConfiguration": false,
             "qosPolicyOverrides": {
-              "bandwidthPercentage_SMB": "50",
-              "priorityValue8021Action_Cluster": "7",
-              "priorityValue8021Action_SMB": "3"
+              "bandwidthPercentageSMB": "50",
+              "priorityValue8021ActionCluster": "7",
+              "priorityValue8021ActionSMB": "3"
             },
             "trafficType": [
               "Storage"
@@ -285,10 +287,12 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
         "storageNetworks": [
           {
             "adapterName": "smb0",
+            "name": "StorageNetwork0",
             "vlan": "711"
           },
           {
             "adapterName": "smb1",
+            "name": "StorageNetwork1",
             "vlan": "712"
           }
         ],
@@ -359,9 +363,9 @@ param deploymentSettings = {
       overrideQosPolicy: false
       overrideVirtualSwitchConfiguration: false
       qosPolicyOverrides: {
-        bandwidthPercentage_SMB: '50'
-        priorityValue8021Action_Cluster: '7'
-        priorityValue8021Action_SMB: '3'
+        bandwidthPercentageSMB: '50'
+        priorityValue8021ActionCluster: '7'
+        priorityValue8021ActionSMB: '3'
       }
       trafficType: [
         'Management'
@@ -386,9 +390,9 @@ param deploymentSettings = {
       overrideQosPolicy: false
       overrideVirtualSwitchConfiguration: false
       qosPolicyOverrides: {
-        bandwidthPercentage_SMB: '50'
-        priorityValue8021Action_Cluster: '7'
-        priorityValue8021Action_SMB: '3'
+        bandwidthPercentageSMB: '50'
+        priorityValue8021ActionCluster: '7'
+        priorityValue8021ActionSMB: '3'
       }
       trafficType: [
         'Compute'
@@ -413,9 +417,9 @@ param deploymentSettings = {
       overrideQosPolicy: true
       overrideVirtualSwitchConfiguration: false
       qosPolicyOverrides: {
-        bandwidthPercentage_SMB: '50'
-        priorityValue8021Action_Cluster: '7'
-        priorityValue8021Action_SMB: '3'
+        bandwidthPercentageSMB: '50'
+        priorityValue8021ActionCluster: '7'
+        priorityValue8021ActionSMB: '3'
       }
       trafficType: [
         'Storage'
@@ -431,10 +435,12 @@ param deploymentSettings = {
   storageNetworks: [
     {
       adapterName: 'smb0'
+      name: 'StorageNetwork0'
       vlan: '711'
     }
     {
       adapterName: 'smb1'
+      name: 'StorageNetwork1'
       vlan: '712'
     }
   ]
@@ -499,9 +505,9 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
           overrideQosPolicy: false
           overrideVirtualSwitchConfiguration: false
           qosPolicyOverrides: {
-            bandwidthPercentage_SMB: '50'
-            priorityValue8021Action_Cluster: '7'
-            priorityValue8021Action_SMB: '3'
+            bandwidthPercentageSMB: '50'
+            priorityValue8021ActionCluster: '7'
+            priorityValue8021ActionSMB: '3'
           }
           trafficType: [
             'Management'
@@ -526,9 +532,9 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
           overrideQosPolicy: false
           overrideVirtualSwitchConfiguration: false
           qosPolicyOverrides: {
-            bandwidthPercentage_SMB: '50'
-            priorityValue8021Action_Cluster: '7'
-            priorityValue8021Action_SMB: '3'
+            bandwidthPercentageSMB: '50'
+            priorityValue8021ActionCluster: '7'
+            priorityValue8021ActionSMB: '3'
           }
           trafficType: [
             'Compute'
@@ -553,9 +559,9 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
           overrideQosPolicy: true
           overrideVirtualSwitchConfiguration: false
           qosPolicyOverrides: {
-            bandwidthPercentage_SMB: '50'
-            priorityValue8021Action_Cluster: '7'
-            priorityValue8021Action_SMB: '3'
+            bandwidthPercentageSMB: '50'
+            priorityValue8021ActionCluster: '7'
+            priorityValue8021ActionSMB: '3'
           }
           trafficType: [
             'Storage'
@@ -574,10 +580,12 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
       storageNetworks: [
         {
           adapterName: 'smb0'
+          name: 'StorageNetwork0'
           vlan: '711'
         }
         {
           adapterName: 'smb1'
+          name: 'StorageNetwork1'
           vlan: '712'
         }
       ]
@@ -648,9 +656,9 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
             "overrideQosPolicy": false,
             "overrideVirtualSwitchConfiguration": false,
             "qosPolicyOverrides": {
-              "bandwidthPercentage_SMB": "50",
-              "priorityValue8021Action_Cluster": "7",
-              "priorityValue8021Action_SMB": "3"
+              "bandwidthPercentageSMB": "50",
+              "priorityValue8021ActionCluster": "7",
+              "priorityValue8021ActionSMB": "3"
             },
             "trafficType": [
               "Management"
@@ -675,9 +683,9 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
             "overrideQosPolicy": false,
             "overrideVirtualSwitchConfiguration": false,
             "qosPolicyOverrides": {
-              "bandwidthPercentage_SMB": "50",
-              "priorityValue8021Action_Cluster": "7",
-              "priorityValue8021Action_SMB": "3"
+              "bandwidthPercentageSMB": "50",
+              "priorityValue8021ActionCluster": "7",
+              "priorityValue8021ActionSMB": "3"
             },
             "trafficType": [
               "Compute"
@@ -702,9 +710,9 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
             "overrideQosPolicy": true,
             "overrideVirtualSwitchConfiguration": false,
             "qosPolicyOverrides": {
-              "bandwidthPercentage_SMB": "50",
-              "priorityValue8021Action_Cluster": "7",
-              "priorityValue8021Action_SMB": "3"
+              "bandwidthPercentageSMB": "50",
+              "priorityValue8021ActionCluster": "7",
+              "priorityValue8021ActionSMB": "3"
             },
             "trafficType": [
               "Storage"
@@ -723,10 +731,12 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
         "storageNetworks": [
           {
             "adapterName": "smb0",
+            "name": "StorageNetwork0",
             "vlan": "711"
           },
           {
             "adapterName": "smb1",
+            "name": "StorageNetwork1",
             "vlan": "712"
           }
         ],
@@ -807,9 +817,9 @@ param deploymentSettings = {
       overrideQosPolicy: false
       overrideVirtualSwitchConfiguration: false
       qosPolicyOverrides: {
-        bandwidthPercentage_SMB: '50'
-        priorityValue8021Action_Cluster: '7'
-        priorityValue8021Action_SMB: '3'
+        bandwidthPercentageSMB: '50'
+        priorityValue8021ActionCluster: '7'
+        priorityValue8021ActionSMB: '3'
       }
       trafficType: [
         'Management'
@@ -834,9 +844,9 @@ param deploymentSettings = {
       overrideQosPolicy: false
       overrideVirtualSwitchConfiguration: false
       qosPolicyOverrides: {
-        bandwidthPercentage_SMB: '50'
-        priorityValue8021Action_Cluster: '7'
-        priorityValue8021Action_SMB: '3'
+        bandwidthPercentageSMB: '50'
+        priorityValue8021ActionCluster: '7'
+        priorityValue8021ActionSMB: '3'
       }
       trafficType: [
         'Compute'
@@ -861,9 +871,9 @@ param deploymentSettings = {
       overrideQosPolicy: true
       overrideVirtualSwitchConfiguration: false
       qosPolicyOverrides: {
-        bandwidthPercentage_SMB: '50'
-        priorityValue8021Action_Cluster: '7'
-        priorityValue8021Action_SMB: '3'
+        bandwidthPercentageSMB: '50'
+        priorityValue8021ActionCluster: '7'
+        priorityValue8021ActionSMB: '3'
       }
       trafficType: [
         'Storage'
@@ -882,10 +892,12 @@ param deploymentSettings = {
   storageNetworks: [
     {
       adapterName: 'smb0'
+      name: 'StorageNetwork0'
       vlan: '711'
     }
     {
       adapterName: 'smb1'
+      name: 'StorageNetwork1'
       vlan: '712'
     }
   ]
@@ -1174,6 +1186,199 @@ An array of Network ATC Network Intent objects that define the Compute, Manageme
 - Required: Yes
 - Type: array
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`adapter`](#parameter-deploymentsettingsnetworkintentsadapter) | array | The names of the network adapters to include in the intent. |
+| [`adapterPropertyOverrides`](#parameter-deploymentsettingsnetworkintentsadapterpropertyoverrides) | object | The adapter property overrides for the network intent. |
+| [`name`](#parameter-deploymentsettingsnetworkintentsname) | string | The name of the network intent. |
+| [`overrideAdapterProperty`](#parameter-deploymentsettingsnetworkintentsoverrideadapterproperty) | bool | Specify whether to override the adapter property. Use false by default. |
+| [`overrideQosPolicy`](#parameter-deploymentsettingsnetworkintentsoverrideqospolicy) | bool | Specify whether to override the qosPolicy property. Use false by default. |
+| [`overrideVirtualSwitchConfiguration`](#parameter-deploymentsettingsnetworkintentsoverridevirtualswitchconfiguration) | bool | Specify whether to override the virtualSwitchConfiguration property. Use false by default. |
+| [`qosPolicyOverrides`](#parameter-deploymentsettingsnetworkintentsqospolicyoverrides) | object | The qosPolicy overrides for the network intent. |
+| [`trafficType`](#parameter-deploymentsettingsnetworkintentstraffictype) | array | The traffic types for the network intent. |
+| [`virtualSwitchConfigurationOverrides`](#parameter-deploymentsettingsnetworkintentsvirtualswitchconfigurationoverrides) | object | The virtualSwitchConfiguration overrides for the network intent. |
+
+### Parameter: `deploymentSettings.networkIntents.adapter`
+
+The names of the network adapters to include in the intent.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `deploymentSettings.networkIntents.adapterPropertyOverrides`
+
+The adapter property overrides for the network intent.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`jumboPacket`](#parameter-deploymentsettingsnetworkintentsadapterpropertyoverridesjumbopacket) | string | The jumboPacket configuration for the network adapters. |
+| [`networkDirect`](#parameter-deploymentsettingsnetworkintentsadapterpropertyoverridesnetworkdirect) | string | The networkDirect configuration for the network adapters. |
+| [`networkDirectTechnology`](#parameter-deploymentsettingsnetworkintentsadapterpropertyoverridesnetworkdirecttechnology) | string | The networkDirectTechnology configuration for the network adapters. |
+
+### Parameter: `deploymentSettings.networkIntents.adapterPropertyOverrides.jumboPacket`
+
+The jumboPacket configuration for the network adapters.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `deploymentSettings.networkIntents.adapterPropertyOverrides.networkDirect`
+
+The networkDirect configuration for the network adapters.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
+### Parameter: `deploymentSettings.networkIntents.adapterPropertyOverrides.networkDirectTechnology`
+
+The networkDirectTechnology configuration for the network adapters.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'iWARP'
+    'RoCEv2'
+  ]
+  ```
+
+### Parameter: `deploymentSettings.networkIntents.name`
+
+The name of the network intent.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `deploymentSettings.networkIntents.overrideAdapterProperty`
+
+Specify whether to override the adapter property. Use false by default.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `deploymentSettings.networkIntents.overrideQosPolicy`
+
+Specify whether to override the qosPolicy property. Use false by default.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `deploymentSettings.networkIntents.overrideVirtualSwitchConfiguration`
+
+Specify whether to override the virtualSwitchConfiguration property. Use false by default.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `deploymentSettings.networkIntents.qosPolicyOverrides`
+
+The qosPolicy overrides for the network intent.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`bandwidthPercentageSMB`](#parameter-deploymentsettingsnetworkintentsqospolicyoverridesbandwidthpercentagesmb) | string | The bandwidthPercentage for the network intent. Recommend 50. |
+| [`priorityValue8021ActionCluster`](#parameter-deploymentsettingsnetworkintentsqospolicyoverridespriorityvalue8021actioncluster) | string | Recommend 7. |
+| [`priorityValue8021ActionSMB`](#parameter-deploymentsettingsnetworkintentsqospolicyoverridespriorityvalue8021actionsmb) | string | Recommend 3. |
+
+### Parameter: `deploymentSettings.networkIntents.qosPolicyOverrides.bandwidthPercentageSMB`
+
+The bandwidthPercentage for the network intent. Recommend 50.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `deploymentSettings.networkIntents.qosPolicyOverrides.priorityValue8021ActionCluster`
+
+Recommend 7.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `deploymentSettings.networkIntents.qosPolicyOverrides.priorityValue8021ActionSMB`
+
+Recommend 3.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `deploymentSettings.networkIntents.trafficType`
+
+The traffic types for the network intent.
+
+- Required: Yes
+- Type: array
+- Allowed:
+  ```Bicep
+  [
+    'Compute'
+    'Management'
+    'Storage'
+  ]
+  ```
+
+### Parameter: `deploymentSettings.networkIntents.virtualSwitchConfigurationOverrides`
+
+The virtualSwitchConfiguration overrides for the network intent.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enableIov`](#parameter-deploymentsettingsnetworkintentsvirtualswitchconfigurationoverridesenableiov) | string | The enableIov configuration for the network intent. |
+| [`loadBalancingAlgorithm`](#parameter-deploymentsettingsnetworkintentsvirtualswitchconfigurationoverridesloadbalancingalgorithm) | string | The loadBalancingAlgorithm configuration for the network intent. |
+
+### Parameter: `deploymentSettings.networkIntents.virtualSwitchConfigurationOverrides.enableIov`
+
+The enableIov configuration for the network intent.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'false'
+    'true'
+  ]
+  ```
+
+### Parameter: `deploymentSettings.networkIntents.virtualSwitchConfigurationOverrides.loadBalancingAlgorithm`
+
+The loadBalancingAlgorithm configuration for the network intent.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Dynamic'
+    'HyperVPort'
+    'IPHash'
+  ]
+  ```
+
 ### Parameter: `deploymentSettings.startingIPAddress`
 
 The starting IP address for the Infrastructure Network IP pool. There must be at least 6 IPs between startingIPAddress and endingIPAddress and this pool should be not include the node IPs.
@@ -1194,6 +1399,77 @@ An array of JSON objects that define the storage network configuration for the c
 
 - Required: Yes
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`adapterName`](#parameter-deploymentsettingsstoragenetworksadaptername) | string | The name of the storage adapter. |
+| [`name`](#parameter-deploymentsettingsstoragenetworksname) | string | The name of the storage network. |
+| [`vlan`](#parameter-deploymentsettingsstoragenetworksvlan) | string | The VLAN for the storage adapter. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`storageAdapterIPInfo`](#parameter-deploymentsettingsstoragenetworksstorageadapteripinfo) | array | The storage adapter IP information for 3-node switchless or manual config deployments. |
+
+### Parameter: `deploymentSettings.storageNetworks.adapterName`
+
+The name of the storage adapter.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `deploymentSettings.storageNetworks.name`
+
+The name of the storage network.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `deploymentSettings.storageNetworks.vlan`
+
+The VLAN for the storage adapter.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `deploymentSettings.storageNetworks.storageAdapterIPInfo`
+
+The storage adapter IP information for 3-node switchless or manual config deployments.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`ipv4Address`](#parameter-deploymentsettingsstoragenetworksstorageadapteripinfoipv4address) | string | The IPv4 address for the storage adapter. |
+| [`physicalNode`](#parameter-deploymentsettingsstoragenetworksstorageadapteripinfophysicalnode) | string | The HCI node name. |
+| [`subnetMask`](#parameter-deploymentsettingsstoragenetworksstorageadapteripinfosubnetmask) | string | The subnet mask for the storage adapter. |
+
+### Parameter: `deploymentSettings.storageNetworks.storageAdapterIPInfo.ipv4Address`
+
+The IPv4 address for the storage adapter.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `deploymentSettings.storageNetworks.storageAdapterIPInfo.physicalNode`
+
+The HCI node name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `deploymentSettings.storageNetworks.storageAdapterIPInfo.subnetMask`
+
+The subnet mask for the storage adapter.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `deploymentSettings.subnetMask`
 

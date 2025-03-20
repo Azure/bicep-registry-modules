@@ -202,7 +202,7 @@ resource deploymentSettings 'Microsoft.AzureStackHCI/clusters/deploymentSettings
               storageConnectivitySwitchless: storageConnectivitySwitchless
               storageNetworks: [
                 for (storageAdapter, index) in storageNetworks: {
-                  name: 'StorageNetwork${index + 1}'
+                  name: storageAdapter.name
                   networkAdapterName: storageAdapter.adapterName
                   vlanId: storageAdapter.vlan
                   storageAdapterIPInfo: storageAdapter.?storageAdapterIPInfo

@@ -156,6 +156,12 @@ module testDeployment '../../../main.bicep' = [
           ]
         }
       }
+      scaleSettings: {
+        maxReplicas: 11
+        minReplicas: 4
+        cooldownPeriod: 500
+        pollingInterval: 45
+      }
     }
   }
 ]

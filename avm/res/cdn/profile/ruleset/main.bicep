@@ -34,17 +34,6 @@ module ruleSet_rules 'rule/main.bicep' = [
   }
 ]
 
-import { ruleType } from './rule/main.bicep'
-
-@export()
-type ruleSetType = {
-  @description('Required. Name of the rule set.')
-  name: string
-
-  @description('Optional. Array of rules.')
-  rules: ruleType[]?
-}
-
 @description('The name of the rule set.')
 output name string = ruleSet.name
 
@@ -53,3 +42,19 @@ output resourceId string = ruleSet.id
 
 @description('The name of the resource group the custom domain was created in.')
 output resourceGroupName string = resourceGroup().name
+
+// =============== //
+//   Definitions   //
+// =============== //
+
+import { ruleType } from './rule/main.bicep'
+
+@export()
+@description('The type of the rule set.')
+type ruleSetType = {
+  @description('Required. Name of the rule set.')
+  name: string
+
+  @description('Optional. Array of rules.')
+  rules: ruleType[]?
+}
