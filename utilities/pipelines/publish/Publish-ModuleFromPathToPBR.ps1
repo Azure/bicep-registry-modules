@@ -51,12 +51,22 @@ function Publish-ModuleFromPathToPBR {
 
     $resultSet = [ordered]@{}
 
-    # 1. Get list of all versioned modules (including top level and child modules) and iterate on it
-    $list = Get-VersionedModuleList -Path $topModuleFolderPath
-    $versionedModuleCount = $list.count
+    # 1. Get list of all modules qualifying for publishing (updated and versioned) and iterate on it
+    $modulesToPublishList = Get-VersionedModuleList -Path $topModuleFolderPath
+    $versionedModuleCount = $modulesToPublishList.count
     Write-Verbose "Number of versioned modules in [$topModuleFolderPath]: [$versionedModuleCount]" -Verbose
 
-    foreach ($moduleFolderPath in $list) {
+    # 2. Test if module qualifies for publishing, continuing to the next versioned module in the list otherwise
+    if (-not $versionedModuleCount) {
+        Write-Verbose "No changes detected for any module in $topModuleFolderPath. Skipping publishing" -Verbose
+        return
+    }
+
+    # $list = Get-VersionedModuleList -Path $topModuleFolderPath
+    # $versionedModuleCount = $list.count
+    # Write-Verbose "Number of versioned modules in [$topModuleFolderPath]: [$versionedModuleCount]" -Verbose
+
+    foreach ($moduleFolderPath in $modulesToPublishList) {
 
         $moduleBicepFilePath = Join-Path $moduleFolderPath 'main.bicep'
         Write-Verbose "moduleFolderPath: $moduleFolderPath" -Verbose
@@ -64,11 +74,11 @@ function Publish-ModuleFromPathToPBR {
         $moduleFolderRelativePath = ($moduleFolderPath -replace ('{0}[\/|\\]' -f [Regex]::Escape($repoRoot)), '') -replace '\\', '/'
         Write-Verbose "moduleFolderRelativePath:  $moduleFolderRelativePath" -Verbose
 
-        # 2. Test if module qualifies for publishing, continuing to the next versioned module in the list otherwise
-        if (-not (Get-ModulesToPublish -ModuleFolderPath $moduleFolderPath)) {
-            Write-Verbose "No changes detected for versioned module $moduleFolderRelativePath. Skipping publishing" -Verbose
-            continue
-        }
+        # # 2. Test if module qualifies for publishing, continuing to the next versioned module in the list otherwise
+        # if (-not (Get-ModulesToPublish -ModuleFolderPath $moduleFolderPath)) {
+        #     Write-Verbose "No changes detected for versioned module $moduleFolderRelativePath. Skipping publishing" -Verbose
+        #     continue
+        # }
 
         # 3. Calculate the version that we would publish with
         $targetVersion = Get-ModuleTargetVersion -ModuleFolderPath $moduleFolderPath
