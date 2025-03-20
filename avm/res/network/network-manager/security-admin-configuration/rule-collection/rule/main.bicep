@@ -1,7 +1,6 @@
 metadata name = 'Network Manager Security Admin Configuration Rule Collection Rules'
 metadata description = '''This module deploys an Azure Virtual Network Manager (AVNM) Security Admin Configuration Rule Collection Rule.
 A security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules.'''
-metadata owner = 'Azure/module-maintainers'
 
 @sys.description('Conditional. The name of the parent network manager. Required if the template is used in a standalone deployment.')
 param networkManagerName string
@@ -18,7 +17,7 @@ param name string
 
 @maxLength(500)
 @sys.description('Optional. A description of the rule.')
-param description string?
+param description string = ''
 
 @allowed([
   'Allow'
@@ -32,7 +31,7 @@ param access string
 param destinationPortRanges string[]?
 
 @sys.description('Optional. The destnations filter can be an IP Address or a service tag. Each filter contains the properties AddressPrefixType (IPPrefix or ServiceTag) and AddressPrefix (using CIDR notation (e.g. 192.168.99.0/24 or 2001:1234::/64) or a service tag (e.g. AppService.WestEurope)). Combining CIDR and Service tags in one rule filter is not permitted.')
-param destinations destinationsType
+param destinations destinationType[]?
 
 @allowed([
   'Inbound'
@@ -61,27 +60,27 @@ param protocol string
 param sourcePortRanges string[]?
 
 @sys.description('Optional. The source filter can be an IP Address or a service tag. Each filter contains the properties AddressPrefixType (IPPrefix or ServiceTag) and AddressPrefix (using CIDR notation (e.g. 192.168.99.0/24 or 2001:1234::/64) or a service tag (e.g. AppService.WestEurope)). Combining CIDR and Service tags in one rule filter is not permitted.')
-param sources sourcesType
+param sources sourceType[]?
 
-resource networkManager 'Microsoft.Network/networkManagers@2023-11-01' existing = {
+resource networkManager 'Microsoft.Network/networkManagers@2024-05-01' existing = {
   name: networkManagerName
 
-  resource securityAdminConfiguration 'securityAdminConfigurations@2023-11-01' existing = {
+  resource securityAdminConfiguration 'securityAdminConfigurations' existing = {
     name: securityAdminConfigurationName
 
-    resource ruleCollection 'ruleCollections@2023-11-01' existing = {
+    resource ruleCollection 'ruleCollections' existing = {
       name: ruleCollectionName
     }
   }
 }
 
-resource rule 'Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections/rules@2023-11-01' = {
+resource rule 'Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections/rules@2024-05-01' = {
   name: name
   parent: networkManager::securityAdminConfiguration::ruleCollection
   kind: 'Custom'
   properties: {
     access: access
-    description: description ?? ''
+    description: description
     destinationPortRanges: destinationPortRanges
     destinations: destinations
     direction: direction
@@ -105,22 +104,22 @@ output resourceGroupName string = resourceGroup().name
 //   Definitions   //
 // =============== //
 
-type destinationPortRangesType = string[]?
-
-type destinationsType = {
+@export()
+@sys.description('The type of a destination.')
+type destinationType = {
   @sys.description('Required. Address prefix type.')
   addressPrefixType: 'IPPrefix' | 'ServiceTag'
 
   @sys.description('Required. Address prefix.')
   addressPrefix: string
-}[]?
+}
 
-type sourcePortRangesType = string[]?
-
-type sourcesType = {
+@export()
+@sys.description('The type of a source.')
+type sourceType = {
   @sys.description('Required. Address prefix type.')
   addressPrefixType: 'IPPrefix' | 'ServiceTag'
 
   @sys.description('Required. Address prefix.')
   addressPrefix: string
-}[]?
+}

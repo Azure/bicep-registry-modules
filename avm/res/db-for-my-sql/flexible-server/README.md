@@ -19,6 +19,7 @@ This module deploys a DBforMySQL Flexible Server.
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.DBforMySQL/flexibleServers` | [2023-12-30](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2023-12-30/flexibleServers) |
 | `Microsoft.DBforMySQL/flexibleServers/administrators` | [2023-06-30](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2023-06-30/flexibleServers/administrators) |
+| `Microsoft.DBforMySQL/flexibleServers/advancedThreatProtectionSettings` | [2023-12-30](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2023-12-30/flexibleServers/advancedThreatProtectionSettings) |
 | `Microsoft.DBforMySQL/flexibleServers/databases` | [2023-06-30](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2023-06-30/flexibleServers/databases) |
 | `Microsoft.DBforMySQL/flexibleServers/firewallRules` | [2023-06-30](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DBforMySQL/2023-06-30/flexibleServers/firewallRules) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
@@ -145,6 +146,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
     // Non-required parameters
     administratorLogin: 'adminUserName'
     administratorLoginPassword: '<administratorLoginPassword>'
+    advancedThreatProtection: 'Enabled'
     availabilityZone: '1'
     backupRetentionDays: 20
     customerManagedKey: {
@@ -211,6 +213,7 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
         '<managedIdentityResourceId>'
       ]
     }
+    publicNetworkAccess: 'Enabled'
     roleAssignments: [
       {
         name: '2478b63b-0cae-457f-9bd3-9feb00e1925b'
@@ -272,6 +275,9 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
     },
     "administratorLoginPassword": {
       "value": "<administratorLoginPassword>"
+    },
+    "advancedThreatProtection": {
+      "value": "Enabled"
     },
     "availabilityZone": {
       "value": "1"
@@ -363,6 +369,9 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
         ]
       }
     },
+    "publicNetworkAccess": {
+      "value": "Enabled"
+    },
     "roleAssignments": {
       "value": [
         {
@@ -427,6 +436,7 @@ param tier = 'GeneralPurpose'
 // Non-required parameters
 param administratorLogin = 'adminUserName'
 param administratorLoginPassword = '<administratorLoginPassword>'
+param advancedThreatProtection = 'Enabled'
 param availabilityZone = '1'
 param backupRetentionDays = 20
 param customerManagedKey = {
@@ -493,6 +503,7 @@ param managedIdentities = {
     '<managedIdentityResourceId>'
   ]
 }
+param publicNetworkAccess = 'Enabled'
 param roleAssignments = [
   {
     name: '2478b63b-0cae-457f-9bd3-9feb00e1925b'
@@ -561,6 +572,23 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
       }
     ]
     delegatedSubnetResourceId: '<delegatedSubnetResourceId>'
+    firewallRules: [
+      {
+        endIpAddress: '0.0.0.0'
+        name: 'AllowAllWindowsAzureIps'
+        startIpAddress: '0.0.0.0'
+      }
+      {
+        endIpAddress: '10.10.10.10'
+        name: 'test-rule1'
+        startIpAddress: '10.10.10.1'
+      }
+      {
+        endIpAddress: '100.100.100.10'
+        name: 'test-rule2'
+        startIpAddress: '100.100.100.1'
+      }
+    ]
     highAvailability: 'SameZone'
     location: '<location>'
     managedIdentities: {
@@ -628,6 +656,25 @@ module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>
     "delegatedSubnetResourceId": {
       "value": "<delegatedSubnetResourceId>"
     },
+    "firewallRules": {
+      "value": [
+        {
+          "endIpAddress": "0.0.0.0",
+          "name": "AllowAllWindowsAzureIps",
+          "startIpAddress": "0.0.0.0"
+        },
+        {
+          "endIpAddress": "10.10.10.10",
+          "name": "test-rule1",
+          "startIpAddress": "10.10.10.1"
+        },
+        {
+          "endIpAddress": "100.100.100.10",
+          "name": "test-rule2",
+          "startIpAddress": "100.100.100.1"
+        }
+      ]
+    },
     "highAvailability": {
       "value": "SameZone"
     },
@@ -691,6 +738,23 @@ param databases = [
   }
 ]
 param delegatedSubnetResourceId = '<delegatedSubnetResourceId>'
+param firewallRules = [
+  {
+    endIpAddress: '0.0.0.0'
+    name: 'AllowAllWindowsAzureIps'
+    startIpAddress: '0.0.0.0'
+  }
+  {
+    endIpAddress: '10.10.10.10'
+    name: 'test-rule1'
+    startIpAddress: '10.10.10.1'
+  }
+  {
+    endIpAddress: '100.100.100.10'
+    name: 'test-rule2'
+    startIpAddress: '100.100.100.1'
+  }
+]
 param highAvailability = 'SameZone'
 param location = '<location>'
 param managedIdentities = {
@@ -870,6 +934,7 @@ param tags = {
 | [`administratorLogin`](#parameter-administratorlogin) | string | The administrator login name of a server. Can only be specified when the MySQL server is being created. |
 | [`administratorLoginPassword`](#parameter-administratorloginpassword) | securestring | The administrator login password. |
 | [`administrators`](#parameter-administrators) | array | The Azure AD administrators when AAD authentication enabled. |
+| [`advancedThreatProtection`](#parameter-advancedthreatprotection) | string | Enable/Disable Advanced Threat Protection (Microsoft Defender) for the server. |
 | [`availabilityZone`](#parameter-availabilityzone) | string | Availability zone information of the server. Default will have no preference set. |
 | [`backupRetentionDays`](#parameter-backupretentiondays) | int | Backup retention days for the server. |
 | [`createMode`](#parameter-createmode) | string | The mode to create a new MySQL server. |
@@ -886,6 +951,7 @@ param tags = {
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`maintenanceWindow`](#parameter-maintenancewindow) | object | Properties for the maintenence window. If provided, "customWindow" property must exist and set to "Enabled". |
+| [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Specifies whether public network access is allowed for this server. Set to "Enabled" to allow public access, or "Disabled" (default) when the server has VNet integration. |
 | [`replicationRole`](#parameter-replicationrole) | string | The replication role. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`storageAutoIoScaling`](#parameter-storageautoioscaling) | string | Enable IO Auto Scaling or not. The server scales IOPs up or down automatically depending on your workload needs. |
@@ -949,7 +1015,6 @@ Private dns zone arm resource ID. Used when the desired connectivity mode is "Pr
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `restorePointInTime`
 
@@ -965,7 +1030,6 @@ The source MySQL server ID. Required if "createMode" is set to "PointInTimeResto
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `storageAutoGrow`
 
@@ -988,7 +1052,6 @@ The administrator login name of a server. Can only be specified when the MySQL s
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `administratorLoginPassword`
 
@@ -996,7 +1059,6 @@ The administrator login password.
 
 - Required: No
 - Type: securestring
-- Default: `''`
 
 ### Parameter: `administrators`
 
@@ -1005,6 +1067,21 @@ The Azure AD administrators when AAD authentication enabled.
 - Required: No
 - Type: array
 - Default: `[]`
+
+### Parameter: `advancedThreatProtection`
+
+Enable/Disable Advanced Threat Protection (Microsoft Defender) for the server.
+
+- Required: No
+- Type: string
+- Default: `'Enabled'`
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
 
 ### Parameter: `availabilityZone`
 
@@ -1030,6 +1107,8 @@ Backup retention days for the server.
 - Required: No
 - Type: int
 - Default: `7`
+- MinValue: 1
+- MaxValue: 35
 
 ### Parameter: `createMode`
 
@@ -1160,7 +1239,6 @@ Delegated subnet arm resource ID. Used when the desired connectivity mode is "Pr
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `diagnosticSettings`
 
@@ -1415,6 +1493,21 @@ Properties for the maintenence window. If provided, "customWindow" property must
 - Type: object
 - Default: `{}`
 
+### Parameter: `publicNetworkAccess`
+
+Specifies whether public network access is allowed for this server. Set to "Enabled" to allow public access, or "Disabled" (default) when the server has VNet integration.
+
+- Required: No
+- Type: string
+- Default: `'Disabled'`
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
 ### Parameter: `replicationRole`
 
 The replication role.
@@ -1557,6 +1650,8 @@ Storage IOPS for a server. Max IOPS are determined by compute size.
 - Required: No
 - Type: int
 - Default: `1000`
+- MinValue: 360
+- MaxValue: 48000
 
 ### Parameter: `storageSizeGB`
 

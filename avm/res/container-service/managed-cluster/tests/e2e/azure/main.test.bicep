@@ -207,7 +207,7 @@ module testDeployment '../../../main.bicep' = [
       enableStorageProfileFileCSIDriver: true
       enableStorageProfileSnapshotController: true
       managedIdentities: {
-        userAssignedResourcesIds: [
+        userAssignedResourceIds: [
           nestedDependencies.outputs.managedIdentityResourceId
         ]
       }
@@ -222,11 +222,6 @@ module testDeployment '../../../main.bicep' = [
       enableKeyvaultSecretsProvider: true
       enablePodSecurityPolicy: false
       enableAzureMonitorProfileMetrics: true
-      customerManagedKey: {
-        keyName: nestedDependencies.outputs.keyVaultEncryptionKeyName
-        keyVaultNetworkAccess: 'Public'
-        keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
-      }
       lock: {
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
@@ -280,6 +275,11 @@ module testDeployment '../../../main.bicep' = [
               timeoutInSeconds: 180
               url: 'https://github.com/mspnp/aks-baseline'
             }
+            kustomizations: {
+              unified: {
+                path: './cluster-manifests'
+              }
+            }
           }
           {
             namespace: 'flux-system-helm'
@@ -317,9 +317,5 @@ module testDeployment '../../../main.bicep' = [
         ]
       }
     }
-    dependsOn: [
-      nestedDependencies
-      diagnosticDependencies
-    ]
   }
 ]

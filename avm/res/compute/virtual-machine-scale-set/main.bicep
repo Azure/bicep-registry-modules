@@ -1,6 +1,5 @@
 metadata name = 'Virtual Machine Scale Sets'
 metadata description = 'This module deploys a Virtual Machine Scale Set.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the VMSS.')
 param name string
@@ -327,6 +326,22 @@ var publicKeysFormatted = [
   }
 ]
 
+var networkInterfaceConfigurations = [
+  for (nicConfiguration, index) in nicConfigurations: {
+    name: '${name}${nicConfiguration.nicSuffix}configuration-${index}'
+    properties: {
+      primary: (index == 0) ? true : any(null)
+      enableAcceleratedNetworking: nicConfiguration.?enableAcceleratedNetworking ?? true
+      networkSecurityGroup: contains(nicConfiguration, 'nsgId')
+        ? {
+            id: nicConfiguration.nsgId
+          }
+        : null
+      ipConfigurations: nicConfiguration.ipConfigurations
+    }
+  }
+]
+
 var linuxConfiguration = {
   disablePasswordAuthentication: disablePasswordAuthentication
   ssh: {
@@ -582,24 +597,10 @@ resource vmss 'Microsoft.Compute/virtualMachineScaleSets@2024-07-01' = {
           }
         ]
       }
-      networkProfile: {
-        networkApiVersion: (orchestrationMode == 'Flexible') ? '2020-11-01' : null
-        networkInterfaceConfigurations: [
-          for (nicConfiguration, index) in nicConfigurations: {
-            name: '${name}${nicConfiguration.nicSuffix}configuration-${index}'
-            properties: {
-              primary: (index == 0) ? true : any(null)
-              enableAcceleratedNetworking: nicConfiguration.?enableAcceleratedNetworking ?? true
-              networkSecurityGroup: contains(nicConfiguration, 'nsgId')
-                ? {
-                    id: nicConfiguration.nsgId
-                  }
-                : null
-              ipConfigurations: nicConfiguration.ipConfigurations
-            }
-          }
-        ]
-      }
+      networkProfile: union(
+        orchestrationMode == 'Flexible' ? { networkApiVersion: '2020-11-01' } : {},
+        { networkInterfaceConfigurations: networkInterfaceConfigurations }
+      )
       diagnosticsProfile: {
         bootDiagnostics: {
           enabled: !empty(bootDiagnosticStorageAccountName) ? true : bootDiagnosticEnabled
@@ -875,7 +876,7 @@ output resourceGroupName string = resourceGroup().name
 output name string = vmss.name
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = vmss.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = vmss.?identity.?principalId
 
 @description('The location the resource was deployed into.')
 output location string = vmss.location

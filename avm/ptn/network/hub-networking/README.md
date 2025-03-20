@@ -54,7 +54,7 @@ This instance deploys the module with the minimum set of required parameters.
 module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
   name: 'hubNetworkingDeployment'
   params: {
-    location: '<location>'
+
   }
 }
 ```
@@ -70,11 +70,7 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
-  "parameters": {
-    "location": {
-      "value": "<location>"
-    }
-  }
+  "parameters": {}
 }
 ```
 
@@ -88,7 +84,7 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
 ```bicep-params
 using 'br/public:avm/ptn/network/hub-networking:<version>'
 
-param location = '<location>'
+
 ```
 
 </details>
@@ -112,14 +108,19 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
         addressPrefixes: '<addressPrefixes>'
         azureFirewallSettings: {
           azureSkuTier: 'Standard'
-          enableTelemetry: true
           location: '<location>'
           publicIPAddressObject: {
             name: 'hub1-waf-pip'
           }
           threatIntelMode: 'Alert'
+          zones: [
+            1
+            2
+            3
+          ]
         }
         bastionHost: {
+          bastionHostName: 'bastion-hub1'
           disableCopyPaste: true
           enableFileCopy: false
           enableIpConnect: false
@@ -148,7 +149,6 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
         enableAzureFirewall: true
         enableBastion: true
         enablePeering: false
-        enableTelemetry: true
         flowTimeoutInMinutes: 30
         location: '<location>'
         lock: {
@@ -199,7 +199,6 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
         addressPrefixes: '<addressPrefixes>'
         azureFirewallSettings: {
           azureSkuTier: 'Standard'
-          enableTelemetry: true
           location: '<location>'
           publicIPAddressObject: {
             name: 'hub2-waf-pip'
@@ -222,7 +221,6 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
         enableAzureFirewall: true
         enableBastion: true
         enablePeering: false
-        enableTelemetry: false
         flowTimeoutInMinutes: 10
         location: '<location>'
         lock: {
@@ -293,14 +291,19 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
           "addressPrefixes": "<addressPrefixes>",
           "azureFirewallSettings": {
             "azureSkuTier": "Standard",
-            "enableTelemetry": true,
             "location": "<location>",
             "publicIPAddressObject": {
               "name": "hub1-waf-pip"
             },
-            "threatIntelMode": "Alert"
+            "threatIntelMode": "Alert",
+            "zones": [
+              1,
+              2,
+              3
+            ]
           },
           "bastionHost": {
+            "bastionHostName": "bastion-hub1",
             "disableCopyPaste": true,
             "enableFileCopy": false,
             "enableIpConnect": false,
@@ -329,7 +332,6 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
           "enableAzureFirewall": true,
           "enableBastion": true,
           "enablePeering": false,
-          "enableTelemetry": true,
           "flowTimeoutInMinutes": 30,
           "location": "<location>",
           "lock": {
@@ -380,7 +382,6 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
           "addressPrefixes": "<addressPrefixes>",
           "azureFirewallSettings": {
             "azureSkuTier": "Standard",
-            "enableTelemetry": true,
             "location": "<location>",
             "publicIPAddressObject": {
               "name": "hub2-waf-pip"
@@ -403,7 +404,6 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
           "enableAzureFirewall": true,
           "enableBastion": true,
           "enablePeering": false,
-          "enableTelemetry": false,
           "flowTimeoutInMinutes": 10,
           "location": "<location>",
           "lock": {
@@ -474,14 +474,19 @@ param hubVirtualNetworks = {
     addressPrefixes: '<addressPrefixes>'
     azureFirewallSettings: {
       azureSkuTier: 'Standard'
-      enableTelemetry: true
       location: '<location>'
       publicIPAddressObject: {
         name: 'hub1-waf-pip'
       }
       threatIntelMode: 'Alert'
+      zones: [
+        1
+        2
+        3
+      ]
     }
     bastionHost: {
+      bastionHostName: 'bastion-hub1'
       disableCopyPaste: true
       enableFileCopy: false
       enableIpConnect: false
@@ -510,7 +515,6 @@ param hubVirtualNetworks = {
     enableAzureFirewall: true
     enableBastion: true
     enablePeering: false
-    enableTelemetry: true
     flowTimeoutInMinutes: 30
     location: '<location>'
     lock: {
@@ -561,7 +565,6 @@ param hubVirtualNetworks = {
     addressPrefixes: '<addressPrefixes>'
     azureFirewallSettings: {
       azureSkuTier: 'Standard'
-      enableTelemetry: true
       location: '<location>'
       publicIPAddressObject: {
         name: 'hub2-waf-pip'
@@ -584,7 +587,6 @@ param hubVirtualNetworks = {
     enableAzureFirewall: true
     enableBastion: true
     enablePeering: false
-    enableTelemetry: false
     flowTimeoutInMinutes: 10
     location: '<location>'
     lock: {
@@ -675,7 +677,6 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
         enableAzureFirewall: false
         enableBastion: false
         enablePeering: false
-        enableTelemetry: true
         flowTimeoutInMinutes: 30
         location: '<location>'
         lock: {
@@ -756,7 +757,6 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
           "enableAzureFirewall": false,
           "enableBastion": false,
           "enablePeering": false,
-          "enableTelemetry": true,
           "flowTimeoutInMinutes": 30,
           "location": "<location>",
           "lock": {
@@ -837,7 +837,6 @@ param hubVirtualNetworks = {
     enableAzureFirewall: false
     enableBastion: false
     enablePeering: false
-    enableTelemetry: true
     flowTimeoutInMinutes: 30
     location: '<location>'
     lock: {
@@ -900,7 +899,6 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
         addressPrefixes: '<addressPrefixes>'
         azureFirewallSettings: {
           azureSkuTier: 'Standard'
-          enableTelemetry: true
           location: '<location>'
           publicIPAddressObject: {
             name: 'hub1PublicIp'
@@ -941,7 +939,6 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
         enableAzureFirewall: true
         enableBastion: true
         enablePeering: false
-        enableTelemetry: true
         flowTimeoutInMinutes: 30
         location: '<location>'
         lock: {
@@ -1003,7 +1000,6 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
           "addressPrefixes": "<addressPrefixes>",
           "azureFirewallSettings": {
             "azureSkuTier": "Standard",
-            "enableTelemetry": true,
             "location": "<location>",
             "publicIPAddressObject": {
               "name": "hub1PublicIp"
@@ -1044,7 +1040,6 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
           "enableAzureFirewall": true,
           "enableBastion": true,
           "enablePeering": false,
-          "enableTelemetry": true,
           "flowTimeoutInMinutes": 30,
           "location": "<location>",
           "lock": {
@@ -1106,7 +1101,6 @@ param hubVirtualNetworks = {
     addressPrefixes: '<addressPrefixes>'
     azureFirewallSettings: {
       azureSkuTier: 'Standard'
-      enableTelemetry: true
       location: '<location>'
       publicIPAddressObject: {
         name: 'hub1PublicIp'
@@ -1147,7 +1141,6 @@ param hubVirtualNetworks = {
     enableAzureFirewall: true
     enableBastion: true
     enablePeering: false
-    enableTelemetry: true
     flowTimeoutInMinutes: 30
     location: '<location>'
     lock: {
@@ -1248,13 +1241,13 @@ The hub virtual networks to create.
 | [`enableAzureFirewall`](#parameter-hubvirtualnetworks>any_other_property<enableazurefirewall) | bool | Enable/Disable Azure Firewall for the virtual network. |
 | [`enableBastion`](#parameter-hubvirtualnetworks>any_other_property<enablebastion) | bool | Enable/Disable Azure Bastion for the virtual network. |
 | [`enablePeering`](#parameter-hubvirtualnetworks>any_other_property<enablepeering) | bool | Enable/Disable peering for the virtual network. |
-| [`enableTelemetry`](#parameter-hubvirtualnetworks>any_other_property<enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`flowTimeoutInMinutes`](#parameter-hubvirtualnetworks>any_other_property<flowtimeoutinminutes) | int | The flow timeout in minutes. |
 | [`location`](#parameter-hubvirtualnetworks>any_other_property<location) | string | The location of the virtual network. Defaults to the location of the resource group. |
 | [`lock`](#parameter-hubvirtualnetworks>any_other_property<lock) | object | The lock settings of the virtual network. |
 | [`peeringSettings`](#parameter-hubvirtualnetworks>any_other_property<peeringsettings) | array | The peerings of the virtual network. |
 | [`roleAssignments`](#parameter-hubvirtualnetworks>any_other_property<roleassignments) | array | The role assignments to create. |
 | [`routes`](#parameter-hubvirtualnetworks>any_other_property<routes) | array | Routes to add to the virtual network route table. |
+| [`routeTableName`](#parameter-hubvirtualnetworks>any_other_property<routetablename) | string | The name of the route table. |
 | [`subnets`](#parameter-hubvirtualnetworks>any_other_property<subnets) | array | The subnets of the virtual network. |
 | [`tags`](#parameter-hubvirtualnetworks>any_other_property<tags) | object | The tags of the virtual network. |
 | [`vnetEncryption`](#parameter-hubvirtualnetworks>any_other_property<vnetencryption) | bool | Enable/Disable VNet encryption. |
@@ -1280,9 +1273,9 @@ The Azure Firewall config.
 | :-- | :-- | :-- |
 | [`additionalPublicIpConfigurations`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsadditionalpublicipconfigurations) | array | Additional public IP configurations. |
 | [`applicationRuleCollections`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsapplicationrulecollections) | array | Application rule collections. |
+| [`azureFirewallName`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsazurefirewallname) | string | The name of the Azure Firewall. |
 | [`azureSkuTier`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsazureskutier) | string | Azure Firewall SKU. |
 | [`diagnosticSettings`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsdiagnosticsettings) | array | Diagnostic settings. |
-| [`enableTelemetry`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsenabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`firewallPolicyId`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingsfirewallpolicyid) | string | Firewall policy ID. |
 | [`hubIpAddresses`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingshubipaddresses) | object | Hub IP addresses. |
 | [`location`](#parameter-hubvirtualnetworks>any_other_property<azurefirewallsettingslocation) | string | The location of the virtual network. Defaults to the location of the resource group. |
@@ -1313,12 +1306,27 @@ Application rule collections.
 - Required: No
 - Type: array
 
+### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.azureFirewallName`
+
+The name of the Azure Firewall.
+
+- Required: No
+- Type: string
+
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.azureSkuTier`
 
 Azure Firewall SKU.
 
 - Required: No
 - Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Basic'
+    'Premium'
+    'Standard'
+  ]
+  ```
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.diagnosticSettings`
 
@@ -1465,13 +1473,6 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 - Required: No
 - Type: string
-
-### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.enableTelemetry`
-
-Enable/Disable usage telemetry for module.
-
-- Required: No
-- Type: bool
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.azureFirewallSettings.firewallPolicyId`
 
@@ -1708,12 +1709,21 @@ The Azure Bastion config.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`bastionHostName`](#parameter-hubvirtualnetworks>any_other_property<bastionhostbastionhostname) | string | The name of the bastion host. |
 | [`disableCopyPaste`](#parameter-hubvirtualnetworks>any_other_property<bastionhostdisablecopypaste) | bool | Enable/Disable copy/paste functionality. |
 | [`enableFileCopy`](#parameter-hubvirtualnetworks>any_other_property<bastionhostenablefilecopy) | bool | Enable/Disable file copy functionality. |
 | [`enableIpConnect`](#parameter-hubvirtualnetworks>any_other_property<bastionhostenableipconnect) | bool | Enable/Disable IP connect functionality. |
+| [`enableKerberos`](#parameter-hubvirtualnetworks>any_other_property<bastionhostenablekerberos) | bool | Enable/Disable Kerberos authentication. |
 | [`enableShareableLink`](#parameter-hubvirtualnetworks>any_other_property<bastionhostenableshareablelink) | bool | Enable/Disable shareable link functionality. |
 | [`scaleUnits`](#parameter-hubvirtualnetworks>any_other_property<bastionhostscaleunits) | int | The number of scale units for the Bastion host. Defaults to 4. |
 | [`skuName`](#parameter-hubvirtualnetworks>any_other_property<bastionhostskuname) | string | The SKU name of the Bastion host. Defaults to Standard. |
+
+### Parameter: `hubVirtualNetworks.>Any_other_property<.bastionHost.bastionHostName`
+
+The name of the bastion host.
+
+- Required: No
+- Type: string
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.bastionHost.disableCopyPaste`
 
@@ -1732,6 +1742,13 @@ Enable/Disable file copy functionality.
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.bastionHost.enableIpConnect`
 
 Enable/Disable IP connect functionality.
+
+- Required: No
+- Type: bool
+
+### Parameter: `hubVirtualNetworks.>Any_other_property<.bastionHost.enableKerberos`
+
+Enable/Disable Kerberos authentication.
 
 - Required: No
 - Type: bool
@@ -1756,6 +1773,15 @@ The SKU name of the Bastion host. Defaults to Standard.
 
 - Required: No
 - Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Basic'
+    'Developer'
+    'Premium'
+    'Standard'
+  ]
+  ```
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.ddosProtectionPlanResourceId`
 
@@ -1934,13 +1960,6 @@ Enable/Disable Azure Bastion for the virtual network.
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.enablePeering`
 
 Enable/Disable peering for the virtual network.
-
-- Required: No
-- Type: bool
-
-### Parameter: `hubVirtualNetworks.>Any_other_property<.enableTelemetry`
-
-Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
@@ -2150,6 +2169,13 @@ Routes to add to the virtual network route table.
 
 - Required: No
 - Type: array
+
+### Parameter: `hubVirtualNetworks.>Any_other_property<.routeTableName`
+
+The name of the route table.
+
+- Required: No
+- Type: string
 
 ### Parameter: `hubVirtualNetworks.>Any_other_property<.subnets`
 

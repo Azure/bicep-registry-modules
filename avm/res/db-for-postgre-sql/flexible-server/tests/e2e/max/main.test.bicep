@@ -76,6 +76,8 @@ module testDeployment '../../../main.bicep' = [
           nestedDependencies.outputs.managedIdentityResourceId
         ]
       }
+      serverThreatProtection: 'Enabled'
+      autoGrow: 'Enabled'
     }
   }
 ]

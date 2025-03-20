@@ -1,6 +1,5 @@
 metadata name = 'Kubernetes Configuration Extensions'
 metadata description = 'This module deploys a Kubernetes Configuration Extension.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the Flux Configuration.')
 param name string
@@ -38,6 +37,8 @@ param version string?
 
 @description('Optional. A list of flux configuraitons.')
 param fluxConfigurations array?
+
+var enableReferencedModulesTelemetry = false
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
@@ -91,7 +92,7 @@ module fluxConfiguration 'br/public:avm/res/kubernetes-configuration/flux-config
   for (fluxConfiguration, index) in (fluxConfigurations ?? []): {
     name: '${uniqueString(deployment().name, location)}-ManagedCluster-FluxConfiguration${index}'
     params: {
-      enableTelemetry: fluxConfiguration.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
       clusterName: managedCluster.name
       scope: fluxConfiguration.scope
       namespace: fluxConfiguration.namespace

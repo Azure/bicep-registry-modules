@@ -69,7 +69,6 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      location: resourceLocation
       enablePrivateCluster: true
       primaryAgentPoolProfiles: [
         {
@@ -211,7 +210,7 @@ module testDeployment '../../../main.bicep' = [
       ]
       privateDNSZone: nestedDependencies.outputs.privateDnsZoneResourceId
       managedIdentities: {
-        userAssignedResourcesIds: [
+        userAssignedResourceIds: [
           nestedDependencies.outputs.managedIdentityResourceId
         ]
       }
@@ -225,9 +224,5 @@ module testDeployment '../../../main.bicep' = [
         aadProfileManaged: true
       }
     }
-    dependsOn: [
-      nestedDependencies
-      diagnosticDependencies
-    ]
   }
 ]

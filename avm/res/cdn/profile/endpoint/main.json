@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "12158435617192568330"
+      "version": "0.33.93.31351",
+      "templateHash": "9751303751415771294"
     },
     "name": "CDN Profiles Endpoints",
-    "description": "This module deploys a CDN Profile Endpoint.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a CDN Profile Endpoint."
   },
   "parameters": {
     "profileName": {
@@ -122,12 +121,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "1967881427631941882"
+              "version": "0.33.93.31351",
+              "templateHash": "7262263912518756359"
             },
             "name": "CDN Profiles Endpoints Origins",
-            "description": "This module deploys a CDN Profile Endpoint Origin.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a CDN Profile Endpoint Origin."
           },
           "parameters": {
             "endpointName": {

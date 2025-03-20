@@ -177,6 +177,7 @@ The interval of the frequency for the deployment schedule. 1 Hour is every hour,
 - Required: No
 - Type: int
 - Default: `1`
+- MaxValue: 100
 
 ### Parameter: `isEnabled`
 

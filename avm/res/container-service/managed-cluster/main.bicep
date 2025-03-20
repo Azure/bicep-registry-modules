@@ -1,6 +1,5 @@
 metadata name = 'Azure Kubernetes Service (AKS) Managed Clusters'
 metadata description = 'This module deploys an Azure Kubernetes Service (AKS) Managed Cluster.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Specifies the name of the AKS cluster.')
 param name string
@@ -11,8 +10,9 @@ param location string = resourceGroup().location
 @description('Optional. Specifies the DNS prefix specified when creating the managed cluster.')
 param dnsPrefix string = name
 
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The managed identity definition for this resource. Only one type of identity is supported: system-assigned or user-assigned, but not both.')
-param managedIdentities managedIdentitiesType?
+param managedIdentities managedIdentityAllType?
 
 @description('Optional. Network dataplane used in the Kubernetes cluster. Not compatible with kubenet network plugin.')
 @allowed([
@@ -169,6 +169,15 @@ param webApplicationRoutingEnabled bool = false
 
 @description('Optional. Specifies the resource ID of connected DNS zone. It will be ignored if `webApplicationRoutingEnabled` is set to `false`.')
 param dnsZoneResourceId string?
+
+@description('Optional. Ingress type for the default NginxIngressController custom resource. It will be ignored if `webApplicationRoutingEnabled` is set to `false`.')
+@allowed([
+  'AnnotationControlled'
+  'External'
+  'Internal'
+  'None'
+])
+param defaultIngressControllerType string?
 
 @description('Optional. Specifies whether assing the DNS zone contributor role to the cluster service principal. It will be ignored if `webApplicationRoutingEnabled` is set to `false` or `dnsZoneResourceId` not provided.')
 param enableDnsZoneContributorRoleAssignment bool = true
@@ -328,11 +337,15 @@ param enableStorageProfileSnapshotController bool = false
 @description('Optional. The support plan for the Managed Cluster.')
 param supportPlan string = 'KubernetesOfficial'
 
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The diagnostic settings of the service.')
-param diagnosticSettings diagnosticSettingType
+param diagnosticSettings diagnosticSettingFullType[]?
 
 @description('Optional. Specifies whether the OMS agent is enabled.')
 param omsAgentEnabled bool = true
+
+@description('Optional. Specifies whether the OMS agent is using managed identity authentication.')
+param omsAgentUseAADAuth bool = false
 
 @description('Optional. Resource ID of the monitoring log analytics workspace.')
 param monitoringWorkspaceResourceId string?
@@ -340,11 +353,13 @@ param monitoringWorkspaceResourceId string?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+param roleAssignments roleAssignmentType[]?
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
-param lock lockType
+param lock lockType?
 
 @description('Optional. Tags of the resource.')
 param tags object?
@@ -366,9 +381,6 @@ param kedaAddon bool = false
 
 @description('Optional. Whether to enable VPA add-on in cluster. Default value is false.')
 param vpaAddon bool = false
-
-@description('Optional. The customer managed key definition.')
-param customerManagedKey customerManagedKeyType?
 
 @description('Optional. Whether the metric state of the kubenetes cluster is enabled.')
 param enableAzureMonitorProfileMetrics bool = false
@@ -404,14 +416,16 @@ param istioServiceMeshInternalIngressGatewayEnabled bool = false
 param istioServiceMeshExternalIngressGatewayEnabled bool = false
 
 @description('Optional. The Istio Certificate Authority definition.')
-param istioServiceMeshCertificateAuthority istioServiceMeshCertificateAuthorityType
+param istioServiceMeshCertificateAuthority istioServiceMeshCertificateAuthorityType?
 
 // =========== //
 // Variables   //
 // =========== //
 
+var enableReferencedModulesTelemetry = false
+
 var formattedUserAssignedIdentities = reduce(
-  map((managedIdentities.?userAssignedResourcesIds ?? []), (id) => { '${id}': {} }),
+  map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
   (cur, next) => union(cur, next)
 ) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
@@ -420,7 +434,7 @@ var identity = !empty(managedIdentities)
   ? {
       type: (managedIdentities.?systemAssigned ?? false)
         ? 'SystemAssigned'
-        : (!empty(managedIdentities.?userAssignedResourcesIds ?? {}) ? 'UserAssigned' : null)
+        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : null)
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
   : null
@@ -529,23 +543,11 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
-  name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
-  scope: resourceGroup(
-    split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
-    split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
-  )
-
-  resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
-    name: customerManagedKey.?keyName ?? 'dummyKey'
-  }
-}
-
 // ============== //
 // Main Resources //
 // ============== //
 
-resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-preview' = {
+resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-09-02-preview' = {
   name: name
   location: location
   tags: tags
@@ -584,6 +586,7 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-p
       osDiskSizeGB: profile.?osDiskSizeGB
       osDiskType: profile.?osDiskType
       osType: profile.?osType ?? 'Linux'
+      osSKU: profile.?osSKU
       #disable-next-line use-resource-id-functions // Not possible to reference as nested
       podSubnetID: profile.?podSubnetResourceId
       #disable-next-line use-resource-id-functions // Not possible to reference as nested
@@ -591,6 +594,11 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-p
       scaleDownMode: profile.?scaleDownMode ?? 'Delete'
       scaleSetEvictionPolicy: profile.?scaleSetEvictionPolicy ?? 'Delete'
       scaleSetPriority: profile.?scaleSetPriority
+      securityProfile: {
+        enableSecureBoot: profile.?enableSecureBoot ?? false
+        enableVTPM: profile.?enableVTPM ?? false
+        sshAccess: skuName == 'Automatic' ? 'Disabled' : 'LocalUser'
+      }
       spotMaxPrice: profile.?spotMaxPrice
       tags: profile.?tags
       type: profile.?type
@@ -633,6 +641,11 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-p
               any(dnsZoneResourceId)
             ]
           : null
+        nginx: !empty(defaultIngressControllerType)
+          ? {
+              defaultIngressControllerType: any(defaultIngressControllerType)
+            }
+          : null
       }
     }
     addonProfiles: {
@@ -654,6 +667,11 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-03-02-p
         config: omsAgentEnabled && !empty(monitoringWorkspaceResourceId)
           ? {
               logAnalyticsWorkspaceResourceID: monitoringWorkspaceResourceId!
+              ...(omsAgentUseAADAuth
+                ? {
+                    useAADAuth: 'true'
+                  }
+                : {})
             }
           : null
       }
@@ -904,7 +922,7 @@ module managedCluster_agentPools 'agent-pool/main.bicep' = [
       orchestratorVersion: agentPool.?orchestratorVersion ?? kubernetesVersion
       osDiskSizeGB: agentPool.?osDiskSizeGB
       osDiskType: agentPool.?osDiskType
-      osSku: agentPool.?osSku
+      osSKU: agentPool.?osSKU
       osType: agentPool.?osType
       podSubnetResourceId: agentPool.?podSubnetResourceId
       proximityPlacementGroupResourceId: agentPool.?proximityPlacementGroupResourceId
@@ -922,13 +940,13 @@ module managedCluster_agentPools 'agent-pool/main.bicep' = [
   }
 ]
 
-module managedCluster_extension 'br/public:avm/res/kubernetes-configuration/extension:0.2.0' = if (!empty(fluxExtension)) {
+module managedCluster_extension 'br/public:avm/res/kubernetes-configuration/extension:0.3.5' = if (!empty(fluxExtension)) {
   name: '${uniqueString(deployment().name, location)}-ManagedCluster-FluxExtension'
   params: {
     clusterName: managedCluster.name
     configurationProtectedSettings: fluxExtension.?configurationProtectedSettings
     configurationSettings: fluxExtension.?configurationSettings
-    enableTelemetry: enableTelemetry
+    enableTelemetry: enableReferencedModulesTelemetry
     extensionType: 'microsoft.flux'
     fluxConfigurations: fluxExtension.?configurations
     location: location
@@ -1031,46 +1049,47 @@ output controlPlaneFQDN string = enablePrivateCluster
   : managedCluster.properties.fqdn
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = managedCluster.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = managedCluster.?identity.?principalId
 
 @description('The Client ID of the AKS identity.')
-output kubeletIdentityClientId string = managedCluster.properties.?identityProfile.?kubeletidentity.?clientId ?? ''
+output kubeletIdentityClientId string? = managedCluster.properties.?identityProfile.?kubeletidentity.?clientId
 
 @description('The Object ID of the AKS identity.')
-output kubeletIdentityObjectId string = managedCluster.properties.?identityProfile.?kubeletidentity.?objectId ?? ''
+output kubeletIdentityObjectId string? = managedCluster.properties.?identityProfile.?kubeletidentity.?objectId
 
 @description('The Resource ID of the AKS identity.')
-output kubeletIdentityResourceId string = managedCluster.properties.?identityProfile.?kubeletidentity.?resourceId ?? ''
+output kubeletIdentityResourceId string? = managedCluster.properties.?identityProfile.?kubeletidentity.?resourceId
 
 @description('The Object ID of the OMS agent identity.')
-output omsagentIdentityObjectId string = managedCluster.properties.?addonProfiles.?omsagent.?identity.?objectId ?? ''
+output omsagentIdentityObjectId string? = managedCluster.properties.?addonProfiles.?omsagent.?identity.?objectId
 
 @description('The Object ID of the Key Vault Secrets Provider identity.')
-output keyvaultIdentityObjectId string = managedCluster.properties.?addonProfiles.?azureKeyvaultSecretsProvider.?identity.?objectId ?? ''
+output keyvaultIdentityObjectId string? = managedCluster.properties.?addonProfiles.?azureKeyvaultSecretsProvider.?identity.?objectId
 
 @description('The Client ID of the Key Vault Secrets Provider identity.')
-output keyvaultIdentityClientId string = managedCluster.properties.?addonProfiles.?azureKeyvaultSecretsProvider.?identity.?clientId ?? ''
+output keyvaultIdentityClientId string? = managedCluster.properties.?addonProfiles.?azureKeyvaultSecretsProvider.?identity.?clientId
 
 @description('The Object ID of Application Gateway Ingress Controller (AGIC) identity.')
-output ingressApplicationGatewayIdentityObjectId string = managedCluster.properties.?addonProfiles.?ingressApplicationGateway.?identity.?objectId ?? ''
+output ingressApplicationGatewayIdentityObjectId string? = managedCluster.properties.?addonProfiles.?ingressApplicationGateway.?identity.?objectId
 
 @description('The location the resource was deployed into.')
 output location string = managedCluster.location
 
 @description('The OIDC token issuer URL.')
-output oidcIssuerUrl string = managedCluster.properties.?oidcIssuerProfile.?issuerURL ?? ''
+output oidcIssuerUrl string? = managedCluster.properties.?oidcIssuerProfile.?issuerURL
 
 @description('The addonProfiles of the Kubernetes cluster.')
-output addonProfiles object = managedCluster.properties.?addonProfiles ?? {}
+output addonProfiles object? = managedCluster.properties.?addonProfiles
 
 @description('The Object ID of Web Application Routing.')
-output webAppRoutingIdentityObjectId string = managedCluster.properties.?ingressProfile.?webAppRouting.?identity.?objectId ?? ''
+output webAppRoutingIdentityObjectId string? = managedCluster.properties.?ingressProfile.?webAppRouting.?identity.?objectId
 
 // =============== //
 //   Definitions   //
 // =============== //
 
 @export()
+@description('The type for an agent pool.')
 type agentPoolType = {
   @description('Required. The name of the agent pool.')
   name: string
@@ -1139,7 +1158,7 @@ type agentPoolType = {
   osDiskType: string?
 
   @description('Optional. The OS SKU of the agent pool.')
-  osSku: string?
+  osSKU: string?
 
   @description('Optional. The OS type of the agent pool.')
   osType: ('Linux' | 'Windows')?
@@ -1158,6 +1177,12 @@ type agentPoolType = {
 
   @description('Optional. The scale set priority of the agent pool.')
   scaleSetPriority: ('Low' | 'Regular' | 'Spot')?
+
+  @description('Optional. Secure Boot is a feature of Trusted Launch which ensures that only signed operating systems and drivers can boot. For more details, see aka.ms/aks/trustedlaunch.')
+  enableSecureBoot: bool?
+
+  @description('Optional. vTPM is a Trusted Launch feature for configuring a dedicated secure vault for keys and measurements held locally on the node. For more details, see aka.ms/aks/trustedlaunch.')
+  enableVTPM: bool?
 
   @description('Optional. The spot max price of the agent pool.')
   spotMaxPrice: int?
@@ -1185,102 +1210,15 @@ type agentPoolType = {
 }
 
 @export()
-type managedIdentitiesType = {
-  @description('Optional. Enables system assigned managed identity on the resource.')
-  systemAssigned: bool?
-
-  @description('Optional. The resource ID(s) to assign to the resource.')
-  userAssignedResourcesIds: string[]?
-}
-
-@export()
-type lockType = {
-  @description('Optional. Specify the name of lock.')
-  name: string?
-
-  @description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?
-
-@export()
-type roleAssignmentType = {
-  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
-  name: string?
-
-  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
-
-  @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
-
-  @description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
-
-  @description('Optional. The description of the role assignment.')
-  description: string?
-
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
-
-  @description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
-
-  @description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?
-
-@export()
-type diagnosticSettingType = {
-  @description('Optional. The name of diagnostic setting.')
-  name: string?
-
-  @description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.')
-  logCategoriesAndGroups: {
-    @description('Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.')
-    category: string?
-
-    @description('Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.')
-    categoryGroup: string?
-
-    @description('Optional. Enable or disable the category explicitly. Default is `true`.')
-    enabled: bool?
-  }[]?
-
-  @description('Optional. The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.')
-  metricCategories: {
-    @description('Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.')
-    category: string
-
-    @description('Optional. Enable or disable the category explicitly. Default is `true`.')
-    enabled: bool?
-  }[]?
-
-  @description('Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.')
-  logAnalyticsDestinationType: ('Dedicated' | 'AzureDiagnostics' | null)?
-
-  @description('Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  workspaceResourceId: string?
-
-  @description('Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  storageAccountResourceId: string?
-
-  @description('Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.')
-  eventHubAuthorizationRuleResourceId: string?
-
-  @description('Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  eventHubName: string?
-
-  @description('Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.')
-  marketplacePartnerResourceId: string?
-}[]?
-
-@export()
+@description('The type for flux configuration protected settings.')
 type fluxConfigurationProtectedSettingsType = {
   @description('Optional. The SSH private key to use for Git authentication.')
+  @secure()
   sshPrivateKey: string?
 }
 
 @export()
+@description('The type for an extension.')
 type extensionType = {
   @description('Optional. The name of the extension.')
   name: string?
@@ -1308,29 +1246,17 @@ type extensionType = {
 }
 
 @export()
-type customerManagedKeyType = {
-  @description('Required. The resource ID of a key vault to reference a customer managed key for encryption from.')
-  keyVaultResourceId: string
-
-  @description('Required. The name of the customer managed key to use for encryption.')
-  keyName: string
-
-  @description('Optional. The version of the customer managed key to reference for encryption. If not provided, using \'latest\'.')
-  keyVersion: string?
-
-  @description('Required. Network access of key vault. The possible values are Public and Private. Public means the key vault allows public access from all networks. Private means the key vault disables public access and enables private link. The default value is Public.')
-  keyVaultNetworkAccess: ('Private' | 'Public')
-}
-
-@export()
+@description('The type of a mainenance configuration.')
 type maintenanceConfigurationType = {
   @description('Required. Name of maintenance window.')
   name: ('aksManagedAutoUpgradeSchedule' | 'aksManagedNodeOSUpgradeSchedule')
 
   @description('Required. Maintenance window for the maintenance configuration.')
   maintenanceWindow: object
-}?
+}
 
+@export()
+@description('The type for an The Istio Certificate Authority definition.')
 type istioServiceMeshCertificateAuthorityType = {
   @description('Required. The resource ID of a key vault to reference a Certificate Authority from.')
   keyVaultResourceId: string
@@ -1346,9 +1272,10 @@ type istioServiceMeshCertificateAuthorityType = {
 
   @description('Required. Root certificate object name in Azure Key Vault.')
   rootCertObjectName: string
-}?
+}
 
 @export()
+@description('The type for an AAD profile.')
 type aadProfileType = {
   @description('Optional. The client AAD application ID.')
   aadProfileClientAppID: string?
@@ -1370,4 +1297,4 @@ type aadProfileType = {
 
   @description('Optional. Specifies the tenant ID of the Azure Active Directory used by the AKS cluster for authentication.')
   aadProfileTenantId: string?
-}?
+}

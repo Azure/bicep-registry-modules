@@ -1,6 +1,5 @@
 metadata name = 'DocumentDB Database Account SQL Role.'
 metadata description = 'This module deploys SQL Role Definision and Assignment in a CosmosDB Account.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent Database Account. Required if the template is used in a standalone deployment.')
 param databaseAccountName string
@@ -28,7 +27,7 @@ param roleName string = 'Reader Writer'
 ])
 param roleType string = 'CustomRole'
 
-resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' existing = {
+resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2024-11-15' existing = {
   name: databaseAccountName
 }
 
@@ -57,7 +56,6 @@ module sqlRoleAssignment 'sql-role-assignments/main.bicep' = [
     }
     dependsOn: [
       databaseAccount
-      sqlRoleDefinition
     ]
   }
 ]

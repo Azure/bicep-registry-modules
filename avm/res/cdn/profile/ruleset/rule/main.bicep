@@ -1,6 +1,5 @@
 metadata name = 'CDN Profiles Rules'
 metadata description = 'This module deploys a CDN Profile rule.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the rule.')
 param name string
@@ -55,7 +54,12 @@ output resourceId string = rule.id
 @description('The name of the resource group the custom domain was created in.')
 output resourceGroupName string = resourceGroup().name
 
+// =============== //
+//   Definitions   //
+// =============== //
+
 @export()
+@description('The type of the rule.')
 type ruleType = {
   @description('Required. The name of the rule.')
   name: string

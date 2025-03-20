@@ -13,7 +13,7 @@ This module deploys a MongoDB Database Collection.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections` | [2023-04-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2023-04-15/databaseAccounts/mongodbDatabases/collections) |
+| `Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections` | [2024-11-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/mongodbDatabases/collections) |
 
 ## Parameters
 
@@ -36,7 +36,7 @@ This module deploys a MongoDB Database Collection.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`throughput`](#parameter-throughput) | int | Request Units per second. |
+| [`throughput`](#parameter-throughput) | int | Request Units per second. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the collection level and not at the database level. |
 
 ### Parameter: `indexes`
 
@@ -75,7 +75,7 @@ The name of the parent mongodb database. Required if the template is used in a s
 
 ### Parameter: `throughput`
 
-Request Units per second.
+Request Units per second. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the collection level and not at the database level.
 
 - Required: No
 - Type: int

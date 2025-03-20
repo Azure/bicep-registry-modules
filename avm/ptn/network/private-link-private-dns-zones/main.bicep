@@ -1,6 +1,5 @@
 metadata name = 'avm/ptn/network/private-link-private-dns-zones'
 metadata description = 'Private Link Private DNS Zones'
-metadata owner = 'jtracey93'
 
 @description('Optional. Azure region where the each of the Private Link Private DNS Zones created will be deployed, default to Resource Group location if not specified.')
 param location string = resourceGroup().location
@@ -183,6 +182,12 @@ var azureRegionGeoCodeShortNameAsKey = {
   chilecentral: 'clc'
   westus: 'wus'
   swedensouth: 'sds'
+  usgovvirginia: 'ugv'
+  usgovtexas: 'ugt'
+  usgovarizona: 'uga'
+  usdodeast: 'ude'
+  usdodcentral: 'udc'
+  indonesiacentral: 'idc'
 }
 
 var azureRegionShortNameDisplayNameAsKey = {
@@ -243,6 +248,12 @@ var azureRegionShortNameDisplayNameAsKey = {
   'west us 3': 'westus3'
   'taiwan north': 'taiwannorth'
   'sweden central': 'swedencentral'
+  'usgov virginia': 'usgovvirginia'
+  'usgov texas': 'usgovtexas'
+  'usgov arizona': 'usgovarizona'
+  'usdod east': 'usdodeast'
+  'usdod central': 'usdodcentral'
+  'indonesia central': 'indonesiacentral'
 }
 
 var locationLowered = toLower(location)

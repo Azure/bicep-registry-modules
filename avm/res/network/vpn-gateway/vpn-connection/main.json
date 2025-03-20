@@ -4,12 +4,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "13703101435058090684"
+      "version": "0.33.13.18514",
+      "templateHash": "6343342170986309278"
     },
     "name": "VPN Gateway VPN Connections",
-    "description": "This module deploys a VPN Gateway VPN Connection.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a VPN Gateway VPN Connection."
   },
   "parameters": {
     "name": {

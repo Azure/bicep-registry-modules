@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "156138954055342275"
+      "version": "0.33.93.31351",
+      "templateHash": "14024094214852981332"
     },
     "name": "Log Analytics Workspace Storage Insight Configs",
-    "description": "This module deploys a Log Analytics Workspace Storage Insight Config.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Log Analytics Workspace Storage Insight Config."
   },
   "parameters": {
     "logAnalyticsWorkspaceName": {
@@ -70,12 +69,12 @@
     "workspace": {
       "existing": true,
       "type": "Microsoft.OperationalInsights/workspaces",
-      "apiVersion": "2022-10-01",
+      "apiVersion": "2023-09-01",
       "name": "[parameters('logAnalyticsWorkspaceName')]"
     },
     "storageinsightconfig": {
       "type": "Microsoft.OperationalInsights/workspaces/storageInsightConfigs",
-      "apiVersion": "2020-08-01",
+      "apiVersion": "2023-09-01",
       "name": "[format('{0}/{1}', parameters('logAnalyticsWorkspaceName'), parameters('name'))]",
       "tags": "[parameters('tags')]",
       "properties": {
@@ -85,11 +84,7 @@
           "id": "[parameters('storageAccountResourceId')]",
           "key": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', last(split(parameters('storageAccountResourceId'), '/'))), '2022-09-01').keys[0].value]"
         }
-      },
-      "dependsOn": [
-        "storageAccount",
-        "workspace"
-      ]
+      }
     }
   },
   "outputs": {

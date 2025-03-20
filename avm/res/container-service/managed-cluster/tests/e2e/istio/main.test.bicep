@@ -90,6 +90,6 @@ module secretPermissions 'main.rbac.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-rbac'
   params: {
     keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
-    principalId: testDeployment[0].outputs.keyvaultIdentityObjectId
+    principalId: testDeployment[0].outputs.keyvaultIdentityObjectId!
   }
 }

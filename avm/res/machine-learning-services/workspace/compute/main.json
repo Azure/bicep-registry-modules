@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "2023974498049700881"
+      "version": "0.33.93.31351",
+      "templateHash": "13679175688936595005"
     },
     "name": "Machine Learning Services Workspaces Computes",
-    "description": "This module deploys a Machine Learning Services Workspaces Compute.\n\nAttaching a compute is not idempotent and will fail in case you try to redeploy over an existing compute in AML (see parameter `deployCompute`).",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Machine Learning Services Workspaces Compute.\n\nAttaching a compute is not idempotent and will fail in case you try to redeploy over an existing compute in AML (see parameter `deployCompute`)."
   },
   "definitions": {
     "managedIdentityAllType": {
@@ -166,16 +165,13 @@
     "compute": {
       "condition": "[equals(parameters('deployCompute'), true())]",
       "type": "Microsoft.MachineLearningServices/workspaces/computes",
-      "apiVersion": "2022-10-01",
+      "apiVersion": "2024-10-01",
       "name": "[format('{0}/{1}', parameters('machineLearningWorkspaceName'), parameters('name'))]",
       "location": "[parameters('location')]",
       "tags": "[if(empty(parameters('resourceId')), parameters('tags'), null())]",
       "sku": "[if(empty(parameters('resourceId')), createObject('name', parameters('sku'), 'tier', parameters('sku')), null())]",
       "identity": "[if(empty(parameters('resourceId')), variables('identity'), null())]",
-      "properties": "[union(createObject('description', parameters('description'), 'disableLocalAuth', parameters('disableLocalAuth'), 'computeType', parameters('computeType')), if(not(empty(parameters('resourceId'))), createObject('resourceId', parameters('resourceId')), createObject('computeLocation', parameters('computeLocation'), 'properties', parameters('properties'))))]",
-      "dependsOn": [
-        "machineLearningWorkspace"
-      ]
+      "properties": "[union(createObject('description', parameters('description'), 'disableLocalAuth', parameters('disableLocalAuth'), 'computeType', parameters('computeType')), if(not(empty(parameters('resourceId'))), createObject('resourceId', parameters('resourceId')), createObject('computeLocation', parameters('computeLocation'), 'properties', parameters('properties'))))]"
     }
   },
   "outputs": {
@@ -202,17 +198,18 @@
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",
+      "nullable": true,
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[coalesce(tryGet(tryGet(reference('compute', '2022-10-01', 'full'), 'identity'), 'principalId'), '')]"
+      "value": "[tryGet(tryGet(reference('compute', '2024-10-01', 'full'), 'identity'), 'principalId')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('compute', '2022-10-01', 'full').location]"
+      "value": "[reference('compute', '2024-10-01', 'full').location]"
     }
   }
 }

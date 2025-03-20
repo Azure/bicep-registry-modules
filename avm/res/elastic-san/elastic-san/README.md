@@ -1167,6 +1167,8 @@ Size of the Elastic SAN base capacity in Tebibytes (TiB). The supported capacity
 - Required: No
 - Type: int
 - Default: `1`
+- MinValue: 1
+- MaxValue: 400
 
 ### Parameter: `diagnosticSettings`
 
@@ -1292,6 +1294,8 @@ Size of the Elastic SAN additional capacity in Tebibytes (TiB). The supported ca
 - Required: No
 - Type: int
 - Default: `0`
+- MinValue: 0
+- MaxValue: 600
 
 ### Parameter: `location`
 
@@ -1616,7 +1620,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 | [`name`](#parameter-volumegroupsprivateendpointsname) | string | The name of the Private Endpoint. |
 | [`privateDnsZoneGroup`](#parameter-volumegroupsprivateendpointsprivatednszonegroup) | object | The private DNS Zone Group to configure for the Private Endpoint. |
 | [`privateLinkServiceConnectionName`](#parameter-volumegroupsprivateendpointsprivatelinkserviceconnectionname) | string | The name of the private link connection to create. |
-| [`resourceGroupName`](#parameter-volumegroupsprivateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different Resource Group than the main resource. |
+| [`resourceGroupResourceId`](#parameter-volumegroupsprivateendpointsresourcegroupresourceid) | string | The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used. |
 | [`roleAssignments`](#parameter-volumegroupsprivateendpointsroleassignments) | array | Array of role assignments to create. |
 | [`service`](#parameter-volumegroupsprivateendpointsservice) | string | The subresource to deploy the Private Endpoint for. For example "vault" for a Key Vault Private Endpoint. |
 | [`tags`](#parameter-volumegroupsprivateendpointstags) | object | Tags to be applied on all resources/Resource Groups in this deployment. |
@@ -1869,9 +1873,9 @@ The name of the private link connection to create.
 - Required: No
 - Type: string
 
-### Parameter: `volumeGroups.privateEndpoints.resourceGroupName`
+### Parameter: `volumeGroups.privateEndpoints.resourceGroupResourceId`
 
-Specify if you want to deploy the Private Endpoint into a different Resource Group than the main resource.
+The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used.
 
 - Required: No
 - Type: string
@@ -2050,6 +2054,8 @@ Size of the Elastic SAN Volume in Gibibytes (GiB). The supported capacity ranges
 
 - Required: Yes
 - Type: int
+- MinValue: 1
+- MaxValue: 65536
 
 ### Parameter: `volumeGroups.volumes.snapshots`
 
@@ -2087,8 +2093,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.9.0` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.3.0` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.10.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

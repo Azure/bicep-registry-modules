@@ -1,6 +1,5 @@
 metadata name = 'DBforMySQL Flexible Server Firewall Rules'
 metadata description = 'This module deploys a DBforMySQL Flexible Server Firewall Rule.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the MySQL flexible server Firewall Rule.')
 param name string

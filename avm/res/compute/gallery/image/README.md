@@ -13,7 +13,7 @@ This module deploys an Azure Compute Gallery Image Definition.
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Compute/galleries/images` | [2023-07-03](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2023-07-03/galleries/images) |
+| `Microsoft.Compute/galleries/images` | [2024-03-03](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-03-03/galleries/images) |
 
 ## Parameters
 
@@ -36,9 +36,11 @@ This module deploys an Azure Compute Gallery Image Definition.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`allowUpdateImage`](#parameter-allowupdateimage) | bool | Must be set to true if the gallery image features are being updated. |
 | [`architecture`](#parameter-architecture) | string | The architecture of the image. Applicable to OS disks only. |
 | [`description`](#parameter-description) | string | The description of this gallery image definition resource. This property is updatable. |
 | [`disallowed`](#parameter-disallowed) | object | Describes the disallowed disk types. |
+| [`diskControllerType`](#parameter-diskcontrollertype) | string | The disk controllers that an OS disk supports. |
 | [`endOfLifeDate`](#parameter-endoflifedate) | string | The end of life date of the gallery image definition. This property can be used for decommissioning purposes. This property is updatable. |
 | [`eula`](#parameter-eula) | string | The Eula agreement for the gallery image definition. |
 | [`hyperVGeneration`](#parameter-hypervgeneration) | string | The hypervisor generation of the Virtual Machine. If this value is not specified, then it is determined by the securityType parameter. If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1. |
@@ -132,6 +134,13 @@ The name of the parent Azure Shared Image Gallery. Required if the template is u
 - Required: Yes
 - Type: string
 
+### Parameter: `allowUpdateImage`
+
+Must be set to true if the gallery image features are being updated.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `architecture`
 
 The architecture of the image. Applicable to OS disks only.
@@ -179,6 +188,21 @@ A list of disk types.
   ]
   ```
 
+### Parameter: `diskControllerType`
+
+The disk controllers that an OS disk supports.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'NVMe, SCSI'
+    'SCSI'
+    'SCSI, NVMe'
+  ]
+  ```
+
 ### Parameter: `endOfLifeDate`
 
 The end of life date of the gallery image definition. This property can be used for decommissioning purposes. This property is updatable.
@@ -213,7 +237,6 @@ Specify if the image supports accelerated networking.
 
 - Required: No
 - Type: bool
-- Default: `True`
 
 ### Parameter: `isHibernateSupported`
 
@@ -264,6 +287,7 @@ The minimum number of the resource.
 
 - Required: No
 - Type: int
+- MinValue: 1
 
 ### Parameter: `privacyStatementUri`
 
@@ -485,6 +509,7 @@ The minimum number of the resource.
 
 - Required: No
 - Type: int
+- MinValue: 1
 
 ## Outputs
 

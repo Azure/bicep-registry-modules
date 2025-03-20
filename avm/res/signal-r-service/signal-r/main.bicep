@@ -1,6 +1,5 @@
 metadata name = 'SignalR Service SignalR'
 metadata description = 'This module deploys a SignalR Service SignalR.'
-metadata owner = 'Azure/module-maintainers'
 
 // ============== //
 //   Parameters   //
@@ -124,6 +123,8 @@ param managedIdentities managedIdentityAllType?
 // ============= //
 //   Variables   //
 // ============= //
+
+var enableReferencedModulesTelemetry = false
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -304,7 +305,7 @@ module signalR_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.8.
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
-      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',
@@ -362,7 +363,7 @@ output resourceId string = signalR.id
 output location string = signalR.location
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = signalR.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = signalR.?identity.?principalId
 
 @description('The private endpoints of the SignalR.')
 output privateEndpoints array = [

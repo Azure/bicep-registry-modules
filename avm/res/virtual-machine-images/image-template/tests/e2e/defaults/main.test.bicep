@@ -64,7 +64,6 @@ module testDeployment '../../../main.bicep' = {
         type: 'ManagedImage'
       }
     ]
-
     managedIdentities: {
       userAssignedResourceIds: [
         nestedDependencies.outputs.managedIdentityResourceId

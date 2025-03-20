@@ -1,6 +1,5 @@
 metadata name = 'Machine Learning Services Workspaces Connections'
 metadata description = 'This module creates a connection in a Machine Learning Services workspace.'
-metadata owner = 'Azure/module-maintainers'
 
 // ================ //
 // Parameters       //
@@ -48,7 +47,7 @@ resource machineLearningWorkspace 'Microsoft.MachineLearningServices/workspaces@
 // Resources      //
 // ============== //
 
-resource connection 'Microsoft.MachineLearningServices/workspaces/connections@2024-04-01' = {
+resource connection 'Microsoft.MachineLearningServices/workspaces/connections@2024-10-01' = {
   name: name
   parent: machineLearningWorkspace
   properties: union(
@@ -124,6 +123,7 @@ type categoryType =
   | 'Dynamics'
   | 'DynamicsAx'
   | 'DynamicsCrm'
+  | 'Elasticsearch'
   | 'Eloqua'
   | 'FileServer'
   | 'FtpServer'
@@ -143,6 +143,7 @@ type categoryType =
   | 'Informix'
   | 'Jira'
   | 'Magento'
+  | 'ManagedOnlineEndpoint'
   | 'MariaDb'
   | 'Marketo'
   | 'MicrosoftAccess'
@@ -159,6 +160,7 @@ type categoryType =
   | 'OracleServiceCloud'
   | 'PayPal'
   | 'Phoenix'
+  | 'Pinecone'
   | 'PostgreSql'
   | 'Presto'
   | 'PythonFeed'
@@ -210,7 +212,7 @@ type accountKeyAuthTypeWorkspaceConnectionPropertyType = {
   authType: 'AccountKey'
 
   @description('Required. The credentials for the connection.')
-  credentials: workspaceConnectionAccountKey
+  credentials: workspaceConnectionAccountKeyType
 }
 
 type apiKeyAuthWorkspaceConnectionPropertyType = {
@@ -298,7 +300,7 @@ type workspaceConnectionAccessKeyType = {
   secretAccessKey: string
 }
 
-type workspaceConnectionAccountKey = {
+type workspaceConnectionAccountKeyType = {
   @description('Required. The connection key.')
   key: string
 }
@@ -382,6 +384,7 @@ type workspaceConnectionUsernamePasswordType = {
 type connectionPropertyType =
   | aadAuthTypeWorkspaceConnectionPropertyType
   | accessKeyAuthTypeWorkspaceConnectionPropertyType
+  | accountKeyAuthTypeWorkspaceConnectionPropertyType
   | apiKeyAuthWorkspaceConnectionPropertyType
   | customKeysWorkspaceConnectionPropertyType
   | managedIdentityAuthTypeWorkspaceConnectionPropertyType

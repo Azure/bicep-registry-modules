@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "11162019331609283814"
+      "version": "0.33.93.31351",
+      "templateHash": "8421640590183520512"
     },
     "name": "Compute Galleries Applications",
-    "description": "This module deploys an Azure Compute Gallery Application.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Azure Compute Gallery Application."
   },
   "definitions": {
     "customActionType": {
@@ -282,12 +281,12 @@
     "gallery": {
       "existing": true,
       "type": "Microsoft.Compute/galleries",
-      "apiVersion": "2022-03-03",
+      "apiVersion": "2024-03-03",
       "name": "[parameters('galleryName')]"
     },
     "application": {
       "type": "Microsoft.Compute/galleries/applications",
-      "apiVersion": "2022-03-03",
+      "apiVersion": "2024-03-03",
       "name": "[format('{0}/{1}', parameters('galleryName'), parameters('name'))]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -299,10 +298,7 @@
         "privacyStatementUri": "[parameters('privacyStatementUri')]",
         "releaseNoteUri": "[parameters('releaseNoteUri')]",
         "supportedOSType": "[parameters('supportedOSType')]"
-      },
-      "dependsOn": [
-        "gallery"
-      ]
+      }
     },
     "application_roleAssignments": {
       "copy": {
@@ -354,7 +350,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('application', '2022-03-03', 'full').location]"
+      "value": "[reference('application', '2024-03-03', 'full').location]"
     }
   }
 }

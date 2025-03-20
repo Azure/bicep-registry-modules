@@ -1,6 +1,5 @@
 metadata name = 'CDN Profiles AFD Endpoint Route'
 metadata description = 'This module deploys a CDN Profile AFD Endpoint route.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the route.')
 param name string
@@ -128,6 +127,7 @@ output resourceGroupName string = resourceGroup().name
 // =============== //
 
 @export()
+@description('The type of the route.')
 type routeType = {
   @description('Required. The name of the route.')
   name: string
@@ -166,6 +166,8 @@ type routeType = {
   supportedProtocols: array?
 }
 
+@export()
+@description('The type of the route cache configuration.')
 type afdRoutecacheConfigurationType = {
   @description('Required. Compression settings.')
   compressionSettings: {
@@ -173,7 +175,7 @@ type afdRoutecacheConfigurationType = {
     contentTypesToCompress: string[]
 
     @description('Optional. Indicates whether content compression is enabled on AzureFrontDoor. Default value is false. If compression is enabled, content will be served as compressed if user requests for a compressed version. Content won\'t be compressed on AzureFrontDoor when requested content is smaller than 1 byte or larger than 1 MB.')
-    iscontentTypeToCompressAll: bool?
+    isCompressionEnabled: bool?
   }
   @description('Required. Query parameters to include or exclude (comma separated).')
   queryParameters: string

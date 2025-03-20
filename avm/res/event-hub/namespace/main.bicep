@@ -1,6 +1,5 @@
 metadata name = 'Event Hub Namespaces'
 metadata description = 'This module deploys an Event Hub Namespace.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the event hub namespace.')
 @maxLength(50)
@@ -68,33 +67,33 @@ param minimumTlsVersion string = '1.2'
 ])
 param publicNetworkAccess string = ''
 
-import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointSingleServiceType[]?
 
 @description('Optional. Configure networking options. This object contains IPs/Subnets to allow or restrict access to private endpoints only. For security reasons, it is recommended to configure this object on the Namespace.')
 param networkRuleSets object = {}
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
-import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyWithAutoRotateType?
 
 @description('Optional. Enable infrastructure encryption (double encryption). Note, this setting requires the configuration of Customer-Managed-Keys (CMK) via the corresponding module parameters.')
 param requireInfrastructureEncryption bool = false
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -109,6 +108,11 @@ param eventhubs array = []
 
 @description('Optional. The disaster recovery config for this namespace.')
 param disasterRecoveryConfig disasterRecoveryConfigType?
+
+@description('Optional. Key vault reference and secret settings for the module\'s secrets export.')
+param secretsExportConfiguration secretsExportConfigurationType?
+
+var enableReferencedModulesTelemetry = false
 
 var maximumThroughputUnitsVar = !isAutoInflateEnabled ? 0 : maximumThroughputUnits
 
@@ -165,22 +169,22 @@ var formattedRoleAssignments = [
 ]
 
 resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
-  name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
+  name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
   scope: resourceGroup(
-    split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
-    split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
+    split(customerManagedKey.?keyVaultResourceId!, '/')[2],
+    split(customerManagedKey.?keyVaultResourceId!, '/')[4]
   )
 
   resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
-    name: customerManagedKey.?keyName ?? 'dummyKey'
+    name: customerManagedKey.?keyName!
   }
 }
 
 resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
-  name: last(split(customerManagedKey.?userAssignedIdentityResourceId ?? 'dummyMsi', '/'))
+  name: last(split(customerManagedKey.?userAssignedIdentityResourceId!, '/'))
   scope: resourceGroup(
-    split((customerManagedKey.?userAssignedIdentityResourceId ?? '//'), '/')[2],
-    split((customerManagedKey.?userAssignedIdentityResourceId ?? '////'), '/')[4]
+    split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[2],
+    split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[4]
   )
 }
 
@@ -228,7 +232,7 @@ resource eventHubNamespace 'Microsoft.EventHub/namespaces@2024-01-01' = {
               keyName: customerManagedKey!.keyName
               keyVaultUri: cMKKeyVault.properties.vaultUri
               keyVersion: !empty(customerManagedKey.?keyVersion ?? '')
-                ? customerManagedKey!.keyVersion
+                ? customerManagedKey!.?keyVersion
                 : (customerManagedKey.?autoRotationEnabled ?? true)
                     ? null
                     : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
@@ -311,7 +315,7 @@ module eventHubNamespace_networkRuleSet 'network-rule-set/main.bicep' = if (!emp
   }
 }
 
-module eventHubNamespace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
+module eventHubNamespace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-eventHubNamespace-PrivateEndpoint-${index}'
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
@@ -345,7 +349,7 @@ module eventHubNamespace_privateEndpoints 'br/public:avm/res/network/private-end
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
-      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',
@@ -423,6 +427,52 @@ resource eventHubNamespace_diagnosticSettings 'Microsoft.Insights/diagnosticSett
   }
 ]
 
+module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfiguration != null) {
+  name: '${uniqueString(deployment().name, location)}-secrets-kv'
+  scope: resourceGroup(
+    split(secretsExportConfiguration.?keyVaultResourceId!, '/')[2],
+    split(secretsExportConfiguration.?keyVaultResourceId!, '/')[4]
+  )
+  params: {
+    keyVaultName: last(split(secretsExportConfiguration.?keyVaultResourceId!, '/'))
+    secretsToSet: union(
+      [],
+      contains(secretsExportConfiguration!, 'rootPrimaryConnectionStringName')
+        ? [
+            {
+              name: secretsExportConfiguration!.?rootPrimaryConnectionStringName
+              value: listkeys('${eventHubNamespace.id}/AuthorizationRules/RootManageSharedAccessKey', '2024-01-01').primaryConnectionString
+            }
+          ]
+        : [],
+      contains(secretsExportConfiguration!, 'rootSecondaryConnectionStringName')
+        ? [
+            {
+              name: secretsExportConfiguration!.?rootSecondaryConnectionStringName
+              value: listkeys('${eventHubNamespace.id}/AuthorizationRules/RootManageSharedAccessKey', '2024-01-01').secondaryConnectionString
+            }
+          ]
+        : [],
+      contains(secretsExportConfiguration!, 'rootPrimaryKeyName')
+        ? [
+            {
+              name: secretsExportConfiguration!.?rootPrimaryKeyName
+              value: listkeys('${eventHubNamespace.id}/AuthorizationRules/RootManageSharedAccessKey', '2024-01-01').primaryKey
+            }
+          ]
+        : [],
+      contains(secretsExportConfiguration!, 'rootSecondaryKeyName')
+        ? [
+            {
+              name: secretsExportConfiguration!.?rootSecondaryKeyName
+              value: listkeys('${eventHubNamespace.id}/AuthorizationRules/RootManageSharedAccessKey', '2024-01-01').secondaryKey
+            }
+          ]
+        : []
+    )
+  }
+}
+
 @description('The name of the eventspace.')
 output name string = eventHubNamespace.name
 
@@ -444,19 +494,49 @@ output eventHubResourceIds string[] = [
 ]
 
 @description('The private endpoints of the eventspace.')
-output privateEndpoints array = [
+output privateEndpoints privateEndpointOutputType[] = [
   for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
     name: eventHubNamespace_privateEndpoints[i].outputs.name
     resourceId: eventHubNamespace_privateEndpoints[i].outputs.resourceId
-    groupId: eventHubNamespace_privateEndpoints[i].outputs.groupId
-    customDnsConfig: eventHubNamespace_privateEndpoints[i].outputs.customDnsConfig
-    networkInterfaceIds: eventHubNamespace_privateEndpoints[i].outputs.networkInterfaceIds
+    groupId: eventHubNamespace_privateEndpoints[i].outputs.?groupId!
+    customDnsConfigs: eventHubNamespace_privateEndpoints[i].outputs.customDnsConfigs
+    networkInterfaceResourceIds: eventHubNamespace_privateEndpoints[i].outputs.networkInterfaceResourceIds
   }
 ]
+
+import { secretsOutputType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+@description('A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret\'s name.')
+output exportedSecrets secretsOutputType = (secretsExportConfiguration != null)
+  ? toObject(secretsExport.outputs.secretsSet, secret => last(split(secret.secretResourceId, '/')), secret => secret)
+  : {}
 
 // =============== //
 //   Definitions   //
 // =============== //
+
+@export()
+type privateEndpointOutputType = {
+  @description('The name of the private endpoint.')
+  name: string
+
+  @description('The resource ID of the private endpoint.')
+  resourceId: string
+
+  @description('The group Id for the private endpoint Group.')
+  groupId: string?
+
+  @description('The custom DNS configurations of the private endpoint.')
+  customDnsConfigs: {
+    @description('FQDN that resolves to private endpoint IP address.')
+    fqdn: string?
+
+    @description('A list of private IP addresses of the private endpoint.')
+    ipAddresses: string[]
+  }[]
+
+  @description('The IDs of the network interfaces associated with the private endpoint.')
+  networkInterfaceResourceIds: string[]
+}
 
 @export()
 type disasterRecoveryConfigType = {
@@ -465,4 +545,22 @@ type disasterRecoveryConfigType = {
 
   @description('Optional. Resource ID of the Primary/Secondary event hub namespace name, which is part of GEO DR pairing.')
   partnerNamespaceResourceId: string?
+}
+
+@export()
+type secretsExportConfigurationType = {
+  @description('Required. The resource ID of the key vault where to store the secrets of this module.')
+  keyVaultResourceId: string
+
+  @description('Optional. The rootPrimaryConnectionStringName secret name to create.')
+  rootPrimaryConnectionStringName: string?
+
+  @description('Optional. The rootSecondaryConnectionStringName secret name to create.')
+  rootSecondaryConnectionStringName: string?
+
+  @description('Optional. The rootPrimaryKeyName secret name to create.')
+  rootPrimaryKeyName: string?
+
+  @description('Optional. The rootSecondaryKeyName secret name to create.')
+  rootSecondaryKeyName: string?
 }

@@ -1,15 +1,15 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "1469752443660867394"
+      "version": "0.26.170.59819",
+      "templateHash": "14190380769454676871"
     },
     "name": "Policy Insights Remediations",
-    "description": "This module deploys a Policy Insights Remediation.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Policy Insights Remediation."
   },
   "parameters": {
     "name": {
@@ -27,9 +27,22 @@
     },
     "filtersLocations": {
       "type": "array",
+      "items": {
+        "type": "string"
+      },
       "defaultValue": [],
       "metadata": {
         "description": "Optional. The filters that will be applied to determine which resources to remediate."
+      }
+    },
+    "filtersResourceIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. The IDs of the resources that will be remediated. Can specify at most 100 IDs."
       }
     },
     "parallelDeployments": {
@@ -110,11 +123,11 @@
       }
     }
   },
-  "resources": [
-    {
+  "resources": {
+    "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2024-11-01",
       "name": "[take(format('46d3xbcp.ptn.policyinsights-remediation.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
       "location": "[parameters('location')]",
       "properties": {
@@ -132,7 +145,7 @@
         }
       }
     },
-    {
+    "remediation_mg": {
       "condition": "[and(empty(parameters('subscriptionId')), empty(parameters('resourceGroupName')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -160,6 +173,9 @@
           "filtersLocations": {
             "value": "[parameters('filtersLocations')]"
           },
+          "filtersResourceIds": {
+            "value": "[parameters('filtersResourceIds')]"
+          },
           "resourceCount": {
             "value": "[parameters('resourceCount')]"
           },
@@ -172,16 +188,16 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "2802722151462806427"
+              "version": "0.26.170.59819",
+              "templateHash": "10127303315339284140"
             },
             "name": "Policy Insights Remediations (Management Group scope)",
-            "description": "This module starts a Policy Remediation task at a Management Group scope.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module starts a Policy Remediation task at a Management Group scope."
           },
           "parameters": {
             "name": {
@@ -199,9 +215,22 @@
             },
             "filtersLocations": {
               "type": "array",
+              "items": {
+                "type": "string"
+              },
               "defaultValue": [],
               "metadata": {
                 "description": "Optional. The filters that will be applied to determine which resources to remediate."
+              }
+            },
+            "filtersResourceIds": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. The IDs of the resources that will be remediated. Can specify at most 100 IDs."
               }
             },
             "parallelDeployments": {
@@ -243,25 +272,23 @@
               }
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "remediation": {
               "type": "Microsoft.PolicyInsights/remediations",
-              "apiVersion": "2021-10-01",
+              "apiVersion": "2024-10-01",
               "name": "[parameters('name')]",
               "properties": {
                 "failureThreshold": {
                   "percentage": "[json(parameters('failureThresholdPercentage'))]"
                 },
-                "filters": {
-                  "locations": "[parameters('filtersLocations')]"
-                },
+                "filters": "[union(createObject('locations', parameters('filtersLocations')), if(greater(length(parameters('filtersResourceIds')), 0), createObject('resourceIds', parameters('filtersResourceIds')), createObject()))]",
                 "parallelDeployments": "[parameters('parallelDeployments')]",
                 "policyAssignmentId": "[parameters('policyAssignmentId')]",
                 "policyDefinitionReferenceId": "[parameters('policyDefinitionReferenceId')]",
                 "resourceCount": "[parameters('resourceCount')]"
               }
             }
-          ],
+          },
           "outputs": {
             "name": {
               "type": "string",
@@ -295,7 +322,7 @@
         }
       }
     },
-    {
+    "remediation_sub": {
       "condition": "[and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -323,6 +350,9 @@
           "filtersLocations": {
             "value": "[parameters('filtersLocations')]"
           },
+          "filtersResourceIds": {
+            "value": "[parameters('filtersResourceIds')]"
+          },
           "resourceCount": {
             "value": "[parameters('resourceCount')]"
           },
@@ -338,16 +368,16 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "13178635694417585402"
+              "version": "0.26.170.59819",
+              "templateHash": "5693975749961050586"
             },
             "name": "Policy Insights Remediations (Subscription scope)",
-            "description": "This module deploys a Policy Insights Remediation on a Subscription scope.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Policy Insights Remediation on a Subscription scope."
           },
           "parameters": {
             "name": {
@@ -365,9 +395,22 @@
             },
             "filtersLocations": {
               "type": "array",
+              "items": {
+                "type": "string"
+              },
               "defaultValue": [],
               "metadata": {
                 "description": "Optional. The filters that will be applied to determine which resources to remediate."
+              }
+            },
+            "filtersResourceIds": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. The IDs of the resources that will be remediated. Can specify at most 100 IDs."
               }
             },
             "parallelDeployments": {
@@ -420,18 +463,16 @@
               }
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "remediation": {
               "type": "Microsoft.PolicyInsights/remediations",
-              "apiVersion": "2021-10-01",
+              "apiVersion": "2024-10-01",
               "name": "[parameters('name')]",
               "properties": {
                 "failureThreshold": {
                   "percentage": "[json(parameters('failureThresholdPercentage'))]"
                 },
-                "filters": {
-                  "locations": "[parameters('filtersLocations')]"
-                },
+                "filters": "[union(createObject('locations', parameters('filtersLocations')), if(and(not(equals(parameters('resourceDiscoveryMode'), 'ReEvaluateCompliance')), greater(length(parameters('filtersResourceIds')), 0)), createObject('resourceIds', parameters('filtersResourceIds')), createObject()))]",
                 "parallelDeployments": "[parameters('parallelDeployments')]",
                 "policyAssignmentId": "[parameters('policyAssignmentId')]",
                 "policyDefinitionReferenceId": "[parameters('policyDefinitionReferenceId')]",
@@ -439,7 +480,7 @@
                 "resourceDiscoveryMode": "[parameters('resourceDiscoveryMode')]"
               }
             }
-          ],
+          },
           "outputs": {
             "name": {
               "type": "string",
@@ -473,7 +514,7 @@
         }
       }
     },
-    {
+    "remediation_rg": {
       "condition": "[and(not(empty(parameters('resourceGroupName'))), not(empty(parameters('subscriptionId'))))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -501,6 +542,9 @@
           "filtersLocations": {
             "value": "[parameters('filtersLocations')]"
           },
+          "filtersResourceIds": {
+            "value": "[parameters('filtersResourceIds')]"
+          },
           "resourceCount": {
             "value": "[parameters('resourceCount')]"
           },
@@ -516,16 +560,16 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "4742361634752088015"
+              "version": "0.26.170.59819",
+              "templateHash": "17544035878221874408"
             },
             "name": "Policy Insights Remediations (Resource Group scope)",
-            "description": "This module deploys a Policy Insights Remediation on a Resource Group scope.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Policy Insights Remediation on a Resource Group scope."
           },
           "parameters": {
             "name": {
@@ -543,9 +587,22 @@
             },
             "filtersLocations": {
               "type": "array",
+              "items": {
+                "type": "string"
+              },
               "defaultValue": [],
               "metadata": {
                 "description": "Optional. The filters that will be applied to determine which resources to remediate."
+              }
+            },
+            "filtersResourceIds": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "defaultValue": [],
+              "metadata": {
+                "description": "Optional. The IDs of the resources that will be remediated. Can specify at most 100 IDs."
               }
             },
             "parallelDeployments": {
@@ -598,18 +655,16 @@
               }
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "remediation": {
               "type": "Microsoft.PolicyInsights/remediations",
-              "apiVersion": "2021-10-01",
+              "apiVersion": "2024-10-01",
               "name": "[parameters('name')]",
               "properties": {
                 "failureThreshold": {
                   "percentage": "[json(parameters('failureThresholdPercentage'))]"
                 },
-                "filters": {
-                  "locations": "[parameters('filtersLocations')]"
-                },
+                "filters": "[union(createObject('locations', parameters('filtersLocations')), if(and(not(equals(parameters('resourceDiscoveryMode'), 'ReEvaluateCompliance')), greater(length(parameters('filtersResourceIds')), 0)), createObject('resourceIds', parameters('filtersResourceIds')), createObject()))]",
                 "parallelDeployments": "[parameters('parallelDeployments')]",
                 "policyAssignmentId": "[parameters('policyAssignmentId')]",
                 "policyDefinitionReferenceId": "[parameters('policyDefinitionReferenceId')]",
@@ -617,7 +672,7 @@
                 "resourceDiscoveryMode": "[parameters('resourceDiscoveryMode')]"
               }
             }
-          ],
+          },
           "outputs": {
             "name": {
               "type": "string",
@@ -651,28 +706,28 @@
         }
       }
     }
-  ],
+  },
   "outputs": {
     "name": {
       "type": "string",
       "metadata": {
         "description": "The name of the remediation."
       },
-      "value": "[if(and(empty(parameters('subscriptionId')), empty(parameters('resourceGroupName'))), reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('managementGroupId')), 'Microsoft.Resources/deployments', format('{0}-Remediation-MG-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.name.value, if(and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName'))), reference(subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', format('{0}-Remediation-Sub-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.name.value, reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-Remediation-RG-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.name.value))]"
+      "value": "[if(and(empty(parameters('subscriptionId')), empty(parameters('resourceGroupName'))), reference('remediation_mg').outputs.name.value, if(and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName'))), reference('remediation_sub').outputs.name.value, reference('remediation_rg').outputs.name.value))]"
     },
     "resourceId": {
       "type": "string",
       "metadata": {
         "description": "The resource ID of the remediation."
       },
-      "value": "[if(and(empty(parameters('subscriptionId')), empty(parameters('resourceGroupName'))), reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('managementGroupId')), 'Microsoft.Resources/deployments', format('{0}-Remediation-MG-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.resourceId.value, if(and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName'))), reference(subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', format('{0}-Remediation-Sub-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.resourceId.value, reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-Remediation-RG-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.resourceId.value))]"
+      "value": "[if(and(empty(parameters('subscriptionId')), empty(parameters('resourceGroupName'))), reference('remediation_mg').outputs.resourceId.value, if(and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName'))), reference('remediation_sub').outputs.resourceId.value, reference('remediation_rg').outputs.resourceId.value))]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[if(and(empty(parameters('subscriptionId')), empty(parameters('resourceGroupName'))), reference(extensionResourceId(tenantResourceId('Microsoft.Management/managementGroups', parameters('managementGroupId')), 'Microsoft.Resources/deployments', format('{0}-Remediation-MG-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.location.value, if(and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName'))), reference(subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', format('{0}-Remediation-Sub-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.location.value, reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('subscriptionId'), parameters('resourceGroupName')), 'Microsoft.Resources/deployments', format('{0}-Remediation-RG-Module', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.location.value))]"
+      "value": "[if(and(empty(parameters('subscriptionId')), empty(parameters('resourceGroupName'))), reference('remediation_mg').outputs.location.value, if(and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName'))), reference('remediation_sub').outputs.location.value, reference('remediation_rg').outputs.location.value))]"
     }
   }
 }

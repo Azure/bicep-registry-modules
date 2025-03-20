@@ -1,6 +1,5 @@
 metadata name = 'Azure Cosmos DB account tables'
 metadata description = 'This module deploys a table within an Azure Cosmos DB Account.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the table.')
 param name string
@@ -17,7 +16,7 @@ param maxThroughput int = 4000
 @description('Optional. Request Units per second (for example 10000). Cannot be set together with `maxThroughput`.')
 param throughput int?
 
-resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' existing = {
+resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2024-11-15' existing = {
   name: databaseAccountName
 }
 
@@ -32,7 +31,7 @@ var tableOptions = contains(databaseAccount.properties.capabilities, { name: 'En
       throughput: throughput
     }
 
-resource table 'Microsoft.DocumentDB/databaseAccounts/tables@2023-04-15' = {
+resource table 'Microsoft.DocumentDB/databaseAccounts/tables@2024-11-15' = {
   name: name
   tags: tags
   parent: databaseAccount

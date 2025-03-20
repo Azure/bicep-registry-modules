@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.3.12046",
-      "templateHash": "16462612640291787003"
+      "version": "0.33.93.31351",
+      "templateHash": "1228674487075439131"
     },
     "name": "NAT Gateways",
-    "description": "This module deploys a NAT Gateway.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a NAT Gateway."
   },
   "definitions": {
     "lockType": {
@@ -208,6 +207,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
+    "enableReferencedModulesTelemetry": false,
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Network Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4d97b98b-1d4f-4787-a291-c67834d212e7')]",
@@ -345,7 +345,7 @@
             "value": "[coalesce(tryGet(coalesce(parameters('publicIPAddressObjects'), createArray())[copyIndex()], 'zones'), if(not(equals(parameters('zone'), 0)), createArray(parameters('zone')), null()))]"
           },
           "enableTelemetry": {
-            "value": "[coalesce(tryGet(coalesce(parameters('publicIPAddressObjects'), createArray())[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           },
           "ddosSettings": {
             "value": "[tryGet(coalesce(parameters('publicIPAddressObjects'), createArray())[copyIndex()], 'ddosSettings')]"
@@ -1006,8 +1006,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.3.12046",
-              "templateHash": "9121047532434826411"
+              "version": "0.33.93.31351",
+              "templateHash": "15600590522677918373"
             }
           },
           "parameters": {
@@ -1074,7 +1074,7 @@
             "value": "[coalesce(tryGet(coalesce(parameters('publicIPPrefixObjects'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
           },
           "enableTelemetry": {
-            "value": "[coalesce(tryGet(coalesce(parameters('publicIPPrefixObjects'), createArray())[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -1420,8 +1420,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.3.12046",
-              "templateHash": "9121047532434826411"
+              "version": "0.33.93.31351",
+              "templateHash": "15600590522677918373"
             }
           },
           "parameters": {

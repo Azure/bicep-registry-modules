@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "7294045171019589380"
+      "version": "0.33.93.31351",
+      "templateHash": "11635704021988875359"
     },
     "name": "Elastic SAN Volumes",
-    "description": "This module deploys an Elastic SAN Volume.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Elastic SAN Volume."
   },
   "definitions": {
     "volumeSnapshotType": {
@@ -119,10 +118,7 @@
       "existing": true,
       "type": "Microsoft.ElasticSan/elasticSans/volumegroups",
       "apiVersion": "2023-01-01",
-      "name": "[format('{0}/{1}', parameters('elasticSanName'), parameters('volumeGroupName'))]",
-      "dependsOn": [
-        "elasticSan"
-      ]
+      "name": "[format('{0}/{1}', parameters('elasticSanName'), parameters('volumeGroupName'))]"
     },
     "elasticSan": {
       "existing": true,
@@ -136,10 +132,7 @@
       "name": "[format('{0}/{1}/{2}', parameters('elasticSanName'), parameters('volumeGroupName'), parameters('name'))]",
       "properties": {
         "sizeGiB": "[parameters('sizeGiB')]"
-      },
-      "dependsOn": [
-        "elasticSan::volumeGroup"
-      ]
+      }
     },
     "volume_snapshots": {
       "copy": {
@@ -177,12 +170,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "12385278995369535477"
+              "version": "0.33.93.31351",
+              "templateHash": "6701978252436416407"
             },
             "name": "Elastic SAN Volume Snapshots",
-            "description": "This module deploys an Elastic SAN Volume Snapshot.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Elastic SAN Volume Snapshot."
           },
           "parameters": {
             "elasticSanName": {
@@ -271,7 +263,6 @@
         }
       },
       "dependsOn": [
-        "elasticSan",
         "volume"
       ]
     }

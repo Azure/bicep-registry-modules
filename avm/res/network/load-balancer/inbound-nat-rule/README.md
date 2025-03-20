@@ -54,6 +54,8 @@ The port used for the internal endpoint.
 
 - Required: Yes
 - Type: int
+- MinValue: 0
+- MaxValue: 65535
 
 ### Parameter: `frontendIPConfigurationName`
 
@@ -75,6 +77,8 @@ The port for the external endpoint. Port numbers for each rule must be unique wi
 
 - Required: No
 - Type: int
+- MinValue: 0
+- MaxValue: 65534
 
 ### Parameter: `frontendPortRangeStart`
 
@@ -82,6 +86,8 @@ The port range start for the external endpoint. This property is used together w
 
 - Required: No
 - Type: int
+- MinValue: 0
+- MaxValue: 65534
 
 ### Parameter: `loadBalancerName`
 
@@ -144,6 +150,8 @@ The port range end for the external endpoint. This property is used together wit
 
 - Required: No
 - Type: int
+- MinValue: 0
+- MaxValue: 65534
 
 ## Outputs
 

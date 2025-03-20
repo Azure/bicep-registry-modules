@@ -1363,6 +1363,8 @@ The number of partitions in the search service; if specified, it can be 1, 2, 3,
 - Required: No
 - Type: int
 - Default: `1`
+- MinValue: 1
+- MaxValue: 12
 
 ### Parameter: `privateEndpoints`
 
@@ -1797,6 +1799,8 @@ The number of replicas in the search service. If specified, it must be a value b
 - Required: No
 - Type: int
 - Default: `3`
+- MinValue: 1
+- MaxValue: 12
 
 ### Parameter: `roleAssignments`
 

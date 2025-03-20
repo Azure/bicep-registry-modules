@@ -1,6 +1,6 @@
 targetScope = 'subscription'
 
-metadata name = 'Web App'
+metadata name = 'Web App, with Logs Configuration'
 metadata description = 'This instance deploys the module as Web App with the set of logs configuration.'
 
 // ========== //
@@ -52,7 +52,6 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      location: resourceLocation
       kind: 'app'
       serverFarmResourceId: nestedDependencies.outputs.serverFarmResourceId
       appInsightResourceId: nestedDependencies.outputs.applicationInsigtsResourceId

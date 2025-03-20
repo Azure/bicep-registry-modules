@@ -1,6 +1,5 @@
 metadata name = 'Private Endpoint Private DNS Zone Groups'
 metadata description = 'This module deploys a Private Endpoint Private DNS Zone Group.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent private endpoint. Required if the template is used in a standalone deployment.')
 param privateEndpointName string

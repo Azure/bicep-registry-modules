@@ -1,6 +1,5 @@
 metadata name = 'DBforMySQL Flexible Servers'
 metadata description = 'This module deploys a DBforMySQL Flexible Server.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the MySQL flexible server.')
 param name string
@@ -16,11 +15,11 @@ param location string = resourceGroup().location
 param tags object?
 
 @description('Optional. The administrator login name of a server. Can only be specified when the MySQL server is being created.')
-param administratorLogin string = ''
+param administratorLogin string?
 
 @description('Optional. The administrator login password.')
 @secure()
-param administratorLoginPassword string = ''
+param administratorLoginPassword string?
 
 @description('Optional. The Azure AD administrators when AAD authentication enabled.')
 param administrators array = []
@@ -92,10 +91,17 @@ param highAvailability string = 'ZoneRedundant'
 param maintenanceWindow object = {}
 
 @description('Optional. Delegated subnet arm resource ID. Used when the desired connectivity mode is "Private Access" - virtual network integration. Delegation must be enabled on the subnet for MySQL Flexible Servers and subnet CIDR size is /29.')
-param delegatedSubnetResourceId string = ''
+param delegatedSubnetResourceId string?
 
 @description('Conditional. Private dns zone arm resource ID. Used when the desired connectivity mode is "Private Access". Required if "delegatedSubnetResourceId" is used and the Private DNS Zone name must end with mysql.database.azure.com in order to be linked to the MySQL Flexible Server.')
-param privateDnsZoneResourceId string = ''
+param privateDnsZoneResourceId string?
+
+@description('Optional. Specifies whether public network access is allowed for this server. Set to "Enabled" to allow public access, or "Disabled" (default) when the server has VNet integration.')
+@allowed([
+  'Enabled'
+  'Disabled'
+])
+param publicNetworkAccess string = 'Disabled'
 
 @description('Conditional. Restore point creation time (ISO8601 format), specifying the time to restore from. Required if "createMode" is set to "PointInTimeRestore".')
 param restorePointInTime string = ''
@@ -109,7 +115,7 @@ param restorePointInTime string = ''
 param replicationRole string = 'None'
 
 @description('Conditional. The source MySQL server ID. Required if "createMode" is set to "PointInTimeRestore".')
-param sourceServerResourceId string = ''
+param sourceServerResourceId string?
 
 @allowed([
   'Disabled'
@@ -158,6 +164,13 @@ param databases array = []
 
 @description('Optional. The firewall rules to create in the MySQL flexible server.')
 param firewallRules array = []
+
+@description('Optional. Enable/Disable Advanced Threat Protection (Microsoft Defender) for the server.')
+@allowed([
+  'Enabled'
+  'Disabled'
+])
+param advancedThreatProtection string = 'Enabled'
 
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Optional. Array of role assignments to create.')
@@ -240,42 +253,42 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 }
 
 resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
-  name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
+  name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
   scope: resourceGroup(
-    split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
-    split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
+    split(customerManagedKey.?keyVaultResourceId!, '/')[2],
+    split(customerManagedKey.?keyVaultResourceId!, '/')[4]
   )
 
   resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
-    name: customerManagedKey.?keyName ?? 'dummyKey'
+    name: customerManagedKey.?keyName!
   }
 }
 
 resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
-  name: last(split(customerManagedKey.?userAssignedIdentityResourceId ?? 'dummyMsi', '/'))
+  name: last(split(customerManagedKey.?userAssignedIdentityResourceId!, '/'))
   scope: resourceGroup(
-    split((customerManagedKey.?userAssignedIdentityResourceId ?? '//'), '/')[2],
-    split((customerManagedKey.?userAssignedIdentityResourceId ?? '////'), '/')[4]
+    split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[2],
+    split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[4]
   )
 }
 
 resource cMKGeoKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKeyGeo.?keyVaultResourceId)) {
-  name: last(split((customerManagedKeyGeo.?keyVaultResourceId ?? 'dummyVault'), '/'))
+  name: last(split(customerManagedKeyGeo.?keyVaultResourceId!, '/'))
   scope: resourceGroup(
-    split((customerManagedKeyGeo.?keyVaultResourceId ?? '//'), '/')[2],
-    split((customerManagedKeyGeo.?keyVaultResourceId ?? '////'), '/')[4]
+    split(customerManagedKeyGeo.?keyVaultResourceId!, '/')[2],
+    split(customerManagedKeyGeo.?keyVaultResourceId!, '/')[4]
   )
 
   resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKeyGeo.?keyVaultResourceId) && !empty(customerManagedKeyGeo.?keyName)) {
-    name: customerManagedKeyGeo.?keyName ?? 'dummyKey'
+    name: customerManagedKeyGeo.?keyName!
   }
 }
 
 resource cMKGeoUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (!empty(customerManagedKeyGeo.?userAssignedIdentityResourceId)) {
-  name: last(split(customerManagedKeyGeo.?userAssignedIdentityResourceId ?? 'dummyMsi', '/'))
+  name: last(split(customerManagedKeyGeo.?userAssignedIdentityResourceId!, '/'))
   scope: resourceGroup(
-    split((customerManagedKeyGeo.?userAssignedIdentityResourceId ?? '//'), '/')[2],
-    split((customerManagedKeyGeo.?userAssignedIdentityResourceId ?? '////'), '/')[4]
+    split(customerManagedKeyGeo.?userAssignedIdentityResourceId!, '/')[2],
+    split(customerManagedKeyGeo.?userAssignedIdentityResourceId!, '/')[4]
   )
 }
 
@@ -289,8 +302,8 @@ resource flexibleServer 'Microsoft.DBforMySQL/flexibleServers@2023-12-30' = {
   }
   identity: identity
   properties: {
-    administratorLogin: !empty(administratorLogin) ? administratorLogin : null
-    administratorLoginPassword: !empty(administratorLoginPassword) ? administratorLoginPassword : null
+    administratorLogin: administratorLogin
+    administratorLoginPassword: administratorLoginPassword
     availabilityZone: availabilityZone
     backup: {
       backupRetentionDays: backupRetentionDays
@@ -302,12 +315,12 @@ resource flexibleServer 'Microsoft.DBforMySQL/flexibleServers@2023-12-30' = {
           type: 'AzureKeyVault'
           geoBackupKeyURI: geoRedundantBackup == 'Enabled'
             ? (!empty(customerManagedKeyGeo.?keyVersion ?? '')
-                ? '${cMKGeoKeyVault::cMKKey.properties.keyUri}/${customerManagedKeyGeo!.keyVersion}'
+                ? '${cMKGeoKeyVault::cMKKey.properties.keyUri}/${customerManagedKeyGeo!.?keyVersion!}'
                 : cMKGeoKeyVault::cMKKey.properties.keyUriWithVersion)
             : null
           geoBackupUserAssignedIdentityId: geoRedundantBackup == 'Enabled' ? cMKGeoUserAssignedIdentity.id : null
           primaryKeyURI: !empty(customerManagedKey.?keyVersion ?? '')
-            ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.keyVersion}'
+            ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.?keyVersion!}'
             : cMKKeyVault::cMKKey.properties.keyUriWithVersion
           primaryUserAssignedIdentityId: cMKUserAssignedIdentity.id
         }
@@ -324,15 +337,14 @@ resource flexibleServer 'Microsoft.DBforMySQL/flexibleServers@2023-12-30' = {
           startMinute: maintenanceWindow.customWindow == 'Enabled' ? maintenanceWindow.startMinute : 0
         }
       : null
-    network: !empty(delegatedSubnetResourceId) && empty(firewallRules)
-      ? {
-          delegatedSubnetResourceId: delegatedSubnetResourceId
-          privateDnsZoneResourceId: privateDnsZoneResourceId
-        }
-      : null
+    network: {
+      delegatedSubnetResourceId: delegatedSubnetResourceId
+      privateDnsZoneResourceId: privateDnsZoneResourceId
+      publicNetworkAccess: publicNetworkAccess
+    }
     replicationRole: replicationRole
     restorePointInTime: restorePointInTime
-    sourceServerResourceId: !empty(sourceServerResourceId) ? sourceServerResourceId : null
+    sourceServerResourceId: sourceServerResourceId
     storage: {
       autoGrow: storageAutoGrow
       autoIoScaling: storageAutoIoScaling
@@ -406,6 +418,14 @@ module flexibleServer_administrators 'administrator/main.bicep' = [
     }
   }
 ]
+
+module flexibleServer_advancedThreatProtection 'advanced-threat-protection/main.bicep' = {
+  name: '${uniqueString(deployment().name, location)}-MySQL-AdvancedThreatProtection'
+  params: {
+    flexibleServerName: flexibleServer.name
+    advancedThreatProtection: advancedThreatProtection
+  }
+}
 
 resource flexibleServer_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {

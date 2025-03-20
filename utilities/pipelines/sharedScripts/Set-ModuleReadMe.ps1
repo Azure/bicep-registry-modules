@@ -197,6 +197,32 @@ function Set-ParametersSection {
 
 <#
 .SYNOPSIS
+Reformat a given string to a markdown-compatible header reference
+
+.DESCRIPTION
+This function removes characters that are not part of a markdown header and adds a header reference to the front
+
+.PARAMETER StringToFormat
+Mandatory. The string to format
+
+.EXAMPLE
+Get-MarkdownHeaderReferenceFormattedString 'Parameter: dataCollectionRuleProperties.kind-AgentSettings.description'
+
+The given string is reformatted to: '#parameter-datacollectionrulepropertieskind-agentsettingsdescription'.
+#>
+function Get-MarkdownHeaderReferenceFormattedString {
+
+    [CmdletBinding()]
+    param (
+        [Parameter()]
+        [string] $StringToFormat
+    )
+
+    return ('#{0}' -f ($StringToFormat -replace '^#+ ', '' -replace '\s', '-' -replace '`|\:|\.', '').ToLower())
+}
+
+<#
+.SYNOPSIS
 Update parts of the 'parameters' section of the given readme file, if user defined types are used
 
 .DESCRIPTION
@@ -211,9 +237,6 @@ Optional. Hashtable of the user defined properties
 .PARAMETER ParentName
 Optional. Name of the parameter, that has the user defined types
 
-.PARAMETER ParentIdentifierLink
-Optional. Link of the parameter, that has the user defined types
-
 .PARAMETER ColumnsInOrder
 Optional. The order of parameter categories to show in the readme parameters section.
 
@@ -223,7 +246,7 @@ Set-DefinitionSection -TemplateFileContent @{ resource = @{}; ... } -ColumnsInOr
 Top-level invocation. Will start from the TemplateFile's parameters object and recursively crawl through all children. Tables will be ordered by 'Required' first and 'Optional' after.
 
 .EXAMPLE
-Set-DefinitionSection -TemplateFileContent @{ resource = @{}; ... } -Properties @{ @{ name = @{ type = 'string'; 'allowedValues' = @('A1','A2','A3','A4','A5','A6'); 'nullable' = $true; (...) } -ParentName 'diagnosticSettings' -ParentIdentifierLink '#parameter-diagnosticsettings'
+Set-DefinitionSection -TemplateFileContent @{ resource = @{}; ... } -Properties @{ @{ name = @{ type = 'string'; 'allowedValues' = @('A1','A2','A3','A4','A5','A6'); 'nullable' = $true; (...) } -ParentName 'diagnosticSettings'
 
 Child-level invocation during recursion.
 
@@ -240,9 +263,6 @@ function Set-DefinitionSection {
 
         [Parameter(Mandatory = $false)]
         [string] $ParentName,
-
-        [Parameter(Mandatory = $false)]
-        [string] $ParentIdentifierLink,
 
         [Parameter(Mandatory = $false)]
         [string[]] $ColumnsInOrder = @('Required', 'Conditional', 'Optional', 'Generated')
@@ -263,6 +283,7 @@ function Set-DefinitionSection {
         if ($paramsWithoutCategory = $TemplateFileContent.parameters.Values | Where-Object { $_.metadata.description -notmatch '^\w+?\.' }) {
             $formattedParam = $paramsWithoutCategory | ForEach-Object { [PSCustomObject]@{ name = $_.name; description = $_.metadata.description } } | ConvertTo-Json -Compress
             Write-Error ("Each parameter description should start with a category like [Required. / Optional. / Conditional. ]. The following parameters are missing such a category: `n$formattedParam`n")
+            return
         }
     } else {
         $descriptions = $Properties.Values.metadata.description
@@ -273,6 +294,7 @@ function Set-DefinitionSection {
         if ($paramsWithoutCategory = $Properties.Values | Where-Object { $_.metadata.description -notmatch '^\w+?\.' }) {
             $formattedParam = $paramsWithoutCategory | ForEach-Object { [PSCustomObject]@{ name = $_.name; description = $_.metadata.description } } | ConvertTo-Json -Compress
             Write-Error ("Each parameter description should start with a category like [Required. / Optional. / Conditional. ]. The following parameters are missing such a category: `n$formattedParam`n")
+            return
         }
     }
 
@@ -313,7 +335,7 @@ function Set-DefinitionSection {
 
             $paramIdentifier = (-not [String]::IsNullOrEmpty($ParentName)) ? '{0}.{1}' -f $ParentName, $parameter.name : $parameter.name
             $paramHeader = '### Parameter: `{0}`' -f $paramIdentifier
-            $paramIdentifierLink = (-not [String]::IsNullOrEmpty($ParentIdentifierLink)) ? ('{0}{1}' -f $ParentIdentifierLink, $parameter.name).ToLower() :  ('#{0}' -f $paramHeader.TrimStart('#').Trim().ToLower()) -replace '[:|`]' -replace ' ', '-'
+            $paramIdentifierLink = Get-MarkdownHeaderReferenceFormattedString $paramHeader
 
             # definition type (if any)
             if ($parameter.Keys -contains '$ref') {
@@ -423,6 +445,19 @@ function Set-DefinitionSection {
                 $formattedAllowedValues = $null # Reset value for future iterations
             }
 
+            # add MinValue and maxValue to the description
+            if ($parameter.Keys -contains 'minValue') {
+                $formattedMinValue = "- MinValue: $($parameter['minValue'])"
+            } else {
+                $formattedMinValue = $null # Reset value for future iterations
+            }
+
+            if ($parameter.Keys -contains 'maxValue') {
+                $formattedMaxValue = "- MaxValue: $($parameter['maxValue'])"
+            } else {
+                $formattedMaxValue = $null # Reset value for future iterations
+            }
+
             # Special case for 'roleAssignments' parameter
             if (($parameter.name -eq 'roleAssignments') -and ($TemplateFileContent.variables.keys -contains 'builtInRoleNames')) {
                 if ([String]::IsNullOrEmpty($ParentName)) {
@@ -481,8 +516,11 @@ function Set-DefinitionSection {
             ('- Type: {0}' -f $type),
             ((-not [String]::IsNullOrEmpty($formattedDefaultValue)) ? $formattedDefaultValue : $null),
             ((-not [String]::IsNullOrEmpty($formattedAllowedValues)) ? $formattedAllowedValues : $null),
+            ((-not [String]::IsNullOrEmpty($formattedMinValue)) ? $formattedMinValue : $null),
+            ((-not [String]::IsNullOrEmpty($formattedMaxValue)) ? $formattedMaxValue : $null),
             ((-not [String]::IsNullOrEmpty($formattedRoleNames)) ? $formattedRoleNames : $null),
             ((-not [String]::IsNullOrEmpty($formattedExample)) ? $formattedExample : $null),
+            (($definition.discriminator.propertyName) ? ('- Discriminator: `{0}`' -f $definition.discriminator.propertyName) : $null),
                 ''
             ) | Where-Object { $null -ne $_ }
 
@@ -493,27 +531,75 @@ function Set-DefinitionSection {
                 if ($definition.Keys -contains 'items' -and ($definition.items.properties.Keys -or $definition.items.additionalProperties.Keys)) {
                     if ($definition.items.properties.Keys) {
                         $childProperties = $definition.items.properties
-                        $sectionContent = Set-DefinitionSection -TemplateFileContent $TemplateFileContent -Properties $childProperties -ParentName $paramIdentifier -ParentIdentifierLink $paramIdentifierLink -ColumnsInOrder $ColumnsInOrder
+                        $sectionContent = Set-DefinitionSection -TemplateFileContent $TemplateFileContent -Properties $childProperties -ParentName $paramIdentifier -ColumnsInOrder $ColumnsInOrder
                         $listSectionContent += $sectionContent
                     }
                     if ($definition.items.additionalProperties.Keys) {
                         $childProperties = $definition.items.additionalProperties
                         $formattedProperties = @{ '>Any_other_property<' = $childProperties }
-                        $sectionContent = Set-DefinitionSection -TemplateFileContent $TemplateFileContent -Properties $formattedProperties -ParentName $paramIdentifier -ParentIdentifierLink $paramIdentifierLink -ColumnsInOrder $ColumnsInOrder
+                        $sectionContent = Set-DefinitionSection -TemplateFileContent $TemplateFileContent -Properties $formattedProperties -ParentName $paramIdentifier -ColumnsInOrder $ColumnsInOrder
                         $listSectionContent += $sectionContent
                     }
-                } elseif ($definition.type -eq 'object' -and ($definition.properties.Keys -or $definition.additionalProperties.Keys)) {
+                } elseif ($definition.type -in @('object', 'secureObject') -and ($definition.properties.Keys -or $definition.additionalProperties.Keys)) {
                     if ($definition.properties.Keys) {
                         $childProperties = $definition.properties
-                        $sectionContent = Set-DefinitionSection -TemplateFileContent $TemplateFileContent -Properties $childProperties -ParentName $paramIdentifier -ParentIdentifierLink $paramIdentifierLink -ColumnsInOrder $ColumnsInOrder
+                        $sectionContent = Set-DefinitionSection -TemplateFileContent $TemplateFileContent -Properties $childProperties -ParentName $paramIdentifier -ColumnsInOrder $ColumnsInOrder
                         $listSectionContent += $sectionContent
                     }
                     if ($definition.additionalProperties.Keys) {
                         $childProperties = $definition.additionalProperties
                         $formattedProperties = @{ '>Any_other_property<' = $childProperties }
-                        $sectionContent = Set-DefinitionSection -TemplateFileContent $TemplateFileContent -Properties $formattedProperties -ParentName $paramIdentifier -ParentIdentifierLink $paramIdentifierLink -ColumnsInOrder $ColumnsInOrder
+                        $sectionContent = Set-DefinitionSection -TemplateFileContent $TemplateFileContent -Properties $formattedProperties -ParentName $paramIdentifier -ColumnsInOrder $ColumnsInOrder
                         $listSectionContent += $sectionContent
                     }
+                } elseif ($definition.type -in @('object', 'secureObject') -and $definition.keys -contains 'discriminator') {
+                    <#
+                    Discriminator type. E.g.,
+
+                    @discriminator('kind')
+                    type mainType = subTypeA | subTypeB | subTypeC
+                    #>
+
+                    $variantTableSectionContent += @(
+                        '<h4>The available variants are:</h4>',
+                        ''
+                        '| Variant | Description |',
+                        '| :-- | :-- |'
+                    )
+
+                    $variantContent = @()
+                    foreach ($typeVariantName in $definition.discriminator.mapping.Keys) {
+                        $typeVariant = $definition.discriminator.mapping[$typeVariantName]
+                        $resolvedTypeVariant = $TemplateFileContent.definitions[(Split-Path $typeVariant.'$ref' -Leaf)]
+                        $variantDescription = ($resolvedTypeVariant.metadata.description ?? '').Replace("`r`n", '<p>').Replace("`n", '<p>')
+
+                        $variantIdentifier = '{0}.{1}-{2}' -f $paramIdentifier, $definition.discriminator.propertyName, $typeVariantName
+                        $variantIdentifierHeader = "### Variant: ``$variantIdentifier``"
+                        $variantIdentifierLink = Get-MarkdownHeaderReferenceFormattedString $variantIdentifierHeader
+
+                        $variantContent += @(
+                            $variantIdentifierHeader,
+                            $variantDescription,
+                            '',
+                            ('To use this variant, set the property `{0}` to `{1}`.' -f $definition.discriminator.propertyName, $typeVariantName),
+                            ''
+                        )
+
+                        $variantTableSectionContent += ('| [`{0}`]({1}) | {2} |' -f $typeVariantName, $variantIdentifierLink, $variantDescription)
+
+                        $definitionSectionInputObject = @{
+                            TemplateFileContent = $TemplateFileContent
+                            Properties          = $resolvedTypeVariant.properties
+                            ParentName          = $variantIdentifier
+                            ColumnsInOrder      = $ColumnsInOrder
+                        }
+                        $sectionContent = Set-DefinitionSection @definitionSectionInputObject
+                        $variantContent += $sectionContent
+                    }
+
+                    $variantTableSectionContent += ''
+                    $listSectionContent += $variantTableSectionContent
+                    $listSectionContent += $variantContent
                 }
             }
         }
@@ -1155,7 +1241,7 @@ function ConvertTo-FormattedJSONParameterObject {
             $isLineWithStringValue = $lineValue -match '^".+"$' # e.g. "value"
             $isLineWithFunction = $lineValue -match '^[a-zA-Z0-9]+\(.+' # e.g., split(something) or loadFileAsBase64("./test.pfx")
             $isLineWithPlainValue = $lineValue -match '^\w+$' # e.g. adminPassword: password
-            $isLineWithPrimitiveValue = $lineValue -match '^\s*true|false|[0-9]+$' # e.g., isSecure: true
+            $isLineWithPrimitiveValue = $lineValue -match '^\s*(true|false|[0-9])+$' # e.g., isSecure: true
             $isLineContainingCondition = $lineValue -match '^\w+ [=!?|&]{2} .+\?.+\:.+$' # e.g., iteration == "init" ? "A" : "B"
 
             # Special case: Multi-line function

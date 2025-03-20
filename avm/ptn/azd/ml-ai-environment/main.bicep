@@ -2,7 +2,6 @@ metadata name = 'Azd Azure Machine Learning Environment'
 metadata description = '''Create Azure Machine Learning workspaces of type 'Hub' and 'Project' and their required dependencies.
 
 **Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case.'''
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The AI Studio Hub Resource name.')
 param hubName string

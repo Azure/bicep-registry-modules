@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "3450465162010752754"
+      "version": "0.33.93.31351",
+      "templateHash": "8660442686917021421"
     },
     "name": "CDN Profiles Origin Group",
-    "description": "This module deploys a CDN Profile Origin Group.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a CDN Profile Origin Group."
   },
   "definitions": {
     "originGroupType": {
@@ -64,7 +63,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type of the origin group."
       }
     },
     "loadBalancingSettingsType": {
@@ -90,7 +90,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type of the load balancing settings."
       }
     },
     "healthProbeSettingsType": {
@@ -136,7 +137,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type of the health probe settings."
       }
     },
     "originType": {
@@ -216,6 +218,7 @@
         }
       },
       "metadata": {
+        "description": "The name of the origin type.",
         "__bicep_imported_from!": {
           "sourceTemplate": "origin/main.bicep"
         }
@@ -349,12 +352,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "5172201899085933507"
+              "version": "0.33.93.31351",
+              "templateHash": "10103984259825996754"
             },
             "name": "CDN Profiles Origin",
-            "description": "This module deploys a CDN Profile Origin.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a CDN Profile Origin."
           },
           "definitions": {
             "originType": {
@@ -434,7 +436,8 @@
                 }
               },
               "metadata": {
-                "__bicep_export!": true
+                "__bicep_export!": true,
+                "description": "The name of the origin type."
               }
             }
           },

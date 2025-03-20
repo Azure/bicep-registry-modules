@@ -1,6 +1,5 @@
 metadata name = 'Private Endpoints'
 metadata description = 'This module deploys a Private Endpoint.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the private endpoint resource to create.')
 param name string
@@ -23,11 +22,11 @@ param privateDnsZoneGroup privateDnsZoneGroupType?
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -37,10 +36,10 @@ param tags object?
 @description('Optional. Custom DNS configurations.')
 param customDnsConfigs customDnsConfigType[]?
 
-@description('Optional. A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource.')
-param manualPrivateLinkServiceConnections manualPrivateLinkServiceConnectionType[]?
+@description('Conditional. A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource. Required if `privateLinkServiceConnections` is empty.')
+param manualPrivateLinkServiceConnections privateLinkServiceConnectionType[]?
 
-@description('Optional. A grouping of information about the connection to the remote resource.')
+@description('Conditional. A grouping of information about the connection to the remote resource. Required if `manualPrivateLinkServiceConnections` is empty.')
 param privateLinkServiceConnections privateLinkServiceConnectionType[]?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
@@ -180,7 +179,7 @@ output name string = privateEndpoint.name
 output location string = privateEndpoint.location
 
 @description('The custom DNS configurations of the private endpoint.')
-output customDnsConfig customDnsConfigType[] = privateEndpoint.properties.customDnsConfigs
+output customDnsConfigs customDnsConfigType[] = privateEndpoint.properties.customDnsConfigs
 
 @description('The resource IDs of the network interfaces associated with the private endpoint.')
 output networkInterfaceResourceIds string[] = map(privateEndpoint.properties.networkInterfaces, nic => nic.id)
@@ -218,24 +217,6 @@ type ipConfigurationType = {
 
     @description('Required. A private IP address obtained from the private endpoint\'s subnet.')
     privateIPAddress: string
-  }
-}
-
-@export()
-type manualPrivateLinkServiceConnectionType = {
-  @description('Required. The name of the private link service connection.')
-  name: string
-
-  @description('Required. Properties of private link service connection.')
-  properties: {
-    @description('Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`.')
-    groupIds: string[]
-
-    @description('Required. The resource id of private link service.')
-    privateLinkServiceId: string
-
-    @description('Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars.')
-    requestMessage: string?
   }
 }
 

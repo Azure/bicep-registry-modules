@@ -45,13 +45,11 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      location: resourceLocation
       autoNodeOsUpgradeProfileUpgradeChannel: 'NodeImage'
       disableLocalAccounts: true
       enableKeyvaultSecretsProvider: true
       enableSecretRotation: true
       kedaAddon: true
-      kubernetesVersion: '1.28'
       aadProfile: {
         aadProfileEnableAzureRBAC: true
         aadProfileManaged: true
@@ -96,6 +94,7 @@ module testDeployment '../../../main.bicep' = [
       skuName: 'Automatic'
       vpaAddon: true
       webApplicationRoutingEnabled: true
+      defaultIngressControllerType: 'Internal'
     }
   }
 ]
