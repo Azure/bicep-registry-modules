@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "4579418839577677839"
+      "version": "0.32.4.45862",
+      "templateHash": "10431403763774756689"
     },
     "name": "CDN Profiles Custom Domains",
     "description": "This module deploys a CDN Profile Custom Domains."
@@ -240,9 +240,9 @@
         "description": "The DNS validation records."
       },
       "value": {
-        "dnsTxtRecordName": "[format('_dnsauth.{0}', reference('customDomain').hostName)]",
-        "dnsTxtRecordValue": "[reference('customDomain').validationProperties.validationToken]",
-        "dnsTxtRecordExpiry": "[reference('customDomain').validationProperties.expirationDate]"
+        "dnsTxtRecordName": "[coalesce(format('_dnsauth.{0}', reference('customDomain').hostName), '')]",
+        "dnsTxtRecordValue": "[coalesce(reference('customDomain').validationProperties.validationToken, '')]",
+        "dnsTxtRecordExpiry": "[coalesce(reference('customDomain').validationProperties.expirationDate, '')]"
       }
     }
   }
