@@ -212,12 +212,12 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     platformReservedDnsIP: '172.17.17.17'
     roleAssignments: [
       {
-        name: '43fc5250-f111-472b-8722-f1cb4a0e754b'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -348,12 +348,12 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     "roleAssignments": {
       "value": [
         {
-          "name": "43fc5250-f111-472b-8722-f1cb4a0e754b",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -456,12 +456,12 @@ param platformReservedCidr = '172.17.17.0/24'
 param platformReservedDnsIP = '172.17.17.17'
 param roleAssignments = [
   {
-    name: '43fc5250-f111-472b-8722-f1cb4a0e754b'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'
   }
   {
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
