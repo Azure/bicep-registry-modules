@@ -5,56 +5,53 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "5470663689877325880"
+      "version": "0.33.13.18514",
+      "templateHash": "871338674884502737"
     },
     "name": "Network Manager Routing Configurations",
     "description": "This module deploys an Network Manager Routing Configuration.\nRouting configurations are the building blocks of UDR management. They're used to describe the desired routing behavior for a network group."
   },
   "definitions": {
     "routingConfigurationRuleCollectionType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The name of the rule collection."
-            }
-          },
-          "description": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. A description of the rule collection."
-            }
-          },
-          "appliesTo": {
-            "$ref": "#/definitions/appliesToType",
-            "metadata": {
-              "description": "Required. List of network groups for configuration. A routing rule collection must be associated to at least one network group."
-            }
-          },
-          "disableBgpRoutePropagation": {
-            "type": "bool",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Disables BGP route propagation for the rule collection. Defaults to true."
-            }
-          },
-          "rules": {
-            "$ref": "#/definitions/rulesType",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. List of rules for the routing rules collection. Warning: A rule collection without a rule will cause a deployment of routing configuration to fail in network manager."
-            }
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the rule collection."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A description of the rule collection."
+          }
+        },
+        "appliesTo": {
+          "$ref": "#/definitions/appliesToType",
+          "metadata": {
+            "description": "Required. List of network groups for configuration. A routing rule collection must be associated to at least one network group."
+          }
+        },
+        "disableBgpRoutePropagation": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Disables BGP route propagation for the rule collection. Defaults to true."
+          }
+        },
+        "rules": {
+          "$ref": "#/definitions/rulesType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. List of rules for the routing rules collection. Warning: A rule collection without a rule will cause a deployment of routing configuration to fail in network manager."
           }
         }
       },
-      "nullable": true,
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type of a routing configuration rule collection."
       }
     },
     "_1.destinationType": {
@@ -78,6 +75,7 @@
         }
       },
       "metadata": {
+        "description": "The type for the destination.",
         "__bicep_imported_from!": {
           "sourceTemplate": "rule-collection/rule/main.bicep"
         }
@@ -108,6 +106,7 @@
         }
       },
       "metadata": {
+        "description": "The type of the next hop.",
         "__bicep_imported_from!": {
           "sourceTemplate": "rule-collection/rule/main.bicep"
         }
@@ -195,7 +194,11 @@
       }
     },
     "ruleCollections": {
-      "$ref": "#/definitions/routingConfigurationRuleCollectionType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/routingConfigurationRuleCollectionType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. A routing configuration contains a set of rule collections that are applied to network groups. Each rule collection contains one or more routing rules."
       }
@@ -259,8 +262,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "9240364702512586570"
+              "version": "0.33.13.18514",
+              "templateHash": "10571757562663540488"
             },
             "name": "Network Manager Routing Configuration Rule Collections",
             "description": "This module deploys an Network Manager Routing Configuration Rule Collection.\nRouting configurations are the building blocks of UDR management. They're used to describe the desired routing behavior for a network group. Each routing configuration contains one ore more rule collections. Warning: A rule collection without a rule will cause a deployment of routing configuration to fail in network manager."
@@ -341,6 +344,7 @@
                 }
               },
               "metadata": {
+                "description": "The type for the destination.",
                 "__bicep_imported_from!": {
                   "sourceTemplate": "rule/main.bicep"
                 }
@@ -371,6 +375,7 @@
                 }
               },
               "metadata": {
+                "description": "The type of the next hop.",
                 "__bicep_imported_from!": {
                   "sourceTemplate": "rule/main.bicep"
                 }
@@ -491,8 +496,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "10535917161454379553"
+                      "version": "0.33.13.18514",
+                      "templateHash": "11763316582891802886"
                     },
                     "name": "Network Manager Routing configuration Rule Collection Rules",
                     "description": "This module deploys an Azure Virtual Network Manager (AVNM) Routing Configuration Rule Collection Rule.\nA Routing configuration contains a set of rule collections. Each rule collection contains one or more routing rules."
@@ -519,7 +524,8 @@
                         }
                       },
                       "metadata": {
-                        "__bicep_export!": true
+                        "__bicep_export!": true,
+                        "description": "The type for the destination."
                       }
                     },
                     "nextHopType": {
@@ -547,7 +553,8 @@
                         }
                       },
                       "metadata": {
-                        "__bicep_export!": true
+                        "__bicep_export!": true,
+                        "description": "The type of the next hop."
                       }
                     }
                   },
