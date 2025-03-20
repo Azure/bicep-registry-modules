@@ -52,7 +52,7 @@ function Publish-ModuleFromPathToPBR {
     # 1. Get list of all modules qualifying for publishing (updated and versioned)
     $modulesToPublishList = Get-ModulesToPublish -ModuleFolderPath $topModuleFolderPath
     $modulesToPublishCount = $modulesToPublishList.count
-    Write-Verbose "Number of versioned modules in [$topModuleFolderPath]: [$modulesToPublishCount]" -Verbose
+    Write-Verbose "Number of modules to publish in [$topModuleFolderPath]: [$modulesToPublishCount]" -Verbose
 
     # If no module qualifies for publishing, return
     if (-not $modulesToPublishCount) {
@@ -60,8 +60,8 @@ function Publish-ModuleFromPathToPBR {
     }
 
     # 2. Iterate on the modules qualifying for publishing
-    foreach ($moduleFolderPath in $modulesToPublishList) {
-
+    foreach ($moduleToPublish in $modulesToPublishList) {
+        $moduleFolderPath = Split-Path -Path $moduleToPublish -Parent
         $moduleBicepFilePath = Join-Path $moduleFolderPath 'main.bicep'
 
         $moduleFolderRelativePath = ($moduleFolderPath -replace ('{0}[\/|\\]' -f [Regex]::Escape($repoRoot)), '') -replace '\\', '/'
