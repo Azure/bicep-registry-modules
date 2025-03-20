@@ -204,5 +204,5 @@ function Get-ModulesToPublish {
     # }
 
     # Return the remaining template file(s)
-    return $TemplateFilesToPublish | Sort-Object
+    return $TemplateFilesToPublish
 }
