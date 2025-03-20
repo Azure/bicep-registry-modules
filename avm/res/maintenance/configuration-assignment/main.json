@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "4931246391206291327"
+      "templateHash": "8546827987734636586"
     },
     "name": "Maintenance Configuration Assignments",
     "description": "This module deploys a Maintenance Configuration Assignment."
@@ -138,18 +138,18 @@
       "existing": true,
       "type": "Microsoft.Compute/virtualMachines",
       "apiVersion": "2024-07-01",
-      "name": "[if(not(equals(parameters('resourceId'), null())), last(split(parameters('resourceId'), '/')), 'null')]"
+      "name": "[last(split(coalesce(parameters('resourceId'), ''), '/'))]"
     },
     "configurationAssignment": {
       "condition": "[not(equals(parameters('resourceId'), null()))]",
       "type": "Microsoft.Maintenance/configurationAssignments",
       "apiVersion": "2023-04-01",
-      "scope": "[format('Microsoft.Compute/virtualMachines/{0}', if(not(equals(parameters('resourceId'), null())), last(split(parameters('resourceId'), '/')), 'null'))]",
+      "scope": "[format('Microsoft.Compute/virtualMachines/{0}', last(split(coalesce(parameters('resourceId'), ''), '/')))]",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "properties": {
         "maintenanceConfigurationId": "[parameters('maintenanceConfigurationResourceId')]",
-        "resourceId": "[resourceId('Microsoft.Compute/virtualMachines', if(not(equals(parameters('resourceId'), null())), last(split(parameters('resourceId'), '/')), 'null'))]"
+        "resourceId": "[resourceId('Microsoft.Compute/virtualMachines', last(split(coalesce(parameters('resourceId'), ''), '/')))]"
       }
     },
     "configurationAssignment_dynamic": {
@@ -177,7 +177,7 @@
       "metadata": {
         "description": "The resource ID of the Maintenance configuration assignment."
       },
-      "value": "[coalesce(extensionResourceId(resourceId('Microsoft.Compute/virtualMachines', if(not(equals(parameters('resourceId'), null())), last(split(parameters('resourceId'), '/')), 'null')), 'Microsoft.Maintenance/configurationAssignments', parameters('name')), resourceId('Microsoft.Maintenance/configurationAssignments', parameters('name')))]"
+      "value": "[coalesce(extensionResourceId(resourceId('Microsoft.Compute/virtualMachines', last(split(coalesce(parameters('resourceId'), ''), '/'))), 'Microsoft.Maintenance/configurationAssignments', parameters('name')), resourceId('Microsoft.Maintenance/configurationAssignments', parameters('name')))]"
     },
     "resourceGroupName": {
       "type": "string",
