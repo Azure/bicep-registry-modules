@@ -83,7 +83,6 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       solutionPrefix: '${namePrefix}${serviceShort}'
-      aiFoundryAiServicesContentUnderstandingLocation: 'West US'
     }
   }
 ]

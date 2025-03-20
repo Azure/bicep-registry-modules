@@ -130,8 +130,6 @@ This module deploys the [Conversation Knowledge Mining Solution Accelerator](htt
 module conversationKnowledgeMining 'br/public:avm/ptn/sa/conversation-knowledge-mining:<version>' = {
   name: 'conversationKnowledgeMiningDeployment'
   params: {
-    // Required parameters
-    aiFoundryAiServicesContentUnderstandingLocation: 'West US'
     solutionPrefix: 'ckmpoc'
   }
 }
@@ -149,10 +147,6 @@ module conversationKnowledgeMining 'br/public:avm/ptn/sa/conversation-knowledge-
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
-    "aiFoundryAiServicesContentUnderstandingLocation": {
-      "value": "West US"
-    },
     "solutionPrefix": {
       "value": "ckmpoc"
     }
@@ -170,8 +164,6 @@ module conversationKnowledgeMining 'br/public:avm/ptn/sa/conversation-knowledge-
 ```bicep-params
 using 'br/public:avm/ptn/sa/conversation-knowledge-mining:<version>'
 
-// Required parameters
-param aiFoundryAiServicesContentUnderstandingLocation = 'West US'
 param solutionPrefix = 'ckmpoc'
 ```
 
@@ -184,111 +176,327 @@ param solutionPrefix = 'ckmpoc'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`aiFoundryAiServicesContentUnderstandingLocation`](#parameter-aifoundryaiservicescontentunderstandinglocation) | string | Location for the AI Foundry Content Understanding service deployment. |
 | [`solutionPrefix`](#parameter-solutionprefix) | string | The prefix to add in the default names given to all deployed Azure resources. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`aiFoundryAiHubLocation`](#parameter-aifoundryaihublocation) | string | Location for the AI Foundry AI Hub resource deployment. |
-| [`aiFoundryAiHubResourceName`](#parameter-aifoundryaihubresourcename) | string | The name of the AI Foundry AI Hub resource. It will override the default given name. |
-| [`aiFoundryAiHubSkuName`](#parameter-aifoundryaihubskuname) | string | The SKU of the AI Foundry AI Hub account. |
-| [`aiFoundryAiProjectLocation`](#parameter-aifoundryaiprojectlocation) | string | Location for the AI Foundry AI Project resource deployment. |
-| [`aiFoundryAiProjectResourceName`](#parameter-aifoundryaiprojectresourcename) | string | The name of the AI Foundry AI Project resource. It will override the default given name. |
-| [`aiFoundryAiProjectSkuName`](#parameter-aifoundryaiprojectskuname) | string | The SKU of the AI Foundry AI project. |
-| [`aiFoundryAiServicesContentUnderstandingResourceName`](#parameter-aifoundryaiservicescontentunderstandingresourcename) | string | The name of the AI Foundry AI Services Content Understanding resource. It will override the default given name. |
-| [`aiFoundryAiServicesContentUnderstandingSkuName`](#parameter-aifoundryaiservicescontentunderstandingskuname) | string | The SKU of the AI Foundry AI Services account. Use 'Get-AzCognitiveServicesAccountSku' to determine a valid combinations of 'kind' and 'SKU' for your Azure region. |
-| [`aiFoundryAIServicesGptModelDeploymentCapacity`](#parameter-aifoundryaiservicesgptmodeldeploymentcapacity) | int | Capacity of the GPT model to deploy in the AI Foundry AI Services account. Capacity is limited per model/region, so you will get errors if you go over. [Quotas link](https://learn.microsoft.com/azure/ai-services/openai/quotas-limits). |
-| [`aiFoundryAIServicesGptModelDeploymentType`](#parameter-aifoundryaiservicesgptmodeldeploymenttype) | string | GPT model deployment type of the AI Foundry AI Services account. |
-| [`aiFoundryAIServicesGptModelName`](#parameter-aifoundryaiservicesgptmodelname) | string | Name of the GPT model to deploy in the AI Foundry AI Services account. |
-| [`aiFoundryAiServicesLocation`](#parameter-aifoundryaiserviceslocation) | string | Location for the AI Foundry AI Service resource deployment. |
-| [`aiFoundryAiServicesResourceName`](#parameter-aifoundryaiservicesresourcename) | string | The name of the AI Foundry AI Services resource. It will override the default given name. |
-| [`aiFoundryAiServicesSkuName`](#parameter-aifoundryaiservicesskuname) | string | The SKU of the AI Foundry AI Services account. Use 'Get-AzCognitiveServicesAccountSku' to determine a valid combinations of 'kind' and 'SKU' for your Azure region. |
-| [`aiFoundryAiServicesTextEmbeddingModelCapacity`](#parameter-aifoundryaiservicestextembeddingmodelcapacity) | int | Capacity of the Text Embedding model to deploy in the AI Foundry AI Services account. Capacity is limited per model/region, so you will get errors if you go over. [Quotas link](https://learn.microsoft.com/azure/ai-services/openai/quotas-limits). |
-| [`aiFoundryAiServicesTextEmbeddingModelName`](#parameter-aifoundryaiservicestextembeddingmodelname) | string | Name of the Text Embedding model to deploy in the AI Foundry AI Services account. |
-| [`aiFoundryApplicationInsightsLocation`](#parameter-aifoundryapplicationinsightslocation) | string | Location for the AI Foundry Application Insights resource deployment. |
-| [`aiFoundryApplicationInsightsResourceName`](#parameter-aifoundryapplicationinsightsresourcename) | string | The name of the AI Foundry Application Insights resource. It will override the default given name. |
-| [`aiFoundryApplicationInsightsRetentionInDays`](#parameter-aifoundryapplicationinsightsretentionindays) | int | The retention of Application Insights data in days. If empty, Standard will be used. |
-| [`aiFoundryContainerRegistryLocation`](#parameter-aifoundrycontainerregistrylocation) | string | Location for the AI Foundry Container Registry resource deployment. |
-| [`aiFoundryContainerRegistryResourceName`](#parameter-aifoundrycontainerregistryresourcename) | string | The name of the AI Foundry Container Registry resource. It will override the default given name. |
-| [`aiFoundryContainerRegistrySkuName`](#parameter-aifoundrycontainerregistryskuname) | string | The SKU for the AI Foundry Container Registry. If empty, Premium will be used. |
-| [`aiFoundrySearchServiceLocation`](#parameter-aifoundrysearchservicelocation) | string | Location for the AI Foundry Search Service resource deployment. |
-| [`aiFoundrySearchServiceResourceName`](#parameter-aifoundrysearchserviceresourcename) | string | The name of the AI Foundry Search Service resource. It will override the default given name. |
-| [`aiFoundrySearchServiceSkuName`](#parameter-aifoundrysearchserviceskuname) | string | The SKU of the AI Foundry Search Service account. |
-| [`aiFoundryStorageAccountLocation`](#parameter-aifoundrystorageaccountlocation) | string | Location for the AI Foundry Storage Account resource deployment. |
-| [`aiFoundryStorageAccountResourceName`](#parameter-aifoundrystorageaccountresourcename) | string | The name of the AI Foundry Storage Account resource. It will override the default given name. |
-| [`aiFoundryStorageAccountSkuName`](#parameter-aifoundrystorageaccountskuname) | string | The SKU for the AI Foundry Storage Account. If empty, Standard_LRS will be used. |
-| [`cosmosDbAccountLocation`](#parameter-cosmosdbaccountlocation) | string | Location for the Cosmos DB Account resource deployment. |
-| [`cosmosDbAccountResourceName`](#parameter-cosmosdbaccountresourcename) | string | The name of the Cosmos DB Account resource. It will override the default given name. |
+| [`aiFoundryAiHubConfiguration`](#parameter-aifoundryaihubconfiguration) | object | The configuration to apply for the Conversation Knowledge Mining AI Foundry AI Hub resource. |
+| [`aiFoundryAiProjectConfiguration`](#parameter-aifoundryaiprojectconfiguration) | object | The configuration to apply for the Conversation Knowledge Mining AI Foundry AI Project resource. |
+| [`aiFoundryAiServicesConfiguration`](#parameter-aifoundryaiservicesconfiguration) | object | The configuration to apply for the Conversation Knowledge Mining AI Foundry AI Services resource. |
+| [`aiFoundryAiServicesContentUnderstandingConfiguration`](#parameter-aifoundryaiservicescontentunderstandingconfiguration) | object | The configuration to apply for the Conversation Knowledge Mining AI Foundry AI Services Content Understanding resource. |
+| [`aiFoundryApplicationInsightsConfiguration`](#parameter-aifoundryapplicationinsightsconfiguration) | object | The configuration to apply for the Conversation Knowledge Mining AI Foundry Application Insights resource. |
+| [`aiFoundryContainerRegistryConfiguration`](#parameter-aifoundrycontainerregistryconfiguration) | object | The configuration to apply for the Conversation Knowledge Mining AI Foundry Container Registry resource. |
+| [`aiFoundrySearchServiceConfiguration`](#parameter-aifoundrysearchserviceconfiguration) | object | The configuration to apply for the Conversation Knowledge Mining AI Foundry Search Services resource. |
+| [`aiFoundryStorageAccountConfiguration`](#parameter-aifoundrystorageaccountconfiguration) | object | The configuration to apply for the Conversation Knowledge Mining AI Foundry Storage Account resource. |
+| [`cosmosDbAccountConfiguration`](#parameter-cosmosdbaccountconfiguration) | object | The configuration to apply for the Conversation Knowledge Mining Cosmos DB Account resource. |
 | [`databasesLocation`](#parameter-databaseslocation) | string | Location for all the deployed databases Azure resources. Defaulted to East US 2. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`functionChartAppScaleLimit`](#parameter-functionchartappscalelimit) | int | The maximum number of workers that the Charts function can scale out. |
-| [`functionChartCpu`](#parameter-functionchartcpu) | int | The required CPU in cores of the Charts function. |
-| [`functionChartDockerImageContainerRegistryUrl`](#parameter-functionchartdockerimagecontainerregistryurl) | string | The url of the Container Registry where the docker image for the Charts function is located. |
-| [`functionChartDockerImageName`](#parameter-functionchartdockerimagename) | string | The name of the docker image for the Charts function. |
-| [`functionChartDockerImageTag`](#parameter-functionchartdockerimagetag) | string | The tag of the docker image for the Charts function. |
-| [`functionChartMemory`](#parameter-functionchartmemory) | string | The required memory in GiB of the Charts function. |
-| [`functionChartsFunctionName`](#parameter-functionchartsfunctionname) | string | The name of the function to be used to get the metrics in the Charts function. |
-| [`functionChartsLocation`](#parameter-functionchartslocation) | string | Location for the Function Charts resource deployment. |
-| [`functionChartsResourceName`](#parameter-functionchartsresourcename) | string | The name of the Function Charts resource. It will override the default given name. |
-| [`functionRagAppScaleLimit`](#parameter-functionragappscalelimit) | int | The maximum number of workers that the Rag function can scale out. |
-| [`functionRagCpu`](#parameter-functionragcpu) | int | The required CPU in cores of the Rag function. |
-| [`functionRagDockerImageContainerRegistryUrl`](#parameter-functionragdockerimagecontainerregistryurl) | string | The url of the Container Registry where the docker image for the Rag function is located. |
-| [`functionRagDockerImageName`](#parameter-functionragdockerimagename) | string | The name of the docker image for the Rag function. |
-| [`functionRagDockerImageTag`](#parameter-functionragdockerimagetag) | string | The tag of the docker image for the Rag function. |
-| [`functionRagFunctionName`](#parameter-functionragfunctionname) | string | The name of the function to be used to stream text in the Rag function. |
-| [`functionRagLocation`](#parameter-functionraglocation) | string | Location for the Function RAG resource deployment. |
-| [`functionRagMemory`](#parameter-functionragmemory) | string | The required memory in GiB of the Rag function. |
-| [`functionRagResourceName`](#parameter-functionragresourcename) | string | The name of the Function RAG resource. It will override the default given name. |
-| [`functionsManagedEnvironmentLocation`](#parameter-functionsmanagedenvironmentlocation) | string | Location for the Functions Managed Environment resource deployment. |
-| [`functionsManagedEnvironmentResourceName`](#parameter-functionsmanagedenvironmentresourcename) | string | The name of the Functions Managed Environment resource. It will override the default given name. |
-| [`keyVaultCreateMode`](#parameter-keyvaultcreatemode) | string | The Key Vault create mode. Indicates whether the vault need to be recovered from purge or not. If empty, default will be used. |
-| [`keyVaultLocation`](#parameter-keyvaultlocation) | string | Location for the Key Vault resource deployment. |
-| [`keyVaultPurgeProtectionEnabled`](#parameter-keyvaultpurgeprotectionenabled) | bool | If set to true, The Key Vault purge protection will be enabled. If empty, it will be set to false. |
-| [`keyVaultResourceName`](#parameter-keyvaultresourcename) | string | The name of the Key Vault resource. It will override the default given name. |
-| [`keyVaultRoleAssignments`](#parameter-keyvaultroleassignments) | array | Array of role assignments to include in the Key Vault. |
-| [`keyVaultSku`](#parameter-keyvaultsku) | string | The SKU for the Key Vault. If empty, standard will be used. |
-| [`keyVaultSoftDeleteEnabled`](#parameter-keyvaultsoftdeleteenabled) | bool | If set to true, The Key Vault soft delete will be enabled. |
-| [`keyVaultSoftDeleteRetentionInDays`](#parameter-keyvaultsoftdeleteretentionindays) | int | The number of days to retain the soft deleted vault. If empty, it will be set to 7. |
-| [`logAnalyticsWorkspaceDataRetentionInDays`](#parameter-loganalyticsworkspacedataretentionindays) | int | The number of days to retain the data in the Log Analytics Workspace. If empty, it will be set to 30 days. |
-| [`logAnalyticsWorkspaceLocation`](#parameter-loganalyticsworkspacelocation) | string | Location for the Log Analytics Workspace resource deployment. |
-| [`logAnalyticsWorkspaceResourceName`](#parameter-loganalyticsworkspaceresourcename) | string | The name of the Log Analytics Workspace resource. It will override the default given name. |
-| [`logAnalyticsWorkspaceSkuName`](#parameter-loganalyticsworkspaceskuname) | string | The SKU for the Log Analytics Workspace. If empty, PerGB2018 will be used. |
-| [`managedIdentityLocation`](#parameter-managedidentitylocation) | string | Location for the Managed Identity resource deployment. |
-| [`managedIdentityResourceName`](#parameter-managedidentityresourcename) | string | The name of the Managed Identity resource. It will override the default given name. |
-| [`scriptCopyDataLocation`](#parameter-scriptcopydatalocation) | string | Location for the Script Copy Data resource deployment. |
-| [`scriptCopyDataResourceName`](#parameter-scriptcopydataresourcename) | string | The name of the Script Copy Data resource. It will override the default given name. |
-| [`scriptIndexDataLocation`](#parameter-scriptindexdatalocation) | string | Location for the Script Index Data resource deployment. |
-| [`scriptIndexDataResourceName`](#parameter-scriptindexdataresourcename) | string | The name of the Script Index Data resource. It will override the default given name. |
+| [`functionChartsConfiguration`](#parameter-functionchartsconfiguration) | object | The configuration to apply for the Conversation Knowledge Mining Charts Function resource. |
+| [`functionRagConfiguration`](#parameter-functionragconfiguration) | object | The configuration to apply for the Conversation Knowledge Mining Rag Function resource. |
+| [`functionsManagedEnvironmentConfiguration`](#parameter-functionsmanagedenvironmentconfiguration) | object | The configuration to apply for the Conversation Knowledge Mining Functions Managed Environment resource. |
+| [`keyVaultConfiguration`](#parameter-keyvaultconfiguration) | object | The configuration to apply for the Conversation Knowledge Mining Key Vault resource. |
+| [`logAnalyticsWorkspaceConfiguration`](#parameter-loganalyticsworkspaceconfiguration) | object | The configuration to apply for the Conversation Knowledge Mining Log Analytics Workspace resource. |
+| [`managedIdentityConfiguration`](#parameter-managedidentityconfiguration) | object | The configuration to apply for the Conversation Knowledge Mining Managed Identity resource. |
+| [`scriptCopyDataConfiguration`](#parameter-scriptcopydataconfiguration) | object | The configuration to apply for the Conversation Knowledge Mining Copy Data Script resource. |
+| [`scriptIndexDataConfiguration`](#parameter-scriptindexdataconfiguration) | object | The configuration to apply for the Conversation Knowledge Mining Copy Data Script resource. |
 | [`solutionLocation`](#parameter-solutionlocation) | string | Location for all the deployed Azure resources except databases. Defaulted to East US. |
-| [`sqlServerAdministratorLogin`](#parameter-sqlserveradministratorlogin) | securestring | The administrator login credential for the SQL Server. |
-| [`sqlServerAdministratorPassword`](#parameter-sqlserveradministratorpassword) | securestring | The administrator password credential for the SQL Server. |
-| [`sqlServerDatabaseName`](#parameter-sqlserverdatabasename) | string | The name of the SQL Server database. |
-| [`sqlServerDatabaseSkuCapacity`](#parameter-sqlserverdatabaseskucapacity) | int | The SKU capacity of the SQL Server database. If empty, it will be set to 2. Find available options: Database.[Sku property](https://learn.microsoft.com/dotnet/api/microsoft.azure.management.sql.models.database.sku). |
-| [`sqlServerDatabaseSkuFamily`](#parameter-sqlserverdatabaseskufamily) | string | The SKU Family of the SQL Server database. If empty, it will be set to Gen5. Find available options: Database.[Sku property](https://learn.microsoft.com/dotnet/api/microsoft.azure.management.sql.models.database.sku). |
-| [`sqlServerDatabaseSkuName`](#parameter-sqlserverdatabaseskuname) | string | The SKU name of the SQL Server database. If empty, it will be set to GP_Gen5_2. Find available options: Database.[Sku property](https://learn.microsoft.com/dotnet/api/microsoft.azure.management.sql.models.database.sku). |
-| [`sqlServerDatabaseSkuTier`](#parameter-sqlserverdatabaseskutier) | string | The SKU tier of the SQL Server database. If empty, it will be set to GeneralPurpose. Find available options: Database.[Sku property](https://learn.microsoft.com/dotnet/api/microsoft.azure.management.sql.models.database.sku). |
-| [`sqlServerLocation`](#parameter-sqlserverlocation) | string | Location for the SQL Server resource deployment. |
-| [`sqlServerResourceName`](#parameter-sqlserverresourcename) | string | The name of the SQL Server resource. It will override the default given name. |
-| [`storageAccountLocation`](#parameter-storageaccountlocation) | string | Location for the Storage Account resource deployment. |
-| [`storageAccountResourceName`](#parameter-storageaccountresourcename) | string | The name of the Storage Account resource. It will override the default given name. |
-| [`storageAccountSkuName`](#parameter-storageaccountskuname) | string | The SKU for the Storage Account. If empty, Standard_LRS will be used. |
+| [`sqlServerConfiguration`](#parameter-sqlserverconfiguration) | object | The configuration to apply for the Conversation Knowledge Mining SQL Server resource. |
+| [`storageAccountConfiguration`](#parameter-storageaccountconfiguration) | object | The configuration to apply for the Conversation Knowledge Mining Storage Account resource. |
 | [`tags`](#parameter-tags) | object | The tags to apply to all deployed Azure resources. |
-| [`webAppDockerImageContainerRegistryUrl`](#parameter-webappdockerimagecontainerregistryurl) | string | The url of the Container Registry where the docker image for Conversation Knowledge Mining webapp is located. |
-| [`webAppDockerImageName`](#parameter-webappdockerimagename) | string | The name of the docker image for the Rag function. |
-| [`webAppDockerImageTag`](#parameter-webappdockerimagetag) | string | The tag of the docker image for the Rag function. |
-| [`webAppLocation`](#parameter-webapplocation) | string | Location for the Web App resource deployment. |
-| [`webAppResourceName`](#parameter-webappresourcename) | string | The name of the Web App resource. |
-| [`webAppServerFarmLocation`](#parameter-webappserverfarmlocation) | string | The location for the Web App Server Farm. Defaulted to the solution location. |
-| [`webAppServerFarmResourceName`](#parameter-webappserverfarmresourcename) | string | The name of the Web App Server Farm resource. It will override the default given name. |
-| [`webAppServerFarmSku`](#parameter-webappserverfarmsku) | string | The SKU for the web app. If empty it will be set to B2. |
+| [`webAppServerFarmConfiguration`](#parameter-webappserverfarmconfiguration) | object | The configuration to apply for the Conversation Knowledge Mining Web App Server Farm resource. |
 
-### Parameter: `aiFoundryAiServicesContentUnderstandingLocation`
+### Parameter: `solutionPrefix`
+
+The prefix to add in the default names given to all deployed Azure resources.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `aiFoundryAiHubConfiguration`
+
+The configuration to apply for the Conversation Knowledge Mining AI Foundry AI Hub resource.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      location: '[parameters(\'solutionLocation\')]'
+      name: '[format(\'{0}-aifd-aihb\', parameters(\'solutionPrefix\'))]'
+      sku: 'Basic'
+  }
+  ```
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`location`](#parameter-aifoundryaihubconfigurationlocation) | string | Location for the AI Foundry AI Hub resource. |
+| [`name`](#parameter-aifoundryaihubconfigurationname) | string | The name of the AI Foundry AI Hub resource. |
+| [`sku`](#parameter-aifoundryaihubconfigurationsku) | string | The SKU of the AI Foundry AI Hub resource. |
+
+### Parameter: `aiFoundryAiHubConfiguration.location`
+
+Location for the AI Foundry AI Hub resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `aiFoundryAiHubConfiguration.name`
+
+The name of the AI Foundry AI Hub resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `aiFoundryAiHubConfiguration.sku`
+
+The SKU of the AI Foundry AI Hub resource.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Basic'
+    'Free'
+    'Premium'
+    'Standard'
+  ]
+  ```
+
+### Parameter: `aiFoundryAiProjectConfiguration`
+
+The configuration to apply for the Conversation Knowledge Mining AI Foundry AI Project resource.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      location: '[parameters(\'solutionLocation\')]'
+      name: '[format(\'{0}-aifd-aipj\', parameters(\'solutionPrefix\'))]'
+      sku: 'Standard'
+  }
+  ```
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`location`](#parameter-aifoundryaiprojectconfigurationlocation) | string | Location for the AI Foundry AI Project resource deployment. |
+| [`name`](#parameter-aifoundryaiprojectconfigurationname) | string | The name of the AI Foundry AI Project resource. |
+| [`sku`](#parameter-aifoundryaiprojectconfigurationsku) | string | The SKU of the AI Foundry AI Project resource. |
+
+### Parameter: `aiFoundryAiProjectConfiguration.location`
+
+Location for the AI Foundry AI Project resource deployment.
+
+- Required: No
+- Type: string
+
+### Parameter: `aiFoundryAiProjectConfiguration.name`
+
+The name of the AI Foundry AI Project resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `aiFoundryAiProjectConfiguration.sku`
+
+The SKU of the AI Foundry AI Project resource.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Basic'
+    'Free'
+    'Premium'
+    'Standard'
+  ]
+  ```
+
+### Parameter: `aiFoundryAiServicesConfiguration`
+
+The configuration to apply for the Conversation Knowledge Mining AI Foundry AI Services resource.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      gptModelCapacity: 100
+      gptModelName: 'gpt-4o-mini'
+      gptModelSku: 'Standard'
+      location: 'East US'
+      name: '[format(\'{0}-aifd-aisr\', parameters(\'solutionPrefix\'))]'
+      sku: 'S0'
+      textEmbeddingModelCapacity: 80
+      textEmbeddingModelName: 'text-embedding-ada-002'
+      textEmbeddingModelSku: 'Standard'
+  }
+  ```
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`gptModelCapacity`](#parameter-aifoundryaiservicesconfigurationgptmodelcapacity) | int | Capacity of the GPT model to deploy in the AI Foundry AI Services account. Capacity is limited per model/region, so you will get errors if you go over. [Quotas link](https://learn.microsoft.com/azure/ai-services/openai/quotas-limits). |
+| [`gptModelName`](#parameter-aifoundryaiservicesconfigurationgptmodelname) | string | Name of the GPT model to deploy in the AI Foundry AI Services account. |
+| [`gptModelSku`](#parameter-aifoundryaiservicesconfigurationgptmodelsku) | string | GPT model deployment type of the AI Foundry AI Services account. |
+| [`location`](#parameter-aifoundryaiservicesconfigurationlocation) | string | Location for the AI Foundry AI Services resource. |
+| [`name`](#parameter-aifoundryaiservicesconfigurationname) | string | The name of the AI Foundry AI Services resource. |
+| [`sku`](#parameter-aifoundryaiservicesconfigurationsku) | string | The SKU of the AI Foundry AI Services resource. Use 'Get-AzCognitiveServicesAccountSku' to determine a valid combinations of 'kind' and 'SKU' for your Azure region. |
+| [`textEmbeddingModelCapacity`](#parameter-aifoundryaiservicesconfigurationtextembeddingmodelcapacity) | int | Capacity of the Text Embedding model to deploy in the AI Foundry AI Services account. Capacity is limited per model/region, so you will get errors if you go over. [Quotas link](https://learn.microsoft.com/azure/ai-services/openai/quotas-limits). |
+| [`textEmbeddingModelName`](#parameter-aifoundryaiservicesconfigurationtextembeddingmodelname) | string | Name of the Text Embedding model to deploy in the AI Foundry AI Services account. |
+| [`textEmbeddingModelSku`](#parameter-aifoundryaiservicesconfigurationtextembeddingmodelsku) | string | GPT model deployment type of the AI Foundry AI Services account. |
+
+### Parameter: `aiFoundryAiServicesConfiguration.gptModelCapacity`
+
+Capacity of the GPT model to deploy in the AI Foundry AI Services account. Capacity is limited per model/region, so you will get errors if you go over. [Quotas link](https://learn.microsoft.com/azure/ai-services/openai/quotas-limits).
+
+- Required: No
+- Type: int
+- MinValue: 10
+
+### Parameter: `aiFoundryAiServicesConfiguration.gptModelName`
+
+Name of the GPT model to deploy in the AI Foundry AI Services account.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'gpt-4'
+    'gpt-4o'
+    'gpt-4o-mini'
+  ]
+  ```
+
+### Parameter: `aiFoundryAiServicesConfiguration.gptModelSku`
+
+GPT model deployment type of the AI Foundry AI Services account.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'GlobalStandard'
+    'Standard'
+  ]
+  ```
+
+### Parameter: `aiFoundryAiServicesConfiguration.location`
+
+Location for the AI Foundry AI Services resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `aiFoundryAiServicesConfiguration.name`
+
+The name of the AI Foundry AI Services resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `aiFoundryAiServicesConfiguration.sku`
+
+The SKU of the AI Foundry AI Services resource. Use 'Get-AzCognitiveServicesAccountSku' to determine a valid combinations of 'kind' and 'SKU' for your Azure region.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'C2'
+    'C3'
+    'C4'
+    'F0'
+    'F1'
+    'S'
+    'S0'
+    'S1'
+    'S10'
+    'S2'
+    'S3'
+    'S4'
+    'S5'
+    'S6'
+    'S7'
+    'S8'
+    'S9'
+  ]
+  ```
+
+### Parameter: `aiFoundryAiServicesConfiguration.textEmbeddingModelCapacity`
+
+Capacity of the Text Embedding model to deploy in the AI Foundry AI Services account. Capacity is limited per model/region, so you will get errors if you go over. [Quotas link](https://learn.microsoft.com/azure/ai-services/openai/quotas-limits).
+
+- Required: No
+- Type: int
+- MinValue: 10
+
+### Parameter: `aiFoundryAiServicesConfiguration.textEmbeddingModelName`
+
+Name of the Text Embedding model to deploy in the AI Foundry AI Services account.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'text-embedding-ada-002'
+  ]
+  ```
+
+### Parameter: `aiFoundryAiServicesConfiguration.textEmbeddingModelSku`
+
+GPT model deployment type of the AI Foundry AI Services account.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Standard'
+  ]
+  ```
+
+### Parameter: `aiFoundryAiServicesContentUnderstandingConfiguration`
+
+The configuration to apply for the Conversation Knowledge Mining AI Foundry AI Services Content Understanding resource.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      location: 'West US'
+      name: '[format(\'{0}-aifd-aisr-cu\', parameters(\'solutionPrefix\'))]'
+      sku: 'S0'
+  }
+  ```
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`location`](#parameter-aifoundryaiservicescontentunderstandingconfigurationlocation) | string | Location for the AI Foundry Content Understanding service deployment. |
+| [`name`](#parameter-aifoundryaiservicescontentunderstandingconfigurationname) | string | The name of the AI Foundry AI Services Content Understanding resource. |
+| [`sku`](#parameter-aifoundryaiservicescontentunderstandingconfigurationsku) | string | The SKU of the AI Foundry AI Services account. Use 'Get-AzCognitiveServicesAccountSku' to determine a valid combinations of 'kind' and 'SKU' for your Azure region. |
+
+### Parameter: `aiFoundryAiServicesContentUnderstandingConfiguration.location`
 
 Location for the AI Foundry Content Understanding service deployment.
 
-- Required: Yes
+- Required: No
 - Type: string
 - Allowed:
   ```Bicep
@@ -299,94 +507,19 @@ Location for the AI Foundry Content Understanding service deployment.
   ]
   ```
 
-### Parameter: `solutionPrefix`
+### Parameter: `aiFoundryAiServicesContentUnderstandingConfiguration.name`
 
-The prefix to add in the default names given to all deployed Azure resources.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `aiFoundryAiHubLocation`
-
-Location for the AI Foundry AI Hub resource deployment.
+The name of the AI Foundry AI Services Content Understanding resource.
 
 - Required: No
 - Type: string
-- Default: `[parameters('solutionLocation')]`
 
-### Parameter: `aiFoundryAiHubResourceName`
-
-The name of the AI Foundry AI Hub resource. It will override the default given name.
-
-- Required: No
-- Type: string
-- Default: `[format('{0}-aifd-aihb', parameters('solutionPrefix'))]`
-
-### Parameter: `aiFoundryAiHubSkuName`
-
-The SKU of the AI Foundry AI Hub account.
-
-- Required: No
-- Type: string
-- Default: `'Basic'`
-- Allowed:
-  ```Bicep
-  [
-    'Basic'
-    'Free'
-    'Premium'
-    'Standard'
-  ]
-  ```
-
-### Parameter: `aiFoundryAiProjectLocation`
-
-Location for the AI Foundry AI Project resource deployment.
-
-- Required: No
-- Type: string
-- Default: `[parameters('solutionLocation')]`
-
-### Parameter: `aiFoundryAiProjectResourceName`
-
-The name of the AI Foundry AI Project resource. It will override the default given name.
-
-- Required: No
-- Type: string
-- Default: `[format('{0}-aifd-aipj', parameters('solutionPrefix'))]`
-
-### Parameter: `aiFoundryAiProjectSkuName`
-
-The SKU of the AI Foundry AI project.
-
-- Required: No
-- Type: string
-- Default: `'Standard'`
-- Allowed:
-  ```Bicep
-  [
-    'Basic'
-    'Free'
-    'Premium'
-    'Standard'
-  ]
-  ```
-
-### Parameter: `aiFoundryAiServicesContentUnderstandingResourceName`
-
-The name of the AI Foundry AI Services Content Understanding resource. It will override the default given name.
-
-- Required: No
-- Type: string
-- Default: `[format('{0}-aifd-aisr-cu', parameters('solutionPrefix'))]`
-
-### Parameter: `aiFoundryAiServicesContentUnderstandingSkuName`
+### Parameter: `aiFoundryAiServicesContentUnderstandingConfiguration.sku`
 
 The SKU of the AI Foundry AI Services account. Use 'Get-AzCognitiveServicesAccountSku' to determine a valid combinations of 'kind' and 'SKU' for your Azure region.
 
 - Required: No
 - Type: string
-- Default: `'S0'`
 - Allowed:
   ```Bicep
   [
@@ -410,138 +543,49 @@ The SKU of the AI Foundry AI Services account. Use 'Get-AzCognitiveServicesAccou
   ]
   ```
 
-### Parameter: `aiFoundryAIServicesGptModelDeploymentCapacity`
+### Parameter: `aiFoundryApplicationInsightsConfiguration`
 
-Capacity of the GPT model to deploy in the AI Foundry AI Services account. Capacity is limited per model/region, so you will get errors if you go over. [Quotas link](https://learn.microsoft.com/azure/ai-services/openai/quotas-limits).
-
-- Required: No
-- Type: int
-- Default: `100`
-- MinValue: 10
-
-### Parameter: `aiFoundryAIServicesGptModelDeploymentType`
-
-GPT model deployment type of the AI Foundry AI Services account.
+The configuration to apply for the Conversation Knowledge Mining AI Foundry Application Insights resource.
 
 - Required: No
-- Type: string
-- Default: `'GlobalStandard'`
-- Allowed:
+- Type: object
+- Default:
   ```Bicep
-  [
-    'GlobalStandard'
-    'Standard'
-  ]
+  {
+      location: '[parameters(\'solutionLocation\')]'
+      name: '[format(\'{0}-aifd-appi\', parameters(\'solutionPrefix\'))]'
+      retentionInDays: 30
+  }
   ```
 
-### Parameter: `aiFoundryAIServicesGptModelName`
+**Optional parameters**
 
-Name of the GPT model to deploy in the AI Foundry AI Services account.
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`location`](#parameter-aifoundryapplicationinsightsconfigurationlocation) | string | Location for the AI Foundry Application Insights resource. |
+| [`name`](#parameter-aifoundryapplicationinsightsconfigurationname) | string | The name of the AI Foundry Application Insights resource. |
+| [`retentionInDays`](#parameter-aifoundryapplicationinsightsconfigurationretentionindays) | int | The retention of Application Insights data in days. If empty, Standard will be used. |
 
-- Required: No
-- Type: string
-- Default: `'gpt-4o-mini'`
-- Allowed:
-  ```Bicep
-  [
-    'gpt-4'
-    'gpt-4o'
-    'gpt-4o-mini'
-  ]
-  ```
+### Parameter: `aiFoundryApplicationInsightsConfiguration.location`
 
-### Parameter: `aiFoundryAiServicesLocation`
-
-Location for the AI Foundry AI Service resource deployment.
+Location for the AI Foundry Application Insights resource.
 
 - Required: No
 - Type: string
-- Default: `[parameters('solutionLocation')]`
 
-### Parameter: `aiFoundryAiServicesResourceName`
+### Parameter: `aiFoundryApplicationInsightsConfiguration.name`
 
-The name of the AI Foundry AI Services resource. It will override the default given name.
-
-- Required: No
-- Type: string
-- Default: `[format('{0}-aifd-aisr', parameters('solutionPrefix'))]`
-
-### Parameter: `aiFoundryAiServicesSkuName`
-
-The SKU of the AI Foundry AI Services account. Use 'Get-AzCognitiveServicesAccountSku' to determine a valid combinations of 'kind' and 'SKU' for your Azure region.
+The name of the AI Foundry Application Insights resource.
 
 - Required: No
 - Type: string
-- Default: `'S0'`
-- Allowed:
-  ```Bicep
-  [
-    'C2'
-    'C3'
-    'C4'
-    'F0'
-    'F1'
-    'S'
-    'S0'
-    'S1'
-    'S10'
-    'S2'
-    'S3'
-    'S4'
-    'S5'
-    'S6'
-    'S7'
-    'S8'
-    'S9'
-  ]
-  ```
 
-### Parameter: `aiFoundryAiServicesTextEmbeddingModelCapacity`
-
-Capacity of the Text Embedding model to deploy in the AI Foundry AI Services account. Capacity is limited per model/region, so you will get errors if you go over. [Quotas link](https://learn.microsoft.com/azure/ai-services/openai/quotas-limits).
-
-- Required: No
-- Type: int
-- Default: `80`
-- MinValue: 10
-
-### Parameter: `aiFoundryAiServicesTextEmbeddingModelName`
-
-Name of the Text Embedding model to deploy in the AI Foundry AI Services account.
-
-- Required: No
-- Type: string
-- Default: `'text-embedding-ada-002'`
-- Allowed:
-  ```Bicep
-  [
-    'text-embedding-ada-002'
-  ]
-  ```
-
-### Parameter: `aiFoundryApplicationInsightsLocation`
-
-Location for the AI Foundry Application Insights resource deployment.
-
-- Required: No
-- Type: string
-- Default: `[parameters('solutionLocation')]`
-
-### Parameter: `aiFoundryApplicationInsightsResourceName`
-
-The name of the AI Foundry Application Insights resource. It will override the default given name.
-
-- Required: No
-- Type: string
-- Default: `[format('{0}-aifd-appi', parameters('solutionPrefix'))]`
-
-### Parameter: `aiFoundryApplicationInsightsRetentionInDays`
+### Parameter: `aiFoundryApplicationInsightsConfiguration.retentionInDays`
 
 The retention of Application Insights data in days. If empty, Standard will be used.
 
 - Required: No
 - Type: int
-- Default: `30`
 - Allowed:
   ```Bicep
   [
@@ -557,29 +601,49 @@ The retention of Application Insights data in days. If empty, Standard will be u
   ]
   ```
 
-### Parameter: `aiFoundryContainerRegistryLocation`
+### Parameter: `aiFoundryContainerRegistryConfiguration`
 
-Location for the AI Foundry Container Registry resource deployment.
+The configuration to apply for the Conversation Knowledge Mining AI Foundry Container Registry resource.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      location: '[parameters(\'solutionLocation\')]'
+      name: '[replace(format(\'{0}-aifd-creg\', parameters(\'solutionPrefix\')), \'-\', \'\')]'
+      sku: 'Premium'
+  }
+  ```
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`location`](#parameter-aifoundrycontainerregistryconfigurationlocation) | string | Location for the AI Foundry Container Registry resource. |
+| [`name`](#parameter-aifoundrycontainerregistryconfigurationname) | string | The name of the AI Foundry Container Registry resource. |
+| [`sku`](#parameter-aifoundrycontainerregistryconfigurationsku) | string | The SKU for the AI Foundry Container Registry resource. |
+
+### Parameter: `aiFoundryContainerRegistryConfiguration.location`
+
+Location for the AI Foundry Container Registry resource.
 
 - Required: No
 - Type: string
-- Default: `[parameters('solutionLocation')]`
 
-### Parameter: `aiFoundryContainerRegistryResourceName`
+### Parameter: `aiFoundryContainerRegistryConfiguration.name`
 
-The name of the AI Foundry Container Registry resource. It will override the default given name.
-
-- Required: No
-- Type: string
-- Default: `[replace(format('{0}-aifd-creg', parameters('solutionPrefix')), '-', '')]`
-
-### Parameter: `aiFoundryContainerRegistrySkuName`
-
-The SKU for the AI Foundry Container Registry. If empty, Premium will be used.
+The name of the AI Foundry Container Registry resource.
 
 - Required: No
 - Type: string
-- Default: `'Premium'`
+
+### Parameter: `aiFoundryContainerRegistryConfiguration.sku`
+
+The SKU for the AI Foundry Container Registry resource.
+
+- Required: No
+- Type: string
 - Allowed:
   ```Bicep
   [
@@ -589,29 +653,49 @@ The SKU for the AI Foundry Container Registry. If empty, Premium will be used.
   ]
   ```
 
-### Parameter: `aiFoundrySearchServiceLocation`
+### Parameter: `aiFoundrySearchServiceConfiguration`
 
-Location for the AI Foundry Search Service resource deployment.
+The configuration to apply for the Conversation Knowledge Mining AI Foundry Search Services resource.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      location: '[parameters(\'solutionLocation\')]'
+      name: '[format(\'{0}-aifd-srch\', parameters(\'solutionPrefix\'))]'
+      sku: 'basic'
+  }
+  ```
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`location`](#parameter-aifoundrysearchserviceconfigurationlocation) | string | Location for the AI Foundry Search Services resource. |
+| [`name`](#parameter-aifoundrysearchserviceconfigurationname) | string | The name of the AI Foundry Search Services resource. |
+| [`sku`](#parameter-aifoundrysearchserviceconfigurationsku) | string | The SKU for the AI Foundry Search Services resource. |
+
+### Parameter: `aiFoundrySearchServiceConfiguration.location`
+
+Location for the AI Foundry Search Services resource.
 
 - Required: No
 - Type: string
-- Default: `[parameters('solutionLocation')]`
 
-### Parameter: `aiFoundrySearchServiceResourceName`
+### Parameter: `aiFoundrySearchServiceConfiguration.name`
 
-The name of the AI Foundry Search Service resource. It will override the default given name.
-
-- Required: No
-- Type: string
-- Default: `[format('{0}-aifd-srch', parameters('solutionPrefix'))]`
-
-### Parameter: `aiFoundrySearchServiceSkuName`
-
-The SKU of the AI Foundry Search Service account.
+The name of the AI Foundry Search Services resource.
 
 - Required: No
 - Type: string
-- Default: `'basic'`
+
+### Parameter: `aiFoundrySearchServiceConfiguration.sku`
+
+The SKU for the AI Foundry Search Services resource.
+
+- Required: No
+- Type: string
 - Allowed:
   ```Bicep
   [
@@ -625,29 +709,49 @@ The SKU of the AI Foundry Search Service account.
   ]
   ```
 
-### Parameter: `aiFoundryStorageAccountLocation`
+### Parameter: `aiFoundryStorageAccountConfiguration`
 
-Location for the AI Foundry Storage Account resource deployment.
+The configuration to apply for the Conversation Knowledge Mining AI Foundry Storage Account resource.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      location: '[parameters(\'solutionLocation\')]'
+      name: '[replace(format(\'{0}-aifd-strg\', parameters(\'solutionPrefix\')), \'-\', \'\')]'
+      sku: 'Standard_LRS'
+  }
+  ```
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`location`](#parameter-aifoundrystorageaccountconfigurationlocation) | string | Location for the Storage Account resource. |
+| [`name`](#parameter-aifoundrystorageaccountconfigurationname) | string | The name of the Storage Account resource. |
+| [`sku`](#parameter-aifoundrystorageaccountconfigurationsku) | string | The SKU for the Storage Account resource. |
+
+### Parameter: `aiFoundryStorageAccountConfiguration.location`
+
+Location for the Storage Account resource.
 
 - Required: No
 - Type: string
-- Default: `[parameters('solutionLocation')]`
 
-### Parameter: `aiFoundryStorageAccountResourceName`
+### Parameter: `aiFoundryStorageAccountConfiguration.name`
 
-The name of the AI Foundry Storage Account resource. It will override the default given name.
-
-- Required: No
-- Type: string
-- Default: `[replace(format('{0}-aifd-strg', parameters('solutionPrefix')), '-', '')]`
-
-### Parameter: `aiFoundryStorageAccountSkuName`
-
-The SKU for the AI Foundry Storage Account. If empty, Standard_LRS will be used.
+The name of the Storage Account resource.
 
 - Required: No
 - Type: string
-- Default: `'Standard_LRS'`
+
+### Parameter: `aiFoundryStorageAccountConfiguration.sku`
+
+The SKU for the Storage Account resource.
+
+- Required: No
+- Type: string
 - Allowed:
   ```Bicep
   [
@@ -660,21 +764,40 @@ The SKU for the AI Foundry Storage Account. If empty, Standard_LRS will be used.
   ]
   ```
 
-### Parameter: `cosmosDbAccountLocation`
+### Parameter: `cosmosDbAccountConfiguration`
 
-Location for the Cosmos DB Account resource deployment.
+The configuration to apply for the Conversation Knowledge Mining Cosmos DB Account resource.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      location: '[parameters(\'databasesLocation\')]'
+      name: '[format(\'{0}-cmdb\', parameters(\'solutionPrefix\'))]'
+  }
+  ```
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`location`](#parameter-cosmosdbaccountconfigurationlocation) | string | Location for the Cosmos DB Account resource. |
+| [`name`](#parameter-cosmosdbaccountconfigurationname) | string | The name of the Cosmos DB Account resource. |
+
+### Parameter: `cosmosDbAccountConfiguration.location`
+
+Location for the Cosmos DB Account resource.
 
 - Required: No
 - Type: string
-- Default: `[parameters('databasesLocation')]`
 
-### Parameter: `cosmosDbAccountResourceName`
+### Parameter: `cosmosDbAccountConfiguration.name`
 
-The name of the Cosmos DB Account resource. It will override the default given name.
+The name of the Cosmos DB Account resource.
 
 - Required: No
 - Type: string
-- Default: `[format('{0}-cmdb', parameters('solutionPrefix'))]`
 
 ### Parameter: `databasesLocation`
 
@@ -692,173 +815,276 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
-### Parameter: `functionChartAppScaleLimit`
+### Parameter: `functionChartsConfiguration`
 
-The maximum number of workers that the Charts function can scale out.
+The configuration to apply for the Conversation Knowledge Mining Charts Function resource.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      appScaleLimit: 10
+      cpu: 1
+      dockerImageContainerRegistryUrl: 'kmcontainerreg.azurecr.io'
+      dockerImageName: 'km-charts-function'
+      dockerImageTag: 'latest_2025-03-20_276'
+      functionName: 'get_metrics'
+      location: '[parameters(\'solutionLocation\')]'
+      memory: '2Gi'
+      name: '[format(\'{0}-azfn-fchr\', parameters(\'solutionPrefix\'))]'
+  }
+  ```
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`appScaleLimit`](#parameter-functionchartsconfigurationappscalelimit) | int | The maximum number of workers that the function can scale out. |
+| [`cpu`](#parameter-functionchartsconfigurationcpu) | int | The required CPU in cores of the function. |
+| [`dockerImageContainerRegistryUrl`](#parameter-functionchartsconfigurationdockerimagecontainerregistryurl) | string | The url of the Container Registry where the docker image for the function is located. |
+| [`dockerImageName`](#parameter-functionchartsconfigurationdockerimagename) | string | The name of the docker image for the function. |
+| [`dockerImageTag`](#parameter-functionchartsconfigurationdockerimagetag) | string | The tag of the docker image for the function. |
+| [`functionName`](#parameter-functionchartsconfigurationfunctionname) | string | The name of the function to be used to get the metrics in the function. |
+| [`location`](#parameter-functionchartsconfigurationlocation) | string | Location for the Function resource. |
+| [`memory`](#parameter-functionchartsconfigurationmemory) | string | The required memory in GiB of the function. |
+| [`name`](#parameter-functionchartsconfigurationname) | string | The name of the Function resource. |
+
+### Parameter: `functionChartsConfiguration.appScaleLimit`
+
+The maximum number of workers that the function can scale out.
 
 - Required: No
 - Type: int
-- Default: `10`
 
-### Parameter: `functionChartCpu`
+### Parameter: `functionChartsConfiguration.cpu`
 
-The required CPU in cores of the Charts function.
-
-- Required: No
-- Type: int
-- Default: `1`
-
-### Parameter: `functionChartDockerImageContainerRegistryUrl`
-
-The url of the Container Registry where the docker image for the Charts function is located.
-
-- Required: No
-- Type: string
-- Default: `'kmcontainerreg.azurecr.io'`
-
-### Parameter: `functionChartDockerImageName`
-
-The name of the docker image for the Charts function.
-
-- Required: No
-- Type: string
-- Default: `'km-charts-function'`
-
-### Parameter: `functionChartDockerImageTag`
-
-The tag of the docker image for the Charts function.
-
-- Required: No
-- Type: string
-- Default: `'latest'`
-
-### Parameter: `functionChartMemory`
-
-The required memory in GiB of the Charts function.
-
-- Required: No
-- Type: string
-- Default: `'2Gi'`
-
-### Parameter: `functionChartsFunctionName`
-
-The name of the function to be used to get the metrics in the Charts function.
-
-- Required: No
-- Type: string
-- Default: `'get_metrics'`
-
-### Parameter: `functionChartsLocation`
-
-Location for the Function Charts resource deployment.
-
-- Required: No
-- Type: string
-- Default: `[parameters('solutionLocation')]`
-
-### Parameter: `functionChartsResourceName`
-
-The name of the Function Charts resource. It will override the default given name.
-
-- Required: No
-- Type: string
-- Default: `[format('{0}-fchr-azfn', parameters('solutionPrefix'))]`
-
-### Parameter: `functionRagAppScaleLimit`
-
-The maximum number of workers that the Rag function can scale out.
+The required CPU in cores of the function.
 
 - Required: No
 - Type: int
-- Default: `10`
 
-### Parameter: `functionRagCpu`
+### Parameter: `functionChartsConfiguration.dockerImageContainerRegistryUrl`
 
-The required CPU in cores of the Rag function.
+The url of the Container Registry where the docker image for the function is located.
+
+- Required: No
+- Type: string
+
+### Parameter: `functionChartsConfiguration.dockerImageName`
+
+The name of the docker image for the function.
+
+- Required: No
+- Type: string
+
+### Parameter: `functionChartsConfiguration.dockerImageTag`
+
+The tag of the docker image for the function.
+
+- Required: No
+- Type: string
+
+### Parameter: `functionChartsConfiguration.functionName`
+
+The name of the function to be used to get the metrics in the function.
+
+- Required: No
+- Type: string
+
+### Parameter: `functionChartsConfiguration.location`
+
+Location for the Function resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `functionChartsConfiguration.memory`
+
+The required memory in GiB of the function.
+
+- Required: No
+- Type: string
+
+### Parameter: `functionChartsConfiguration.name`
+
+The name of the Function resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `functionRagConfiguration`
+
+The configuration to apply for the Conversation Knowledge Mining Rag Function resource.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      appScaleLimit: 10
+      cpu: 1
+      dockerImageContainerRegistryUrl: 'kmcontainerreg.azurecr.io'
+      dockerImageName: 'km-rag-function'
+      dockerImageTag: 'latest_2025-03-20_276'
+      functionName: 'stream_openai_text'
+      location: '[parameters(\'solutionLocation\')]'
+      memory: '2Gi'
+      name: '[format(\'{0}-azfn-frag\', parameters(\'solutionPrefix\'))]'
+  }
+  ```
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`appScaleLimit`](#parameter-functionragconfigurationappscalelimit) | int | The maximum number of workers that the function can scale out. |
+| [`cpu`](#parameter-functionragconfigurationcpu) | int | The required CPU in cores of the function. |
+| [`dockerImageContainerRegistryUrl`](#parameter-functionragconfigurationdockerimagecontainerregistryurl) | string | The url of the Container Registry where the docker image for the function is located. |
+| [`dockerImageName`](#parameter-functionragconfigurationdockerimagename) | string | The name of the docker image for the function. |
+| [`dockerImageTag`](#parameter-functionragconfigurationdockerimagetag) | string | The tag of the docker image for the function. |
+| [`functionName`](#parameter-functionragconfigurationfunctionname) | string | The name of the function to be used to get the metrics in the function. |
+| [`location`](#parameter-functionragconfigurationlocation) | string | Location for the Function resource. |
+| [`memory`](#parameter-functionragconfigurationmemory) | string | The required memory in GiB of the function. |
+| [`name`](#parameter-functionragconfigurationname) | string | The name of the Function resource. |
+
+### Parameter: `functionRagConfiguration.appScaleLimit`
+
+The maximum number of workers that the function can scale out.
 
 - Required: No
 - Type: int
-- Default: `1`
 
-### Parameter: `functionRagDockerImageContainerRegistryUrl`
+### Parameter: `functionRagConfiguration.cpu`
 
-The url of the Container Registry where the docker image for the Rag function is located.
+The required CPU in cores of the function.
+
+- Required: No
+- Type: int
+
+### Parameter: `functionRagConfiguration.dockerImageContainerRegistryUrl`
+
+The url of the Container Registry where the docker image for the function is located.
 
 - Required: No
 - Type: string
-- Default: `'kmcontainerreg.azurecr.io'`
 
-### Parameter: `functionRagDockerImageName`
+### Parameter: `functionRagConfiguration.dockerImageName`
 
-The name of the docker image for the Rag function.
-
-- Required: No
-- Type: string
-- Default: `'km-rag-function'`
-
-### Parameter: `functionRagDockerImageTag`
-
-The tag of the docker image for the Rag function.
+The name of the docker image for the function.
 
 - Required: No
 - Type: string
-- Default: `'latest'`
 
-### Parameter: `functionRagFunctionName`
+### Parameter: `functionRagConfiguration.dockerImageTag`
 
-The name of the function to be used to stream text in the Rag function.
-
-- Required: No
-- Type: string
-- Default: `'stream_openai_text'`
-
-### Parameter: `functionRagLocation`
-
-Location for the Function RAG resource deployment.
+The tag of the docker image for the function.
 
 - Required: No
 - Type: string
-- Default: `[parameters('solutionLocation')]`
 
-### Parameter: `functionRagMemory`
+### Parameter: `functionRagConfiguration.functionName`
 
-The required memory in GiB of the Rag function.
-
-- Required: No
-- Type: string
-- Default: `'2Gi'`
-
-### Parameter: `functionRagResourceName`
-
-The name of the Function RAG resource. It will override the default given name.
+The name of the function to be used to get the metrics in the function.
 
 - Required: No
 - Type: string
-- Default: `[format('{0}-frag-azfn', parameters('solutionPrefix'))]`
 
-### Parameter: `functionsManagedEnvironmentLocation`
+### Parameter: `functionRagConfiguration.location`
 
-Location for the Functions Managed Environment resource deployment.
-
-- Required: No
-- Type: string
-- Default: `[parameters('solutionLocation')]`
-
-### Parameter: `functionsManagedEnvironmentResourceName`
-
-The name of the Functions Managed Environment resource. It will override the default given name.
+Location for the Function resource.
 
 - Required: No
 - Type: string
-- Default: `[format('{0}-ftme', parameters('solutionPrefix'))]`
 
-### Parameter: `keyVaultCreateMode`
+### Parameter: `functionRagConfiguration.memory`
+
+The required memory in GiB of the function.
+
+- Required: No
+- Type: string
+
+### Parameter: `functionRagConfiguration.name`
+
+The name of the Function resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `functionsManagedEnvironmentConfiguration`
+
+The configuration to apply for the Conversation Knowledge Mining Functions Managed Environment resource.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      location: '[parameters(\'solutionLocation\')]'
+      name: '[format(\'{0}-fnme\', parameters(\'solutionPrefix\'))]'
+  }
+  ```
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`location`](#parameter-functionsmanagedenvironmentconfigurationlocation) | string | Location for the Functions Managed Environment resource. |
+| [`name`](#parameter-functionsmanagedenvironmentconfigurationname) | string | The name of the Functions Managed Environment resource. |
+
+### Parameter: `functionsManagedEnvironmentConfiguration.location`
+
+Location for the Functions Managed Environment resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `functionsManagedEnvironmentConfiguration.name`
+
+The name of the Functions Managed Environment resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `keyVaultConfiguration`
+
+The configuration to apply for the Conversation Knowledge Mining Key Vault resource.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      createMode: 'default'
+      location: '[parameters(\'solutionLocation\')]'
+      name: '[format(\'{0}-keyv\', parameters(\'solutionPrefix\'))]'
+      purgeProtectionEnabled: false
+      roleAssignments: []
+      sku: 'standard'
+      softDeleteEnabled: true
+      softDeleteRetentionInDays: 7
+  }
+  ```
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`createMode`](#parameter-keyvaultconfigurationcreatemode) | string | The Key Vault create mode. Indicates whether the vault need to be recovered from purge or not. If empty, default will be used. |
+| [`location`](#parameter-keyvaultconfigurationlocation) | string | Location for the Key Vault resource. |
+| [`name`](#parameter-keyvaultconfigurationname) | string | The name of the Key Vault resource. |
+| [`purgeProtectionEnabled`](#parameter-keyvaultconfigurationpurgeprotectionenabled) | bool | If set to true, The Key Vault purge protection will be enabled. If empty, it will be set to false. |
+| [`roleAssignments`](#parameter-keyvaultconfigurationroleassignments) | array | Array of role assignments to include in the Key Vault. |
+| [`sku`](#parameter-keyvaultconfigurationsku) | string | The SKU for the Key Vault resource. |
+| [`softDeleteEnabled`](#parameter-keyvaultconfigurationsoftdeleteenabled) | bool | If set to true, The Key Vault soft delete will be enabled. |
+| [`softDeleteRetentionInDays`](#parameter-keyvaultconfigurationsoftdeleteretentionindays) | int | The number of days to retain the soft deleted vault. If empty, it will be set to 7. |
+
+### Parameter: `keyVaultConfiguration.createMode`
 
 The Key Vault create mode. Indicates whether the vault need to be recovered from purge or not. If empty, default will be used.
 
 - Required: No
 - Type: string
-- Default: `'default'`
 - Allowed:
   ```Bicep
   [
@@ -867,78 +1093,74 @@ The Key Vault create mode. Indicates whether the vault need to be recovered from
   ]
   ```
 
-### Parameter: `keyVaultLocation`
+### Parameter: `keyVaultConfiguration.location`
 
-Location for the Key Vault resource deployment.
+Location for the Key Vault resource.
 
 - Required: No
 - Type: string
-- Default: `[parameters('solutionLocation')]`
 
-### Parameter: `keyVaultPurgeProtectionEnabled`
+### Parameter: `keyVaultConfiguration.name`
+
+The name of the Key Vault resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `keyVaultConfiguration.purgeProtectionEnabled`
 
 If set to true, The Key Vault purge protection will be enabled. If empty, it will be set to false.
 
-- Required: No
+- Required: Yes
 - Type: bool
-- Default: `False`
 
-### Parameter: `keyVaultResourceName`
-
-The name of the Key Vault resource. It will override the default given name.
-
-- Required: No
-- Type: string
-- Default: `[format('{0}-keyv', parameters('solutionPrefix'))]`
-
-### Parameter: `keyVaultRoleAssignments`
+### Parameter: `keyVaultConfiguration.roleAssignments`
 
 Array of role assignments to include in the Key Vault.
 
-- Required: No
+- Required: Yes
 - Type: array
-- Default: `[]`
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`principalId`](#parameter-keyvaultroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
-| [`roleDefinitionIdOrName`](#parameter-keyvaultroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+| [`principalId`](#parameter-keyvaultconfigurationroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-keyvaultconfigurationroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`condition`](#parameter-keyvaultroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
-| [`conditionVersion`](#parameter-keyvaultroleassignmentsconditionversion) | string | Version of the condition. |
-| [`delegatedManagedIdentityResourceId`](#parameter-keyvaultroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
-| [`description`](#parameter-keyvaultroleassignmentsdescription) | string | The description of the role assignment. |
-| [`name`](#parameter-keyvaultroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
-| [`principalType`](#parameter-keyvaultroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+| [`condition`](#parameter-keyvaultconfigurationroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-keyvaultconfigurationroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-keyvaultconfigurationroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-keyvaultconfigurationroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-keyvaultconfigurationroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
+| [`principalType`](#parameter-keyvaultconfigurationroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
-### Parameter: `keyVaultRoleAssignments.principalId`
+### Parameter: `keyVaultConfiguration.roleAssignments.principalId`
 
 The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `keyVaultRoleAssignments.roleDefinitionIdOrName`
+### Parameter: `keyVaultConfiguration.roleAssignments.roleDefinitionIdOrName`
 
 The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `keyVaultRoleAssignments.condition`
+### Parameter: `keyVaultConfiguration.roleAssignments.condition`
 
 The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
 
 - Required: No
 - Type: string
 
-### Parameter: `keyVaultRoleAssignments.conditionVersion`
+### Parameter: `keyVaultConfiguration.roleAssignments.conditionVersion`
 
 Version of the condition.
 
@@ -951,28 +1173,28 @@ Version of the condition.
   ]
   ```
 
-### Parameter: `keyVaultRoleAssignments.delegatedManagedIdentityResourceId`
+### Parameter: `keyVaultConfiguration.roleAssignments.delegatedManagedIdentityResourceId`
 
 The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
 
-### Parameter: `keyVaultRoleAssignments.description`
+### Parameter: `keyVaultConfiguration.roleAssignments.description`
 
 The description of the role assignment.
 
 - Required: No
 - Type: string
 
-### Parameter: `keyVaultRoleAssignments.name`
+### Parameter: `keyVaultConfiguration.roleAssignments.name`
 
 The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
 
-### Parameter: `keyVaultRoleAssignments.principalType`
+### Parameter: `keyVaultConfiguration.roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
 
@@ -989,13 +1211,12 @@ The principal type of the assigned principal ID.
   ]
   ```
 
-### Parameter: `keyVaultSku`
+### Parameter: `keyVaultConfiguration.sku`
 
-The SKU for the Key Vault. If empty, standard will be used.
+The SKU for the Key Vault resource.
 
 - Required: No
 - Type: string
-- Default: `'standard'`
 - Allowed:
   ```Bicep
   [
@@ -1004,57 +1225,76 @@ The SKU for the Key Vault. If empty, standard will be used.
   ]
   ```
 
-### Parameter: `keyVaultSoftDeleteEnabled`
+### Parameter: `keyVaultConfiguration.softDeleteEnabled`
 
 If set to true, The Key Vault soft delete will be enabled.
 
-- Required: No
+- Required: Yes
 - Type: bool
-- Default: `True`
 
-### Parameter: `keyVaultSoftDeleteRetentionInDays`
+### Parameter: `keyVaultConfiguration.softDeleteRetentionInDays`
 
 The number of days to retain the soft deleted vault. If empty, it will be set to 7.
 
-- Required: No
+- Required: Yes
 - Type: int
-- Default: `7`
 - MinValue: 7
 - MaxValue: 90
 
-### Parameter: `logAnalyticsWorkspaceDataRetentionInDays`
+### Parameter: `logAnalyticsWorkspaceConfiguration`
+
+The configuration to apply for the Conversation Knowledge Mining Log Analytics Workspace resource.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      dataRetentionInDays: 30
+      location: '[parameters(\'solutionLocation\')]'
+      name: '[format(\'{0}-laws\', parameters(\'solutionPrefix\'))]'
+      sku: 'PerGB2018'
+  }
+  ```
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`dataRetentionInDays`](#parameter-loganalyticsworkspaceconfigurationdataretentionindays) | int | The number of days to retain the data in the Log Analytics Workspace. If empty, it will be set to 30 days. |
+| [`location`](#parameter-loganalyticsworkspaceconfigurationlocation) | string | Location for the Log Analytics Workspace resource. |
+| [`name`](#parameter-loganalyticsworkspaceconfigurationname) | string | The name of the Log Analytics Workspace resource. |
+| [`sku`](#parameter-loganalyticsworkspaceconfigurationsku) | string | The SKU for the Log Analytics Workspace resource. |
+
+### Parameter: `logAnalyticsWorkspaceConfiguration.dataRetentionInDays`
 
 The number of days to retain the data in the Log Analytics Workspace. If empty, it will be set to 30 days.
 
 - Required: No
 - Type: int
-- Default: `30`
 - MinValue: 0
 - MaxValue: 730
 
-### Parameter: `logAnalyticsWorkspaceLocation`
+### Parameter: `logAnalyticsWorkspaceConfiguration.location`
 
-Location for the Log Analytics Workspace resource deployment.
-
-- Required: No
-- Type: string
-- Default: `[parameters('solutionLocation')]`
-
-### Parameter: `logAnalyticsWorkspaceResourceName`
-
-The name of the Log Analytics Workspace resource. It will override the default given name.
+Location for the Log Analytics Workspace resource.
 
 - Required: No
 - Type: string
-- Default: `[format('{0}-laws', parameters('solutionPrefix'))]`
 
-### Parameter: `logAnalyticsWorkspaceSkuName`
+### Parameter: `logAnalyticsWorkspaceConfiguration.name`
 
-The SKU for the Log Analytics Workspace. If empty, PerGB2018 will be used.
+The name of the Log Analytics Workspace resource.
 
 - Required: No
 - Type: string
-- Default: `'PerGB2018'`
+
+### Parameter: `logAnalyticsWorkspaceConfiguration.sku`
+
+The SKU for the Log Analytics Workspace resource.
+
+- Required: No
+- Type: string
 - Allowed:
   ```Bicep
   [
@@ -1069,53 +1309,146 @@ The SKU for the Log Analytics Workspace. If empty, PerGB2018 will be used.
   ]
   ```
 
-### Parameter: `managedIdentityLocation`
+### Parameter: `managedIdentityConfiguration`
 
-Location for the Managed Identity resource deployment.
+The configuration to apply for the Conversation Knowledge Mining Managed Identity resource.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      location: '[parameters(\'solutionLocation\')]'
+      name: '[format(\'{0}-mgid\', parameters(\'solutionPrefix\'))]'
+  }
+  ```
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`location`](#parameter-managedidentityconfigurationlocation) | string | Location for the Managed Identity resource. |
+| [`name`](#parameter-managedidentityconfigurationname) | string | The name of the Managed Identity resource. |
+
+### Parameter: `managedIdentityConfiguration.location`
+
+Location for the Managed Identity resource.
 
 - Required: No
 - Type: string
-- Default: `[parameters('solutionLocation')]`
 
-### Parameter: `managedIdentityResourceName`
+### Parameter: `managedIdentityConfiguration.name`
 
-The name of the Managed Identity resource. It will override the default given name.
-
-- Required: No
-- Type: string
-- Default: `[format('{0}-mgid', parameters('solutionPrefix'))]`
-
-### Parameter: `scriptCopyDataLocation`
-
-Location for the Script Copy Data resource deployment.
+The name of the Managed Identity resource.
 
 - Required: No
 - Type: string
-- Default: `[parameters('solutionLocation')]`
 
-### Parameter: `scriptCopyDataResourceName`
+### Parameter: `scriptCopyDataConfiguration`
 
-The name of the Script Copy Data resource. It will override the default given name.
+The configuration to apply for the Conversation Knowledge Mining Copy Data Script resource.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      githubBaseUrl: 'https://raw.githubusercontent.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator/7e1f274415e96070fc1f0306651303ce8ea75268/'
+      location: '[parameters(\'solutionLocation\')]'
+      name: '[format(\'{0}-scrp-cpdt\', parameters(\'solutionPrefix\'))]'
+      scriptUrl: 'https://raw.githubusercontent.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator/7e1f274415e96070fc1f0306651303ce8ea75268/infra/scripts/copy_kb_files.sh'
+  }
+  ```
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`githubBaseUrl`](#parameter-scriptcopydataconfigurationgithubbaseurl) | string | The base Raw Url of the GitHub repository where the Copy Data Script is located. |
+| [`location`](#parameter-scriptcopydataconfigurationlocation) | string | Location for the Script resource. |
+| [`name`](#parameter-scriptcopydataconfigurationname) | string | The name of the Script resource. |
+| [`scriptUrl`](#parameter-scriptcopydataconfigurationscripturl) | string | The Url where the Copy Data Script is located. |
+
+### Parameter: `scriptCopyDataConfiguration.githubBaseUrl`
+
+The base Raw Url of the GitHub repository where the Copy Data Script is located.
 
 - Required: No
 - Type: string
-- Default: `[format('{0}-scrp-cpdt', parameters('solutionPrefix'))]`
 
-### Parameter: `scriptIndexDataLocation`
+### Parameter: `scriptCopyDataConfiguration.location`
 
-Location for the Script Index Data resource deployment.
-
-- Required: No
-- Type: string
-- Default: `[parameters('solutionLocation')]`
-
-### Parameter: `scriptIndexDataResourceName`
-
-The name of the Script Index Data resource. It will override the default given name.
+Location for the Script resource.
 
 - Required: No
 - Type: string
-- Default: `[format('{0}-scrp-idxd', parameters('solutionPrefix'))]`
+
+### Parameter: `scriptCopyDataConfiguration.name`
+
+The name of the Script resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `scriptCopyDataConfiguration.scriptUrl`
+
+The Url where the Copy Data Script is located.
+
+- Required: No
+- Type: string
+
+### Parameter: `scriptIndexDataConfiguration`
+
+The configuration to apply for the Conversation Knowledge Mining Copy Data Script resource.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      githubBaseUrl: 'https://raw.githubusercontent.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator/7e1f274415e96070fc1f0306651303ce8ea75268/'
+      location: '[parameters(\'solutionLocation\')]'
+      name: '[format(\'{0}-scrp-indt\', parameters(\'solutionPrefix\'))]'
+      scriptUrl: 'https://raw.githubusercontent.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator/7e1f274415e96070fc1f0306651303ce8ea75268/infra/scripts/run_create_index_scripts.sh'
+  }
+  ```
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`githubBaseUrl`](#parameter-scriptindexdataconfigurationgithubbaseurl) | string | The base Raw Url of the GitHub repository where the Copy Data Script is located. |
+| [`location`](#parameter-scriptindexdataconfigurationlocation) | string | Location for the Script resource. |
+| [`name`](#parameter-scriptindexdataconfigurationname) | string | The name of the Script resource. |
+| [`scriptUrl`](#parameter-scriptindexdataconfigurationscripturl) | string | The Url where the Copy Data Script is located. |
+
+### Parameter: `scriptIndexDataConfiguration.githubBaseUrl`
+
+The base Raw Url of the GitHub repository where the Copy Data Script is located.
+
+- Required: No
+- Type: string
+
+### Parameter: `scriptIndexDataConfiguration.location`
+
+Location for the Script resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `scriptIndexDataConfiguration.name`
+
+The name of the Script resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `scriptIndexDataConfiguration.scriptUrl`
+
+The Url where the Copy Data Script is located.
+
+- Required: No
+- Type: string
 
 ### Parameter: `solutionLocation`
 
@@ -1125,101 +1458,147 @@ Location for all the deployed Azure resources except databases. Defaulted to Eas
 - Type: string
 - Default: `'East US'`
 
-### Parameter: `sqlServerAdministratorLogin`
+### Parameter: `sqlServerConfiguration`
+
+The configuration to apply for the Conversation Knowledge Mining SQL Server resource.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      location: '[parameters(\'databasesLocation\')]'
+      name: '[format(\'{0}-sqls\', parameters(\'solutionPrefix\'))]'
+      sqlServerAdministratorLogin: 'sqladmin'
+      sqlServerAdministratorPassword: 'TestPassword_1234'
+      sqlServerDatabaseName: '[format(\'{0}-ckmdb\', parameters(\'solutionPrefix\'))]'
+      sqlServerDatabaseSkuCapacity: 2
+      sqlServerDatabaseSkuFamily: 'Gen5'
+      sqlServerDatabaseSkuName: 'GP_Gen5_2'
+      sqlServerDatabaseSkuTier: 'GeneralPurpose'
+  }
+  ```
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`location`](#parameter-sqlserverconfigurationlocation) | string | Location for the SQL Server resource. |
+| [`name`](#parameter-sqlserverconfigurationname) | string | The name of the SQL Server resource. |
+| [`sqlServerAdministratorLogin`](#parameter-sqlserverconfigurationsqlserveradministratorlogin) | securestring | The administrator login credential for the SQL Server. |
+| [`sqlServerAdministratorPassword`](#parameter-sqlserverconfigurationsqlserveradministratorpassword) | securestring | The administrator password credential for the SQL Server. |
+| [`sqlServerDatabaseName`](#parameter-sqlserverconfigurationsqlserverdatabasename) | string | The name of the SQL Server database. |
+| [`sqlServerDatabaseSkuCapacity`](#parameter-sqlserverconfigurationsqlserverdatabaseskucapacity) | int | The SKU capacity of the SQL Server database. If empty, it will be set to 2. Find available options: Database.[Sku property](https://learn.microsoft.com/dotnet/api/microsoft.azure.management.sql.models.database.sku). |
+| [`sqlServerDatabaseSkuFamily`](#parameter-sqlserverconfigurationsqlserverdatabaseskufamily) | string | The SKU Family of the SQL Server database. If empty, it will be set to Gen5. Find available options: Database.[Sku property](https://learn.microsoft.com/dotnet/api/microsoft.azure.management.sql.models.database.sku). |
+| [`sqlServerDatabaseSkuName`](#parameter-sqlserverconfigurationsqlserverdatabaseskuname) | string | The SKU name of the SQL Server database. If empty, it will be set to GP_Gen5_2. Find available options: Database.[Sku property](https://learn.microsoft.com/dotnet/api/microsoft.azure.management.sql.models.database.sku). |
+| [`sqlServerDatabaseSkuTier`](#parameter-sqlserverconfigurationsqlserverdatabaseskutier) | string | The SKU tier of the SQL Server database. If empty, it will be set to GeneralPurpose. Find available options: Database.[Sku property](https://learn.microsoft.com/dotnet/api/microsoft.azure.management.sql.models.database.sku). |
+
+### Parameter: `sqlServerConfiguration.location`
+
+Location for the SQL Server resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `sqlServerConfiguration.name`
+
+The name of the SQL Server resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `sqlServerConfiguration.sqlServerAdministratorLogin`
 
 The administrator login credential for the SQL Server.
 
 - Required: No
 - Type: securestring
-- Default: `'sqladmin'`
 
-### Parameter: `sqlServerAdministratorPassword`
+### Parameter: `sqlServerConfiguration.sqlServerAdministratorPassword`
 
 The administrator password credential for the SQL Server.
 
 - Required: No
 - Type: securestring
-- Default: `'TestPassword_1234'`
 
-### Parameter: `sqlServerDatabaseName`
+### Parameter: `sqlServerConfiguration.sqlServerDatabaseName`
 
 The name of the SQL Server database.
 
 - Required: No
 - Type: string
-- Default: `[format('{0}-ckmdb', parameters('sqlServerResourceName'))]`
 
-### Parameter: `sqlServerDatabaseSkuCapacity`
+### Parameter: `sqlServerConfiguration.sqlServerDatabaseSkuCapacity`
 
 The SKU capacity of the SQL Server database. If empty, it will be set to 2. Find available options: Database.[Sku property](https://learn.microsoft.com/dotnet/api/microsoft.azure.management.sql.models.database.sku).
 
 - Required: No
 - Type: int
-- Default: `2`
 
-### Parameter: `sqlServerDatabaseSkuFamily`
+### Parameter: `sqlServerConfiguration.sqlServerDatabaseSkuFamily`
 
 The SKU Family of the SQL Server database. If empty, it will be set to Gen5. Find available options: Database.[Sku property](https://learn.microsoft.com/dotnet/api/microsoft.azure.management.sql.models.database.sku).
 
 - Required: No
 - Type: string
-- Default: `'Gen5'`
 
-### Parameter: `sqlServerDatabaseSkuName`
+### Parameter: `sqlServerConfiguration.sqlServerDatabaseSkuName`
 
 The SKU name of the SQL Server database. If empty, it will be set to GP_Gen5_2. Find available options: Database.[Sku property](https://learn.microsoft.com/dotnet/api/microsoft.azure.management.sql.models.database.sku).
 
 - Required: No
 - Type: string
-- Default: `'GP_Gen5_2'`
 
-### Parameter: `sqlServerDatabaseSkuTier`
+### Parameter: `sqlServerConfiguration.sqlServerDatabaseSkuTier`
 
 The SKU tier of the SQL Server database. If empty, it will be set to GeneralPurpose. Find available options: Database.[Sku property](https://learn.microsoft.com/dotnet/api/microsoft.azure.management.sql.models.database.sku).
 
 - Required: No
 - Type: string
-- Default: `'GeneralPurpose'`
 
-### Parameter: `sqlServerLocation`
+### Parameter: `storageAccountConfiguration`
 
-Location for the SQL Server resource deployment.
+The configuration to apply for the Conversation Knowledge Mining Storage Account resource.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      location: '[parameters(\'solutionLocation\')]'
+      name: '[replace(format(\'{0}-strg\', parameters(\'solutionPrefix\')), \'-\', \'\')]'
+      sku: 'Standard_LRS'
+  }
+  ```
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`location`](#parameter-storageaccountconfigurationlocation) | string | Location for the Storage Account resource. |
+| [`name`](#parameter-storageaccountconfigurationname) | string | The name of the Storage Account resource. |
+| [`sku`](#parameter-storageaccountconfigurationsku) | string | The SKU for the Storage Account resource. |
+
+### Parameter: `storageAccountConfiguration.location`
+
+Location for the Storage Account resource.
 
 - Required: No
 - Type: string
-- Default: `[parameters('databasesLocation')]`
 
-### Parameter: `sqlServerResourceName`
+### Parameter: `storageAccountConfiguration.name`
 
-The name of the SQL Server resource. It will override the default given name.
-
-- Required: No
-- Type: string
-- Default: `[format('{0}-sqls', parameters('solutionPrefix'))]`
-
-### Parameter: `storageAccountLocation`
-
-Location for the Storage Account resource deployment.
+The name of the Storage Account resource.
 
 - Required: No
 - Type: string
-- Default: `[parameters('solutionLocation')]`
 
-### Parameter: `storageAccountResourceName`
+### Parameter: `storageAccountConfiguration.sku`
 
-The name of the Storage Account resource. It will override the default given name.
-
-- Required: No
-- Type: string
-- Default: `[replace(format('{0}-strg', parameters('solutionPrefix')), '-', '')]`
-
-### Parameter: `storageAccountSkuName`
-
-The SKU for the Storage Account. If empty, Standard_LRS will be used.
+The SKU for the Storage Account resource.
 
 - Required: No
 - Type: string
-- Default: `'Standard_LRS'`
 - Allowed:
   ```Bicep
   [
@@ -1246,69 +1625,94 @@ The tags to apply to all deployed Azure resources.
   }
   ```
 
-### Parameter: `webAppDockerImageContainerRegistryUrl`
+### Parameter: `webAppServerFarmConfiguration`
+
+The configuration to apply for the Conversation Knowledge Mining Web App Server Farm resource.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      location: '[parameters(\'solutionLocation\')]'
+      name: '[format(\'{0}-wsrv\', parameters(\'solutionPrefix\'))]'
+      sku: 'B2'
+      webAppDockerImageContainerRegistryUrl: 'kmcontainerreg.azurecr.io'
+      webAppDockerImageName: 'km-app'
+      webAppDockerImageTag: 'latest_2025-03-20_276'
+      webAppLocation: '[parameters(\'solutionLocation\')]'
+      webAppResourceName: '[format(\'{0}-app\', parameters(\'solutionPrefix\'))]'
+  }
+  ```
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`location`](#parameter-webappserverfarmconfigurationlocation) | string | Location for the Web App Server Farm resource. |
+| [`name`](#parameter-webappserverfarmconfigurationname) | string | The name of the Web App Server Farm resource. |
+| [`sku`](#parameter-webappserverfarmconfigurationsku) | string | The SKU for the Web App Server Farm resource. |
+| [`webAppDockerImageContainerRegistryUrl`](#parameter-webappserverfarmconfigurationwebappdockerimagecontainerregistryurl) | string | The url of the Container Registry where the docker image for Conversation Knowledge Mining webapp is located. |
+| [`webAppDockerImageName`](#parameter-webappserverfarmconfigurationwebappdockerimagename) | string | The name of the docker image for the Rag function. |
+| [`webAppDockerImageTag`](#parameter-webappserverfarmconfigurationwebappdockerimagetag) | string | The tag of the docker image for the Rag function. |
+| [`webAppLocation`](#parameter-webappserverfarmconfigurationwebapplocation) | string | Location for the Web App resource deployment. |
+| [`webAppResourceName`](#parameter-webappserverfarmconfigurationwebappresourcename) | string | The name of the Web App resource. |
+
+### Parameter: `webAppServerFarmConfiguration.location`
+
+Location for the Web App Server Farm resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `webAppServerFarmConfiguration.name`
+
+The name of the Web App Server Farm resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `webAppServerFarmConfiguration.sku`
+
+The SKU for the Web App Server Farm resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `webAppServerFarmConfiguration.webAppDockerImageContainerRegistryUrl`
 
 The url of the Container Registry where the docker image for Conversation Knowledge Mining webapp is located.
 
 - Required: No
 - Type: string
-- Default: `'kmcontainerreg.azurecr.io'`
 
-### Parameter: `webAppDockerImageName`
+### Parameter: `webAppServerFarmConfiguration.webAppDockerImageName`
 
 The name of the docker image for the Rag function.
 
 - Required: No
 - Type: string
-- Default: `'km-app'`
 
-### Parameter: `webAppDockerImageTag`
+### Parameter: `webAppServerFarmConfiguration.webAppDockerImageTag`
 
 The tag of the docker image for the Rag function.
 
 - Required: No
 - Type: string
-- Default: `'latest'`
 
-### Parameter: `webAppLocation`
+### Parameter: `webAppServerFarmConfiguration.webAppLocation`
 
 Location for the Web App resource deployment.
 
 - Required: No
 - Type: string
-- Default: `[parameters('solutionLocation')]`
 
-### Parameter: `webAppResourceName`
+### Parameter: `webAppServerFarmConfiguration.webAppResourceName`
 
 The name of the Web App resource.
 
 - Required: No
 - Type: string
-- Default: `[format('{0}-wapp-wapp', parameters('solutionPrefix'))]`
-
-### Parameter: `webAppServerFarmLocation`
-
-The location for the Web App Server Farm. Defaulted to the solution location.
-
-- Required: No
-- Type: string
-- Default: `[parameters('solutionLocation')]`
-
-### Parameter: `webAppServerFarmResourceName`
-
-The name of the Web App Server Farm resource. It will override the default given name.
-
-- Required: No
-- Type: string
-- Default: `[format('{0}-waoo-srvf', parameters('solutionPrefix'))]`
-
-### Parameter: `webAppServerFarmSku`
-
-The SKU for the web app. If empty it will be set to B2.
-
-- Required: No
-- Type: string
-- Default: `'B2'`
 
 ## Outputs
 

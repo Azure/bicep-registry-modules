@@ -27,417 +27,216 @@ param tags object = {
   location: solutionLocation
 }
 
-// PARAMETERS: Resource names
-@description('Optional. The name of the AI Foundry AI Hub resource. It will override the default given name.')
-@maxLength(90)
-param aiFoundryAiHubResourceName string = '${solutionPrefix}-aifd-aihb'
+// PARAMETERS: Resources configuration
+@description('Optional. The configuration to apply for the Conversation Knowledge Mining AI Foundry AI Hub resource.')
+param aiFoundryAiHubConfiguration aiFoundryAiHubType = {
+  name: '${solutionPrefix}-aifd-aihb'
+  location: solutionLocation
+  sku: 'Basic'
+}
 
-@description('Optional. The name of the AI Foundry AI Project resource. It will override the default given name.')
-@maxLength(90)
-param aiFoundryAiProjectResourceName string = '${solutionPrefix}-aifd-aipj'
+@description('Optional. The configuration to apply for the Conversation Knowledge Mining AI Foundry AI Project resource.')
+param aiFoundryAiProjectConfiguration aiFoundryAiProjectType = {
+  name: '${solutionPrefix}-aifd-aipj'
+  location: solutionLocation
+  sku: 'Standard'
+}
 
-@description('Optional. The name of the AI Foundry AI Services Content Understanding resource. It will override the default given name.')
-@maxLength(90)
-param aiFoundryAiServicesContentUnderstandingResourceName string = '${solutionPrefix}-aifd-aisr-cu'
+@description('Optional. The configuration to apply for the Conversation Knowledge Mining AI Foundry AI Services Content Understanding resource.')
+param aiFoundryAiServicesContentUnderstandingConfiguration aiFoundryAiServicesContentUnderstandingType = {
+  name: '${solutionPrefix}-aifd-aisr-cu'
+  location: 'West US'
+  sku: 'S0'
+}
 
-@description('Optional. The name of the AI Foundry AI Services resource. It will override the default given name.')
-@maxLength(90)
-param aiFoundryAiServicesResourceName string = '${solutionPrefix}-aifd-aisr'
+@description('Optional. The configuration to apply for the Conversation Knowledge Mining AI Foundry AI Services resource.')
+param aiFoundryAiServicesConfiguration aiFoundryAiServicesType = {
+  name: '${solutionPrefix}-aifd-aisr'
+  location: 'East US'
+  sku: 'S0'
+  gptModelName: 'gpt-4o-mini'
+  gptModelSku: 'Standard'
+  gptModelCapacity: 100
+  textEmbeddingModelName: 'text-embedding-ada-002'
+  textEmbeddingModelSku: 'Standard'
+  textEmbeddingModelCapacity: 80
+}
 
-@description('Optional. The name of the AI Foundry Application Insights resource. It will override the default given name.')
-@maxLength(90)
-param aiFoundryApplicationInsightsResourceName string = '${solutionPrefix}-aifd-appi'
+@description('Optional. The configuration to apply for the Conversation Knowledge Mining AI Foundry Application Insights resource.')
+param aiFoundryApplicationInsightsConfiguration aiFoundryApplicationInsightsType = {
+  name: '${solutionPrefix}-aifd-appi'
+  location: solutionLocation
+  retentionInDays: 30
+}
 
-@description('Optional. The name of the AI Foundry Container Registry resource. It will override the default given name.')
-@maxLength(50)
-param aiFoundryContainerRegistryResourceName string = replace('${solutionPrefix}-aifd-creg', '-', '') //NOTE: ACR name should not contain hyphens
+@description('Optional. The configuration to apply for the Conversation Knowledge Mining AI Foundry Container Registry resource.')
+param aiFoundryContainerRegistryConfiguration aiFoundryContainerRegistryType = {
+  name: replace('${solutionPrefix}-aifd-creg', '-', '') //NOTE: ACR name should not contain hyphens
+  location: solutionLocation
+  sku: 'Premium'
+}
 
-@description('Optional. The name of the AI Foundry Search Service resource. It will override the default given name.')
-@maxLength(60)
-param aiFoundrySearchServiceResourceName string = '${solutionPrefix}-aifd-srch'
+@description('Optional. The configuration to apply for the Conversation Knowledge Mining AI Foundry Search Services resource.')
+param aiFoundrySearchServiceConfiguration aiFoundrySearchServiceType = {
+  name: '${solutionPrefix}-aifd-srch'
+  location: solutionLocation
+  sku: 'basic'
+}
 
-@description('Optional. The name of the AI Foundry Storage Account resource. It will override the default given name.')
-@maxLength(24)
-param aiFoundryStorageAccountResourceName string = replace('${solutionPrefix}-aifd-strg', '-', '') //NOTE: SA name should not contain hyphens
+@description('Optional. The configuration to apply for the Conversation Knowledge Mining AI Foundry Storage Account resource.')
+param aiFoundryStorageAccountConfiguration storageAccountType = {
+  name: replace('${solutionPrefix}-aifd-strg', '-', '')
+  location: solutionLocation
+  sku: 'Standard_LRS'
+}
 
-@description('Optional. The name of the Cosmos DB Account resource. It will override the default given name.')
-@maxLength(50)
-param cosmosDbAccountResourceName string = '${solutionPrefix}-cmdb'
+@description('Optional. The configuration to apply for the Conversation Knowledge Mining Cosmos DB Account resource.')
+param cosmosDbAccountConfiguration cosmosDbAccountType = {
+  name: '${solutionPrefix}-cmdb'
+  location: databasesLocation
+}
 
-@description('Optional. The name of the Function Charts resource. It will override the default given name.')
-@maxLength(90)
-param functionChartsResourceName string = '${solutionPrefix}-fchr-azfn'
+@description('Optional. The configuration to apply for the Conversation Knowledge Mining Charts Function resource.')
+param functionChartsConfiguration functionsType = {
+  name: '${solutionPrefix}-azfn-fchr'
+  location: solutionLocation
+  dockerImageContainerRegistryUrl: 'kmcontainerreg.azurecr.io'
+  dockerImageName: 'km-charts-function'
+  dockerImageTag: 'latest_2025-03-20_276'
+  cpu: 1
+  memory: '2Gi'
+  appScaleLimit: 10
+  functionName: 'get_metrics'
+}
 
-@description('Optional. The name of the Function RAG resource. It will override the default given name.')
-@maxLength(90)
-param functionRagResourceName string = '${solutionPrefix}-frag-azfn'
+@description('Optional. The configuration to apply for the Conversation Knowledge Mining Rag Function resource.')
+param functionRagConfiguration functionsType = {
+  name: '${solutionPrefix}-azfn-frag'
+  location: solutionLocation
+  dockerImageContainerRegistryUrl: 'kmcontainerreg.azurecr.io'
+  dockerImageName: 'km-rag-function'
+  dockerImageTag: 'latest_2025-03-20_276'
+  cpu: 1
+  memory: '2Gi'
+  appScaleLimit: 10
+  functionName: 'stream_openai_text'
+}
 
-@description('Optional. The name of the Functions Managed Environment resource. It will override the default given name.')
-@maxLength(90)
-param functionsManagedEnvironmentResourceName string = '${solutionPrefix}-ftme'
+@description('Optional. The configuration to apply for the Conversation Knowledge Mining Functions Managed Environment resource.')
+param functionsManagedEnvironmentConfiguration functionsManagedEnvironmentType = {
+  name: '${solutionPrefix}-fnme'
+  location: solutionLocation
+}
 
-@description('Optional. The name of the Key Vault resource. It will override the default given name.')
-@maxLength(24)
-param keyVaultResourceName string = '${solutionPrefix}-keyv'
+@description('Optional. The configuration to apply for the Conversation Knowledge Mining Key Vault resource.')
+param keyVaultConfiguration ckmKeyVaultType = {
+  name: '${solutionPrefix}-keyv'
+  location: solutionLocation
+  sku: 'standard'
+  createMode: 'default'
+  softDeleteEnabled: true
+  softDeleteRetentionInDays: 7
+  purgeProtectionEnabled: false
+  roleAssignments: []
+}
 
-@description('Optional. The name of the Log Analytics Workspace resource. It will override the default given name.')
-@maxLength(63)
-param logAnalyticsWorkspaceResourceName string = '${solutionPrefix}-laws'
+@description('Optional. The configuration to apply for the Conversation Knowledge Mining Log Analytics Workspace resource.')
+param logAnalyticsWorkspaceConfiguration logAnalyticsWorkspaceType = {
+  name: '${solutionPrefix}-laws'
+  location: solutionLocation
+  sku: 'PerGB2018'
+  dataRetentionInDays: 30
+}
 
-@description('Optional. The name of the Managed Identity resource. It will override the default given name.')
-@maxLength(128)
-param managedIdentityResourceName string = '${solutionPrefix}-mgid'
+@description('Optional. The configuration to apply for the Conversation Knowledge Mining Managed Identity resource.')
+param managedIdentityConfiguration managedIdentityType = {
+  name: '${solutionPrefix}-mgid'
+  location: solutionLocation
+}
 
-@description('Optional. The name of the Script Copy Data resource. It will override the default given name.')
-@maxLength(90)
-param scriptCopyDataResourceName string = '${solutionPrefix}-scrp-cpdt'
+@description('Optional. The configuration to apply for the Conversation Knowledge Mining Copy Data Script resource.')
+param scriptCopyDataConfiguration scriptType = {
+  name: '${solutionPrefix}-scrp-cpdt'
+  location: solutionLocation
+  githubBaseUrl: 'https://raw.githubusercontent.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator/7e1f274415e96070fc1f0306651303ce8ea75268/'
+  scriptUrl: 'https://raw.githubusercontent.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator/7e1f274415e96070fc1f0306651303ce8ea75268/infra/scripts/copy_kb_files.sh'
+}
 
-@description('Optional. The name of the Script Index Data resource. It will override the default given name.')
-@maxLength(90)
-param scriptIndexDataResourceName string = '${solutionPrefix}-scrp-idxd'
+@description('Optional. The configuration to apply for the Conversation Knowledge Mining Copy Data Script resource.')
+param scriptIndexDataConfiguration scriptType = {
+  name: '${solutionPrefix}-scrp-indt'
+  location: solutionLocation
+  githubBaseUrl: 'https://raw.githubusercontent.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator/7e1f274415e96070fc1f0306651303ce8ea75268/'
+  scriptUrl: 'https://raw.githubusercontent.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator/7e1f274415e96070fc1f0306651303ce8ea75268/infra/scripts/run_create_index_scripts.sh'
+}
 
-@description('Optional. The name of the SQL Server resource. It will override the default given name.')
-@maxLength(63)
-param sqlServerResourceName string = '${solutionPrefix}-sqls'
+@description('Optional. The configuration to apply for the Conversation Knowledge Mining SQL Server resource.')
+param sqlServerConfiguration sqlServerType = {
+  name: '${solutionPrefix}-sqls'
+  location: databasesLocation
+  sqlServerAdministratorLogin: 'sqladmin'
+  sqlServerAdministratorPassword: 'TestPassword_1234'
+  sqlServerDatabaseName: '${solutionPrefix}-ckmdb'
+  sqlServerDatabaseSkuName: 'GP_Gen5_2'
+  sqlServerDatabaseSkuTier: 'GeneralPurpose'
+  sqlServerDatabaseSkuFamily: 'Gen5'
+  sqlServerDatabaseSkuCapacity: 2
+}
 
-@description('Optional. The name of the Storage Account resource. It will override the default given name.')
-@maxLength(24)
-param storageAccountResourceName string = replace('${solutionPrefix}-strg', '-', '') //NOTE: SA name should not contain hyphens
+@description('Optional. The configuration to apply for the Conversation Knowledge Mining Storage Account resource.')
+param storageAccountConfiguration storageAccountType = {
+  name: replace('${solutionPrefix}-strg', '-', '')
+  location: solutionLocation
+  sku: 'Standard_LRS'
+}
 
-@description('Optional. The name of the Web App resource.')
-@maxLength(60)
-param webAppResourceName string = '${solutionPrefix}-wapp-wapp'
-
-@description('Optional. The name of the Web App Server Farm resource. It will override the default given name.')
-@maxLength(60)
-param webAppServerFarmResourceName string = '${solutionPrefix}-waoo-srvf'
-
-// PARAMETERS: locations
-//NOTE: allow for individual locations for each resource
-@description('Required. Location for the AI Foundry Content Understanding service deployment.')
-@allowed(['West US', 'Sweden Central', 'Australia East'])
-@metadata({ azd: { type: 'location' } })
-param aiFoundryAiServicesContentUnderstandingLocation string
-@description('Optional. The location for the Web App Server Farm. Defaulted to the solution location.')
-@metadata({ azd: { type: 'location' } })
-param webAppServerFarmLocation string = solutionLocation
-@description('Optional. Location for the AI Foundry AI Hub resource deployment.')
-@metadata({ azd: { type: 'location' } })
-param aiFoundryAiHubLocation string = solutionLocation
-@description('Optional. Location for the AI Foundry AI Service resource deployment.')
-@metadata({ azd: { type: 'location' } })
-param aiFoundryAiServicesLocation string = solutionLocation
-@description('Optional. Location for the AI Foundry AI Project resource deployment.')
-@metadata({ azd: { type: 'location' } })
-param aiFoundryAiProjectLocation string = solutionLocation
-@description('Optional. Location for the AI Foundry Application Insights resource deployment.')
-@metadata({ azd: { type: 'location' } })
-param aiFoundryApplicationInsightsLocation string = solutionLocation
-@description('Optional. Location for the AI Foundry Container Registry resource deployment.')
-@metadata({ azd: { type: 'location' } })
-param aiFoundryContainerRegistryLocation string = solutionLocation
-@description('Optional. Location for the AI Foundry Search Service resource deployment.')
-@metadata({ azd: { type: 'location' } })
-param aiFoundrySearchServiceLocation string = solutionLocation
-@description('Optional. Location for the AI Foundry Storage Account resource deployment.')
-@metadata({ azd: { type: 'location' } })
-param aiFoundryStorageAccountLocation string = solutionLocation
-@description('Optional. Location for the Cosmos DB Account resource deployment.')
-@metadata({ azd: { type: 'location' } })
-param cosmosDbAccountLocation string = databasesLocation
-@description('Optional. Location for the Function Charts resource deployment.')
-@metadata({ azd: { type: 'location' } })
-param functionChartsLocation string = solutionLocation
-@description('Optional. Location for the Function RAG resource deployment.')
-@metadata({ azd: { type: 'location' } })
-param functionRagLocation string = solutionLocation
-@description('Optional. Location for the Functions Managed Environment resource deployment.')
-@metadata({ azd: { type: 'location' } })
-param functionsManagedEnvironmentLocation string = solutionLocation
-@description('Optional. Location for the Key Vault resource deployment.')
-@metadata({ azd: { type: 'location' } })
-param keyVaultLocation string = solutionLocation
-@description('Optional. Location for the Log Analytics Workspace resource deployment.')
-@metadata({ azd: { type: 'location' } })
-param logAnalyticsWorkspaceLocation string = solutionLocation
-@description('Optional. Location for the Managed Identity resource deployment.')
-@metadata({ azd: { type: 'location' } })
-param managedIdentityLocation string = solutionLocation
-@description('Optional. Location for the Script Copy Data resource deployment.')
-@metadata({ azd: { type: 'location' } })
-param scriptCopyDataLocation string = solutionLocation
-@description('Optional. Location for the Script Index Data resource deployment.')
-@metadata({ azd: { type: 'location' } })
-param scriptIndexDataLocation string = solutionLocation
-@description('Optional. Location for the SQL Server resource deployment.')
-@metadata({ azd: { type: 'location' } })
-param sqlServerLocation string = databasesLocation
-@description('Optional. Location for the Storage Account resource deployment.')
-@metadata({ azd: { type: 'location' } })
-param storageAccountLocation string = solutionLocation
-@description('Optional. Location for the Web App resource deployment.')
-@metadata({ azd: { type: 'location' } })
-param webAppLocation string = solutionLocation
-
-// PARAMETERS: Log Analytics workspace configuration
-@description('Optional. The SKU for the Log Analytics Workspace. If empty, PerGB2018 will be used.')
-@allowed(['CapacityReservation', 'Free', 'LACluster', 'PerGB2018', 'PerNode', 'Premium', 'Standalone', 'Standard'])
-param logAnalyticsWorkspaceSkuName string = 'PerGB2018'
-
-@description('Optional. The number of days to retain the data in the Log Analytics Workspace. If empty, it will be set to 30 days.')
-@minValue(0)
-@maxValue(730)
-param logAnalyticsWorkspaceDataRetentionInDays int = 30
-
-// PARAMETERS: Key Vault configuration
-@allowed(['premium', 'standard'])
-@description('Optional. The SKU for the Key Vault. If empty, standard will be used.')
-param keyVaultSku string = 'standard'
-
-@description('Optional. The Key Vault create mode. Indicates whether the vault need to be recovered from purge or not. If empty, default will be used.')
-@allowed(['default', 'recover'])
-param keyVaultCreateMode string = 'default'
-
-@description('Optional. If set to true, The Key Vault soft delete will be enabled.')
-param keyVaultSoftDeleteEnabled bool = true
-
-@description('Optional. The number of days to retain the soft deleted vault. If empty, it will be set to 7.')
-@minValue(7)
-@maxValue(90)
-param keyVaultSoftDeleteRetentionInDays int = 7
-
-@description('Optional. If set to true, The Key Vault purge protection will be enabled. If empty, it will be set to false.')
-param keyVaultPurgeProtectionEnabled bool = false
-
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
-@description('Optional. Array of role assignments to include in the Key Vault.')
-param keyVaultRoleAssignments roleAssignmentType[] = []
-
-// PARAMETERS: AI Foundry Storage Account configuration
-@description('Optional. The SKU for the AI Foundry Storage Account. If empty, Standard_LRS will be used.')
-@allowed([
-  'Standard_LRS'
-  'Standard_GRS'
-  'Standard_RAGRS'
-  'Standard_ZRS'
-  'Premium_LRS'
-  'Premium_ZRS'
-])
-param aiFoundryStorageAccountSkuName string = 'Standard_LRS'
-
-// PARAMETERS: AI Foundry Application Insights configuration
-
-@description('Optional. The retention of Application Insights data in days. If empty, Standard will be used.')
-@allowed([120, 180, 270, 30, 365, 550, 60, 730, 90])
-param aiFoundryApplicationInsightsRetentionInDays int = 30
-
-// PARAMETERS: AI Foundry Container Registry configuration
-@description('Optional. The SKU for the AI Foundry Container Registry. If empty, Premium will be used.')
-@allowed([
-  'Basic'
-  'Standard'
-  'Premium'
-])
-param aiFoundryContainerRegistrySkuName string = 'Premium'
-
-// PARAMETERS: AI Foundry AI Services configuration
-@description('Optional. The SKU of the AI Foundry AI Services account. Use \'Get-AzCognitiveServicesAccountSku\' to determine a valid combinations of \'kind\' and \'SKU\' for your Azure region.')
-@allowed([
-  'C2'
-  'C3'
-  'C4'
-  'F0'
-  'F1'
-  'S'
-  'S0'
-  'S1'
-  'S10'
-  'S2'
-  'S3'
-  'S4'
-  'S5'
-  'S6'
-  'S7'
-  'S8'
-  'S9'
-])
-param aiFoundryAiServicesSkuName string = 'S0'
-@description('Optional. GPT model deployment type of the AI Foundry AI Services account.')
-@allowed([
-  'Standard'
-  'GlobalStandard'
-])
-param aiFoundryAIServicesGptModelDeploymentType string = 'GlobalStandard'
-@description('Optional. Name of the GPT model to deploy in the AI Foundry AI Services account.')
-@allowed([
-  'gpt-4o-mini'
-  'gpt-4o'
-  'gpt-4'
-])
-param aiFoundryAIServicesGptModelName string = 'gpt-4o-mini'
-@minValue(10)
-@description('Optional. Capacity of the GPT model to deploy in the AI Foundry AI Services account. Capacity is limited per model/region, so you will get errors if you go over. [Quotas link](https://learn.microsoft.com/azure/ai-services/openai/quotas-limits).')
-param aiFoundryAIServicesGptModelDeploymentCapacity int = 100
-@description('Optional. Name of the Text Embedding model to deploy in the AI Foundry AI Services account.')
-@allowed([
-  'text-embedding-ada-002'
-])
-param aiFoundryAiServicesTextEmbeddingModelName string = 'text-embedding-ada-002'
-@minValue(10)
-@description('Optional. Capacity of the Text Embedding model to deploy in the AI Foundry AI Services account. Capacity is limited per model/region, so you will get errors if you go over. [Quotas link](https://learn.microsoft.com/azure/ai-services/openai/quotas-limits).')
-param aiFoundryAiServicesTextEmbeddingModelCapacity int = 80
-
-// PARAMETERS: AI Foundry AI Services Content Understanding configuration
-@description('Optional. The SKU of the AI Foundry AI Services account. Use \'Get-AzCognitiveServicesAccountSku\' to determine a valid combinations of \'kind\' and \'SKU\' for your Azure region.')
-@allowed([
-  'C2'
-  'C3'
-  'C4'
-  'F0'
-  'F1'
-  'S'
-  'S0'
-  'S1'
-  'S10'
-  'S2'
-  'S3'
-  'S4'
-  'S5'
-  'S6'
-  'S7'
-  'S8'
-  'S9'
-])
-param aiFoundryAiServicesContentUnderstandingSkuName string = 'S0'
-
-// PARAMETERS: AI Foundry Search Services configuration
-@description('Optional. The SKU of the AI Foundry Search Service account.')
-@allowed([
-  'basic'
-  'free'
-  'standard'
-  'standard2'
-  'standard3'
-  'storage_optimized_l1'
-  'storage_optimized_l2'
-])
-param aiFoundrySearchServiceSkuName string = 'basic'
-
-// PARAMETERS: AI Foundry AI Hub configuration
-@description('Optional. The SKU of the AI Foundry AI Hub account.')
-@allowed([
-  'Basic'
-  'Free'
-  'Standard'
-  'Premium'
-])
-param aiFoundryAiHubSkuName string = 'Basic'
-
-// PARAMETERS: AI Foundry AI Project configuration
-@description('Optional. The SKU of the AI Foundry AI project.')
-@allowed([
-  'Basic'
-  'Free'
-  'Standard'
-  'Premium'
-])
-param aiFoundryAiProjectSkuName string = 'Standard'
-
-// PARAMETERS: AI Foundry Storage Account configuration
-@description('Optional. The SKU for the Storage Account. If empty, Standard_LRS will be used.')
-@allowed([
-  'Standard_LRS'
-  'Standard_GRS'
-  'Standard_RAGRS'
-  'Standard_ZRS'
-  'Premium_LRS'
-  'Premium_ZRS'
-])
-param storageAccountSkuName string = 'Standard_LRS'
-
-// PARAMETERS: SQL Server configuration
-@description('Optional. The administrator login credential for the SQL Server.')
-@secure()
-#disable-next-line secure-parameter-default
-param sqlServerAdministratorLogin string = 'sqladmin'
-
-@description('Optional. The administrator password credential for the SQL Server.')
-@secure()
-#disable-next-line secure-parameter-default
-param sqlServerAdministratorPassword string = 'TestPassword_1234'
-
-@description('Optional. The name of the SQL Server database.')
-@maxLength(128)
-param sqlServerDatabaseName string = '${sqlServerResourceName}-ckmdb'
-
-@description('Optional. The SKU name of the SQL Server database. If empty, it will be set to GP_Gen5_2. Find available options: Database.[Sku property](https://learn.microsoft.com/dotnet/api/microsoft.azure.management.sql.models.database.sku).')
-param sqlServerDatabaseSkuName string = 'GP_Gen5_2'
-
-@description('Optional. The SKU tier of the SQL Server database. If empty, it will be set to GeneralPurpose. Find available options: Database.[Sku property](https://learn.microsoft.com/dotnet/api/microsoft.azure.management.sql.models.database.sku).')
-param sqlServerDatabaseSkuTier string = 'GeneralPurpose'
-
-@description('Optional. The SKU Family of the SQL Server database. If empty, it will be set to Gen5. Find available options: Database.[Sku property](https://learn.microsoft.com/dotnet/api/microsoft.azure.management.sql.models.database.sku).')
-param sqlServerDatabaseSkuFamily string = 'Gen5'
-
-@description('Optional. The SKU capacity of the SQL Server database. If empty, it will be set to 2. Find available options: Database.[Sku property](https://learn.microsoft.com/dotnet/api/microsoft.azure.management.sql.models.database.sku).')
-param sqlServerDatabaseSkuCapacity int = 2
-
-// PARAMETERS: Function Charts configuration
-@description('Optional. The url of the Container Registry where the docker image for the Charts function is located.')
-param functionChartDockerImageContainerRegistryUrl string = 'kmcontainerreg.azurecr.io'
-@description('Optional. The name of the docker image for the Charts function.')
-param functionChartDockerImageName string = 'km-charts-function'
-@description('Optional. The tag of the docker image for the Charts function.')
-param functionChartDockerImageTag string = 'latest'
-@description('Optional. The required CPU in cores of the Charts function.')
-param functionChartCpu int = 1
-@description('Optional. The required memory in GiB of the Charts function.')
-param functionChartMemory string = '2Gi'
-@description('Optional. The maximum number of workers that the Charts function can scale out.')
-param functionChartAppScaleLimit int = 10
-@description('Optional. The name of the function to be used to get the metrics in the Charts function.')
-param functionChartsFunctionName string = 'get_metrics'
-
-// PARAMETERS: Function Rag configuration
-@description('Optional. The url of the Container Registry where the docker image for the Rag function is located.')
-param functionRagDockerImageContainerRegistryUrl string = 'kmcontainerreg.azurecr.io'
-@description('Optional. The name of the docker image for the Rag function.')
-param functionRagDockerImageName string = 'km-rag-function'
-@description('Optional. The tag of the docker image for the Rag function.')
-param functionRagDockerImageTag string = 'latest'
-@description('Optional. The required CPU in cores of the Rag function.')
-param functionRagCpu int = 1
-@description('Optional. The required memory in GiB of the Rag function.')
-param functionRagMemory string = '2Gi'
-@description('Optional. The maximum number of workers that the Rag function can scale out.')
-param functionRagAppScaleLimit int = 10
-@description('Optional. The name of the function to be used to stream text in the Rag function.')
-param functionRagFunctionName string = 'stream_openai_text'
-
-// PARAMETERS: Web app configuration
-@description('Optional. The SKU for the web app. If empty it will be set to B2.')
-param webAppServerFarmSku string = 'B2'
-@description('Optional. The url of the Container Registry where the docker image for Conversation Knowledge Mining webapp is located.')
-param webAppDockerImageContainerRegistryUrl string = 'kmcontainerreg.azurecr.io'
-@description('Optional. The name of the docker image for the Rag function.')
-param webAppDockerImageName string = 'km-app'
-@description('Optional. The tag of the docker image for the Rag function.')
-param webAppDockerImageTag string = 'latest'
+@description('Optional. The configuration to apply for the Conversation Knowledge Mining Web App Server Farm resource.')
+param webAppServerFarmConfiguration webAppServerFarmType = {
+  name: '${solutionPrefix}-wsrv'
+  location: solutionLocation
+  sku: 'B2'
+  webAppResourceName: '${solutionPrefix}-app'
+  webAppLocation: solutionLocation
+  webAppDockerImageContainerRegistryUrl: 'kmcontainerreg.azurecr.io'
+  webAppDockerImageName: 'km-app'
+  webAppDockerImageTag: 'latest_2025-03-20_276'
+}
 
 // PARAMETERS: Telemetry
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 // ========== Variables ========== //
-// VARIABLES: defaults
+// VARIABLES: general defaults
 var avmDeploymentNameFormat = 'ckm-deploy-avm-{0}'
 var localModuleDeploymentNameFormat = 'ckm-deploy-module-{0}'
 
-// VARIABLES: Key Vault configuration
-var varKvSecretNameAdlsAccountKey = 'ADLS-ACCOUNT-KEY'
-var varKvSecretNameAzureCosmosdbAccountKey = 'AZURE-COSMOSDB-ACCOUNT-KEY'
+// VARIABLES: AI Foundry AI Hub configuration defaults
+var aiFoundryAiHubResourceName = aiFoundryAiHubConfiguration.?name ?? '${solutionPrefix}-aifd-aihb'
+var aiFoundryAiHubLocation = aiFoundryAiHubConfiguration.?location ?? solutionLocation
+var aiFoundryAiHubSkuName = aiFoundryAiHubConfiguration.?aiFoundryAiHubSkuName ?? 'Basic'
 
-// VARIABLES: AI Model deployments
+// VARIABLES: AI Foundry AI Project configuration defaults
+var aiFoundryAiProjectResourceName = aiFoundryAiProjectConfiguration.?name ?? '${solutionPrefix}-aifd-aipj'
+var aiFoundryAiProjectLocation = aiFoundryAiProjectConfiguration.?location ?? solutionLocation
+var aiFoundryAiProjectSkuName = aiFoundryAiProjectConfiguration.?aiFoundryAiProjectSkuName ?? 'Standard'
+
+// VARIABLES: AI Foundry AI Service Content Understanding configuration defaults
+var aiFoundryAiServicesContentUnderstandingResourceName = aiFoundryAiServicesContentUnderstandingConfiguration.?name ?? '${solutionPrefix}-aifd-aisr-cu'
+var aiFoundryAiServicesContentUnderstandingLocation = aiFoundryAiServicesContentUnderstandingConfiguration.?location ?? 'West US'
+var aiFoundryAiServicesContentUnderstandingSkuName = aiFoundryAiServicesContentUnderstandingConfiguration.?sku ?? 'S0'
+
+// VARIABLES: AI Foundry AI Service configuration defaults
+var aiFoundryAiServicesResourceName = aiFoundryAiServicesConfiguration.?name ?? '${solutionPrefix}-aifd-aisr-cu'
+var aiFoundryAiServicesLocation = aiFoundryAiServicesConfiguration.?location ?? 'West US'
+var aiFoundryAiServicesSkuName = aiFoundryAiServicesConfiguration.?sku ?? 'S0'
+var aiFoundryAIServicesGptModelName = aiFoundryAiServicesConfiguration.?gptModelName ?? 'gpt-4o-mini'
+var aiFoundryAiServicesGptModelSku = aiFoundryAiServicesConfiguration.?gptModelSku ?? 'Standard'
+var aiFoundryAIServicesGptModelCapacity = aiFoundryAiServicesConfiguration.?gptModelCapacity ?? 100
+var aiFoundryAiServicesTextEmbeddingModelName = aiFoundryAiServicesConfiguration.?textEmbeddingModelName ?? 'text-embedding-ada-002'
+var aiFoundryAiServicesTextEmbeddingModelSku = aiFoundryAiServicesConfiguration.?textEmbeddingModelSku ?? 'Standard'
+var aiFoundryAiServicesTextEmbeddingModelCapacity = aiFoundryAiServicesConfiguration.?textEmbeddingModelCapacity ?? 80
+
 var varAiFoundryAiServiceGPTModelVersion = '2024-07-18'
 var varAiFoundryAiServiceGPTModelVersionPreview = '2024-02-15-preview'
 var varAiFoundryAiServiceTextEmbeddingModelVersion = '2'
@@ -451,8 +250,8 @@ var varAiFoundryAIServicesModelDeployments = [
       version: varAiFoundryAiServiceGPTModelVersion //NOTE: This attribute is mandatory for AVM, but optional for ARM. Request AVM to make it optional
     }
     sku: {
-      name: aiFoundryAIServicesGptModelDeploymentType
-      capacity: aiFoundryAIServicesGptModelDeploymentCapacity
+      name: aiFoundryAiServicesGptModelSku
+      capacity: aiFoundryAIServicesGptModelCapacity
     }
     raiPolicyName: 'Microsoft.Default'
   }
@@ -464,14 +263,46 @@ var varAiFoundryAIServicesModelDeployments = [
       version: varAiFoundryAiServiceTextEmbeddingModelVersion //NOTE: This attribute is mandatory for AVM, but optional for ARM. Request AVM to make it optional
     }
     sku: {
-      name: 'Standard'
+      name: aiFoundryAiServicesTextEmbeddingModelSku
       capacity: aiFoundryAiServicesTextEmbeddingModelCapacity
     }
     raiPolicyName: 'Microsoft.Default'
   }
 ]
 
-// VARIABLES: CosmosDB
+// VARIABLES: AI Foundry Application Insights configuration defaults
+var aiFoundryApplicationInsightsResourceName = aiFoundryApplicationInsightsConfiguration.?name ?? '${solutionPrefix}-aifd-appi'
+var aiFoundryApplicationInsightsLocation = aiFoundryApplicationInsightsConfiguration.?location ?? solutionLocation
+var aiFoundryApplicationInsightsRetentionInDays = aiFoundryApplicationInsightsConfiguration.?retentionInDays ?? 30
+
+// VARIABLES: AI Foundry Search Service configuration defaults
+var aiFoundrySearchServiceResourceName = aiFoundrySearchServiceConfiguration.?name ?? '${solutionPrefix}-aifd-srch'
+var aiFoundrySearchServiceLocation = aiFoundrySearchServiceConfiguration.?location ?? solutionLocation
+var aiFoundrySearchServiceSkuName = aiFoundrySearchServiceConfiguration.?sku ?? 'basic'
+
+// VARIABLES: AI Foundry Container Registry configuration defaults
+var aiFoundryContainerRegistryResourceName = aiFoundryContainerRegistryConfiguration.?name ?? replace(
+  '${solutionPrefix}-aifd-creg',
+  //NOTE: ACR name should not contain hyphens
+  '-',
+  ''
+)
+var aiFoundryContainerRegistryLocation = aiFoundryContainerRegistryConfiguration.?location ?? solutionLocation
+var aiFoundryContainerRegistrySkuName = aiFoundryContainerRegistryConfiguration.?sku ?? 'Premium'
+
+// VARIABLES: AI Foundry Storage Account configuration defaults
+var aiFoundryStorageAccountResourceName = aiFoundryStorageAccountConfiguration.?name ?? replace(
+  '${solutionPrefix}-aifd-strg',
+  '-',
+  ''
+)
+var aiFoundryStorageAccountLocation = aiFoundryStorageAccountConfiguration.?location ?? solutionLocation
+var aiFoundryStorageAccountSkuName = aiFoundryStorageAccountConfiguration.?sku ?? 'Standard_LRS'
+
+// VARIABLES: CosmosDB configuration defaults
+var cosmosDbAccountResourceName = cosmosDbAccountConfiguration.?name ?? '${solutionPrefix}-cmdb'
+var cosmosDbAccountLocation = cosmosDbAccountConfiguration.?location ?? databasesLocation
+
 var varCosmosDbSqlDbName = 'db_conversation_history'
 var varCosmosDbSqlDbCollName = 'conversations'
 var varCosmosDbAccountSqlDbContainers = [
@@ -482,11 +313,95 @@ var varCosmosDbAccountSqlDbContainers = [
   }
 ]
 
-// VARIABLES: Deployment scripts
-var varCKMGithubBaseUrl = 'https://raw.githubusercontent.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator/7e1f274415e96070fc1f0306651303ce8ea75268/'
+// VARIABLES: Function Charts configuration defaults
+var functionChartsResourceName = functionChartsConfiguration.?name ?? '${solutionPrefix}-azfn-fchr'
+var functionChartsLocation = functionChartsConfiguration.?location ?? solutionLocation
+var functionChartDockerImageContainerRegistryUrl = functionChartsConfiguration.?dockerImageContainerRegistryUrl ?? 'kmcontainerreg.azurecr.io'
+var functionChartDockerImageName = functionChartsConfiguration.?dockerImageName ?? 'km-charts-function'
+var functionChartDockerImageTag = functionChartsConfiguration.?functionChartDockerImageTag ?? 'latest_2025-03-20_276'
+var functionChartCpu = functionChartsConfiguration.?functionChartCpu ?? 1
+var functionChartMemory = functionChartsConfiguration.?functionChartMemory ?? '2Gi'
+var functionChartAppScaleLimit = functionChartsConfiguration.?functionChartAppScaleLimit ?? 10
+var functionChartsFunctionName = functionChartsConfiguration.?functionChartsFunctionName ?? 'get_metrics'
+
+// VARIABLES: Function Rag configuration defaults
+var functionRagResourceName = functionRagConfiguration.?name ?? '${solutionPrefix}-azfn-frag'
+var functionRagLocation = functionRagConfiguration.?location ?? solutionLocation
+var functionRagDockerImageContainerRegistryUrl = functionRagConfiguration.?dockerImageContainerRegistryUrl ?? 'kmcontainerreg.azurecr.io'
+var functionRagDockerImageName = functionRagConfiguration.?dockerImageName ?? 'km-rag-function'
+var functionRagDockerImageTag = functionRagConfiguration.?functionRagDockerImageTag ?? 'latest_2025-03-20_276'
+var functionRagCpu = functionRagConfiguration.?functionRagCpu ?? 1
+var functionRagMemory = functionRagConfiguration.?functionRagMemory ?? '2Gi'
+var functionRagAppScaleLimit = functionRagConfiguration.?functionRagAppScaleLimit ?? 10
+var functionRagFunctionName = functionRagConfiguration.?functionRagFunctionName ?? 'stream_openai_text'
+
+// VARIABLES: Functions Managed Environment configuration defaults
+var functionsManagedEnvironmentResourceName = functionsManagedEnvironmentConfiguration.?name ?? '${solutionPrefix}-fnme'
+var functionsManagedEnvironmentLocation = functionsManagedEnvironmentConfiguration.?location ?? solutionLocation
+
+// VARIABLES: Key Vault configuration defaults
+var keyVaultResourceName = keyVaultConfiguration.?name ?? '${solutionPrefix}-keyv'
+var keyVaultLocation = keyVaultConfiguration.?location ?? solutionLocation
+var keyVaultSku = keyVaultConfiguration.?sku ?? 'standard'
+var keyVaultCreateMode = keyVaultConfiguration.?createMode ?? 'default'
+var keyVaultSoftDeleteEnabled = keyVaultConfiguration.?softDeleteEnabled ?? true
+var keyVaultSoftDeleteRetentionInDays = keyVaultConfiguration.?softDeleteRetentionInDays ?? 7
+var keyVaultPurgeProtectionEnabled = keyVaultConfiguration.?purgeProtectionEnabled ?? false
+var keyVaultRoleAssignments = keyVaultConfiguration.?roleAssignments ?? []
+
+var varKvSecretNameAdlsAccountKey = 'ADLS-ACCOUNT-KEY'
+var varKvSecretNameAzureCosmosdbAccountKey = 'AZURE-COSMOSDB-ACCOUNT-KEY'
+
+// VARIABLES: Log Analytics configuration defaults
+var logAnalyticsWorkspaceResourceName = logAnalyticsWorkspaceConfiguration.?name ?? '${solutionPrefix}-laws'
+var logAnalyticsWorkspaceLocation = logAnalyticsWorkspaceConfiguration.?location ?? solutionLocation
+var logAnalyticsWorkspaceSkuName = logAnalyticsWorkspaceConfiguration.?sku ?? 'PerGB2018'
+var logAnalyticsWorkspaceDataRetentionInDays = logAnalyticsWorkspaceConfiguration.?dataRetentionInDays ?? 30
+
+// VARIABLES: Managed Identity configuration defaults
+var managedIdentityResourceName = managedIdentityConfiguration.?name ?? '${solutionPrefix}-mgid'
+var managedIdentityLocation = managedIdentityConfiguration.?location ?? solutionLocation
+
+// VARIABLES: Script Copy Data configuration defaults
+var scriptCopyDataResourceName = scriptCopyDataConfiguration.?name ?? '${solutionPrefix}-scrp-cpdt'
+var scriptCopyDataLocation = scriptCopyDataConfiguration.?location ?? solutionLocation
+var scriptCopyDataGithubBaseUrl = scriptCopyDataConfiguration.?githubBaseUrl ?? 'https://raw.githubusercontent.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator/7e1f274415e96070fc1f0306651303ce8ea75268/'
+var scriptCopyDataScriptUrl = scriptCopyDataConfiguration.?scriptUrl ?? 'https://raw.githubusercontent.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator/7e1f274415e96070fc1f0306651303ce8ea75268/infra/scripts/copy_kb_files.sh'
+
+// VARIABLES: Script Index Data configuration defaults
+var scriptIndexDataResourceName = scriptIndexDataConfiguration.?name ?? '${solutionPrefix}-scrp-indt'
+var scriptIndexDataLocation = scriptIndexDataConfiguration.?location ?? solutionLocation
+var scriptIndexDataGithubBaseUrl = scriptIndexDataConfiguration.?githubBaseUrl ?? 'https://raw.githubusercontent.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator/7e1f274415e96070fc1f0306651303ce8ea75268/'
+var scriptIndexDataScriptUrl = scriptIndexDataConfiguration.?scriptUrl ?? 'https://raw.githubusercontent.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator/7e1f274415e96070fc1f0306651303ce8ea75268/infra/scripts/run_create_index_scripts.sh'
+
+// VARIABLES: SQL Server configuration defaults
+var sqlServerResourceName = sqlServerConfiguration.?name ?? '${solutionPrefix}-sqls'
+var sqlServerLocation = sqlServerConfiguration.?location ?? databasesLocation
+var sqlServerAdministratorLogin = sqlServerConfiguration.?sqlServerAdministratorLogin ?? 'sqladmin'
+var sqlServerAdministratorPassword = sqlServerConfiguration.?sqlServerAdministratorPassword ?? 'TestPassword_1234'
+var sqlServerDatabaseName = sqlServerConfiguration.?sqlServerDatabaseName ?? '${solutionPrefix}-ckmdb'
+var sqlServerDatabaseSkuName = sqlServerConfiguration.?sqlServerDatabaseSkuName ?? 'GP_Gen5_2'
+var sqlServerDatabaseSkuTier = sqlServerConfiguration.?sqlServerDatabaseSkuTier ?? 'GeneralPurpose'
+var sqlServerDatabaseSkuFamily = sqlServerConfiguration.?sqlServerDatabaseSkuFamily ?? 'Gen5'
+var sqlServerDatabaseSkuCapacity = sqlServerConfiguration.?sqlServerDatabaseSkuCapacity ?? 2
+
+// VARIABLES: Storage Account configuration defaults
+var storageAccountResourceName = storageAccountConfiguration.?name ?? replace('${solutionPrefix}-aifd-strg', '-', '')
+var storageAccountLocation = storageAccountConfiguration.?location ?? solutionLocation
+var storageAccountSkuName = storageAccountConfiguration.?sku ?? 'Standard_LRS'
+
 var varStorageContainerName = 'data'
 
-// VARIABLES: Web App settings
+// VARIABLES: Web App Server configuration defaults
+var webAppServerFarmResourceName = webAppServerFarmConfiguration.?name ?? '${solutionPrefix}-wsrv'
+var webAppServerFarmLocation = webAppServerFarmConfiguration.?location ?? solutionLocation
+var webAppServerFarmSkuName = webAppServerFarmConfiguration.?sku ?? 'B2'
+var webAppResourceName = webAppServerFarmConfiguration.?webAppResourceName ?? '${solutionPrefix}-app'
+var webAppLocation = webAppServerFarmConfiguration.?webAppLocation ?? solutionLocation
+var webAppDockerImageContainerRegistryUrl = webAppServerFarmConfiguration.?webAppDockerImageContainerRegistryUrl ?? 'kmcontainerreg.azurecr.io'
+var webAppDockerImageName = webAppServerFarmConfiguration.?webAppDockerImageName ?? 'km-app'
+var webAppDockerImageTag = webAppServerFarmConfiguration.?webAppDockerImageTag ?? 'latest_2025-03-20_276'
+
 var varWebAppAppConfigReact = '''{
   "appConfig": {
     "THREE_COLUMN": {
@@ -635,7 +550,7 @@ module avmKeyVault 'br/public:avm/res/key-vault/vault:0.12.1' = {
       keyVaultRoleAssignments
     )
     secrets: [
-      { name: 'ADLS-ACCOUNT-CONTAINER', value: 'data' }
+      { name: 'ADLS-ACCOUNT-CONTAINER', value: varStorageContainerName }
       { name: 'ADLS-ACCOUNT-NAME', value: storageAccountResourceName }
       { name: 'TENANT-ID', value: subscription().tenantId }
       { name: 'AZURE-COSMOSDB-ACCOUNT', value: cosmosDbAccountResourceName }
@@ -725,7 +640,7 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.18.2' = {
       diagnosticSettings: [{ workspaceResourceId: avmLogAnalyticsWorkspace.outputs.resourceId }]
       containers: [
         {
-          name: 'data'
+          name: varStorageContainerName
           publicAccess: 'None'
           defaultEncryptionScope: '$account-encryption-key'
           denyEncryptionScopeOverride: false
@@ -844,8 +759,8 @@ module avmDeploymentScriptCopyData 'br/public:avm/res/resources/deployment-scrip
       ]
     }
     azCliVersion: '2.50.0'
-    primaryScriptUri: '${varCKMGithubBaseUrl}infra/scripts/copy_kb_files.sh'
-    arguments: '${avmStorageAccount.outputs.name} ${varStorageContainerName} ${varCKMGithubBaseUrl}'
+    primaryScriptUri: scriptCopyDataScriptUrl
+    arguments: '${avmStorageAccount.outputs.name} ${varStorageContainerName} ${scriptCopyDataGithubBaseUrl}'
     timeout: 'PT1H'
     retentionInterval: 'PT1H'
     cleanupPreference: 'OnSuccess'
@@ -872,8 +787,8 @@ module avmDeploymentScriptIndexData 'br/public:avm/res/resources/deployment-scri
       ]
     }
     azCliVersion: '2.52.0'
-    primaryScriptUri: '${varCKMGithubBaseUrl}infra/scripts/run_create_index_scripts.sh'
-    arguments: '${varCKMGithubBaseUrl} ${avmKeyVault.outputs.name}'
+    primaryScriptUri: scriptIndexDataScriptUrl
+    arguments: '${scriptIndexDataGithubBaseUrl} ${avmKeyVault.outputs.name}'
     timeout: 'PT1H'
     retentionInterval: 'PT1H'
     cleanupPreference: 'OnSuccess'
@@ -1049,7 +964,7 @@ module avmServerFarmWebapp 'br/public:avm/res/web/serverfarm:0.4.1' = {
     location: webAppServerFarmLocation
     enableTelemetry: enableTelemetry
     diagnosticSettings: [{ workspaceResourceId: avmLogAnalyticsWorkspace.outputs.resourceId }]
-    skuName: webAppServerFarmSku
+    skuName: webAppServerFarmSkuName
     kind: 'linux'
   }
 }
@@ -1096,3 +1011,385 @@ output resourceGroupName string = resourceGroup().name
 
 @description('The url of the webapp where the deployed Conversation Knowledge Mining solution can be accessed.')
 output webAppUrl string = '${webAppResourceName}.azurewebsites.net'
+
+@export()
+@description('The type for the Conversation Knowledge Mining AI Foundry AI Hub resource configuration.')
+type aiFoundryAiHubType = {
+  @description('Optional. The name of the AI Foundry AI Hub resource.')
+  @maxLength(90)
+  name: string?
+
+  @description('Optional. Location for the AI Foundry AI Hub resource.')
+  @metadata({ azd: { type: 'location' } })
+  location: string?
+
+  @description('Optional. The SKU of the AI Foundry AI Hub resource.')
+  sku: ('Basic' | 'Free' | 'Standard' | 'Premium')?
+}
+
+@export()
+@description('The type for the Conversation Knowledge Mining AI Foundry AI Project resource configuration.')
+type aiFoundryAiProjectType = {
+  @description('Optional. The name of the AI Foundry AI Project resource.')
+  @maxLength(90)
+  name: string?
+
+  @description('Optional. Location for the AI Foundry AI Project resource deployment.')
+  @metadata({ azd: { type: 'location' } })
+  location: string?
+
+  @description('Optional. The SKU of the AI Foundry AI Project resource.')
+  sku: ('Basic' | 'Free' | 'Standard' | 'Premium')?
+}
+
+@export()
+@description('The type for the Conversation Knowledge Mining AI Foundry AI Services Content Understanding resource configuration.')
+type aiFoundryAiServicesContentUnderstandingType = {
+  @description('Optional. The name of the AI Foundry AI Services Content Understanding resource.')
+  @maxLength(90)
+  name: string?
+  @description('Optional. Location for the AI Foundry Content Understanding service deployment.')
+  @metadata({ azd: { type: 'location' } })
+  location: ('West US' | 'Sweden Central' | 'Australia East')?
+  @description('Optional. The SKU of the AI Foundry AI Services account. Use \'Get-AzCognitiveServicesAccountSku\' to determine a valid combinations of \'kind\' and \'SKU\' for your Azure region.')
+  sku: (
+    | 'C2'
+    | 'C3'
+    | 'C4'
+    | 'F0'
+    | 'F1'
+    | 'S'
+    | 'S0'
+    | 'S1'
+    | 'S10'
+    | 'S2'
+    | 'S3'
+    | 'S4'
+    | 'S5'
+    | 'S6'
+    | 'S7'
+    | 'S8'
+    | 'S9')?
+}
+
+@export()
+@description('The type for the Conversation Knowledge Mining AI Foundry AI Services resource configuration.')
+type aiFoundryAiServicesType = {
+  @description('Optional. The name of the AI Foundry AI Services resource.')
+  @maxLength(90)
+  name: string?
+
+  @description('Optional. Location for the AI Foundry AI Services resource.')
+  @metadata({ azd: { type: 'location' } })
+  location: string?
+
+  @description('Optional. The SKU of the AI Foundry AI Services resource. Use \'Get-AzCognitiveServicesAccountSku\' to determine a valid combinations of \'kind\' and \'SKU\' for your Azure region.')
+  sku: (
+    | 'C2'
+    | 'C3'
+    | 'C4'
+    | 'F0'
+    | 'F1'
+    | 'S'
+    | 'S0'
+    | 'S1'
+    | 'S10'
+    | 'S2'
+    | 'S3'
+    | 'S4'
+    | 'S5'
+    | 'S6'
+    | 'S7'
+    | 'S8'
+    | 'S9')?
+
+  @description('Optional. Name of the GPT model to deploy in the AI Foundry AI Services account.')
+  gptModelName: ('gpt-4o-mini' | 'gpt-4o' | 'gpt-4')?
+
+  @description('Optional. GPT model deployment type of the AI Foundry AI Services account.')
+  gptModelSku: ('GlobalStandard' | 'Standard')?
+
+  @minValue(10)
+  @description('Optional. Capacity of the GPT model to deploy in the AI Foundry AI Services account. Capacity is limited per model/region, so you will get errors if you go over. [Quotas link](https://learn.microsoft.com/azure/ai-services/openai/quotas-limits).')
+  gptModelCapacity: int?
+
+  @description('Optional. Name of the Text Embedding model to deploy in the AI Foundry AI Services account.')
+  textEmbeddingModelName: ('text-embedding-ada-002')?
+
+  @description('Optional. GPT model deployment type of the AI Foundry AI Services account.')
+  textEmbeddingModelSku: ('Standard')?
+
+  @minValue(10)
+  @description('Optional. Capacity of the Text Embedding model to deploy in the AI Foundry AI Services account. Capacity is limited per model/region, so you will get errors if you go over. [Quotas link](https://learn.microsoft.com/azure/ai-services/openai/quotas-limits).')
+  textEmbeddingModelCapacity: int?
+}
+
+@export()
+@description('The type for the Conversation Knowledge Mining AI Foundry Application Insights resource configuration.')
+type aiFoundryApplicationInsightsType = {
+  @description('Optional. The name of the AI Foundry Application Insights resource.')
+  @maxLength(90)
+  name: string?
+
+  @description('Optional. Location for the AI Foundry Application Insights resource.')
+  @metadata({ azd: { type: 'location' } })
+  location: string?
+
+  @description('Optional. The retention of Application Insights data in days. If empty, Standard will be used.')
+  retentionInDays: (120 | 180 | 270 | 30 | 365 | 550 | 60 | 730 | 90)?
+}
+
+@export()
+@description('The type for the Conversation Knowledge Mining AI Foundry Container Registry resource configuration.')
+type aiFoundryContainerRegistryType = {
+  @description('Optional. The name of the AI Foundry Container Registry resource.')
+  @maxLength(50)
+  name: string?
+
+  @description('Optional. Location for the AI Foundry Container Registry resource.')
+  @metadata({ azd: { type: 'location' } })
+  location: string?
+
+  @description('Optional. The SKU for the AI Foundry Container Registry resource.')
+  sku: ('Basic' | 'Standard' | 'Premium')?
+}
+
+@export()
+@description('The type for the Conversation Knowledge Mining AI Foundry Search Services resource configuration.')
+type aiFoundrySearchServiceType = {
+  @description('Optional. The name of the AI Foundry Search Services resource.')
+  @maxLength(60)
+  name: string?
+
+  @description('Optional. Location for the AI Foundry Search Services resource.')
+  @metadata({ azd: { type: 'location' } })
+  location: string?
+
+  @description('Optional. The SKU for the AI Foundry Search Services resource.')
+  sku: ('basic' | 'free' | 'standard' | 'standard2' | 'standard3' | 'storage_optimized_l1' | 'storage_optimized_l2')?
+}
+
+@export()
+@description('The type for the Conversation Knowledge Mining Cosmos DB Account resource configuration.')
+type cosmosDbAccountType = {
+  @description('Optional. The name of the Cosmos DB Account resource.')
+  @maxLength(60)
+  name: string?
+
+  @description('Optional. Location for the Cosmos DB Account resource.')
+  @metadata({ azd: { type: 'location' } })
+  location: string?
+}
+
+@export()
+@description('The type for the Conversation Knowledge Mining Function resource configuration.')
+type functionsType = {
+  @description('Optional. The name of the Function resource.')
+  @maxLength(60)
+  name: string?
+
+  @description('Optional. Location for the Function resource.')
+  @metadata({ azd: { type: 'location' } })
+  location: string?
+
+  @description('Optional. The url of the Container Registry where the docker image for the function is located.')
+  dockerImageContainerRegistryUrl: string?
+
+  @description('Optional. The name of the docker image for the function.')
+  dockerImageName: string?
+
+  @description('Optional. The tag of the docker image for the function.')
+  dockerImageTag: string?
+
+  @description('Optional. The required CPU in cores of the function.')
+  cpu: int?
+
+  @description('Optional. The required memory in GiB of the function.')
+  memory: string?
+
+  @description('Optional. The maximum number of workers that the function can scale out.')
+  appScaleLimit: int?
+
+  @description('Optional. The name of the function to be used to get the metrics in the function.')
+  functionName: string?
+}
+
+@export()
+@description('The type for the Conversation Knowledge Mining Functions Managed Environment resource configuration.')
+type functionsManagedEnvironmentType = {
+  @description('Optional. The name of the Functions Managed Environment resource.')
+  @maxLength(60)
+  name: string?
+
+  @description('Optional. Location for the Functions Managed Environment resource.')
+  @metadata({ azd: { type: 'location' } })
+  location: string?
+}
+
+@export()
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+@description('The type for the Conversation Knowledge Mining Key Vault resource configuration.')
+type ckmKeyVaultType = {
+  @description('Optional. The name of the Key Vault resource.')
+  @maxLength(24)
+  name: string?
+
+  @description('Optional. Location for the Key Vault resource.')
+  @metadata({ azd: { type: 'location' } })
+  location: string?
+
+  @description('Optional. The SKU for the Key Vault resource.')
+  sku: ('premium' | 'standard')?
+
+  @description('Optional. The Key Vault create mode. Indicates whether the vault need to be recovered from purge or not. If empty, default will be used.')
+  createMode: ('default' | 'recover')?
+
+  @description('Optional. If set to true, The Key Vault soft delete will be enabled.')
+  softDeleteEnabled: bool
+
+  @description('Optional. The number of days to retain the soft deleted vault. If empty, it will be set to 7.')
+  @minValue(7)
+  @maxValue(90)
+  softDeleteRetentionInDays: int
+
+  @description('Optional. If set to true, The Key Vault purge protection will be enabled. If empty, it will be set to false.')
+  purgeProtectionEnabled: bool
+
+  @description('Optional. Array of role assignments to include in the Key Vault.')
+  roleAssignments: roleAssignmentType[]
+}
+
+@export()
+@description('The type for the Conversation Knowledge Mining Log Analytics Workspace resource configuration.')
+type logAnalyticsWorkspaceType = {
+  @description('Optional. The name of the Log Analytics Workspace resource.')
+  @maxLength(63)
+  name: string?
+
+  @description('Optional. Location for the Log Analytics Workspace resource.')
+  @metadata({ azd: { type: 'location' } })
+  location: string?
+
+  @description('Optional. The SKU for the Log Analytics Workspace resource.')
+  sku: ('CapacityReservation' | 'Free' | 'LACluster' | 'PerGB2018' | 'PerNode' | 'Premium' | 'Standalone' | 'Standard')?
+
+  @description('Optional. The number of days to retain the data in the Log Analytics Workspace. If empty, it will be set to 30 days.')
+  @minValue(0)
+  @maxValue(730)
+  dataRetentionInDays: int?
+}
+
+@export()
+@description('The type for the Conversation Knowledge Mining Managed Identity resource configuration.')
+type managedIdentityType = {
+  @description('Optional. The name of the Managed Identity resource.')
+  @maxLength(128)
+  name: string?
+
+  @description('Optional. Location for the Managed Identity resource.')
+  @metadata({ azd: { type: 'location' } })
+  location: string?
+}
+
+@export()
+@description('The type for the Conversation Knowledge Mining Script resource configuration.')
+type scriptType = {
+  @description('Optional. The name of the Script resource.')
+  @maxLength(90)
+  name: string?
+
+  @description('Optional. Location for the Script resource.')
+  @metadata({ azd: { type: 'location' } })
+  location: string?
+
+  @description('Optional. The base Raw Url of the GitHub repository where the Copy Data Script is located.')
+  githubBaseUrl: string?
+
+  @description('Optional. The Url where the Copy Data Script is located.')
+  scriptUrl: string?
+}
+
+@export()
+@description('The type for the Conversation Knowledge Mining SQL Server resource configuration.')
+type sqlServerType = {
+  @description('Optional. The name of the SQL Server resource.')
+  @maxLength(63)
+  name: string?
+
+  @description('Optional. Location for the SQL Server resource.')
+  @metadata({ azd: { type: 'location' } })
+  location: string?
+
+  @description('Optional. The administrator login credential for the SQL Server.')
+  @secure()
+  #disable-next-line secure-parameter-default
+  sqlServerAdministratorLogin: string?
+
+  @description('Optional. The administrator password credential for the SQL Server.')
+  @secure()
+  #disable-next-line secure-parameter-default
+  sqlServerAdministratorPassword: string?
+
+  @description('Optional. The name of the SQL Server database.')
+  @maxLength(128)
+  sqlServerDatabaseName: string?
+
+  @description('Optional. The SKU name of the SQL Server database. If empty, it will be set to GP_Gen5_2. Find available options: Database.[Sku property](https://learn.microsoft.com/dotnet/api/microsoft.azure.management.sql.models.database.sku).')
+  sqlServerDatabaseSkuName: string?
+
+  @description('Optional. The SKU tier of the SQL Server database. If empty, it will be set to GeneralPurpose. Find available options: Database.[Sku property](https://learn.microsoft.com/dotnet/api/microsoft.azure.management.sql.models.database.sku).')
+  sqlServerDatabaseSkuTier: string?
+
+  @description('Optional. The SKU Family of the SQL Server database. If empty, it will be set to Gen5. Find available options: Database.[Sku property](https://learn.microsoft.com/dotnet/api/microsoft.azure.management.sql.models.database.sku).')
+  sqlServerDatabaseSkuFamily: string?
+
+  @description('Optional. The SKU capacity of the SQL Server database. If empty, it will be set to 2. Find available options: Database.[Sku property](https://learn.microsoft.com/dotnet/api/microsoft.azure.management.sql.models.database.sku).')
+  sqlServerDatabaseSkuCapacity: int?
+}
+
+@export()
+@description('The type for the Conversation Knowledge Mining Storage Account resource configuration.')
+type storageAccountType = {
+  @description('Optional. The name of the Storage Account resource.')
+  @maxLength(60)
+  name: string?
+
+  @description('Optional. Location for the Storage Account resource.')
+  @metadata({ azd: { type: 'location' } })
+  location: string?
+
+  @description('Optional. The SKU for the Storage Account resource.')
+  sku: ('Standard_LRS' | 'Standard_GRS' | 'Standard_RAGRS' | 'Standard_ZRS' | 'Premium_LRS' | 'Premium_ZRS')?
+}
+
+@export()
+@description('The type for the Conversation Knowledge Mining Web App Server Farm resource configuration.')
+type webAppServerFarmType = {
+  @description('Optional. The name of the Web App Server Farm resource.')
+  @maxLength(60)
+  name: string?
+
+  @description('Optional. Location for the Web App Server Farm resource.')
+  @metadata({ azd: { type: 'location' } })
+  location: string?
+
+  @description('Optional. The SKU for the Web App Server Farm resource.')
+  sku: string?
+
+  @description('Optional. The name of the Web App resource.')
+  @maxLength(60)
+  webAppResourceName: string?
+
+  @description('Optional. Location for the Web App resource deployment.')
+  @metadata({ azd: { type: 'location' } })
+  webAppLocation: string?
+
+  @description('Optional. The url of the Container Registry where the docker image for Conversation Knowledge Mining webapp is located.')
+  webAppDockerImageContainerRegistryUrl: string?
+
+  @description('Optional. The name of the docker image for the Rag function.')
+  webAppDockerImageName: string?
+
+  @description('Optional. The tag of the docker image for the Rag function.')
+  webAppDockerImageTag: string?
+}
