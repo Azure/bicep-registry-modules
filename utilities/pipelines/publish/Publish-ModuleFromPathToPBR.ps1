@@ -61,10 +61,11 @@ function Publish-ModuleFromPathToPBR {
 
     # 2. Iterate on the modules qualifying for publishing
     foreach ($moduleToPublish in $modulesToPublishList) {
+
         $moduleFolderPath = Split-Path -Path $moduleToPublish -Parent
         $moduleBicepFilePath = Join-Path $moduleFolderPath 'main.bicep'
-
         $moduleFolderRelativePath = ($moduleFolderPath -replace ('{0}[\/|\\]' -f [Regex]::Escape($repoRoot)), '') -replace '\\', '/'
+
         Write-Verbose "### Module:  $moduleFolderRelativePath" -Verbose
 
         # 3. Calculate the version that we would publish with
