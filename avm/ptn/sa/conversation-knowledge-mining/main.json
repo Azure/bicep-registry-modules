@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "10252141787953516632"
+      "templateHash": "15620098601766786906"
     },
     "name": "Conversation Knowledge Mining Solution Accelerator",
     "description": "This module deploys the [Conversation Knowledge Mining Solution Accelerator](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator).\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator product. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -1022,7 +1022,7 @@
         "partitionKey": "/userId"
       }
     ],
-    "varCKMGithubBaseUrl": "https://raw.githubusercontent.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator/main/",
+    "varCKMGithubBaseUrl": "https://raw.githubusercontent.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator/7e1f274415e96070fc1f0306651303ce8ea75268/",
     "varStorageContainerName": "data",
     "varWebAppAppConfigReact": "{\n  \"appConfig\": {\n    \"THREE_COLUMN\": {\n      \"DASHBOARD\": 50,\n      \"CHAT\": 33,\n      \"CHATHISTORY\": 17\n    },\n    \"TWO_COLUMN\": {\n      \"DASHBOARD_CHAT\": {\n        \"DASHBOARD\": 65,\n        \"CHAT\": 35\n      },\n      \"CHAT_CHATHISTORY\": {\n        \"CHAT\": 80,\n        \"CHATHISTORY\": 20\n      }\n    }\n  },\n  \"charts\": [\n    {\n      \"id\": \"SATISFIED\",\n      \"name\": \"Satisfied\",\n      \"type\": \"card\",\n      \"layout\": { \"row\": 1, \"column\": 1, \"height\": 11 }\n    },\n    {\n      \"id\": \"TOTAL_CALLS\",\n      \"name\": \"Total Calls\",\n      \"type\": \"card\",\n      \"layout\": { \"row\": 1, \"column\": 2, \"span\": 1 }\n    },\n    {\n      \"id\": \"AVG_HANDLING_TIME\",\n      \"name\": \"Average Handling Time\",\n      \"type\": \"card\",\n      \"layout\": { \"row\": 1, \"column\": 3, \"span\": 1 }\n    },\n    {\n      \"id\": \"SENTIMENT\",\n      \"name\": \"Topics Overview\",\n      \"type\": \"donutchart\",\n      \"layout\": { \"row\": 2, \"column\": 1, \"width\": 40, \"height\": 44.5 }\n    },\n    {\n      \"id\": \"AVG_HANDLING_TIME_BY_TOPIC\",\n      \"name\": \"Average Handling Time By Topic\",\n      \"type\": \"bar\",\n      \"layout\": { \"row\": 2, \"column\": 2, \"row-span\": 2, \"width\": 60 }\n    },\n    {\n      \"id\": \"TOPICS\",\n      \"name\": \"Trending Topics\",\n      \"type\": \"table\",\n      \"layout\": { \"row\": 3, \"column\": 1, \"span\": 2 }\n    },\n    {\n      \"id\": \"KEY_PHRASES\",\n      \"name\": \"Key Phrases\",\n      \"type\": \"wordcloud\",\n      \"layout\": { \"row\": 3, \"column\": 2, \"height\": 44.5 }\n    }\n  ]\n}"
   },
@@ -8044,7 +8044,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "535134120638097666"
+              "templateHash": "3565935438459722412"
             }
           },
           "parameters": {
@@ -8345,9 +8345,7 @@
                   },
                   "blobServices": {
                     "value": {
-                      "deleteRetentionPolicyDays": 7,
                       "deleteRetentionPolicyEnabled": false,
-                      "containerDeleteRetentionPolicyAllowPermanentDelete": false,
                       "containerDeleteRetentionPolicyDays": 7,
                       "containerDeleteRetentionPolicyEnabled": false,
                       "diagnosticSettings": [
@@ -32831,11 +32829,7 @@
           "blobServices": {
             "value": {
               "corsRules": [],
-              "automaticSnapshotPolicyEnabled": false,
-              "deleteRetentionPolicyAllowPermanentDelete": false,
-              "deleteRetentionPolicyDays": 7,
               "deleteRetentionPolicyEnabled": false,
-              "containerDeleteRetentionPolicyAllowPermanentDelete": false,
               "containerDeleteRetentionPolicyDays": 7,
               "containerDeleteRetentionPolicyEnabled": false,
               "diagnosticSettings": [
@@ -42394,10 +42388,8 @@
                   "family": "[parameters('sqlServerDatabaseSkuFamily')]",
                   "capacity": "[parameters('sqlServerDatabaseSkuCapacity')]"
                 },
-                "collation": "SQL_Latin1_General_CP1_CI_AS",
                 "autoPauseDelay": 60,
                 "minCapacity": "1",
-                "readScale": "Disabled",
                 "zoneRedundant": false
               }
             ]
