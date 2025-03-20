@@ -3405,6 +3405,7 @@ The failover groups configuration.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`readOnlyEndpoint`](#parameter-failovergroupsreadonlyendpoint) | object | Read-only endpoint of the failover group instance. |
+| [`tags`](#parameter-failovergroupstags) | object | Tags of the resource. |
 
 ### Parameter: `failoverGroups.databases`
 
@@ -3515,6 +3516,13 @@ The target partner server where the read-only endpoint points to.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `failoverGroups.tags`
+
+Tags of the resource.
+
+- Required: No
+- Type: object
 
 ### Parameter: `federatedClientId`
 

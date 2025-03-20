@@ -8,7 +8,6 @@ This module deploys an Azure Stack HCI Cluster on the provided Arc Machines.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -18,6 +17,7 @@ This module deploys an Azure Stack HCI Cluster on the provided Arc Machines.
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.AzureStackHCI/clusters` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AzureStackHCI/clusters) |
 | `Microsoft.AzureStackHCI/clusters/deploymentSettings` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AzureStackHCI/clusters/deploymentSettings) |
+| `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
 
 ## Usage examples
 
@@ -75,9 +75,9 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
           overrideQosPolicy: false
           overrideVirtualSwitchConfiguration: false
           qosPolicyOverrides: {
-            bandwidthPercentage_SMB: '50'
-            priorityValue8021Action_Cluster: '7'
-            priorityValue8021Action_SMB: '3'
+            bandwidthPercentageSMB: '50'
+            priorityValue8021ActionCluster: '7'
+            priorityValue8021ActionSMB: '3'
           }
           trafficType: [
             'Management'
@@ -102,9 +102,9 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
           overrideQosPolicy: false
           overrideVirtualSwitchConfiguration: false
           qosPolicyOverrides: {
-            bandwidthPercentage_SMB: '50'
-            priorityValue8021Action_Cluster: '7'
-            priorityValue8021Action_SMB: '3'
+            bandwidthPercentageSMB: '50'
+            priorityValue8021ActionCluster: '7'
+            priorityValue8021ActionSMB: '3'
           }
           trafficType: [
             'Compute'
@@ -129,9 +129,9 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
           overrideQosPolicy: true
           overrideVirtualSwitchConfiguration: false
           qosPolicyOverrides: {
-            bandwidthPercentage_SMB: '50'
-            priorityValue8021Action_Cluster: '7'
-            priorityValue8021Action_SMB: '3'
+            bandwidthPercentageSMB: '50'
+            priorityValue8021ActionCluster: '7'
+            priorityValue8021ActionSMB: '3'
           }
           trafficType: [
             'Storage'
@@ -147,15 +147,23 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
       storageNetworks: [
         {
           adapterName: 'smb0'
+          name: 'StorageNetwork0'
           vlan: '711'
         }
         {
           adapterName: 'smb1'
+          name: 'StorageNetwork1'
           vlan: '712'
         }
       ]
       subnetMask: '255.255.255.0'
     }
+    deploymentUser: 'deployUser'
+    deploymentUserPassword: '<deploymentUserPassword>'
+    localAdminPassword: '<localAdminPassword>'
+    localAdminUser: 'admin-hci'
+    servicePrincipalId: '<servicePrincipalId>'
+    servicePrincipalSecret: '<servicePrincipalSecret>'
   }
 }
 ```
@@ -207,9 +215,9 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
             "overrideQosPolicy": false,
             "overrideVirtualSwitchConfiguration": false,
             "qosPolicyOverrides": {
-              "bandwidthPercentage_SMB": "50",
-              "priorityValue8021Action_Cluster": "7",
-              "priorityValue8021Action_SMB": "3"
+              "bandwidthPercentageSMB": "50",
+              "priorityValue8021ActionCluster": "7",
+              "priorityValue8021ActionSMB": "3"
             },
             "trafficType": [
               "Management"
@@ -234,9 +242,9 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
             "overrideQosPolicy": false,
             "overrideVirtualSwitchConfiguration": false,
             "qosPolicyOverrides": {
-              "bandwidthPercentage_SMB": "50",
-              "priorityValue8021Action_Cluster": "7",
-              "priorityValue8021Action_SMB": "3"
+              "bandwidthPercentageSMB": "50",
+              "priorityValue8021ActionCluster": "7",
+              "priorityValue8021ActionSMB": "3"
             },
             "trafficType": [
               "Compute"
@@ -261,9 +269,9 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
             "overrideQosPolicy": true,
             "overrideVirtualSwitchConfiguration": false,
             "qosPolicyOverrides": {
-              "bandwidthPercentage_SMB": "50",
-              "priorityValue8021Action_Cluster": "7",
-              "priorityValue8021Action_SMB": "3"
+              "bandwidthPercentageSMB": "50",
+              "priorityValue8021ActionCluster": "7",
+              "priorityValue8021ActionSMB": "3"
             },
             "trafficType": [
               "Storage"
@@ -279,15 +287,35 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
         "storageNetworks": [
           {
             "adapterName": "smb0",
+            "name": "StorageNetwork0",
             "vlan": "711"
           },
           {
             "adapterName": "smb1",
+            "name": "StorageNetwork1",
             "vlan": "712"
           }
         ],
         "subnetMask": "255.255.255.0"
       }
+    },
+    "deploymentUser": {
+      "value": "deployUser"
+    },
+    "deploymentUserPassword": {
+      "value": "<deploymentUserPassword>"
+    },
+    "localAdminPassword": {
+      "value": "<localAdminPassword>"
+    },
+    "localAdminUser": {
+      "value": "admin-hci"
+    },
+    "servicePrincipalId": {
+      "value": "<servicePrincipalId>"
+    },
+    "servicePrincipalSecret": {
+      "value": "<servicePrincipalSecret>"
     }
   }
 }
@@ -335,9 +363,9 @@ param deploymentSettings = {
       overrideQosPolicy: false
       overrideVirtualSwitchConfiguration: false
       qosPolicyOverrides: {
-        bandwidthPercentage_SMB: '50'
-        priorityValue8021Action_Cluster: '7'
-        priorityValue8021Action_SMB: '3'
+        bandwidthPercentageSMB: '50'
+        priorityValue8021ActionCluster: '7'
+        priorityValue8021ActionSMB: '3'
       }
       trafficType: [
         'Management'
@@ -362,9 +390,9 @@ param deploymentSettings = {
       overrideQosPolicy: false
       overrideVirtualSwitchConfiguration: false
       qosPolicyOverrides: {
-        bandwidthPercentage_SMB: '50'
-        priorityValue8021Action_Cluster: '7'
-        priorityValue8021Action_SMB: '3'
+        bandwidthPercentageSMB: '50'
+        priorityValue8021ActionCluster: '7'
+        priorityValue8021ActionSMB: '3'
       }
       trafficType: [
         'Compute'
@@ -389,9 +417,9 @@ param deploymentSettings = {
       overrideQosPolicy: true
       overrideVirtualSwitchConfiguration: false
       qosPolicyOverrides: {
-        bandwidthPercentage_SMB: '50'
-        priorityValue8021Action_Cluster: '7'
-        priorityValue8021Action_SMB: '3'
+        bandwidthPercentageSMB: '50'
+        priorityValue8021ActionCluster: '7'
+        priorityValue8021ActionSMB: '3'
       }
       trafficType: [
         'Storage'
@@ -407,15 +435,23 @@ param deploymentSettings = {
   storageNetworks: [
     {
       adapterName: 'smb0'
+      name: 'StorageNetwork0'
       vlan: '711'
     }
     {
       adapterName: 'smb1'
+      name: 'StorageNetwork1'
       vlan: '712'
     }
   ]
   subnetMask: '255.255.255.0'
 }
+param deploymentUser = 'deployUser'
+param deploymentUserPassword = '<deploymentUserPassword>'
+param localAdminPassword = '<localAdminPassword>'
+param localAdminUser = 'admin-hci'
+param servicePrincipalId = '<servicePrincipalId>'
+param servicePrincipalSecret = '<servicePrincipalSecret>'
 ```
 
 </details>
@@ -469,9 +505,9 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
           overrideQosPolicy: false
           overrideVirtualSwitchConfiguration: false
           qosPolicyOverrides: {
-            bandwidthPercentage_SMB: '50'
-            priorityValue8021Action_Cluster: '7'
-            priorityValue8021Action_SMB: '3'
+            bandwidthPercentageSMB: '50'
+            priorityValue8021ActionCluster: '7'
+            priorityValue8021ActionSMB: '3'
           }
           trafficType: [
             'Management'
@@ -496,9 +532,9 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
           overrideQosPolicy: false
           overrideVirtualSwitchConfiguration: false
           qosPolicyOverrides: {
-            bandwidthPercentage_SMB: '50'
-            priorityValue8021Action_Cluster: '7'
-            priorityValue8021Action_SMB: '3'
+            bandwidthPercentageSMB: '50'
+            priorityValue8021ActionCluster: '7'
+            priorityValue8021ActionSMB: '3'
           }
           trafficType: [
             'Compute'
@@ -523,9 +559,9 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
           overrideQosPolicy: true
           overrideVirtualSwitchConfiguration: false
           qosPolicyOverrides: {
-            bandwidthPercentage_SMB: '50'
-            priorityValue8021Action_Cluster: '7'
-            priorityValue8021Action_SMB: '3'
+            bandwidthPercentageSMB: '50'
+            priorityValue8021ActionCluster: '7'
+            priorityValue8021ActionSMB: '3'
           }
           trafficType: [
             'Storage'
@@ -544,15 +580,23 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
       storageNetworks: [
         {
           adapterName: 'smb0'
+          name: 'StorageNetwork0'
           vlan: '711'
         }
         {
           adapterName: 'smb1'
+          name: 'StorageNetwork1'
           vlan: '712'
         }
       ]
       subnetMask: '255.255.255.0'
     }
+    deploymentUser: 'deployUser'
+    deploymentUserPassword: '<deploymentUserPassword>'
+    localAdminPassword: '<localAdminPassword>'
+    localAdminUser: 'admin-hci'
+    servicePrincipalId: '<servicePrincipalId>'
+    servicePrincipalSecret: '<servicePrincipalSecret>'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -612,9 +656,9 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
             "overrideQosPolicy": false,
             "overrideVirtualSwitchConfiguration": false,
             "qosPolicyOverrides": {
-              "bandwidthPercentage_SMB": "50",
-              "priorityValue8021Action_Cluster": "7",
-              "priorityValue8021Action_SMB": "3"
+              "bandwidthPercentageSMB": "50",
+              "priorityValue8021ActionCluster": "7",
+              "priorityValue8021ActionSMB": "3"
             },
             "trafficType": [
               "Management"
@@ -639,9 +683,9 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
             "overrideQosPolicy": false,
             "overrideVirtualSwitchConfiguration": false,
             "qosPolicyOverrides": {
-              "bandwidthPercentage_SMB": "50",
-              "priorityValue8021Action_Cluster": "7",
-              "priorityValue8021Action_SMB": "3"
+              "bandwidthPercentageSMB": "50",
+              "priorityValue8021ActionCluster": "7",
+              "priorityValue8021ActionSMB": "3"
             },
             "trafficType": [
               "Compute"
@@ -666,9 +710,9 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
             "overrideQosPolicy": true,
             "overrideVirtualSwitchConfiguration": false,
             "qosPolicyOverrides": {
-              "bandwidthPercentage_SMB": "50",
-              "priorityValue8021Action_Cluster": "7",
-              "priorityValue8021Action_SMB": "3"
+              "bandwidthPercentageSMB": "50",
+              "priorityValue8021ActionCluster": "7",
+              "priorityValue8021ActionSMB": "3"
             },
             "trafficType": [
               "Storage"
@@ -687,15 +731,35 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
         "storageNetworks": [
           {
             "adapterName": "smb0",
+            "name": "StorageNetwork0",
             "vlan": "711"
           },
           {
             "adapterName": "smb1",
+            "name": "StorageNetwork1",
             "vlan": "712"
           }
         ],
         "subnetMask": "255.255.255.0"
       }
+    },
+    "deploymentUser": {
+      "value": "deployUser"
+    },
+    "deploymentUserPassword": {
+      "value": "<deploymentUserPassword>"
+    },
+    "localAdminPassword": {
+      "value": "<localAdminPassword>"
+    },
+    "localAdminUser": {
+      "value": "admin-hci"
+    },
+    "servicePrincipalId": {
+      "value": "<servicePrincipalId>"
+    },
+    "servicePrincipalSecret": {
+      "value": "<servicePrincipalSecret>"
     },
     "tags": {
       "value": {
@@ -753,9 +817,9 @@ param deploymentSettings = {
       overrideQosPolicy: false
       overrideVirtualSwitchConfiguration: false
       qosPolicyOverrides: {
-        bandwidthPercentage_SMB: '50'
-        priorityValue8021Action_Cluster: '7'
-        priorityValue8021Action_SMB: '3'
+        bandwidthPercentageSMB: '50'
+        priorityValue8021ActionCluster: '7'
+        priorityValue8021ActionSMB: '3'
       }
       trafficType: [
         'Management'
@@ -780,9 +844,9 @@ param deploymentSettings = {
       overrideQosPolicy: false
       overrideVirtualSwitchConfiguration: false
       qosPolicyOverrides: {
-        bandwidthPercentage_SMB: '50'
-        priorityValue8021Action_Cluster: '7'
-        priorityValue8021Action_SMB: '3'
+        bandwidthPercentageSMB: '50'
+        priorityValue8021ActionCluster: '7'
+        priorityValue8021ActionSMB: '3'
       }
       trafficType: [
         'Compute'
@@ -807,9 +871,9 @@ param deploymentSettings = {
       overrideQosPolicy: true
       overrideVirtualSwitchConfiguration: false
       qosPolicyOverrides: {
-        bandwidthPercentage_SMB: '50'
-        priorityValue8021Action_Cluster: '7'
-        priorityValue8021Action_SMB: '3'
+        bandwidthPercentageSMB: '50'
+        priorityValue8021ActionCluster: '7'
+        priorityValue8021ActionSMB: '3'
       }
       trafficType: [
         'Storage'
@@ -828,15 +892,23 @@ param deploymentSettings = {
   storageNetworks: [
     {
       adapterName: 'smb0'
+      name: 'StorageNetwork0'
       vlan: '711'
     }
     {
       adapterName: 'smb1'
+      name: 'StorageNetwork1'
       vlan: '712'
     }
   ]
   subnetMask: '255.255.255.0'
 }
+param deploymentUser = 'deployUser'
+param deploymentUserPassword = '<deploymentUserPassword>'
+param localAdminPassword = '<localAdminPassword>'
+param localAdminUser = 'admin-hci'
+param servicePrincipalId = '<servicePrincipalId>'
+param servicePrincipalSecret = '<servicePrincipalSecret>'
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
@@ -855,17 +927,40 @@ param tags = {
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | The name of the Azure Stack HCI cluster - this must be a valid Active Directory computer name and will be the name of your cluster in Azure. |
 
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`deploymentUser`](#parameter-deploymentuser) | string | The name of the deployment user. Required if useSharedKeyVault is true. |
+| [`deploymentUserPassword`](#parameter-deploymentuserpassword) | securestring | The password of the deployment user. Required if useSharedKeyVault is true. |
+| [`localAdminPassword`](#parameter-localadminpassword) | securestring | The password of the local admin user. Required if useSharedKeyVault is true. |
+| [`localAdminUser`](#parameter-localadminuser) | string | The name of the local admin user. Required if useSharedKeyVault is true. |
+| [`servicePrincipalId`](#parameter-serviceprincipalid) | string | The service principal ID for ARB. Required if useSharedKeyVault is true. |
+| [`servicePrincipalSecret`](#parameter-serviceprincipalsecret) | securestring | The service principal secret for ARB. Required if useSharedKeyVault is true. |
+
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`azureStackLCMUserCredentialContentType`](#parameter-azurestacklcmusercredentialcontenttype) | string | Content type of the azure stack lcm user credential. |
+| [`azureStackLCMUserCredentialTags`](#parameter-azurestacklcmusercredentialtags) | object | Tags of azure stack LCM user credential. |
+| [`defaultARBApplicationContentType`](#parameter-defaultarbapplicationcontenttype) | string | Content type of the default ARB application. |
+| [`defaultARBApplicationTags`](#parameter-defaultarbapplicationtags) | object | Tags of the default ARB application. |
 | [`deploymentOperations`](#parameter-deploymentoperations) | array | The cluster deployment operations to execute. Defaults to "[Validate, Deploy]". |
 | [`deploymentSettings`](#parameter-deploymentsettings) | object | The deployment settings of the cluster. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`keyvaultResourceGroup`](#parameter-keyvaultresourcegroup) | string | Key vault resource group, which is used for for storing secrets for the HCI cluster. |
+| [`keyvaultSubscriptionId`](#parameter-keyvaultsubscriptionid) | string | Key vault subscription ID, which is used for for storing secrets for the HCI cluster. |
+| [`localAdminCredentialContentType`](#parameter-localadmincredentialcontenttype) | string | Content type of the local admin credential. |
+| [`localAdminCredentialTags`](#parameter-localadmincredentialtags) | object | Tags of the local admin credential. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`useSharedKeyVault`](#parameter-usesharedkeyvault) | bool | Specify whether to use the shared key vault for the HCI cluster. |
+| [`witnessStorageAccountResourceGroup`](#parameter-witnessstorageaccountresourcegroup) | string | Storage account resource group, which is used as the witness for the HCI Windows Failover Cluster. |
+| [`witnessStorageAccountSubscriptionId`](#parameter-witnessstorageaccountsubscriptionid) | string | Storage account subscription ID, which is used as the witness for the HCI Windows Failover Cluster. |
+| [`witnessStoragekeyContentType`](#parameter-witnessstoragekeycontenttype) | string | Content type of the witness storage key. |
+| [`witnessStoragekeyTags`](#parameter-witnessstoragekeytags) | object | Tags of the witness storage key. |
 
 ### Parameter: `name`
 
@@ -873,6 +968,78 @@ The name of the Azure Stack HCI cluster - this must be a valid Active Directory 
 
 - Required: Yes
 - Type: string
+
+### Parameter: `deploymentUser`
+
+The name of the deployment user. Required if useSharedKeyVault is true.
+
+- Required: No
+- Type: string
+
+### Parameter: `deploymentUserPassword`
+
+The password of the deployment user. Required if useSharedKeyVault is true.
+
+- Required: No
+- Type: securestring
+
+### Parameter: `localAdminPassword`
+
+The password of the local admin user. Required if useSharedKeyVault is true.
+
+- Required: No
+- Type: securestring
+
+### Parameter: `localAdminUser`
+
+The name of the local admin user. Required if useSharedKeyVault is true.
+
+- Required: No
+- Type: string
+
+### Parameter: `servicePrincipalId`
+
+The service principal ID for ARB. Required if useSharedKeyVault is true.
+
+- Required: No
+- Type: string
+
+### Parameter: `servicePrincipalSecret`
+
+The service principal secret for ARB. Required if useSharedKeyVault is true.
+
+- Required: No
+- Type: securestring
+
+### Parameter: `azureStackLCMUserCredentialContentType`
+
+Content type of the azure stack lcm user credential.
+
+- Required: No
+- Type: string
+- Default: `'Secret'`
+
+### Parameter: `azureStackLCMUserCredentialTags`
+
+Tags of azure stack LCM user credential.
+
+- Required: No
+- Type: object
+
+### Parameter: `defaultARBApplicationContentType`
+
+Content type of the default ARB application.
+
+- Required: No
+- Type: string
+- Default: `'Secret'`
+
+### Parameter: `defaultARBApplicationTags`
+
+Tags of the default ARB application.
+
+- Required: No
+- Type: object
 
 ### Parameter: `deploymentOperations`
 
@@ -928,7 +1095,6 @@ The deployment settings of the cluster.
 | :-- | :-- | :-- |
 | [`bitlockerBootVolume`](#parameter-deploymentsettingsbitlockerbootvolume) | bool | When set to true, BitLocker XTS_AES 256-bit encryption is enabled for all data-at-rest on the OS volume of your Azure Stack HCI cluster. This setting is TPM-hardware dependent. |
 | [`bitlockerDataVolumes`](#parameter-deploymentsettingsbitlockerdatavolumes) | bool | When set to true, BitLocker XTS-AES 256-bit encryption is enabled for all data-at-rest on your Azure Stack HCI cluster shared volumes. |
-| [`cloudId`](#parameter-deploymentsettingscloudid) | string | If using a shared key vault or non-legacy secret naming, pass the properties.cloudId guid from the pre-created HCI cluster resource. |
 | [`credentialGuardEnforced`](#parameter-deploymentsettingscredentialguardenforced) | bool | Enables the Credential Guard. |
 | [`driftControlEnforced`](#parameter-deploymentsettingsdriftcontrolenforced) | bool | When set to true, the security baseline is re-applied regularly. |
 | [`drtmProtection`](#parameter-deploymentsettingsdrtmprotection) | bool | The hardware-dependent Secure Boot setting. |
@@ -1020,6 +1186,199 @@ An array of Network ATC Network Intent objects that define the Compute, Manageme
 - Required: Yes
 - Type: array
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`adapter`](#parameter-deploymentsettingsnetworkintentsadapter) | array | The names of the network adapters to include in the intent. |
+| [`adapterPropertyOverrides`](#parameter-deploymentsettingsnetworkintentsadapterpropertyoverrides) | object | The adapter property overrides for the network intent. |
+| [`name`](#parameter-deploymentsettingsnetworkintentsname) | string | The name of the network intent. |
+| [`overrideAdapterProperty`](#parameter-deploymentsettingsnetworkintentsoverrideadapterproperty) | bool | Specify whether to override the adapter property. Use false by default. |
+| [`overrideQosPolicy`](#parameter-deploymentsettingsnetworkintentsoverrideqospolicy) | bool | Specify whether to override the qosPolicy property. Use false by default. |
+| [`overrideVirtualSwitchConfiguration`](#parameter-deploymentsettingsnetworkintentsoverridevirtualswitchconfiguration) | bool | Specify whether to override the virtualSwitchConfiguration property. Use false by default. |
+| [`qosPolicyOverrides`](#parameter-deploymentsettingsnetworkintentsqospolicyoverrides) | object | The qosPolicy overrides for the network intent. |
+| [`trafficType`](#parameter-deploymentsettingsnetworkintentstraffictype) | array | The traffic types for the network intent. |
+| [`virtualSwitchConfigurationOverrides`](#parameter-deploymentsettingsnetworkintentsvirtualswitchconfigurationoverrides) | object | The virtualSwitchConfiguration overrides for the network intent. |
+
+### Parameter: `deploymentSettings.networkIntents.adapter`
+
+The names of the network adapters to include in the intent.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `deploymentSettings.networkIntents.adapterPropertyOverrides`
+
+The adapter property overrides for the network intent.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`jumboPacket`](#parameter-deploymentsettingsnetworkintentsadapterpropertyoverridesjumbopacket) | string | The jumboPacket configuration for the network adapters. |
+| [`networkDirect`](#parameter-deploymentsettingsnetworkintentsadapterpropertyoverridesnetworkdirect) | string | The networkDirect configuration for the network adapters. |
+| [`networkDirectTechnology`](#parameter-deploymentsettingsnetworkintentsadapterpropertyoverridesnetworkdirecttechnology) | string | The networkDirectTechnology configuration for the network adapters. |
+
+### Parameter: `deploymentSettings.networkIntents.adapterPropertyOverrides.jumboPacket`
+
+The jumboPacket configuration for the network adapters.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `deploymentSettings.networkIntents.adapterPropertyOverrides.networkDirect`
+
+The networkDirect configuration for the network adapters.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
+### Parameter: `deploymentSettings.networkIntents.adapterPropertyOverrides.networkDirectTechnology`
+
+The networkDirectTechnology configuration for the network adapters.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'iWARP'
+    'RoCEv2'
+  ]
+  ```
+
+### Parameter: `deploymentSettings.networkIntents.name`
+
+The name of the network intent.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `deploymentSettings.networkIntents.overrideAdapterProperty`
+
+Specify whether to override the adapter property. Use false by default.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `deploymentSettings.networkIntents.overrideQosPolicy`
+
+Specify whether to override the qosPolicy property. Use false by default.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `deploymentSettings.networkIntents.overrideVirtualSwitchConfiguration`
+
+Specify whether to override the virtualSwitchConfiguration property. Use false by default.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `deploymentSettings.networkIntents.qosPolicyOverrides`
+
+The qosPolicy overrides for the network intent.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`bandwidthPercentageSMB`](#parameter-deploymentsettingsnetworkintentsqospolicyoverridesbandwidthpercentagesmb) | string | The bandwidthPercentage for the network intent. Recommend 50. |
+| [`priorityValue8021ActionCluster`](#parameter-deploymentsettingsnetworkintentsqospolicyoverridespriorityvalue8021actioncluster) | string | Recommend 7. |
+| [`priorityValue8021ActionSMB`](#parameter-deploymentsettingsnetworkintentsqospolicyoverridespriorityvalue8021actionsmb) | string | Recommend 3. |
+
+### Parameter: `deploymentSettings.networkIntents.qosPolicyOverrides.bandwidthPercentageSMB`
+
+The bandwidthPercentage for the network intent. Recommend 50.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `deploymentSettings.networkIntents.qosPolicyOverrides.priorityValue8021ActionCluster`
+
+Recommend 7.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `deploymentSettings.networkIntents.qosPolicyOverrides.priorityValue8021ActionSMB`
+
+Recommend 3.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `deploymentSettings.networkIntents.trafficType`
+
+The traffic types for the network intent.
+
+- Required: Yes
+- Type: array
+- Allowed:
+  ```Bicep
+  [
+    'Compute'
+    'Management'
+    'Storage'
+  ]
+  ```
+
+### Parameter: `deploymentSettings.networkIntents.virtualSwitchConfigurationOverrides`
+
+The virtualSwitchConfiguration overrides for the network intent.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`enableIov`](#parameter-deploymentsettingsnetworkintentsvirtualswitchconfigurationoverridesenableiov) | string | The enableIov configuration for the network intent. |
+| [`loadBalancingAlgorithm`](#parameter-deploymentsettingsnetworkintentsvirtualswitchconfigurationoverridesloadbalancingalgorithm) | string | The loadBalancingAlgorithm configuration for the network intent. |
+
+### Parameter: `deploymentSettings.networkIntents.virtualSwitchConfigurationOverrides.enableIov`
+
+The enableIov configuration for the network intent.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'false'
+    'true'
+  ]
+  ```
+
+### Parameter: `deploymentSettings.networkIntents.virtualSwitchConfigurationOverrides.loadBalancingAlgorithm`
+
+The loadBalancingAlgorithm configuration for the network intent.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Dynamic'
+    'HyperVPort'
+    'IPHash'
+  ]
+  ```
+
 ### Parameter: `deploymentSettings.startingIPAddress`
 
 The starting IP address for the Infrastructure Network IP pool. There must be at least 6 IPs between startingIPAddress and endingIPAddress and this pool should be not include the node IPs.
@@ -1041,6 +1400,77 @@ An array of JSON objects that define the storage network configuration for the c
 - Required: Yes
 - Type: array
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`adapterName`](#parameter-deploymentsettingsstoragenetworksadaptername) | string | The name of the storage adapter. |
+| [`name`](#parameter-deploymentsettingsstoragenetworksname) | string | The name of the storage network. |
+| [`vlan`](#parameter-deploymentsettingsstoragenetworksvlan) | string | The VLAN for the storage adapter. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`storageAdapterIPInfo`](#parameter-deploymentsettingsstoragenetworksstorageadapteripinfo) | array | The storage adapter IP information for 3-node switchless or manual config deployments. |
+
+### Parameter: `deploymentSettings.storageNetworks.adapterName`
+
+The name of the storage adapter.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `deploymentSettings.storageNetworks.name`
+
+The name of the storage network.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `deploymentSettings.storageNetworks.vlan`
+
+The VLAN for the storage adapter.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `deploymentSettings.storageNetworks.storageAdapterIPInfo`
+
+The storage adapter IP information for 3-node switchless or manual config deployments.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`ipv4Address`](#parameter-deploymentsettingsstoragenetworksstorageadapteripinfoipv4address) | string | The IPv4 address for the storage adapter. |
+| [`physicalNode`](#parameter-deploymentsettingsstoragenetworksstorageadapteripinfophysicalnode) | string | The HCI node name. |
+| [`subnetMask`](#parameter-deploymentsettingsstoragenetworksstorageadapteripinfosubnetmask) | string | The subnet mask for the storage adapter. |
+
+### Parameter: `deploymentSettings.storageNetworks.storageAdapterIPInfo.ipv4Address`
+
+The IPv4 address for the storage adapter.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `deploymentSettings.storageNetworks.storageAdapterIPInfo.physicalNode`
+
+The HCI node name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `deploymentSettings.storageNetworks.storageAdapterIPInfo.subnetMask`
+
+The subnet mask for the storage adapter.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `deploymentSettings.subnetMask`
 
 The subnet mask pf the Management Network for the HCI cluster - ex: 255.255.252.0.
@@ -1061,13 +1491,6 @@ When set to true, BitLocker XTS-AES 256-bit encryption is enabled for all data-a
 
 - Required: No
 - Type: bool
-
-### Parameter: `deploymentSettings.cloudId`
-
-If using a shared key vault or non-legacy secret naming, pass the properties.cloudId guid from the pre-created HCI cluster resource.
-
-- Required: No
-- Type: string
 
 ### Parameter: `deploymentSettings.credentialGuardEnforced`
 
@@ -1175,6 +1598,35 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `keyvaultResourceGroup`
+
+Key vault resource group, which is used for for storing secrets for the HCI cluster.
+
+- Required: No
+- Type: string
+
+### Parameter: `keyvaultSubscriptionId`
+
+Key vault subscription ID, which is used for for storing secrets for the HCI cluster.
+
+- Required: No
+- Type: string
+
+### Parameter: `localAdminCredentialContentType`
+
+Content type of the local admin credential.
+
+- Required: No
+- Type: string
+- Default: `'Secret'`
+
+### Parameter: `localAdminCredentialTags`
+
+Tags of the local admin credential.
+
+- Required: No
+- Type: object
 
 ### Parameter: `location`
 
@@ -1304,6 +1756,35 @@ Specify whether to use the shared key vault for the HCI cluster.
 - Type: bool
 - Default: `True`
 
+### Parameter: `witnessStorageAccountResourceGroup`
+
+Storage account resource group, which is used as the witness for the HCI Windows Failover Cluster.
+
+- Required: No
+- Type: string
+
+### Parameter: `witnessStorageAccountSubscriptionId`
+
+Storage account subscription ID, which is used as the witness for the HCI Windows Failover Cluster.
+
+- Required: No
+- Type: string
+
+### Parameter: `witnessStoragekeyContentType`
+
+Content type of the witness storage key.
+
+- Required: No
+- Type: string
+- Default: `'Secret'`
+
+### Parameter: `witnessStoragekeyTags`
+
+Tags of the witness storage key.
+
+- Required: No
+- Type: object
+
 ## Outputs
 
 | Output | Type | Description |
@@ -1313,14 +1794,6 @@ Specify whether to use the shared key vault for the HCI cluster.
 | `resourceGroupName` | string | The resource group of the cluster. |
 | `resourceId` | string | The ID of the cluster. |
 | `systemAssignedMIPrincipalId` | string | The managed identity of the cluster. |
-
-## Cross-referenced modules
-
-This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
-
-| Reference | Type |
-| :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

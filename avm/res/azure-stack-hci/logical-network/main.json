@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "16691190683135212036"
+      "templateHash": "17664075417177294260"
     },
     "name": "Azure Stack HCI Logical Network",
     "description": "This module deploys an Azure Stack HCI Logical Network."
@@ -124,7 +124,7 @@
         "description": "Optional. Enable/Disable usage telemetry for module."
       }
     },
-    "customLocationId": {
+    "customLocationResourceId": {
       "type": "string",
       "metadata": {
         "description": "Required. The custom location ID."
@@ -295,7 +295,7 @@
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "extendedLocation": {
-        "name": "[parameters('customLocationId')]",
+        "name": "[parameters('customLocationResourceId')]",
         "type": "CustomLocation"
       },
       "properties": {

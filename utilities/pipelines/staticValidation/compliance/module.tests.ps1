@@ -395,10 +395,14 @@ Describe 'Module tests' -Tag 'Module' {
             . (Join-Path $repoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Set-ModuleReadMe.ps1')
 
             # Apply update with already compiled template content
-            Set-ModuleReadMe -TemplateFilePath $templateFilePath -PreLoadedContent @{
-                TemplateFileContent       = $templateFileContent
-                CrossReferencedModuleList = $crossReferencedModuleList
-                TelemetryFileContent      = $telemetryFileContent
+            try {
+                Set-ModuleReadMe -TemplateFilePath $templateFilePath -PreLoadedContent @{
+                    TemplateFileContent       = $templateFileContent
+                    CrossReferencedModuleList = $crossReferencedModuleList
+                    TelemetryFileContent      = $telemetryFileContent
+                } -ErrorAction 'Stop' -ErrorVariable 'InvocationError'
+            } catch {
+                $InvocationError[-1] | Should -BeNullOrEmpty -Because "Failed to apply the `Set-ModuleReadMe` function due to an error during the function's execution. Please review the inner error(s)."
             }
 
             # Get hash after 'update'
@@ -823,8 +827,13 @@ Describe 'Module tests' -Tag 'Module' {
                         [hashtable] $templateFileContent
                     )
 
-                    $matchingTypeKey = $templateFileContent.definitions.Keys | Where-Object { $_ -match 'managedIdentity' }
-                    if ($matchingTypeKey -and $templateFileContent.definitions.$matchingTypeKey.properties.keys -contains 'systemAssigned') {
+                    # Testing for `managedIdentit*` in type, to be not dependent on singular/plural in UDT name
+                    $hasMatchingParameter = $templateFileContent.parameters.managedIdentities.'$ref' -match 'managedIdentit'
+
+                    $matchingTypeKey = $templateFileContent.definitions.Keys | Where-Object { $_ -match 'managedIdentit' }
+                    $hasSystemAssignedInType = $templateFileContent.definitions.($matchingTypeKey ?? '').properties.keys -contains 'systemAssigned'
+
+                    if ($hasMatchingParameter -and $hasSystemAssignedInType) {
                         $templateFileContent.outputs.Keys | Should -Contain 'systemAssignedMIPrincipalId' -Because 'The AVM specs require a this output. For information please review the [AVM Specs](https://azure.github.io/Azure-Verified-Modules/specs/bcp/res/interfaces/#managed-identities).'
 
                         $templateFileContent.outputs.systemAssignedMIPrincipalId.type | Should -Be 'string' -Because 'it should match the AVM spec for managed identities. For information please review the [AVM Specs](https://azure.github.io/Azure-Verified-Modules/specs/bcp/res/interfaces/#managed-identities).'
@@ -1025,7 +1034,7 @@ Describe 'Module tests' -Tag 'Module' {
                 $telemetryDeploymentName | Should -Match "$expectedTelemetryIdentifier"
             }
 
-            It '[<moduleFolderName>] Telemetry should be disabled for referenced modules with dedicated telemetry.' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleType -eq 'res' }) {
+            It '[<moduleFolderName>] For resource modules, telemetry should be disabled for referenced modules with dedicated telemetry.' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleType -eq 'res' }) {
 
                 param(
                     [hashtable] $templateFileContent,
@@ -1054,6 +1063,37 @@ Describe 'Module tests' -Tag 'Module' {
                 }
 
                 $incorrectCrossReferences | Should -BeNullOrEmpty -Because ('cross reference modules must be referenced with the enableTelemetry parameter set to the "enableReferencedModulesTelemetry" variable. Found incorrect items: [{0}].' -f ($incorrectCrossReferences -join ', '))
+            }
+
+            It '[<moduleFolderName>] For non-resource modules, telemetry configuration should be passed to referenced modules with dedicated telemetry.' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleType -ne 'res' }) {
+
+                param(
+                    [hashtable] $templateFileContent,
+                    [string] $templateFilePath
+                )
+
+                # get all referenced modules, that offer a telemetry parameter
+                $referencesWithTelemetry = $templateFileContent.resources.Values | Where-Object {
+                    $_.type -eq 'Microsoft.Resources/deployments' -and
+                    $_.properties.template.parameters.Keys -contains 'enableTelemetry'
+                }
+
+                if ($referencesWithTelemetry.Count -eq 0) {
+                    Set-ItResult -Skipped -Because 'no modules with dedicated telemetry are deployed.'
+                    return
+                }
+
+                # telemetry should be disabled for the referenced module
+                $incorrectCrossReferences = [System.Collections.ArrayList]@()
+                foreach ($referencedModule in $referencesWithTelemetry) {
+                    if ($referencedModule.properties.parameters.Keys -notcontains 'enableTelemetry' -or
+                        $referencedModule.properties.parameters.enableTelemetry.value -ne "[parameters('enableTelemetry')]") {
+                        # remember the names (e.g. 'virtualNetwork_subnets') to provide a better error message
+                        $incorrectCrossReferences.Add($referencedModule.identifier)
+                    }
+                }
+
+                $incorrectCrossReferences | Should -BeNullOrEmpty -Because ('cross reference modules must be referenced with the enableTelemetry parameter set to the module''s own "enableTelemetry" parameter. Found incorrect items: [{0}].' -f ($incorrectCrossReferences -join ', '))
             }
         }
 
