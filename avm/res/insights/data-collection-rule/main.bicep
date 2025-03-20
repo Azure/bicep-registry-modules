@@ -167,6 +167,7 @@ output systemAssignedMIPrincipalId string? = dataCollectionRuleProperties.kind =
 
 @export()
 @discriminator('kind')
+@description('The type for data collection rule properties. Depending on the kind, the properties will be different.')
 type dataCollectionRulePropertiesType =
   | linuxDcrPropertiesType
   | windowsDcrPropertiesType
@@ -174,6 +175,7 @@ type dataCollectionRulePropertiesType =
   | agentSettingsDcrPropertiesType
   | directDcrPropertiesType
 
+@description('The type for the properties of the \'Linux\' data collection rule.')
 type linuxDcrPropertiesType = {
   @description('Required. The platform type specifies the type of resources this rule can apply to.')
   kind: 'Linux'
@@ -197,6 +199,7 @@ type linuxDcrPropertiesType = {
   description: string?
 }
 
+@description('The type for the properties of the \'Windows\' data collection rule.')
 type windowsDcrPropertiesType = {
   @description('Required. The platform type specifies the type of resources this rule can apply to.')
   kind: 'Windows'
@@ -220,6 +223,7 @@ type windowsDcrPropertiesType = {
   description: string?
 }
 
+@description('The type for the properties of the data collection rule of the kind \'All\'.')
 type allPlatformsDcrPropertiesType = {
   @description('Required. The platform type specifies the type of resources this rule can apply to.')
   kind: 'All'
@@ -243,6 +247,7 @@ type allPlatformsDcrPropertiesType = {
   description: string?
 }
 
+@description('The type for the properties of the \'AgentSettings\' data collection rule.')
 type agentSettingsDcrPropertiesType = {
   @description('Required. The platform type specifies the type of resources this rule can apply to.')
   kind: 'AgentSettings'
@@ -254,11 +259,13 @@ type agentSettingsDcrPropertiesType = {
   agentSettings: agentSettingsType
 }
 
+@description('The type for the agent settings.')
 type agentSettingsType = {
   @description('Required. All the settings that are applicable to the logs agent (AMA).')
   logs: agentSettingType[]
 }
 
+@description('The type for the (single) agent setting.')
 type agentSettingType = {
   @description('Required. The name of the agent setting.')
   name: ('MaxDiskQuotaInMB' | 'UseTimeReceivedForForwardedEvents')
@@ -267,6 +274,7 @@ type agentSettingType = {
   value: string
 }
 
+@description('The type for the properties of the \'Direct\' data collection rule.')
 type directDcrPropertiesType = {
   @description('Required. The platform type specifies the type of resources this rule can apply to.')
   kind: 'Direct'

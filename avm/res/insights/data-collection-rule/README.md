@@ -3034,14 +3034,14 @@ The kind of data collection rule.
 
 | Variant | Description |
 | :-- | :-- |
-| [`Linux`](#variant-datacollectionrulepropertieskind-linux) |  |
-| [`Windows`](#variant-datacollectionrulepropertieskind-windows) |  |
-| [`All`](#variant-datacollectionrulepropertieskind-all) |  |
-| [`AgentSettings`](#variant-datacollectionrulepropertieskind-agentsettings) |  |
-| [`Direct`](#variant-datacollectionrulepropertieskind-direct) |  |
+| [`Linux`](#variant-datacollectionrulepropertieskind-linux) | The type for the properties of the 'Linux' data collection rule. |
+| [`Windows`](#variant-datacollectionrulepropertieskind-windows) | The type for the properties of the 'Windows' data collection rule. |
+| [`All`](#variant-datacollectionrulepropertieskind-all) | The type for the properties of the data collection rule of the kind 'All'. |
+| [`AgentSettings`](#variant-datacollectionrulepropertieskind-agentsettings) | The type for the properties of the 'AgentSettings' data collection rule. |
+| [`Direct`](#variant-datacollectionrulepropertieskind-direct) | The type for the properties of the 'Direct' data collection rule. |
 
 ### Variant: `dataCollectionRuleProperties.kind-Linux`
-
+The type for the properties of the 'Linux' data collection rule.
 
 To use this variant, set the property `kind` to `Linux`.
 
@@ -3118,7 +3118,7 @@ Declaration of custom streams used in this rule.
 - Type: object
 
 ### Variant: `dataCollectionRuleProperties.kind-Windows`
-
+The type for the properties of the 'Windows' data collection rule.
 
 To use this variant, set the property `kind` to `Windows`.
 
@@ -3195,7 +3195,7 @@ Declaration of custom streams used in this rule.
 - Type: object
 
 ### Variant: `dataCollectionRuleProperties.kind-All`
-
+The type for the properties of the data collection rule of the kind 'All'.
 
 To use this variant, set the property `kind` to `All`.
 
@@ -3272,7 +3272,7 @@ Declaration of custom streams used in this rule.
 - Type: object
 
 ### Variant: `dataCollectionRuleProperties.kind-AgentSettings`
-
+The type for the properties of the 'AgentSettings' data collection rule.
 
 To use this variant, set the property `kind` to `AgentSettings`.
 
@@ -3358,7 +3358,7 @@ Description of the data collection rule.
 - Type: string
 
 ### Variant: `dataCollectionRuleProperties.kind-Direct`
-
+The type for the properties of the 'Direct' data collection rule.
 
 To use this variant, set the property `kind` to `Direct`.
 

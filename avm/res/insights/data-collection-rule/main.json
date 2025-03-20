@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "1117085004798748424"
+      "templateHash": "18163333757886088570"
     },
     "name": "Data Collection Rules",
     "description": "This module deploys a Data Collection Rule."
@@ -35,7 +35,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for data collection rule properties. Depending on the kind, the properties will be different."
       }
     },
     "linuxDcrPropertiesType": {
@@ -89,6 +90,9 @@
             "description": "Optional. Description of the data collection rule."
           }
         }
+      },
+      "metadata": {
+        "description": "The type for the properties of the 'Linux' data collection rule."
       }
     },
     "windowsDcrPropertiesType": {
@@ -142,6 +146,9 @@
             "description": "Optional. Description of the data collection rule."
           }
         }
+      },
+      "metadata": {
+        "description": "The type for the properties of the 'Windows' data collection rule."
       }
     },
     "allPlatformsDcrPropertiesType": {
@@ -195,6 +202,9 @@
             "description": "Optional. Description of the data collection rule."
           }
         }
+      },
+      "metadata": {
+        "description": "The type for the properties of the data collection rule of the kind 'All'."
       }
     },
     "agentSettingsDcrPropertiesType": {
@@ -222,6 +232,9 @@
             "description": "Required. Agent settings used to modify agent behavior on a given host."
           }
         }
+      },
+      "metadata": {
+        "description": "The type for the properties of the 'AgentSettings' data collection rule."
       }
     },
     "agentSettingsType": {
@@ -236,6 +249,9 @@
             "description": "Required. All the settings that are applicable to the logs agent (AMA)."
           }
         }
+      },
+      "metadata": {
+        "description": "The type for the agent settings."
       }
     },
     "agentSettingType": {
@@ -257,6 +273,9 @@
             "description": "Required. The value of the agent setting."
           }
         }
+      },
+      "metadata": {
+        "description": "The type for the (single) agent setting."
       }
     },
     "directDcrPropertiesType": {
@@ -303,6 +322,9 @@
             "description": "Optional. Description of the data collection rule."
           }
         }
+      },
+      "metadata": {
+        "description": "The type for the properties of the 'Direct' data collection rule."
       }
     },
     "lockType": {
