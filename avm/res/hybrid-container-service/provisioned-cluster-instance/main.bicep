@@ -29,7 +29,7 @@ param customLocationId string
 param kubernetesVersion string?
 
 @description('Optional. The agent pool properties for the provisioned cluster.')
-param agentPoolProfiles agentPoolProfilesType = [
+param agentPoolProfiles agentPoolProfilesType[] = [
   {
     name: 'nodepool1'
     count: 1
@@ -283,7 +283,7 @@ type agentPoolProfilesType = {
   osType: string
   @description('Required. The VM size for the nodes.')
   vmSize: string
-}[]
+}
 
 @export()
 @description('The type for cloud provider profile configuration.')

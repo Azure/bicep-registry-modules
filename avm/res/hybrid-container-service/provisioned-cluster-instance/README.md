@@ -30,12 +30,13 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/hybrid-container-service/provisioned-cluster-instance:<version>`.
 
-- [Deploy Aks Arc in default configuration](#example-1-deploy-aks-arc-in-default-configuration)
-- [Deploy Aks Arc in WAF aligned configuration](#example-2-deploy-aks-arc-in-waf-aligned-configuration)
+- [Using only defaults](#example-1-using-only-defaults)
+- [Using large parameter set](#example-2-using-large-parameter-set)
+- [WAF-aligned](#example-3-waf-aligned)
 
-### Example 1: _Deploy Aks Arc in default configuration_
+### Example 1: _Using only defaults_
 
-This test deploys an Aks Arc.
+This instance deploys the module with the minimum set of required parameters.
 
 
 <details>
@@ -125,9 +126,301 @@ param keyVaultName = '<keyVaultName>'
 </details>
 <p>
 
-### Example 2: _Deploy Aks Arc in WAF aligned configuration_
+### Example 2: _Using large parameter set_
 
-This test deploys an Aks Arc.
+This instance deploys the module with most of its features enabled.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/provisioned-cluster-instance:<version>' = {
+  name: 'provisionedClusterInstanceDeployment'
+  params: {
+    // Required parameters
+    cloudProviderProfile: {
+      infraNetworkProfile: {
+        vnetSubnetIds: [
+          '<resourceId>'
+        ]
+      }
+    }
+    customLocationId: '<customLocationId>'
+    name: 'hcspcimax001'
+    // Non-required parameters
+    agentPoolProfiles: [
+      {
+        count: 2
+        enableAutoScaling: false
+        maxCount: 5
+        maxPods: 110
+        minCount: 1
+        name: 'nodepool1'
+        nodeLabels: {}
+        nodeTaints: []
+        osSKU: 'CBLMariner'
+        osType: 'Linux'
+        vmSize: 'Standard_A4_v2'
+      }
+    ]
+    arcAgentProfile: {
+      agentAutoUpgrade: 'Enabled'
+    }
+    connectClustersTags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+    controlPlane: {
+      controlPlaneEndpoint: {
+        hostIP: '<hostIP>'
+      }
+      count: 1
+      vmSize: 'Standard_A4_v2'
+    }
+    enableTelemetry: true
+    keyVaultName: '<keyVaultName>'
+    kubernetesVersion: '1.29.4'
+    licenseProfile: {
+      azureHybridBenefit: 'False'
+    }
+    linuxProfile: '<linuxProfile>'
+    location: '<location>'
+    oidcIssuerProfile: {
+      enabled: false
+    }
+    securityProfile: {
+      workloadIdentity: {
+        enabled: false
+      }
+    }
+    storageProfile: {
+      nfsCsiDriver: {
+        enabled: true
+      }
+      smbCsiDriver: {
+        enabled: true
+      }
+    }
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "cloudProviderProfile": {
+      "value": {
+        "infraNetworkProfile": {
+          "vnetSubnetIds": [
+            "<resourceId>"
+          ]
+        }
+      }
+    },
+    "customLocationId": {
+      "value": "<customLocationId>"
+    },
+    "name": {
+      "value": "hcspcimax001"
+    },
+    // Non-required parameters
+    "agentPoolProfiles": {
+      "value": [
+        {
+          "count": 2,
+          "enableAutoScaling": false,
+          "maxCount": 5,
+          "maxPods": 110,
+          "minCount": 1,
+          "name": "nodepool1",
+          "nodeLabels": {},
+          "nodeTaints": [],
+          "osSKU": "CBLMariner",
+          "osType": "Linux",
+          "vmSize": "Standard_A4_v2"
+        }
+      ]
+    },
+    "arcAgentProfile": {
+      "value": {
+        "agentAutoUpgrade": "Enabled"
+      }
+    },
+    "connectClustersTags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    },
+    "controlPlane": {
+      "value": {
+        "controlPlaneEndpoint": {
+          "hostIP": "<hostIP>"
+        },
+        "count": 1,
+        "vmSize": "Standard_A4_v2"
+      }
+    },
+    "enableTelemetry": {
+      "value": true
+    },
+    "keyVaultName": {
+      "value": "<keyVaultName>"
+    },
+    "kubernetesVersion": {
+      "value": "1.29.4"
+    },
+    "licenseProfile": {
+      "value": {
+        "azureHybridBenefit": "False"
+      }
+    },
+    "linuxProfile": {
+      "value": "<linuxProfile>"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "oidcIssuerProfile": {
+      "value": {
+        "enabled": false
+      }
+    },
+    "securityProfile": {
+      "value": {
+        "workloadIdentity": {
+          "enabled": false
+        }
+      }
+    },
+    "storageProfile": {
+      "value": {
+        "nfsCsiDriver": {
+          "enabled": true
+        },
+        "smbCsiDriver": {
+          "enabled": true
+        }
+      }
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/hybrid-container-service/provisioned-cluster-instance:<version>'
+
+// Required parameters
+param cloudProviderProfile = {
+  infraNetworkProfile: {
+    vnetSubnetIds: [
+      '<resourceId>'
+    ]
+  }
+}
+param customLocationId = '<customLocationId>'
+param name = 'hcspcimax001'
+// Non-required parameters
+param agentPoolProfiles = [
+  {
+    count: 2
+    enableAutoScaling: false
+    maxCount: 5
+    maxPods: 110
+    minCount: 1
+    name: 'nodepool1'
+    nodeLabels: {}
+    nodeTaints: []
+    osSKU: 'CBLMariner'
+    osType: 'Linux'
+    vmSize: 'Standard_A4_v2'
+  }
+]
+param arcAgentProfile = {
+  agentAutoUpgrade: 'Enabled'
+}
+param connectClustersTags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param controlPlane = {
+  controlPlaneEndpoint: {
+    hostIP: '<hostIP>'
+  }
+  count: 1
+  vmSize: 'Standard_A4_v2'
+}
+param enableTelemetry = true
+param keyVaultName = '<keyVaultName>'
+param kubernetesVersion = '1.29.4'
+param licenseProfile = {
+  azureHybridBenefit: 'False'
+}
+param linuxProfile = '<linuxProfile>'
+param location = '<location>'
+param oidcIssuerProfile = {
+  enabled: false
+}
+param securityProfile = {
+  workloadIdentity: {
+    enabled: false
+  }
+}
+param storageProfile = {
+  nfsCsiDriver: {
+    enabled: true
+  }
+  smbCsiDriver: {
+    enabled: true
+  }
+}
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
+### Example 3: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
 
 <details>

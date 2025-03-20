@@ -5,88 +5,85 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "4084446257176869266"
+      "version": "0.32.4.45862",
+      "templateHash": "9060632404917393436"
     },
     "name": "Hybrid Container Service Provisioned Cluster Instance",
     "description": "Deploy a provisioned cluster instance."
   },
   "definitions": {
     "agentPoolProfilesType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "count": {
-            "type": "int",
-            "metadata": {
-              "description": "Required. The number of nodes for the pool."
-            }
+      "type": "object",
+      "properties": {
+        "count": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. The number of nodes for the pool."
+          }
+        },
+        "enableAutoScaling": {
+          "type": "bool",
+          "metadata": {
+            "description": "Required. Whether to enable auto-scaling for the pool."
+          }
+        },
+        "maxCount": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. The maximum number of nodes for auto-scaling."
+          }
+        },
+        "minCount": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. The minimum number of nodes for auto-scaling."
+          }
+        },
+        "maxPods": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. The maximum number of pods per node."
+          }
+        },
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the agent pool."
+          }
+        },
+        "nodeLabels": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The node labels to be applied to nodes in the pool."
+          }
+        },
+        "nodeTaints": {
+          "type": "array",
+          "items": {
+            "type": "string"
           },
-          "enableAutoScaling": {
-            "type": "bool",
-            "metadata": {
-              "description": "Required. Whether to enable auto-scaling for the pool."
-            }
-          },
-          "maxCount": {
-            "type": "int",
-            "metadata": {
-              "description": "Required. The maximum number of nodes for auto-scaling."
-            }
-          },
-          "minCount": {
-            "type": "int",
-            "metadata": {
-              "description": "Required. The minimum number of nodes for auto-scaling."
-            }
-          },
-          "maxPods": {
-            "type": "int",
-            "metadata": {
-              "description": "Required. The maximum number of pods per node."
-            }
-          },
-          "name": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The name of the agent pool."
-            }
-          },
-          "nodeLabels": {
-            "type": "object",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The node labels to be applied to nodes in the pool."
-            }
-          },
-          "nodeTaints": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The taints to be applied to nodes in the pool."
-            }
-          },
-          "osSKU": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The OS SKU for the nodes."
-            }
-          },
-          "osType": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The OS type for the nodes."
-            }
-          },
-          "vmSize": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The VM size for the nodes."
-            }
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The taints to be applied to nodes in the pool."
+          }
+        },
+        "osSKU": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The OS SKU for the nodes."
+          }
+        },
+        "osType": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The OS type for the nodes."
+          }
+        },
+        "vmSize": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The VM size for the nodes."
           }
         }
       },
@@ -505,7 +502,10 @@
       }
     },
     "agentPoolProfiles": {
-      "$ref": "#/definitions/agentPoolProfilesType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/agentPoolProfilesType"
+      },
       "defaultValue": [
         {
           "name": "nodepool1",

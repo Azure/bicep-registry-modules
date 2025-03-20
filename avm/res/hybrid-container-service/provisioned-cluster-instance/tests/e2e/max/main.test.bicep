@@ -1,14 +1,14 @@
 targetScope = 'subscription'
 
-metadata name = 'WAF-aligned'
-metadata description = 'This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.'
+metadata name = 'Using large parameter set'
+metadata description = 'This instance deploys the module with most of its features enabled.'
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-hybridcontainerservice.provisionedclusterinstances-${serviceShort}-rg'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'hcspciwaf'
+param serviceShort string = 'hcspcimax'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
@@ -232,6 +232,19 @@ module testDeployment '../../../main.bicep' = {
     location: enforcedLocation
     customLocationId: customLocation.id
     keyVaultName: nestedDependencies.outputs.keyVaultName
+    enableTelemetry: true
+    kubernetesVersion: '1.29.4'
+    storageProfile: {
+      nfsCsiDriver: {
+        enabled: true
+      }
+      smbCsiDriver: {
+        enabled: true
+      }
+    }
+    linuxProfile: null
+    licenseProfile: { azureHybridBenefit: 'False' }
+
     cloudProviderProfile: {
       infraNetworkProfile: {
         vnetSubnetIds: [
@@ -261,6 +274,15 @@ module testDeployment '../../../main.bicep' = {
         vmSize: 'Standard_A4_v2'
       }
     ]
+    arcAgentProfile: {
+      agentAutoUpgrade: 'Enabled'
+    }
+    oidcIssuerProfile: { enabled: false }
+    securityProfile: {
+      workloadIdentity: {
+        enabled: false
+      }
+    }
     connectClustersTags: {
       'hidden-title': 'This is visible in the resource name'
       Environment: 'Non-Prod'

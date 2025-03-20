@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Deploy Aks Arc in default configuration'
-metadata description = 'This test deploys an Aks Arc.'
+metadata name = 'Using only defaults'
+metadata description = 'This instance deploys the module with the minimum set of required parameters.'
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
