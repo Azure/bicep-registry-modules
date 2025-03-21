@@ -11,6 +11,9 @@ metadata description = 'This instance deploys the module with most of its featur
 @maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-sql.managedinstances-${serviceShort}-rg'
 
+@description('Optional. The location to deploy resources to.')
+param resourceLocation string = deployment().location
+
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'sqlmimax'
 
@@ -24,12 +27,6 @@ param password string = newGuid()
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-// Set to fixed location due to availability constraints
-param enforcedLocation string = 'uksouth'
-
-// Paired location for the secondary region
-param secondaryLocation string = 'ukwest'
-
 // ============ //
 // Dependencies //
 // ============ //
@@ -38,21 +35,21 @@ param secondaryLocation string = 'ukwest'
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-11-01' = {
   name: resourceGroupName
-  location: enforcedLocation
+  location: resourceLocation
 }
 
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
     keyVaultName: 'dep${namePrefix}kv${serviceShort}${substring(uniqueString(baseTime), 0, 3)}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    pairedRegionScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     networkSecurityGroupName: 'dep-${namePrefix}-nsg-${serviceShort}'
     routeTableName: 'dep-${namePrefix}-rt-${serviceShort}'
-    location: enforcedLocation
-    secondaryLocation: secondaryLocation
+    location: resourceLocation
   }
 }
 
@@ -60,13 +57,13 @@ module nestedDependencies 'dependencies.bicep' = {
 // ===========
 module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, enforcedLocation)}-diagnosticDependencies'
+  name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
   params: {
     storageAccountName: toLower('dep${namePrefix}x${serviceShort}01')
     logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
     eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
     eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
-    location: enforcedLocation
+    location: resourceLocation
   }
 }
 
@@ -78,9 +75,9 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     scope: resourceGroup
-    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      location: enforcedLocation
+      location: resourceLocation
       name: '${namePrefix}-${serviceShort}'
       administratorLogin: 'adminUserName'
       administratorLoginPassword: password

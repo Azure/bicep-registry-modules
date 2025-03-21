@@ -10,17 +10,55 @@ param routeTableName string
 @description('Required. The name of the Managed Identity to create.')
 param managedIdentityName string
 
+@description('Required. The name of the Deployment Script to create to get the paired region name.')
+param pairedRegionScriptName string
+
 @description('Required. The name of the Key Vault to create.')
 param keyVaultName string
 
 @description('Optional. The location to deploy resources to.')
 param location string = resourceGroup().location
 
-@description('Required. The secondary location, the Azure region paired with the primary location.')
-param secondaryLocation string
-
 var addressPrefix = '10.0.0.0/16'
 var addressPrefixString = replace(replace(addressPrefix, '.', '-'), '/', '-')
+
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
+  name: managedIdentityName
+  location: location
+}
+
+resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid('msi-${location}-${managedIdentity.id}-Reader-RoleAssignment')
+  properties: {
+    principalId: managedIdentity.properties.principalId
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+    ) // Reader
+    principalType: 'ServicePrincipal'
+  }
+}
+
+resource getPairedRegionScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
+  name: pairedRegionScriptName
+  location: location
+  kind: 'AzurePowerShell'
+  identity: {
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${managedIdentity.id}': {}
+    }
+  }
+  properties: {
+    azPowerShellVersion: '8.0'
+    retentionInterval: 'P1D'
+    arguments: '-Location \\"${location}\\"'
+    scriptContent: loadTextContent('../../../../../../../utilities/e2e-template-assets/scripts/Get-PairedRegion.ps1')
+  }
+  dependsOn: [
+    roleAssignment
+  ]
+}
 
 resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2024-05-01' = {
   name: networkSecurityGroupName
@@ -191,7 +229,7 @@ resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2024-05-0
           sourcePortRange: '*'
           destinationPortRange: '443'
           sourceAddressPrefix: addressPrefix
-          destinationAddressPrefix: 'Storage.${secondaryLocation}'
+          destinationAddressPrefix: 'Storage.${getPairedRegionScript.properties.outputs.pairedRegionName}'
           access: 'Allow'
           priority: 105
           direction: 'Outbound'
@@ -271,9 +309,9 @@ resource routeTable 'Microsoft.Network/routeTables@2024-05-01' = {
         }
       }
       {
-        name: 'Microsoft.Sql-managedInstances_UseOnly_mi-AzureCloud.${secondaryLocation}'
+        name: 'Microsoft.Sql-managedInstances_UseOnly_mi-AzureCloud.${getPairedRegionScript.properties.outputs.pairedRegionName}'
         properties: {
-          addressPrefix: 'AzureCloud.${secondaryLocation}'
+          addressPrefix: 'AzureCloud.${getPairedRegionScript.properties.outputs.pairedRegionName}'
           nextHopType: 'Internet'
         }
       }
@@ -285,9 +323,9 @@ resource routeTable 'Microsoft.Network/routeTables@2024-05-01' = {
         }
       }
       {
-        name: 'Microsoft.Sql-managedInstances_UseOnly_mi-Storage.${secondaryLocation}'
+        name: 'Microsoft.Sql-managedInstances_UseOnly_mi-Storage.${getPairedRegionScript.properties.outputs.pairedRegionName}'
         properties: {
-          addressPrefix: 'Storage.${secondaryLocation}'
+          addressPrefix: 'Storage.${getPairedRegionScript.properties.outputs.pairedRegionName}'
           nextHopType: 'Internet'
         }
       }
@@ -299,9 +337,9 @@ resource routeTable 'Microsoft.Network/routeTables@2024-05-01' = {
         }
       }
       {
-        name: 'Microsoft.Sql-managedInstances_UseOnly_mi-EventHub.${secondaryLocation}'
+        name: 'Microsoft.Sql-managedInstances_UseOnly_mi-EventHub.${getPairedRegionScript.properties.outputs.pairedRegionName}'
         properties: {
-          addressPrefix: 'EventHub.${secondaryLocation}'
+          addressPrefix: 'EventHub.${getPairedRegionScript.properties.outputs.pairedRegionName}'
           nextHopType: 'Internet'
         }
       }
@@ -341,11 +379,6 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-05-01' = {
       }
     ]
   }
-}
-
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
-  name: managedIdentityName
-  location: location
 }
 
 resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
