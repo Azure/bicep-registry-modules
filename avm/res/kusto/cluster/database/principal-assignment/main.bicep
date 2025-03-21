@@ -1,19 +1,6 @@
 metadata name = 'Kusto Cluster Database Principal Assignments'
 metadata description = 'This module deploys a Kusto Cluster Database Principal Assignment.'
 
-@minLength(4)
-@maxLength(22)
-@description('Conditional. The name of the parent Kusto Cluster Database. Required if the template is used in a standalone deployment.')
-param kustoClusterDatabaseName string
-
-@description('Required. The principal assignement for the Kusto Cluster Database.')
-param databasePrincipalAssignment databasePrincipalAssignmentType
-
-// ============== //
-// Resources      //
-// ============== //
-
-@minLength(4)
 @maxLength(22)
 @description('Conditional. The name of the Kusto cluster.')
 param clusterName string
@@ -23,7 +10,15 @@ param clusterName string
 @description('Conditional. The name of the parent Kusto Cluster Database. Required if the template is used in a standalone deployment.')
 param databaseName string
 
-resource kustoCluster 'Microsoft.Kusto/clusters@2024-04-13' existing  = {
+@description('Required. The principal assignement for the Kusto Cluster Database.')
+param databasePrincipalAssignment databasePrincipalAssignmentType
+
+// ============== //
+// Resources      //
+// ============== //
+
+
+resource cluster 'Microsoft.Kusto/clusters@2024-04-13' existing  = {
   name: clusterName
 
   resource database 'databases@2024-04-13' existing = {
@@ -31,9 +26,9 @@ resource kustoCluster 'Microsoft.Kusto/clusters@2024-04-13' existing  = {
   }
 }
 
-resource kustoDatabasePrincipalAssignment 'Microsoft.Kusto/clusters/databases/principalAssignments@2024-04-13' = {
+resource kustoClusterDatabasePrincipalAssignment 'Microsoft.Kusto/clusters/databases/principalAssignments@2024-04-13' = {
   name: databasePrincipalAssignment.principalId
-  parent: kustoCluster::databaseName
+  parent: cluster::database
   properties: {
     principalId: databasePrincipalAssignment.principalId
     principalType: databasePrincipalAssignment.principalType
@@ -47,10 +42,10 @@ resource kustoDatabasePrincipalAssignment 'Microsoft.Kusto/clusters/databases/pr
 // =============== //
 
 @description('The name of the deployed Kusto Cluster Database Principal Assignment.')
-output name string = kustoDatabasePrincipalAssignment.name
+output type string = kustoClusterDatabasePrincipalAssignment.name
 
 @description('The resource id of the deployed Kusto Cluster Database Principal Assignment.')
-output resourceId string = kustoClusterDatabase.id
+output resourceId string = kustoClusterDatabasePrincipalAssignment.id
 
 @description('The resource group name of the deployed Kusto Cluster Database Principal Assignment.')
 output resourceGroupName string = resourceGroup().name

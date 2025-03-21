@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "996876216045569261"
+      "templateHash": "17455288099265095352"
     },
     "name": "Kusto Cluster Databases",
     "description": "This module deploys a Kusto Cluster Database."
@@ -207,7 +207,10 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "kustoClusterDatabaseName": "[if(equals(parameters('databaseKind'), 'ReadOnlyFollowing'), createObject('value', parameters('name')), createObject('value', parameters('name')))]",
+          "clusterName": {
+            "value": "[parameters('kustoClusterName')]"
+          },
+          "databaseName": "[if(equals(parameters('databaseKind'), 'ReadOnlyFollowing'), createObject('value', parameters('name')), createObject('value', parameters('name')))]",
           "databasePrincipalAssignment": {
             "value": "[coalesce(parameters('databasePrincipalAssignments'), createArray())[copyIndex()]]"
           }
@@ -220,7 +223,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.13.18514",
-              "templateHash": "2292703608588518690"
+              "templateHash": "13931018911823476236"
             },
             "name": "Kusto Cluster Database Principal Assignments",
             "description": "This module deploys a Kusto Cluster Database Principal Assignment."
@@ -273,7 +276,14 @@
             }
           },
           "parameters": {
-            "kustoClusterDatabaseName": {
+            "clusterName": {
+              "type": "string",
+              "maxLength": 22,
+              "metadata": {
+                "description": "Conditional. The name of the Kusto cluster."
+              }
+            },
+            "databaseName": {
               "type": "string",
               "minLength": 4,
               "maxLength": 22,
@@ -289,16 +299,22 @@
             }
           },
           "resources": {
-            "kustoClusterDatabase": {
+            "cluster::database": {
               "existing": true,
               "type": "Microsoft.Kusto/clusters/databases",
               "apiVersion": "2024-04-13",
-              "name": "[parameters('kustoClusterDatabaseName')]"
+              "name": "[format('{0}/{1}', parameters('clusterName'), parameters('databaseName'))]"
             },
-            "kustoDatabasePrincipalAssignment": {
+            "cluster": {
+              "existing": true,
+              "type": "Microsoft.Kusto/clusters",
+              "apiVersion": "2024-04-13",
+              "name": "[parameters('clusterName')]"
+            },
+            "kustoClusterDatabasePrincipalAssignment": {
               "type": "Microsoft.Kusto/clusters/databases/principalAssignments",
               "apiVersion": "2024-04-13",
-              "name": "[format('{0}/{1}/{2}', split(parameters('kustoClusterDatabaseName'), '/')[0], split(parameters('kustoClusterDatabaseName'), '/')[1], parameters('databasePrincipalAssignment').principalId)]",
+              "name": "[format('{0}/{1}/{2}', parameters('clusterName'), parameters('databaseName'), parameters('databasePrincipalAssignment').principalId)]",
               "properties": {
                 "principalId": "[parameters('databasePrincipalAssignment').principalId]",
                 "principalType": "[parameters('databasePrincipalAssignment').principalType]",
@@ -308,7 +324,7 @@
             }
           },
           "outputs": {
-            "name": {
+            "type": {
               "type": "string",
               "metadata": {
                 "description": "The name of the deployed Kusto Cluster Database Principal Assignment."
@@ -320,7 +336,7 @@
               "metadata": {
                 "description": "The resource id of the deployed Kusto Cluster Database Principal Assignment."
               },
-              "value": "[resourceId('Microsoft.Kusto/clusters/databases', split(parameters('kustoClusterDatabaseName'), '/')[0], split(parameters('kustoClusterDatabaseName'), '/')[1])]"
+              "value": "[resourceId('Microsoft.Kusto/clusters/databases/principalAssignments', parameters('clusterName'), parameters('databaseName'), parameters('databasePrincipalAssignment').principalId)]"
             },
             "resourceGroupName": {
               "type": "string",
