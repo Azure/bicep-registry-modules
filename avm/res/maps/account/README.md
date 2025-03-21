@@ -43,10 +43,7 @@ This instance deploys the module with the minimum set of required parameters.
 module account 'br/public:avm/res/maps/account:<version>' = {
   name: 'accountDeployment'
   params: {
-    // Required parameters
     name: 'mamin001'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -63,13 +60,8 @@ module account 'br/public:avm/res/maps/account:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
     "name": {
       "value": "mamin001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -85,10 +77,7 @@ module account 'br/public:avm/res/maps/account:<version>' = {
 ```bicep-params
 using 'br/public:avm/res/maps/account:<version>'
 
-// Required parameters
 param name = 'mamin001'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -142,7 +131,7 @@ module account 'br/public:avm/res/maps/account:<version>' = {
       'westeurope'
     ]
     managedIdentities: {
-      systemAssigned: false
+      systemAssigned: true
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
@@ -225,7 +214,7 @@ module account 'br/public:avm/res/maps/account:<version>' = {
     },
     "managedIdentities": {
       "value": {
-        "systemAssigned": false,
+        "systemAssigned": true,
         "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
         ]
@@ -296,7 +285,7 @@ param locations = [
   'westeurope'
 ]
 param managedIdentities = {
-  systemAssigned: false
+  systemAssigned: true
   userAssignedResourceIds: [
     '<managedIdentityResourceId>'
   ]
@@ -497,7 +486,6 @@ Specifies CORS rules for the Blob service. You can include up to five CorsRule e
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 **Required parameters**
 
@@ -583,7 +571,6 @@ The array of associated resources to the Maps account. Linked resource in the ar
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 **Required parameters**
 
@@ -620,7 +607,6 @@ List of additional data processing regions for the Maps Account, which may resul
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `managedIdentities`
 
