@@ -77,7 +77,7 @@ ISO 8601 timespan idle interval after which the subscription is automatically de
 
 - Required: No
 - Type: string
-- Default: `'PT1H'`
+- Default: `'P10675198DT2H48M5.477S'`
 
 ### Parameter: `clientAffineProperties`
 
