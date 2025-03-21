@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "3287254436599351961"
+      "templateHash": "14522232767266937796"
     },
     "name": "Virtual Networks",
     "description": "This module deploys a Virtual Network (vNet)."
@@ -1207,7 +1207,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "13644695472933819194"
+              "templateHash": "1101873770878712670"
             },
             "name": "Virtual Network Peerings",
             "description": "This module deploys a Virtual Network Peering."
@@ -1217,7 +1217,7 @@
               "type": "string",
               "defaultValue": "[format('peer-{0}-{1}', parameters('localVnetName'), last(split(parameters('remoteVirtualNetworkResourceId'), '/')))]",
               "metadata": {
-                "description": "Optional. The Name of VNET Peering resource. If not provided, default value will be localVnetName-remoteVnetName."
+                "description": "Optional. The Name of Virtual Network Peering resource. If not provided, default value will be localVnetName-remoteVnetName."
               }
             },
             "localVnetName": {
@@ -1364,7 +1364,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "13644695472933819194"
+              "templateHash": "1101873770878712670"
             },
             "name": "Virtual Network Peerings",
             "description": "This module deploys a Virtual Network Peering."
@@ -1374,7 +1374,7 @@
               "type": "string",
               "defaultValue": "[format('peer-{0}-{1}', parameters('localVnetName'), last(split(parameters('remoteVirtualNetworkResourceId'), '/')))]",
               "metadata": {
-                "description": "Optional. The Name of VNET Peering resource. If not provided, default value will be localVnetName-remoteVnetName."
+                "description": "Optional. The Name of Virtual Network Peering resource. If not provided, default value will be localVnetName-remoteVnetName."
               }
             },
             "localVnetName": {
