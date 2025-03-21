@@ -26,8 +26,8 @@ param deploymentOperations string[] = ['Validate', 'Deploy']
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-@description('Optional. The deployment settings of the cluster.')
-param deploymentSettings deploymentSettingsType?
+@description('Required. The deployment settings of the cluster.')
+param deploymentSettings deploymentSettingsType
 
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')

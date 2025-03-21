@@ -54,7 +54,12 @@ output resourceId string = rule.id
 @description('The name of the resource group the custom domain was created in.')
 output resourceGroupName string = resourceGroup().name
 
+// =============== //
+//   Definitions   //
+// =============== //
+
 @export()
+@description('The type of the rule.')
 type ruleType = {
   @description('Required. The name of the rule.')
   name: string
