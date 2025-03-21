@@ -161,7 +161,7 @@ var locationProperty = [
 ]
 
 var properties = {
-  linkedResources: linkedResources
+  linkedResources: linkedResources ?? []
   cors: {
     corsRules: corsRulesProperty
   }
