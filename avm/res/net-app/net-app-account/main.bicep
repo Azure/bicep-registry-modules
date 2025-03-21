@@ -99,7 +99,7 @@ var activeDirectoryConnectionProperties = [
     serverRootCACertificate: !empty(domainName) ? serverRootCACertificate : null
     smbServerName: !empty(domainName) ? smbServerNamePrefix : null
     organizationalUnit: !empty(domainJoinOU) ? domainJoinOU : null
-    allowLocalNfsUsersWithLdap: !empty(domainJoinOU) ? allowLocalNfsUsersWithLdap : false
+    allowLocalNfsUsersWithLdap: !empty(domainName) ? allowLocalNfsUsersWithLdap : false
   }
 ]
 
@@ -180,7 +180,7 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
   )
 }
 
-resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2024-07-01' = {
+resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2024-09-01' = {
   name: name
   tags: tags
   identity: identity

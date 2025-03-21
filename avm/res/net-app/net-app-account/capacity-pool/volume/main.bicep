@@ -139,23 +139,23 @@ var formattedRoleAssignments = [
   })
 ]
 
-resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2024-07-01' existing = {
+resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2024-09-01' existing = {
   name: netAppAccountName
 
   //cp-na-anfs-swc-y01
-  resource capacityPool 'capacityPools@2024-07-01' existing = {
+  resource capacityPool 'capacityPools@2024-09-01' existing = {
     name: capacityPoolName
   }
 
-  resource backupVault 'backupVaults@2024-07-01' existing = if (!empty(dataProtection.?backup)) {
+  resource backupVault 'backupVaults@2024-09-01' existing = if (!empty(dataProtection.?backup)) {
     name: dataProtection.?backup!.backupVaultName
   }
 
-  resource backupPolicy 'backupPolicies@2024-07-01' existing = if (!empty(dataProtection.?backup)) {
+  resource backupPolicy 'backupPolicies@2024-09-01' existing = if (!empty(dataProtection.?backup)) {
     name: dataProtection.?backup!.backupPolicyName
   }
 
-  resource snapshotPolicy 'snapshotPolicies@2024-07-01' existing = if (!empty(dataProtection.?snapshot)) {
+  resource snapshotPolicy 'snapshotPolicies@2024-09-01' existing = if (!empty(dataProtection.?snapshot)) {
     name: dataProtection.?snapshot!.snapshotPolicyName
   }
 }
@@ -168,7 +168,7 @@ resource keyVaultPrivateEndpoint 'Microsoft.Network/privateEndpoints@2024-03-01'
   )
 }
 
-resource remoteNetAppAccount 'Microsoft.NetApp/netAppAccounts@2024-07-01' existing = if (!empty(dataProtection.?replication.?remoteVolumeResourceId) && (remoteNetAppName != netAppAccountName)) {
+resource remoteNetAppAccount 'Microsoft.NetApp/netAppAccounts@2024-09-01' existing = if (!empty(dataProtection.?replication.?remoteVolumeResourceId) && (remoteNetAppName != netAppAccountName)) {
   name: split(dataProtection.?replication.?remoteVolumeResourceId!, '/')[8]
   scope: resourceGroup(
     split(dataProtection.?replication.?remoteVolumeResourceId!, '/')[2],
@@ -176,10 +176,10 @@ resource remoteNetAppAccount 'Microsoft.NetApp/netAppAccounts@2024-07-01' existi
   )
 
   //cp-na-anfs-swc-y01
-  resource remoteCapacityPool 'capacityPools@2024-07-01' existing = if (!empty(dataProtection.?replication.?remoteVolumeResourceId) && (remoteCapacityPoolName != capacityPoolName)) {
+  resource remoteCapacityPool 'capacityPools@2024-09-01' existing = if (!empty(dataProtection.?replication.?remoteVolumeResourceId) && (remoteCapacityPoolName != capacityPoolName)) {
     name: split(dataProtection.?replication.?remoteVolumeResourceId!, '/')[10]
 
-    resource remoteVolume 'volumes@2024-07-01' existing = if (!empty(dataProtection.?replication)) {
+    resource remoteVolume 'volumes@2024-09-01' existing = if (!empty(dataProtection.?replication)) {
       name: last(split(dataProtection.?replication.?remoteVolumeResourceId!, '/'))
     }
   }
@@ -194,7 +194,7 @@ resource vnet 'Microsoft.Network/virtualNetworks@2024-03-01' existing = {
   }
 }
 
-resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2024-07-01' = {
+resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2024-09-01' = {
   name: name
   parent: netAppAccount::capacityPool
   location: location

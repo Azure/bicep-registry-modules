@@ -76,11 +76,11 @@ var formattedRoleAssignments = [
   })
 ]
 
-resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2024-07-01' existing = {
+resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2024-09-01' existing = {
   name: netAppAccountName
 }
 
-resource capacityPool 'Microsoft.NetApp/netAppAccounts/capacityPools@2024-07-01' = {
+resource capacityPool 'Microsoft.NetApp/netAppAccounts/capacityPools@2024-09-01' = {
   name: name
   parent: netAppAccount
   location: location
