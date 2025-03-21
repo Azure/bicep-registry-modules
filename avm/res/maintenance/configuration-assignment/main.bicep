@@ -103,5 +103,13 @@ type filterType = {
   osTypes: ('Linux' | 'Windows')[]?
 
   @description('Optional. Tags to be applied on all resources/Resource Groups in this deployment.')
-  tagSettings: object?
+  tagSettings: {
+    @description('Required. Filter VMs by Any or All specified tags.')
+    filterOperator: ('All' | 'Any')
+
+    @description('Required. Tags to be applied.')
+    tags: {
+      *: string
+    }
+  }?
 }
