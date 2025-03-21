@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "12782818729051513077"
+      "templateHash": "4776240624411857381"
     },
     "name": "Conversation Knowledge Mining Solution Accelerator",
     "description": "This module deploys the [Conversation Knowledge Mining Solution Accelerator](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator).\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator product. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -641,7 +641,6 @@
         "dataRetentionInDays": {
           "type": "int",
           "nullable": true,
-          "minValue": 0,
           "maxValue": 730,
           "metadata": {
             "description": "Optional. The number of days to retain the data in the Log Analytics Workspace. If empty, it will be set to 30 days."
@@ -742,21 +741,21 @@
             "description": "Optional. Location for the SQL Server resource."
           }
         },
-        "sqlServerAdministratorLogin": {
+        "administratorLogin": {
           "type": "securestring",
           "nullable": true,
           "metadata": {
             "description": "Optional. The administrator login credential for the SQL Server."
           }
         },
-        "sqlServerAdministratorPassword": {
+        "administratorPassword": {
           "type": "securestring",
           "nullable": true,
           "metadata": {
             "description": "Optional. The administrator password credential for the SQL Server."
           }
         },
-        "sqlServerDatabaseName": {
+        "databaseName": {
           "type": "string",
           "nullable": true,
           "maxLength": 128,
@@ -764,28 +763,28 @@
             "description": "Optional. The name of the SQL Server database."
           }
         },
-        "sqlServerDatabaseSkuName": {
+        "databaseSkuName": {
           "type": "string",
           "nullable": true,
           "metadata": {
             "description": "Optional. The SKU name of the SQL Server database. If empty, it will be set to GP_Gen5_2. Find available options: Database.[Sku property](https://learn.microsoft.com/dotnet/api/microsoft.azure.management.sql.models.database.sku)."
           }
         },
-        "sqlServerDatabaseSkuTier": {
+        "databaseSkuTier": {
           "type": "string",
           "nullable": true,
           "metadata": {
             "description": "Optional. The SKU tier of the SQL Server database. If empty, it will be set to GeneralPurpose. Find available options: Database.[Sku property](https://learn.microsoft.com/dotnet/api/microsoft.azure.management.sql.models.database.sku)."
           }
         },
-        "sqlServerDatabaseSkuFamily": {
+        "databaseSkuFamily": {
           "type": "string",
           "nullable": true,
           "metadata": {
             "description": "Optional. The SKU Family of the SQL Server database. If empty, it will be set to Gen5. Find available options: Database.[Sku property](https://learn.microsoft.com/dotnet/api/microsoft.azure.management.sql.models.database.sku)."
           }
         },
-        "sqlServerDatabaseSkuCapacity": {
+        "databaseSkuCapacity": {
           "type": "int",
           "nullable": true,
           "metadata": {
@@ -1242,13 +1241,13 @@
       "defaultValue": {
         "name": "[format('{0}-sqls', parameters('solutionPrefix'))]",
         "location": "[parameters('databasesLocation')]",
-        "sqlServerAdministratorLogin": "sqladmin",
-        "sqlServerAdministratorPassword": "TestPassword_1234",
-        "sqlServerDatabaseName": "[format('{0}-ckmdb', parameters('solutionPrefix'))]",
-        "sqlServerDatabaseSkuName": "GP_Gen5_2",
-        "sqlServerDatabaseSkuTier": "GeneralPurpose",
-        "sqlServerDatabaseSkuFamily": "Gen5",
-        "sqlServerDatabaseSkuCapacity": 2
+        "administratorLogin": "sqladmin",
+        "administratorPassword": "TestPassword_1234",
+        "databaseName": "[format('{0}-ckmdb', parameters('solutionPrefix'))]",
+        "databaseSkuName": "GP_Gen5_2",
+        "databaseSkuTier": "GeneralPurpose",
+        "databaseSkuFamily": "Gen5",
+        "databaseSkuCapacity": 2
       },
       "metadata": {
         "description": "Optional. The configuration to apply for the Conversation Knowledge Mining SQL Server resource."
@@ -1411,13 +1410,13 @@
     "scriptIndexDataScriptUrl": "[coalesce(tryGet(parameters('scriptIndexDataConfiguration'), 'scriptUrl'), 'https://raw.githubusercontent.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator/7e1f274415e96070fc1f0306651303ce8ea75268/infra/scripts/run_create_index_scripts.sh')]",
     "sqlServerResourceName": "[coalesce(tryGet(parameters('sqlServerConfiguration'), 'name'), format('{0}-sqls', parameters('solutionPrefix')))]",
     "sqlServerLocation": "[coalesce(tryGet(parameters('sqlServerConfiguration'), 'location'), parameters('databasesLocation'))]",
-    "sqlServerAdministratorLogin": "[coalesce(tryGet(parameters('sqlServerConfiguration'), 'sqlServerAdministratorLogin'), 'sqladmin')]",
-    "sqlServerAdministratorPassword": "[coalesce(tryGet(parameters('sqlServerConfiguration'), 'sqlServerAdministratorPassword'), 'TestPassword_1234')]",
-    "sqlServerDatabaseName": "[coalesce(tryGet(parameters('sqlServerConfiguration'), 'sqlServerDatabaseName'), format('{0}-ckmdb', parameters('solutionPrefix')))]",
-    "sqlServerDatabaseSkuName": "[coalesce(tryGet(parameters('sqlServerConfiguration'), 'sqlServerDatabaseSkuName'), 'GP_Gen5_2')]",
-    "sqlServerDatabaseSkuTier": "[coalesce(tryGet(parameters('sqlServerConfiguration'), 'sqlServerDatabaseSkuTier'), 'GeneralPurpose')]",
-    "sqlServerDatabaseSkuFamily": "[coalesce(tryGet(parameters('sqlServerConfiguration'), 'sqlServerDatabaseSkuFamily'), 'Gen5')]",
-    "sqlServerDatabaseSkuCapacity": "[coalesce(tryGet(parameters('sqlServerConfiguration'), 'sqlServerDatabaseSkuCapacity'), 2)]",
+    "sqlServerAdministratorLogin": "[coalesce(tryGet(parameters('sqlServerConfiguration'), 'administratorLogin'), 'sqladmin')]",
+    "sqlServerAdministratorPassword": "[coalesce(tryGet(parameters('sqlServerConfiguration'), 'administratorPassword'), 'TestPassword_1234')]",
+    "sqlServerDatabaseName": "[coalesce(tryGet(parameters('sqlServerConfiguration'), 'databaseName'), format('{0}-ckmdb', parameters('solutionPrefix')))]",
+    "sqlServerDatabaseSkuName": "[coalesce(tryGet(parameters('sqlServerConfiguration'), 'databaseSkuName'), 'GP_Gen5_2')]",
+    "sqlServerDatabaseSkuTier": "[coalesce(tryGet(parameters('sqlServerConfiguration'), 'databaseSkuTier'), 'GeneralPurpose')]",
+    "sqlServerDatabaseSkuFamily": "[coalesce(tryGet(parameters('sqlServerConfiguration'), 'databaseSkuFamily'), 'Gen5')]",
+    "sqlServerDatabaseSkuCapacity": "[coalesce(tryGet(parameters('sqlServerConfiguration'), 'databaseSkuCapacity'), 2)]",
     "storageAccountResourceName": "[coalesce(tryGet(parameters('storageAccountConfiguration'), 'name'), replace(format('{0}-aifd-strg', parameters('solutionPrefix')), '-', ''))]",
     "storageAccountLocation": "[coalesce(tryGet(parameters('storageAccountConfiguration'), 'location'), parameters('solutionLocation'))]",
     "storageAccountSkuName": "[coalesce(tryGet(parameters('storageAccountConfiguration'), 'sku'), 'Standard_LRS')]",

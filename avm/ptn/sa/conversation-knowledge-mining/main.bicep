@@ -174,13 +174,13 @@ param scriptIndexDataConfiguration ckmScriptType = {
 param sqlServerConfiguration ckmSqlServerType = {
   name: '${solutionPrefix}-sqls'
   location: databasesLocation
-  sqlServerAdministratorLogin: 'sqladmin'
-  sqlServerAdministratorPassword: 'TestPassword_1234'
-  sqlServerDatabaseName: '${solutionPrefix}-ckmdb'
-  sqlServerDatabaseSkuName: 'GP_Gen5_2'
-  sqlServerDatabaseSkuTier: 'GeneralPurpose'
-  sqlServerDatabaseSkuFamily: 'Gen5'
-  sqlServerDatabaseSkuCapacity: 2
+  administratorLogin: 'sqladmin'
+  administratorPassword: 'TestPassword_1234'
+  databaseName: '${solutionPrefix}-ckmdb'
+  databaseSkuName: 'GP_Gen5_2'
+  databaseSkuTier: 'GeneralPurpose'
+  databaseSkuFamily: 'Gen5'
+  databaseSkuCapacity: 2
 }
 
 @description('Optional. The configuration to apply for the Conversation Knowledge Mining Storage Account resource.')
@@ -377,13 +377,13 @@ var scriptIndexDataScriptUrl = scriptIndexDataConfiguration.?scriptUrl ?? 'https
 // VARIABLES: SQL Server configuration defaults
 var sqlServerResourceName = sqlServerConfiguration.?name ?? '${solutionPrefix}-sqls'
 var sqlServerLocation = sqlServerConfiguration.?location ?? databasesLocation
-var sqlServerAdministratorLogin = sqlServerConfiguration.?sqlServerAdministratorLogin ?? 'sqladmin'
-var sqlServerAdministratorPassword = sqlServerConfiguration.?sqlServerAdministratorPassword ?? 'TestPassword_1234'
-var sqlServerDatabaseName = sqlServerConfiguration.?sqlServerDatabaseName ?? '${solutionPrefix}-ckmdb'
-var sqlServerDatabaseSkuName = sqlServerConfiguration.?sqlServerDatabaseSkuName ?? 'GP_Gen5_2'
-var sqlServerDatabaseSkuTier = sqlServerConfiguration.?sqlServerDatabaseSkuTier ?? 'GeneralPurpose'
-var sqlServerDatabaseSkuFamily = sqlServerConfiguration.?sqlServerDatabaseSkuFamily ?? 'Gen5'
-var sqlServerDatabaseSkuCapacity = sqlServerConfiguration.?sqlServerDatabaseSkuCapacity ?? 2
+var sqlServerAdministratorLogin = sqlServerConfiguration.?administratorLogin ?? 'sqladmin'
+var sqlServerAdministratorPassword = sqlServerConfiguration.?administratorPassword ?? 'TestPassword_1234'
+var sqlServerDatabaseName = sqlServerConfiguration.?databaseName ?? '${solutionPrefix}-ckmdb'
+var sqlServerDatabaseSkuName = sqlServerConfiguration.?databaseSkuName ?? 'GP_Gen5_2'
+var sqlServerDatabaseSkuTier = sqlServerConfiguration.?databaseSkuTier ?? 'GeneralPurpose'
+var sqlServerDatabaseSkuFamily = sqlServerConfiguration.?databaseSkuFamily ?? 'Gen5'
+var sqlServerDatabaseSkuCapacity = sqlServerConfiguration.?databaseSkuCapacity ?? 2
 
 // VARIABLES: Storage Account configuration defaults
 var storageAccountResourceName = storageAccountConfiguration.?name ?? replace('${solutionPrefix}-aifd-strg', '-', '')
@@ -1012,7 +1012,6 @@ output resourceGroupName string = resourceGroup().name
 @description('The url of the webapp where the deployed Conversation Knowledge Mining solution can be accessed.')
 output webAppUrl string = '${webAppResourceName}.azurewebsites.net'
 
-
 // =============== //
 //   Definitions   //
 // =============== //
@@ -1279,7 +1278,6 @@ type ckmLogAnalyticsWorkspaceType = {
   sku: ('CapacityReservation' | 'Free' | 'LACluster' | 'PerGB2018' | 'PerNode' | 'Premium' | 'Standalone' | 'Standard')?
 
   @description('Optional. The number of days to retain the data in the Log Analytics Workspace. If empty, it will be set to 30 days.')
-  @minValue(0)
   @maxValue(730)
   dataRetentionInDays: int?
 }
@@ -1328,28 +1326,28 @@ type ckmSqlServerType = {
   @description('Optional. The administrator login credential for the SQL Server.')
   @secure()
   #disable-next-line secure-parameter-default
-  sqlServerAdministratorLogin: string?
+  administratorLogin: string?
 
   @description('Optional. The administrator password credential for the SQL Server.')
   @secure()
   #disable-next-line secure-parameter-default
-  sqlServerAdministratorPassword: string?
+  administratorPassword: string?
 
   @description('Optional. The name of the SQL Server database.')
   @maxLength(128)
-  sqlServerDatabaseName: string?
+  databaseName: string?
 
   @description('Optional. The SKU name of the SQL Server database. If empty, it will be set to GP_Gen5_2. Find available options: Database.[Sku property](https://learn.microsoft.com/dotnet/api/microsoft.azure.management.sql.models.database.sku).')
-  sqlServerDatabaseSkuName: string?
+  databaseSkuName: string?
 
   @description('Optional. The SKU tier of the SQL Server database. If empty, it will be set to GeneralPurpose. Find available options: Database.[Sku property](https://learn.microsoft.com/dotnet/api/microsoft.azure.management.sql.models.database.sku).')
-  sqlServerDatabaseSkuTier: string?
+  databaseSkuTier: string?
 
   @description('Optional. The SKU Family of the SQL Server database. If empty, it will be set to Gen5. Find available options: Database.[Sku property](https://learn.microsoft.com/dotnet/api/microsoft.azure.management.sql.models.database.sku).')
-  sqlServerDatabaseSkuFamily: string?
+  databaseSkuFamily: string?
 
   @description('Optional. The SKU capacity of the SQL Server database. If empty, it will be set to 2. Find available options: Database.[Sku property](https://learn.microsoft.com/dotnet/api/microsoft.azure.management.sql.models.database.sku).')
-  sqlServerDatabaseSkuCapacity: int?
+  databaseSkuCapacity: int?
 }
 
 @export()

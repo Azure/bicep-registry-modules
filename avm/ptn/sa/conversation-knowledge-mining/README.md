@@ -115,11 +115,11 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/sa/conversation-knowledge-mining:<version>`.
 
-- [Using Proof of Concept parameter set](#example-1-using-proof-of-concept-parameter-set)
+- [Sandbox configuration with defaults parameter values](#example-1-sandbox-configuration-with-defaults-parameter-values)
 
-### Example 1: _Using Proof of Concept parameter set_
+### Example 1: _Sandbox configuration with defaults parameter values_
 
-This module deploys the [Conversation Knowledge Mining Solution Accelerator](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator) using the configuration for Proof of Concept scenarios
+This instance deploys the [Conversation Knowledge Mining Solution Accelerator](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator) using the default values, which are designed for Sandbox environments
 
 
 <details>
@@ -130,7 +130,7 @@ This module deploys the [Conversation Knowledge Mining Solution Accelerator](htt
 module conversationKnowledgeMining 'br/public:avm/ptn/sa/conversation-knowledge-mining:<version>' = {
   name: 'conversationKnowledgeMiningDeployment'
   params: {
-    solutionPrefix: 'ckmpoc'
+    solutionPrefix: 'sbxdft'
   }
 }
 ```
@@ -148,7 +148,7 @@ module conversationKnowledgeMining 'br/public:avm/ptn/sa/conversation-knowledge-
   "contentVersion": "1.0.0.0",
   "parameters": {
     "solutionPrefix": {
-      "value": "ckmpoc"
+      "value": "sbxdft"
     }
   }
 }
@@ -164,7 +164,7 @@ module conversationKnowledgeMining 'br/public:avm/ptn/sa/conversation-knowledge-
 ```bicep-params
 using 'br/public:avm/ptn/sa/conversation-knowledge-mining:<version>'
 
-param solutionPrefix = 'ckmpoc'
+param solutionPrefix = 'sbxdft'
 ```
 
 </details>
@@ -1272,7 +1272,6 @@ The number of days to retain the data in the Log Analytics Workspace. If empty, 
 
 - Required: No
 - Type: int
-- MinValue: 0
 - MaxValue: 730
 
 ### Parameter: `logAnalyticsWorkspaceConfiguration.location`
@@ -1467,15 +1466,15 @@ The configuration to apply for the Conversation Knowledge Mining SQL Server reso
 - Default:
   ```Bicep
   {
+      administratorLogin: 'sqladmin'
+      administratorPassword: 'TestPassword_1234'
+      databaseName: '[format(\'{0}-ckmdb\', parameters(\'solutionPrefix\'))]'
+      databaseSkuCapacity: 2
+      databaseSkuFamily: 'Gen5'
+      databaseSkuName: 'GP_Gen5_2'
+      databaseSkuTier: 'GeneralPurpose'
       location: '[parameters(\'databasesLocation\')]'
       name: '[format(\'{0}-sqls\', parameters(\'solutionPrefix\'))]'
-      sqlServerAdministratorLogin: 'sqladmin'
-      sqlServerAdministratorPassword: 'TestPassword_1234'
-      sqlServerDatabaseName: '[format(\'{0}-ckmdb\', parameters(\'solutionPrefix\'))]'
-      sqlServerDatabaseSkuCapacity: 2
-      sqlServerDatabaseSkuFamily: 'Gen5'
-      sqlServerDatabaseSkuName: 'GP_Gen5_2'
-      sqlServerDatabaseSkuTier: 'GeneralPurpose'
   }
   ```
 
@@ -1483,15 +1482,64 @@ The configuration to apply for the Conversation Knowledge Mining SQL Server reso
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`administratorLogin`](#parameter-sqlserverconfigurationadministratorlogin) | securestring | The administrator login credential for the SQL Server. |
+| [`administratorPassword`](#parameter-sqlserverconfigurationadministratorpassword) | securestring | The administrator password credential for the SQL Server. |
+| [`databaseName`](#parameter-sqlserverconfigurationdatabasename) | string | The name of the SQL Server database. |
+| [`databaseSkuCapacity`](#parameter-sqlserverconfigurationdatabaseskucapacity) | int | The SKU capacity of the SQL Server database. If empty, it will be set to 2. Find available options: Database.[Sku property](https://learn.microsoft.com/dotnet/api/microsoft.azure.management.sql.models.database.sku). |
+| [`databaseSkuFamily`](#parameter-sqlserverconfigurationdatabaseskufamily) | string | The SKU Family of the SQL Server database. If empty, it will be set to Gen5. Find available options: Database.[Sku property](https://learn.microsoft.com/dotnet/api/microsoft.azure.management.sql.models.database.sku). |
+| [`databaseSkuName`](#parameter-sqlserverconfigurationdatabaseskuname) | string | The SKU name of the SQL Server database. If empty, it will be set to GP_Gen5_2. Find available options: Database.[Sku property](https://learn.microsoft.com/dotnet/api/microsoft.azure.management.sql.models.database.sku). |
+| [`databaseSkuTier`](#parameter-sqlserverconfigurationdatabaseskutier) | string | The SKU tier of the SQL Server database. If empty, it will be set to GeneralPurpose. Find available options: Database.[Sku property](https://learn.microsoft.com/dotnet/api/microsoft.azure.management.sql.models.database.sku). |
 | [`location`](#parameter-sqlserverconfigurationlocation) | string | Location for the SQL Server resource. |
 | [`name`](#parameter-sqlserverconfigurationname) | string | The name of the SQL Server resource. |
-| [`sqlServerAdministratorLogin`](#parameter-sqlserverconfigurationsqlserveradministratorlogin) | securestring | The administrator login credential for the SQL Server. |
-| [`sqlServerAdministratorPassword`](#parameter-sqlserverconfigurationsqlserveradministratorpassword) | securestring | The administrator password credential for the SQL Server. |
-| [`sqlServerDatabaseName`](#parameter-sqlserverconfigurationsqlserverdatabasename) | string | The name of the SQL Server database. |
-| [`sqlServerDatabaseSkuCapacity`](#parameter-sqlserverconfigurationsqlserverdatabaseskucapacity) | int | The SKU capacity of the SQL Server database. If empty, it will be set to 2. Find available options: Database.[Sku property](https://learn.microsoft.com/dotnet/api/microsoft.azure.management.sql.models.database.sku). |
-| [`sqlServerDatabaseSkuFamily`](#parameter-sqlserverconfigurationsqlserverdatabaseskufamily) | string | The SKU Family of the SQL Server database. If empty, it will be set to Gen5. Find available options: Database.[Sku property](https://learn.microsoft.com/dotnet/api/microsoft.azure.management.sql.models.database.sku). |
-| [`sqlServerDatabaseSkuName`](#parameter-sqlserverconfigurationsqlserverdatabaseskuname) | string | The SKU name of the SQL Server database. If empty, it will be set to GP_Gen5_2. Find available options: Database.[Sku property](https://learn.microsoft.com/dotnet/api/microsoft.azure.management.sql.models.database.sku). |
-| [`sqlServerDatabaseSkuTier`](#parameter-sqlserverconfigurationsqlserverdatabaseskutier) | string | The SKU tier of the SQL Server database. If empty, it will be set to GeneralPurpose. Find available options: Database.[Sku property](https://learn.microsoft.com/dotnet/api/microsoft.azure.management.sql.models.database.sku). |
+
+### Parameter: `sqlServerConfiguration.administratorLogin`
+
+The administrator login credential for the SQL Server.
+
+- Required: No
+- Type: securestring
+
+### Parameter: `sqlServerConfiguration.administratorPassword`
+
+The administrator password credential for the SQL Server.
+
+- Required: No
+- Type: securestring
+
+### Parameter: `sqlServerConfiguration.databaseName`
+
+The name of the SQL Server database.
+
+- Required: No
+- Type: string
+
+### Parameter: `sqlServerConfiguration.databaseSkuCapacity`
+
+The SKU capacity of the SQL Server database. If empty, it will be set to 2. Find available options: Database.[Sku property](https://learn.microsoft.com/dotnet/api/microsoft.azure.management.sql.models.database.sku).
+
+- Required: No
+- Type: int
+
+### Parameter: `sqlServerConfiguration.databaseSkuFamily`
+
+The SKU Family of the SQL Server database. If empty, it will be set to Gen5. Find available options: Database.[Sku property](https://learn.microsoft.com/dotnet/api/microsoft.azure.management.sql.models.database.sku).
+
+- Required: No
+- Type: string
+
+### Parameter: `sqlServerConfiguration.databaseSkuName`
+
+The SKU name of the SQL Server database. If empty, it will be set to GP_Gen5_2. Find available options: Database.[Sku property](https://learn.microsoft.com/dotnet/api/microsoft.azure.management.sql.models.database.sku).
+
+- Required: No
+- Type: string
+
+### Parameter: `sqlServerConfiguration.databaseSkuTier`
+
+The SKU tier of the SQL Server database. If empty, it will be set to GeneralPurpose. Find available options: Database.[Sku property](https://learn.microsoft.com/dotnet/api/microsoft.azure.management.sql.models.database.sku).
+
+- Required: No
+- Type: string
 
 ### Parameter: `sqlServerConfiguration.location`
 
@@ -1503,55 +1551,6 @@ Location for the SQL Server resource.
 ### Parameter: `sqlServerConfiguration.name`
 
 The name of the SQL Server resource.
-
-- Required: No
-- Type: string
-
-### Parameter: `sqlServerConfiguration.sqlServerAdministratorLogin`
-
-The administrator login credential for the SQL Server.
-
-- Required: No
-- Type: securestring
-
-### Parameter: `sqlServerConfiguration.sqlServerAdministratorPassword`
-
-The administrator password credential for the SQL Server.
-
-- Required: No
-- Type: securestring
-
-### Parameter: `sqlServerConfiguration.sqlServerDatabaseName`
-
-The name of the SQL Server database.
-
-- Required: No
-- Type: string
-
-### Parameter: `sqlServerConfiguration.sqlServerDatabaseSkuCapacity`
-
-The SKU capacity of the SQL Server database. If empty, it will be set to 2. Find available options: Database.[Sku property](https://learn.microsoft.com/dotnet/api/microsoft.azure.management.sql.models.database.sku).
-
-- Required: No
-- Type: int
-
-### Parameter: `sqlServerConfiguration.sqlServerDatabaseSkuFamily`
-
-The SKU Family of the SQL Server database. If empty, it will be set to Gen5. Find available options: Database.[Sku property](https://learn.microsoft.com/dotnet/api/microsoft.azure.management.sql.models.database.sku).
-
-- Required: No
-- Type: string
-
-### Parameter: `sqlServerConfiguration.sqlServerDatabaseSkuName`
-
-The SKU name of the SQL Server database. If empty, it will be set to GP_Gen5_2. Find available options: Database.[Sku property](https://learn.microsoft.com/dotnet/api/microsoft.azure.management.sql.models.database.sku).
-
-- Required: No
-- Type: string
-
-### Parameter: `sqlServerConfiguration.sqlServerDatabaseSkuTier`
-
-The SKU tier of the SQL Server database. If empty, it will be set to GeneralPurpose. Find available options: Database.[Sku property](https://learn.microsoft.com/dotnet/api/microsoft.azure.management.sql.models.database.sku).
 
 - Required: No
 - Type: string

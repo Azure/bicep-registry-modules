@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using Proof of Concept parameter set'
-metadata description = 'This module deploys the [Conversation Knowledge Mining Solution Accelerator](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator) using the configuration for Proof of Concept scenarios'
+metadata name = 'Sandbox configuration with defaults parameter values'
+metadata description = 'This instance deploys the [Conversation Knowledge Mining Solution Accelerator](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator) using the default values, which are designed for Sandbox environments'
 
 // ========== //
 // Parameters //
@@ -14,7 +14,7 @@ param resourceGroupName string = 'dep-${namePrefix}-sa.ckm-${serviceShort}-rg'
 param resourceLocation string = deployment().location
 
 @sys.description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'ckmpoc'
+param serviceShort string = 'sbxdft'
 
 @sys.description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
