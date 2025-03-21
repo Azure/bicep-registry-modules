@@ -63,13 +63,19 @@ Find the closest main.json file to the changed files in the module folder struct
 .PARAMETER ModuleFolderPath
 Mandatory. Path to the main/parent module folder.
 
+.PARAMETER PathsToInclude
+Mandatory. Paths to include in the search for the closest main.json file.
+
+.PARAMETER SkipNotVersionedModules
+Optional. Specify if filtering the list by returning only versioned modified modules.
+
 .EXAMPLE
 Get-TemplateFileToPublish -ModuleFolderPath ".\avm\storage\storage-account\"
 
 .\avm\storage\storage-account\table-service\table\main.json
 
 Gets the closest main.json file to the changed files in the module folder structure.
-Assuming there is a changed file in 'storage\storage-account\table-service\table'
+Assuming there is a changed file in 'storage\storage-account\table-service\table' and that a version.json file exists in the same folder,
 the function would return the main.json file in the same folder.
 
 #>
@@ -81,7 +87,10 @@ function Get-TemplateFileToPublish {
         [string] $ModuleFolderPath,
 
         [Parameter(Mandatory)]
-        [string[]] $PathsToInclude = @()
+        [string[]] $PathsToInclude = @(),
+
+        [Parameter(Mandatory = $false)]
+        [switch] $SkipNotVersionedModules
     )
 
     $ModuleRelativeFolderPath = (($ModuleFolderPath -split '[\/|\\](avm)[\/|\\](res|ptn|utl)[\/|\\]')[-3..-1] -join '/') -replace '\\', '/'
@@ -109,6 +118,20 @@ function Get-TemplateFileToPublish {
     }
 
     Write-Verbose ('Modified modules found: [{0}]' -f $TemplateFilesToPublish.count) -Verbose
+    $TemplateFilesToPublish | ForEach-Object {
+        $RelPath = (($_ -split '[\/|\\](avm)[\/|\\](res|ptn|utl)[\/|\\]')[-3..-1] -join '/') -replace '\\', '/'
+        $RelPath = $RelPath.Split('/main.')[0]
+        Write-Verbose " - [$RelPath]" -Verbose
+    }
+
+    if ($SkipNotVersionedModules) {
+        Write-Verbose 'Skipping modules that are not versioned.' -Verbose
+        $TemplateFilesToPublish = $TemplateFilesToPublish | Where-Object {
+            Test-Path (Join-Path (Split-Path $_) 'version.json')
+        }
+    }
+
+    Write-Verbose ('Versioned modules to publish: [{0}]' -f $TemplateFilesToPublish.count) -Verbose
     $TemplateFilesToPublish | ForEach-Object {
         $RelPath = (($_ -split '[\/|\\](avm)[\/|\\](res|ptn|utl)[\/|\\]')[-3..-1] -join '/') -replace '\\', '/'
         $RelPath = $RelPath.Split('/main.')[0]
@@ -188,14 +211,17 @@ function Get-ModulesToPublish {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory)]
-        [string] $ModuleFolderPath
+        [string] $ModuleFolderPath,
+
+        [Parameter(Mandatory = $false)]
+        [switch] $SkipNotVersionedModules
     )
 
     $versionFile = (Get-Content (Join-Path $ModuleFolderPath 'version.json') -Raw) | ConvertFrom-Json
     $PathsToInclude = $versionFile.PathFilters
 
     # Check as per a `diff` with head^-1 if there was a change in any file that would justify a publish
-    $TemplateFilesToPublish = Get-TemplateFileToPublish -ModuleFolderPath $ModuleFolderPath -PathsToInclude $PathsToInclude
+    $TemplateFilesToPublish = Get-TemplateFileToPublish -ModuleFolderPath $ModuleFolderPath -PathsToInclude $PathsToInclude -SkipNotVersionedModules
 
     # Filter out any children (as they're currently not considered for publishing)
     # $TemplateFilesToPublish = $TemplateFilesToPublish | Where-Object {
