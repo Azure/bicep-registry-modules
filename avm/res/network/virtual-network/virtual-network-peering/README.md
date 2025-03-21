@@ -36,7 +36,7 @@ This module deploys a Virtual Network Peering.
 | [`allowGatewayTransit`](#parameter-allowgatewaytransit) | bool | If gateway links can be used in remote virtual networking to link to this virtual network. Default is false. |
 | [`allowVirtualNetworkAccess`](#parameter-allowvirtualnetworkaccess) | bool | Whether the VMs in the local virtual network space would be able to access the VMs in remote virtual network space. Default is true. |
 | [`doNotVerifyRemoteGateways`](#parameter-donotverifyremotegateways) | bool | If we need to verify the provisioning state of the remote gateway. Default is true. |
-| [`name`](#parameter-name) | string | The Name of Virtual Network Peering resource. If not provided, default value will be localVnetName-remoteVnetName. |
+| [`name`](#parameter-name) | string | The Name of VNET Peering resource. If not provided, default value will be localVnetName-remoteVnetName. |
 | [`useRemoteGateways`](#parameter-useremotegateways) | bool | If remote gateways can be used on this virtual network. If the flag is set to true, and allowGatewayTransit on remote peering is also true, virtual network will use gateways of remote virtual network for transit. Only one peering can have this flag set to true. This flag cannot be set if virtual network already has a gateway. Default is false. |
 
 ### Parameter: `remoteVirtualNetworkResourceId`
@@ -87,7 +87,7 @@ If we need to verify the provisioning state of the remote gateway. Default is tr
 
 ### Parameter: `name`
 
-The Name of Virtual Network Peering resource. If not provided, default value will be localVnetName-remoteVnetName.
+The Name of VNET Peering resource. If not provided, default value will be localVnetName-remoteVnetName.
 
 - Required: No
 - Type: string
