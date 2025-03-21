@@ -21,13 +21,13 @@ param sku string = 'G2'
 param kind string = 'Gen2'
 
 @description('Optional. List of additional data processing regions for the Maps Account, which may result in requests being processed in another geography. Some features or results may be restricted to specific regions. By default, Maps REST APIs process requests according to the account location or the geographic scope.')
-param locations array = []
+param locations string[]?
 
 @description('Optional. Specifies CORS rules for the Blob service. You can include up to five CorsRule elements in the request. If no CorsRule elements are included in the request body, all CORS rules will be deleted, and CORS will be disabled for the Blob service.')
-param corsRules corsRuleType[] = []
+param corsRules corsRuleType[]?
 
 @description('Optional. The array of associated resources to the Maps account. Linked resource in the array cannot individually update, you must update all linked resources in the array together. These resources may be used on operations on the Azure Maps REST API. Access is controlled by the Maps Account Managed Identity(s) permissions to those resource(s).')
-param linkedResources linkedResourceType[] = []
+param linkedResources linkedResourceType[]?
 
 @description('Optional. Allows toggle functionality on Azure Policy to disable Azure Maps local authentication support. This will disable Shared Keys and Shared Access Signature Token authentication from any usage. Default is true.')
 param disableLocalAuth bool = true
@@ -149,13 +149,13 @@ var encryptionProperties = !empty(customerManagedKey)
   : {}
 
 var corsRulesProperty = [
-  for rule in corsRules: {
+  for rule in corsRules ?? []: {
     allowedOrigins: rule.allowedOrigins
   }
 ]
 
 var locationProperty = [
-  for dataLocation in locations: {
+  for dataLocation in locations ?? []: {
     locationName: dataLocation
   }
 ]
@@ -219,12 +219,14 @@ output location string = mapsAccount.location
 // Definitions      //
 // ================ //
 @export()
+@description('The type of the CORS rule.')
 type corsRuleType = {
   @description('Required. The allowed origins for the CORS rule.')
   allowedOrigins: string[]
 }
 
 @export()
+@description('The type of the linked resource.')
 type linkedResourceType = {
   @description('Required. ARM resource id in the form: \'/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Storage/accounts/{storageName}\'.')
   id: string
@@ -233,6 +235,7 @@ type linkedResourceType = {
 }
 
 @export()
+@description('The type of the customer managed key encryption.')
 type customerManagedKeyType = {
   @description('Required. The resource ID of the Key Vault.')
   keyVaultResourceId: string
