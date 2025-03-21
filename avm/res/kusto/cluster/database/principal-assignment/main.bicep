@@ -55,6 +55,7 @@ output resourceGroupName string = resourceGroup().name
 // =============== //
 
 @export()
+@description('The type of a database principal assignment.')
 type databasePrincipalAssignmentType = {
   @description('Required. The principal id assigned to the Kusto Cluster database principal. It can be a user email, application id, or security group name.')
   principalId: string
