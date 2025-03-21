@@ -67,12 +67,6 @@ resource strorageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' = {
 @description('The resource ID of the created Key Vault.')
 output keyVaultResourceId string = keyVault.id
 
-@description('The name of the created encryption key.')
-output keyName string = keyVault::key.name
-
-@description('The version of the created encryption key.')
-output keyVersion string = last(split(keyVault::key.properties.keyUriWithVersion, '/'))
-
 @description('The principal ID of the created Managed Identity.')
 output managedIdentityPrincipalId string = managedIdentity.properties.principalId
 
