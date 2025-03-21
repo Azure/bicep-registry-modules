@@ -59,8 +59,6 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
     administratorLoginPassword: '<administratorLoginPassword>'
     name: 'sqlmimin'
     subnetResourceId: '<subnetResourceId>'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -89,10 +87,6 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
     },
     "subnetResourceId": {
       "value": "<subnetResourceId>"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -113,8 +107,6 @@ param administratorLogin = 'adminUserName'
 param administratorLoginPassword = '<administratorLoginPassword>'
 param name = 'sqlmimin'
 param subnetResourceId = '<subnetResourceId>'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -790,10 +782,7 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
     ]
     licenseType: 'LicenseIncluded'
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
+    maintenanceWindow: 'Custom2'
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [
@@ -925,11 +914,8 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
     "location": {
       "value": "<location>"
     },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
+    "maintenanceWindow": {
+      "value": "Custom2"
     },
     "managedIdentities": {
       "value": {
@@ -1060,10 +1046,7 @@ param keys = [
 ]
 param licenseType = 'LicenseIncluded'
 param location = '<location>'
-param lock = {
-  kind: 'CanNotDelete'
-  name: 'myCustomLockName'
-}
+param maintenanceWindow = 'Custom2'
 param managedIdentities = {
   systemAssigned: true
   userAssignedResourceIds: [

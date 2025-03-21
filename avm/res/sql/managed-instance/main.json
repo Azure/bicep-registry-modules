@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "8028460309428865929"
+      "templateHash": "18351867889110726122"
     },
     "name": "SQL Managed Instances",
     "description": "This module deploys a SQL Managed Instance."
@@ -802,7 +802,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "13748603224311979804"
+              "templateHash": "16462212043812771881"
             },
             "name": "SQL Managed Instance Databases",
             "description": "This module deploys a SQL Managed Instance Database."
@@ -1470,7 +1470,8 @@
                 }
               },
               "dependsOn": [
-                "database"
+                "database",
+                "database_backupShortTermRetentionPolicy"
               ]
             }
           },
