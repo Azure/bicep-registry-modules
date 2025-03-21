@@ -42,7 +42,7 @@ resource kustoClusterDatabasePrincipalAssignment 'Microsoft.Kusto/clusters/datab
 // =============== //
 
 @description('The name of the deployed Kusto Cluster Database Principal Assignment.')
-output type string = kustoClusterDatabasePrincipalAssignment.name
+output name string = kustoClusterDatabasePrincipalAssignment.name
 
 @description('The resource id of the deployed Kusto Cluster Database Principal Assignment.')
 output resourceId string = kustoClusterDatabasePrincipalAssignment.id

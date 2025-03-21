@@ -110,6 +110,6 @@ The name of the parent Kusto Cluster Database. Required if the template is used 
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `name` | string | The name of the deployed Kusto Cluster Database Principal Assignment. |
 | `resourceGroupName` | string | The resource group name of the deployed Kusto Cluster Database Principal Assignment. |
 | `resourceId` | string | The resource id of the deployed Kusto Cluster Database Principal Assignment. |
-| `type` | string | The name of the deployed Kusto Cluster Database Principal Assignment. |
