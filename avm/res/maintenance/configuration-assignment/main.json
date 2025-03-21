@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "9455541556329695883"
+      "templateHash": "13366072417349467027"
     },
     "name": "Maintenance Configuration Assignments",
     "description": "This module deploys a Maintenance Configuration Assignment."
@@ -73,7 +73,10 @@
               "type": "object",
               "properties": {},
               "additionalProperties": {
-                "type": "string"
+                "type": "string",
+                "metadata": {
+                  "description": "Required. A key-value pair."
+                }
               },
               "metadata": {
                 "description": "Required. Dictionary of tags with its list of values."

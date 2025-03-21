@@ -383,6 +383,19 @@ Dictionary of tags with its list of values.
 - Required: Yes
 - Type: object
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`>Any_other_property<`](#parameter-filtertagsettingstags>any_other_property<) | string | A key-value pair. |
+
+### Parameter: `filter.tagSettings.tags.>Any_other_property<`
+
+A key-value pair.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `resourceId`
 
 The unique virtual machine resource ID to assign the configuration to. Required if filter is not provided. If resourceId is provided, filter is ignored. If provided, the module scope must be set to the resource group of the virtual machine.
