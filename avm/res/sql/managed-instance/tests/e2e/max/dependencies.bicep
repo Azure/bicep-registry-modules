@@ -16,6 +16,9 @@ param keyVaultName string
 @description('Optional. The location to deploy resources to.')
 param location string = resourceGroup().location
 
+@description('Required. The secondary location, the Azure region paired with the primary location.')
+param secondaryLocation string
+
 var addressPrefix = '10.0.0.0/16'
 var addressPrefixString = replace(replace(addressPrefix, '.', '-'), '/', '-')
 
@@ -108,6 +111,34 @@ resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2024-05-0
         }
       }
       {
+        name: 'Microsoft.Sql-managedInstances_UseOnly_mi-aad-out-${addressPrefixString}-v11'
+        properties: {
+          description: 'Allow communication with Azure Active Directory over https'
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          destinationPortRange: '443'
+          sourceAddressPrefix: addressPrefix
+          destinationAddressPrefix: 'AzureActiveDirectory'
+          access: 'Allow'
+          priority: 100
+          direction: 'Outbound'
+        }
+      }
+      {
+        name: 'Microsoft.Sql-managedInstances_UseOnly_mi-onedsc-out-${addressPrefixString}-v11'
+        properties: {
+          description: 'Allow communication with the One DS Collector over https'
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          destinationPortRange: '443'
+          sourceAddressPrefix: addressPrefix
+          destinationAddressPrefix: 'OneDsCollector'
+          access: 'Allow'
+          priority: 101
+          direction: 'Outbound'
+        }
+      }
+      {
         name: 'Microsoft.Sql-managedInstances_UseOnly_mi-services-out-${addressPrefixString}-v10'
         properties: {
           description: 'Allow MI services outbound traffic over https'
@@ -116,7 +147,7 @@ resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2024-05-0
           sourceAddressPrefix: addressPrefix
           destinationAddressPrefix: 'AzureCloud'
           access: 'Allow'
-          priority: 100
+          priority: 102
           direction: 'Outbound'
           destinationPortRanges: [
             '443'
@@ -134,7 +165,35 @@ resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2024-05-0
           sourceAddressPrefix: addressPrefix
           destinationAddressPrefix: addressPrefix
           access: 'Allow'
-          priority: 101
+          priority: 103
+          direction: 'Outbound'
+        }
+      }
+      {
+        name: 'Microsoft.Sql-managedInstances_UseOnly_mi-strg-p-out-${addressPrefixString}-v11'
+        properties: {
+          description: 'Allow outbound communication with storage over HTTPS'
+          protocol: '*'
+          sourcePortRange: '*'
+          destinationPortRange: '443'
+          sourceAddressPrefix: addressPrefix
+          destinationAddressPrefix: 'Storage.${location}'
+          access: 'Allow'
+          priority: 104
+          direction: 'Outbound'
+        }
+      }
+      {
+        name: 'Microsoft.Sql-managedInstances_UseOnly_mi-strg-s-out-${addressPrefixString}-v11'
+        properties: {
+          description: 'Allow outbound communication with storage over HTTPS'
+          protocol: '*'
+          sourcePortRange: '*'
+          destinationPortRange: '443'
+          sourceAddressPrefix: addressPrefix
+          destinationAddressPrefix: 'Storage.${secondaryLocation}'
+          access: 'Allow'
+          priority: 105
           direction: 'Outbound'
         }
       }
@@ -198,9 +257,23 @@ resource routeTable 'Microsoft.Network/routeTables@2024-05-01' = {
         }
       }
       {
+        name: 'Microsoft.Sql-managedInstances_UseOnly_mi-OneDsCollector'
+        properties: {
+          addressPrefix: 'OneDsCollector'
+          nextHopType: 'Internet'
+        }
+      }
+      {
         name: 'Microsoft.Sql-managedInstances_UseOnly_mi-AzureCloud.${location}'
         properties: {
           addressPrefix: 'AzureCloud.${location}'
+          nextHopType: 'Internet'
+        }
+      }
+      {
+        name: 'Microsoft.Sql-managedInstances_UseOnly_mi-AzureCloud.${secondaryLocation}'
+        properties: {
+          addressPrefix: 'AzureCloud.${secondaryLocation}'
           nextHopType: 'Internet'
         }
       }
@@ -212,9 +285,23 @@ resource routeTable 'Microsoft.Network/routeTables@2024-05-01' = {
         }
       }
       {
+        name: 'Microsoft.Sql-managedInstances_UseOnly_mi-Storage.${secondaryLocation}'
+        properties: {
+          addressPrefix: 'Storage.${secondaryLocation}'
+          nextHopType: 'Internet'
+        }
+      }
+      {
         name: 'Microsoft.Sql-managedInstances_UseOnly_mi-EventHub.${location}'
         properties: {
           addressPrefix: 'EventHub.${location}'
+          nextHopType: 'Internet'
+        }
+      }
+      {
+        name: 'Microsoft.Sql-managedInstances_UseOnly_mi-EventHub.${secondaryLocation}'
+        properties: {
+          addressPrefix: 'EventHub.${secondaryLocation}'
           nextHopType: 'Internet'
         }
       }
