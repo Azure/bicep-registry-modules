@@ -152,6 +152,7 @@ body:
         - "avm/res/load-test-service/load-test"
         - "avm/res/logic/workflow"
         - "avm/res/machine-learning-services/workspace"
+        - "avm/res/maintenance/configuration-assignment"
         - "avm/res/maintenance/maintenance-configuration"
         - "avm/res/managed-identity/user-assigned-identity"
         - "avm/res/managed-services/registration-definition"
