@@ -12,7 +12,7 @@ This module deploys a Snapshot Policy for an Azure NetApp File.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.NetApp/netAppAccounts/snapshotPolicies` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-07-01/netAppAccounts/snapshotPolicies) |
+| `Microsoft.NetApp/netAppAccounts/snapshotPolicies` | [2024-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-09-01/netAppAccounts/snapshotPolicies) |
 
 ## Parameters
 
