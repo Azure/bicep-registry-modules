@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "9060632404917393436"
+      "templateHash": "8366034920436368543"
     },
     "name": "Hybrid Container Service Provisioned Cluster Instance",
     "description": "Deploy a provisioned cluster instance."
@@ -662,7 +662,7 @@
     },
     "managedIdentity": {
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
-      "apiVersion": "2018-11-30",
+      "apiVersion": "2023-01-31",
       "name": "[format('temp-{0}', parameters('name'))]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]"

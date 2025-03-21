@@ -129,7 +129,7 @@ resource kv 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (empty(linuxPro
   name: keyVaultName!
 }
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
   name: 'temp-${name}'
   location: location
   tags: tags
