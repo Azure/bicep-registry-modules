@@ -45,6 +45,7 @@ module nestedDependencies 'dependencies.bicep' = {
     // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
     keyVaultName: 'dep${namePrefix}kv${serviceShort}${substring(uniqueString(baseTime), 0, 3)}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    pairedRegionScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     networkSecurityGroupName: 'dep-${namePrefix}-nsg-${serviceShort}'
     routeTableName: 'dep-${namePrefix}-rt-${serviceShort}'
@@ -130,10 +131,6 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       licenseType: 'LicenseIncluded'
-      lock: {
-        kind: 'CanNotDelete'
-        name: 'myCustomLockName'
-      }
       primaryUserAssignedIdentityId: nestedDependencies.outputs.managedIdentityResourceId
       proxyOverride: 'Proxy'
       publicDataEndpointEnabled: false
@@ -152,6 +149,7 @@ module testDeployment '../../../main.bicep' = [
           nestedDependencies.outputs.managedIdentityResourceId
         ]
       }
+      maintenanceWindow: 'Custom2'
       timezoneId: 'UTC'
       vCores: 4
       vulnerabilityAssessmentsObj: {
