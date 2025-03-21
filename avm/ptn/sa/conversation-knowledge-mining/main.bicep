@@ -1012,6 +1012,11 @@ output resourceGroupName string = resourceGroup().name
 @description('The url of the webapp where the deployed Conversation Knowledge Mining solution can be accessed.')
 output webAppUrl string = '${webAppResourceName}.azurewebsites.net'
 
+
+// =============== //
+//   Definitions   //
+// =============== //
+
 @export()
 @description('The type for the Conversation Knowledge Mining AI Foundry AI Hub resource configuration.')
 type ckmAiFoundryAiHubType = {
