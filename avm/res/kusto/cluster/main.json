@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "6685275223463202770"
+      "templateHash": "5398603153869316610"
     },
     "name": "Kusto Cluster",
     "description": "This module deploys a Kusto Cluster."
@@ -375,6 +375,7 @@
         }
       },
       "metadata": {
+        "description": "The type of a database principal assignment.",
         "__bicep_imported_from!": {
           "sourceTemplate": "database/principal-assignment/main.bicep"
         }
@@ -2257,7 +2258,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.13.18514",
-              "templateHash": "17455288099265095352"
+              "templateHash": "11817489645779269985"
             },
             "name": "Kusto Cluster Databases",
             "description": "This module deploys a Kusto Cluster Database."
@@ -2366,6 +2367,7 @@
                 }
               },
               "metadata": {
+                "description": "The type of a database principal assignment.",
                 "__bicep_imported_from!": {
                   "sourceTemplate": "principal-assignment/main.bicep"
                 }
@@ -2474,7 +2476,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.33.13.18514",
-                      "templateHash": "13931018911823476236"
+                      "templateHash": "7518414124068618808"
                     },
                     "name": "Kusto Cluster Database Principal Assignments",
                     "description": "This module deploys a Kusto Cluster Database Principal Assignment."
@@ -2522,7 +2524,8 @@
                         }
                       },
                       "metadata": {
-                        "__bicep_export!": true
+                        "__bicep_export!": true,
+                        "description": "The type of a database principal assignment."
                       }
                     }
                   },
