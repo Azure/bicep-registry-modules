@@ -142,6 +142,9 @@ module database_backupLongTermRetentionPolicy 'backup-long-term-retention-policy
     monthlyRetention: backupLongTermRetentionPolicy.?monthlyRetention
     yearlyRetention: backupLongTermRetentionPolicy.?yearlyRetention
   }
+  dependsOn: [
+    database_backupShortTermRetentionPolicy
+  ]
 }
 
 @description('The name of the deployed database.')
