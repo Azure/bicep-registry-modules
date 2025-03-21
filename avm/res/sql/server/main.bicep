@@ -498,11 +498,11 @@ module server_audit_settings 'audit-settings/main.bicep' = if (!empty(auditSetti
 module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfiguration != null) {
   name: '${uniqueString(deployment().name, location)}-secrets-kv'
   scope: resourceGroup(
-    split((secretsExportConfiguration.?keyVaultResourceId ?? '//'), '/')[2],
-    split((secretsExportConfiguration.?keyVaultResourceId ?? '////'), '/')[4]
+    split(secretsExportConfiguration.?keyVaultResourceId!, '/')[2],
+    split(secretsExportConfiguration.?keyVaultResourceId!, '/')[4]
   )
   params: {
-    keyVaultName: last(split(secretsExportConfiguration.?keyVaultResourceId ?? '//', '/'))
+    keyVaultName: last(split(secretsExportConfiguration.?keyVaultResourceId!, '/'))
     secretsToSet: union(
       [],
       contains(secretsExportConfiguration!, 'sqlAdminPasswordSecretName')
@@ -530,6 +530,7 @@ module failover_groups 'failover-group/main.bicep' = [
     name: '${uniqueString(deployment().name, location)}-Sql-FailoverGroup-${index}'
     params: {
       name: failoverGroup.name
+      tags: failoverGroup.?tags ?? tags
       serverName: server.name
       databases: failoverGroup.databases
       partnerServers: failoverGroup.partnerServers
@@ -958,6 +959,9 @@ type securityAlerPolicyType = {
 type failoverGroupType = {
   @description('Required. The name of the failover group.')
   name: string
+
+  @description('Optional. Tags of the resource.')
+  tags: object?
 
   @description('Required. List of databases in the failover group.')
   databases: string[]

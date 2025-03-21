@@ -19,9 +19,9 @@ This module deploys a Machine Learning Services Workspace.
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.MachineLearningServices/workspaces` | [2024-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2024-04-01-preview/workspaces) |
-| `Microsoft.MachineLearningServices/workspaces/computes` | [2022-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2022-10-01/workspaces/computes) |
-| `Microsoft.MachineLearningServices/workspaces/connections` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2024-04-01/workspaces/connections) |
+| `Microsoft.MachineLearningServices/workspaces` | [2024-10-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2024-10-01-preview/workspaces) |
+| `Microsoft.MachineLearningServices/workspaces/computes` | [2024-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2024-10-01/workspaces/computes) |
+| `Microsoft.MachineLearningServices/workspaces/connections` | [2024-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2024-10-01/workspaces/connections) |
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
 
@@ -322,6 +322,7 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
       ]
     }
     managedNetworkSettings: {
+      firewallSku: 'Basic'
       isolationMode: 'AllowInternetOutbound'
       outboundRules: {
         rule: {
@@ -388,6 +389,7 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
     },
     "managedNetworkSettings": {
       "value": {
+        "firewallSku": "Basic",
         "isolationMode": "AllowInternetOutbound",
         "outboundRules": {
           "rule": {
@@ -438,6 +440,7 @@ param managedIdentities = {
   ]
 }
 param managedNetworkSettings = {
+  firewallSku: 'Basic'
   isolationMode: 'AllowInternetOutbound'
   outboundRules: {
     rule: {
@@ -641,7 +644,11 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
       }
     ]
     discoveryUrl: 'http://example.com'
+    friendlyName: 'Workspace'
     imageBuildCompute: 'testcompute'
+    ipAllowlist: [
+      '1.2.3.4/32'
+    ]
     kind: 'Default'
     location: '<location>'
     lock: {
@@ -689,6 +696,7 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
         subnetResourceId: '<subnetResourceId>'
       }
     ]
+    provisionNetworkNow: true
     roleAssignments: [
       {
         name: 'f9b5b0d9-f27e-4c89-bacf-1bbc4a99dbce'
@@ -712,7 +720,7 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
       serverlessComputeCustomSubnet: '<serverlessComputeCustomSubnet>'
       serverlessComputeNoPublicIP: true
     }
-    systemDatastoresAuthMode: 'accessKey'
+    systemDatastoresAuthMode: 'AccessKey'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -820,8 +828,16 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
     "discoveryUrl": {
       "value": "http://example.com"
     },
+    "friendlyName": {
+      "value": "Workspace"
+    },
     "imageBuildCompute": {
       "value": "testcompute"
+    },
+    "ipAllowlist": {
+      "value": [
+        "1.2.3.4/32"
+      ]
     },
     "kind": {
       "value": "Default"
@@ -884,6 +900,9 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
         }
       ]
     },
+    "provisionNetworkNow": {
+      "value": true
+    },
     "roleAssignments": {
       "value": [
         {
@@ -912,7 +931,7 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
       }
     },
     "systemDatastoresAuthMode": {
-      "value": "accessKey"
+      "value": "AccessKey"
     },
     "tags": {
       "value": {
@@ -1001,7 +1020,11 @@ param diagnosticSettings = [
   }
 ]
 param discoveryUrl = 'http://example.com'
+param friendlyName = 'Workspace'
 param imageBuildCompute = 'testcompute'
+param ipAllowlist = [
+  '1.2.3.4/32'
+]
 param kind = 'Default'
 param location = '<location>'
 param lock = {
@@ -1049,6 +1072,7 @@ param privateEndpoints = [
     subnetResourceId: '<subnetResourceId>'
   }
 ]
+param provisionNetworkNow = true
 param roleAssignments = [
   {
     name: 'f9b5b0d9-f27e-4c89-bacf-1bbc4a99dbce'
@@ -1072,7 +1096,7 @@ param serverlessComputeSettings = {
   serverlessComputeCustomSubnet: '<serverlessComputeCustomSubnet>'
   serverlessComputeNoPublicIP: true
 }
-param systemDatastoresAuthMode = 'accessKey'
+param systemDatastoresAuthMode = 'AccessKey'
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
@@ -1113,6 +1137,7 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
     ]
     location: '<location>'
     managedNetworkSettings: {
+      firewallSku: 'Standard'
       isolationMode: 'AllowOnlyApprovedOutbound'
       outboundRules: {
         rule1: {
@@ -1157,7 +1182,8 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
         }
       }
     ]
-    systemDatastoresAuthMode: 'identity'
+    provisionNetworkNow: true
+    systemDatastoresAuthMode: 'Identity'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -1211,6 +1237,7 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
     },
     "managedNetworkSettings": {
       "value": {
+        "firewallSku": "Standard",
         "isolationMode": "AllowOnlyApprovedOutbound",
         "outboundRules": {
           "rule1": {
@@ -1258,8 +1285,11 @@ module workspace 'br/public:avm/res/machine-learning-services/workspace:<version
         }
       ]
     },
+    "provisionNetworkNow": {
+      "value": true
+    },
     "systemDatastoresAuthMode": {
-      "value": "identity"
+      "value": "Identity"
     },
     "tags": {
       "value": {
@@ -1299,6 +1329,7 @@ param diagnosticSettings = [
 ]
 param location = '<location>'
 param managedNetworkSettings = {
+  firewallSku: 'Standard'
   isolationMode: 'AllowOnlyApprovedOutbound'
   outboundRules: {
     rule1: {
@@ -1343,7 +1374,8 @@ param privateEndpoints = [
     }
   }
 ]
-param systemDatastoresAuthMode = 'identity'
+param provisionNetworkNow = true
+param systemDatastoresAuthMode = 'Identity'
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
@@ -1368,7 +1400,7 @@ param tags = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`associatedApplicationInsightsResourceId`](#parameter-associatedapplicationinsightsresourceid) | string | The resource ID of the associated Application Insights. Required if 'kind' is 'Default' or 'FeatureStore'. |
-| [`associatedKeyVaultResourceId`](#parameter-associatedkeyvaultresourceid) | string | The resource ID of the associated Key Vault. Required if 'kind' is 'Default', 'FeatureStore' or 'Hub'. |
+| [`associatedKeyVaultResourceId`](#parameter-associatedkeyvaultresourceid) | string | The resource ID of the associated Key Vault. Required if 'kind' is 'Default' or 'FeatureStore'. If not provided, the key vault will be managed by Microsoft. |
 | [`associatedStorageAccountResourceId`](#parameter-associatedstorageaccountresourceid) | string | The resource ID of the associated Storage Account. Required if 'kind' is 'Default', 'FeatureStore' or 'Hub'. |
 | [`featureStoreSettings`](#parameter-featurestoresettings) | object | Settings for feature store type workspaces. Required if 'kind' is set to 'FeatureStore'. |
 | [`hubResourceId`](#parameter-hubresourceid) | string | The resource ID of the hub to associate with the workspace. Required if 'kind' is set to 'Project'. |
@@ -1385,15 +1417,19 @@ param tags = {
 | [`description`](#parameter-description) | string | The description of this workspace. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`discoveryUrl`](#parameter-discoveryurl) | string | URL for the discovery service to identify regional endpoints for machine learning experimentation services. |
+| [`enableServiceSideCMKEncryption`](#parameter-enableservicesidecmkencryption) | bool | Enable service-side encryption. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`friendlyName`](#parameter-friendlyname) | string | The friendly name of the machine learning workspace. |
 | [`hbiWorkspace`](#parameter-hbiworkspace) | bool | The flag to signal HBI data in the workspace and reduce diagnostic data collected by the service. |
 | [`imageBuildCompute`](#parameter-imagebuildcompute) | string | The compute name for image build. |
+| [`ipAllowlist`](#parameter-ipallowlist) | array | List of IPv4 addresse ranges that are allowed to access the workspace. |
 | [`kind`](#parameter-kind) | string | The type of Azure Machine Learning workspace to create. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. At least one identity type is required. |
 | [`managedNetworkSettings`](#parameter-managednetworksettings) | object | Managed Network settings for a machine learning workspace. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
+| [`provisionNetworkNow`](#parameter-provisionnetworknow) | bool | Trigger the provisioning of the managed virtual network when creating the workspace. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`serverlessComputeSettings`](#parameter-serverlesscomputesettings) | object | Settings for serverless compute created in the workspace. |
@@ -1435,7 +1471,7 @@ The resource ID of the associated Application Insights. Required if 'kind' is 'D
 
 ### Parameter: `associatedKeyVaultResourceId`
 
-The resource ID of the associated Key Vault. Required if 'kind' is 'Default', 'FeatureStore' or 'Hub'.
+The resource ID of the associated Key Vault. Required if 'kind' is 'Default' or 'FeatureStore'. If not provided, the key vault will be managed by Microsoft.
 
 - Required: No
 - Type: string
@@ -1595,6 +1631,7 @@ Category of the connection.
     'Dynamics'
     'DynamicsAx'
     'DynamicsCrm'
+    'Elasticsearch'
     'Eloqua'
     'FileServer'
     'FtpServer'
@@ -1614,6 +1651,7 @@ Category of the connection.
     'Informix'
     'Jira'
     'Magento'
+    'ManagedOnlineEndpoint'
     'MariaDb'
     'Marketo'
     'MicrosoftAccess'
@@ -1630,6 +1668,7 @@ Category of the connection.
     'OracleServiceCloud'
     'PayPal'
     'Phoenix'
+    'Pinecone'
     'PostgreSql'
     'Presto'
     'PythonFeed'
@@ -1671,6 +1710,649 @@ The properties of the connection, specific to the auth type.
 
 - Required: Yes
 - Type: secureObject
+- Discriminator: `authType`
+
+<h4>The available variants are:</h4>
+
+| Variant | Description |
+| :-- | :-- |
+| [`AAD`](#variant-connectionsconnectionpropertiesauthtype-aad) |  |
+| [`AccessKey`](#variant-connectionsconnectionpropertiesauthtype-accesskey) |  |
+| [`AccountKey`](#variant-connectionsconnectionpropertiesauthtype-accountkey) |  |
+| [`ApiKey`](#variant-connectionsconnectionpropertiesauthtype-apikey) |  |
+| [`CustomKeys`](#variant-connectionsconnectionpropertiesauthtype-customkeys) |  |
+| [`ManagedIdentity`](#variant-connectionsconnectionpropertiesauthtype-managedidentity) |  |
+| [`None`](#variant-connectionsconnectionpropertiesauthtype-none) |  |
+| [`OAuth2`](#variant-connectionsconnectionpropertiesauthtype-oauth2) |  |
+| [`PAT`](#variant-connectionsconnectionpropertiesauthtype-pat) |  |
+| [`SAS`](#variant-connectionsconnectionpropertiesauthtype-sas) |  |
+| [`ServicePrincipal`](#variant-connectionsconnectionpropertiesauthtype-serviceprincipal) |  |
+| [`UsernamePassword`](#variant-connectionsconnectionpropertiesauthtype-usernamepassword) |  |
+
+### Variant: `connections.connectionProperties.authType-AAD`
+
+
+To use this variant, set the property `authType` to `AAD`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`authType`](#parameter-connectionsconnectionpropertiesauthtype-aadauthtype) | string | The authentication type of the connection target. |
+
+### Parameter: `connections.connectionProperties.authType-AAD.authType`
+
+The authentication type of the connection target.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AAD'
+  ]
+  ```
+
+### Variant: `connections.connectionProperties.authType-AccessKey`
+
+
+To use this variant, set the property `authType` to `AccessKey`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`authType`](#parameter-connectionsconnectionpropertiesauthtype-accesskeyauthtype) | string | The authentication type of the connection target. |
+| [`credentials`](#parameter-connectionsconnectionpropertiesauthtype-accesskeycredentials) | object | The credentials for the connection. |
+
+### Parameter: `connections.connectionProperties.authType-AccessKey.authType`
+
+The authentication type of the connection target.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AccessKey'
+  ]
+  ```
+
+### Parameter: `connections.connectionProperties.authType-AccessKey.credentials`
+
+The credentials for the connection.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`accessKeyId`](#parameter-connectionsconnectionpropertiesauthtype-accesskeycredentialsaccesskeyid) | string | The connection access key ID. |
+| [`secretAccessKey`](#parameter-connectionsconnectionpropertiesauthtype-accesskeycredentialssecretaccesskey) | string | The connection secret access key. |
+
+### Parameter: `connections.connectionProperties.authType-AccessKey.credentials.accessKeyId`
+
+The connection access key ID.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `connections.connectionProperties.authType-AccessKey.credentials.secretAccessKey`
+
+The connection secret access key.
+
+- Required: Yes
+- Type: string
+
+### Variant: `connections.connectionProperties.authType-AccountKey`
+
+
+To use this variant, set the property `authType` to `AccountKey`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`authType`](#parameter-connectionsconnectionpropertiesauthtype-accountkeyauthtype) | string | The authentication type of the connection target. |
+| [`credentials`](#parameter-connectionsconnectionpropertiesauthtype-accountkeycredentials) | object | The credentials for the connection. |
+
+### Parameter: `connections.connectionProperties.authType-AccountKey.authType`
+
+The authentication type of the connection target.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AccountKey'
+  ]
+  ```
+
+### Parameter: `connections.connectionProperties.authType-AccountKey.credentials`
+
+The credentials for the connection.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`key`](#parameter-connectionsconnectionpropertiesauthtype-accountkeycredentialskey) | string | The connection key. |
+
+### Parameter: `connections.connectionProperties.authType-AccountKey.credentials.key`
+
+The connection key.
+
+- Required: Yes
+- Type: string
+
+### Variant: `connections.connectionProperties.authType-ApiKey`
+
+
+To use this variant, set the property `authType` to `ApiKey`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`authType`](#parameter-connectionsconnectionpropertiesauthtype-apikeyauthtype) | string | The authentication type of the connection target. |
+| [`credentials`](#parameter-connectionsconnectionpropertiesauthtype-apikeycredentials) | object | The credentials for the connection. |
+
+### Parameter: `connections.connectionProperties.authType-ApiKey.authType`
+
+The authentication type of the connection target.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'ApiKey'
+  ]
+  ```
+
+### Parameter: `connections.connectionProperties.authType-ApiKey.credentials`
+
+The credentials for the connection.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`key`](#parameter-connectionsconnectionpropertiesauthtype-apikeycredentialskey) | string | The connection API key. |
+
+### Parameter: `connections.connectionProperties.authType-ApiKey.credentials.key`
+
+The connection API key.
+
+- Required: Yes
+- Type: string
+
+### Variant: `connections.connectionProperties.authType-CustomKeys`
+
+
+To use this variant, set the property `authType` to `CustomKeys`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`authType`](#parameter-connectionsconnectionpropertiesauthtype-customkeysauthtype) | string | The authentication type of the connection target. |
+| [`credentials`](#parameter-connectionsconnectionpropertiesauthtype-customkeyscredentials) | object | The credentials for the connection. |
+
+### Parameter: `connections.connectionProperties.authType-CustomKeys.authType`
+
+The authentication type of the connection target.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'CustomKeys'
+  ]
+  ```
+
+### Parameter: `connections.connectionProperties.authType-CustomKeys.credentials`
+
+The credentials for the connection.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`keys`](#parameter-connectionsconnectionpropertiesauthtype-customkeyscredentialskeys) | object | The custom keys for the connection. |
+
+### Parameter: `connections.connectionProperties.authType-CustomKeys.credentials.keys`
+
+The custom keys for the connection.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`>Any_other_property<`](#parameter-connectionsconnectionpropertiesauthtype-customkeyscredentialskeys>any_other_property<) | string | Key-value pairs for the custom keys. |
+
+### Parameter: `connections.connectionProperties.authType-CustomKeys.credentials.keys.>Any_other_property<`
+
+Key-value pairs for the custom keys.
+
+- Required: Yes
+- Type: string
+
+### Variant: `connections.connectionProperties.authType-ManagedIdentity`
+
+
+To use this variant, set the property `authType` to `ManagedIdentity`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`authType`](#parameter-connectionsconnectionpropertiesauthtype-managedidentityauthtype) | string | The authentication type of the connection target. |
+| [`credentials`](#parameter-connectionsconnectionpropertiesauthtype-managedidentitycredentials) | object | The credentials for the connection. |
+
+### Parameter: `connections.connectionProperties.authType-ManagedIdentity.authType`
+
+The authentication type of the connection target.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'ManagedIdentity'
+  ]
+  ```
+
+### Parameter: `connections.connectionProperties.authType-ManagedIdentity.credentials`
+
+The credentials for the connection.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`clientId`](#parameter-connectionsconnectionpropertiesauthtype-managedidentitycredentialsclientid) | string | The connection managed identity ID. |
+| [`resourceId`](#parameter-connectionsconnectionpropertiesauthtype-managedidentitycredentialsresourceid) | string | The connection managed identity resource ID. |
+
+### Parameter: `connections.connectionProperties.authType-ManagedIdentity.credentials.clientId`
+
+The connection managed identity ID.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `connections.connectionProperties.authType-ManagedIdentity.credentials.resourceId`
+
+The connection managed identity resource ID.
+
+- Required: Yes
+- Type: string
+
+### Variant: `connections.connectionProperties.authType-None`
+
+
+To use this variant, set the property `authType` to `None`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`authType`](#parameter-connectionsconnectionpropertiesauthtype-noneauthtype) | string | The authentication type of the connection target. |
+
+### Parameter: `connections.connectionProperties.authType-None.authType`
+
+The authentication type of the connection target.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'None'
+  ]
+  ```
+
+### Variant: `connections.connectionProperties.authType-OAuth2`
+
+
+To use this variant, set the property `authType` to `OAuth2`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`authType`](#parameter-connectionsconnectionpropertiesauthtype-oauth2authtype) | string | The authentication type of the connection target. |
+| [`credentials`](#parameter-connectionsconnectionpropertiesauthtype-oauth2credentials) | object | The credentials for the connection. |
+
+### Parameter: `connections.connectionProperties.authType-OAuth2.authType`
+
+The authentication type of the connection target.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'OAuth2'
+  ]
+  ```
+
+### Parameter: `connections.connectionProperties.authType-OAuth2.credentials`
+
+The credentials for the connection.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`clientId`](#parameter-connectionsconnectionpropertiesauthtype-oauth2credentialsclientid) | string | The connection client ID in the format of UUID. |
+| [`clientSecret`](#parameter-connectionsconnectionpropertiesauthtype-oauth2credentialsclientsecret) | string | The connection client secret. |
+| [`tenantId`](#parameter-connectionsconnectionpropertiesauthtype-oauth2credentialstenantid) | string | The connection tenant ID. Required by QuickBooks and Xero connection categories. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`authUrl`](#parameter-connectionsconnectionpropertiesauthtype-oauth2credentialsauthurl) | string | The connection auth URL. Required by Concur connection category. |
+| [`developerToken`](#parameter-connectionsconnectionpropertiesauthtype-oauth2credentialsdevelopertoken) | string | The connection developer token. Required by GoogleAdWords connection category. |
+| [`password`](#parameter-connectionsconnectionpropertiesauthtype-oauth2credentialspassword) | string | The connection password. Required by Concur and ServiceNow connection categories where AccessToken grant type is 'Password'. |
+| [`refreshToken`](#parameter-connectionsconnectionpropertiesauthtype-oauth2credentialsrefreshtoken) | string | The connection refresh token. Required by GoogleBigQuery, GoogleAdWords, Hubspot, QuickBooks, Square, Xero and Zoho connection categories. |
+| [`username`](#parameter-connectionsconnectionpropertiesauthtype-oauth2credentialsusername) | string | The connection username. Required by Concur and ServiceNow connection categories where AccessToken grant type is 'Password'. |
+
+### Parameter: `connections.connectionProperties.authType-OAuth2.credentials.clientId`
+
+The connection client ID in the format of UUID.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `connections.connectionProperties.authType-OAuth2.credentials.clientSecret`
+
+The connection client secret.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `connections.connectionProperties.authType-OAuth2.credentials.tenantId`
+
+The connection tenant ID. Required by QuickBooks and Xero connection categories.
+
+- Required: No
+- Type: string
+
+### Parameter: `connections.connectionProperties.authType-OAuth2.credentials.authUrl`
+
+The connection auth URL. Required by Concur connection category.
+
+- Required: No
+- Type: string
+
+### Parameter: `connections.connectionProperties.authType-OAuth2.credentials.developerToken`
+
+The connection developer token. Required by GoogleAdWords connection category.
+
+- Required: No
+- Type: string
+
+### Parameter: `connections.connectionProperties.authType-OAuth2.credentials.password`
+
+The connection password. Required by Concur and ServiceNow connection categories where AccessToken grant type is 'Password'.
+
+- Required: No
+- Type: string
+
+### Parameter: `connections.connectionProperties.authType-OAuth2.credentials.refreshToken`
+
+The connection refresh token. Required by GoogleBigQuery, GoogleAdWords, Hubspot, QuickBooks, Square, Xero and Zoho connection categories.
+
+- Required: No
+- Type: string
+
+### Parameter: `connections.connectionProperties.authType-OAuth2.credentials.username`
+
+The connection username. Required by Concur and ServiceNow connection categories where AccessToken grant type is 'Password'.
+
+- Required: No
+- Type: string
+
+### Variant: `connections.connectionProperties.authType-PAT`
+
+
+To use this variant, set the property `authType` to `PAT`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`authType`](#parameter-connectionsconnectionpropertiesauthtype-patauthtype) | string | The authentication type of the connection target. |
+| [`credentials`](#parameter-connectionsconnectionpropertiesauthtype-patcredentials) | object | The credentials for the connection. |
+
+### Parameter: `connections.connectionProperties.authType-PAT.authType`
+
+The authentication type of the connection target.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'PAT'
+  ]
+  ```
+
+### Parameter: `connections.connectionProperties.authType-PAT.credentials`
+
+The credentials for the connection.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`pat`](#parameter-connectionsconnectionpropertiesauthtype-patcredentialspat) | string | The connection personal access token. |
+
+### Parameter: `connections.connectionProperties.authType-PAT.credentials.pat`
+
+The connection personal access token.
+
+- Required: Yes
+- Type: string
+
+### Variant: `connections.connectionProperties.authType-SAS`
+
+
+To use this variant, set the property `authType` to `SAS`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`authType`](#parameter-connectionsconnectionpropertiesauthtype-sasauthtype) | string | The authentication type of the connection target. |
+| [`credentials`](#parameter-connectionsconnectionpropertiesauthtype-sascredentials) | object | The credentials for the connection. |
+
+### Parameter: `connections.connectionProperties.authType-SAS.authType`
+
+The authentication type of the connection target.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'SAS'
+  ]
+  ```
+
+### Parameter: `connections.connectionProperties.authType-SAS.credentials`
+
+The credentials for the connection.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`sas`](#parameter-connectionsconnectionpropertiesauthtype-sascredentialssas) | string | The connection SAS token. |
+
+### Parameter: `connections.connectionProperties.authType-SAS.credentials.sas`
+
+The connection SAS token.
+
+- Required: Yes
+- Type: string
+
+### Variant: `connections.connectionProperties.authType-ServicePrincipal`
+
+
+To use this variant, set the property `authType` to `ServicePrincipal`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`authType`](#parameter-connectionsconnectionpropertiesauthtype-serviceprincipalauthtype) | string | The authentication type of the connection target. |
+| [`credentials`](#parameter-connectionsconnectionpropertiesauthtype-serviceprincipalcredentials) | object | The credentials for the connection. |
+
+### Parameter: `connections.connectionProperties.authType-ServicePrincipal.authType`
+
+The authentication type of the connection target.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'ServicePrincipal'
+  ]
+  ```
+
+### Parameter: `connections.connectionProperties.authType-ServicePrincipal.credentials`
+
+The credentials for the connection.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`clientId`](#parameter-connectionsconnectionpropertiesauthtype-serviceprincipalcredentialsclientid) | string | The connection client ID. |
+| [`clientSecret`](#parameter-connectionsconnectionpropertiesauthtype-serviceprincipalcredentialsclientsecret) | string | The connection client secret. |
+| [`tenantId`](#parameter-connectionsconnectionpropertiesauthtype-serviceprincipalcredentialstenantid) | string | The connection tenant ID. |
+
+### Parameter: `connections.connectionProperties.authType-ServicePrincipal.credentials.clientId`
+
+The connection client ID.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `connections.connectionProperties.authType-ServicePrincipal.credentials.clientSecret`
+
+The connection client secret.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `connections.connectionProperties.authType-ServicePrincipal.credentials.tenantId`
+
+The connection tenant ID.
+
+- Required: Yes
+- Type: string
+
+### Variant: `connections.connectionProperties.authType-UsernamePassword`
+
+
+To use this variant, set the property `authType` to `UsernamePassword`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`authType`](#parameter-connectionsconnectionpropertiesauthtype-usernamepasswordauthtype) | string | The authentication type of the connection target. |
+| [`credentials`](#parameter-connectionsconnectionpropertiesauthtype-usernamepasswordcredentials) | object | The credentials for the connection. |
+
+### Parameter: `connections.connectionProperties.authType-UsernamePassword.authType`
+
+The authentication type of the connection target.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'UsernamePassword'
+  ]
+  ```
+
+### Parameter: `connections.connectionProperties.authType-UsernamePassword.credentials`
+
+The credentials for the connection.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`password`](#parameter-connectionsconnectionpropertiesauthtype-usernamepasswordcredentialspassword) | string | The connection password. |
+| [`username`](#parameter-connectionsconnectionpropertiesauthtype-usernamepasswordcredentialsusername) | string | The connection username. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`securityToken`](#parameter-connectionsconnectionpropertiesauthtype-usernamepasswordcredentialssecuritytoken) | string | The connection security token. Required by connections like SalesForce for extra security in addition to 'UsernamePassword'. |
+
+### Parameter: `connections.connectionProperties.authType-UsernamePassword.credentials.password`
+
+The connection password.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `connections.connectionProperties.authType-UsernamePassword.credentials.username`
+
+The connection username.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `connections.connectionProperties.authType-UsernamePassword.credentials.securityToken`
+
+The connection security token. Required by connections like SalesForce for extra security in addition to 'UsernamePassword'.
+
+- Required: No
+- Type: string
 
 ### Parameter: `connections.name`
 
@@ -1943,6 +2625,13 @@ URL for the discovery service to identify regional endpoints for machine learnin
 - Required: No
 - Type: string
 
+### Parameter: `enableServiceSideCMKEncryption`
+
+Enable service-side encryption.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `enableTelemetry`
 
 Enable/Disable usage telemetry for module.
@@ -1950,6 +2639,13 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `friendlyName`
+
+The friendly name of the machine learning workspace.
+
+- Required: No
+- Type: string
 
 ### Parameter: `hbiWorkspace`
 
@@ -1965,6 +2661,13 @@ The compute name for image build.
 
 - Required: No
 - Type: string
+
+### Parameter: `ipAllowlist`
+
+List of IPv4 addresse ranges that are allowed to access the workspace.
+
+- Required: No
+- Type: array
 
 ### Parameter: `kind`
 
@@ -2078,6 +2781,7 @@ Managed Network settings for a machine learning workspace.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`firewallSku`](#parameter-managednetworksettingsfirewallsku) | string | The firewall SKU used for FQDN rules. |
 | [`outboundRules`](#parameter-managednetworksettingsoutboundrules) | object | Outbound rules for the managed network of a machine learning workspace. |
 
 ### Parameter: `managedNetworkSettings.isolationMode`
@@ -2092,6 +2796,20 @@ Isolation mode for the managed network of a machine learning workspace.
     'AllowInternetOutbound'
     'AllowOnlyApprovedOutbound'
     'Disabled'
+  ]
+  ```
+
+### Parameter: `managedNetworkSettings.firewallSku`
+
+The firewall SKU used for FQDN rules.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Basic'
+    'Standard'
   ]
   ```
 
@@ -2114,6 +2832,249 @@ The outbound rule. The name of the rule is the object key.
 
 - Required: Yes
 - Type: object
+- Discriminator: `type`
+
+<h4>The available variants are:</h4>
+
+| Variant | Description |
+| :-- | :-- |
+| [`FQDN`](#variant-managednetworksettingsoutboundrules>any_other_property<type-fqdn) |  |
+| [`PrivateEndpoint`](#variant-managednetworksettingsoutboundrules>any_other_property<type-privateendpoint) |  |
+| [`ServiceTag`](#variant-managednetworksettingsoutboundrules>any_other_property<type-servicetag) |  |
+
+### Variant: `managedNetworkSettings.outboundRules.>Any_other_property<.type-FQDN`
+
+
+To use this variant, set the property `type` to `FQDN`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`destination`](#parameter-managednetworksettingsoutboundrules>any_other_property<type-fqdndestination) | string | Fully Qualified Domain Name to allow for outbound traffic. |
+| [`type`](#parameter-managednetworksettingsoutboundrules>any_other_property<type-fqdntype) | string | Type of a managed network Outbound Rule of a machine learning workspace. Only supported when 'isolationMode' is 'AllowOnlyApprovedOutbound'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-managednetworksettingsoutboundrules>any_other_property<type-fqdncategory) | string | Category of a managed network Outbound Rule of a machine learning workspace. |
+
+### Parameter: `managedNetworkSettings.outboundRules.>Any_other_property<.type-FQDN.destination`
+
+Fully Qualified Domain Name to allow for outbound traffic.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `managedNetworkSettings.outboundRules.>Any_other_property<.type-FQDN.type`
+
+Type of a managed network Outbound Rule of a machine learning workspace. Only supported when 'isolationMode' is 'AllowOnlyApprovedOutbound'.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'FQDN'
+  ]
+  ```
+
+### Parameter: `managedNetworkSettings.outboundRules.>Any_other_property<.type-FQDN.category`
+
+Category of a managed network Outbound Rule of a machine learning workspace.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Dependency'
+    'Recommended'
+    'Required'
+    'UserDefined'
+  ]
+  ```
+
+### Variant: `managedNetworkSettings.outboundRules.>Any_other_property<.type-PrivateEndpoint`
+
+
+To use this variant, set the property `type` to `PrivateEndpoint`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`destination`](#parameter-managednetworksettingsoutboundrules>any_other_property<type-privateendpointdestination) | object | Service Tag destination for a Service Tag Outbound Rule for the managed network of a machine learning workspace. |
+| [`type`](#parameter-managednetworksettingsoutboundrules>any_other_property<type-privateendpointtype) | string | Type of a managed network Outbound Rule of a machine learning workspace. Only supported when 'isolationMode' is 'AllowOnlyApprovedOutbound' or 'AllowInternetOutbound'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-managednetworksettingsoutboundrules>any_other_property<type-privateendpointcategory) | string | Category of a managed network Outbound Rule of a machine learning workspace. |
+
+### Parameter: `managedNetworkSettings.outboundRules.>Any_other_property<.type-PrivateEndpoint.destination`
+
+Service Tag destination for a Service Tag Outbound Rule for the managed network of a machine learning workspace.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`serviceResourceId`](#parameter-managednetworksettingsoutboundrules>any_other_property<type-privateendpointdestinationserviceresourceid) | string | The resource ID of the target resource for the private endpoint. |
+| [`subresourceTarget`](#parameter-managednetworksettingsoutboundrules>any_other_property<type-privateendpointdestinationsubresourcetarget) | string | The sub resource to connect for the private endpoint. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`sparkEnabled`](#parameter-managednetworksettingsoutboundrules>any_other_property<type-privateendpointdestinationsparkenabled) | bool | Whether the private endpoint can be used by jobs running on Spark. |
+
+### Parameter: `managedNetworkSettings.outboundRules.>Any_other_property<.type-PrivateEndpoint.destination.serviceResourceId`
+
+The resource ID of the target resource for the private endpoint.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `managedNetworkSettings.outboundRules.>Any_other_property<.type-PrivateEndpoint.destination.subresourceTarget`
+
+The sub resource to connect for the private endpoint.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `managedNetworkSettings.outboundRules.>Any_other_property<.type-PrivateEndpoint.destination.sparkEnabled`
+
+Whether the private endpoint can be used by jobs running on Spark.
+
+- Required: No
+- Type: bool
+
+### Parameter: `managedNetworkSettings.outboundRules.>Any_other_property<.type-PrivateEndpoint.type`
+
+Type of a managed network Outbound Rule of a machine learning workspace. Only supported when 'isolationMode' is 'AllowOnlyApprovedOutbound' or 'AllowInternetOutbound'.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'PrivateEndpoint'
+  ]
+  ```
+
+### Parameter: `managedNetworkSettings.outboundRules.>Any_other_property<.type-PrivateEndpoint.category`
+
+Category of a managed network Outbound Rule of a machine learning workspace.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Dependency'
+    'Recommended'
+    'Required'
+    'UserDefined'
+  ]
+  ```
+
+### Variant: `managedNetworkSettings.outboundRules.>Any_other_property<.type-ServiceTag`
+
+
+To use this variant, set the property `type` to `ServiceTag`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`destination`](#parameter-managednetworksettingsoutboundrules>any_other_property<type-servicetagdestination) | object | Service Tag destination for a Service Tag Outbound Rule for the managed network of a machine learning workspace. |
+| [`type`](#parameter-managednetworksettingsoutboundrules>any_other_property<type-servicetagtype) | string | Type of a managed network Outbound Rule of a machine learning workspace. Only supported when 'isolationMode' is 'AllowOnlyApprovedOutbound'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`category`](#parameter-managednetworksettingsoutboundrules>any_other_property<type-servicetagcategory) | string | Category of a managed network Outbound Rule of a machine learning workspace. |
+
+### Parameter: `managedNetworkSettings.outboundRules.>Any_other_property<.type-ServiceTag.destination`
+
+Service Tag destination for a Service Tag Outbound Rule for the managed network of a machine learning workspace.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`portRanges`](#parameter-managednetworksettingsoutboundrules>any_other_property<type-servicetagdestinationportranges) | string | The name of the service tag to allow. |
+| [`protocol`](#parameter-managednetworksettingsoutboundrules>any_other_property<type-servicetagdestinationprotocol) | string | The protocol to allow. Provide an asterisk(*) to allow any protocol. |
+| [`serviceTag`](#parameter-managednetworksettingsoutboundrules>any_other_property<type-servicetagdestinationservicetag) | string | Which ports will be allow traffic by this rule. Provide an asterisk(*) to allow any port. |
+
+### Parameter: `managedNetworkSettings.outboundRules.>Any_other_property<.type-ServiceTag.destination.portRanges`
+
+The name of the service tag to allow.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `managedNetworkSettings.outboundRules.>Any_other_property<.type-ServiceTag.destination.protocol`
+
+The protocol to allow. Provide an asterisk(*) to allow any protocol.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '*'
+    'ICMP'
+    'TCP'
+    'UDP'
+  ]
+  ```
+
+### Parameter: `managedNetworkSettings.outboundRules.>Any_other_property<.type-ServiceTag.destination.serviceTag`
+
+Which ports will be allow traffic by this rule. Provide an asterisk(*) to allow any port.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `managedNetworkSettings.outboundRules.>Any_other_property<.type-ServiceTag.type`
+
+Type of a managed network Outbound Rule of a machine learning workspace. Only supported when 'isolationMode' is 'AllowOnlyApprovedOutbound'.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'ServiceTag'
+  ]
+  ```
+
+### Parameter: `managedNetworkSettings.outboundRules.>Any_other_property<.type-ServiceTag.category`
+
+Category of a managed network Outbound Rule of a machine learning workspace.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Dependency'
+    'Recommended'
+    'Required'
+    'UserDefined'
+  ]
+  ```
 
 ### Parameter: `privateEndpoints`
 
@@ -2526,6 +3487,13 @@ Tags to be applied on all resources/Resource Groups in this deployment.
 - Required: No
 - Type: object
 
+### Parameter: `provisionNetworkNow`
+
+Trigger the provisioning of the managed virtual network when creating the workspace.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `publicNetworkAccess`
 
 Whether or not public network access is allowed for this resource. For security reasons it should be disabled.
@@ -2699,8 +3667,9 @@ The authentication mode used by the workspace when connecting to the default sto
 - Allowed:
   ```Bicep
   [
-    'accessKey'
-    'identity'
+    'AccessKey'
+    'Identity'
+    'UserDelegationSAS'
   ]
   ```
 

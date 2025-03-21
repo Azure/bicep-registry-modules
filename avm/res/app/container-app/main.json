@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "7075159430454310469"
+      "version": "0.33.93.31351",
+      "templateHash": "14843677762258257428"
     },
     "name": "Container Apps",
     "description": "This module deploys a Container App."
@@ -407,6 +407,92 @@
         "description": "The type for a container app probe TCP socket."
       }
     },
+    "scaleType": {
+      "type": "object",
+      "properties": {
+        "maxReplicas": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. The maximum number of replicas."
+          }
+        },
+        "minReplicas": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. The minimum number of replicas."
+          }
+        },
+        "cooldownPeriod": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The cooldown period in seconds."
+          }
+        },
+        "pollingInterval": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The polling interval in seconds."
+          }
+        },
+        "rules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/scaleRuleType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The scaling rules."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The scale settings for the Container App."
+      }
+    },
+    "scaleRuleType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the scaling rule."
+          }
+        },
+        "custom": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The custom scaling rule."
+          }
+        },
+        "azureQueue": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Azure Queue based scaling rule."
+          }
+        },
+        "http": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The HTTP requests based scaling rule."
+          }
+        },
+        "tcp": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The TCP based scaling rule."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The scaling rules for the Container App."
+      }
+    },
     "volumeMountType": {
       "type": "object",
       "properties": {
@@ -506,7 +592,6 @@
           }
         }
       },
-      "nullable": true,
       "metadata": {
         "__bicep_export!": true,
         "description": "Optional. App runtime configuration for the Container App."
@@ -792,25 +877,14 @@
         "description": "Optional. Target Port in containers for traffic from ingress."
       }
     },
-    "scaleMaxReplicas": {
-      "type": "int",
-      "defaultValue": 10,
+    "scaleSettings": {
+      "$ref": "#/definitions/scaleType",
+      "defaultValue": {
+        "maxReplicas": 10,
+        "minReplicas": 3
+      },
       "metadata": {
-        "description": "Optional. Maximum number of container replicas. Defaults to 10 if not set."
-      }
-    },
-    "scaleMinReplicas": {
-      "type": "int",
-      "defaultValue": 3,
-      "metadata": {
-        "description": "Optional. Minimum number of container replicas. Defaults to 3 if not set."
-      }
-    },
-    "scaleRules": {
-      "type": "array",
-      "defaultValue": [],
-      "metadata": {
-        "description": "Optional. Scaling rules."
+        "description": "Optional. The scaling settings of the service."
       }
     },
     "serviceBinds": {
@@ -950,6 +1024,7 @@
     },
     "runtime": {
       "$ref": "#/definitions/runtimeType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Runtime configuration for the Container App."
       }
@@ -1068,11 +1143,7 @@
           "containers": "[parameters('containers')]",
           "initContainers": "[if(not(empty(parameters('initContainersTemplate'))), parameters('initContainersTemplate'), null())]",
           "revisionSuffix": "[parameters('revisionSuffix')]",
-          "scale": {
-            "maxReplicas": "[parameters('scaleMaxReplicas')]",
-            "minReplicas": "[parameters('scaleMinReplicas')]",
-            "rules": "[if(not(empty(parameters('scaleRules'))), parameters('scaleRules'), null())]"
-          },
+          "scale": "[parameters('scaleSettings')]",
           "serviceBinds": "[if(and(parameters('includeAddOns'), not(empty(parameters('serviceBinds')))), parameters('serviceBinds'), null())]",
           "volumes": "[if(not(empty(parameters('volumes'))), parameters('volumes'), null())]"
         },
