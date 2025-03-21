@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "8253755367782362735"
+      "version": "0.33.93.31351",
+      "templateHash": "14843677762258257428"
     },
     "name": "Container Apps",
     "description": "This module deploys a Container App."
@@ -592,7 +592,6 @@
           }
         }
       },
-      "nullable": true,
       "metadata": {
         "__bicep_export!": true,
         "description": "Optional. App runtime configuration for the Container App."
@@ -1025,6 +1024,7 @@
     },
     "runtime": {
       "$ref": "#/definitions/runtimeType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Runtime configuration for the Container App."
       }

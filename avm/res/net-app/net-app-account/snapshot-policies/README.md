@@ -95,8 +95,6 @@ Resource size in bytes, current storage usage for the volume in bytes.
 
 - Required: No
 - Type: int
-- MinValue: 1
-- MaxValue: 255
 
 ### Parameter: `hourlySchedule`
 
@@ -142,8 +140,6 @@ Resource size in bytes, current storage usage for the volume in bytes.
 
 - Required: No
 - Type: int
-- MinValue: 1
-- MaxValue: 255
 
 ### Parameter: `location`
 
@@ -215,8 +211,6 @@ Resource size in bytes, current storage usage for the volume in bytes.
 
 - Required: No
 - Type: int
-- MinValue: 1
-- MaxValue: 255
 
 ### Parameter: `name`
 
@@ -308,8 +302,6 @@ Resource size in bytes, current storage usage for the volume in bytes.
 
 - Required: No
 - Type: int
-- MinValue: 1
-- MaxValue: 255
 
 ## Outputs
 
