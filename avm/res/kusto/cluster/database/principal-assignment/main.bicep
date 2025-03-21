@@ -13,13 +13,27 @@ param databasePrincipalAssignment databasePrincipalAssignmentType
 // Resources      //
 // ============== //
 
-resource kustoClusterDatabase 'Microsoft.Kusto/clusters/databases@2024-04-13' existing = {
-  name: kustoClusterDatabaseName
+@minLength(4)
+@maxLength(22)
+@description('Conditional. The name of the Kusto cluster.')
+param clusterName string
+
+@minLength(4)
+@maxLength(22)
+@description('Conditional. The name of the parent Kusto Cluster Database. Required if the template is used in a standalone deployment.')
+param databaseName string
+
+resource kustoCluster 'Microsoft.Kusto/clusters@2024-04-13' existing  = {
+  name: clusterName
+
+  resource database 'databases@2024-04-13' existing = {
+    name: databaseName
+  }
 }
 
 resource kustoDatabasePrincipalAssignment 'Microsoft.Kusto/clusters/databases/principalAssignments@2024-04-13' = {
   name: databasePrincipalAssignment.principalId
-  parent: kustoClusterDatabase
+  parent: kustoCluster::databaseName
   properties: {
     principalId: databasePrincipalAssignment.principalId
     principalType: databasePrincipalAssignment.principalType
