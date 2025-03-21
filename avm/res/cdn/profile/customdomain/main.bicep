@@ -94,6 +94,7 @@ output dnsValidation dnsValidationType = {
 // =============== //
 
 @export()
+@description('The type of the custom domain.')
 type customDomainType = {
   @description('Required. The name of the custom domain.')
   name: string
@@ -121,6 +122,7 @@ type customDomainType = {
 }
 
 @export()
+@description('The type of the DNS validation.')
 type dnsValidationType = {
   @description('Required. The DNS record name.')
   dnsTxtRecordName: string

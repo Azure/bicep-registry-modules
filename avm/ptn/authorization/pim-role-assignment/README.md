@@ -397,6 +397,354 @@ The type of the PIM role assignment whether its active or eligible.
 
 - Required: Yes
 - Type: object
+- Discriminator: `roleAssignmentType`
+
+<h4>The available variants are:</h4>
+
+| Variant | Description |
+| :-- | :-- |
+| [`Active`](#variant-pimroleassignmenttyperoleassignmenttype-active) |  |
+| [`Eligible`](#variant-pimroleassignmenttyperoleassignmenttype-eligible) |  |
+
+### Variant: `pimRoleAssignmentType.roleAssignmentType-Active`
+
+
+To use this variant, set the property `roleAssignmentType` to `Active`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`roleAssignmentType`](#parameter-pimroleassignmenttyperoleassignmenttype-activeroleassignmenttype) | string | The type of the role assignment. |
+| [`scheduleInfo`](#parameter-pimroleassignmenttyperoleassignmenttype-activescheduleinfo) | object | The schedule information for the role assignment. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`linkedRoleEligibilityScheduleId`](#parameter-pimroleassignmenttyperoleassignmenttype-activelinkedroleeligibilityscheduleid) | string | The linked role eligibility schedule id - to activate an eligibility. |
+| [`targetRoleAssignmentScheduleId`](#parameter-pimroleassignmenttyperoleassignmenttype-activetargetroleassignmentscheduleid) | string | The resultant role assignment schedule id or the role assignment schedule id being updated. |
+| [`targetRoleAssignmentScheduleInstanceId`](#parameter-pimroleassignmenttyperoleassignmenttype-activetargetroleassignmentscheduleinstanceid) | string | The role assignment schedule instance id being updated. |
+
+### Parameter: `pimRoleAssignmentType.roleAssignmentType-Active.roleAssignmentType`
+
+The type of the role assignment.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Active'
+  ]
+  ```
+
+### Parameter: `pimRoleAssignmentType.roleAssignmentType-Active.scheduleInfo`
+
+The schedule information for the role assignment.
+
+- Required: Yes
+- Type: object
+- Discriminator: `durationType`
+
+<h4>The available variants are:</h4>
+
+| Variant | Description |
+| :-- | :-- |
+| [`NoExpiration`](#variant-pimroleassignmenttyperoleassignmenttype-activescheduleinfodurationtype-noexpiration) |  |
+| [`AfterDuration`](#variant-pimroleassignmenttyperoleassignmenttype-activescheduleinfodurationtype-afterduration) |  |
+| [`AfterDateTime`](#variant-pimroleassignmenttyperoleassignmenttype-activescheduleinfodurationtype-afterdatetime) |  |
+
+### Variant: `pimRoleAssignmentType.roleAssignmentType-Active.scheduleInfo.durationType-NoExpiration`
+
+
+To use this variant, set the property `durationType` to `NoExpiration`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`durationType`](#parameter-pimroleassignmenttyperoleassignmenttype-activescheduleinfodurationtype-noexpirationdurationtype) | string | The type of the duration. |
+
+### Parameter: `pimRoleAssignmentType.roleAssignmentType-Active.scheduleInfo.durationType-NoExpiration.durationType`
+
+The type of the duration.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'NoExpiration'
+  ]
+  ```
+
+### Variant: `pimRoleAssignmentType.roleAssignmentType-Active.scheduleInfo.durationType-AfterDuration`
+
+
+To use this variant, set the property `durationType` to `AfterDuration`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`duration`](#parameter-pimroleassignmenttyperoleassignmenttype-activescheduleinfodurationtype-afterdurationduration) | string | The duration for the role assignment. |
+| [`durationType`](#parameter-pimroleassignmenttyperoleassignmenttype-activescheduleinfodurationtype-afterdurationdurationtype) | string | The type of the duration. |
+| [`startTime`](#parameter-pimroleassignmenttyperoleassignmenttype-activescheduleinfodurationtype-afterdurationstarttime) | string | The start time for the role assignment. |
+
+### Parameter: `pimRoleAssignmentType.roleAssignmentType-Active.scheduleInfo.durationType-AfterDuration.duration`
+
+The duration for the role assignment.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `pimRoleAssignmentType.roleAssignmentType-Active.scheduleInfo.durationType-AfterDuration.durationType`
+
+The type of the duration.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AfterDuration'
+  ]
+  ```
+
+### Parameter: `pimRoleAssignmentType.roleAssignmentType-Active.scheduleInfo.durationType-AfterDuration.startTime`
+
+The start time for the role assignment.
+
+- Required: Yes
+- Type: string
+
+### Variant: `pimRoleAssignmentType.roleAssignmentType-Active.scheduleInfo.durationType-AfterDateTime`
+
+
+To use this variant, set the property `durationType` to `AfterDateTime`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`durationType`](#parameter-pimroleassignmenttyperoleassignmenttype-activescheduleinfodurationtype-afterdatetimedurationtype) | string | The type of the duration. |
+| [`endDateTime`](#parameter-pimroleassignmenttyperoleassignmenttype-activescheduleinfodurationtype-afterdatetimeenddatetime) | string | The end date and time for the role assignment. |
+| [`startTime`](#parameter-pimroleassignmenttyperoleassignmenttype-activescheduleinfodurationtype-afterdatetimestarttime) | string | The start date and time for the role assignment. |
+
+### Parameter: `pimRoleAssignmentType.roleAssignmentType-Active.scheduleInfo.durationType-AfterDateTime.durationType`
+
+The type of the duration.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AfterDateTime'
+  ]
+  ```
+
+### Parameter: `pimRoleAssignmentType.roleAssignmentType-Active.scheduleInfo.durationType-AfterDateTime.endDateTime`
+
+The end date and time for the role assignment.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `pimRoleAssignmentType.roleAssignmentType-Active.scheduleInfo.durationType-AfterDateTime.startTime`
+
+The start date and time for the role assignment.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `pimRoleAssignmentType.roleAssignmentType-Active.linkedRoleEligibilityScheduleId`
+
+The linked role eligibility schedule id - to activate an eligibility.
+
+- Required: No
+- Type: string
+
+### Parameter: `pimRoleAssignmentType.roleAssignmentType-Active.targetRoleAssignmentScheduleId`
+
+The resultant role assignment schedule id or the role assignment schedule id being updated.
+
+- Required: No
+- Type: string
+
+### Parameter: `pimRoleAssignmentType.roleAssignmentType-Active.targetRoleAssignmentScheduleInstanceId`
+
+The role assignment schedule instance id being updated.
+
+- Required: No
+- Type: string
+
+### Variant: `pimRoleAssignmentType.roleAssignmentType-Eligible`
+
+
+To use this variant, set the property `roleAssignmentType` to `Eligible`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`roleAssignmentType`](#parameter-pimroleassignmenttyperoleassignmenttype-eligibleroleassignmenttype) | string | The type of the role assignment. |
+| [`scheduleInfo`](#parameter-pimroleassignmenttyperoleassignmenttype-eligiblescheduleinfo) | object | The schedule information for the role assignment. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`targetRoleEligibilityScheduleId`](#parameter-pimroleassignmenttyperoleassignmenttype-eligibletargetroleeligibilityscheduleid) | string | The resultant role eligibility schedule id or the role eligibility schedule id being updated. |
+| [`targetRoleEligibilityScheduleInstanceId`](#parameter-pimroleassignmenttyperoleassignmenttype-eligibletargetroleeligibilityscheduleinstanceid) | string | The role eligibility assignment instance id being updated. |
+
+### Parameter: `pimRoleAssignmentType.roleAssignmentType-Eligible.roleAssignmentType`
+
+The type of the role assignment.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Eligible'
+  ]
+  ```
+
+### Parameter: `pimRoleAssignmentType.roleAssignmentType-Eligible.scheduleInfo`
+
+The schedule information for the role assignment.
+
+- Required: Yes
+- Type: object
+- Discriminator: `durationType`
+
+<h4>The available variants are:</h4>
+
+| Variant | Description |
+| :-- | :-- |
+| [`NoExpiration`](#variant-pimroleassignmenttyperoleassignmenttype-eligiblescheduleinfodurationtype-noexpiration) |  |
+| [`AfterDuration`](#variant-pimroleassignmenttyperoleassignmenttype-eligiblescheduleinfodurationtype-afterduration) |  |
+| [`AfterDateTime`](#variant-pimroleassignmenttyperoleassignmenttype-eligiblescheduleinfodurationtype-afterdatetime) |  |
+
+### Variant: `pimRoleAssignmentType.roleAssignmentType-Eligible.scheduleInfo.durationType-NoExpiration`
+
+
+To use this variant, set the property `durationType` to `NoExpiration`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`durationType`](#parameter-pimroleassignmenttyperoleassignmenttype-eligiblescheduleinfodurationtype-noexpirationdurationtype) | string | The type of the duration. |
+
+### Parameter: `pimRoleAssignmentType.roleAssignmentType-Eligible.scheduleInfo.durationType-NoExpiration.durationType`
+
+The type of the duration.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'NoExpiration'
+  ]
+  ```
+
+### Variant: `pimRoleAssignmentType.roleAssignmentType-Eligible.scheduleInfo.durationType-AfterDuration`
+
+
+To use this variant, set the property `durationType` to `AfterDuration`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`duration`](#parameter-pimroleassignmenttyperoleassignmenttype-eligiblescheduleinfodurationtype-afterdurationduration) | string | The duration for the role assignment. |
+| [`durationType`](#parameter-pimroleassignmenttyperoleassignmenttype-eligiblescheduleinfodurationtype-afterdurationdurationtype) | string | The type of the duration. |
+| [`startTime`](#parameter-pimroleassignmenttyperoleassignmenttype-eligiblescheduleinfodurationtype-afterdurationstarttime) | string | The start time for the role assignment. |
+
+### Parameter: `pimRoleAssignmentType.roleAssignmentType-Eligible.scheduleInfo.durationType-AfterDuration.duration`
+
+The duration for the role assignment.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `pimRoleAssignmentType.roleAssignmentType-Eligible.scheduleInfo.durationType-AfterDuration.durationType`
+
+The type of the duration.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AfterDuration'
+  ]
+  ```
+
+### Parameter: `pimRoleAssignmentType.roleAssignmentType-Eligible.scheduleInfo.durationType-AfterDuration.startTime`
+
+The start time for the role assignment.
+
+- Required: Yes
+- Type: string
+
+### Variant: `pimRoleAssignmentType.roleAssignmentType-Eligible.scheduleInfo.durationType-AfterDateTime`
+
+
+To use this variant, set the property `durationType` to `AfterDateTime`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`durationType`](#parameter-pimroleassignmenttyperoleassignmenttype-eligiblescheduleinfodurationtype-afterdatetimedurationtype) | string | The type of the duration. |
+| [`endDateTime`](#parameter-pimroleassignmenttyperoleassignmenttype-eligiblescheduleinfodurationtype-afterdatetimeenddatetime) | string | The end date and time for the role assignment. |
+| [`startTime`](#parameter-pimroleassignmenttyperoleassignmenttype-eligiblescheduleinfodurationtype-afterdatetimestarttime) | string | The start date and time for the role assignment. |
+
+### Parameter: `pimRoleAssignmentType.roleAssignmentType-Eligible.scheduleInfo.durationType-AfterDateTime.durationType`
+
+The type of the duration.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AfterDateTime'
+  ]
+  ```
+
+### Parameter: `pimRoleAssignmentType.roleAssignmentType-Eligible.scheduleInfo.durationType-AfterDateTime.endDateTime`
+
+The end date and time for the role assignment.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `pimRoleAssignmentType.roleAssignmentType-Eligible.scheduleInfo.durationType-AfterDateTime.startTime`
+
+The start date and time for the role assignment.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `pimRoleAssignmentType.roleAssignmentType-Eligible.targetRoleEligibilityScheduleId`
+
+The resultant role eligibility schedule id or the role eligibility schedule id being updated.
+
+- Required: No
+- Type: string
+
+### Parameter: `pimRoleAssignmentType.roleAssignmentType-Eligible.targetRoleEligibilityScheduleInstanceId`
+
+The role eligibility assignment instance id being updated.
+
+- Required: No
+- Type: string
 
 ### Parameter: `principalId`
 
