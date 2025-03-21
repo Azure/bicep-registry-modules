@@ -48,7 +48,6 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 
 resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' existing = if (resourceId != null) {
   name: last(split(resourceId ?? '', '/'))!
-  // scope: resourceGroup(split(resourceId ?? '', '/')[2], split(resourceId ?? '', '/')[4])
 }
 
 resource configurationAssignment 'Microsoft.Maintenance/configurationAssignments@2023-04-01' = if (resourceId != null) {
@@ -102,12 +101,12 @@ type filterType = {
   @description('Optional. List of allowed operating systems.')
   osTypes: ('Linux' | 'Windows')[]?
 
-  @description('Optional. Tags to be applied on all resources/Resource Groups in this deployment.')
+  @description('Optional. Tag settings for the VM.')
   tagSettings: {
     @description('Required. Filter VMs by Any or All specified tags.')
     filterOperator: ('All' | 'Any')
 
-    @description('Required. Tags to be applied.')
+    @description('Required. Dictionary of tags with its list of values.')
     tags: {
       *: string
     }

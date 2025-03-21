@@ -311,7 +311,7 @@ Properties of the dynamic configuration assignment. Required if resourceId is no
 | [`osTypes`](#parameter-filterostypes) | array | List of allowed operating systems. |
 | [`resourceGroups`](#parameter-filterresourcegroups) | array | List of allowed resource group names. |
 | [`resourceTypes`](#parameter-filterresourcetypes) | array | List of allowed resource types. |
-| [`tagSettings`](#parameter-filtertagsettings) | object | Tags to be applied on all resources/Resource Groups in this deployment. |
+| [`tagSettings`](#parameter-filtertagsettings) | object | Tag settings for the VM. |
 
 ### Parameter: `filter.locations`
 
@@ -350,9 +350,37 @@ List of allowed resource types.
 
 ### Parameter: `filter.tagSettings`
 
-Tags to be applied on all resources/Resource Groups in this deployment.
+Tag settings for the VM.
 
 - Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`filterOperator`](#parameter-filtertagsettingsfilteroperator) | string | Filter VMs by Any or All specified tags. |
+| [`tags`](#parameter-filtertagsettingstags) | object | Dictionary of tags with its list of values. |
+
+### Parameter: `filter.tagSettings.filterOperator`
+
+Filter VMs by Any or All specified tags.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'All'
+    'Any'
+  ]
+  ```
+
+### Parameter: `filter.tagSettings.tags`
+
+Dictionary of tags with its list of values.
+
+- Required: Yes
 - Type: object
 
 ### Parameter: `resourceId`

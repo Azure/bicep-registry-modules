@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "8546827987734636586"
+      "templateHash": "9455541556329695883"
     },
     "name": "Maintenance Configuration Assignments",
     "description": "This module deploys a Maintenance Configuration Assignment."
@@ -58,9 +58,31 @@
         },
         "tagSettings": {
           "type": "object",
+          "properties": {
+            "filterOperator": {
+              "type": "string",
+              "allowedValues": [
+                "All",
+                "Any"
+              ],
+              "metadata": {
+                "description": "Required. Filter VMs by Any or All specified tags."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": {
+                "type": "string"
+              },
+              "metadata": {
+                "description": "Required. Dictionary of tags with its list of values."
+              }
+            }
+          },
           "nullable": true,
           "metadata": {
-            "description": "Optional. Tags to be applied on all resources/Resource Groups in this deployment."
+            "description": "Optional. Tag settings for the VM."
           }
         }
       },

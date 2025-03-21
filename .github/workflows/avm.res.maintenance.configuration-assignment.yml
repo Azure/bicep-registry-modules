@@ -25,7 +25,7 @@ on:
   push:
     branches:
       - main
-      # - users/erikag/new-maint-config-assign
+      - users/erikag/new-maint-config-assign
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
