@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "18351867889110726122"
+      "templateHash": "18312606614037978405"
     },
     "name": "SQL Managed Instances",
     "description": "This module deploys a SQL Managed Instance."
@@ -372,10 +372,10 @@
         "PointInTimeRestore"
       ],
       "metadata": {
-        "description": "Optional. Specifies the mode of database creation. Default: Regular instance creation. Restore: Creates an instance by restoring a set of backups to specific point in time. RestorePointInTime and SourceManagedInstanceId must be specified."
+        "description": "Optional. Specifies the mode of database creation. Default: Regular instance creation. Restore: Creates an instance by restoring a set of backups to specific point in time. RestorePointInTime and sourceManagedInstanceResourceId must be specified."
       }
     },
-    "dnsZonePartner": {
+    "dnsZonePartnerResourceId": {
       "type": "string",
       "nullable": true,
       "metadata": {
@@ -429,7 +429,7 @@
         "description": "Optional. Specifies the point in time (ISO8601 format) of the source database that will be restored to create the new database."
       }
     },
-    "sourceManagedInstanceId": {
+    "sourceManagedInstanceResourceId": {
       "type": "string",
       "nullable": true,
       "metadata": {
@@ -484,7 +484,7 @@
         "description": "Optional. The managed identity definition for this resource."
       }
     },
-    "primaryUserAssignedIdentityId": {
+    "primaryUserAssignedIdentityResourceId": {
       "type": "string",
       "nullable": true,
       "metadata": {
@@ -640,14 +640,14 @@
         "vCores": "[parameters('vCores')]",
         "storageSizeInGB": "[parameters('storageSizeInGB')]",
         "collation": "[parameters('collation')]",
-        "dnsZonePartner": "[parameters('dnsZonePartner')]",
+        "dnsZonePartner": "[parameters('dnsZonePartnerResourceId')]",
         "publicDataEndpointEnabled": "[parameters('publicDataEndpointEnabled')]",
-        "sourceManagedInstanceId": "[parameters('sourceManagedInstanceId')]",
+        "sourceManagedInstanceId": "[parameters('sourceManagedInstanceResourceId')]",
         "restorePointInTime": "[parameters('restorePointInTime')]",
         "proxyOverride": "[parameters('proxyOverride')]",
         "timezoneId": "[parameters('timezoneId')]",
         "instancePoolId": "[parameters('instancePoolResourceId')]",
-        "primaryUserAssignedIdentityId": "[parameters('primaryUserAssignedIdentityId')]",
+        "primaryUserAssignedIdentityId": "[parameters('primaryUserAssignedIdentityResourceId')]",
         "requestedBackupStorageRedundancy": "[parameters('requestedBackupStorageRedundancy')]",
         "zoneRedundant": "[parameters('zoneRedundant')]",
         "servicePrincipal": {

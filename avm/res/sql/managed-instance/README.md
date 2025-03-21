@@ -166,7 +166,7 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    dnsZonePartner: ''
+    dnsZonePartnerResourceId: ''
     encryptionProtectorObj: {
       serverKeyName: '<serverKeyName>'
       serverKeyType: 'AzureKeyVault'
@@ -192,7 +192,7 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
         '<managedIdentityResourceId>'
       ]
     }
-    primaryUserAssignedIdentityId: '<primaryUserAssignedIdentityId>'
+    primaryUserAssignedIdentityResourceId: '<primaryUserAssignedIdentityResourceId>'
     proxyOverride: 'Proxy'
     publicDataEndpointEnabled: false
     roleAssignments: [
@@ -307,7 +307,7 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
         }
       ]
     },
-    "dnsZonePartner": {
+    "dnsZonePartnerResourceId": {
       "value": ""
     },
     "encryptionProtectorObj": {
@@ -351,8 +351,8 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
         ]
       }
     },
-    "primaryUserAssignedIdentityId": {
-      "value": "<primaryUserAssignedIdentityId>"
+    "primaryUserAssignedIdentityResourceId": {
+      "value": "<primaryUserAssignedIdentityResourceId>"
     },
     "proxyOverride": {
       "value": "Proxy"
@@ -476,7 +476,7 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
-param dnsZonePartner = ''
+param dnsZonePartnerResourceId = ''
 param encryptionProtectorObj = {
   serverKeyName: '<serverKeyName>'
   serverKeyType: 'AzureKeyVault'
@@ -502,7 +502,7 @@ param managedIdentities = {
     '<managedIdentityResourceId>'
   ]
 }
-param primaryUserAssignedIdentityId = '<primaryUserAssignedIdentityId>'
+param primaryUserAssignedIdentityResourceId = '<primaryUserAssignedIdentityResourceId>'
 param proxyOverride = 'Proxy'
 param publicDataEndpointEnabled = false
 param roleAssignments = [
@@ -572,7 +572,6 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
     name: 'sqlmivln'
     subnetResourceId: '<subnetResourceId>'
     // Non-required parameters
-    location: '<location>'
     managedIdentities: {
       systemAssigned: true
     }
@@ -628,9 +627,6 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
       "value": "<subnetResourceId>"
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
     "managedIdentities": {
       "value": {
         "systemAssigned": true
@@ -682,7 +678,6 @@ param administratorLoginPassword = '<administratorLoginPassword>'
 param name = 'sqlmivln'
 param subnetResourceId = '<subnetResourceId>'
 // Non-required parameters
-param location = '<location>'
 param managedIdentities = {
   systemAssigned: true
 }
@@ -767,7 +762,7 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    dnsZonePartner: ''
+    dnsZonePartnerResourceId: ''
     encryptionProtectorObj: {
       serverKeyName: '<serverKeyName>'
       serverKeyType: 'AzureKeyVault'
@@ -781,7 +776,6 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
       }
     ]
     licenseType: 'LicenseIncluded'
-    location: '<location>'
     maintenanceWindow: 'Custom2'
     managedIdentities: {
       systemAssigned: true
@@ -789,7 +783,7 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
         '<managedIdentityResourceId>'
       ]
     }
-    primaryUserAssignedIdentityId: '<primaryUserAssignedIdentityId>'
+    primaryUserAssignedIdentityResourceId: '<primaryUserAssignedIdentityResourceId>'
     proxyOverride: 'Proxy'
     publicDataEndpointEnabled: false
     securityAlertPoliciesObj: {
@@ -887,7 +881,7 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
         }
       ]
     },
-    "dnsZonePartner": {
+    "dnsZonePartnerResourceId": {
       "value": ""
     },
     "encryptionProtectorObj": {
@@ -911,9 +905,6 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
     "licenseType": {
       "value": "LicenseIncluded"
     },
-    "location": {
-      "value": "<location>"
-    },
     "maintenanceWindow": {
       "value": "Custom2"
     },
@@ -925,8 +916,8 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
         ]
       }
     },
-    "primaryUserAssignedIdentityId": {
-      "value": "<primaryUserAssignedIdentityId>"
+    "primaryUserAssignedIdentityResourceId": {
+      "value": "<primaryUserAssignedIdentityResourceId>"
     },
     "proxyOverride": {
       "value": "Proxy"
@@ -1031,7 +1022,7 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
-param dnsZonePartner = ''
+param dnsZonePartnerResourceId = ''
 param encryptionProtectorObj = {
   serverKeyName: '<serverKeyName>'
   serverKeyType: 'AzureKeyVault'
@@ -1045,7 +1036,6 @@ param keys = [
   }
 ]
 param licenseType = 'LicenseIncluded'
-param location = '<location>'
 param maintenanceWindow = 'Custom2'
 param managedIdentities = {
   systemAssigned: true
@@ -1053,7 +1043,7 @@ param managedIdentities = {
     '<managedIdentityResourceId>'
   ]
 }
-param primaryUserAssignedIdentityId = '<primaryUserAssignedIdentityId>'
+param primaryUserAssignedIdentityResourceId = '<primaryUserAssignedIdentityResourceId>'
 param proxyOverride = 'Proxy'
 param publicDataEndpointEnabled = false
 param securityAlertPoliciesObj = {
@@ -1102,7 +1092,7 @@ param vulnerabilityAssessmentsObj = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`primaryUserAssignedIdentityId`](#parameter-primaryuserassignedidentityid) | string | The resource ID of a user assigned identity to be used by default. Required if "userAssignedIdentities" is not empty. |
+| [`primaryUserAssignedIdentityResourceId`](#parameter-primaryuserassignedidentityresourceid) | string | The resource ID of a user assigned identity to be used by default. Required if "userAssignedIdentities" is not empty. |
 
 **Optional parameters**
 
@@ -1112,7 +1102,7 @@ param vulnerabilityAssessmentsObj = {
 | [`collation`](#parameter-collation) | string | Collation of the managed instance. |
 | [`databases`](#parameter-databases) | array | Databases to create in this server. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
-| [`dnsZonePartner`](#parameter-dnszonepartner) | string | The resource ID of another managed instance whose DNS zone this managed instance will share after creation. |
+| [`dnsZonePartnerResourceId`](#parameter-dnszonepartnerresourceid) | string | The resource ID of another managed instance whose DNS zone this managed instance will share after creation. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`encryptionProtectorObj`](#parameter-encryptionprotectorobj) | object | The encryption protection configuration. |
 | [`hardwareFamily`](#parameter-hardwarefamily) | string | If the service has different generations of hardware, for the same SKU, then that can be captured here. |
@@ -1123,7 +1113,7 @@ param vulnerabilityAssessmentsObj = {
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`maintenanceWindow`](#parameter-maintenancewindow) | string | The maintenance window for the SQL Managed Instance.<p><p>SystemManaged: The system automatically selects a 9-hour maintenance window between 8:00 AM to 5:00 PM local time, Monday - Sunday.<p>Custom1: Weekday window: 10:00 PM to 6:00 AM local time, Monday - Thursday.<p>Custom2: Weekend window: 10:00 PM to 6:00 AM local time, Friday - Sunday.<p> |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
-| [`managedInstanceCreateMode`](#parameter-managedinstancecreatemode) | string | Specifies the mode of database creation. Default: Regular instance creation. Restore: Creates an instance by restoring a set of backups to specific point in time. RestorePointInTime and SourceManagedInstanceId must be specified. |
+| [`managedInstanceCreateMode`](#parameter-managedinstancecreatemode) | string | Specifies the mode of database creation. Default: Regular instance creation. Restore: Creates an instance by restoring a set of backups to specific point in time. RestorePointInTime and sourceManagedInstanceResourceId must be specified. |
 | [`minimalTlsVersion`](#parameter-minimaltlsversion) | string | Minimal TLS version allowed. |
 | [`proxyOverride`](#parameter-proxyoverride) | string | Connection type used for connecting to the instance. |
 | [`publicDataEndpointEnabled`](#parameter-publicdataendpointenabled) | bool | Whether or not the public data endpoint is enabled. |
@@ -1134,7 +1124,7 @@ param vulnerabilityAssessmentsObj = {
 | [`servicePrincipal`](#parameter-serviceprincipal) | string | Service principal type. If using AD Authentication and applying Admin, must be set to `SystemAssigned`. Then Global Admin must allow Reader access to Azure AD for the Service Principal. |
 | [`skuName`](#parameter-skuname) | string | The name of the SKU, typically, a letter + Number code, e.g. P3. |
 | [`skuTier`](#parameter-skutier) | string | The tier or edition of the particular SKU, e.g. Basic, Premium. |
-| [`sourceManagedInstanceId`](#parameter-sourcemanagedinstanceid) | string | The resource identifier of the source managed instance associated with create operation of this instance. |
+| [`sourceManagedInstanceResourceId`](#parameter-sourcemanagedinstanceresourceid) | string | The resource identifier of the source managed instance associated with create operation of this instance. |
 | [`storageSizeInGB`](#parameter-storagesizeingb) | int | Storage size in GB. Minimum value: 32. Maximum value: 8192. Increments of 32 GB allowed only. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`timezoneId`](#parameter-timezoneid) | string | ID of the timezone. Allowed values are timezones supported by Windows. |
@@ -1170,7 +1160,7 @@ The fully qualified resource ID of the subnet on which the SQL managed instance 
 - Required: Yes
 - Type: string
 
-### Parameter: `primaryUserAssignedIdentityId`
+### Parameter: `primaryUserAssignedIdentityResourceId`
 
 The resource ID of a user assigned identity to be used by default. Required if "userAssignedIdentities" is not empty.
 
@@ -1347,7 +1337,7 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 - Required: No
 - Type: string
 
-### Parameter: `dnsZonePartner`
+### Parameter: `dnsZonePartnerResourceId`
 
 The resource ID of another managed instance whose DNS zone this managed instance will share after creation.
 
@@ -1498,7 +1488,7 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 
 ### Parameter: `managedInstanceCreateMode`
 
-Specifies the mode of database creation. Default: Regular instance creation. Restore: Creates an instance by restoring a set of backups to specific point in time. RestorePointInTime and SourceManagedInstanceId must be specified.
+Specifies the mode of database creation. Default: Regular instance creation. Restore: Creates an instance by restoring a set of backups to specific point in time. RestorePointInTime and sourceManagedInstanceResourceId must be specified.
 
 - Required: No
 - Type: string
@@ -1725,7 +1715,7 @@ The tier or edition of the particular SKU, e.g. Basic, Premium.
 - Type: string
 - Default: `'GeneralPurpose'`
 
-### Parameter: `sourceManagedInstanceId`
+### Parameter: `sourceManagedInstanceResourceId`
 
 The resource identifier of the source managed instance associated with create operation of this instance.
 

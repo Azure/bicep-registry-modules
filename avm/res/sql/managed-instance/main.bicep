@@ -49,7 +49,7 @@ param zoneRedundant bool = false
 ])
 param servicePrincipal string = 'None'
 
-@description('Optional. Specifies the mode of database creation. Default: Regular instance creation. Restore: Creates an instance by restoring a set of backups to specific point in time. RestorePointInTime and SourceManagedInstanceId must be specified.')
+@description('Optional. Specifies the mode of database creation. Default: Regular instance creation. Restore: Creates an instance by restoring a set of backups to specific point in time. RestorePointInTime and sourceManagedInstanceResourceId must be specified.')
 @allowed([
   'Default'
   'PointInTimeRestore'
@@ -57,7 +57,7 @@ param servicePrincipal string = 'None'
 param managedInstanceCreateMode string = 'Default'
 
 @description('Optional. The resource ID of another managed instance whose DNS zone this managed instance will share after creation.')
-param dnsZonePartner string?
+param dnsZonePartnerResourceId string?
 
 @description('Optional. Collation of the managed instance.')
 param collation string = 'SQL_Latin1_General_CP1_CI_AS'
@@ -83,7 +83,7 @@ param instancePoolResourceId string?
 param restorePointInTime string?
 
 @description('Optional. The resource identifier of the source managed instance associated with create operation of this instance.')
-param sourceManagedInstanceId string?
+param sourceManagedInstanceResourceId string?
 
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The diagnostic settings of the service.')
@@ -108,7 +108,7 @@ import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types
 param managedIdentities managedIdentityAllType?
 
 @description('Conditional. The resource ID of a user assigned identity to be used by default. Required if "userAssignedIdentities" is not empty.')
-param primaryUserAssignedIdentityId string?
+param primaryUserAssignedIdentityResourceId string?
 
 @description('Optional. Databases to create in this server.')
 param databases array = []
@@ -273,14 +273,14 @@ resource managedInstance 'Microsoft.Sql/managedInstances@2024-05-01-preview' = {
     vCores: vCores
     storageSizeInGB: storageSizeInGB
     collation: collation
-    dnsZonePartner: dnsZonePartner
+    dnsZonePartner: dnsZonePartnerResourceId
     publicDataEndpointEnabled: publicDataEndpointEnabled
-    sourceManagedInstanceId: sourceManagedInstanceId
+    sourceManagedInstanceId: sourceManagedInstanceResourceId
     restorePointInTime: restorePointInTime
     proxyOverride: proxyOverride
     timezoneId: timezoneId
     instancePoolId: instancePoolResourceId
-    primaryUserAssignedIdentityId: primaryUserAssignedIdentityId
+    primaryUserAssignedIdentityId: primaryUserAssignedIdentityResourceId
     requestedBackupStorageRedundancy: requestedBackupStorageRedundancy
     zoneRedundant: zoneRedundant
     servicePrincipal: {
