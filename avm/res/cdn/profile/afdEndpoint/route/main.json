@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "3826115860857971765"
+      "version": "0.33.13.18514",
+      "templateHash": "6040094508639145269"
     },
     "name": "CDN Profiles AFD Endpoint Route",
     "description": "This module deploys a CDN Profile AFD Endpoint route."
@@ -307,7 +307,7 @@
     },
     "profile::customDomains": {
       "copy": {
-        "name": "customDomains",
+        "name": "profile::customDomains",
         "count": "[length(coalesce(parameters('customDomainNames'), createArray()))]"
       },
       "existing": true,
@@ -323,7 +323,7 @@
     },
     "profile::ruleSet": {
       "copy": {
-        "name": "ruleSet",
+        "name": "profile::ruleSet",
         "count": "[length(parameters('ruleSets'))]"
       },
       "existing": true,
