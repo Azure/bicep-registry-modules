@@ -584,8 +584,8 @@ type privateEndpointOutputType = {
 }
 
 @export()
-@description('The type for the cognitive services account deployments.')
-type deploymentsType = {
+@description('The type for a cognitive services account deployment.')
+type deploymentType = {
   @description('Optional. Specify the name of cognitive service account deployment.')
   name: string?
 
