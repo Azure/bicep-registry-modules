@@ -214,12 +214,12 @@ var localModuleDeploymentNameFormat = 'ckm-deploy-module-{0}'
 // VARIABLES: AI Foundry AI Hub configuration defaults
 var aiFoundryAiHubResourceName = aiFoundryAiHubConfiguration.?name ?? '${solutionPrefix}-aifd-aihb'
 var aiFoundryAiHubLocation = aiFoundryAiHubConfiguration.?location ?? solutionLocation
-var aiFoundryAiHubSkuName = aiFoundryAiHubConfiguration.?aiFoundryAiHubSkuName ?? 'Basic'
+var aiFoundryAiHubSkuName = aiFoundryAiHubConfiguration.?sku ?? 'Basic'
 
 // VARIABLES: AI Foundry AI Project configuration defaults
 var aiFoundryAiProjectResourceName = aiFoundryAiProjectConfiguration.?name ?? '${solutionPrefix}-aifd-aipj'
 var aiFoundryAiProjectLocation = aiFoundryAiProjectConfiguration.?location ?? solutionLocation
-var aiFoundryAiProjectSkuName = aiFoundryAiProjectConfiguration.?aiFoundryAiProjectSkuName ?? 'Standard'
+var aiFoundryAiProjectSkuName = aiFoundryAiProjectConfiguration.?sku ?? 'Standard'
 
 // VARIABLES: AI Foundry AI Service Content Understanding configuration defaults
 var aiFoundryAiServicesContentUnderstandingResourceName = aiFoundryAiServicesContentUnderstandingConfiguration.?name ?? '${solutionPrefix}-aifd-aisr-cu'
@@ -318,22 +318,22 @@ var functionChartsResourceName = functionChartsConfiguration.?name ?? '${solutio
 var functionChartsLocation = functionChartsConfiguration.?location ?? solutionLocation
 var functionChartDockerImageContainerRegistryUrl = functionChartsConfiguration.?dockerImageContainerRegistryUrl ?? 'kmcontainerreg.azurecr.io'
 var functionChartDockerImageName = functionChartsConfiguration.?dockerImageName ?? 'km-charts-function'
-var functionChartDockerImageTag = functionChartsConfiguration.?functionChartDockerImageTag ?? 'latest_2025-03-20_276'
-var functionChartCpu = functionChartsConfiguration.?functionChartCpu ?? 1
-var functionChartMemory = functionChartsConfiguration.?functionChartMemory ?? '2Gi'
-var functionChartAppScaleLimit = functionChartsConfiguration.?functionChartAppScaleLimit ?? 10
-var functionChartsFunctionName = functionChartsConfiguration.?functionChartsFunctionName ?? 'get_metrics'
+var functionChartDockerImageTag = functionChartsConfiguration.?dockerImageTag ?? 'latest_2025-03-20_276'
+var functionChartCpu = functionChartsConfiguration.?cpu ?? 1
+var functionChartMemory = functionChartsConfiguration.?memory ?? '2Gi'
+var functionChartAppScaleLimit = functionChartsConfiguration.?appScaleLimit ?? 10
+var functionChartsFunctionName = functionChartsConfiguration.?functionName ?? 'get_metrics'
 
 // VARIABLES: Function Rag configuration defaults
 var functionRagResourceName = functionRagConfiguration.?name ?? '${solutionPrefix}-azfn-frag'
 var functionRagLocation = functionRagConfiguration.?location ?? solutionLocation
 var functionRagDockerImageContainerRegistryUrl = functionRagConfiguration.?dockerImageContainerRegistryUrl ?? 'kmcontainerreg.azurecr.io'
 var functionRagDockerImageName = functionRagConfiguration.?dockerImageName ?? 'km-rag-function'
-var functionRagDockerImageTag = functionRagConfiguration.?functionRagDockerImageTag ?? 'latest_2025-03-20_276'
-var functionRagCpu = functionRagConfiguration.?functionRagCpu ?? 1
-var functionRagMemory = functionRagConfiguration.?functionRagMemory ?? '2Gi'
-var functionRagAppScaleLimit = functionRagConfiguration.?functionRagAppScaleLimit ?? 10
-var functionRagFunctionName = functionRagConfiguration.?functionRagFunctionName ?? 'stream_openai_text'
+var functionRagDockerImageTag = functionRagConfiguration.?dockerImageTag ?? 'latest_2025-03-20_276'
+var functionRagCpu = functionRagConfiguration.?cpu ?? 1
+var functionRagMemory = functionRagConfiguration.?memory ?? '2Gi'
+var functionRagAppScaleLimit = functionRagConfiguration.?appScaleLimit ?? 10
+var functionRagFunctionName = functionRagConfiguration.?functionName ?? 'stream_openai_text'
 
 // VARIABLES: Functions Managed Environment configuration defaults
 var functionsManagedEnvironmentResourceName = functionsManagedEnvironmentConfiguration.?name ?? '${solutionPrefix}-fnme'
