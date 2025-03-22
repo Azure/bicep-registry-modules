@@ -96,6 +96,19 @@ param customDomains array = []
 ])
 param publicNetworkAccess string = ''
 
+@description('Optional. Due the nature of Azure Static Apps, a partition ID is added to the app URL upon creation. Enabling the creation of the private DNS Zone will provision a DNS Zone with the correct partition ID, this is required for private endpoint connectivity to be enabled. You can choose to disable this option and create your own private DNS Zone by leveraging the output of the partitionId within this module. Default is `Enabled`, However the Private DNS Zone will only be created following if a `privateEndpoint` configuration is supplied.')
+@allowed([
+  'Enabled'
+  'Disabled'
+])
+param createPrivateDnsZone string = 'Enabled'
+
+@description('Conditional. The Virtual Network Resource Id to use for the private DNS Zone Vnet Link. Required if `createPrivateDnsZone` is set to `Enabled` and a Private Endpoint Configuration is supplied.')
+param virtualNetworkResourceId string = ''
+
+@description('Condiitonal. If you choose to create your own private DNS Zone, you can provide the resource ID of the private DNS Zone here. Required if `createPrivateDnsZone` is enabled and a `privateEndpoint` configuration is supplied.')
+param customPrivateDnsZoneResourceId string = ''
+
 var enableReferencedModulesTelemetry = false
 
 var formattedUserAssignedIdentities = reduce(
@@ -108,7 +121,7 @@ var identity = !empty(managedIdentities)
   ? {
       type: (managedIdentities.?systemAssigned ?? false)
         ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned, UserAssigned' : 'SystemAssigned')
-        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : null)
+        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
   : null
@@ -257,6 +270,19 @@ resource staticSite_roleAssignments 'Microsoft.Authorization/roleAssignments@202
   }
 ]
 
+module staticSite_privateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.0' = if (!empty(privateEndpoints) && createPrivateDnsZone == 'Enabled') {
+  name: '${uniqueString(deployment().name, location)}-staticSite-PrivateDnsZone'
+  params: {
+    name: 'privatelink.${staticSite.properties.defaultHostname}.azurestaticapps.net'
+    enableTelemetry: enableReferencedModulesTelemetry
+    virtualNetworkLinks: [
+      {
+        virtualNetworkResourceId: virtualNetworkResourceId
+      }
+    ]
+  }
+}
+
 module staticSite_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-staticSite-PrivateEndpoint-${index}'
@@ -301,7 +327,15 @@ module staticSite_privateEndpoints 'br/public:avm/res/network/private-endpoint:0
         'Full'
       ).location
       lock: privateEndpoint.?lock ?? lock
-      privateDnsZoneGroup: privateEndpoint.?privateDnsZoneGroup
+      privateDnsZoneGroup: {
+        privateDnsZoneGroupConfigs: [
+          {
+            privateDnsZoneResourceId: (createPrivateDnsZone != 'Disabled')
+              ? staticSite_privateDnsZone.outputs.resourceId
+              : customPrivateDnsZoneResourceId
+          }
+        ]
+      }
       roleAssignments: privateEndpoint.?roleAssignments
       tags: privateEndpoint.?tags ?? tags
       customDnsConfigs: privateEndpoint.?customDnsConfigs
