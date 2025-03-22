@@ -13,11 +13,11 @@ metadata description = '''This module deploys the [Conversation Knowledge Mining
 @maxLength(12)
 param solutionPrefix string
 
-@description('Optional. Location for all the deployed Azure resources except databases. Defaulted to East US.')
+@description('Optional. Location for all the deployed Azure resources except databases. Defaults to East US.')
 @metadata({ azd: { type: 'location' } })
 param solutionLocation string = 'East US'
 
-@description('Optional. Location for all the deployed databases Azure resources. Defaulted to East US 2.')
+@description('Optional. Location for all the deployed databases Azure resources. Defaults to East US 2.')
 @metadata({ azd: { type: 'location' } })
 param databasesLocation string = 'East US 2'
 
