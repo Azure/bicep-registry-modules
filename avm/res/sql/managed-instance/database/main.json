@@ -5,13 +5,188 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "1538162937602224879"
+      "version": "0.33.93.31351",
+      "templateHash": "16462212043812771881"
     },
     "name": "SQL Managed Instance Databases",
     "description": "This module deploys a SQL Managed Instance Database."
   },
   "definitions": {
+    "managedInstanceLongTermRetentionPolicyType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the long term retention policy. If not specified, 'default' name will be used."
+          }
+        },
+        "backupStorageAccessTier": {
+          "type": "string",
+          "allowedValues": [
+            "Archive",
+            "Hot"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The BackupStorageAccessTier for the LTR backups."
+          }
+        },
+        "monthlyRetention": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The monthly retention policy for an LTR backup in an ISO 8601 format."
+          }
+        },
+        "weeklyRetention": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The weekly retention policy for an LTR backup in an ISO 8601 format."
+          }
+        },
+        "weekOfYear": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The week of year to take the yearly backup in an ISO 8601 format."
+          }
+        },
+        "yearlyRetention": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The yearly retention policy for an LTR backup in an ISO 8601 format."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for the long term backup retention policy."
+      }
+    },
+    "managedInstanceShortTermRetentionPolicyType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the short term retention policy. If not specified, 'default' name will be used."
+          }
+        },
+        "retentionDays": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The backup retention period in days. This is how many days Point-in-Time Restore will be supported. If not specified, the default value is 35 days."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for the short term backup retention policy."
+      }
+    },
+    "diagnosticSettingLogsOnlyType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of diagnostic setting."
+          }
+        },
+        "logCategoriesAndGroups": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "category": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
+                }
+              },
+              "categoryGroup": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
+                }
+              },
+              "enabled": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
+          }
+        },
+        "logAnalyticsDestinationType": {
+          "type": "string",
+          "allowedValues": [
+            "AzureDiagnostics",
+            "Dedicated"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
+          }
+        },
+        "workspaceResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "storageAccountResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "eventHubAuthorizationRuleResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
+          }
+        },
+        "eventHubName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "marketplacePartnerResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a diagnostic setting. To be used if only logs are supported by the resource provider.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    },
     "lockType": {
       "type": "object",
       "properties": {
@@ -35,95 +210,12 @@
           }
         }
       },
-      "nullable": true
-    },
-    "diagnosticSettingType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of diagnostic setting."
-            }
-          },
-          "logCategoriesAndGroups": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "category": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
-                  }
-                },
-                "categoryGroup": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to 'AllLogs' to collect all logs."
-                  }
-                }
-              }
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to '' to disable log collection."
-            }
-          },
-          "logAnalyticsDestinationType": {
-            "type": "string",
-            "allowedValues": [
-              "AzureDiagnostics",
-              "Dedicated"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
-            }
-          },
-          "workspaceResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-            }
-          },
-          "storageAccountResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-            }
-          },
-          "eventHubAuthorizationRuleResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
-            }
-          },
-          "eventHubName": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-            }
-          },
-          "marketplacePartnerResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
-            }
-          }
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
-      },
-      "nullable": true
+      }
     }
   },
   "parameters": {
@@ -176,75 +268,80 @@
     },
     "sourceDatabaseId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Conditional. The resource identifier of the source database associated with create operation of this database. Required if createMode is PointInTimeRestore."
       }
     },
     "restorePointInTime": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Conditional. Specifies the point in time (ISO8601 format) of the source database that will be restored to create the new database. Required if createMode is PointInTimeRestore."
       }
     },
     "restorableDroppedDatabaseId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The restorable dropped database resource ID to restore when creating this database."
       }
     },
     "storageContainerUri": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Conditional. Specifies the uri of the storage container where backups for this restore are stored. Required if createMode is RestoreExternalBackup."
       }
     },
     "storageContainerSasToken": {
       "type": "securestring",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Conditional. Specifies the storage container sas token. Required if createMode is RestoreExternalBackup."
       }
     },
     "recoverableDatabaseId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Conditional. The resource identifier of the recoverable database associated with create operation of this database. Required if createMode is Recovery."
       }
     },
     "longTermRetentionBackupResourceId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Conditional. The resource ID of the Long Term Retention backup to be used for restore of this managed database. Required if createMode is RestoreLongTermRetentionBackup."
       }
     },
     "diagnosticSettings": {
-      "$ref": "#/definitions/diagnosticSettingType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/diagnosticSettingLogsOnlyType"
+      },
+      "nullable": true,
       "metadata": {
-        "description": "Optional. The diagnostic settings of the service."
+        "description": "Optional. The database-level diagnostic settings of the service."
       }
     },
     "lock": {
       "$ref": "#/definitions/lockType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The lock settings of the service."
       }
     },
-    "backupShortTermRetentionPoliciesObj": {
-      "type": "object",
-      "defaultValue": {},
+    "backupShortTermRetentionPolicy": {
+      "$ref": "#/definitions/managedInstanceShortTermRetentionPolicyType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The configuration for the backup short term retention policy definition."
       }
     },
-    "backupLongTermRetentionPoliciesObj": {
-      "type": "object",
-      "defaultValue": {},
+    "backupLongTermRetentionPolicy": {
+      "$ref": "#/definitions/managedInstanceLongTermRetentionPolicyType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The configuration for the backup long term retention policy definition."
       }
@@ -261,26 +358,26 @@
     "managedInstance": {
       "existing": true,
       "type": "Microsoft.Sql/managedInstances",
-      "apiVersion": "2023-08-01-preview",
+      "apiVersion": "2024-05-01-preview",
       "name": "[parameters('managedInstanceName')]"
     },
     "database": {
       "type": "Microsoft.Sql/managedInstances/databases",
-      "apiVersion": "2023-08-01-preview",
+      "apiVersion": "2024-05-01-preview",
       "name": "[format('{0}/{1}', parameters('managedInstanceName'), parameters('name'))]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "properties": {
-        "collation": "[if(empty(parameters('collation')), null(), parameters('collation'))]",
-        "restorePointInTime": "[if(empty(parameters('restorePointInTime')), null(), parameters('restorePointInTime'))]",
-        "catalogCollation": "[if(empty(parameters('catalogCollation')), null(), parameters('catalogCollation'))]",
-        "createMode": "[if(empty(parameters('createMode')), null(), parameters('createMode'))]",
-        "storageContainerUri": "[if(empty(parameters('storageContainerUri')), null(), parameters('storageContainerUri'))]",
-        "sourceDatabaseId": "[if(empty(parameters('sourceDatabaseId')), null(), parameters('sourceDatabaseId'))]",
-        "restorableDroppedDatabaseId": "[if(empty(parameters('restorableDroppedDatabaseId')), null(), parameters('restorableDroppedDatabaseId'))]",
-        "storageContainerSasToken": "[if(empty(parameters('storageContainerSasToken')), null(), parameters('storageContainerSasToken'))]",
-        "recoverableDatabaseId": "[if(empty(parameters('recoverableDatabaseId')), null(), parameters('recoverableDatabaseId'))]",
-        "longTermRetentionBackupResourceId": "[if(empty(parameters('longTermRetentionBackupResourceId')), null(), parameters('longTermRetentionBackupResourceId'))]"
+        "collation": "[parameters('collation')]",
+        "restorePointInTime": "[parameters('restorePointInTime')]",
+        "catalogCollation": "[parameters('catalogCollation')]",
+        "createMode": "[parameters('createMode')]",
+        "storageContainerUri": "[parameters('storageContainerUri')]",
+        "sourceDatabaseId": "[parameters('sourceDatabaseId')]",
+        "restorableDroppedDatabaseId": "[parameters('restorableDroppedDatabaseId')]",
+        "storageContainerSasToken": "[parameters('storageContainerSasToken')]",
+        "recoverableDatabaseId": "[parameters('recoverableDatabaseId')]",
+        "longTermRetentionBackupResourceId": "[parameters('longTermRetentionBackupResourceId')]"
       }
     },
     "database_lock": {
@@ -330,7 +427,7 @@
       ]
     },
     "database_backupShortTermRetentionPolicy": {
-      "condition": "[not(empty(parameters('backupShortTermRetentionPoliciesObj')))]",
+      "condition": "[not(empty(parameters('backupShortTermRetentionPolicy')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-BackupShortTRetPol', deployment().name)]",
@@ -347,9 +444,11 @@
             "value": "[last(split(parameters('name'), '/'))]"
           },
           "name": {
-            "value": "[parameters('backupShortTermRetentionPoliciesObj').name]"
+            "value": "[tryGet(parameters('backupShortTermRetentionPolicy'), 'name')]"
           },
-          "retentionDays": "[if(contains(parameters('backupShortTermRetentionPoliciesObj'), 'retentionDays'), createObject('value', parameters('backupShortTermRetentionPoliciesObj').retentionDays), createObject('value', 35))]"
+          "retentionDays": {
+            "value": "[tryGet(parameters('backupShortTermRetentionPolicy'), 'retentionDays')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -357,8 +456,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "5286316596090026143"
+              "version": "0.33.93.31351",
+              "templateHash": "11456772619785800996"
             },
             "name": "SQL Managed Instance Database Backup Short-Term Retention Policies",
             "description": "This module deploys a SQL Managed Instance Database Backup Short-Term Retention Policy."
@@ -366,8 +465,9 @@
           "parameters": {
             "name": {
               "type": "string",
+              "defaultValue": "default",
               "metadata": {
-                "description": "Required. The name of the Short Term Retention backup policy. For example \"default\"."
+                "description": "Optional. The name of the Short Term Retention backup policy."
               }
             },
             "databaseName": {
@@ -393,7 +493,7 @@
           "resources": [
             {
               "type": "Microsoft.Sql/managedInstances/databases/backupShortTermRetentionPolicies",
-              "apiVersion": "2023-08-01-preview",
+              "apiVersion": "2024-05-01-preview",
               "name": "[format('{0}/{1}/{2}', parameters('managedInstanceName'), parameters('databaseName'), parameters('name'))]",
               "properties": {
                 "retentionDays": "[parameters('retentionDays')]"
@@ -430,7 +530,7 @@
       ]
     },
     "database_backupLongTermRetentionPolicy": {
-      "condition": "[not(empty(parameters('backupLongTermRetentionPoliciesObj')))]",
+      "condition": "[not(empty(parameters('backupLongTermRetentionPolicy')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-BackupLongTRetPol', deployment().name)]",
@@ -447,12 +547,20 @@
             "value": "[last(split(parameters('name'), '/'))]"
           },
           "name": {
-            "value": "[parameters('backupLongTermRetentionPoliciesObj').name]"
+            "value": "[tryGet(parameters('backupLongTermRetentionPolicy'), 'name')]"
           },
-          "weekOfYear": "[if(contains(parameters('backupLongTermRetentionPoliciesObj'), 'weekOfYear'), createObject('value', parameters('backupLongTermRetentionPoliciesObj').weekOfYear), createObject('value', 5))]",
-          "weeklyRetention": "[if(contains(parameters('backupLongTermRetentionPoliciesObj'), 'weeklyRetention'), createObject('value', parameters('backupLongTermRetentionPoliciesObj').weeklyRetention), createObject('value', 'P1M'))]",
-          "monthlyRetention": "[if(contains(parameters('backupLongTermRetentionPoliciesObj'), 'monthlyRetention'), createObject('value', parameters('backupLongTermRetentionPoliciesObj').monthlyRetention), createObject('value', 'P1Y'))]",
-          "yearlyRetention": "[if(contains(parameters('backupLongTermRetentionPoliciesObj'), 'yearlyRetention'), createObject('value', parameters('backupLongTermRetentionPoliciesObj').yearlyRetention), createObject('value', 'P5Y'))]"
+          "weekOfYear": {
+            "value": "[tryGet(parameters('backupLongTermRetentionPolicy'), 'weekOfYear')]"
+          },
+          "weeklyRetention": {
+            "value": "[tryGet(parameters('backupLongTermRetentionPolicy'), 'weeklyRetention')]"
+          },
+          "monthlyRetention": {
+            "value": "[tryGet(parameters('backupLongTermRetentionPolicy'), 'monthlyRetention')]"
+          },
+          "yearlyRetention": {
+            "value": "[tryGet(parameters('backupLongTermRetentionPolicy'), 'yearlyRetention')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -460,8 +568,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "7325115054986992226"
+              "version": "0.33.93.31351",
+              "templateHash": "4471544038808802530"
             },
             "name": "SQL Managed Instance Database Backup Long-Term Retention Policies",
             "description": "This module deploys a SQL Managed Instance Database Backup Long-Term Retention Policy."
@@ -469,8 +577,9 @@
           "parameters": {
             "name": {
               "type": "string",
+              "defaultValue": "default",
               "metadata": {
-                "description": "Required. The name of the Long Term Retention backup policy. For example \"default\"."
+                "description": "Optional. The name of the Long Term Retention backup policy."
               }
             },
             "databaseName": {
@@ -483,6 +592,17 @@
               "type": "string",
               "metadata": {
                 "description": "Conditional. The name of the parent managed instance. Required if the template is used in a standalone deployment."
+              }
+            },
+            "backupStorageAccessTier": {
+              "type": "string",
+              "defaultValue": "Hot",
+              "allowedValues": [
+                "Archive",
+                "Hot"
+              ],
+              "metadata": {
+                "description": "Optional. The BackupStorageAccessTier for the LTR backups."
               }
             },
             "weekOfYear": {
@@ -517,9 +637,10 @@
           "resources": [
             {
               "type": "Microsoft.Sql/managedInstances/databases/backupLongTermRetentionPolicies",
-              "apiVersion": "2022-05-01-preview",
+              "apiVersion": "2024-05-01-preview",
               "name": "[format('{0}/{1}/{2}', parameters('managedInstanceName'), parameters('databaseName'), parameters('name'))]",
               "properties": {
+                "backupStorageAccessTier": "[parameters('backupStorageAccessTier')]",
                 "monthlyRetention": "[parameters('monthlyRetention')]",
                 "weeklyRetention": "[parameters('weeklyRetention')]",
                 "weekOfYear": "[parameters('weekOfYear')]",
@@ -553,7 +674,8 @@
         }
       },
       "dependsOn": [
-        "database"
+        "database",
+        "database_backupShortTermRetentionPolicy"
       ]
     }
   },
@@ -584,7 +706,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('database', '2023-08-01-preview', 'full').location]"
+      "value": "[reference('database', '2024-05-01-preview', 'full').location]"
     }
   }
 }

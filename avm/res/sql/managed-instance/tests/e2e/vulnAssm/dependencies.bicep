@@ -7,6 +7,12 @@ param networkSecurityGroupName string
 @description('Required. The name of the Route Table to create.')
 param routeTableName string
 
+@description('Required. The name of the Managed Identity to create.')
+param managedIdentityName string
+
+@description('Required. The name of the Deployment Script to create to get the paired region name.')
+param pairedRegionScriptName string
+
 @description('Optional. The location to deploy resources to.')
 param location string = resourceGroup().location
 
@@ -16,7 +22,45 @@ param storageAccountName string
 var addressPrefix = '10.0.0.0/16'
 var addressPrefixString = replace(replace(addressPrefix, '.', '-'), '/', '-')
 
-resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2023-04-01' = {
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
+  name: managedIdentityName
+  location: location
+}
+
+resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid('msi-${location}-${managedIdentity.id}-Reader-RoleAssignment')
+  properties: {
+    principalId: managedIdentity.properties.principalId
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+    ) // Reader
+    principalType: 'ServicePrincipal'
+  }
+}
+
+resource getPairedRegionScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
+  name: pairedRegionScriptName
+  location: location
+  kind: 'AzurePowerShell'
+  identity: {
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${managedIdentity.id}': {}
+    }
+  }
+  properties: {
+    azPowerShellVersion: '8.0'
+    retentionInterval: 'P1D'
+    arguments: '-Location \\"${location}\\"'
+    scriptContent: loadTextContent('../../../../../../../utilities/e2e-template-assets/scripts/Get-PairedRegion.ps1')
+  }
+  dependsOn: [
+    roleAssignment
+  ]
+}
+
+resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2024-05-01' = {
   name: networkSecurityGroupName
   location: location
   properties: {
@@ -114,7 +158,7 @@ resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2023-04-0
           sourceAddressPrefix: addressPrefix
           destinationAddressPrefix: 'AzureActiveDirectory'
           access: 'Allow'
-          priority: 101
+          priority: 100
           direction: 'Outbound'
         }
       }
@@ -128,7 +172,7 @@ resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2023-04-0
           sourceAddressPrefix: addressPrefix
           destinationAddressPrefix: 'OneDsCollector'
           access: 'Allow'
-          priority: 102
+          priority: 101
           direction: 'Outbound'
         }
       }
@@ -141,7 +185,7 @@ resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2023-04-0
           sourceAddressPrefix: addressPrefix
           destinationAddressPrefix: 'AzureCloud'
           access: 'Allow'
-          priority: 100
+          priority: 102
           direction: 'Outbound'
           destinationPortRanges: [
             '443'
@@ -164,28 +208,28 @@ resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2023-04-0
         }
       }
       {
-        name: 'mi-strg-p-out-${addressPrefixString}-v11'
+        name: 'Microsoft.Sql-managedInstances_UseOnly_mi-strg-p-out-${addressPrefixString}-v11'
         properties: {
           description: 'Allow outbound communication with storage over HTTPS'
           protocol: '*'
           sourcePortRange: '*'
           destinationPortRange: '443'
           sourceAddressPrefix: addressPrefix
-          destinationAddressPrefix: 'Storage.eastus'
+          destinationAddressPrefix: 'Storage.${location}'
           access: 'Allow'
           priority: 104
           direction: 'Outbound'
         }
       }
       {
-        name: 'mi-strg-s-out-${addressPrefixString}-v11'
+        name: 'Microsoft.Sql-managedInstances_UseOnly_mi-strg-s-out-${addressPrefixString}-v11'
         properties: {
           description: 'Allow outbound communication with storage over HTTPS'
           protocol: '*'
           sourcePortRange: '*'
           destinationPortRange: '443'
           sourceAddressPrefix: addressPrefix
-          destinationAddressPrefix: 'Storage.westus'
+          destinationAddressPrefix: 'Storage.${getPairedRegionScript.properties.outputs.pairedRegionName}'
           access: 'Allow'
           priority: 105
           direction: 'Outbound'
@@ -195,7 +239,7 @@ resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2023-04-0
   }
 }
 
-resource routeTable 'Microsoft.Network/routeTables@2023-04-01' = {
+resource routeTable 'Microsoft.Network/routeTables@2024-05-01' = {
   name: routeTableName
   location: location
   properties: {
@@ -206,7 +250,6 @@ resource routeTable 'Microsoft.Network/routeTables@2023-04-01' = {
         properties: {
           addressPrefix: addressPrefix
           nextHopType: 'VnetLocal'
-          hasBgpOverride: false
         }
       }
       {
@@ -214,23 +257,6 @@ resource routeTable 'Microsoft.Network/routeTables@2023-04-01' = {
         properties: {
           addressPrefix: 'Storage'
           nextHopType: 'Internet'
-          hasBgpOverride: false
-        }
-      }
-      {
-        name: 'Microsoft.Sql-managedInstances_UseOnly_mi-Storage.eastus'
-        properties: {
-          addressPrefix: 'Storage.eastus'
-          nextHopType: 'Internet'
-          hasBgpOverride: false
-        }
-      }
-      {
-        name: 'Microsoft.Sql-managedInstances_UseOnly_mi-Storage.westus'
-        properties: {
-          addressPrefix: 'Storage.westus'
-          nextHopType: 'Internet'
-          hasBgpOverride: false
         }
       }
       {
@@ -238,7 +264,6 @@ resource routeTable 'Microsoft.Network/routeTables@2023-04-01' = {
         properties: {
           addressPrefix: 'SqlManagement'
           nextHopType: 'Internet'
-          hasBgpOverride: false
         }
       }
       {
@@ -246,7 +271,6 @@ resource routeTable 'Microsoft.Network/routeTables@2023-04-01' = {
         properties: {
           addressPrefix: 'AzureMonitor'
           nextHopType: 'Internet'
-          hasBgpOverride: false
         }
       }
       {
@@ -254,7 +278,6 @@ resource routeTable 'Microsoft.Network/routeTables@2023-04-01' = {
         properties: {
           addressPrefix: 'CorpNetSaw'
           nextHopType: 'Internet'
-          hasBgpOverride: false
         }
       }
       {
@@ -262,7 +285,6 @@ resource routeTable 'Microsoft.Network/routeTables@2023-04-01' = {
         properties: {
           addressPrefix: 'CorpNetPublic'
           nextHopType: 'Internet'
-          hasBgpOverride: false
         }
       }
       {
@@ -270,7 +292,6 @@ resource routeTable 'Microsoft.Network/routeTables@2023-04-01' = {
         properties: {
           addressPrefix: 'AzureActiveDirectory'
           nextHopType: 'Internet'
-          hasBgpOverride: false
         }
       }
       {
@@ -278,62 +299,55 @@ resource routeTable 'Microsoft.Network/routeTables@2023-04-01' = {
         properties: {
           addressPrefix: 'OneDsCollector'
           nextHopType: 'Internet'
-          hasBgpOverride: false
         }
       }
       {
-        name: 'Microsoft.Sql-managedInstances_UseOnly_mi-AzureCloud.westeurope'
+        name: 'Microsoft.Sql-managedInstances_UseOnly_mi-AzureCloud.${location}'
         properties: {
-          addressPrefix: 'AzureCloud.westeurope'
+          addressPrefix: 'AzureCloud.${location}'
           nextHopType: 'Internet'
-          hasBgpOverride: false
         }
       }
       {
-        name: 'Microsoft.Sql-managedInstances_UseOnly_mi-AzureCloud.northeurope'
+        name: 'Microsoft.Sql-managedInstances_UseOnly_mi-AzureCloud.${getPairedRegionScript.properties.outputs.pairedRegionName}'
         properties: {
-          addressPrefix: 'AzureCloud.northeurope'
+          addressPrefix: 'AzureCloud.${getPairedRegionScript.properties.outputs.pairedRegionName}'
           nextHopType: 'Internet'
-          hasBgpOverride: false
         }
       }
       {
-        name: 'Microsoft.Sql-managedInstances_UseOnly_mi-Storage.westeurope'
+        name: 'Microsoft.Sql-managedInstances_UseOnly_mi-Storage.${location}'
         properties: {
-          addressPrefix: 'Storage.westeurope'
+          addressPrefix: 'Storage.${location}'
           nextHopType: 'Internet'
-          hasBgpOverride: false
         }
       }
       {
-        name: 'Microsoft.Sql-managedInstances_UseOnly_mi-Storage.northeurope'
+        name: 'Microsoft.Sql-managedInstances_UseOnly_mi-Storage.${getPairedRegionScript.properties.outputs.pairedRegionName}'
         properties: {
-          addressPrefix: 'Storage.northeurope'
+          addressPrefix: 'Storage.${getPairedRegionScript.properties.outputs.pairedRegionName}'
           nextHopType: 'Internet'
-          hasBgpOverride: false
         }
       }
       {
-        name: 'Microsoft.Sql-managedInstances_UseOnly_mi-EventHub.westeurope'
+        name: 'Microsoft.Sql-managedInstances_UseOnly_mi-EventHub.${location}'
         properties: {
-          addressPrefix: 'EventHub.westeurope'
+          addressPrefix: 'EventHub.${location}'
           nextHopType: 'Internet'
-          hasBgpOverride: false
         }
       }
       {
-        name: 'Microsoft.Sql-managedInstances_UseOnly_mi-EventHub.northeurope'
+        name: 'Microsoft.Sql-managedInstances_UseOnly_mi-EventHub.${getPairedRegionScript.properties.outputs.pairedRegionName}'
         properties: {
-          addressPrefix: 'EventHub.northeurope'
+          addressPrefix: 'EventHub.${getPairedRegionScript.properties.outputs.pairedRegionName}'
           nextHopType: 'Internet'
-          hasBgpOverride: false
         }
       }
     ]
   }
 }
 
-resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
+resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-05-01' = {
   name: virtualNetworkName
   location: location
   properties: {
@@ -367,7 +381,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
   }
 }
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2021-08-01' = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' = {
   name: storageAccountName
   location: location
   kind: 'StorageV2'

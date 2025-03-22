@@ -57,7 +57,6 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}-${serviceShort}'
-      location: resourceLocation
       administratorLogin: 'adminUserName'
       administratorLoginPassword: password
       subnetResourceId: nestedDependencies.outputs.subnetResourceId

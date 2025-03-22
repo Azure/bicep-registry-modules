@@ -33,7 +33,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-11-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -45,6 +45,7 @@ module nestedDependencies 'dependencies.bicep' = {
     // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
     keyVaultName: 'dep${namePrefix}kv${serviceShort}${substring(uniqueString(baseTime), 0, 3)}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    pairedRegionScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     networkSecurityGroupName: 'dep-${namePrefix}-nsg-${serviceShort}'
     routeTableName: 'dep-${namePrefix}-rt-${serviceShort}'
@@ -84,10 +85,10 @@ module testDeployment '../../../main.bicep' = [
       collation: 'SQL_Latin1_General_CP1_CI_AS'
       databases: [
         {
-          backupLongTermRetentionPolicies: {
+          backupLongTermRetentionPolicy: {
             name: 'default'
           }
-          backupShortTermRetentionPolicies: {
+          backupShortTermRetentionPolicy: {
             name: 'default'
           }
           name: '${namePrefix}-${serviceShort}-db-001'
@@ -116,7 +117,7 @@ module testDeployment '../../../main.bicep' = [
           workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
         }
       ]
-      dnsZonePartner: ''
+      dnsZonePartnerResourceId: ''
       encryptionProtectorObj: {
         serverKeyName: '${nestedDependencies.outputs.keyVaultName}_${nestedDependencies.outputs.keyVaultKeyName}_${last(split(nestedDependencies.outputs.keyVaultEncryptionKeyUrl, '/'))}'
         serverKeyType: 'AzureKeyVault'
@@ -134,7 +135,7 @@ module testDeployment '../../../main.bicep' = [
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
       }
-      primaryUserAssignedIdentityId: nestedDependencies.outputs.managedIdentityResourceId
+      primaryUserAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
       proxyOverride: 'Proxy'
       publicDataEndpointEnabled: false
       roleAssignments: [
@@ -172,6 +173,7 @@ module testDeployment '../../../main.bicep' = [
           nestedDependencies.outputs.managedIdentityResourceId
         ]
       }
+      maintenanceWindow: 'Custom1'
       timezoneId: 'UTC'
       vCores: 4
       vulnerabilityAssessmentsObj: {
