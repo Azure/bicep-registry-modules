@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "2590231837756468091"
+      "templateHash": "13482370210272820045"
     },
     "name": "Cognitive Services",
     "description": "This module deploys a Cognitive Service."
@@ -76,7 +76,7 @@
         "description": "The type for the private endpoint output."
       }
     },
-    "deploymentsType": {
+    "deploymentType": {
       "type": "object",
       "properties": {
         "name": {
@@ -172,10 +172,10 @@
       },
       "metadata": {
         "__bicep_export!": true,
-        "description": "The type for the cognitive services account deployments."
+        "description": "The type for a cognitive services account deployment."
       }
     },
-    "endpointsType": {
+    "endpointType": {
       "type": "object",
       "properties": {
         "name": {
@@ -195,7 +195,7 @@
       },
       "metadata": {
         "__bicep_export!": true,
-        "description": "The type for the cognitive services account endpoints."
+        "description": "The type for a cognitive services account endpoint."
       }
     },
     "secretsExportConfigurationType": {
@@ -1037,7 +1037,7 @@
     "deployments": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/deploymentsType"
+        "$ref": "#/definitions/deploymentType"
       },
       "nullable": true,
       "metadata": {
@@ -2206,7 +2206,7 @@
       "value": "[reference('cognitiveService').endpoint]"
     },
     "endpoints": {
-      "$ref": "#/definitions/endpointsType",
+      "$ref": "#/definitions/endpointType",
       "metadata": {
         "description": "All endpoints available for the cognitive services account, types depends on the cognitive service kind."
       },

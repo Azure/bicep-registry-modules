@@ -127,7 +127,7 @@ param managedIdentities managedIdentityAllType?
 param enableTelemetry bool = true
 
 @description('Optional. Array of deployments about cognitive service accounts to create.')
-param deployments deploymentsType[]?
+param deployments deploymentType[]?
 
 @description('Optional. Key vault reference and secret settings for the module\'s secrets export.')
 param secretsExportConfiguration secretsExportConfigurationType?
@@ -529,7 +529,7 @@ output resourceGroupName string = resourceGroup().name
 output endpoint string = cognitiveService.properties.endpoint
 
 @description('All endpoints available for the cognitive services account, types depends on the cognitive service kind.')
-output endpoints endpointsType = cognitiveService.properties.endpoints
+output endpoints endpointType = cognitiveService.properties.endpoints
 
 @description('The principal ID of the system assigned identity.')
 output systemAssignedMIPrincipalId string? = cognitiveService.?identity.?principalId
