@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "18312606614037978405"
+      "templateHash": "500378130738855554"
     },
     "name": "SQL Managed Instances",
     "description": "This module deploys a SQL Managed Instance."
@@ -535,7 +535,7 @@
     },
     "maintenanceWindow": {
       "type": "string",
-      "defaultValue": "Custom2",
+      "defaultValue": "SystemManaged",
       "allowedValues": [
         "SystemManaged",
         "Custom1",

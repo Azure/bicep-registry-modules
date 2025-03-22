@@ -139,7 +139,7 @@ SystemManaged: The system automatically selects a 9-hour maintenance window betw
 Custom1: Weekday window: 10:00 PM to 6:00 AM local time, Monday - Thursday.
 Custom2: Weekend window: 10:00 PM to 6:00 AM local time, Friday - Sunday.
 ''')
-param maintenanceWindow string = 'Custom2'
+param maintenanceWindow string = 'SystemManaged'
 
 @description('Optional. Minimal TLS version allowed.')
 @allowed([

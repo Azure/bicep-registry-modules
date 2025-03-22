@@ -1448,7 +1448,7 @@ The maintenance window for the SQL Managed Instance.<p><p>SystemManaged: The sys
 
 - Required: No
 - Type: string
-- Default: `'Custom2'`
+- Default: `'SystemManaged'`
 - Allowed:
   ```Bicep
   [
