@@ -20,15 +20,15 @@ param databaseKind string = 'ReadWrite'
 @description('Optional. The properties of the database if using read-write. Only used if databaseKind is ReadWrite.')
 param databaseReadWriteProperties databaseReadWriteType
 
+@description('Optional. The principal assignments for the Kusto database.')
+param databasePrincipalAssignments databasePrincipalAssignmentType[]?
+
+// ============== //
+// Resources      //
+// ============== //
+
 resource kustoCluster 'Microsoft.Kusto/clusters@2024-04-13' existing = {
   name: kustoClusterName
-}
-
-resource database_readOnly 'Microsoft.Kusto/clusters/databases@2024-04-13' = if (databaseKind == 'ReadOnlyFollowing') {
-  name: name
-  parent: kustoCluster
-  location: location
-  kind: 'ReadOnlyFollowing'
 }
 
 resource database_readWrite 'Microsoft.Kusto/clusters/databases@2024-04-13' = if (databaseKind == 'ReadWrite') {
@@ -38,6 +38,24 @@ resource database_readWrite 'Microsoft.Kusto/clusters/databases@2024-04-13' = if
   kind: 'ReadWrite'
   properties: databaseReadWriteProperties ?? null
 }
+
+resource database_readOnly 'Microsoft.Kusto/clusters/databases@2024-04-13' = if (databaseKind == 'ReadOnlyFollowing') {
+  name: name
+  parent: kustoCluster
+  location: location
+  kind: 'ReadOnlyFollowing'
+}
+
+module database_readWrite_PrincipalAssignment './principal-assignment/main.bicep' = [
+  for (principalAssignment, index) in (databasePrincipalAssignments ?? []): {
+    name: '${uniqueString(deployment().name, location)}-KustoDatabase-PrincipalAssignment-${index}'
+    params: {
+      clusterName: kustoClusterName
+      databaseName: databaseKind == 'ReadOnlyFollowing' ? database_readOnly.name : database_readWrite.name
+      databasePrincipalAssignment: principalAssignment
+    }
+  }
+]
 
 // =============== //
 //     Outputs     //
@@ -55,6 +73,8 @@ output resourceGroupName string = resourceGroup().name
 // =============== //
 //   Definitions   //
 // =============== //
+
+import { databasePrincipalAssignmentType } from './principal-assignment/main.bicep'
 
 @export()
 @description('Conditional. The properties of the database if using read-write.')
