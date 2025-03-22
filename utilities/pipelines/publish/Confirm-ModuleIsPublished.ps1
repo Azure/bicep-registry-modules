@@ -37,12 +37,9 @@ function Confirm-ModuleIsPublished {
     $catalogUrl = "$baseUrl/_catalog"
     $moduleVersionsUrl = "$baseUrl/bicep/$PublishedModuleName/tags/list"
 
-    # TODO revert before merge
-    # $time_limit_seconds = 3600 # 1h
-    $time_limit_seconds = 30 # 1h
+    $time_limit_seconds = 3600 # 1h
     $end_time = (Get-Date).AddSeconds($time_limit_seconds)
-    # $retry_seconds = 60
-    $retry_seconds = 15
+    $retry_seconds = 60
     $index = 0
 
     #######################################
