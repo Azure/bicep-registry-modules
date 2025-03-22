@@ -1,0 +1,215 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.33.93.31351",
+      "templateHash": "13366072417349467027"
+    },
+    "name": "Maintenance Configuration Assignments",
+    "description": "This module deploys a Maintenance Configuration Assignment."
+  },
+  "definitions": {
+    "filterType": {
+      "type": "object",
+      "properties": {
+        "resourceGroups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. List of allowed resource group names."
+          }
+        },
+        "resourceTypes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. List of allowed resource types."
+          }
+        },
+        "locations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. List of locations to scope the query to."
+          }
+        },
+        "osTypes": {
+          "type": "array",
+          "allowedValues": [
+            "Linux",
+            "Windows"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. List of allowed operating systems."
+          }
+        },
+        "tagSettings": {
+          "type": "object",
+          "properties": {
+            "filterOperator": {
+              "type": "string",
+              "allowedValues": [
+                "All",
+                "Any"
+              ],
+              "metadata": {
+                "description": "Required. Filter VMs by Any or All specified tags."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. A key-value pair."
+                }
+              },
+              "metadata": {
+                "description": "Required. Dictionary of tags with its list of values."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Tag settings for the VM."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a managed configuration dynamic assignment filter."
+      }
+    }
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Maintenance configuration assignment Name."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. Location for all Resources."
+      }
+    },
+    "maintenanceConfigurationResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The maintenance configuration resource ID."
+      }
+    },
+    "resourceId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Conditional. The unique virtual machine resource ID to assign the configuration to. Required if filter is not provided. If resourceId is provided, filter is ignored. If provided, the module scope must be set to the resource group of the virtual machine."
+      }
+    },
+    "filter": {
+      "$ref": "#/definitions/filterType",
+      "nullable": true,
+      "metadata": {
+        "description": "Conditional. Properties of the dynamic configuration assignment. Required if resourceId is not provided."
+      }
+    }
+  },
+  "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2024-03-01",
+      "name": "[format('46d3xbcp.res.maintenance-configurationassignment.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
+    "vm": {
+      "condition": "[not(equals(parameters('resourceId'), null()))]",
+      "existing": true,
+      "type": "Microsoft.Compute/virtualMachines",
+      "apiVersion": "2024-07-01",
+      "name": "[last(split(coalesce(parameters('resourceId'), ''), '/'))]"
+    },
+    "configurationAssignment": {
+      "condition": "[not(equals(parameters('resourceId'), null()))]",
+      "type": "Microsoft.Maintenance/configurationAssignments",
+      "apiVersion": "2023-04-01",
+      "scope": "[format('Microsoft.Compute/virtualMachines/{0}', last(split(coalesce(parameters('resourceId'), ''), '/')))]",
+      "name": "[parameters('name')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "maintenanceConfigurationId": "[parameters('maintenanceConfigurationResourceId')]",
+        "resourceId": "[resourceId('Microsoft.Compute/virtualMachines', last(split(coalesce(parameters('resourceId'), ''), '/')))]"
+      }
+    },
+    "configurationAssignment_dynamic": {
+      "condition": "[equals(parameters('resourceId'), null())]",
+      "type": "Microsoft.Maintenance/configurationAssignments",
+      "apiVersion": "2023-04-01",
+      "name": "[parameters('name')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "filter": "[parameters('filter')]",
+        "maintenanceConfigurationId": "[parameters('maintenanceConfigurationResourceId')]"
+      }
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Maintenance configuration assignment."
+      },
+      "value": "[coalesce(parameters('name'), parameters('name'))]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the Maintenance configuration assignment."
+      },
+      "value": "[coalesce(extensionResourceId(resourceId('Microsoft.Compute/virtualMachines', last(split(coalesce(parameters('resourceId'), ''), '/'))), 'Microsoft.Maintenance/configurationAssignments', parameters('name')), resourceId('Microsoft.Maintenance/configurationAssignments', parameters('name')))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the Maintenance configuration assignment was created in."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

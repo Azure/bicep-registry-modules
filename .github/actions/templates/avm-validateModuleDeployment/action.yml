@@ -73,6 +73,11 @@ runs:
           # List of modules requiring service principal + secret authentication
           $modulePath = "${{ inputs.modulePath }}"
           $exceptionModulePaths = @(
+            'avm/ptn/lz/sub-vending'                             # Failing on resource deletion when trying to delete RBAC at subscription level (hub-spoke test)
+            'avm/res/azure-stack-hci/cluster'                    # Failing on resource deletion when trying to delete RBAC at subscription level
+            'avm/res/azure-stack-hci/logical-network'            # Failing on resource deletion when trying to delete RBAC at subscription level
+            'avm/res/azure-stack-hci/network-interface'          # Failing on resource deletion when trying to delete RBAC at subscription level
+            'avm/res/azure-stack-hci/virtual-hard-disk'          # Failing on resource deletion when trying to delete RBAC at subscription level
             'avm/res/compute/image'                              # Failing on resource deletion when trying to delete RBAC at subscription level
             'avm/res/compute/disk'                               # Failing on resource deletion when trying to delete RBAC at subscription level
             'avm/ptn/virtual-machine-images/azure-image-builder' # Failing on resource deletion when trying to delete RBAC at subscription level

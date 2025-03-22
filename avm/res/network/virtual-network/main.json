@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "17461823572424139738"
+      "version": "0.33.93.31351",
+      "templateHash": "3287254436599351961"
     },
     "name": "Virtual Networks",
     "description": "This module deploys a Virtual Network (vNet)."
@@ -829,8 +829,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "15508131240272677845"
+              "version": "0.33.93.31351",
+              "templateHash": "1989433230243572453"
             },
             "name": "Virtual Network Subnets",
             "description": "This module deploys a Virtual Network Subnet."
@@ -1237,8 +1237,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "3926757544002464477"
+              "version": "0.33.93.31351",
+              "templateHash": "13644695472933819194"
             },
             "name": "Virtual Network Peerings",
             "description": "This module deploys a Virtual Network Peering."
@@ -1394,8 +1394,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "3926757544002464477"
+              "version": "0.33.93.31351",
+              "templateHash": "13644695472933819194"
             },
             "name": "Virtual Network Peerings",
             "description": "This module deploys a Virtual Network Peering."

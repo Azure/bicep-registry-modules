@@ -59,8 +59,6 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     ]
     environmentResourceId: '<environmentResourceId>'
     name: 'acamin001'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -95,10 +93,6 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     },
     "name": {
       "value": "acamin001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -127,8 +121,6 @@ param containers = [
 ]
 param environmentResourceId = '<environmentResourceId>'
 param name = 'acamin001'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -162,7 +154,6 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     name: 'acapriv001'
     // Non-required parameters
     disableIngress: true
-    location: '<location>'
   }
 }
 ```
@@ -201,9 +192,6 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     // Non-required parameters
     "disableIngress": {
       "value": true
-    },
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -234,7 +222,6 @@ param environmentResourceId = '<environmentResourceId>'
 param name = 'acapriv001'
 // Non-required parameters
 param disableIngress = true
-param location = '<location>'
 ```
 
 </details>
@@ -335,19 +322,23 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
         ]
       }
     }
-    secrets: {
-      secureList: [
-        {
-          name: 'containerappstoredsecret'
-          value: '<value>'
-        }
-        {
-          identity: '<identity>'
-          keyVaultUrl: '<keyVaultUrl>'
-          name: 'keyvaultstoredsecret'
-        }
-      ]
+    scaleSettings: {
+      cooldownPeriod: 500
+      maxReplicas: 11
+      minReplicas: 4
+      pollingInterval: 45
     }
+    secrets: [
+      {
+        name: 'containerappstoredsecret'
+        value: '<value>'
+      }
+      {
+        identity: '<identity>'
+        keyVaultUrl: '<keyVaultUrl>'
+        name: 'keyvaultstoredsecret'
+      }
+    ]
     tags: {
       Env: 'test'
       'hidden-title': 'This is visible in the resource name'
@@ -466,20 +457,26 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
         }
       }
     },
-    "secrets": {
+    "scaleSettings": {
       "value": {
-        "secureList": [
-          {
-            "name": "containerappstoredsecret",
-            "value": "<value>"
-          },
-          {
-            "identity": "<identity>",
-            "keyVaultUrl": "<keyVaultUrl>",
-            "name": "keyvaultstoredsecret"
-          }
-        ]
+        "cooldownPeriod": 500,
+        "maxReplicas": 11,
+        "minReplicas": 4,
+        "pollingInterval": 45
       }
+    },
+    "secrets": {
+      "value": [
+        {
+          "name": "containerappstoredsecret",
+          "value": "<value>"
+        },
+        {
+          "identity": "<identity>",
+          "keyVaultUrl": "<keyVaultUrl>",
+          "name": "keyvaultstoredsecret"
+        }
+      ]
     },
     "tags": {
       "value": {
@@ -583,19 +580,23 @@ param runtime = {
     ]
   }
 }
-param secrets = {
-  secureList: [
-    {
-      name: 'containerappstoredsecret'
-      value: '<value>'
-    }
-    {
-      identity: '<identity>'
-      keyVaultUrl: '<keyVaultUrl>'
-      name: 'keyvaultstoredsecret'
-    }
-  ]
+param scaleSettings = {
+  cooldownPeriod: 500
+  maxReplicas: 11
+  minReplicas: 4
+  pollingInterval: 45
 }
+param secrets = [
+  {
+    name: 'containerappstoredsecret'
+    value: '<value>'
+  }
+  {
+    identity: '<identity>'
+    keyVaultUrl: '<keyVaultUrl>'
+    name: 'keyvaultstoredsecret'
+  }
+]
 param tags = {
   Env: 'test'
   'hidden-title': 'This is visible in the resource name'
@@ -643,7 +644,6 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     ingressExternal: false
     ingressTargetPort: 80
     ingressTransport: 'tcp'
-    location: '<location>'
   }
 }
 ```
@@ -700,9 +700,6 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     },
     "ingressTransport": {
       "value": "tcp"
-    },
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -743,7 +740,6 @@ param ingressAllowInsecure = false
 param ingressExternal = false
 param ingressTargetPort = 80
 param ingressTransport = 'tcp'
-param location = '<location>'
 ```
 
 </details>
@@ -795,11 +791,6 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     // Non-required parameters
     ingressAllowInsecure: false
     ingressExternal: false
-    location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     managedIdentities: {
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
@@ -868,15 +859,6 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     "ingressExternal": {
       "value": false
     },
-    "location": {
-      "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
     "managedIdentities": {
       "value": {
         "userAssignedResourceIds": [
@@ -937,11 +919,6 @@ param name = 'acawaf001'
 // Non-required parameters
 param ingressAllowInsecure = false
 param ingressExternal = false
-param location = '<location>'
-param lock = {
-  kind: 'CanNotDelete'
-  name: 'myCustomLockName'
-}
 param managedIdentities = {
   userAssignedResourceIds: [
     '<managedIdentityResourceId>'
@@ -994,10 +971,8 @@ param tags = {
 | [`revisionSuffix`](#parameter-revisionsuffix) | string | User friendly suffix that is appended to the revision name. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`runtime`](#parameter-runtime) | object | Runtime configuration for the Container App. |
-| [`scaleMaxReplicas`](#parameter-scalemaxreplicas) | int | Maximum number of container replicas. Defaults to 10 if not set. |
-| [`scaleMinReplicas`](#parameter-scaleminreplicas) | int | Minimum number of container replicas. Defaults to 3 if not set. |
-| [`scaleRules`](#parameter-scalerules) | array | Scaling rules. |
-| [`secrets`](#parameter-secrets) | secureObject | The secrets of the Container App. |
+| [`scaleSettings`](#parameter-scalesettings) | object | The scaling settings of the service. |
+| [`secrets`](#parameter-secrets) | array | The secrets of the Container App. |
 | [`service`](#parameter-service) | object | Dev ContainerApp service type. |
 | [`serviceBinds`](#parameter-servicebinds) | array | List of container app services bound to the app. |
 | [`stickySessionsAffinity`](#parameter-stickysessionsaffinity) | string | Bool indicating if the Container App should enable session affinity. |
@@ -1146,8 +1121,6 @@ HTTPGet specifies the http request to perform.
 
 - Required: No
 - Type: object
-- MinValue: 1
-- MaxValue: 10
 
 **Required parameters**
 
@@ -1170,8 +1143,6 @@ Path to access on the HTTP server.
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 10
 
 ### Parameter: `containers.probes.httpGet.port`
 
@@ -1179,8 +1150,6 @@ Name or number of the port to access on the container.
 
 - Required: Yes
 - Type: int
-- MinValue: 1
-- MaxValue: 10
 
 ### Parameter: `containers.probes.httpGet.host`
 
@@ -1188,8 +1157,6 @@ Host name to connect to. Defaults to the pod IP.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 10
 
 ### Parameter: `containers.probes.httpGet.httpHeaders`
 
@@ -1197,8 +1164,6 @@ HTTP headers to set in the request.
 
 - Required: No
 - Type: array
-- MinValue: 1
-- MaxValue: 10
 
 **Required parameters**
 
@@ -1213,8 +1178,6 @@ Name of the header.
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 10
 
 ### Parameter: `containers.probes.httpGet.httpHeaders.value`
 
@@ -1222,8 +1185,6 @@ Value of the header.
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 10
 
 ### Parameter: `containers.probes.httpGet.scheme`
 
@@ -1238,8 +1199,6 @@ Scheme to use for connecting to the host. Defaults to HTTP.
     'HTTPS'
   ]
   ```
-- MinValue: 1
-- MaxValue: 10
 
 ### Parameter: `containers.probes.initialDelaySeconds`
 
@@ -1274,8 +1233,6 @@ The TCP socket specifies an action involving a TCP port. TCP hooks not yet suppo
 
 - Required: No
 - Type: object
-- MinValue: 1
-- MaxValue: 10
 
 **Required parameters**
 
@@ -1304,8 +1261,6 @@ Host name to connect to, defaults to the pod IP.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 65535
 
 ### Parameter: `containers.probes.terminationGracePeriodSeconds`
 
@@ -1313,8 +1268,6 @@ Optional duration in seconds the pod needs to terminate gracefully upon probe fa
 
 - Required: No
 - Type: int
-- MinValue: 1
-- MaxValue: 10
 
 ### Parameter: `containers.probes.timeoutSeconds`
 
@@ -1339,8 +1292,6 @@ The type of probe.
     'Startup'
   ]
   ```
-- MinValue: 1
-- MaxValue: 240
 
 ### Parameter: `containers.volumeMounts`
 
@@ -1941,37 +1892,168 @@ Name of the logger.
 - Required: Yes
 - Type: string
 
-### Parameter: `scaleMaxReplicas`
+### Parameter: `scaleSettings`
 
-Maximum number of container replicas. Defaults to 10 if not set.
+The scaling settings of the service.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      maxReplicas: 10
+      minReplicas: 3
+  }
+  ```
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`maxReplicas`](#parameter-scalesettingsmaxreplicas) | int | The maximum number of replicas. |
+| [`minReplicas`](#parameter-scalesettingsminreplicas) | int | The minimum number of replicas. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`cooldownPeriod`](#parameter-scalesettingscooldownperiod) | int | The cooldown period in seconds. |
+| [`pollingInterval`](#parameter-scalesettingspollinginterval) | int | The polling interval in seconds. |
+| [`rules`](#parameter-scalesettingsrules) | array | The scaling rules. |
+
+### Parameter: `scaleSettings.maxReplicas`
+
+The maximum number of replicas.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `scaleSettings.minReplicas`
+
+The minimum number of replicas.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `scaleSettings.cooldownPeriod`
+
+The cooldown period in seconds.
 
 - Required: No
 - Type: int
-- Default: `10`
 
-### Parameter: `scaleMinReplicas`
+### Parameter: `scaleSettings.pollingInterval`
 
-Minimum number of container replicas. Defaults to 3 if not set.
+The polling interval in seconds.
 
 - Required: No
 - Type: int
-- Default: `3`
 
-### Parameter: `scaleRules`
+### Parameter: `scaleSettings.rules`
 
-Scaling rules.
+The scaling rules.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-scalesettingsrulesname) | string | The name of the scaling rule. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`azureQueue`](#parameter-scalesettingsrulesazurequeue) | object | The Azure Queue based scaling rule. |
+| [`custom`](#parameter-scalesettingsrulescustom) | object | The custom scaling rule. |
+| [`http`](#parameter-scalesettingsruleshttp) | object | The HTTP requests based scaling rule. |
+| [`tcp`](#parameter-scalesettingsrulestcp) | object | The TCP based scaling rule. |
+
+### Parameter: `scaleSettings.rules.name`
+
+The name of the scaling rule.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `scaleSettings.rules.azureQueue`
+
+The Azure Queue based scaling rule.
+
+- Required: No
+- Type: object
+
+### Parameter: `scaleSettings.rules.custom`
+
+The custom scaling rule.
+
+- Required: No
+- Type: object
+
+### Parameter: `scaleSettings.rules.http`
+
+The HTTP requests based scaling rule.
+
+- Required: No
+- Type: object
+
+### Parameter: `scaleSettings.rules.tcp`
+
+The TCP based scaling rule.
+
+- Required: No
+- Type: object
 
 ### Parameter: `secrets`
 
 The secrets of the Container App.
 
 - Required: No
-- Type: secureObject
-- Default: `{}`
+- Type: array
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`keyVaultUrl`](#parameter-secretskeyvaulturl) | string | Azure Key Vault URL pointing to the secret referenced by the Container App Job. Required if `value` is null. |
+| [`value`](#parameter-secretsvalue) | securestring | The secret value, if not fetched from Key Vault. Required if `keyVaultUrl` is not null. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`identity`](#parameter-secretsidentity) | string | Resource ID of a managed identity to authenticate with Azure Key Vault, or System to use a system-assigned identity. |
+| [`name`](#parameter-secretsname) | string | The name of the secret. |
+
+### Parameter: `secrets.keyVaultUrl`
+
+Azure Key Vault URL pointing to the secret referenced by the Container App Job. Required if `value` is null.
+
+- Required: No
+- Type: string
+
+### Parameter: `secrets.value`
+
+The secret value, if not fetched from Key Vault. Required if `keyVaultUrl` is not null.
+
+- Required: No
+- Type: securestring
+
+### Parameter: `secrets.identity`
+
+Resource ID of a managed identity to authenticate with Azure Key Vault, or System to use a system-assigned identity.
+
+- Required: No
+- Type: string
+
+### Parameter: `secrets.name`
+
+The name of the secret.
+
+- Required: No
+- Type: string
 
 ### Parameter: `service`
 

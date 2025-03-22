@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "13858460997059168010"
+      "version": "0.33.93.31351",
+      "templateHash": "5191633407919649272"
     },
     "name": "Compute Galleries Image Definitions",
     "description": "This module deploys an Azure Compute Gallery Image Definition."
@@ -285,7 +285,7 @@
     },
     "isAcceleratedNetworkSupported": {
       "type": "bool",
-      "defaultValue": true,
+      "nullable": true,
       "metadata": {
         "description": "Optional. Specify if the image supports accelerated networking."
       }
@@ -295,6 +295,13 @@
       "nullable": true,
       "metadata": {
         "description": "Optional. Specifiy if the image supports hibernation."
+      }
+    },
+    "allowUpdateImage": {
+      "type": "bool",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Must be set to true if the gallery image features are being updated."
       }
     },
     "architecture": {
@@ -347,6 +354,18 @@
         "description": "Optional. The hypervisor generation of the Virtual Machine. If this value is not specified, then it is determined by the securityType parameter. If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1."
       }
     },
+    "diskControllerType": {
+      "type": "string",
+      "allowedValues": [
+        "NVMe, SCSI",
+        "SCSI",
+        "SCSI, NVMe"
+      ],
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The disk controllers that an OS disk supports."
+      }
+    },
     "roleAssignments": {
       "$ref": "#/definitions/roleAssignmentType",
       "metadata": {
@@ -383,16 +402,17 @@
     "gallery": {
       "existing": true,
       "type": "Microsoft.Compute/galleries",
-      "apiVersion": "2023-07-03",
+      "apiVersion": "2024-03-03",
       "name": "[parameters('galleryName')]"
     },
     "image": {
       "type": "Microsoft.Compute/galleries/images",
-      "apiVersion": "2023-07-03",
+      "apiVersion": "2024-03-03",
       "name": "[format('{0}/{1}', parameters('galleryName'), parameters('name'))]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "properties": {
+        "allowUpdateImage": "[if(not(equals(parameters('allowUpdateImage'), null())), parameters('allowUpdateImage'), null())]",
         "architecture": "[parameters('architecture')]",
         "description": "[parameters('description')]",
         "disallowed": {
@@ -400,7 +420,7 @@
         },
         "endOfLifeDate": "[parameters('endOfLifeDate')]",
         "eula": "[parameters('eula')]",
-        "features": "[union(createArray(createObject('name', 'IsAcceleratedNetworkSupported', 'value', format('{0}', parameters('isAcceleratedNetworkSupported')))), if(and(not(equals(parameters('securityType'), null())), not(equals(parameters('securityType'), 'Standard'))), createArray(createObject('name', 'SecurityType', 'value', format('{0}', parameters('securityType')))), createArray()), if(not(equals(parameters('isHibernateSupported'), null())), createArray(createObject('name', 'IsHibernateSupported', 'value', format('{0}', parameters('isHibernateSupported')))), createArray()))]",
+        "features": "[union(if(not(equals(parameters('isAcceleratedNetworkSupported'), null())), createArray(createObject('name', 'IsAcceleratedNetworkSupported', 'value', format('{0}', parameters('isAcceleratedNetworkSupported')))), createArray()), if(and(not(equals(parameters('securityType'), null())), not(equals(parameters('securityType'), 'Standard'))), createArray(createObject('name', 'SecurityType', 'value', format('{0}', parameters('securityType')))), createArray()), if(not(equals(parameters('isHibernateSupported'), null())), createArray(createObject('name', 'IsHibernateSupported', 'value', format('{0}', parameters('isHibernateSupported')))), createArray()), if(not(equals(parameters('diskControllerType'), null())), createArray(createObject('name', 'DiskControllerTypes', 'value', format('{0}', parameters('diskControllerType')))), createArray()))]",
         "hyperVGeneration": "[coalesce(parameters('hyperVGeneration'), if(not(empty(coalesce(parameters('securityType'), ''))), 'V2', 'V1'))]",
         "identifier": {
           "publisher": "[parameters('identifier').publisher]",
@@ -468,7 +488,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('image', '2023-07-03', 'full').location]"
+      "value": "[reference('image', '2024-03-03', 'full').location]"
     }
   }
 }
