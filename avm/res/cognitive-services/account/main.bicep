@@ -627,8 +627,8 @@ type deploymentType = {
 }
 
 @export()
-@description('The type for the cognitive services account endpoints.')
-type endpointsType = {
+@description('The type for a cognitive services account endpoint.')
+type endpointType = {
   @description('Type of the endpoint.')
   name: string?
   @description('The endpoint URI.')
