@@ -5,35 +5,13 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "9578132933341238313"
+      "version": "0.33.93.31351",
+      "templateHash": "12780275859390763587"
     },
     "name": "Disk Encryption Sets",
     "description": "This module deploys a Disk Encryption Set. The module will attempt to set permissions on the provided Key Vault for any used user-assigned identity."
   },
   "definitions": {
-    "managedIdentitiesType": {
-      "type": "object",
-      "properties": {
-        "systemAssigned": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Enables system assigned managed identity on the resource."
-          }
-        },
-        "userAssignedResourceIds": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The resource ID(s) to assign to the resource."
-          }
-        }
-      }
-    },
     "lockType": {
       "type": "object",
       "properties": {
@@ -57,80 +35,115 @@
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
     },
-    "roleAssignmentType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
-            }
+    "managedIdentityAllType": {
+      "type": "object",
+      "properties": {
+        "systemAssigned": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enables system assigned managed identity on the resource."
+          }
+        },
+        "userAssignedResourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
           },
-          "roleDefinitionIdOrName": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-            }
-          },
-          "principalId": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-            }
-          },
-          "principalType": {
-            "type": "string",
-            "allowedValues": [
-              "Device",
-              "ForeignGroup",
-              "Group",
-              "ServicePrincipal",
-              "User"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The principal type of the assigned principal ID."
-            }
-          },
-          "description": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The description of the role assignment."
-            }
-          },
-          "condition": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-            }
-          },
-          "conditionVersion": {
-            "type": "string",
-            "allowedValues": [
-              "2.0"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Version of the condition."
-            }
-          },
-          "delegatedManagedIdentityResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The Resource Id of the delegated managed identity resource."
-            }
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption."
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    },
+    "roleAssignmentType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+          }
+        },
+        "roleDefinitionIdOrName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+          }
+        },
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+          }
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "Device",
+            "ForeignGroup",
+            "Group",
+            "ServicePrincipal",
+            "User"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The principal type of the assigned principal ID."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The description of the role assignment."
+          }
+        },
+        "condition": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+          }
+        },
+        "conditionVersion": {
+          "type": "string",
+          "allowedValues": [
+            "2.0"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Version of the condition."
+          }
+        },
+        "delegatedManagedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Resource Id of the delegated managed identity resource."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a role assignment.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
     }
   },
   "parameters": {
@@ -149,6 +162,7 @@
     },
     "lock": {
       "$ref": "#/definitions/lockType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The lock settings of the service."
       }
@@ -198,16 +212,20 @@
       }
     },
     "managedIdentities": {
-      "$ref": "#/definitions/managedIdentitiesType",
+      "$ref": "#/definitions/managedIdentityAllType",
       "defaultValue": {
         "systemAssigned": true
       },
       "metadata": {
-        "description": "Optional. The managed identity definition for this resource. At least one identity type is required."
+        "description": "Optional. The managed identity definition for this resource."
       }
     },
     "roleAssignments": {
-      "$ref": "#/definitions/roleAssignmentType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/roleAssignmentType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Array of role assignments to create."
       }
@@ -384,8 +402,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "11508841695002099283"
+              "version": "0.33.93.31351",
+              "templateHash": "7494737573812109564"
             }
           },
           "parameters": {
@@ -472,144 +490,143 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "14994276207531705519"
+                      "version": "0.33.93.31351",
+                      "templateHash": "4507893149671290848"
                     },
                     "name": "Key Vault Access Policies",
                     "description": "This module deploys a Key Vault Access Policy."
                   },
                   "definitions": {
-                    "accessPoliciesType": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "tenantId": {
-                            "type": "string",
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The tenant ID that is used for authenticating requests to the key vault."
-                            }
-                          },
-                          "objectId": {
-                            "type": "string",
-                            "metadata": {
-                              "description": "Required. The object ID of a user, service principal or security group in the tenant for the vault."
-                            }
-                          },
-                          "applicationId": {
-                            "type": "string",
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. Application ID of the client making request on behalf of a principal."
-                            }
-                          },
-                          "permissions": {
-                            "type": "object",
-                            "properties": {
-                              "keys": {
-                                "type": "array",
-                                "allowedValues": [
-                                  "all",
-                                  "backup",
-                                  "create",
-                                  "decrypt",
-                                  "delete",
-                                  "encrypt",
-                                  "get",
-                                  "getrotationpolicy",
-                                  "import",
-                                  "list",
-                                  "purge",
-                                  "recover",
-                                  "release",
-                                  "restore",
-                                  "rotate",
-                                  "setrotationpolicy",
-                                  "sign",
-                                  "unwrapKey",
-                                  "update",
-                                  "verify",
-                                  "wrapKey"
-                                ],
-                                "nullable": true,
-                                "metadata": {
-                                  "description": "Optional. Permissions to keys."
-                                }
-                              },
-                              "secrets": {
-                                "type": "array",
-                                "allowedValues": [
-                                  "all",
-                                  "backup",
-                                  "delete",
-                                  "get",
-                                  "list",
-                                  "purge",
-                                  "recover",
-                                  "restore",
-                                  "set"
-                                ],
-                                "nullable": true,
-                                "metadata": {
-                                  "description": "Optional. Permissions to secrets."
-                                }
-                              },
-                              "certificates": {
-                                "type": "array",
-                                "allowedValues": [
-                                  "all",
-                                  "backup",
-                                  "create",
-                                  "delete",
-                                  "deleteissuers",
-                                  "get",
-                                  "getissuers",
-                                  "import",
-                                  "list",
-                                  "listissuers",
-                                  "managecontacts",
-                                  "manageissuers",
-                                  "purge",
-                                  "recover",
-                                  "restore",
-                                  "setissuers",
-                                  "update"
-                                ],
-                                "nullable": true,
-                                "metadata": {
-                                  "description": "Optional. Permissions to certificates."
-                                }
-                              },
-                              "storage": {
-                                "type": "array",
-                                "allowedValues": [
-                                  "all",
-                                  "backup",
-                                  "delete",
-                                  "deletesas",
-                                  "get",
-                                  "getsas",
-                                  "list",
-                                  "listsas",
-                                  "purge",
-                                  "recover",
-                                  "regeneratekey",
-                                  "restore",
-                                  "set",
-                                  "setsas",
-                                  "update"
-                                ],
-                                "nullable": true,
-                                "metadata": {
-                                  "description": "Optional. Permissions to storage accounts."
-                                }
+                    "accessPolicyType": {
+                      "type": "object",
+                      "properties": {
+                        "tenantId": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The tenant ID that is used for authenticating requests to the key vault."
+                          }
+                        },
+                        "objectId": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. The object ID of a user, service principal or security group in the tenant for the vault."
+                          }
+                        },
+                        "applicationId": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Application ID of the client making request on behalf of a principal."
+                          }
+                        },
+                        "permissions": {
+                          "type": "object",
+                          "properties": {
+                            "keys": {
+                              "type": "array",
+                              "allowedValues": [
+                                "all",
+                                "backup",
+                                "create",
+                                "decrypt",
+                                "delete",
+                                "encrypt",
+                                "get",
+                                "getrotationpolicy",
+                                "import",
+                                "list",
+                                "purge",
+                                "recover",
+                                "release",
+                                "restore",
+                                "rotate",
+                                "setrotationpolicy",
+                                "sign",
+                                "unwrapKey",
+                                "update",
+                                "verify",
+                                "wrapKey"
+                              ],
+                              "nullable": true,
+                              "metadata": {
+                                "description": "Optional. Permissions to keys."
+                              }
+                            },
+                            "secrets": {
+                              "type": "array",
+                              "allowedValues": [
+                                "all",
+                                "backup",
+                                "delete",
+                                "get",
+                                "list",
+                                "purge",
+                                "recover",
+                                "restore",
+                                "set"
+                              ],
+                              "nullable": true,
+                              "metadata": {
+                                "description": "Optional. Permissions to secrets."
+                              }
+                            },
+                            "certificates": {
+                              "type": "array",
+                              "allowedValues": [
+                                "all",
+                                "backup",
+                                "create",
+                                "delete",
+                                "deleteissuers",
+                                "get",
+                                "getissuers",
+                                "import",
+                                "list",
+                                "listissuers",
+                                "managecontacts",
+                                "manageissuers",
+                                "purge",
+                                "recover",
+                                "restore",
+                                "setissuers",
+                                "update"
+                              ],
+                              "nullable": true,
+                              "metadata": {
+                                "description": "Optional. Permissions to certificates."
+                              }
+                            },
+                            "storage": {
+                              "type": "array",
+                              "allowedValues": [
+                                "all",
+                                "backup",
+                                "delete",
+                                "deletesas",
+                                "get",
+                                "getsas",
+                                "list",
+                                "listsas",
+                                "purge",
+                                "recover",
+                                "regeneratekey",
+                                "restore",
+                                "set",
+                                "setsas",
+                                "update"
+                              ],
+                              "nullable": true,
+                              "metadata": {
+                                "description": "Optional. Permissions to storage accounts."
                               }
                             }
                           }
                         }
                       },
-                      "nullable": true
+                      "metadata": {
+                        "description": "Type describing an access policy."
+                      }
                     }
                   },
                   "parameters": {
@@ -620,7 +637,11 @@
                       }
                     },
                     "accessPolicies": {
-                      "$ref": "#/definitions/accessPoliciesType",
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/accessPolicyType"
+                      },
+                      "nullable": true,
                       "metadata": {
                         "description": "Optional. An array of 0 to 16 identities that have access to the key vault. All identities in the array must use the same tenant ID as the key vault's tenant ID."
                       }
