@@ -197,6 +197,9 @@ Uses Head^-1 to check for changed files and filters them by the module path & pa
 .PARAMETER ModuleFolderPath
 Mandatory. The path to the module to check for changed files in.
 
+.PARAMETER SkipNotVersionedModules
+Optional. Specify if filtering the list by returning only versioned modified modules.
+
 .EXAMPLE
 Get-ModulesToPublish -ModuleFolderPath "C:\avm\storage\storage-account"
 
@@ -222,12 +225,6 @@ function Get-ModulesToPublish {
 
     # Check as per a `diff` with head^-1 if there was a change in any file that would justify a publish
     $TemplateFilesToPublish = Get-TemplateFileToPublish -ModuleFolderPath $ModuleFolderPath -PathsToInclude $PathsToInclude -SkipNotVersionedModules
-
-    # Filter out any children (as they're currently not considered for publishing)
-    # $TemplateFilesToPublish = $TemplateFilesToPublish | Where-Object {
-    #   # e.g., res\network\private-endpoint\main.json
-    #   (($_ -split 'avm[\/|\\]')[1] -split '[\/|\\]').Count -le 4
-    # }
 
     # Return the remaining template file(s)
     return $TemplateFilesToPublish
