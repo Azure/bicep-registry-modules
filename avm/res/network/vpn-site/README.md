@@ -8,6 +8,7 @@ This module deploys a VPN Site.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Notes](#Notes)
 - [Data Collection](#Data-Collection)
 
@@ -52,7 +53,6 @@ module vpnSite 'br/public:avm/res/network/vpn-site:<version>' = {
       '10.0.0.0/16'
     ]
     ipAddress: '1.2.3.4'
-    location: '<location>'
   }
 }
 ```
@@ -84,9 +84,6 @@ module vpnSite 'br/public:avm/res/network/vpn-site:<version>' = {
     },
     "ipAddress": {
       "value": "1.2.3.4"
-    },
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -110,7 +107,6 @@ param addressPrefixes = [
   '10.0.0.0/16'
 ]
 param ipAddress = '1.2.3.4'
-param location = '<location>'
 ```
 
 </details>
@@ -422,10 +418,6 @@ module vpnSite 'br/public:avm/res/network/vpn-site:<version>' = {
       linkSpeedInMbps: 0
     }
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     o365Policy: {
       breakOutCategories: {
         allow: true
@@ -500,12 +492,6 @@ module vpnSite 'br/public:avm/res/network/vpn-site:<version>' = {
     "location": {
       "value": "<location>"
     },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
     "o365Policy": {
       "value": {
         "breakOutCategories": {
@@ -576,10 +562,6 @@ param deviceProperties = {
   linkSpeedInMbps: 0
 }
 param location = '<location>'
-param lock = {
-  kind: 'CanNotDelete'
-  name: 'myCustomLockName'
-}
 o365Policy: {
   breakOutCategories: {
     allow: true
@@ -899,6 +881,14 @@ List of all VPN site links.
 | `name` | string | The name of the VPN site. |
 | `resourceGroupName` | string | The resource group the VPN site was deployed into. |
 | `resourceId` | string | The resource ID of the VPN site. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Notes
 

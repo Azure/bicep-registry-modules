@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "10872254821030072983"
+      "version": "0.33.93.31351",
+      "templateHash": "4579418839577677839"
     },
     "name": "CDN Profiles Custom Domains",
     "description": "This module deploys a CDN Profile Custom Domains."
@@ -79,7 +79,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type of the custom domain."
       }
     },
     "dnsValidationType": {
@@ -105,7 +106,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type of the DNS validation."
       }
     }
   },
@@ -180,7 +182,7 @@
     }
   },
   "resources": {
-    "profile::secrect": {
+    "profile::secret": {
       "condition": "[not(empty(parameters('secretName')))]",
       "existing": true,
       "type": "Microsoft.Cdn/profiles/secrets",

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "15725443146645806343"
+      "version": "0.33.93.31351",
+      "templateHash": "7209455646454855037"
     },
     "name": "Healthcare API Workspace DICOM Services",
     "description": "This module deploys a Healthcare API Workspace DICOM Service."

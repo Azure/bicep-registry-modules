@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "4518596352429667624"
+      "version": "0.33.93.31351",
+      "templateHash": "7725937349396046157"
     },
     "name": "Azure Container Registries (ACR)",
     "description": "This module deploys an Azure Container Registry (ACR)."
@@ -103,7 +103,201 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for a scope map."
+      }
+    },
+    "cacheRuleType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the cache rule. Will be derived from the source repository name if not defined."
+          }
+        },
+        "sourceRepository": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Source repository pulled from upstream."
+          }
+        },
+        "targetRepository": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Target repository specified in docker pull command. E.g.: docker pull myregistry.azurecr.io/{targetRepository}:{tag}."
+          }
+        },
+        "credentialSetResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID of the credential store which is associated with the cache rule."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a cache rule."
+      }
+    },
+    "credentialSetType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the credential set."
+          }
+        },
+        "managedIdentities": {
+          "$ref": "#/definitions/managedIdentityOnlySysAssignedType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The managed identity definition for this resource."
+          }
+        },
+        "authCredentials": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/authCredentialsType"
+          },
+          "metadata": {
+            "description": "Required. List of authentication credentials stored for an upstream. Usually consists of a primary and an optional secondary credential."
+          }
+        },
+        "loginServer": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The credentials are stored for this upstream or login server."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a credential set."
+      }
+    },
+    "replicationType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the replication."
+          }
+        },
+        "location": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Location for all resources."
+          }
+        },
+        "tags": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Tags of the resource."
+          }
+        },
+        "regionEndpointEnabled": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies whether the replication regional endpoint is enabled. Requests will not be routed to a replication whose regional endpoint is disabled, however its data will continue to be synced with other replications."
+          }
+        },
+        "zoneRedundancy": {
+          "type": "string",
+          "allowedValues": [
+            "Disabled",
+            "Enabled"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Whether or not zone redundancy is enabled for this container registry."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a replication."
+      }
+    },
+    "webhookType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "minLength": 5,
+          "maxLength": 50,
+          "metadata": {
+            "description": "Optional. The name of the registry webhook."
+          }
+        },
+        "serviceUri": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The service URI for the webhook to post notifications."
+          }
+        },
+        "status": {
+          "type": "string",
+          "allowedValues": [
+            "disabled",
+            "enabled"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The status of the webhook at the time the operation was called."
+          }
+        },
+        "action": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The list of actions that trigger the webhook to post notifications."
+          }
+        },
+        "location": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Location for all resources."
+          }
+        },
+        "tags": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Tags of the resource."
+          }
+        },
+        "customHeaders": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Custom headers that will be added to the webhook notifications."
+          }
+        },
+        "scope": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The scope of repositories where the event can be triggered. For example, 'foo:*' means events for all tags under repository 'foo'. 'foo:bar' means events for 'foo:bar' only. 'foo' is equivalent to 'foo:latest'. Empty means all events."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a webhook."
       }
     },
     "_1.privateEndpointCustomDnsConfigType": {
@@ -212,6 +406,35 @@
       "metadata": {
         "__bicep_imported_from!": {
           "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    },
+    "authCredentialsType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the credential."
+          }
+        },
+        "usernameSecretIdentifier": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. KeyVault Secret URI for accessing the username."
+          }
+        },
+        "passwordSecretIdentifier": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. KeyVault Secret URI for accessing the password."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for auth credentials.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "credential-set/main.bicep"
         }
       }
     },
@@ -434,6 +657,24 @@
       },
       "metadata": {
         "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    },
+    "managedIdentityOnlySysAssignedType": {
+      "type": "object",
+      "properties": {
+        "systemAssigned": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enables system assigned managed identity on the resource."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a managed identity configuration. To be used if only system-assigned identities are supported by the resource provider.",
         "__bicep_imported_from!": {
           "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
@@ -761,7 +1002,7 @@
         "enabled"
       ],
       "metadata": {
-        "description": "Optional. The value that indicates whether the policy for using ARM audience token for a container registr is enabled or not. Default is enabled."
+        "description": "Optional. The value that indicates whether the policy for using ARM audience token for a container registry is enabled or not. Default is enabled."
       }
     },
     "softDeletePolicyStatus": {
@@ -852,6 +1093,9 @@
     },
     "replications": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/replicationType"
+      },
       "nullable": true,
       "metadata": {
         "description": "Optional. All replications to create."
@@ -859,6 +1103,9 @@
     },
     "webhooks": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/webhookType"
+      },
       "nullable": true,
       "metadata": {
         "description": "Optional. All webhooks to create."
@@ -918,6 +1165,9 @@
     },
     "cacheRules": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/cacheRuleType"
+      },
       "nullable": true,
       "metadata": {
         "description": "Optional. Array of Cache Rules."
@@ -925,7 +1175,10 @@
     },
     "credentialSets": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "$ref": "#/definitions/credentialSetType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Array of Credential Sets."
       }
@@ -949,6 +1202,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
+    "enableReferencedModulesTelemetry": false,
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned, UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "builtInRoleNames": {
@@ -971,9 +1225,9 @@
       "existing": true,
       "type": "Microsoft.KeyVault/vaults/keys",
       "apiVersion": "2023-02-01",
-      "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '//'), '/')[2]]",
-      "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '////'), '/')[4]]",
-      "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]"
+      "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
+      "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'))]"
     },
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
@@ -1000,18 +1254,18 @@
       "existing": true,
       "type": "Microsoft.KeyVault/vaults",
       "apiVersion": "2023-02-01",
-      "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '//'), '/')[2]]",
-      "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '////'), '/')[4]]",
-      "name": "[last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/'))]"
+      "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
+      "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
     },
     "cMKUserAssignedIdentity": {
       "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId')))]",
       "existing": true,
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
       "apiVersion": "2023-01-31",
-      "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '//'), '/')[2]]",
-      "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '////'), '/')[4]]",
-      "name": "[last(split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), 'dummyMsi'), '/'))]"
+      "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]]",
+      "name": "[last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/'))]"
     },
     "registry": {
       "type": "Microsoft.ContainerRegistry/registries",
@@ -1026,7 +1280,7 @@
       "properties": {
         "anonymousPullEnabled": "[parameters('anonymousPullEnabled')]",
         "adminUserEnabled": "[parameters('acrAdminUserEnabled')]",
-        "encryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('status', 'enabled', 'keyVaultProperties', createObject('identity', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), ''))), reference('cMKUserAssignedIdentity').clientId, null()), 'keyIdentifier', if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, parameters('customerManagedKey').keyVersion), if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), reference('cMKKeyVault::cMKKey').keyUri, reference('cMKKeyVault::cMKKey').keyUriWithVersion)))), null())]",
+        "encryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('status', 'enabled', 'keyVaultProperties', createObject('identity', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), ''))), reference('cMKUserAssignedIdentity').clientId, null()), 'keyIdentifier', if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, tryGet(parameters('customerManagedKey'), 'keyVersion')), if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), reference('cMKKeyVault::cMKKey').keyUri, reference('cMKKeyVault::cMKKey').keyUriWithVersion)))), null())]",
         "policies": {
           "azureADAuthenticationAsArmPolicy": {
             "status": "[parameters('azureADAuthenticationAsArmPolicyStatus')]"
@@ -1162,8 +1416,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "12313465250221246597"
+              "version": "0.33.93.31351",
+              "templateHash": "11112300500664950599"
             },
             "name": "Container Registries scopeMaps",
             "description": "This module deploys an Azure Container Registry (ACR) scopeMap."
@@ -1285,8 +1539,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "43238165429335678"
+              "version": "0.33.93.31351",
+              "templateHash": "6036875058945996178"
             },
             "name": "Azure Container Registry (ACR) Replications",
             "description": "This module deploys an Azure Container Registry (ACR) Replication."
@@ -1429,14 +1683,41 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "898472573600471940"
+              "version": "0.33.93.31351",
+              "templateHash": "15848218260506856293"
             },
             "name": "Container Registries Credential Sets",
             "description": "This module deploys an ACR Credential Set."
           },
           "definitions": {
-            "managedIdentitiesType": {
+            "authCredentialsType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the credential."
+                  }
+                },
+                "usernameSecretIdentifier": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. KeyVault Secret URI for accessing the username."
+                  }
+                },
+                "passwordSecretIdentifier": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. KeyVault Secret URI for accessing the password."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for auth credentials."
+              }
+            },
+            "managedIdentityOnlySysAssignedType": {
               "type": "object",
               "properties": {
                 "systemAssigned": {
@@ -1446,31 +1727,11 @@
                     "description": "Optional. Enables system assigned managed identity on the resource."
                   }
                 }
-              }
-            },
-            "authCredentialsType": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. The name of the credential."
-                    }
-                  },
-                  "usernameSecretIdentifier": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. KeyVault Secret URI for accessing the username."
-                    }
-                  },
-                  "passwordSecretIdentifier": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. KeyVault Secret URI for accessing the password."
-                    }
-                  }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a managed identity configuration. To be used if only system-assigned identities are supported by the resource provider.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
                 }
               }
             }
@@ -1479,7 +1740,7 @@
             "registryName": {
               "type": "string",
               "metadata": {
-                "description": "Required. The name of the parent registry. Required if the template is used in a standalone deployment."
+                "description": "Conditional. The name of the parent registry. Required if the template is used in a standalone deployment."
               }
             },
             "name": {
@@ -1489,13 +1750,17 @@
               }
             },
             "managedIdentities": {
-              "$ref": "#/definitions/managedIdentitiesType",
+              "$ref": "#/definitions/managedIdentityOnlySysAssignedType",
+              "nullable": true,
               "metadata": {
-                "description": "Required. The managed identity definition for this resource."
+                "description": "Optional. The managed identity definition for this resource."
               }
             },
             "authCredentials": {
-              "$ref": "#/definitions/authCredentialsType",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/authCredentialsType"
+              },
               "metadata": {
                 "description": "Required. List of authentication credentials stored for an upstream. Usually consists of a primary and an optional secondary credential."
               }
@@ -1586,12 +1851,14 @@
             "value": "[coalesce(parameters('cacheRules'), createArray())[copyIndex()].sourceRepository]"
           },
           "name": {
-            "value": "[coalesce(tryGet(coalesce(parameters('cacheRules'), createArray())[copyIndex()], 'name'), replace(replace(replace(coalesce(parameters('cacheRules'), createArray())[copyIndex()].sourceRepository, '/', '-'), '.', '-'), '*', ''))]"
+            "value": "[tryGet(coalesce(parameters('cacheRules'), createArray())[copyIndex()], 'name')]"
           },
           "targetRepository": {
             "value": "[coalesce(tryGet(coalesce(parameters('cacheRules'), createArray())[copyIndex()], 'targetRepository'), coalesce(parameters('cacheRules'), createArray())[copyIndex()].sourceRepository)]"
           },
-          "credentialSetResourceId": "[if(not(empty(tryGet(coalesce(parameters('cacheRules'), createArray())[copyIndex()], 'credentialSetResourceId'))), createObject('value', tryGet(coalesce(parameters('cacheRules'), createArray())[copyIndex()], 'credentialSetResourceId')), createObject('value', null()))]"
+          "credentialSetResourceId": {
+            "value": "[tryGet(coalesce(parameters('cacheRules'), createArray())[copyIndex()], 'credentialSetResourceId')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1600,8 +1867,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "10966757769768845548"
+              "version": "0.33.93.31351",
+              "templateHash": "3783697279882479947"
             },
             "name": "Container Registries Cache",
             "description": "Cache for Azure Container Registry (Preview) feature allows users to cache container images in a private container registry. Cache for ACR, is a preview feature available in Basic, Standard, and Premium service tiers ([ref](https://learn.microsoft.com/en-us/azure/container-registry/tutorial-registry-cache))."
@@ -1610,7 +1877,7 @@
             "registryName": {
               "type": "string",
               "metadata": {
-                "description": "Required. The name of the parent registry. Required if the template is used in a standalone deployment."
+                "description": "Conditional. The name of the parent registry. Required if the template is used in a standalone deployment."
               }
             },
             "name": {
@@ -1713,7 +1980,7 @@
             "value": "[coalesce(tryGet(coalesce(parameters('webhooks'), createArray())[copyIndex()], 'location'), parameters('location'))]"
           },
           "action": {
-            "value": "[coalesce(tryGet(coalesce(parameters('webhooks'), createArray())[copyIndex()], 'action'), createArray('chart_delete', 'chart_push', 'delete', 'push', 'quarantine'))]"
+            "value": "[tryGet(coalesce(parameters('webhooks'), createArray())[copyIndex()], 'action')]"
           },
           "customHeaders": {
             "value": "[tryGet(coalesce(parameters('webhooks'), createArray())[copyIndex()], 'customHeaders')]"
@@ -1738,8 +2005,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "2046020077786059291"
+              "version": "0.33.93.31351",
+              "templateHash": "10084997815751263562"
             },
             "name": "Azure Container Registry (ACR) Webhooks",
             "description": "This module deploys an Azure Container Registry (ACR) Webhook."
@@ -1779,6 +2046,9 @@
             },
             "action": {
               "type": "array",
+              "items": {
+                "type": "string"
+              },
               "defaultValue": [
                 "chart_delete",
                 "chart_push",
@@ -1906,6 +2176,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-registry-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "subscriptionId": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[2]]",
+      "resourceGroup": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[4]]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -1921,7 +2193,7 @@
             "value": "[coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId]"
           },
           "enableTelemetry": {
-            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           },
           "location": {
             "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'location'), reference(split(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location)]"
@@ -2650,7 +2922,8 @@
         }
       },
       "dependsOn": [
-        "registry"
+        "registry",
+        "registry_replications"
       ]
     }
   },
@@ -2704,8 +2977,8 @@
         "description": "The Principal IDs of the ACR Credential Sets system-assigned identities."
       },
       "copy": {
-        "count": "[length(range(0, length(parameters('credentialSets'))))]",
-        "input": "[reference(format('registry_credentialSets[{0}]', range(0, length(parameters('credentialSets')))[copyIndex()])).outputs.systemAssignedMIPrincipalId.value]"
+        "count": "[length(range(0, length(coalesce(parameters('credentialSets'), createArray()))))]",
+        "input": "[tryGet(tryGet(reference(format('registry_credentialSets[{0}]', range(0, length(coalesce(parameters('credentialSets'), createArray())))[copyIndex()])).outputs, 'systemAssignedMIPrincipalId'), 'value')]"
       }
     },
     "credentialSetsResourceIds": {
@@ -2714,17 +2987,20 @@
         "description": "The Resource IDs of the ACR Credential Sets."
       },
       "copy": {
-        "count": "[length(range(0, length(parameters('credentialSets'))))]",
-        "input": "[reference(format('registry_credentialSets[{0}]', range(0, length(parameters('credentialSets')))[copyIndex()])).outputs.resourceId.value]"
+        "count": "[length(range(0, length(coalesce(parameters('credentialSets'), createArray()))))]",
+        "input": "[reference(format('registry_credentialSets[{0}]', range(0, length(coalesce(parameters('credentialSets'), createArray())))[copyIndex()])).outputs.resourceId.value]"
       }
     },
     "privateEndpoints": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/privateEndpointOutputType"
+      },
       "metadata": {
         "description": "The private endpoints of the Azure container registry."
       },
       "copy": {
-        "count": "[length(if(not(empty(parameters('privateEndpoints'))), array(parameters('privateEndpoints')), createArray()))]",
+        "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]",
         "input": {
           "name": "[reference(format('registry_privateEndpoints[{0}]', copyIndex())).outputs.name.value]",
           "resourceId": "[reference(format('registry_privateEndpoints[{0}]', copyIndex())).outputs.resourceId.value]",

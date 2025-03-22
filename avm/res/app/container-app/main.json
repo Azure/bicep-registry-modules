@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "16393853788129161391"
+      "version": "0.33.93.31351",
+      "templateHash": "14843677762258257428"
     },
     "name": "Container Apps",
     "description": "This module deploys a Container App."
@@ -407,6 +407,92 @@
         "description": "The type for a container app probe TCP socket."
       }
     },
+    "scaleType": {
+      "type": "object",
+      "properties": {
+        "maxReplicas": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. The maximum number of replicas."
+          }
+        },
+        "minReplicas": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. The minimum number of replicas."
+          }
+        },
+        "cooldownPeriod": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The cooldown period in seconds."
+          }
+        },
+        "pollingInterval": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The polling interval in seconds."
+          }
+        },
+        "rules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/scaleRuleType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The scaling rules."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The scale settings for the Container App."
+      }
+    },
+    "scaleRuleType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the scaling rule."
+          }
+        },
+        "custom": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The custom scaling rule."
+          }
+        },
+        "azureQueue": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Azure Queue based scaling rule."
+          }
+        },
+        "http": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The HTTP requests based scaling rule."
+          }
+        },
+        "tcp": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The TCP based scaling rule."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The scaling rules for the Container App."
+      }
+    },
     "volumeMountType": {
       "type": "object",
       "properties": {
@@ -506,10 +592,46 @@
           }
         }
       },
-      "nullable": true,
       "metadata": {
         "__bicep_export!": true,
         "description": "Optional. App runtime configuration for the Container App."
+      }
+    },
+    "secretType": {
+      "type": "object",
+      "properties": {
+        "identity": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of a managed identity to authenticate with Azure Key Vault, or System to use a system-assigned identity."
+          }
+        },
+        "keyVaultUrl": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Conditional. Azure Key Vault URL pointing to the secret referenced by the Container App Job. Required if `value` is null."
+          }
+        },
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the secret."
+          }
+        },
+        "value": {
+          "type": "securestring",
+          "nullable": true,
+          "metadata": {
+            "description": "Conditional. The secret value, if not fetched from Key Vault. Required if `keyVaultUrl` is not null."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a secret."
       }
     },
     "lockType": {
@@ -755,25 +877,14 @@
         "description": "Optional. Target Port in containers for traffic from ingress."
       }
     },
-    "scaleMaxReplicas": {
-      "type": "int",
-      "defaultValue": 10,
+    "scaleSettings": {
+      "$ref": "#/definitions/scaleType",
+      "defaultValue": {
+        "maxReplicas": 10,
+        "minReplicas": 3
+      },
       "metadata": {
-        "description": "Optional. Maximum number of container replicas. Defaults to 10 if not set."
-      }
-    },
-    "scaleMinReplicas": {
-      "type": "int",
-      "defaultValue": 3,
-      "metadata": {
-        "description": "Optional. Minimum number of container replicas. Defaults to 3 if not set."
-      }
-    },
-    "scaleRules": {
-      "type": "array",
-      "defaultValue": [],
-      "metadata": {
-        "description": "Optional. Scaling rules."
+        "description": "Optional. The scaling settings of the service."
       }
     },
     "serviceBinds": {
@@ -913,6 +1024,7 @@
     },
     "runtime": {
       "$ref": "#/definitions/runtimeType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Runtime configuration for the Container App."
       }
@@ -934,8 +1046,11 @@
       }
     },
     "secrets": {
-      "type": "secureObject",
-      "defaultValue": {},
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/secretType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. The secrets of the Container App."
       }
@@ -970,7 +1085,6 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
-    "secretList": "[if(not(empty(parameters('secrets'))), parameters('secrets').secureList, createArray())]",
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "builtInRoleNames": {
@@ -1019,7 +1133,7 @@
           "service": "[if(and(parameters('includeAddOns'), not(empty(parameters('service')))), parameters('service'), null())]",
           "maxInactiveRevisions": "[parameters('maxInactiveRevisions')]",
           "registries": "[if(not(empty(parameters('registries'))), parameters('registries'), null())]",
-          "secrets": "[variables('secretList')]",
+          "secrets": "[parameters('secrets')]",
           "runtime": {
             "dotnet": "[if(not(empty(tryGet(parameters('runtime'), 'dotnet'))), createObject('autoConfigureDataProtection', tryGet(parameters('runtime'), 'dotnet', 'autoConfigureDataProtection')), null())]",
             "java": "[if(not(empty(tryGet(parameters('runtime'), 'java'))), createObject('enableMetrics', tryGet(parameters('runtime'), 'java', 'enableMetrics'), 'javaAgent', createObject('enabled', tryGet(parameters('runtime'), 'java', 'enableJavaAgent'), 'logging', createObject('loggerSettings', tryGet(tryGet(parameters('runtime'), 'java'), 'loggerSettings')))), null())]"
@@ -1029,11 +1143,7 @@
           "containers": "[parameters('containers')]",
           "initContainers": "[if(not(empty(parameters('initContainersTemplate'))), parameters('initContainersTemplate'), null())]",
           "revisionSuffix": "[parameters('revisionSuffix')]",
-          "scale": {
-            "maxReplicas": "[parameters('scaleMaxReplicas')]",
-            "minReplicas": "[parameters('scaleMinReplicas')]",
-            "rules": "[if(not(empty(parameters('scaleRules'))), parameters('scaleRules'), null())]"
-          },
+          "scale": "[parameters('scaleSettings')]",
           "serviceBinds": "[if(and(parameters('includeAddOns'), not(empty(parameters('serviceBinds')))), parameters('serviceBinds'), null())]",
           "volumes": "[if(not(empty(parameters('volumes'))), parameters('volumes'), null())]"
         },

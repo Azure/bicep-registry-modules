@@ -5,14 +5,41 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "898472573600471940"
+      "version": "0.33.93.31351",
+      "templateHash": "15848218260506856293"
     },
     "name": "Container Registries Credential Sets",
     "description": "This module deploys an ACR Credential Set."
   },
   "definitions": {
-    "managedIdentitiesType": {
+    "authCredentialsType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the credential."
+          }
+        },
+        "usernameSecretIdentifier": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. KeyVault Secret URI for accessing the username."
+          }
+        },
+        "passwordSecretIdentifier": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. KeyVault Secret URI for accessing the password."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for auth credentials."
+      }
+    },
+    "managedIdentityOnlySysAssignedType": {
       "type": "object",
       "properties": {
         "systemAssigned": {
@@ -22,31 +49,11 @@
             "description": "Optional. Enables system assigned managed identity on the resource."
           }
         }
-      }
-    },
-    "authCredentialsType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The name of the credential."
-            }
-          },
-          "usernameSecretIdentifier": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. KeyVault Secret URI for accessing the username."
-            }
-          },
-          "passwordSecretIdentifier": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. KeyVault Secret URI for accessing the password."
-            }
-          }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a managed identity configuration. To be used if only system-assigned identities are supported by the resource provider.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     }
@@ -55,7 +62,7 @@
     "registryName": {
       "type": "string",
       "metadata": {
-        "description": "Required. The name of the parent registry. Required if the template is used in a standalone deployment."
+        "description": "Conditional. The name of the parent registry. Required if the template is used in a standalone deployment."
       }
     },
     "name": {
@@ -65,13 +72,17 @@
       }
     },
     "managedIdentities": {
-      "$ref": "#/definitions/managedIdentitiesType",
+      "$ref": "#/definitions/managedIdentityOnlySysAssignedType",
+      "nullable": true,
       "metadata": {
-        "description": "Required. The managed identity definition for this resource."
+        "description": "Optional. The managed identity definition for this resource."
       }
     },
     "authCredentials": {
-      "$ref": "#/definitions/authCredentialsType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/authCredentialsType"
+      },
       "metadata": {
         "description": "Required. List of authentication credentials stored for an upstream. Usually consists of a primary and an optional secondary credential."
       }

@@ -65,10 +65,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
       {
         model: {
           format: 'OpenAI'
-          name: 'gpt-35-turbo'
-          version: '0301'
+          name: 'gpt-4'
+          version: '0613'
         }
-        name: 'gpt-35-turbo'
+        name: 'gpt-4'
         sku: {
           capacity: 10
           name: 'Standard'
@@ -124,10 +124,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         {
           "model": {
             "format": "OpenAI",
-            "name": "gpt-35-turbo",
-            "version": "0301"
+            "name": "gpt-4",
+            "version": "0613"
           },
-          "name": "gpt-35-turbo",
+          "name": "gpt-4",
           "sku": {
             "capacity": 10,
             "name": "Standard"
@@ -181,10 +181,10 @@ param deployments = [
   {
     model: {
       format: 'OpenAI'
-      name: 'gpt-35-turbo'
-      version: '0301'
+      name: 'gpt-4'
+      version: '0613'
     }
-    name: 'gpt-35-turbo'
+    name: 'gpt-4'
     sku: {
       capacity: 10
       name: 'Standard'
@@ -235,10 +235,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
       {
         model: {
           format: 'OpenAI'
-          name: 'gpt-35-turbo'
-          version: '0301'
+          name: 'gpt-4'
+          version: '0613'
         }
-        name: 'gpt-35-turbo'
+        name: 'gpt-4'
         sku: {
           capacity: 10
           name: 'Standard'
@@ -278,10 +278,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         {
           "model": {
             "format": "OpenAI",
-            "name": "gpt-35-turbo",
-            "version": "0301"
+            "name": "gpt-4",
+            "version": "0613"
           },
-          "name": "gpt-35-turbo",
+          "name": "gpt-4",
           "sku": {
             "capacity": 10,
             "name": "Standard"
@@ -315,10 +315,10 @@ param deployments = [
   {
     model: {
       format: 'OpenAI'
-      name: 'gpt-35-turbo'
-      version: '0301'
+      name: 'gpt-4'
+      version: '0613'
     }
-    name: 'gpt-35-turbo'
+    name: 'gpt-4'
     sku: {
       capacity: 10
       name: 'Standard'
@@ -951,10 +951,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
       {
         model: {
           format: 'OpenAI'
-          name: 'gpt-35-turbo'
-          version: '0301'
+          name: 'gpt-4'
+          version: '0613'
         }
-        name: 'gpt-35-turbo'
+        name: 'gpt-4'
         sku: {
           capacity: 10
           name: 'Standard'
@@ -1007,10 +1007,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         {
           "model": {
             "format": "OpenAI",
-            "name": "gpt-35-turbo",
-            "version": "0301"
+            "name": "gpt-4",
+            "version": "0613"
           },
-          "name": "gpt-35-turbo",
+          "name": "gpt-4",
           "sku": {
             "capacity": 10,
             "name": "Standard"
@@ -1061,10 +1061,10 @@ param deployments = [
   {
     model: {
       format: 'OpenAI'
-      name: 'gpt-35-turbo'
-      version: '0301'
+      name: 'gpt-4'
+      version: '0613'
     }
-    name: 'gpt-35-turbo'
+    name: 'gpt-4'
     sku: {
       capacity: 10
       name: 'Standard'
@@ -2262,7 +2262,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 | [`name`](#parameter-privateendpointsname) | string | The name of the Private Endpoint. |
 | [`privateDnsZoneGroup`](#parameter-privateendpointsprivatednszonegroup) | object | The private DNS Zone Group to configure for the Private Endpoint. |
 | [`privateLinkServiceConnectionName`](#parameter-privateendpointsprivatelinkserviceconnectionname) | string | The name of the private link connection to create. |
-| [`resourceGroupName`](#parameter-privateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different Resource Group than the main resource. |
+| [`resourceGroupResourceId`](#parameter-privateendpointsresourcegroupresourceid) | string | The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
 | [`service`](#parameter-privateendpointsservice) | string | The subresource to deploy the Private Endpoint for. For example "vault" for a Key Vault Private Endpoint. |
 | [`tags`](#parameter-privateendpointstags) | object | Tags to be applied on all resources/Resource Groups in this deployment. |
@@ -2515,9 +2515,9 @@ The name of the private link connection to create.
 - Required: No
 - Type: string
 
-### Parameter: `privateEndpoints.resourceGroupName`
+### Parameter: `privateEndpoints.resourceGroupResourceId`
 
-Specify if you want to deploy the Private Endpoint into a different Resource Group than the main resource.
+The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used.
 
 - Required: No
 - Type: string
@@ -2906,8 +2906,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.8.0` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.10.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

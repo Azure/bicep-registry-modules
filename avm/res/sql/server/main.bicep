@@ -133,6 +133,8 @@ param secretsExportConfiguration secretsExportConfigurationType?
 @description('Optional. The failover groups configuration.')
 param failoverGroups failoverGroupType[] = []
 
+var enableReferencedModulesTelemetry = false
+
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
@@ -343,15 +345,10 @@ module server_elasticPools 'elastic-pool/main.bicep' = [
 module server_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-server-PrivateEndpoint-${index}'
-    scope: !empty(privateEndpoint.?resourceGroupResourceId)
-      ? resourceGroup(
-          split((privateEndpoint.?resourceGroupResourceId ?? '//'), '/')[2],
-          split((privateEndpoint.?resourceGroupResourceId ?? '////'), '/')[4]
-        )
-      : resourceGroup(
-          split((privateEndpoint.?subnetResourceId ?? '//'), '/')[2],
-          split((privateEndpoint.?subnetResourceId ?? '////'), '/')[4]
-        )
+    scope: resourceGroup(
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
+    )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(server.id, '/'))}-${privateEndpoint.?service ?? 'sqlServer'}-${index}'
       privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
@@ -382,7 +379,7 @@ module server_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
-      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',
@@ -501,11 +498,11 @@ module server_audit_settings 'audit-settings/main.bicep' = if (!empty(auditSetti
 module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfiguration != null) {
   name: '${uniqueString(deployment().name, location)}-secrets-kv'
   scope: resourceGroup(
-    split((secretsExportConfiguration.?keyVaultResourceId ?? '//'), '/')[2],
-    split((secretsExportConfiguration.?keyVaultResourceId ?? '////'), '/')[4]
+    split(secretsExportConfiguration.?keyVaultResourceId!, '/')[2],
+    split(secretsExportConfiguration.?keyVaultResourceId!, '/')[4]
   )
   params: {
-    keyVaultName: last(split(secretsExportConfiguration.?keyVaultResourceId ?? '//', '/'))
+    keyVaultName: last(split(secretsExportConfiguration.?keyVaultResourceId!, '/'))
     secretsToSet: union(
       [],
       contains(secretsExportConfiguration!, 'sqlAdminPasswordSecretName')
@@ -533,6 +530,7 @@ module failover_groups 'failover-group/main.bicep' = [
     name: '${uniqueString(deployment().name, location)}-Sql-FailoverGroup-${index}'
     params: {
       name: failoverGroup.name
+      tags: failoverGroup.?tags ?? tags
       serverName: server.name
       databases: failoverGroup.databases
       partnerServers: failoverGroup.partnerServers
@@ -572,12 +570,12 @@ output exportedSecrets secretsOutputType = (secretsExportConfiguration != null)
 
 @description('The private endpoints of the SQL server.')
 output privateEndpoints privateEndpointOutputType[] = [
-  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
-    name: server_privateEndpoints[i].outputs.name
-    resourceId: server_privateEndpoints[i].outputs.resourceId
-    groupId: server_privateEndpoints[i].outputs.?groupId!
-    customDnsConfigs: server_privateEndpoints[i].outputs.customDnsConfigs
-    networkInterfaceResourceIds: server_privateEndpoints[i].outputs.networkInterfaceResourceIds
+  for (pe, index) in (privateEndpoints ?? []): {
+    name: server_privateEndpoints[index].outputs.name
+    resourceId: server_privateEndpoints[index].outputs.resourceId
+    groupId: server_privateEndpoints[index].outputs.?groupId!
+    customDnsConfigs: server_privateEndpoints[index].outputs.customDnsConfigs
+    networkInterfaceResourceIds: server_privateEndpoints[index].outputs.networkInterfaceResourceIds
   }
 ]
 
@@ -961,6 +959,9 @@ type securityAlerPolicyType = {
 type failoverGroupType = {
   @description('Required. The name of the failover group.')
   name: string
+
+  @description('Optional. Tags of the resource.')
+  tags: object?
 
   @description('Required. List of databases in the failover group.')
   databases: string[]

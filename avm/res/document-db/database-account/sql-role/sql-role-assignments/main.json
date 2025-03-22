@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "12764194787789521059"
+      "templateHash": "18194141979511162014"
     },
     "name": "DocumentDB Database Account SQL Role Assignments.",
     "description": "This module deploys a SQL Role Assignment in a CosmosDB Account."
@@ -40,7 +40,7 @@
   "resources": [
     {
       "type": "Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments",
-      "apiVersion": "2023-04-15",
+      "apiVersion": "2024-11-15",
       "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('name'))]",
       "properties": {
         "principalId": "[parameters('principalId')]",

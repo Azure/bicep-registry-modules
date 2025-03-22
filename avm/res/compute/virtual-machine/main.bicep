@@ -306,6 +306,8 @@ param winRM array = []
 @description('Optional. The configuration profile of automanage. Either \'/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction\', \'providers/Microsoft.Automanage/bestPractices/AzureBestPracticesDevTest\' or the resource Id of custom profile.')
 param configurationProfile string = ''
 
+var enableReferencedModulesTelemetry = false
+
 var publicKeysFormatted = [
   for publicKey in publicKeys: {
     path: publicKey.path
@@ -496,7 +498,7 @@ module vm_nic 'modules/nic-configuration.bicep' = [
       tags: nicConfiguration.?tags ?? tags
       diagnosticSettings: nicConfiguration.?diagnosticSettings
       roleAssignments: nicConfiguration.?roleAssignments
-      enableTelemetry: nicConfiguration.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -516,7 +518,7 @@ resource managedDataDisks 'Microsoft.Compute/disks@2024-03-02' = [
       diskIOPSReadWrite: dataDisk.?diskIOPSReadWrite
       diskMBpsReadWrite: dataDisk.?diskMBpsReadWrite
     }
-    zones: zone != 0 ? array(string(zone)) : null
+    zones: zone != 0 && !contains(dataDisk.managedDisk.storageAccountType, 'ZRS') ? array(string(zone)) : null
   }
 ]
 

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "16187656524256202445"
+      "version": "0.33.93.31351",
+      "templateHash": "13553903812557293878"
     },
     "name": "CDN Profiles Rule Sets",
     "description": "This module deploys a CDN Profile rule set."
@@ -33,7 +33,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type of the rule set."
       }
     },
     "ruleType": {
@@ -78,6 +79,7 @@
         }
       },
       "metadata": {
+        "description": "The type of the rule.",
         "__bicep_imported_from!": {
           "sourceTemplate": "rule/main.bicep"
         }
@@ -163,8 +165,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "5126669469544382460"
+              "version": "0.33.93.31351",
+              "templateHash": "5764390488702823760"
             },
             "name": "CDN Profiles Rules",
             "description": "This module deploys a CDN Profile rule."
@@ -212,7 +214,8 @@
                 }
               },
               "metadata": {
-                "__bicep_export!": true
+                "__bicep_export!": true,
+                "description": "The type of the rule."
               }
             }
           },

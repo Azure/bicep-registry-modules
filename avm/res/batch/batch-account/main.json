@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "7929429293972132995"
+      "version": "0.33.13.18514",
+      "templateHash": "5992078539305258286"
     },
     "name": "Batch Accounts",
     "description": "This module deploys a Batch Account."
@@ -787,6 +787,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
+    "enableReferencedModulesTelemetry": false,
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), 'SystemAssigned', if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "builtInRoleNames": {
@@ -803,9 +804,9 @@
       "existing": true,
       "type": "Microsoft.KeyVault/vaults/keys",
       "apiVersion": "2023-02-01",
-      "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '//'), '/')[2]]",
-      "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '////'), '/')[4]]",
-      "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]"
+      "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
+      "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'))]"
     },
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
@@ -832,18 +833,18 @@
       "existing": true,
       "type": "Microsoft.KeyVault/vaults",
       "apiVersion": "2023-02-01",
-      "subscriptionId": "[split(coalesce(parameters('keyVaultReferenceResourceId'), '//'), '/')[2]]",
-      "resourceGroup": "[split(coalesce(parameters('keyVaultReferenceResourceId'), '////'), '/')[4]]",
-      "name": "[last(split(coalesce(parameters('keyVaultReferenceResourceId'), 'dummyVault'), '/'))]"
+      "subscriptionId": "[split(parameters('keyVaultReferenceResourceId'), '/')[2]]",
+      "resourceGroup": "[split(parameters('keyVaultReferenceResourceId'), '/')[4]]",
+      "name": "[last(split(parameters('keyVaultReferenceResourceId'), '/'))]"
     },
     "cMKKeyVault": {
       "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))]",
       "existing": true,
       "type": "Microsoft.KeyVault/vaults",
       "apiVersion": "2023-02-01",
-      "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '//'), '/')[2]]",
-      "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '////'), '/')[4]]",
-      "name": "[last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/'))]"
+      "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
+      "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
     },
     "batchAccount": {
       "type": "Microsoft.Batch/batchAccounts",
@@ -860,7 +861,7 @@
           "storageAccountId": "[parameters('storageAccountId')]"
         },
         "encryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('keySource', 'Microsoft.KeyVault', 'keyVaultProperties', createObject('keyIdentifier', if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, parameters('customerManagedKey').keyVersion), if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), reference('cMKKeyVault::cMKKey').keyUri, reference('cMKKeyVault::cMKKey').keyUriWithVersion)))), null())]",
-        "keyVaultReference": "[if(equals(parameters('poolAllocationMode'), 'UserSubscription'), createObject('id', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(parameters('keyVaultReferenceResourceId'), '//'), '/')[2], split(coalesce(parameters('keyVaultReferenceResourceId'), '////'), '/')[4]), 'Microsoft.KeyVault/vaults', last(split(coalesce(parameters('keyVaultReferenceResourceId'), 'dummyVault'), '/'))), 'url', reference('batchKeyVaultReference').vaultUri), null())]",
+        "keyVaultReference": "[if(equals(parameters('poolAllocationMode'), 'UserSubscription'), createObject('id', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('keyVaultReferenceResourceId'), '/')[2], split(parameters('keyVaultReferenceResourceId'), '/')[4]), 'Microsoft.KeyVault/vaults', last(split(parameters('keyVaultReferenceResourceId'), '/'))), 'url', reference('batchKeyVaultReference').vaultUri), null())]",
         "networkProfile": "[if(not(empty(coalesce(parameters('networkProfile'), createObject()))), createObject('accountAccess', if(not(empty(variables('accountAccessNetworkProfileIpRules'))), createObject('defaultAction', coalesce(tryGet(tryGet(parameters('networkProfile'), 'accountAccess'), 'defaultAction'), 'Deny'), 'ipRules', variables('accountAccessNetworkProfileIpRules')), null()), 'nodeManagementAccess', if(not(empty(variables('nodeManagementAccessNetworkProfileIpRules'))), createObject('defaultAction', coalesce(tryGet(tryGet(parameters('networkProfile'), 'nodeManagementAccess'), 'defaultAction'), 'Deny'), 'ipRules', variables('nodeManagementAccessNetworkProfileIpRules')), null())), null())]",
         "poolAllocationMode": "[parameters('poolAllocationMode')]",
         "publicNetworkAccess": "[if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(and(not(empty(coalesce(parameters('privateEndpoints'), createArray()))), empty(coalesce(parameters('networkProfile'), createArray()))), 'Disabled', null()))]"
@@ -971,7 +972,7 @@
             "value": "[coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId]"
           },
           "enableTelemetry": {
-            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           },
           "location": {
             "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'location'), reference(split(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location)]"

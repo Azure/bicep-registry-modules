@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "15890143708231344465"
+      "version": "0.33.93.31351",
+      "templateHash": "14592202711795767071"
     },
     "name": "Machine Learning Services Workspaces Connections",
     "description": "This module creates a connection in a Machine Learning Services workspace."
@@ -60,6 +60,7 @@
         "Dynamics",
         "DynamicsAx",
         "DynamicsCrm",
+        "Elasticsearch",
         "Eloqua",
         "FileServer",
         "FtpServer",
@@ -79,6 +80,7 @@
         "Informix",
         "Jira",
         "Magento",
+        "ManagedOnlineEndpoint",
         "MariaDb",
         "Marketo",
         "MicrosoftAccess",
@@ -95,6 +97,7 @@
         "OracleServiceCloud",
         "PayPal",
         "Phoenix",
+        "Pinecone",
         "PostgreSql",
         "Presto",
         "PythonFeed",
@@ -179,7 +182,7 @@
           }
         },
         "credentials": {
-          "$ref": "#/definitions/workspaceConnectionAccountKey",
+          "$ref": "#/definitions/workspaceConnectionAccountKeyType",
           "metadata": {
             "description": "Required. The credentials for the connection."
           }
@@ -395,7 +398,7 @@
         }
       }
     },
-    "workspaceConnectionAccountKey": {
+    "workspaceConnectionAccountKeyType": {
       "type": "object",
       "properties": {
         "key": {
@@ -575,6 +578,9 @@
           "AccessKey": {
             "$ref": "#/definitions/accessKeyAuthTypeWorkspaceConnectionPropertyType"
           },
+          "AccountKey": {
+            "$ref": "#/definitions/accountKeyAuthTypeWorkspaceConnectionPropertyType"
+          },
           "ApiKey": {
             "$ref": "#/definitions/apiKeyAuthWorkspaceConnectionPropertyType"
           },
@@ -688,7 +694,7 @@
     },
     "connection": {
       "type": "Microsoft.MachineLearningServices/workspaces/connections",
-      "apiVersion": "2024-04-01",
+      "apiVersion": "2024-10-01",
       "name": "[format('{0}/{1}', parameters('machineLearningWorkspaceName'), parameters('name'))]",
       "properties": "[union(createObject('category', parameters('category'), 'expiryTime', parameters('expiryTime'), 'isSharedToAll', parameters('isSharedToAll'), 'metadata', parameters('metadata'), 'sharedUserList', parameters('sharedUserList'), 'target', parameters('target'), 'value', parameters('value')), parameters('connectionProperties'))]"
     }

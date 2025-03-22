@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "10211623660401614857"
+      "version": "0.33.93.31351",
+      "templateHash": "18163333757886088570"
     },
     "name": "Data Collection Rules",
     "description": "This module deploys a Data Collection Rule."
@@ -28,11 +28,15 @@
           },
           "AgentSettings": {
             "$ref": "#/definitions/agentSettingsDcrPropertiesType"
+          },
+          "Direct": {
+            "$ref": "#/definitions/directDcrPropertiesType"
           }
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for data collection rule properties. Depending on the kind, the properties will be different."
       }
     },
     "linuxDcrPropertiesType": {
@@ -86,6 +90,9 @@
             "description": "Optional. Description of the data collection rule."
           }
         }
+      },
+      "metadata": {
+        "description": "The type for the properties of the 'Linux' data collection rule."
       }
     },
     "windowsDcrPropertiesType": {
@@ -139,6 +146,9 @@
             "description": "Optional. Description of the data collection rule."
           }
         }
+      },
+      "metadata": {
+        "description": "The type for the properties of the 'Windows' data collection rule."
       }
     },
     "allPlatformsDcrPropertiesType": {
@@ -192,6 +202,9 @@
             "description": "Optional. Description of the data collection rule."
           }
         }
+      },
+      "metadata": {
+        "description": "The type for the properties of the data collection rule of the kind 'All'."
       }
     },
     "agentSettingsDcrPropertiesType": {
@@ -219,6 +232,9 @@
             "description": "Required. Agent settings used to modify agent behavior on a given host."
           }
         }
+      },
+      "metadata": {
+        "description": "The type for the properties of the 'AgentSettings' data collection rule."
       }
     },
     "agentSettingsType": {
@@ -233,6 +249,9 @@
             "description": "Required. All the settings that are applicable to the logs agent (AMA)."
           }
         }
+      },
+      "metadata": {
+        "description": "The type for the agent settings."
       }
     },
     "agentSettingType": {
@@ -254,6 +273,58 @@
             "description": "Required. The value of the agent setting."
           }
         }
+      },
+      "metadata": {
+        "description": "The type for the (single) agent setting."
+      }
+    },
+    "directDcrPropertiesType": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "Direct"
+          ],
+          "metadata": {
+            "description": "Required. The platform type specifies the type of resources this rule can apply to."
+          }
+        },
+        "dataFlows": {
+          "type": "array",
+          "metadata": {
+            "description": "Required. The specification of data flows."
+          }
+        },
+        "destinations": {
+          "type": "object",
+          "metadata": {
+            "description": "Required. Specification of destinations that can be used in data flows."
+          }
+        },
+        "dataCollectionEndpointResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID of the data collection endpoint that this rule can be used with."
+          }
+        },
+        "streamDeclarations": {
+          "type": "object",
+          "metadata": {
+            "description": "Required. Declaration of custom streams used in this rule."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Description of the data collection rule."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for the properties of the 'Direct' data collection rule."
       }
     },
     "lockType": {
@@ -282,7 +353,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.3.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     },
@@ -310,7 +381,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.3.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     },
@@ -385,7 +456,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.3.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     }
@@ -459,7 +530,7 @@
       "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
     },
-    "dataCollectionRulePropertiesUnion": "[union(createObject('description', tryGet(parameters('dataCollectionRuleProperties'), 'description')), if(or(or(equals(parameters('dataCollectionRuleProperties').kind, 'Linux'), equals(parameters('dataCollectionRuleProperties').kind, 'Windows')), equals(parameters('dataCollectionRuleProperties').kind, 'All')), createObject('dataSources', parameters('dataCollectionRuleProperties').dataSources, 'dataFlows', parameters('dataCollectionRuleProperties').dataFlows, 'destinations', parameters('dataCollectionRuleProperties').destinations, 'dataCollectionEndpointId', tryGet(parameters('dataCollectionRuleProperties'), 'dataCollectionEndpointResourceId'), 'streamDeclarations', tryGet(parameters('dataCollectionRuleProperties'), 'streamDeclarations')), createObject()), if(equals(parameters('dataCollectionRuleProperties').kind, 'AgentSettings'), createObject('agentSettings', parameters('dataCollectionRuleProperties').agentSettings), createObject()))]"
+    "dataCollectionRulePropertiesUnion": "[union(createObject('description', tryGet(parameters('dataCollectionRuleProperties'), 'description')), if(or(or(equals(parameters('dataCollectionRuleProperties').kind, 'Linux'), equals(parameters('dataCollectionRuleProperties').kind, 'Windows')), equals(parameters('dataCollectionRuleProperties').kind, 'All')), createObject('dataSources', parameters('dataCollectionRuleProperties').dataSources), createObject()), if(or(or(or(equals(parameters('dataCollectionRuleProperties').kind, 'Linux'), equals(parameters('dataCollectionRuleProperties').kind, 'Windows')), equals(parameters('dataCollectionRuleProperties').kind, 'All')), equals(parameters('dataCollectionRuleProperties').kind, 'Direct')), createObject('dataFlows', parameters('dataCollectionRuleProperties').dataFlows, 'destinations', parameters('dataCollectionRuleProperties').destinations, 'dataCollectionEndpointId', tryGet(parameters('dataCollectionRuleProperties'), 'dataCollectionEndpointResourceId'), 'streamDeclarations', tryGet(parameters('dataCollectionRuleProperties'), 'streamDeclarations')), createObject()), if(equals(parameters('dataCollectionRuleProperties').kind, 'AgentSettings'), createObject('agentSettings', parameters('dataCollectionRuleProperties').agentSettings), createObject()))]"
   },
   "resources": {
     "avmTelemetry": {
@@ -532,8 +603,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "179607600205357551"
+              "version": "0.33.93.31351",
+              "templateHash": "5528885836196228785"
             }
           },
           "definitions": {
@@ -563,7 +634,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a lock.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.3.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
                 }
               }
             },
@@ -638,7 +709,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a role assignment.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.3.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
                 }
               }
             }
