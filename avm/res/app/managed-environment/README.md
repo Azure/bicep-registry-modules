@@ -16,6 +16,7 @@ This module deploys an App Managed Environment (also known as a Container App En
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.App/managedEnvironments` | [2024-10-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-10-02-preview/managedEnvironments) |
+| `Microsoft.App/managedEnvironments/certificates` | [2024-10-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-10-02-preview/managedEnvironments/certificates) |
 | `Microsoft.App/managedEnvironments/storages` | [2024-10-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-10-02-preview/managedEnvironments/storages) |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
@@ -171,9 +172,12 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     name: 'amemax001'
     // Non-required parameters
     appInsightsConnectionString: '<appInsightsConnectionString>'
-    certificateKeyVaultProperties: {
-      identityResourceId: '<identityResourceId>'
-      keyVaultUrl: '<keyVaultUrl>'
+    certificateObject: {
+      certificateKeyVaultProperties: {
+        identityResourceId: '<identityResourceId>'
+        keyVaultUrl: '<keyVaultUrl>'
+      }
+      name: 'dep-cert-amemax'
     }
     dnsSuffix: 'contoso.com'
     dockerBridgeCidr: '172.16.0.1/28'
@@ -185,7 +189,6 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    logsDestination: 'log-analytics'
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [
@@ -209,7 +212,6 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     platformReservedDnsIP: '172.17.17.17'
     roleAssignments: [
       {
-        name: '43fc5250-f111-472b-8722-f1cb4a0e754b'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -279,10 +281,13 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     "appInsightsConnectionString": {
       "value": "<appInsightsConnectionString>"
     },
-    "certificateKeyVaultProperties": {
+    "certificateObject": {
       "value": {
-        "identityResourceId": "<identityResourceId>",
-        "keyVaultUrl": "<keyVaultUrl>"
+        "certificateKeyVaultProperties": {
+          "identityResourceId": "<identityResourceId>",
+          "keyVaultUrl": "<keyVaultUrl>"
+        },
+        "name": "dep-cert-amemax"
       }
     },
     "dnsSuffix": {
@@ -308,9 +313,6 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
       }
-    },
-    "logsDestination": {
-      "value": "log-analytics"
     },
     "managedIdentities": {
       "value": {
@@ -346,7 +348,6 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     "roleAssignments": {
       "value": [
         {
-          "name": "43fc5250-f111-472b-8722-f1cb4a0e754b",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -415,9 +416,12 @@ param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
 param name = 'amemax001'
 // Non-required parameters
 param appInsightsConnectionString = '<appInsightsConnectionString>'
-param certificateKeyVaultProperties = {
-  identityResourceId: '<identityResourceId>'
-  keyVaultUrl: '<keyVaultUrl>'
+param certificateObject = {
+  certificateKeyVaultProperties: {
+    identityResourceId: '<identityResourceId>'
+    keyVaultUrl: '<keyVaultUrl>'
+  }
+  name: 'dep-cert-amemax'
 }
 param dnsSuffix = 'contoso.com'
 param dockerBridgeCidr = '172.16.0.1/28'
@@ -429,7 +433,6 @@ param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
 }
-param logsDestination = 'log-analytics'
 param managedIdentities = {
   systemAssigned: true
   userAssignedResourceIds: [
@@ -453,7 +456,6 @@ param platformReservedCidr = '172.17.17.0/24'
 param platformReservedDnsIP = '172.17.17.17'
 param roleAssignments = [
   {
-    name: '43fc5250-f111-472b-8722-f1cb4a0e754b'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'
@@ -791,7 +793,7 @@ param workloadProfiles = [
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`appInsightsConnectionString`](#parameter-appinsightsconnectionstring) | securestring | Application Insights connection string. |
-| [`certificateKeyVaultProperties`](#parameter-certificatekeyvaultproperties) | object | A key vault reference to the certificate to use for the custom domain. |
+| [`certificateObject`](#parameter-certificateobject) | object | A Managed Environment Certificate. |
 | [`certificatePassword`](#parameter-certificatepassword) | securestring | Password of the certificate used by the custom domain. |
 | [`certificateValue`](#parameter-certificatevalue) | securestring | Certificate to use for the custom domain. PFX or PEM. |
 | [`daprAIConnectionString`](#parameter-dapraiconnectionstring) | securestring | Application Insights connection string used by Dapr to export Service to Service communication telemetry. |
@@ -888,9 +890,26 @@ Application Insights connection string.
 - Type: securestring
 - Default: `''`
 
-### Parameter: `certificateKeyVaultProperties`
+### Parameter: `certificateObject`
 
-A key vault reference to the certificate to use for the custom domain.
+A Managed Environment Certificate.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`certificateKeyVaultProperties`](#parameter-certificateobjectcertificatekeyvaultproperties) | object | A key vault reference. |
+| [`certificatePassword`](#parameter-certificateobjectcertificatepassword) | string | The password of the certificate. |
+| [`certificateType`](#parameter-certificateobjectcertificatetype) | string | The type of the certificate. |
+| [`certificateValue`](#parameter-certificateobjectcertificatevalue) | string | The value of the certificate. PFX or PEM blob. |
+| [`name`](#parameter-certificateobjectname) | string | The name of the certificate. |
+
+### Parameter: `certificateObject.certificateKeyVaultProperties`
+
+A key vault reference.
 
 - Required: No
 - Type: object
@@ -899,21 +918,56 @@ A key vault reference to the certificate to use for the custom domain.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`identityResourceId`](#parameter-certificatekeyvaultpropertiesidentityresourceid) | string | The resource ID of the identity. This is the identity that will be used to access the key vault. |
-| [`keyVaultUrl`](#parameter-certificatekeyvaultpropertieskeyvaulturl) | string | A key vault URL referencing the wildcard certificate that will be used for the custom domain. |
+| [`identityResourceId`](#parameter-certificateobjectcertificatekeyvaultpropertiesidentityresourceid) | string | The resource ID of the identity. This is the identity that will be used to access the key vault. |
+| [`keyVaultUrl`](#parameter-certificateobjectcertificatekeyvaultpropertieskeyvaulturl) | string | A key vault URL referencing the wildcard certificate that will be used for the custom domain. |
 
-### Parameter: `certificateKeyVaultProperties.identityResourceId`
+### Parameter: `certificateObject.certificateKeyVaultProperties.identityResourceId`
 
 The resource ID of the identity. This is the identity that will be used to access the key vault.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `certificateKeyVaultProperties.keyVaultUrl`
+### Parameter: `certificateObject.certificateKeyVaultProperties.keyVaultUrl`
 
 A key vault URL referencing the wildcard certificate that will be used for the custom domain.
 
 - Required: Yes
+- Type: string
+
+### Parameter: `certificateObject.certificatePassword`
+
+The password of the certificate.
+
+- Required: No
+- Type: string
+
+### Parameter: `certificateObject.certificateType`
+
+The type of the certificate.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'ImagePullTrustedCA'
+    'ServerSSLCertificate'
+  ]
+  ```
+
+### Parameter: `certificateObject.certificateValue`
+
+The value of the certificate. PFX or PEM blob.
+
+- Required: No
+- Type: string
+
+### Parameter: `certificateObject.name`
+
+The name of the certificate.
+
+- Required: No
 - Type: string
 
 ### Parameter: `certificatePassword`

@@ -75,9 +75,6 @@ param certificatePassword string = ''
 @secure()
 param certificateValue string = ''
 
-@description('Optional. A key vault reference to the certificate to use for the custom domain.')
-param certificateKeyVaultProperties certificateKeyVaultPropertiesType?
-
 @description('Optional. DNS suffix for the environment domain.')
 param dnsSuffix string = ''
 
@@ -96,6 +93,9 @@ param infrastructureResourceGroupName string = take('ME_${name}', 63)
 
 @description('Optional. The list of storages to mount on the environment.')
 param storages storageType[]?
+
+@description('Optional. A Managed Environment Certificate.')
+param certificateObject certificateObjectType?
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -183,10 +183,10 @@ resource managedEnvironment 'Microsoft.App/managedEnvironments@2024-10-02-previe
       certificatePassword: certificatePassword
       certificateValue: !empty(certificateValue) ? certificateValue : null
       dnsSuffix: dnsSuffix
-      certificateKeyVaultProperties: !empty(certificateKeyVaultProperties)
+      certificateKeyVaultProperties: !empty(certificateObject.?certificateKeyVaultProperties)
         ? {
-            identity: certificateKeyVaultProperties!.identityResourceId
-            keyVaultUrl: certificateKeyVaultProperties!.keyVaultUrl
+            identity: certificateObject!.?certificateKeyVaultProperties!.identityResourceId
+            keyVaultUrl: certificateObject!.?certificateKeyVaultProperties!.keyVaultUrl
           }
         : null
     }
@@ -267,6 +267,18 @@ resource managedEnvironment_lock 'Microsoft.Authorization/locks@2020-05-01' = if
   scope: managedEnvironment
 }
 
+module managedEnvironment_certificate 'certificates/main.bicep' = if (!empty(certificateObject)) {
+  name: '${uniqueString(deployment().name)}-Managed-Environment-Certificate'
+  params: {
+    name: certificateObject.?name ?? 'cert-${name}'
+    managedEnvironmentName: managedEnvironment.name
+    certificateKeyVaultProperties: certificateObject.?certificateKeyVaultProperties
+    certificateType: certificateObject.?certificateType
+    certificateValue: certificateObject.?certificateValue
+    certificatePassword: certificateObject.?certificatePassword
+  }
+}
+
 @description('The name of the resource group the Managed Environment was deployed into.')
 output resourceGroupName string = resourceGroup().name
 
@@ -295,14 +307,25 @@ output domainVerificationId string = managedEnvironment.properties.customDomainC
 //   Definitions   //
 // =============== //
 
-@export()
-@description('The type of the certificate key vault properties.')
-type certificateKeyVaultPropertiesType = {
-  @description('Required. The resource ID of the identity. This is the identity that will be used to access the key vault.')
-  identityResourceId: string
+import { certificateKeyVaultPropertiesType } from 'certificates/main.bicep'
 
-  @description('Required. A key vault URL referencing the wildcard certificate that will be used for the custom domain.')
-  keyVaultUrl: string
+@export()
+@description('The type for a certificate.')
+type certificateObjectType = {
+  @description('Optional. The name of the certificate.')
+  name: string?
+
+  @description('Optional. The type of the certificate.')
+  certificateType: ('ServerSSLCertificate' | 'ImagePullTrustedCA')?
+
+  @description('Optional. The value of the certificate. PFX or PEM blob.')
+  certificateValue: string?
+
+  @description('Optional. The password of the certificate.')
+  certificatePassword: string?
+
+  @description('Optional. A key vault reference.')
+  certificateKeyVaultProperties: certificateKeyVaultPropertiesType
 }
 
 @export()
@@ -319,4 +342,4 @@ type storageType = {
 
   @description('Required. File share name.')
   shareName: string
-}
+}?
