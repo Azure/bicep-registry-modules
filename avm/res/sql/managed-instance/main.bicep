@@ -133,13 +133,13 @@ param administratorsObj object = {}
   'Custom1'
   'Custom2'
 ])
-@description('''Optional. The maintenance window for the SQL Managed Instance.
+@description('''Optional. The maintenance window for the SQL Managed Instance. If not specified, the \'SystemManaged\' option is used.
 
 SystemManaged: The system automatically selects a 9-hour maintenance window between 8:00 AM to 5:00 PM local time, Monday - Sunday.
 Custom1: Weekday window: 10:00 PM to 6:00 AM local time, Monday - Thursday.
 Custom2: Weekend window: 10:00 PM to 6:00 AM local time, Friday - Sunday.
 ''')
-param maintenanceWindow string = 'SystemManaged'
+param maintenanceWindow string?
 
 @description('Optional. Minimal TLS version allowed.')
 @allowed([
@@ -227,12 +227,12 @@ var formattedRoleAssignments = [
   })
 ]
 
-var maintenanceConfigurationId = maintenanceWindow == 'SystemManaged'
-  ? null
-  : subscriptionResourceId(
+var maintenanceConfigurationId = maintenanceWindow == 'Custom1' || maintenanceWindow == 'Custom2'
+  ? subscriptionResourceId(
       'Microsoft.Maintenance/publicMaintenanceConfigurations',
-      'SQL_${location}_MI_${last(maintenanceWindow)}'
+      'SQL_${location}_MI_${last(maintenanceWindow!)}'
     )
+  : null
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {

@@ -1111,7 +1111,7 @@ param vulnerabilityAssessmentsObj = {
 | [`licenseType`](#parameter-licensetype) | string | The license type. Possible values are 'LicenseIncluded' (regular price inclusive of a new SQL license) and 'BasePrice' (discounted AHB price for bringing your own SQL licenses). |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
-| [`maintenanceWindow`](#parameter-maintenancewindow) | string | The maintenance window for the SQL Managed Instance.<p><p>SystemManaged: The system automatically selects a 9-hour maintenance window between 8:00 AM to 5:00 PM local time, Monday - Sunday.<p>Custom1: Weekday window: 10:00 PM to 6:00 AM local time, Monday - Thursday.<p>Custom2: Weekend window: 10:00 PM to 6:00 AM local time, Friday - Sunday.<p> |
+| [`maintenanceWindow`](#parameter-maintenancewindow) | string | The maintenance window for the SQL Managed Instance. If not specified, the \'SystemManaged\' option is used.<p><p>SystemManaged: The system automatically selects a 9-hour maintenance window between 8:00 AM to 5:00 PM local time, Monday - Sunday.<p>Custom1: Weekday window: 10:00 PM to 6:00 AM local time, Monday - Thursday.<p>Custom2: Weekend window: 10:00 PM to 6:00 AM local time, Friday - Sunday.<p> |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`managedInstanceCreateMode`](#parameter-managedinstancecreatemode) | string | Specifies the mode of database creation. Default: Regular instance creation. Restore: Creates an instance by restoring a set of backups to specific point in time. RestorePointInTime and sourceManagedInstanceResourceId must be specified. |
 | [`minimalTlsVersion`](#parameter-minimaltlsversion) | string | Minimal TLS version allowed. |
@@ -1444,11 +1444,10 @@ Specify the name of lock.
 
 ### Parameter: `maintenanceWindow`
 
-The maintenance window for the SQL Managed Instance.<p><p>SystemManaged: The system automatically selects a 9-hour maintenance window between 8:00 AM to 5:00 PM local time, Monday - Sunday.<p>Custom1: Weekday window: 10:00 PM to 6:00 AM local time, Monday - Thursday.<p>Custom2: Weekend window: 10:00 PM to 6:00 AM local time, Friday - Sunday.<p>
+The maintenance window for the SQL Managed Instance. If not specified, the \'SystemManaged\' option is used.<p><p>SystemManaged: The system automatically selects a 9-hour maintenance window between 8:00 AM to 5:00 PM local time, Monday - Sunday.<p>Custom1: Weekday window: 10:00 PM to 6:00 AM local time, Monday - Thursday.<p>Custom2: Weekend window: 10:00 PM to 6:00 AM local time, Friday - Sunday.<p>
 
 - Required: No
 - Type: string
-- Default: `'SystemManaged'`
 - Allowed:
   ```Bicep
   [

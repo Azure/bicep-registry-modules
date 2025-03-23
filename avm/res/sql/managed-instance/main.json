@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "500378130738855554"
+      "templateHash": "15342214379899928450"
     },
     "name": "SQL Managed Instances",
     "description": "This module deploys a SQL Managed Instance."
@@ -535,14 +535,14 @@
     },
     "maintenanceWindow": {
       "type": "string",
-      "defaultValue": "SystemManaged",
+      "nullable": true,
       "allowedValues": [
         "SystemManaged",
         "Custom1",
         "Custom2"
       ],
       "metadata": {
-        "description": "Optional. The maintenance window for the SQL Managed Instance.\n\nSystemManaged: The system automatically selects a 9-hour maintenance window between 8:00 AM to 5:00 PM local time, Monday - Sunday.\nCustom1: Weekday window: 10:00 PM to 6:00 AM local time, Monday - Thursday.\nCustom2: Weekend window: 10:00 PM to 6:00 AM local time, Friday - Sunday.\n"
+        "description": "Optional. The maintenance window for the SQL Managed Instance. If not specified, the \\'SystemManaged\\' option is used.\n\nSystemManaged: The system automatically selects a 9-hour maintenance window between 8:00 AM to 5:00 PM local time, Monday - Sunday.\nCustom1: Weekday window: 10:00 PM to 6:00 AM local time, Monday - Thursday.\nCustom2: Weekend window: 10:00 PM to 6:00 AM local time, Friday - Sunday.\n"
       }
     },
     "minimalTlsVersion": {
@@ -596,7 +596,7 @@
       "SqlMI Migration Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1d335eef-eee1-47fe-a9e0-53214eba8872')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
     },
-    "maintenanceConfigurationId": "[if(equals(parameters('maintenanceWindow'), 'SystemManaged'), null(), subscriptionResourceId('Microsoft.Maintenance/publicMaintenanceConfigurations', format('SQL_{0}_MI_{1}', parameters('location'), last(parameters('maintenanceWindow')))))]"
+    "maintenanceConfigurationId": "[if(or(equals(parameters('maintenanceWindow'), 'Custom1'), equals(parameters('maintenanceWindow'), 'Custom2')), subscriptionResourceId('Microsoft.Maintenance/publicMaintenanceConfigurations', format('SQL_{0}_MI_{1}', parameters('location'), last(parameters('maintenanceWindow')))), null())]"
   },
   "resources": {
     "avmTelemetry": {
