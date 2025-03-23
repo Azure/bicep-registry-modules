@@ -133,7 +133,7 @@ param administratorsObj object = {}
   'Custom1'
   'Custom2'
 ])
-@description('''Optional. The maintenance window for the SQL Managed Instance. If not specified, the \'SystemManaged\' option is used.
+@description('''Optional. The maintenance window for the SQL Managed Instance.
 
 SystemManaged: The system automatically selects a 9-hour maintenance window between 8:00 AM to 5:00 PM local time, Monday - Sunday.
 Custom1: Weekday window: 10:00 PM to 6:00 AM local time, Monday - Thursday.
