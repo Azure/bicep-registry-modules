@@ -94,6 +94,7 @@ output frontDoorEndpointHostName string = afdEndpoint.properties.hostName
 import { routeType } from './route/main.bicep'
 
 @export()
+@description('The type of the AFD Endpoint.')
 type afdEndpointType = {
   @description('Required. The name of the AFD Endpoint.')
   name: string

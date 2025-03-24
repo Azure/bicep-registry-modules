@@ -14,7 +14,7 @@ This module deploys a Policy Insights Remediation.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.PolicyInsights/remediations` | [2021-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.PolicyInsights/2021-10-01/remediations) |
+| `Microsoft.PolicyInsights/remediations` | [2024-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.PolicyInsights/2024-10-01/remediations) |
 
 ## Usage examples
 
@@ -24,14 +24,14 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/policy-insights/remediation:<version>`.
 
-- [Policy Remediation (Management Group scope)](#example-1-policy-remediation-management-group-scope)
-- [Policy Remediation (Management Group scope)](#example-2-policy-remediation-management-group-scope)
-- [Policy Remediation (Resource Group scope)](#example-3-policy-remediation-resource-group-scope)
-- [Policy Remediation (Resource Group scope)](#example-4-policy-remediation-resource-group-scope)
-- [Policy Remediation (Subscription scope)](#example-5-policy-remediation-subscription-scope)
-- [Policy Remediation (Subscription scope)](#example-6-policy-remediation-subscription-scope)
+- [Policy Remediation (Management Group scope - defaults)](#example-1-policy-remediation-management-group-scope---defaults)
+- [Policy Remediation (Management Group scope - max)](#example-2-policy-remediation-management-group-scope---max)
+- [Policy Remediation (Resource Group scope - defaults)](#example-3-policy-remediation-resource-group-scope---defaults)
+- [Policy Remediation (Resource Group scope - max)](#example-4-policy-remediation-resource-group-scope---max)
+- [Policy Remediation (Subscription scope - defaults)](#example-5-policy-remediation-subscription-scope---defaults)
+- [Policy Remediation (Subscription scope - max)](#example-6-policy-remediation-subscription-scope---max)
 
-### Example 1: _Policy Remediation (Management Group scope)_
+### Example 1: _Policy Remediation (Management Group scope - defaults)_
 
 This module runs a Policy remediation task at Management Group scope using minimal parameters.
 
@@ -105,7 +105,7 @@ param policyDefinitionReferenceId = 'Prerequisite_DeployExtensionWindows'
 </details>
 <p>
 
-### Example 2: _Policy Remediation (Management Group scope)_
+### Example 2: _Policy Remediation (Management Group scope - max)_
 
 This module runs a Policy remediation task at Management Group scope using common parameters.
 
@@ -124,6 +124,7 @@ module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
     // Non-required parameters
     failureThresholdPercentage: '0.5'
     filtersLocations: []
+    filtersResourceIds: []
     location: '<location>'
     parallelDeployments: 1
     policyDefinitionReferenceId: 'Prerequisite_DeployExtensionWindows'
@@ -158,6 +159,9 @@ module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
     "filtersLocations": {
       "value": []
     },
+    "filtersResourceIds": {
+      "value": []
+    },
     "location": {
       "value": "<location>"
     },
@@ -190,6 +194,7 @@ param policyAssignmentId = '<policyAssignmentId>'
 // Non-required parameters
 param failureThresholdPercentage = '0.5'
 param filtersLocations = []
+param filtersResourceIds = []
 param location = '<location>'
 param parallelDeployments = 1
 param policyDefinitionReferenceId = 'Prerequisite_DeployExtensionWindows'
@@ -199,7 +204,7 @@ param resourceCount = 10
 </details>
 <p>
 
-### Example 3: _Policy Remediation (Resource Group scope)_
+### Example 3: _Policy Remediation (Resource Group scope - defaults)_
 
 This module runs a Policy remediation task at Resource Group scope using minimal parameters.
 
@@ -283,7 +288,7 @@ param subscriptionId = '<subscriptionId>'
 </details>
 <p>
 
-### Example 4: _Policy Remediation (Resource Group scope)_
+### Example 4: _Policy Remediation (Resource Group scope - max)_
 
 This module runs a Policy remediation task at Resource Group scope using common parameters.
 
@@ -302,6 +307,7 @@ module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
     // Non-required parameters
     failureThresholdPercentage: '0.5'
     filtersLocations: []
+    filtersResourceIds: []
     location: '<location>'
     parallelDeployments: 1
     policyDefinitionReferenceId: 'Prerequisite_DeployExtensionWindows'
@@ -337,6 +343,9 @@ module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
       "value": "0.5"
     },
     "filtersLocations": {
+      "value": []
+    },
+    "filtersResourceIds": {
       "value": []
     },
     "location": {
@@ -380,6 +389,7 @@ param policyAssignmentId = '<policyAssignmentId>'
 // Non-required parameters
 param failureThresholdPercentage = '0.5'
 param filtersLocations = []
+param filtersResourceIds = []
 param location = '<location>'
 param parallelDeployments = 1
 param policyDefinitionReferenceId = 'Prerequisite_DeployExtensionWindows'
@@ -392,7 +402,7 @@ param subscriptionId = '<subscriptionId>'
 </details>
 <p>
 
-### Example 5: _Policy Remediation (Subscription scope)_
+### Example 5: _Policy Remediation (Subscription scope - defaults)_
 
 This module runs a Policy remediation task at subscription scope using minimal parameters.
 
@@ -471,7 +481,7 @@ param subscriptionId = '<subscriptionId>'
 </details>
 <p>
 
-### Example 6: _Policy Remediation (Subscription scope)_
+### Example 6: _Policy Remediation (Subscription scope - max)_
 
 This module runs a Policy remediation task at subscription scope using common parameters.
 
@@ -490,6 +500,7 @@ module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
     // Non-required parameters
     failureThresholdPercentage: '0.5'
     filtersLocations: []
+    filtersResourceIds: []
     location: '<location>'
     parallelDeployments: 1
     policyDefinitionReferenceId: 'Prerequisite_DeployExtensionWindows'
@@ -524,6 +535,9 @@ module remediation 'br/public:avm/ptn/policy-insights/remediation:<version>' = {
       "value": "0.5"
     },
     "filtersLocations": {
+      "value": []
+    },
+    "filtersResourceIds": {
       "value": []
     },
     "location": {
@@ -564,6 +578,7 @@ param policyAssignmentId = '<policyAssignmentId>'
 // Non-required parameters
 param failureThresholdPercentage = '0.5'
 param filtersLocations = []
+param filtersResourceIds = []
 param location = '<location>'
 param parallelDeployments = 1
 param policyDefinitionReferenceId = 'Prerequisite_DeployExtensionWindows'
@@ -591,6 +606,7 @@ param subscriptionId = '<subscriptionId>'
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`failureThresholdPercentage`](#parameter-failurethresholdpercentage) | string | The remediation failure threshold settings. A number between 0.0 to 1.0 representing the percentage failure threshold. The remediation will fail if the percentage of failed remediation operations (i.e. failed deployments) exceeds this threshold. 0 means that the remediation will stop after the first failure. 1 means that the remediation will not stop even if all deployments fail. |
 | [`filtersLocations`](#parameter-filterslocations) | array | The filters that will be applied to determine which resources to remediate. |
+| [`filtersResourceIds`](#parameter-filtersresourceids) | array | The IDs of the resources that will be remediated. Can specify at most 100 IDs. |
 | [`location`](#parameter-location) | string | Location deployment metadata. |
 | [`managementGroupId`](#parameter-managementgroupid) | string | The target scope for the remediation. The name of the management group for the policy assignment. If not provided, will use the current scope for deployment. |
 | [`parallelDeployments`](#parameter-paralleldeployments) | int | Determines how many resources to remediate at any given time. Can be used to increase or reduce the pace of the remediation. Can be between 1-30. Higher values will cause the remediation to complete more quickly, but increase the risk of throttling. If not provided, the default parallel deployments value is used. |
@@ -638,6 +654,14 @@ The filters that will be applied to determine which resources to remediate.
 - Type: array
 - Default: `[]`
 
+### Parameter: `filtersResourceIds`
+
+The IDs of the resources that will be remediated. Can specify at most 100 IDs.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
 ### Parameter: `location`
 
 Location deployment metadata.
@@ -671,8 +695,6 @@ The policy definition reference ID of the individual definition that should be r
 - Required: No
 - Type: string
 - Default: `''`
-- MinValue: 1
-- MaxValue: 30
 
 ### Parameter: `resourceCount`
 
@@ -698,8 +720,6 @@ The way resources to remediate are discovered. Defaults to ExistingNonCompliant 
     'ReEvaluateCompliance'
   ]
   ```
-- MinValue: 1
-- MaxValue: 50000
 
 ### Parameter: `resourceGroupName`
 
@@ -708,8 +728,6 @@ The target scope for the remediation. The name of the resource group for the pol
 - Required: No
 - Type: string
 - Default: `''`
-- MinValue: 1
-- MaxValue: 50000
 
 ### Parameter: `subscriptionId`
 
@@ -718,8 +736,6 @@ The target scope for the remediation. The subscription ID of the subscription fo
 - Required: No
 - Type: string
 - Default: `''`
-- MinValue: 1
-- MaxValue: 50000
 
 ## Outputs
 

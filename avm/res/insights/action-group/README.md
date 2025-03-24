@@ -411,6 +411,7 @@ param tags = {
 | [`emailReceivers`](#parameter-emailreceivers) | array | The list of email receivers that are part of this action group. |
 | [`enabled`](#parameter-enabled) | bool | Indicates whether this action group is enabled. If an action group is not enabled, then none of its receivers will receive communications. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`eventHubReceivers`](#parameter-eventhubreceivers) | array | The list of Event Hub receivers that are part of this action group. |
 | [`itsmReceivers`](#parameter-itsmreceivers) | array | The list of ITSM receivers that are part of this action group. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`logicAppReceivers`](#parameter-logicappreceivers) | array | The list of logic app receivers that are part of this action group. |
@@ -484,6 +485,13 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `eventHubReceivers`
+
+The list of Event Hub receivers that are part of this action group.
+
+- Required: No
+- Type: array
 
 ### Parameter: `itsmReceivers`
 
