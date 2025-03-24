@@ -5,14 +5,14 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "8366034920436368543"
+      "version": "0.33.93.31351",
+      "templateHash": "8125804897137460551"
     },
     "name": "Hybrid Container Service Provisioned Cluster Instance",
     "description": "Deploy a provisioned cluster instance."
   },
   "definitions": {
-    "agentPoolProfilesType": {
+    "agentPoolProfileType": {
       "type": "object",
       "properties": {
         "count": {
@@ -488,7 +488,7 @@
         "description": "Conditional. The name of the key vault. The key vault name. Required if no existing SSH keys."
       }
     },
-    "customLocationId": {
+    "customLocationResourecId": {
       "type": "string",
       "metadata": {
         "description": "Required. The id of the Custom location that used to create hybrid aks."
@@ -504,7 +504,7 @@
     "agentPoolProfiles": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/agentPoolProfilesType"
+        "$ref": "#/definitions/agentPoolProfileType"
       },
       "defaultValue": [
         {
@@ -630,6 +630,7 @@
     }
   },
   "variables": {
+    "$fxv#0": "# Create temp directory in a known location\n$tempDir = '/tmp/sshkeys'\nNew-Item -ItemType Directory -Path $tempDir -Force\nSet-Location $tempDir\n# Generate SSH key pair using ssh-keygen\nssh-keygen -t rsa -b 4096 -f ./key -N '\"\"' -q\n# Read the generated keys\n$publicKey = Get-Content -Path './key.pub' -Raw\n$privateKey = Get-Content -Path './key' -Raw\n# Clean up temp files\nRemove-Item -Path './key*' -Force\nRemove-Item -Path $tempDir -Force -Recurse\n# Set output\n$DeploymentScriptOutputs = @{}\n$DeploymentScriptOutputs['publicKey'] = $publicKey\n$DeploymentScriptOutputs['privateKey'] = $privateKey\n",
     "enableReferencedModulesTelemetry": false
   },
   "resources": {
@@ -684,7 +685,7 @@
       "properties": {
         "azPowerShellVersion": "8.0",
         "retentionInterval": "P1D",
-        "scriptContent": "      # Create temp directory in a known location\n      $tempDir = \"/tmp/sshkeys\"\n      New-Item -ItemType Directory -Path $tempDir -Force\n      Set-Location $tempDir\n      # Generate SSH key pair using ssh-keygen\n      ssh-keygen -t rsa -b 4096 -f ./key -N '\"\"' -q\n      # Read the generated keys\n      $publicKey = Get-Content -Path \"./key.pub\" -Raw\n      $privateKey = Get-Content -Path \"./key\" -Raw\n      # Clean up temp files\n      Remove-Item -Path \"./key*\" -Force\n      Remove-Item -Path $tempDir -Force -Recurse\n      # Set output\n      $DeploymentScriptOutputs = @{}\n      $DeploymentScriptOutputs['publicKey'] = $publicKey\n      $DeploymentScriptOutputs['privateKey'] = $privateKey\n    "
+        "scriptContent": "[variables('$fxv#0')]"
       },
       "dependsOn": [
         "managedIdentity"
@@ -726,7 +727,7 @@
       "scope": "[format('Microsoft.Kubernetes/connectedClusters/{0}', parameters('name'))]",
       "name": "default",
       "extendedLocation": {
-        "name": "[parameters('customLocationId')]",
+        "name": "[parameters('customLocationResourecId')]",
         "type": "CustomLocation"
       },
       "properties": {

@@ -230,7 +230,7 @@ module testDeployment '../../../main.bicep' = {
   params: {
     name: '${namePrefix}${serviceShort}001'
     location: enforcedLocation
-    customLocationId: customLocation.id
+    customLocationResourecId: customLocation.id
     keyVaultName: nestedDependencies.outputs.keyVaultName
     enableTelemetry: true
     kubernetesVersion: '1.29.4'

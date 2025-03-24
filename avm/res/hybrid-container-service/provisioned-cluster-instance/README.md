@@ -55,7 +55,7 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
         ]
       }
     }
-    customLocationId: '<customLocationId>'
+    customLocationResourecId: '<customLocationResourecId>'
     name: 'hcspcimin001'
     // Non-required parameters
     keyVaultName: '<keyVaultName>'
@@ -85,8 +85,8 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
         }
       }
     },
-    "customLocationId": {
-      "value": "<customLocationId>"
+    "customLocationResourecId": {
+      "value": "<customLocationResourecId>"
     },
     "name": {
       "value": "hcspcimin001"
@@ -117,7 +117,7 @@ param cloudProviderProfile = {
     ]
   }
 }
-param customLocationId = '<customLocationId>'
+param customLocationResourecId = '<customLocationResourecId>'
 param name = 'hcspcimin001'
 // Non-required parameters
 param keyVaultName = '<keyVaultName>'
@@ -147,7 +147,7 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
         ]
       }
     }
-    customLocationId: '<customLocationId>'
+    customLocationResourecId: '<customLocationResourecId>'
     name: 'hcspcimax001'
     // Non-required parameters
     agentPoolProfiles: [
@@ -235,8 +235,8 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
         }
       }
     },
-    "customLocationId": {
-      "value": "<customLocationId>"
+    "customLocationResourecId": {
+      "value": "<customLocationResourecId>"
     },
     "name": {
       "value": "hcspcimax001"
@@ -351,7 +351,7 @@ param cloudProviderProfile = {
     ]
   }
 }
-param customLocationId = '<customLocationId>'
+param customLocationResourecId = '<customLocationResourecId>'
 param name = 'hcspcimax001'
 // Non-required parameters
 param agentPoolProfiles = [
@@ -439,7 +439,7 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
         ]
       }
     }
-    customLocationId: '<customLocationId>'
+    customLocationResourecId: '<customLocationResourecId>'
     name: 'hcspciwaf001'
     // Non-required parameters
     agentPoolProfiles: [
@@ -470,7 +470,6 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
       vmSize: 'Standard_A4_v2'
     }
     keyVaultName: '<keyVaultName>'
-    location: '<location>'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -502,8 +501,8 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
         }
       }
     },
-    "customLocationId": {
-      "value": "<customLocationId>"
+    "customLocationResourecId": {
+      "value": "<customLocationResourecId>"
     },
     "name": {
       "value": "hcspciwaf001"
@@ -545,9 +544,6 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
     "keyVaultName": {
       "value": "<keyVaultName>"
     },
-    "location": {
-      "value": "<location>"
-    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -577,7 +573,7 @@ param cloudProviderProfile = {
     ]
   }
 }
-param customLocationId = '<customLocationId>'
+param customLocationResourecId = '<customLocationResourecId>'
 param name = 'hcspciwaf001'
 // Non-required parameters
 param agentPoolProfiles = [
@@ -608,7 +604,6 @@ param controlPlane = {
   vmSize: 'Standard_A4_v2'
 }
 param keyVaultName = '<keyVaultName>'
-param location = '<location>'
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
@@ -626,7 +621,7 @@ param tags = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`cloudProviderProfile`](#parameter-cloudproviderprofile) | object | The profile for the underlying cloud infrastructure provider for the provisioned cluster. |
-| [`customLocationId`](#parameter-customlocationid) | string | The id of the Custom location that used to create hybrid aks. |
+| [`customLocationResourecId`](#parameter-customlocationresourecid) | string | The id of the Custom location that used to create hybrid aks. |
 | [`name`](#parameter-name) | string | The name of the provisioned cluster instance. |
 
 **Conditional parameters**
@@ -690,7 +685,7 @@ The list of virtual network subnet IDs.
 - Required: Yes
 - Type: array
 
-### Parameter: `customLocationId`
+### Parameter: `customLocationResourecId`
 
 The id of the Custom location that used to create hybrid aks.
 

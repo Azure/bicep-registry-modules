@@ -23,13 +23,13 @@ param sshPublicKeySecretName string = 'AksArcAgentSshPublicKey'
 param keyVaultName string?
 
 @description('Required. The id of the Custom location that used to create hybrid aks.')
-param customLocationId string
+param customLocationResourecId string
 
 @description('Optional. The Kubernetes version for the cluster.')
 param kubernetesVersion string?
 
 @description('Optional. The agent pool properties for the provisioned cluster.')
-param agentPoolProfiles agentPoolProfilesType[] = [
+param agentPoolProfiles agentPoolProfileType[] = [
   {
     name: 'nodepool1'
     count: 1
@@ -149,24 +149,7 @@ resource generateSSHKey 'Microsoft.Resources/deploymentScripts@2020-10-01' = if 
   properties: {
     azPowerShellVersion: '8.0'
     retentionInterval: 'P1D'
-    scriptContent: '''
-      # Create temp directory in a known location
-      $tempDir = "/tmp/sshkeys"
-      New-Item -ItemType Directory -Path $tempDir -Force
-      Set-Location $tempDir
-      # Generate SSH key pair using ssh-keygen
-      ssh-keygen -t rsa -b 4096 -f ./key -N '""' -q
-      # Read the generated keys
-      $publicKey = Get-Content -Path "./key.pub" -Raw
-      $privateKey = Get-Content -Path "./key" -Raw
-      # Clean up temp files
-      Remove-Item -Path "./key*" -Force
-      Remove-Item -Path $tempDir -Force -Recurse
-      # Set output
-      $DeploymentScriptOutputs = @{}
-      $DeploymentScriptOutputs['publicKey'] = $publicKey
-      $DeploymentScriptOutputs['privateKey'] = $privateKey
-    '''
+    scriptContent: loadTextContent('./scripts/generateSshKey.ps1')
   }
 }
 
@@ -214,7 +197,7 @@ resource provisionedCluster 'Microsoft.HybridContainerService/provisionedCluster
     sshPublicKeyPem
   ]
   extendedLocation: {
-    name: customLocationId
+    name: customLocationResourecId
     type: 'CustomLocation'
   }
   properties: {
@@ -260,7 +243,7 @@ output location string = location
 
 @export()
 @description('The type for agent pool profiles configuration.')
-type agentPoolProfilesType = {
+type agentPoolProfileType = {
   @description('Required. The number of nodes for the pool.')
   count: int
   @description('Required. Whether to enable auto-scaling for the pool.')
