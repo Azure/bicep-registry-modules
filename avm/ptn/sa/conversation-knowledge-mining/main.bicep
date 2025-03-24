@@ -10,7 +10,7 @@ metadata description = '''This module deploys the [Conversation Knowledge Mining
 // ========== Parameters ========== //
 // PARAMETERS: Solution configuration
 @description('Required. The prefix to add in the default names given to all deployed Azure resources.')
-@maxLength(12)
+@maxLength(19)
 param solutionPrefix string
 
 @description('Optional. Location for all the deployed Azure resources except databases. Defaults to the location of the Resource Group.')
