@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "14374215380472843650"
+      "templateHash": "10096038985761518030"
     },
     "name": "Conversation Knowledge Mining Solution Accelerator",
     "description": "This module deploys the [Conversation Knowledge Mining Solution Accelerator](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator).\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator product. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -998,12 +998,12 @@
     },
     "solutionLocation": {
       "type": "string",
-      "defaultValue": "East US",
+      "defaultValue": "[resourceGroup().location]",
       "metadata": {
         "azd": {
           "type": "location"
         },
-        "description": "Optional. Location for all the deployed Azure resources except databases. Defaults to East US."
+        "description": "Optional. Location for all the deployed Azure resources except databases. Defaults to the location of the Resource Group."
       }
     },
     "databasesLocation": {
