@@ -52,7 +52,7 @@ param aiFoundryAiServicesContentUnderstandingConfiguration ckmAiFoundryAiService
 @description('Optional. The configuration to apply for the Conversation Knowledge Mining AI Foundry AI Services resource.')
 param aiFoundryAiServicesConfiguration ckmAiFoundryAiServicesType = {
   name: '${solutionPrefix}-aifd-aisr'
-  location: 'East US'
+  location: solutionLocation
   sku: 'S0'
   gptModelName: 'gpt-4o-mini'
   gptModelSku: 'Standard'
@@ -228,7 +228,7 @@ var aiFoundryAiServicesContentUnderstandingSkuName = aiFoundryAiServicesContentU
 
 // VARIABLES: AI Foundry AI Service configuration defaults
 var aiFoundryAiServicesResourceName = aiFoundryAiServicesConfiguration.?name ?? '${solutionPrefix}-aifd-aisr-cu'
-var aiFoundryAiServicesLocation = aiFoundryAiServicesConfiguration.?location ?? 'West US'
+var aiFoundryAiServicesLocation = aiFoundryAiServicesConfiguration.?location ?? solutionLocation
 var aiFoundryAiServicesSkuName = aiFoundryAiServicesConfiguration.?sku ?? 'S0'
 var aiFoundryAIServicesGptModelName = aiFoundryAiServicesConfiguration.?gptModelName ?? 'gpt-4o-mini'
 var aiFoundryAiServicesGptModelSku = aiFoundryAiServicesConfiguration.?gptModelSku ?? 'Standard'

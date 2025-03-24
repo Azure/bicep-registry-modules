@@ -332,7 +332,7 @@ The configuration to apply for the Conversation Knowledge Mining AI Foundry AI S
       gptModelCapacity: 100
       gptModelName: 'gpt-4o-mini'
       gptModelSku: 'Standard'
-      location: 'East US'
+      location: '[parameters(\'solutionLocation\')]'
       name: '[format(\'{0}-aifd-aisr\', parameters(\'solutionPrefix\'))]'
       sku: 'S0'
       textEmbeddingModelCapacity: 80
