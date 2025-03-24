@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "7982158538530558379"
+      "version": "0.32.4.45862",
+      "templateHash": "3701439978420477660"
     },
     "name": "Azure Stack HCI Cluster Deployment Settings",
     "description": "This module deploys an Azure Stack HCI Cluster Deployment Settings resource."
@@ -242,7 +242,7 @@
     "keyVaultName": {
       "type": "string",
       "metadata": {
-        "description": "Required. The name of the key vault to be used for storing secrets for the HCI cluster. This currently needs to be unique per HCI cluster."
+        "description": "Required. The name of the key vault to be used for storing secrets for the HCI cluster."
       }
     },
     "cloudId": {
@@ -348,7 +348,7 @@
                       "name": "storageNetworks",
                       "count": "[length(parameters('storageNetworks'))]",
                       "input": {
-                        "name": "[format('StorageNetwork{0}', add(copyIndex('storageNetworks'), 1))]",
+                        "name": "[parameters('storageNetworks')[copyIndex('storageNetworks')].name]",
                         "networkAdapterName": "[parameters('storageNetworks')[copyIndex('storageNetworks')].adapterName]",
                         "vlanId": "[parameters('storageNetworks')[copyIndex('storageNetworks')].vlan]",
                         "storageAdapterIPInfo": "[tryGet(parameters('storageNetworks')[copyIndex('storageNetworks')], 'storageAdapterIPInfo')]"

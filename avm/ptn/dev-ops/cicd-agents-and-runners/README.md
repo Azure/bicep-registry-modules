@@ -1328,6 +1328,341 @@ The networking configuration.
 
 - Required: Yes
 - Type: object
+- Discriminator: `networkType`
+
+<h4>The available variants are:</h4>
+
+| Variant | Description |
+| :-- | :-- |
+| [`createNew`](#variant-networkingconfigurationnetworktype-createnew) |  |
+| [`useExisting`](#variant-networkingconfigurationnetworktype-useexisting) |  |
+
+### Variant: `networkingConfiguration.networkType-createNew`
+
+
+To use this variant, set the property `networkType` to `createNew`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`addressSpace`](#parameter-networkingconfigurationnetworktype-createnewaddressspace) | string | The address space of the created virtual network. |
+| [`networkType`](#parameter-networkingconfigurationnetworktype-createnewnetworktype) | string | The network type. This can be either createNew or useExisting. |
+| [`virtualNetworkName`](#parameter-networkingconfigurationnetworktype-createnewvirtualnetworkname) | string | The virtual network name of the created virtual network. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`containerAppDeploymentScriptSubnetName`](#parameter-networkingconfigurationnetworktype-createnewcontainerappdeploymentscriptsubnetname) | string | The subnet name for the container app deployment script. Only required if private networking is used. If not provided, a default name will be used. |
+| [`containerAppDeploymentScriptSubnetPrefix`](#parameter-networkingconfigurationnetworktype-createnewcontainerappdeploymentscriptsubnetprefix) | string | The subnet address prefix for the container app deployment script which is used to start the placeholder Azure DevOps agent. Only required if private networking is used. If not provided, a default subnet prefix will be used. |
+| [`containerAppSubnetAddressPrefix`](#parameter-networkingconfigurationnetworktype-createnewcontainerappsubnetaddressprefix) | string | The container app subnet CIDR in the created virtual network. If not provided, a default subnet prefix will be used. |
+| [`containerAppSubnetName`](#parameter-networkingconfigurationnetworktype-createnewcontainerappsubnetname) | string | The container app subnet name in the created virtual network. If not provided, a default name will be used. |
+| [`containerInstanceSubnetAddressPrefix`](#parameter-networkingconfigurationnetworktype-createnewcontainerinstancesubnetaddressprefix) | string | The container instance subnet CIDR in the created virtual network. If not provided, a default subnet prefix will be used. |
+| [`containerInstanceSubnetName`](#parameter-networkingconfigurationnetworktype-createnewcontainerinstancesubnetname) | string | The container instance subnet name in the created virtual network. If not provided, a default name will be used. |
+| [`containerInstancesubnetPrefix`](#parameter-networkingconfigurationnetworktype-createnewcontainerinstancesubnetprefix) | string | The container instance subnet address prefix in the created virtual network. If not provided, a default subnet prefix will be used. |
+| [`containerRegistryPrivateDnsZoneResourceId`](#parameter-networkingconfigurationnetworktype-createnewcontainerregistryprivatednszoneresourceid) | string | The container registry private DNS zone Id. If not provided, a new private DNS zone will be created. |
+| [`containerRegistryPrivateEndpointSubnetName`](#parameter-networkingconfigurationnetworktype-createnewcontainerregistryprivateendpointsubnetname) | string | The subnet name for the container registry private endpoint. If not provided, a default name will be used. |
+| [`containerRegistrySubnetPrefix`](#parameter-networkingconfigurationnetworktype-createnewcontainerregistrysubnetprefix) | string | The container registry subnet address prefix in the created virtual network. If not provided, a default subnet prefix will be used. |
+| [`deploymentScriptPrivateDnsZoneResourceId`](#parameter-networkingconfigurationnetworktype-createnewdeploymentscriptprivatednszoneresourceid) | string | The deployment script private DNS zone Id. If not provided, a new private DNS zone will be created. Only required if private networking is used. |
+| [`natGatewayPublicIpAddressResourceId`](#parameter-networkingconfigurationnetworktype-createnewnatgatewaypublicipaddressresourceid) | string | The existing public IP address to assosciate with the NAT gateway. This should be provided if an existing public Ip address is available to be used. If this parameter is not provided, a new Public Ip address will be created. |
+| [`natGatewayResourceId`](#parameter-networkingconfigurationnetworktype-createnewnatgatewayresourceid) | string | The existing NAT Gateway resource Id. This should be provided if an existing NAT gateway is available to be used. If this parameter is not provided, a new NAT gateway will be created. |
+
+### Parameter: `networkingConfiguration.networkType-createNew.addressSpace`
+
+The address space of the created virtual network.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `networkingConfiguration.networkType-createNew.networkType`
+
+The network type. This can be either createNew or useExisting.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'createNew'
+  ]
+  ```
+
+### Parameter: `networkingConfiguration.networkType-createNew.virtualNetworkName`
+
+The virtual network name of the created virtual network.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `networkingConfiguration.networkType-createNew.containerAppDeploymentScriptSubnetName`
+
+The subnet name for the container app deployment script. Only required if private networking is used. If not provided, a default name will be used.
+
+- Required: No
+- Type: string
+
+### Parameter: `networkingConfiguration.networkType-createNew.containerAppDeploymentScriptSubnetPrefix`
+
+The subnet address prefix for the container app deployment script which is used to start the placeholder Azure DevOps agent. Only required if private networking is used. If not provided, a default subnet prefix will be used.
+
+- Required: No
+- Type: string
+
+### Parameter: `networkingConfiguration.networkType-createNew.containerAppSubnetAddressPrefix`
+
+The container app subnet CIDR in the created virtual network. If not provided, a default subnet prefix will be used.
+
+- Required: No
+- Type: string
+
+### Parameter: `networkingConfiguration.networkType-createNew.containerAppSubnetName`
+
+The container app subnet name in the created virtual network. If not provided, a default name will be used.
+
+- Required: No
+- Type: string
+
+### Parameter: `networkingConfiguration.networkType-createNew.containerInstanceSubnetAddressPrefix`
+
+The container instance subnet CIDR in the created virtual network. If not provided, a default subnet prefix will be used.
+
+- Required: No
+- Type: string
+
+### Parameter: `networkingConfiguration.networkType-createNew.containerInstanceSubnetName`
+
+The container instance subnet name in the created virtual network. If not provided, a default name will be used.
+
+- Required: No
+- Type: string
+
+### Parameter: `networkingConfiguration.networkType-createNew.containerInstancesubnetPrefix`
+
+The container instance subnet address prefix in the created virtual network. If not provided, a default subnet prefix will be used.
+
+- Required: No
+- Type: string
+
+### Parameter: `networkingConfiguration.networkType-createNew.containerRegistryPrivateDnsZoneResourceId`
+
+The container registry private DNS zone Id. If not provided, a new private DNS zone will be created.
+
+- Required: No
+- Type: string
+
+### Parameter: `networkingConfiguration.networkType-createNew.containerRegistryPrivateEndpointSubnetName`
+
+The subnet name for the container registry private endpoint. If not provided, a default name will be used.
+
+- Required: No
+- Type: string
+
+### Parameter: `networkingConfiguration.networkType-createNew.containerRegistrySubnetPrefix`
+
+The container registry subnet address prefix in the created virtual network. If not provided, a default subnet prefix will be used.
+
+- Required: No
+- Type: string
+
+### Parameter: `networkingConfiguration.networkType-createNew.deploymentScriptPrivateDnsZoneResourceId`
+
+The deployment script private DNS zone Id. If not provided, a new private DNS zone will be created. Only required if private networking is used.
+
+- Required: No
+- Type: string
+
+### Parameter: `networkingConfiguration.networkType-createNew.natGatewayPublicIpAddressResourceId`
+
+The existing public IP address to assosciate with the NAT gateway. This should be provided if an existing public Ip address is available to be used. If this parameter is not provided, a new Public Ip address will be created.
+
+- Required: No
+- Type: string
+
+### Parameter: `networkingConfiguration.networkType-createNew.natGatewayResourceId`
+
+The existing NAT Gateway resource Id. This should be provided if an existing NAT gateway is available to be used. If this parameter is not provided, a new NAT gateway will be created.
+
+- Required: No
+- Type: string
+
+### Variant: `networkingConfiguration.networkType-useExisting`
+
+
+To use this variant, set the property `networkType` to `useExisting`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`computeNetworking`](#parameter-networkingconfigurationnetworktype-useexistingcomputenetworking) | object | The compute type networking type. |
+| [`containerRegistryPrivateEndpointSubnetName`](#parameter-networkingconfigurationnetworktype-useexistingcontainerregistryprivateendpointsubnetname) | string | The subnet name for the container registry private endpoint. |
+| [`networkType`](#parameter-networkingconfigurationnetworktype-useexistingnetworktype) | string | The network type. This can be either createNew or useExisting. |
+| [`virtualNetworkResourceId`](#parameter-networkingconfigurationnetworktype-useexistingvirtualnetworkresourceid) | string | The existing virtual network resource Id. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`containerRegistryPrivateDnsZoneResourceId`](#parameter-networkingconfigurationnetworktype-useexistingcontainerregistryprivatednszoneresourceid) | string | The container registry private DNS zone Id. If not provided, a new private DNS zone will be created. |
+| [`natGatewayPublicIpAddressResourceId`](#parameter-networkingconfigurationnetworktype-useexistingnatgatewaypublicipaddressresourceid) | string | The existing public IP address to assosciate with the NAT gateway. This should be provided if an existing public Ip address is available to be used. If this parameter is not provided, a new Public Ip address will be created. |
+| [`natGatewayResourceId`](#parameter-networkingconfigurationnetworktype-useexistingnatgatewayresourceid) | string | The existing NAT Gateway resource Id. This should be provided if an existing NAT gateway is available to be used. If this parameter is not provided, a new NAT gateway will be created. |
+
+### Parameter: `networkingConfiguration.networkType-useExisting.computeNetworking`
+
+The compute type networking type.
+
+- Required: Yes
+- Type: object
+- Discriminator: `computeNetworkType`
+
+<h4>The available variants are:</h4>
+
+| Variant | Description |
+| :-- | :-- |
+| [`azureContainerApp`](#variant-networkingconfigurationnetworktype-useexistingcomputenetworkingcomputenetworktype-azurecontainerapp) |  |
+| [`azureContainerInstance`](#variant-networkingconfigurationnetworktype-useexistingcomputenetworkingcomputenetworktype-azurecontainerinstance) |  |
+
+### Variant: `networkingConfiguration.networkType-useExisting.computeNetworking.computeNetworkType-azureContainerApp`
+
+
+To use this variant, set the property `computeNetworkType` to `azureContainerApp`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`computeNetworkType`](#parameter-networkingconfigurationnetworktype-useexistingcomputenetworkingcomputenetworktype-azurecontainerappcomputenetworktype) | string | The Azure Container App networking type. |
+| [`containerAppDeploymentScriptSubnetName`](#parameter-networkingconfigurationnetworktype-useexistingcomputenetworkingcomputenetworktype-azurecontainerappcontainerappdeploymentscriptsubnetname) | string | The existing subnet name for the container app deployment script. |
+| [`containerAppSubnetName`](#parameter-networkingconfigurationnetworktype-useexistingcomputenetworkingcomputenetworktype-azurecontainerappcontainerappsubnetname) | string | The existing network container app subnet name. This is required for Container Apps compute type. This subnet needs to have service delegation for App environments. |
+| [`containerInstanceSubnetName`](#parameter-networkingconfigurationnetworktype-useexistingcomputenetworkingcomputenetworktype-azurecontainerappcontainerinstancesubnetname) | string | The container instance subnet name in the created virtual network. If not provided, a default name will be used. This subnet is required for private networking Azure DevOps scenarios to deploy the deployment script which starts the placeholder agent privately. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`deploymentScriptPrivateDnsZoneResourceId`](#parameter-networkingconfigurationnetworktype-useexistingcomputenetworkingcomputenetworktype-azurecontainerappdeploymentscriptprivatednszoneresourceid) | string | The deployment script private DNS zone Id. If not provided, a new private DNS zone will be created. |
+
+### Parameter: `networkingConfiguration.networkType-useExisting.computeNetworking.computeNetworkType-azureContainerApp.computeNetworkType`
+
+The Azure Container App networking type.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'azureContainerApp'
+  ]
+  ```
+
+### Parameter: `networkingConfiguration.networkType-useExisting.computeNetworking.computeNetworkType-azureContainerApp.containerAppDeploymentScriptSubnetName`
+
+The existing subnet name for the container app deployment script.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `networkingConfiguration.networkType-useExisting.computeNetworking.computeNetworkType-azureContainerApp.containerAppSubnetName`
+
+The existing network container app subnet name. This is required for Container Apps compute type. This subnet needs to have service delegation for App environments.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `networkingConfiguration.networkType-useExisting.computeNetworking.computeNetworkType-azureContainerApp.containerInstanceSubnetName`
+
+The container instance subnet name in the created virtual network. If not provided, a default name will be used. This subnet is required for private networking Azure DevOps scenarios to deploy the deployment script which starts the placeholder agent privately.
+
+- Required: No
+- Type: string
+
+### Parameter: `networkingConfiguration.networkType-useExisting.computeNetworking.computeNetworkType-azureContainerApp.deploymentScriptPrivateDnsZoneResourceId`
+
+The deployment script private DNS zone Id. If not provided, a new private DNS zone will be created.
+
+- Required: No
+- Type: string
+
+### Variant: `networkingConfiguration.networkType-useExisting.computeNetworking.computeNetworkType-azureContainerInstance`
+
+
+To use this variant, set the property `computeNetworkType` to `azureContainerInstance`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`computeNetworkType`](#parameter-networkingconfigurationnetworktype-useexistingcomputenetworkingcomputenetworktype-azurecontainerinstancecomputenetworktype) | string | The Azure Container Instance network type. |
+| [`containerInstanceSubnetName`](#parameter-networkingconfigurationnetworktype-useexistingcomputenetworkingcomputenetworktype-azurecontainerinstancecontainerinstancesubnetname) | string | The container instance subnet name in the created virtual network. If not provided, a default name will be used. |
+
+### Parameter: `networkingConfiguration.networkType-useExisting.computeNetworking.computeNetworkType-azureContainerInstance.computeNetworkType`
+
+The Azure Container Instance network type.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'azureContainerInstance'
+  ]
+  ```
+
+### Parameter: `networkingConfiguration.networkType-useExisting.computeNetworking.computeNetworkType-azureContainerInstance.containerInstanceSubnetName`
+
+The container instance subnet name in the created virtual network. If not provided, a default name will be used.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `networkingConfiguration.networkType-useExisting.containerRegistryPrivateEndpointSubnetName`
+
+The subnet name for the container registry private endpoint.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `networkingConfiguration.networkType-useExisting.networkType`
+
+The network type. This can be either createNew or useExisting.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'useExisting'
+  ]
+  ```
+
+### Parameter: `networkingConfiguration.networkType-useExisting.virtualNetworkResourceId`
+
+The existing virtual network resource Id.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `networkingConfiguration.networkType-useExisting.containerRegistryPrivateDnsZoneResourceId`
+
+The container registry private DNS zone Id. If not provided, a new private DNS zone will be created.
+
+- Required: No
+- Type: string
+
+### Parameter: `networkingConfiguration.networkType-useExisting.natGatewayPublicIpAddressResourceId`
+
+The existing public IP address to assosciate with the NAT gateway. This should be provided if an existing public Ip address is available to be used. If this parameter is not provided, a new Public Ip address will be created.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `networkingConfiguration.networkType-useExisting.natGatewayResourceId`
+
+The existing NAT Gateway resource Id. This should be provided if an existing NAT gateway is available to be used. If this parameter is not provided, a new NAT gateway will be created.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `selfHostedConfig`
 
@@ -1335,6 +1670,521 @@ The self-hosted runner configuration. This can be either GitHub or Azure DevOps.
 
 - Required: Yes
 - Type: object
+- Discriminator: `selfHostedType`
+
+<h4>The available variants are:</h4>
+
+| Variant | Description |
+| :-- | :-- |
+| [`createNew`](#variant-networkingconfigurationnetworktype-createnew) |  |
+| [`useExisting`](#variant-networkingconfigurationnetworktype-useexisting) |  |
+
+<h4>The available variants are:</h4>
+
+| Variant | Description |
+| :-- | :-- |
+| [`github`](#variant-selfhostedconfigselfhostedtype-github) |  |
+| [`azuredevops`](#variant-selfhostedconfigselfhostedtype-azuredevops) |  |
+
+### Variant: `selfHostedConfig.selfHostedType-github`
+
+
+To use this variant, set the property `selfHostedType` to `github`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`githubOrganization`](#parameter-selfhostedconfigselfhostedtype-githubgithuborganization) | string | The GitHub organization name. |
+| [`githubRepository`](#parameter-selfhostedconfigselfhostedtype-githubgithubrepository) | string | The GitHub repository name. |
+| [`personalAccessToken`](#parameter-selfhostedconfigselfhostedtype-githubpersonalaccesstoken) | securestring | The GitHub personal access token with permissions to create and manage self-hosted runners.  See https://learn.microsoft.com/azure/container-apps/tutorial-ci-cd-runners-jobs?tabs=bash&pivots=container-apps-jobs-self-hosted-ci-cd-github-actions#get-a-github-personal-access-token for PAT permissions. The permissions will change based on the scope of the runner. |
+| [`selfHostedType`](#parameter-selfhostedconfigselfhostedtype-githubselfhostedtype) | string | The self-hosted runner type. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`azureContainerAppTarget`](#parameter-selfhostedconfigselfhostedtype-githubazurecontainerapptarget) | object | The GitHub runner Azure Container app configuration. |
+| [`azureContainerInstanceTarget`](#parameter-selfhostedconfigselfhostedtype-githubazurecontainerinstancetarget) | object | The GitHub runner Azure Container instance configuration. |
+| [`ephemeral`](#parameter-selfhostedconfigselfhostedtype-githubephemeral) | bool | Deploy ephemeral runners. |
+| [`runnerGroup`](#parameter-selfhostedconfigselfhostedtype-githubrunnergroup) | string | The GitHub runner group. |
+| [`runnerName`](#parameter-selfhostedconfigselfhostedtype-githubrunnername) | string | The GitHub runner name. |
+| [`runnerNamePrefix`](#parameter-selfhostedconfigselfhostedtype-githubrunnernameprefix) | string | The GitHub runner name prefix. |
+| [`runnerScope`](#parameter-selfhostedconfigselfhostedtype-githubrunnerscope) | string | The GitHub runner scope. Depending on the scope, you would need to set the right permissions for your Personal Access Token. |
+| [`targetWorkflowQueueLength`](#parameter-selfhostedconfigselfhostedtype-githubtargetworkflowqueuelength) | string | The target workflow queue length. |
+
+### Parameter: `selfHostedConfig.selfHostedType-github.githubOrganization`
+
+The GitHub organization name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `selfHostedConfig.selfHostedType-github.githubRepository`
+
+The GitHub repository name.
+
+- Required: No
+- Type: string
+
+### Parameter: `selfHostedConfig.selfHostedType-github.personalAccessToken`
+
+The GitHub personal access token with permissions to create and manage self-hosted runners.  See https://learn.microsoft.com/azure/container-apps/tutorial-ci-cd-runners-jobs?tabs=bash&pivots=container-apps-jobs-self-hosted-ci-cd-github-actions#get-a-github-personal-access-token for PAT permissions. The permissions will change based on the scope of the runner.
+
+- Required: Yes
+- Type: securestring
+
+### Parameter: `selfHostedConfig.selfHostedType-github.selfHostedType`
+
+The self-hosted runner type.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'github'
+  ]
+  ```
+
+### Parameter: `selfHostedConfig.selfHostedType-github.azureContainerAppTarget`
+
+The GitHub runner Azure Container app configuration.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`resources`](#parameter-selfhostedconfigselfhostedtype-githubazurecontainerapptargetresources) | object | The Azure Container App Job CPU and memory resources. |
+
+### Parameter: `selfHostedConfig.selfHostedType-github.azureContainerAppTarget.resources`
+
+The Azure Container App Job CPU and memory resources.
+
+- Required: No
+- Type: object
+- Allowed:
+  ```Bicep
+  [
+    {
+      cpu: '0.25'
+      memory: '0.5Gi'
+    }
+    {
+      cpu: '0.5'
+      memory: '1Gi'
+    }
+    {
+      cpu: '0.75'
+      memory: '1.5Gi'
+    }
+    {
+      cpu: '1'
+      memory: '2Gi'
+    }
+    {
+      cpu: '1.25'
+      memory: '2.5Gi'
+    }
+    {
+      cpu: '1.5'
+      memory: '3Gi'
+    }
+    {
+      cpu: '1.75'
+      memory: '3.5Gi'
+    }
+    {
+      cpu: '2'
+      memory: '4Gi'
+    }
+    {
+      cpu: '2.25'
+      memory: '4.5Gi'
+    }
+    {
+      cpu: '2.5'
+      memory: '5Gi'
+    }
+    {
+      cpu: '2.75'
+      memory: '5.5Gi'
+    }
+    {
+      cpu: '3'
+      memory: '6Gi'
+    }
+    {
+      cpu: '3.25'
+      memory: '6.5Gi'
+    }
+    {
+      cpu: '3.5'
+      memory: '7Gi'
+    }
+    {
+      cpu: '3.75'
+      memory: '7.5Gi'
+    }
+    {
+      cpu: '4'
+      memory: '8Gi'
+    }
+  ]
+  ```
+
+### Parameter: `selfHostedConfig.selfHostedType-github.azureContainerInstanceTarget`
+
+The GitHub runner Azure Container instance configuration.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`cpu`](#parameter-selfhostedconfigselfhostedtype-githubazurecontainerinstancetargetcpu) | int | The Azure Container Instance container cpu. |
+| [`memoryInGB`](#parameter-selfhostedconfigselfhostedtype-githubazurecontainerinstancetargetmemoryingb) | int | The Azure Container Instance container memory. |
+| [`numberOfInstances`](#parameter-selfhostedconfigselfhostedtype-githubazurecontainerinstancetargetnumberofinstances) | int | The number of the Azure Container Instances to deploy. |
+| [`port`](#parameter-selfhostedconfigselfhostedtype-githubazurecontainerinstancetargetport) | int | The Azure Container Instance container port. |
+| [`sku`](#parameter-selfhostedconfigselfhostedtype-githubazurecontainerinstancetargetsku) | string | The Azure Container Instance Sku name. |
+
+### Parameter: `selfHostedConfig.selfHostedType-github.azureContainerInstanceTarget.cpu`
+
+The Azure Container Instance container cpu.
+
+- Required: No
+- Type: int
+
+### Parameter: `selfHostedConfig.selfHostedType-github.azureContainerInstanceTarget.memoryInGB`
+
+The Azure Container Instance container memory.
+
+- Required: No
+- Type: int
+
+### Parameter: `selfHostedConfig.selfHostedType-github.azureContainerInstanceTarget.numberOfInstances`
+
+The number of the Azure Container Instances to deploy.
+
+- Required: No
+- Type: int
+
+### Parameter: `selfHostedConfig.selfHostedType-github.azureContainerInstanceTarget.port`
+
+The Azure Container Instance container port.
+
+- Required: No
+- Type: int
+
+### Parameter: `selfHostedConfig.selfHostedType-github.azureContainerInstanceTarget.sku`
+
+The Azure Container Instance Sku name.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Dedicated'
+    'Standard'
+  ]
+  ```
+
+### Parameter: `selfHostedConfig.selfHostedType-github.ephemeral`
+
+Deploy ephemeral runners.
+
+- Required: No
+- Type: bool
+- Allowed:
+  ```Bicep
+  [
+    true
+  ]
+  ```
+
+### Parameter: `selfHostedConfig.selfHostedType-github.runnerGroup`
+
+The GitHub runner group.
+
+- Required: No
+- Type: string
+
+### Parameter: `selfHostedConfig.selfHostedType-github.runnerName`
+
+The GitHub runner name.
+
+- Required: No
+- Type: string
+
+### Parameter: `selfHostedConfig.selfHostedType-github.runnerNamePrefix`
+
+The GitHub runner name prefix.
+
+- Required: No
+- Type: string
+
+### Parameter: `selfHostedConfig.selfHostedType-github.runnerScope`
+
+The GitHub runner scope. Depending on the scope, you would need to set the right permissions for your Personal Access Token.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'ent'
+    'org'
+    'repo'
+  ]
+  ```
+
+### Parameter: `selfHostedConfig.selfHostedType-github.targetWorkflowQueueLength`
+
+The target workflow queue length.
+
+- Required: No
+- Type: string
+
+### Variant: `selfHostedConfig.selfHostedType-azuredevops`
+
+
+To use this variant, set the property `selfHostedType` to `azuredevops`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`agentsPoolName`](#parameter-selfhostedconfigselfhostedtype-azuredevopsagentspoolname) | string | The Azure DevOps agents pool name. |
+| [`devOpsOrganization`](#parameter-selfhostedconfigselfhostedtype-azuredevopsdevopsorganization) | string | The Azure DevOps organization name. |
+| [`personalAccessToken`](#parameter-selfhostedconfigselfhostedtype-azuredevopspersonalaccesstoken) | securestring | The Azure DevOps persoanl access token with permissions to create and manage self-hosted agents. See https://learn.microsoft.com/azure/container-apps/tutorial-ci-cd-runners-jobs?tabs=bash&pivots=container-apps-jobs-self-hosted-ci-cd-azure-pipelines#get-an-azure-devops-personal-access-token for PAT permissions. |
+| [`selfHostedType`](#parameter-selfhostedconfigselfhostedtype-azuredevopsselfhostedtype) | string | The self-hosted runner type. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`agentName`](#parameter-selfhostedconfigselfhostedtype-azuredevopsagentname) | string | The Azure DevOps agent name. |
+| [`agentNamePrefix`](#parameter-selfhostedconfigselfhostedtype-azuredevopsagentnameprefix) | string | The Azure DevOps agent name prefix. |
+| [`azureContainerAppTarget`](#parameter-selfhostedconfigselfhostedtype-azuredevopsazurecontainerapptarget) | object | The AzureDevOps agents Azure Container app configuration. |
+| [`azureContainerInstanceTarget`](#parameter-selfhostedconfigselfhostedtype-azuredevopsazurecontainerinstancetarget) | object | The GitHub runner Azure Container instance configuration. |
+| [`placeHolderAgentName`](#parameter-selfhostedconfigselfhostedtype-azuredevopsplaceholderagentname) | string | The Azure DevOps placeholder agent name. |
+| [`targetPipelinesQueueLength`](#parameter-selfhostedconfigselfhostedtype-azuredevopstargetpipelinesqueuelength) | string | The target pipelines queue length. |
+
+### Parameter: `selfHostedConfig.selfHostedType-azuredevops.agentsPoolName`
+
+The Azure DevOps agents pool name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `selfHostedConfig.selfHostedType-azuredevops.devOpsOrganization`
+
+The Azure DevOps organization name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `selfHostedConfig.selfHostedType-azuredevops.personalAccessToken`
+
+The Azure DevOps persoanl access token with permissions to create and manage self-hosted agents. See https://learn.microsoft.com/azure/container-apps/tutorial-ci-cd-runners-jobs?tabs=bash&pivots=container-apps-jobs-self-hosted-ci-cd-azure-pipelines#get-an-azure-devops-personal-access-token for PAT permissions.
+
+- Required: Yes
+- Type: securestring
+
+### Parameter: `selfHostedConfig.selfHostedType-azuredevops.selfHostedType`
+
+The self-hosted runner type.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'azuredevops'
+  ]
+  ```
+
+### Parameter: `selfHostedConfig.selfHostedType-azuredevops.agentName`
+
+The Azure DevOps agent name.
+
+- Required: No
+- Type: string
+
+### Parameter: `selfHostedConfig.selfHostedType-azuredevops.agentNamePrefix`
+
+The Azure DevOps agent name prefix.
+
+- Required: No
+- Type: string
+
+### Parameter: `selfHostedConfig.selfHostedType-azuredevops.azureContainerAppTarget`
+
+The AzureDevOps agents Azure Container app configuration.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`resources`](#parameter-selfhostedconfigselfhostedtype-azuredevopsazurecontainerapptargetresources) | object | The Azure Container App Job CPU and memory resources. |
+
+### Parameter: `selfHostedConfig.selfHostedType-azuredevops.azureContainerAppTarget.resources`
+
+The Azure Container App Job CPU and memory resources.
+
+- Required: No
+- Type: object
+- Allowed:
+  ```Bicep
+  [
+    {
+      cpu: '0.25'
+      memory: '0.5Gi'
+    }
+    {
+      cpu: '0.5'
+      memory: '1Gi'
+    }
+    {
+      cpu: '0.75'
+      memory: '1.5Gi'
+    }
+    {
+      cpu: '1'
+      memory: '2Gi'
+    }
+    {
+      cpu: '1.25'
+      memory: '2.5Gi'
+    }
+    {
+      cpu: '1.5'
+      memory: '3Gi'
+    }
+    {
+      cpu: '1.75'
+      memory: '3.5Gi'
+    }
+    {
+      cpu: '2'
+      memory: '4Gi'
+    }
+    {
+      cpu: '2.25'
+      memory: '4.5Gi'
+    }
+    {
+      cpu: '2.5'
+      memory: '5Gi'
+    }
+    {
+      cpu: '2.75'
+      memory: '5.5Gi'
+    }
+    {
+      cpu: '3'
+      memory: '6Gi'
+    }
+    {
+      cpu: '3.25'
+      memory: '6.5Gi'
+    }
+    {
+      cpu: '3.5'
+      memory: '7Gi'
+    }
+    {
+      cpu: '3.75'
+      memory: '7.5Gi'
+    }
+    {
+      cpu: '4'
+      memory: '8Gi'
+    }
+  ]
+  ```
+
+### Parameter: `selfHostedConfig.selfHostedType-azuredevops.azureContainerInstanceTarget`
+
+The GitHub runner Azure Container instance configuration.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`cpu`](#parameter-selfhostedconfigselfhostedtype-azuredevopsazurecontainerinstancetargetcpu) | int | The Azure Container Instance container cpu. |
+| [`memoryInGB`](#parameter-selfhostedconfigselfhostedtype-azuredevopsazurecontainerinstancetargetmemoryingb) | int | The Azure Container Instance container memory. |
+| [`numberOfInstances`](#parameter-selfhostedconfigselfhostedtype-azuredevopsazurecontainerinstancetargetnumberofinstances) | int | The number of the Azure Container Instances to deploy. |
+| [`port`](#parameter-selfhostedconfigselfhostedtype-azuredevopsazurecontainerinstancetargetport) | int | The Azure Container Instance container port. |
+| [`sku`](#parameter-selfhostedconfigselfhostedtype-azuredevopsazurecontainerinstancetargetsku) | string | The Azure Container Instance Sku name. |
+
+### Parameter: `selfHostedConfig.selfHostedType-azuredevops.azureContainerInstanceTarget.cpu`
+
+The Azure Container Instance container cpu.
+
+- Required: No
+- Type: int
+
+### Parameter: `selfHostedConfig.selfHostedType-azuredevops.azureContainerInstanceTarget.memoryInGB`
+
+The Azure Container Instance container memory.
+
+- Required: No
+- Type: int
+
+### Parameter: `selfHostedConfig.selfHostedType-azuredevops.azureContainerInstanceTarget.numberOfInstances`
+
+The number of the Azure Container Instances to deploy.
+
+- Required: No
+- Type: int
+
+### Parameter: `selfHostedConfig.selfHostedType-azuredevops.azureContainerInstanceTarget.port`
+
+The Azure Container Instance container port.
+
+- Required: No
+- Type: int
+
+### Parameter: `selfHostedConfig.selfHostedType-azuredevops.azureContainerInstanceTarget.sku`
+
+The Azure Container Instance Sku name.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Dedicated'
+    'Standard'
+  ]
+  ```
+
+### Parameter: `selfHostedConfig.selfHostedType-azuredevops.placeHolderAgentName`
+
+The Azure DevOps placeholder agent name.
+
+- Required: No
+- Type: string
+
+### Parameter: `selfHostedConfig.selfHostedType-azuredevops.targetPipelinesQueueLength`
+
+The target pipelines queue length.
+
+- Required: No
+- Type: string
 
 ### Parameter: `enableTelemetry`
 

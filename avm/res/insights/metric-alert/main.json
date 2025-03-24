@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "5542299104437497073"
+      "version": "0.33.13.18514",
+      "templateHash": "5735927330543009746"
     },
     "name": "Metric Alerts",
     "description": "This module deploys a Metric Alert."
@@ -27,6 +27,9 @@
             "$ref": "#/definitions/alertMultiResourceType"
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true
       }
     },
     "alertResourceType": {
@@ -36,11 +39,23 @@
           "type": "string",
           "allowedValues": [
             "Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria"
-          ]
+          ],
+          "metadata": {
+            "description": "Required. The type of the alert criteria."
+          }
         },
         "allof": {
-          "type": "array"
+          "type": "array",
+          "items": {
+            "type": "object"
+          },
+          "metadata": {
+            "description": "Required. The list of metric criteria for this 'all of' operation."
+          }
         }
+      },
+      "metadata": {
+        "description": "The alert type for a single resource scenario."
       }
     },
     "alertMultiResourceType": {
@@ -50,11 +65,23 @@
           "type": "string",
           "allowedValues": [
             "Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria"
-          ]
+          ],
+          "metadata": {
+            "description": "Required. The type of the alert criteria."
+          }
         },
         "allof": {
-          "type": "array"
+          "type": "array",
+          "items": {
+            "type": "object"
+          },
+          "metadata": {
+            "description": "Required. The list of multiple metric criteria for this 'all of' operation."
+          }
         }
+      },
+      "metadata": {
+        "description": "The alert type for multiple resources scenario."
       }
     },
     "alertWebtestType": {
@@ -64,17 +91,32 @@
           "type": "string",
           "allowedValues": [
             "Microsoft.Azure.Monitor.WebtestLocationAvailabilityCriteria"
-          ]
+          ],
+          "metadata": {
+            "description": "Required. The type of the alert criteria."
+          }
         },
         "componentResourceId": {
-          "type": "string"
+          "type": "string",
+          "metadata": {
+            "description": "Required. The Application Insights resource Id."
+          }
         },
         "failedLocationCount": {
-          "type": "int"
+          "type": "int",
+          "metadata": {
+            "description": "Required. The number of failed locations."
+          }
         },
         "webTestResourceId": {
-          "type": "string"
+          "type": "string",
+          "metadata": {
+            "description": "Required. The Application Insights web test resource Id."
+          }
         }
+      },
+      "metadata": {
+        "description": "The alert type for a web test scenario."
       }
     },
     "roleAssignmentType": {
@@ -354,7 +396,7 @@
         "windowSize": "[parameters('windowSize')]",
         "targetResourceType": "[parameters('targetResourceType')]",
         "targetResourceRegion": "[parameters('targetResourceRegion')]",
-        "criteria": "[union(createObject('odata.type', parameters('criteria')['odata.type']), if(contains(parameters('criteria'), 'allof'), createObject('allof', parameters('criteria').allof), createObject()), if(contains(parameters('criteria'), 'componentResourceId'), createObject('componentId', parameters('criteria').componentResourceId), createObject()), if(contains(parameters('criteria'), 'failedLocationCount'), createObject('failedLocationCount', parameters('criteria').failedLocationCount), createObject()), if(contains(parameters('criteria'), 'webTestResourceId'), createObject('webTestId', parameters('criteria').webTestResourceId), createObject()))]",
+        "criteria": "[shallowMerge(createArray(createObject('odata.type', parameters('criteria')['odata.type']), if(contains(parameters('criteria'), 'allof'), createObject('allof', parameters('criteria').allof), createObject()), if(contains(parameters('criteria'), 'componentResourceId'), createObject('componentId', parameters('criteria').componentResourceId), createObject()), if(contains(parameters('criteria'), 'failedLocationCount'), createObject('failedLocationCount', parameters('criteria').failedLocationCount), createObject()), if(contains(parameters('criteria'), 'webTestResourceId'), createObject('webTestId', parameters('criteria').webTestResourceId), createObject())))]",
         "autoMitigate": "[parameters('autoMitigate')]",
         "actions": "[variables('actionGroups')]"
       }

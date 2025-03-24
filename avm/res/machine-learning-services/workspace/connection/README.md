@@ -159,6 +159,649 @@ The properties of the connection, specific to the auth type.
 
 - Required: Yes
 - Type: secureObject
+- Discriminator: `authType`
+
+<h4>The available variants are:</h4>
+
+| Variant | Description |
+| :-- | :-- |
+| [`AAD`](#variant-connectionpropertiesauthtype-aad) |  |
+| [`AccessKey`](#variant-connectionpropertiesauthtype-accesskey) |  |
+| [`AccountKey`](#variant-connectionpropertiesauthtype-accountkey) |  |
+| [`ApiKey`](#variant-connectionpropertiesauthtype-apikey) |  |
+| [`CustomKeys`](#variant-connectionpropertiesauthtype-customkeys) |  |
+| [`ManagedIdentity`](#variant-connectionpropertiesauthtype-managedidentity) |  |
+| [`None`](#variant-connectionpropertiesauthtype-none) |  |
+| [`OAuth2`](#variant-connectionpropertiesauthtype-oauth2) |  |
+| [`PAT`](#variant-connectionpropertiesauthtype-pat) |  |
+| [`SAS`](#variant-connectionpropertiesauthtype-sas) |  |
+| [`ServicePrincipal`](#variant-connectionpropertiesauthtype-serviceprincipal) |  |
+| [`UsernamePassword`](#variant-connectionpropertiesauthtype-usernamepassword) |  |
+
+### Variant: `connectionProperties.authType-AAD`
+
+
+To use this variant, set the property `authType` to `AAD`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`authType`](#parameter-connectionpropertiesauthtype-aadauthtype) | string | The authentication type of the connection target. |
+
+### Parameter: `connectionProperties.authType-AAD.authType`
+
+The authentication type of the connection target.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AAD'
+  ]
+  ```
+
+### Variant: `connectionProperties.authType-AccessKey`
+
+
+To use this variant, set the property `authType` to `AccessKey`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`authType`](#parameter-connectionpropertiesauthtype-accesskeyauthtype) | string | The authentication type of the connection target. |
+| [`credentials`](#parameter-connectionpropertiesauthtype-accesskeycredentials) | object | The credentials for the connection. |
+
+### Parameter: `connectionProperties.authType-AccessKey.authType`
+
+The authentication type of the connection target.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AccessKey'
+  ]
+  ```
+
+### Parameter: `connectionProperties.authType-AccessKey.credentials`
+
+The credentials for the connection.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`accessKeyId`](#parameter-connectionpropertiesauthtype-accesskeycredentialsaccesskeyid) | string | The connection access key ID. |
+| [`secretAccessKey`](#parameter-connectionpropertiesauthtype-accesskeycredentialssecretaccesskey) | string | The connection secret access key. |
+
+### Parameter: `connectionProperties.authType-AccessKey.credentials.accessKeyId`
+
+The connection access key ID.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `connectionProperties.authType-AccessKey.credentials.secretAccessKey`
+
+The connection secret access key.
+
+- Required: Yes
+- Type: string
+
+### Variant: `connectionProperties.authType-AccountKey`
+
+
+To use this variant, set the property `authType` to `AccountKey`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`authType`](#parameter-connectionpropertiesauthtype-accountkeyauthtype) | string | The authentication type of the connection target. |
+| [`credentials`](#parameter-connectionpropertiesauthtype-accountkeycredentials) | object | The credentials for the connection. |
+
+### Parameter: `connectionProperties.authType-AccountKey.authType`
+
+The authentication type of the connection target.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AccountKey'
+  ]
+  ```
+
+### Parameter: `connectionProperties.authType-AccountKey.credentials`
+
+The credentials for the connection.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`key`](#parameter-connectionpropertiesauthtype-accountkeycredentialskey) | string | The connection key. |
+
+### Parameter: `connectionProperties.authType-AccountKey.credentials.key`
+
+The connection key.
+
+- Required: Yes
+- Type: string
+
+### Variant: `connectionProperties.authType-ApiKey`
+
+
+To use this variant, set the property `authType` to `ApiKey`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`authType`](#parameter-connectionpropertiesauthtype-apikeyauthtype) | string | The authentication type of the connection target. |
+| [`credentials`](#parameter-connectionpropertiesauthtype-apikeycredentials) | object | The credentials for the connection. |
+
+### Parameter: `connectionProperties.authType-ApiKey.authType`
+
+The authentication type of the connection target.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'ApiKey'
+  ]
+  ```
+
+### Parameter: `connectionProperties.authType-ApiKey.credentials`
+
+The credentials for the connection.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`key`](#parameter-connectionpropertiesauthtype-apikeycredentialskey) | string | The connection API key. |
+
+### Parameter: `connectionProperties.authType-ApiKey.credentials.key`
+
+The connection API key.
+
+- Required: Yes
+- Type: string
+
+### Variant: `connectionProperties.authType-CustomKeys`
+
+
+To use this variant, set the property `authType` to `CustomKeys`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`authType`](#parameter-connectionpropertiesauthtype-customkeysauthtype) | string | The authentication type of the connection target. |
+| [`credentials`](#parameter-connectionpropertiesauthtype-customkeyscredentials) | object | The credentials for the connection. |
+
+### Parameter: `connectionProperties.authType-CustomKeys.authType`
+
+The authentication type of the connection target.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'CustomKeys'
+  ]
+  ```
+
+### Parameter: `connectionProperties.authType-CustomKeys.credentials`
+
+The credentials for the connection.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`keys`](#parameter-connectionpropertiesauthtype-customkeyscredentialskeys) | object | The custom keys for the connection. |
+
+### Parameter: `connectionProperties.authType-CustomKeys.credentials.keys`
+
+The custom keys for the connection.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`>Any_other_property<`](#parameter-connectionpropertiesauthtype-customkeyscredentialskeys>any_other_property<) | string | Key-value pairs for the custom keys. |
+
+### Parameter: `connectionProperties.authType-CustomKeys.credentials.keys.>Any_other_property<`
+
+Key-value pairs for the custom keys.
+
+- Required: Yes
+- Type: string
+
+### Variant: `connectionProperties.authType-ManagedIdentity`
+
+
+To use this variant, set the property `authType` to `ManagedIdentity`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`authType`](#parameter-connectionpropertiesauthtype-managedidentityauthtype) | string | The authentication type of the connection target. |
+| [`credentials`](#parameter-connectionpropertiesauthtype-managedidentitycredentials) | object | The credentials for the connection. |
+
+### Parameter: `connectionProperties.authType-ManagedIdentity.authType`
+
+The authentication type of the connection target.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'ManagedIdentity'
+  ]
+  ```
+
+### Parameter: `connectionProperties.authType-ManagedIdentity.credentials`
+
+The credentials for the connection.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`clientId`](#parameter-connectionpropertiesauthtype-managedidentitycredentialsclientid) | string | The connection managed identity ID. |
+| [`resourceId`](#parameter-connectionpropertiesauthtype-managedidentitycredentialsresourceid) | string | The connection managed identity resource ID. |
+
+### Parameter: `connectionProperties.authType-ManagedIdentity.credentials.clientId`
+
+The connection managed identity ID.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `connectionProperties.authType-ManagedIdentity.credentials.resourceId`
+
+The connection managed identity resource ID.
+
+- Required: Yes
+- Type: string
+
+### Variant: `connectionProperties.authType-None`
+
+
+To use this variant, set the property `authType` to `None`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`authType`](#parameter-connectionpropertiesauthtype-noneauthtype) | string | The authentication type of the connection target. |
+
+### Parameter: `connectionProperties.authType-None.authType`
+
+The authentication type of the connection target.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'None'
+  ]
+  ```
+
+### Variant: `connectionProperties.authType-OAuth2`
+
+
+To use this variant, set the property `authType` to `OAuth2`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`authType`](#parameter-connectionpropertiesauthtype-oauth2authtype) | string | The authentication type of the connection target. |
+| [`credentials`](#parameter-connectionpropertiesauthtype-oauth2credentials) | object | The credentials for the connection. |
+
+### Parameter: `connectionProperties.authType-OAuth2.authType`
+
+The authentication type of the connection target.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'OAuth2'
+  ]
+  ```
+
+### Parameter: `connectionProperties.authType-OAuth2.credentials`
+
+The credentials for the connection.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`clientId`](#parameter-connectionpropertiesauthtype-oauth2credentialsclientid) | string | The connection client ID in the format of UUID. |
+| [`clientSecret`](#parameter-connectionpropertiesauthtype-oauth2credentialsclientsecret) | string | The connection client secret. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`authUrl`](#parameter-connectionpropertiesauthtype-oauth2credentialsauthurl) | string | The connection auth URL. Required if connection category is Concur. |
+| [`developerToken`](#parameter-connectionpropertiesauthtype-oauth2credentialsdevelopertoken) | string | The connection developer token. Required if connection category is GoogleAdWords. |
+| [`password`](#parameter-connectionpropertiesauthtype-oauth2credentialspassword) | string | The connection password. Required if connection category is Concur or ServiceNow where AccessToken grant type is 'Password'. |
+| [`refreshToken`](#parameter-connectionpropertiesauthtype-oauth2credentialsrefreshtoken) | string | The connection refresh token. Required if connection category is GoogleBigQuery, GoogleAdWords, Hubspot, QuickBooks, Square, Xero or Zoho. |
+| [`tenantId`](#parameter-connectionpropertiesauthtype-oauth2credentialstenantid) | string | The connection tenant ID. Required if connection category is QuickBooks or Xero. |
+| [`username`](#parameter-connectionpropertiesauthtype-oauth2credentialsusername) | string | The connection username. Required if connection category is Concur or ServiceNow where AccessToken grant type is 'Password'. |
+
+### Parameter: `connectionProperties.authType-OAuth2.credentials.clientId`
+
+The connection client ID in the format of UUID.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `connectionProperties.authType-OAuth2.credentials.clientSecret`
+
+The connection client secret.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `connectionProperties.authType-OAuth2.credentials.authUrl`
+
+The connection auth URL. Required if connection category is Concur.
+
+- Required: No
+- Type: string
+
+### Parameter: `connectionProperties.authType-OAuth2.credentials.developerToken`
+
+The connection developer token. Required if connection category is GoogleAdWords.
+
+- Required: No
+- Type: string
+
+### Parameter: `connectionProperties.authType-OAuth2.credentials.password`
+
+The connection password. Required if connection category is Concur or ServiceNow where AccessToken grant type is 'Password'.
+
+- Required: No
+- Type: string
+
+### Parameter: `connectionProperties.authType-OAuth2.credentials.refreshToken`
+
+The connection refresh token. Required if connection category is GoogleBigQuery, GoogleAdWords, Hubspot, QuickBooks, Square, Xero or Zoho.
+
+- Required: No
+- Type: string
+
+### Parameter: `connectionProperties.authType-OAuth2.credentials.tenantId`
+
+The connection tenant ID. Required if connection category is QuickBooks or Xero.
+
+- Required: No
+- Type: string
+
+### Parameter: `connectionProperties.authType-OAuth2.credentials.username`
+
+The connection username. Required if connection category is Concur or ServiceNow where AccessToken grant type is 'Password'.
+
+- Required: No
+- Type: string
+
+### Variant: `connectionProperties.authType-PAT`
+
+
+To use this variant, set the property `authType` to `PAT`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`authType`](#parameter-connectionpropertiesauthtype-patauthtype) | string | The authentication type of the connection target. |
+| [`credentials`](#parameter-connectionpropertiesauthtype-patcredentials) | object | The credentials for the connection. |
+
+### Parameter: `connectionProperties.authType-PAT.authType`
+
+The authentication type of the connection target.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'PAT'
+  ]
+  ```
+
+### Parameter: `connectionProperties.authType-PAT.credentials`
+
+The credentials for the connection.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`pat`](#parameter-connectionpropertiesauthtype-patcredentialspat) | string | The connection personal access token. |
+
+### Parameter: `connectionProperties.authType-PAT.credentials.pat`
+
+The connection personal access token.
+
+- Required: Yes
+- Type: string
+
+### Variant: `connectionProperties.authType-SAS`
+
+
+To use this variant, set the property `authType` to `SAS`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`authType`](#parameter-connectionpropertiesauthtype-sasauthtype) | string | The authentication type of the connection target. |
+| [`credentials`](#parameter-connectionpropertiesauthtype-sascredentials) | object | The credentials for the connection. |
+
+### Parameter: `connectionProperties.authType-SAS.authType`
+
+The authentication type of the connection target.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'SAS'
+  ]
+  ```
+
+### Parameter: `connectionProperties.authType-SAS.credentials`
+
+The credentials for the connection.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`sas`](#parameter-connectionpropertiesauthtype-sascredentialssas) | string | The connection SAS token. |
+
+### Parameter: `connectionProperties.authType-SAS.credentials.sas`
+
+The connection SAS token.
+
+- Required: Yes
+- Type: string
+
+### Variant: `connectionProperties.authType-ServicePrincipal`
+
+
+To use this variant, set the property `authType` to `ServicePrincipal`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`authType`](#parameter-connectionpropertiesauthtype-serviceprincipalauthtype) | string | The authentication type of the connection target. |
+| [`credentials`](#parameter-connectionpropertiesauthtype-serviceprincipalcredentials) | object | The credentials for the connection. |
+
+### Parameter: `connectionProperties.authType-ServicePrincipal.authType`
+
+The authentication type of the connection target.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'ServicePrincipal'
+  ]
+  ```
+
+### Parameter: `connectionProperties.authType-ServicePrincipal.credentials`
+
+The credentials for the connection.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`clientId`](#parameter-connectionpropertiesauthtype-serviceprincipalcredentialsclientid) | string | The connection client ID. |
+| [`clientSecret`](#parameter-connectionpropertiesauthtype-serviceprincipalcredentialsclientsecret) | string | The connection client secret. |
+| [`tenantId`](#parameter-connectionpropertiesauthtype-serviceprincipalcredentialstenantid) | string | The connection tenant ID. |
+
+### Parameter: `connectionProperties.authType-ServicePrincipal.credentials.clientId`
+
+The connection client ID.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `connectionProperties.authType-ServicePrincipal.credentials.clientSecret`
+
+The connection client secret.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `connectionProperties.authType-ServicePrincipal.credentials.tenantId`
+
+The connection tenant ID.
+
+- Required: Yes
+- Type: string
+
+### Variant: `connectionProperties.authType-UsernamePassword`
+
+
+To use this variant, set the property `authType` to `UsernamePassword`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`authType`](#parameter-connectionpropertiesauthtype-usernamepasswordauthtype) | string | The authentication type of the connection target. |
+| [`credentials`](#parameter-connectionpropertiesauthtype-usernamepasswordcredentials) | object | The credentials for the connection. |
+
+### Parameter: `connectionProperties.authType-UsernamePassword.authType`
+
+The authentication type of the connection target.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'UsernamePassword'
+  ]
+  ```
+
+### Parameter: `connectionProperties.authType-UsernamePassword.credentials`
+
+The credentials for the connection.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`password`](#parameter-connectionpropertiesauthtype-usernamepasswordcredentialspassword) | string | The connection password. |
+| [`username`](#parameter-connectionpropertiesauthtype-usernamepasswordcredentialsusername) | string | The connection username. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`securityToken`](#parameter-connectionpropertiesauthtype-usernamepasswordcredentialssecuritytoken) | string | The connection security token. Required if connection is like SalesForce for extra security in addition to 'UsernamePassword'. |
+
+### Parameter: `connectionProperties.authType-UsernamePassword.credentials.password`
+
+The connection password.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `connectionProperties.authType-UsernamePassword.credentials.username`
+
+The connection username.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `connectionProperties.authType-UsernamePassword.credentials.securityToken`
+
+The connection security token. Required if connection is like SalesForce for extra security in addition to 'UsernamePassword'.
+
+- Required: No
+- Type: string
 
 ### Parameter: `machineLearningWorkspaceName`
 
