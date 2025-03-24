@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "13303039149892155908"
+      "templateHash": "375785859366555744"
     },
     "name": "Azure Stack HCI Cluster",
     "description": "This module deploys an Azure Stack HCI Cluster on the provided Arc Machines."
@@ -79,19 +79,19 @@
         "qosPolicyOverrides": {
           "type": "object",
           "properties": {
-            "bandwidthPercentage_SMB": {
+            "bandwidthPercentageSMB": {
               "type": "string",
               "metadata": {
                 "description": "Required. The bandwidthPercentage for the network intent. Recommend 50."
               }
             },
-            "priorityValue8021Action_Cluster": {
+            "priorityValue8021ActionCluster": {
               "type": "string",
               "metadata": {
                 "description": "Required. Recommend 7."
               }
             },
-            "priorityValue8021Action_SMB": {
+            "priorityValue8021ActionSMB": {
               "type": "string",
               "metadata": {
                 "description": "Required. Recommend 3."
@@ -1222,7 +1222,13 @@
             "value": "[parameters('deploymentSettings').keyVaultName]"
           },
           "networkIntents": {
-            "value": "[parameters('deploymentSettings').networkIntents]"
+            "copy": [
+              {
+                "name": "value",
+                "count": "[length(parameters('deploymentSettings').networkIntents)]",
+                "input": "[shallowMerge(createArray(parameters('deploymentSettings').networkIntents[copyIndex('value')], createObject('qosPolicyOverrides', createObject('bandwidthPercentage_SMB', parameters('deploymentSettings').networkIntents[copyIndex('value')].qosPolicyOverrides.bandwidthPercentageSMB, 'priorityValue8021Action_Cluster', parameters('deploymentSettings').networkIntents[copyIndex('value')].qosPolicyOverrides.priorityValue8021ActionCluster, 'priorityValue8021Action_SMB', parameters('deploymentSettings').networkIntents[copyIndex('value')].qosPolicyOverrides.priorityValue8021ActionSMB))))]"
+              }
+            ]
           },
           "startingIPAddress": {
             "value": "[parameters('deploymentSettings').startingIPAddress]"

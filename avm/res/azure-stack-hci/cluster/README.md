@@ -73,9 +73,9 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
           overrideQosPolicy: false
           overrideVirtualSwitchConfiguration: false
           qosPolicyOverrides: {
-            bandwidthPercentage_SMB: '50'
-            priorityValue8021Action_Cluster: '7'
-            priorityValue8021Action_SMB: '3'
+            bandwidthPercentageSMB: '50'
+            priorityValue8021ActionCluster: '7'
+            priorityValue8021ActionSMB: '3'
           }
           trafficType: [
             'Management'
@@ -100,9 +100,9 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
           overrideQosPolicy: false
           overrideVirtualSwitchConfiguration: false
           qosPolicyOverrides: {
-            bandwidthPercentage_SMB: '50'
-            priorityValue8021Action_Cluster: '7'
-            priorityValue8021Action_SMB: '3'
+            bandwidthPercentageSMB: '50'
+            priorityValue8021ActionCluster: '7'
+            priorityValue8021ActionSMB: '3'
           }
           trafficType: [
             'Compute'
@@ -127,9 +127,9 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
           overrideQosPolicy: true
           overrideVirtualSwitchConfiguration: false
           qosPolicyOverrides: {
-            bandwidthPercentage_SMB: '50'
-            priorityValue8021Action_Cluster: '7'
-            priorityValue8021Action_SMB: '3'
+            bandwidthPercentageSMB: '50'
+            priorityValue8021ActionCluster: '7'
+            priorityValue8021ActionSMB: '3'
           }
           trafficType: [
             'Storage'
@@ -211,9 +211,9 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
             "overrideQosPolicy": false,
             "overrideVirtualSwitchConfiguration": false,
             "qosPolicyOverrides": {
-              "bandwidthPercentage_SMB": "50",
-              "priorityValue8021Action_Cluster": "7",
-              "priorityValue8021Action_SMB": "3"
+              "bandwidthPercentageSMB": "50",
+              "priorityValue8021ActionCluster": "7",
+              "priorityValue8021ActionSMB": "3"
             },
             "trafficType": [
               "Management"
@@ -238,9 +238,9 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
             "overrideQosPolicy": false,
             "overrideVirtualSwitchConfiguration": false,
             "qosPolicyOverrides": {
-              "bandwidthPercentage_SMB": "50",
-              "priorityValue8021Action_Cluster": "7",
-              "priorityValue8021Action_SMB": "3"
+              "bandwidthPercentageSMB": "50",
+              "priorityValue8021ActionCluster": "7",
+              "priorityValue8021ActionSMB": "3"
             },
             "trafficType": [
               "Compute"
@@ -265,9 +265,9 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
             "overrideQosPolicy": true,
             "overrideVirtualSwitchConfiguration": false,
             "qosPolicyOverrides": {
-              "bandwidthPercentage_SMB": "50",
-              "priorityValue8021Action_Cluster": "7",
-              "priorityValue8021Action_SMB": "3"
+              "bandwidthPercentageSMB": "50",
+              "priorityValue8021ActionCluster": "7",
+              "priorityValue8021ActionSMB": "3"
             },
             "trafficType": [
               "Storage"
@@ -361,9 +361,9 @@ param deploymentSettings = {
       overrideQosPolicy: false
       overrideVirtualSwitchConfiguration: false
       qosPolicyOverrides: {
-        bandwidthPercentage_SMB: '50'
-        priorityValue8021Action_Cluster: '7'
-        priorityValue8021Action_SMB: '3'
+        bandwidthPercentageSMB: '50'
+        priorityValue8021ActionCluster: '7'
+        priorityValue8021ActionSMB: '3'
       }
       trafficType: [
         'Management'
@@ -388,9 +388,9 @@ param deploymentSettings = {
       overrideQosPolicy: false
       overrideVirtualSwitchConfiguration: false
       qosPolicyOverrides: {
-        bandwidthPercentage_SMB: '50'
-        priorityValue8021Action_Cluster: '7'
-        priorityValue8021Action_SMB: '3'
+        bandwidthPercentageSMB: '50'
+        priorityValue8021ActionCluster: '7'
+        priorityValue8021ActionSMB: '3'
       }
       trafficType: [
         'Compute'
@@ -415,9 +415,9 @@ param deploymentSettings = {
       overrideQosPolicy: true
       overrideVirtualSwitchConfiguration: false
       qosPolicyOverrides: {
-        bandwidthPercentage_SMB: '50'
-        priorityValue8021Action_Cluster: '7'
-        priorityValue8021Action_SMB: '3'
+        bandwidthPercentageSMB: '50'
+        priorityValue8021ActionCluster: '7'
+        priorityValue8021ActionSMB: '3'
       }
       trafficType: [
         'Storage'
@@ -503,9 +503,9 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
           overrideQosPolicy: false
           overrideVirtualSwitchConfiguration: false
           qosPolicyOverrides: {
-            bandwidthPercentage_SMB: '50'
-            priorityValue8021Action_Cluster: '7'
-            priorityValue8021Action_SMB: '3'
+            bandwidthPercentageSMB: '50'
+            priorityValue8021ActionCluster: '7'
+            priorityValue8021ActionSMB: '3'
           }
           trafficType: [
             'Management'
@@ -530,9 +530,9 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
           overrideQosPolicy: false
           overrideVirtualSwitchConfiguration: false
           qosPolicyOverrides: {
-            bandwidthPercentage_SMB: '50'
-            priorityValue8021Action_Cluster: '7'
-            priorityValue8021Action_SMB: '3'
+            bandwidthPercentageSMB: '50'
+            priorityValue8021ActionCluster: '7'
+            priorityValue8021ActionSMB: '3'
           }
           trafficType: [
             'Compute'
@@ -557,9 +557,9 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
           overrideQosPolicy: true
           overrideVirtualSwitchConfiguration: false
           qosPolicyOverrides: {
-            bandwidthPercentage_SMB: '50'
-            priorityValue8021Action_Cluster: '7'
-            priorityValue8021Action_SMB: '3'
+            bandwidthPercentageSMB: '50'
+            priorityValue8021ActionCluster: '7'
+            priorityValue8021ActionSMB: '3'
           }
           trafficType: [
             'Storage'
@@ -652,9 +652,9 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
             "overrideQosPolicy": false,
             "overrideVirtualSwitchConfiguration": false,
             "qosPolicyOverrides": {
-              "bandwidthPercentage_SMB": "50",
-              "priorityValue8021Action_Cluster": "7",
-              "priorityValue8021Action_SMB": "3"
+              "bandwidthPercentageSMB": "50",
+              "priorityValue8021ActionCluster": "7",
+              "priorityValue8021ActionSMB": "3"
             },
             "trafficType": [
               "Management"
@@ -679,9 +679,9 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
             "overrideQosPolicy": false,
             "overrideVirtualSwitchConfiguration": false,
             "qosPolicyOverrides": {
-              "bandwidthPercentage_SMB": "50",
-              "priorityValue8021Action_Cluster": "7",
-              "priorityValue8021Action_SMB": "3"
+              "bandwidthPercentageSMB": "50",
+              "priorityValue8021ActionCluster": "7",
+              "priorityValue8021ActionSMB": "3"
             },
             "trafficType": [
               "Compute"
@@ -706,9 +706,9 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
             "overrideQosPolicy": true,
             "overrideVirtualSwitchConfiguration": false,
             "qosPolicyOverrides": {
-              "bandwidthPercentage_SMB": "50",
-              "priorityValue8021Action_Cluster": "7",
-              "priorityValue8021Action_SMB": "3"
+              "bandwidthPercentageSMB": "50",
+              "priorityValue8021ActionCluster": "7",
+              "priorityValue8021ActionSMB": "3"
             },
             "trafficType": [
               "Storage"
@@ -815,9 +815,9 @@ param deploymentSettings = {
       overrideQosPolicy: false
       overrideVirtualSwitchConfiguration: false
       qosPolicyOverrides: {
-        bandwidthPercentage_SMB: '50'
-        priorityValue8021Action_Cluster: '7'
-        priorityValue8021Action_SMB: '3'
+        bandwidthPercentageSMB: '50'
+        priorityValue8021ActionCluster: '7'
+        priorityValue8021ActionSMB: '3'
       }
       trafficType: [
         'Management'
@@ -842,9 +842,9 @@ param deploymentSettings = {
       overrideQosPolicy: false
       overrideVirtualSwitchConfiguration: false
       qosPolicyOverrides: {
-        bandwidthPercentage_SMB: '50'
-        priorityValue8021Action_Cluster: '7'
-        priorityValue8021Action_SMB: '3'
+        bandwidthPercentageSMB: '50'
+        priorityValue8021ActionCluster: '7'
+        priorityValue8021ActionSMB: '3'
       }
       trafficType: [
         'Compute'
@@ -869,9 +869,9 @@ param deploymentSettings = {
       overrideQosPolicy: true
       overrideVirtualSwitchConfiguration: false
       qosPolicyOverrides: {
-        bandwidthPercentage_SMB: '50'
-        priorityValue8021Action_Cluster: '7'
-        priorityValue8021Action_SMB: '3'
+        bandwidthPercentageSMB: '50'
+        priorityValue8021ActionCluster: '7'
+        priorityValue8021ActionSMB: '3'
       }
       trafficType: [
         'Storage'
@@ -1196,25 +1196,25 @@ The qosPolicy overrides for the network intent.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`bandwidthPercentage_SMB`](#parameter-deploymentsettingsnetworkintentsqospolicyoverridesbandwidthpercentage_smb) | string | The bandwidthPercentage for the network intent. Recommend 50. |
-| [`priorityValue8021Action_Cluster`](#parameter-deploymentsettingsnetworkintentsqospolicyoverridespriorityvalue8021action_cluster) | string | Recommend 7. |
-| [`priorityValue8021Action_SMB`](#parameter-deploymentsettingsnetworkintentsqospolicyoverridespriorityvalue8021action_smb) | string | Recommend 3. |
+| [`bandwidthPercentageSMB`](#parameter-deploymentsettingsnetworkintentsqospolicyoverridesbandwidthpercentagesmb) | string | The bandwidthPercentage for the network intent. Recommend 50. |
+| [`priorityValue8021ActionCluster`](#parameter-deploymentsettingsnetworkintentsqospolicyoverridespriorityvalue8021actioncluster) | string | Recommend 7. |
+| [`priorityValue8021ActionSMB`](#parameter-deploymentsettingsnetworkintentsqospolicyoverridespriorityvalue8021actionsmb) | string | Recommend 3. |
 
-### Parameter: `deploymentSettings.networkIntents.qosPolicyOverrides.bandwidthPercentage_SMB`
+### Parameter: `deploymentSettings.networkIntents.qosPolicyOverrides.bandwidthPercentageSMB`
 
 The bandwidthPercentage for the network intent. Recommend 50.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `deploymentSettings.networkIntents.qosPolicyOverrides.priorityValue8021Action_Cluster`
+### Parameter: `deploymentSettings.networkIntents.qosPolicyOverrides.priorityValue8021ActionCluster`
 
 Recommend 7.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `deploymentSettings.networkIntents.qosPolicyOverrides.priorityValue8021Action_SMB`
+### Parameter: `deploymentSettings.networkIntents.qosPolicyOverrides.priorityValue8021ActionSMB`
 
 Recommend 3.
 

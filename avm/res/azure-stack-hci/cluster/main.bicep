@@ -218,7 +218,16 @@ module deploymentSetting 'deployment-setting/main.bicep' = [
       domainOUPath: deploymentSettings!.domainOUPath
       endingIPAddress: deploymentSettings!.endingIPAddress
       keyVaultName: deploymentSettings!.keyVaultName
-      networkIntents: deploymentSettings!.networkIntents
+      networkIntents: [
+        for intent in deploymentSettings.networkIntents: {
+          ...intent
+          qosPolicyOverrides: {
+            bandwidthPercentage_SMB: intent.qosPolicyOverrides.bandwidthPercentageSMB
+            priorityValue8021Action_Cluster: intent.qosPolicyOverrides.priorityValue8021ActionCluster
+            priorityValue8021Action_SMB: intent.qosPolicyOverrides.priorityValue8021ActionSMB
+          }
+        }
+      ]
       startingIPAddress: deploymentSettings!.startingIPAddress
       storageConnectivitySwitchless: deploymentSettings!.storageConnectivitySwitchless
       storageNetworks: deploymentSettings!.storageNetworks
@@ -306,13 +315,13 @@ type networkIntentType = {
   @description('Required. The qosPolicy overrides for the network intent.')
   qosPolicyOverrides: {
     @description('Required. The bandwidthPercentage for the network intent. Recommend 50.')
-    bandwidthPercentage_SMB: string
+    bandwidthPercentageSMB: string
 
     @description('Required. Recommend 7.')
-    priorityValue8021Action_Cluster: string
+    priorityValue8021ActionCluster: string
 
     @description('Required. Recommend 3.')
-    priorityValue8021Action_SMB: string
+    priorityValue8021ActionSMB: string
   }
 
   @description('Required. Specify whether to override the virtualSwitchConfiguration property. Use false by default.')
