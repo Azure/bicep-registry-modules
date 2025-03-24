@@ -645,7 +645,13 @@ Defines the security style of the Volume.
 
 - Required: No
 - Type: string
-- Default: `''`
+- Allowed:
+  ```Bicep
+  [
+    'ntfs'
+    'unix'
+  ]
+  ```
 
 ### Parameter: `serviceLevel`
 
@@ -701,7 +707,6 @@ Unix Permissions for NFS volume.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `volumeType`
 
