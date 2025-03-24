@@ -306,13 +306,13 @@ type networkIntentType = {
   @description('Required. The qosPolicy overrides for the network intent.')
   qosPolicyOverrides: {
     @description('Required. The bandwidthPercentage for the network intent. Recommend 50.')
-    bandwidthPercentageSMB: string
+    bandwidthPercentage_SMB: string
 
     @description('Required. Recommend 7.')
-    priorityValue8021ActionCluster: string
+    priorityValue8021Action_Cluster: string
 
     @description('Required. Recommend 3.')
-    priorityValue8021ActionSMB: string
+    priorityValue8021Action_SMB: string
   }
 
   @description('Required. Specify whether to override the virtualSwitchConfiguration property. Use false by default.')

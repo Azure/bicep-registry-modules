@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "16645481919886666314"
+      "version": "0.33.93.31351",
+      "templateHash": "13303039149892155908"
     },
     "name": "Azure Stack HCI Cluster",
     "description": "This module deploys an Azure Stack HCI Cluster on the provided Arc Machines."
@@ -79,19 +79,19 @@
         "qosPolicyOverrides": {
           "type": "object",
           "properties": {
-            "bandwidthPercentageSMB": {
+            "bandwidthPercentage_SMB": {
               "type": "string",
               "metadata": {
                 "description": "Required. The bandwidthPercentage for the network intent. Recommend 50."
               }
             },
-            "priorityValue8021ActionCluster": {
+            "priorityValue8021Action_Cluster": {
               "type": "string",
               "metadata": {
                 "description": "Required. Recommend 7."
               }
             },
-            "priorityValue8021ActionSMB": {
+            "priorityValue8021Action_SMB": {
               "type": "string",
               "metadata": {
                 "description": "Required. Recommend 3."
@@ -959,8 +959,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "18231557278397526039"
+              "version": "0.33.93.31351",
+              "templateHash": "5238695736774441169"
             }
           },
           "parameters": {
@@ -1289,8 +1289,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "3701439978420477660"
+              "version": "0.33.93.31351",
+              "templateHash": "1370422971386346503"
             },
             "name": "Azure Stack HCI Cluster Deployment Settings",
             "description": "This module deploys an Azure Stack HCI Cluster Deployment Settings resource."
