@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "4776240624411857381"
+      "version": "0.33.13.18514",
+      "templateHash": "17579274417877880356"
     },
     "name": "Conversation Knowledge Mining Solution Accelerator",
     "description": "This module deploys the [Conversation Knowledge Mining Solution Accelerator](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator).\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator product. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -108,7 +108,10 @@
           "allowedValues": [
             "Australia East",
             "Sweden Central",
-            "West US"
+            "West US",
+            "australiaeast",
+            "swedencentral",
+            "westus"
           ],
           "nullable": true,
           "metadata": {
@@ -991,19 +994,19 @@
   "parameters": {
     "solutionPrefix": {
       "type": "string",
-      "maxLength": 12,
+      "maxLength": 19,
       "metadata": {
         "description": "Required. The prefix to add in the default names given to all deployed Azure resources."
       }
     },
     "solutionLocation": {
       "type": "string",
-      "defaultValue": "East US",
+      "defaultValue": "[resourceGroup().location]",
       "metadata": {
         "azd": {
           "type": "location"
         },
-        "description": "Optional. Location for all the deployed Azure resources except databases. Defaulted to East US."
+        "description": "Optional. Location for all the deployed Azure resources except databases. Defaults to the location of the Resource Group."
       }
     },
     "databasesLocation": {
@@ -1013,7 +1016,7 @@
         "azd": {
           "type": "location"
         },
-        "description": "Optional. Location for all the deployed databases Azure resources. Defaulted to East US 2."
+        "description": "Optional. Location for all the deployed databases Azure resources. Defaults to East US 2."
       }
     },
     "tags": {
@@ -1052,7 +1055,7 @@
       "$ref": "#/definitions/ckmAiFoundryAiServicesContentUnderstandingType",
       "defaultValue": {
         "name": "[format('{0}-aifd-aisr-cu', parameters('solutionPrefix'))]",
-        "location": "West US",
+        "location": "[if(contains(createArray('West US', 'westus', 'Sweden Central', 'swedencentral', 'Australia East', 'australiaeast'), parameters('solutionLocation')), parameters('solutionLocation'), 'West US')]",
         "sku": "S0"
       },
       "metadata": {
@@ -1063,10 +1066,10 @@
       "$ref": "#/definitions/ckmAiFoundryAiServicesType",
       "defaultValue": {
         "name": "[format('{0}-aifd-aisr', parameters('solutionPrefix'))]",
-        "location": "East US",
+        "location": "[parameters('solutionLocation')]",
         "sku": "S0",
         "gptModelName": "gpt-4o-mini",
-        "gptModelSku": "Standard",
+        "gptModelSku": "GlobalStandard",
         "gptModelCapacity": 100,
         "textEmbeddingModelName": "text-embedding-ada-002",
         "textEmbeddingModelSku": "Standard",
@@ -1293,18 +1296,18 @@
     "localModuleDeploymentNameFormat": "ckm-deploy-module-{0}",
     "aiFoundryAiHubResourceName": "[coalesce(tryGet(parameters('aiFoundryAiHubConfiguration'), 'name'), format('{0}-aifd-aihb', parameters('solutionPrefix')))]",
     "aiFoundryAiHubLocation": "[coalesce(tryGet(parameters('aiFoundryAiHubConfiguration'), 'location'), parameters('solutionLocation'))]",
-    "aiFoundryAiHubSkuName": "[coalesce(tryGet(parameters('aiFoundryAiHubConfiguration'), 'aiFoundryAiHubSkuName'), 'Basic')]",
+    "aiFoundryAiHubSkuName": "[coalesce(tryGet(parameters('aiFoundryAiHubConfiguration'), 'sku'), 'Basic')]",
     "aiFoundryAiProjectResourceName": "[coalesce(tryGet(parameters('aiFoundryAiProjectConfiguration'), 'name'), format('{0}-aifd-aipj', parameters('solutionPrefix')))]",
     "aiFoundryAiProjectLocation": "[coalesce(tryGet(parameters('aiFoundryAiProjectConfiguration'), 'location'), parameters('solutionLocation'))]",
-    "aiFoundryAiProjectSkuName": "[coalesce(tryGet(parameters('aiFoundryAiProjectConfiguration'), 'aiFoundryAiProjectSkuName'), 'Standard')]",
+    "aiFoundryAiProjectSkuName": "[coalesce(tryGet(parameters('aiFoundryAiProjectConfiguration'), 'sku'), 'Standard')]",
     "aiFoundryAiServicesContentUnderstandingResourceName": "[coalesce(tryGet(parameters('aiFoundryAiServicesContentUnderstandingConfiguration'), 'name'), format('{0}-aifd-aisr-cu', parameters('solutionPrefix')))]",
-    "aiFoundryAiServicesContentUnderstandingLocation": "[coalesce(tryGet(parameters('aiFoundryAiServicesContentUnderstandingConfiguration'), 'location'), 'West US')]",
+    "aiFoundryAiServicesContentUnderstandingLocation": "[coalesce(tryGet(parameters('aiFoundryAiServicesContentUnderstandingConfiguration'), 'location'), if(contains(createArray('West US', 'westus', 'Sweden Central', 'swedencentral', 'Australia East', 'australiaeast'), parameters('solutionLocation')), parameters('solutionLocation'), 'West US'))]",
     "aiFoundryAiServicesContentUnderstandingSkuName": "[coalesce(tryGet(parameters('aiFoundryAiServicesContentUnderstandingConfiguration'), 'sku'), 'S0')]",
     "aiFoundryAiServicesResourceName": "[coalesce(tryGet(parameters('aiFoundryAiServicesConfiguration'), 'name'), format('{0}-aifd-aisr-cu', parameters('solutionPrefix')))]",
-    "aiFoundryAiServicesLocation": "[coalesce(tryGet(parameters('aiFoundryAiServicesConfiguration'), 'location'), 'West US')]",
+    "aiFoundryAiServicesLocation": "[coalesce(tryGet(parameters('aiFoundryAiServicesConfiguration'), 'location'), parameters('solutionLocation'))]",
     "aiFoundryAiServicesSkuName": "[coalesce(tryGet(parameters('aiFoundryAiServicesConfiguration'), 'sku'), 'S0')]",
     "aiFoundryAIServicesGptModelName": "[coalesce(tryGet(parameters('aiFoundryAiServicesConfiguration'), 'gptModelName'), 'gpt-4o-mini')]",
-    "aiFoundryAiServicesGptModelSku": "[coalesce(tryGet(parameters('aiFoundryAiServicesConfiguration'), 'gptModelSku'), 'Standard')]",
+    "aiFoundryAiServicesGptModelSku": "[coalesce(tryGet(parameters('aiFoundryAiServicesConfiguration'), 'gptModelSku'), 'GlobalStandard')]",
     "aiFoundryAIServicesGptModelCapacity": "[coalesce(tryGet(parameters('aiFoundryAiServicesConfiguration'), 'gptModelCapacity'), 100)]",
     "aiFoundryAiServicesTextEmbeddingModelName": "[coalesce(tryGet(parameters('aiFoundryAiServicesConfiguration'), 'textEmbeddingModelName'), 'text-embedding-ada-002')]",
     "aiFoundryAiServicesTextEmbeddingModelSku": "[coalesce(tryGet(parameters('aiFoundryAiServicesConfiguration'), 'textEmbeddingModelSku'), 'Standard')]",
@@ -1368,20 +1371,20 @@
     "functionChartsLocation": "[coalesce(tryGet(parameters('functionChartsConfiguration'), 'location'), parameters('solutionLocation'))]",
     "functionChartDockerImageContainerRegistryUrl": "[coalesce(tryGet(parameters('functionChartsConfiguration'), 'dockerImageContainerRegistryUrl'), 'kmcontainerreg.azurecr.io')]",
     "functionChartDockerImageName": "[coalesce(tryGet(parameters('functionChartsConfiguration'), 'dockerImageName'), 'km-charts-function')]",
-    "functionChartDockerImageTag": "[coalesce(tryGet(parameters('functionChartsConfiguration'), 'functionChartDockerImageTag'), 'latest_2025-03-20_276')]",
-    "functionChartCpu": "[coalesce(tryGet(parameters('functionChartsConfiguration'), 'functionChartCpu'), 1)]",
-    "functionChartMemory": "[coalesce(tryGet(parameters('functionChartsConfiguration'), 'functionChartMemory'), '2Gi')]",
-    "functionChartAppScaleLimit": "[coalesce(tryGet(parameters('functionChartsConfiguration'), 'functionChartAppScaleLimit'), 10)]",
-    "functionChartsFunctionName": "[coalesce(tryGet(parameters('functionChartsConfiguration'), 'functionChartsFunctionName'), 'get_metrics')]",
+    "functionChartDockerImageTag": "[coalesce(tryGet(parameters('functionChartsConfiguration'), 'dockerImageTag'), 'latest_2025-03-20_276')]",
+    "functionChartCpu": "[coalesce(tryGet(parameters('functionChartsConfiguration'), 'cpu'), 1)]",
+    "functionChartMemory": "[coalesce(tryGet(parameters('functionChartsConfiguration'), 'memory'), '2Gi')]",
+    "functionChartAppScaleLimit": "[coalesce(tryGet(parameters('functionChartsConfiguration'), 'appScaleLimit'), 10)]",
+    "functionChartsFunctionName": "[coalesce(tryGet(parameters('functionChartsConfiguration'), 'functionName'), 'get_metrics')]",
     "functionRagResourceName": "[coalesce(tryGet(parameters('functionRagConfiguration'), 'name'), format('{0}-azfn-frag', parameters('solutionPrefix')))]",
     "functionRagLocation": "[coalesce(tryGet(parameters('functionRagConfiguration'), 'location'), parameters('solutionLocation'))]",
     "functionRagDockerImageContainerRegistryUrl": "[coalesce(tryGet(parameters('functionRagConfiguration'), 'dockerImageContainerRegistryUrl'), 'kmcontainerreg.azurecr.io')]",
     "functionRagDockerImageName": "[coalesce(tryGet(parameters('functionRagConfiguration'), 'dockerImageName'), 'km-rag-function')]",
-    "functionRagDockerImageTag": "[coalesce(tryGet(parameters('functionRagConfiguration'), 'functionRagDockerImageTag'), 'latest_2025-03-20_276')]",
-    "functionRagCpu": "[coalesce(tryGet(parameters('functionRagConfiguration'), 'functionRagCpu'), 1)]",
-    "functionRagMemory": "[coalesce(tryGet(parameters('functionRagConfiguration'), 'functionRagMemory'), '2Gi')]",
-    "functionRagAppScaleLimit": "[coalesce(tryGet(parameters('functionRagConfiguration'), 'functionRagAppScaleLimit'), 10)]",
-    "functionRagFunctionName": "[coalesce(tryGet(parameters('functionRagConfiguration'), 'functionRagFunctionName'), 'stream_openai_text')]",
+    "functionRagDockerImageTag": "[coalesce(tryGet(parameters('functionRagConfiguration'), 'dockerImageTag'), 'latest_2025-03-20_276')]",
+    "functionRagCpu": "[coalesce(tryGet(parameters('functionRagConfiguration'), 'cpu'), 1)]",
+    "functionRagMemory": "[coalesce(tryGet(parameters('functionRagConfiguration'), 'memory'), '2Gi')]",
+    "functionRagAppScaleLimit": "[coalesce(tryGet(parameters('functionRagConfiguration'), 'appScaleLimit'), 10)]",
+    "functionRagFunctionName": "[coalesce(tryGet(parameters('functionRagConfiguration'), 'functionName'), 'stream_openai_text')]",
     "functionsManagedEnvironmentResourceName": "[coalesce(tryGet(parameters('functionsManagedEnvironmentConfiguration'), 'name'), format('{0}-fnme', parameters('solutionPrefix')))]",
     "functionsManagedEnvironmentLocation": "[coalesce(tryGet(parameters('functionsManagedEnvironmentConfiguration'), 'location'), parameters('solutionLocation'))]",
     "keyVaultResourceName": "[coalesce(tryGet(parameters('keyVaultConfiguration'), 'name'), format('{0}-keyv', parameters('solutionPrefix')))]",
@@ -2003,8 +2006,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "16387854846241443824"
+              "version": "0.33.13.18514",
+              "templateHash": "6754369033314937733"
             }
           },
           "parameters": {
@@ -8448,8 +8451,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "3565935438459722412"
+              "version": "0.33.13.18514",
+              "templateHash": "1812136302400764151"
             }
           },
           "parameters": {
@@ -25053,8 +25056,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "10655033990517497679"
+                      "version": "0.33.13.18514",
+                      "templateHash": "17621295913857531770"
                     }
                   },
                   "parameters": {
@@ -33061,8 +33064,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "15330346278450231230"
+                      "version": "0.33.13.18514",
+                      "templateHash": "9038882909618566010"
                     }
                   },
                   "parameters": {
@@ -50688,8 +50691,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "12371174693530223044"
+              "version": "0.33.13.18514",
+              "templateHash": "4227662375990339071"
             }
           },
           "parameters": {
@@ -50980,8 +50983,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "12407621259036179092"
+              "version": "0.33.13.18514",
+              "templateHash": "9032010950803272859"
             }
           },
           "parameters": {
@@ -51675,8 +51678,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "5966937356569889005"
+              "version": "0.33.13.18514",
+              "templateHash": "13735037233733060626"
             }
           },
           "parameters": {
@@ -57235,8 +57238,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "16788739449120161090"
+              "version": "0.33.13.18514",
+              "templateHash": "11509175935041019985"
             }
           },
           "parameters": {
