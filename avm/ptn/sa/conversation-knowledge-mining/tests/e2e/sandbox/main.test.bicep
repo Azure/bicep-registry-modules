@@ -23,11 +23,9 @@ param namePrefix string = '#_namePrefix_#'
 // Dependencies //
 // ============ //
 
-// General resources
-// =================
-
 //This variable contains the list of locations where AI services of type 'Microsoft.CognitiveServices/accounts' are allowed to be deployed. If the provided
-var AIServicesAllowedLocations = [
+// COMMENTED BLOCK due to a capacity quota limit for serverfarm has been reached in AVM Azure subscription, and the deployment currently works with defaults for Australia East region
+/* var AIServicesAllowedLocations = [
   'Global'
   'Australia East'
   'Brazil South'
@@ -68,15 +66,18 @@ var AIServicesAllowedLocations = [
   'UK West'
   'Jio India Central'
 ]
+var resourceGroupLocation = contains(AIServicesAllowedLocations, resourceLocation) ? resourceLocation : 'East US' */
 
-//var resourceGroupLocation = contains(AIServicesAllowedLocations, resourceLocation) ? resourceLocation : 'East US'
-
-#disable-next-line no-hardcoded-location // Just a value to avoid ongoing capacity challenges
+#disable-next-line no-hardcoded-location // A value to avoid ongoing capacity challenges with Server Farm for frontend webapp in AVM Azure testing subscription
 var enforcedLocation = 'australiaeast'
+var resourceGroupLocation = enforcedLocation
+
+// General resources
+// =================
 
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
-  location: enforcedLocation
+  location: resourceGroupLocation
 }
 
 @batchSize(1)
@@ -86,10 +87,6 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       solutionPrefix: '${namePrefix}${serviceShort}'
-      //       webAppServerFarmConfiguration: {
-      //        location: enforcedLocation
-      //        webAppLocation: enforcedLocation
-      //    }
     }
   }
 ]
