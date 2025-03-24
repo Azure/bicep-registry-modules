@@ -502,8 +502,11 @@ Location for the AI Foundry Content Understanding service deployment.
   ```Bicep
   [
     'Australia East'
+    'australiaeast'
     'Sweden Central'
+    'swedencentral'
     'West US'
+    'westus'
   ]
   ```
 

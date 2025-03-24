@@ -1064,7 +1064,7 @@ type ckmAiFoundryAiServicesContentUnderstandingType = {
   name: string?
   @description('Optional. Location for the AI Foundry Content Understanding service deployment.')
   @metadata({ azd: { type: 'location' } })
-  location: ('West US' | 'Sweden Central' | 'Australia East')?
+  location: ('West US' | 'westus' | 'Sweden Central' | 'swedencentral' | 'Australia East' | 'australiaeast')?
   @description('Optional. The SKU of the AI Foundry AI Services account. Use \'Get-AzCognitiveServicesAccountSku\' to determine a valid combinations of \'kind\' and \'SKU\' for your Azure region.')
   sku: (
     | 'C2'
