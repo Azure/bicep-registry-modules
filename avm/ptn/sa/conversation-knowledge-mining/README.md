@@ -331,7 +331,7 @@ The configuration to apply for the Conversation Knowledge Mining AI Foundry AI S
   {
       gptModelCapacity: 100
       gptModelName: 'gpt-4o-mini'
-      gptModelSku: 'Standard'
+      gptModelSku: 'GlobalStandard'
       location: '[parameters(\'solutionLocation\')]'
       name: '[format(\'{0}-aifd-aisr\', parameters(\'solutionPrefix\'))]'
       sku: 'S0'

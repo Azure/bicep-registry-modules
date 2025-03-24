@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "16016930119206522680"
+      "templateHash": "17579274417877880356"
     },
     "name": "Conversation Knowledge Mining Solution Accelerator",
     "description": "This module deploys the [Conversation Knowledge Mining Solution Accelerator](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator).\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator product. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -1069,7 +1069,7 @@
         "location": "[parameters('solutionLocation')]",
         "sku": "S0",
         "gptModelName": "gpt-4o-mini",
-        "gptModelSku": "Standard",
+        "gptModelSku": "GlobalStandard",
         "gptModelCapacity": 100,
         "textEmbeddingModelName": "text-embedding-ada-002",
         "textEmbeddingModelSku": "Standard",
@@ -1307,7 +1307,7 @@
     "aiFoundryAiServicesLocation": "[coalesce(tryGet(parameters('aiFoundryAiServicesConfiguration'), 'location'), parameters('solutionLocation'))]",
     "aiFoundryAiServicesSkuName": "[coalesce(tryGet(parameters('aiFoundryAiServicesConfiguration'), 'sku'), 'S0')]",
     "aiFoundryAIServicesGptModelName": "[coalesce(tryGet(parameters('aiFoundryAiServicesConfiguration'), 'gptModelName'), 'gpt-4o-mini')]",
-    "aiFoundryAiServicesGptModelSku": "[coalesce(tryGet(parameters('aiFoundryAiServicesConfiguration'), 'gptModelSku'), 'Standard')]",
+    "aiFoundryAiServicesGptModelSku": "[coalesce(tryGet(parameters('aiFoundryAiServicesConfiguration'), 'gptModelSku'), 'GlobalStandard')]",
     "aiFoundryAIServicesGptModelCapacity": "[coalesce(tryGet(parameters('aiFoundryAiServicesConfiguration'), 'gptModelCapacity'), 100)]",
     "aiFoundryAiServicesTextEmbeddingModelName": "[coalesce(tryGet(parameters('aiFoundryAiServicesConfiguration'), 'textEmbeddingModelName'), 'text-embedding-ada-002')]",
     "aiFoundryAiServicesTextEmbeddingModelSku": "[coalesce(tryGet(parameters('aiFoundryAiServicesConfiguration'), 'textEmbeddingModelSku'), 'Standard')]",

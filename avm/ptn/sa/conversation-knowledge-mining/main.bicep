@@ -60,7 +60,7 @@ param aiFoundryAiServicesConfiguration ckmAiFoundryAiServicesType = {
   location: solutionLocation
   sku: 'S0'
   gptModelName: 'gpt-4o-mini'
-  gptModelSku: 'Standard'
+  gptModelSku: 'GlobalStandard'
   gptModelCapacity: 100
   textEmbeddingModelName: 'text-embedding-ada-002'
   textEmbeddingModelSku: 'Standard'
@@ -241,7 +241,7 @@ var aiFoundryAiServicesResourceName = aiFoundryAiServicesConfiguration.?name ?? 
 var aiFoundryAiServicesLocation = aiFoundryAiServicesConfiguration.?location ?? solutionLocation
 var aiFoundryAiServicesSkuName = aiFoundryAiServicesConfiguration.?sku ?? 'S0'
 var aiFoundryAIServicesGptModelName = aiFoundryAiServicesConfiguration.?gptModelName ?? 'gpt-4o-mini'
-var aiFoundryAiServicesGptModelSku = aiFoundryAiServicesConfiguration.?gptModelSku ?? 'Standard'
+var aiFoundryAiServicesGptModelSku = aiFoundryAiServicesConfiguration.?gptModelSku ?? 'GlobalStandard'
 var aiFoundryAIServicesGptModelCapacity = aiFoundryAiServicesConfiguration.?gptModelCapacity ?? 100
 var aiFoundryAiServicesTextEmbeddingModelName = aiFoundryAiServicesConfiguration.?textEmbeddingModelName ?? 'text-embedding-ada-002'
 var aiFoundryAiServicesTextEmbeddingModelSku = aiFoundryAiServicesConfiguration.?textEmbeddingModelSku ?? 'Standard'
