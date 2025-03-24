@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "2459704616180822975"
+      "templateHash": "5095267177196812414"
     },
     "name": "Conversation Knowledge Mining Solution Accelerator",
     "description": "This module deploys the [Conversation Knowledge Mining Solution Accelerator](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator).\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator product. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -1052,7 +1052,7 @@
       "$ref": "#/definitions/ckmAiFoundryAiServicesContentUnderstandingType",
       "defaultValue": {
         "name": "[format('{0}-aifd-aisr-cu', parameters('solutionPrefix'))]",
-        "location": "West US",
+        "location": "[if(contains(createArray('West US', 'westus', 'Sweden Central', 'swedencentral', 'Australia East', 'australiaeast'), parameters('solutionLocation')), parameters('solutionLocation'), 'West US')]",
         "sku": "S0"
       },
       "metadata": {
@@ -1298,7 +1298,7 @@
     "aiFoundryAiProjectLocation": "[coalesce(tryGet(parameters('aiFoundryAiProjectConfiguration'), 'location'), parameters('solutionLocation'))]",
     "aiFoundryAiProjectSkuName": "[coalesce(tryGet(parameters('aiFoundryAiProjectConfiguration'), 'sku'), 'Standard')]",
     "aiFoundryAiServicesContentUnderstandingResourceName": "[coalesce(tryGet(parameters('aiFoundryAiServicesContentUnderstandingConfiguration'), 'name'), format('{0}-aifd-aisr-cu', parameters('solutionPrefix')))]",
-    "aiFoundryAiServicesContentUnderstandingLocation": "[coalesce(tryGet(parameters('aiFoundryAiServicesContentUnderstandingConfiguration'), 'location'), 'West US')]",
+    "aiFoundryAiServicesContentUnderstandingLocation": "[coalesce(tryGet(parameters('aiFoundryAiServicesContentUnderstandingConfiguration'), 'location'), if(contains(createArray('West US', 'westus', 'Sweden Central', 'swedencentral', 'Australia East', 'australiaeast'), parameters('solutionLocation')), parameters('solutionLocation'), 'West US'))]",
     "aiFoundryAiServicesContentUnderstandingSkuName": "[coalesce(tryGet(parameters('aiFoundryAiServicesContentUnderstandingConfiguration'), 'sku'), 'S0')]",
     "aiFoundryAiServicesResourceName": "[coalesce(tryGet(parameters('aiFoundryAiServicesConfiguration'), 'name'), format('{0}-aifd-aisr-cu', parameters('solutionPrefix')))]",
     "aiFoundryAiServicesLocation": "[coalesce(tryGet(parameters('aiFoundryAiServicesConfiguration'), 'location'), parameters('solutionLocation'))]",

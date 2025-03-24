@@ -478,7 +478,7 @@ The configuration to apply for the Conversation Knowledge Mining AI Foundry AI S
 - Default:
   ```Bicep
   {
-      location: 'West US'
+      location: '[if(contains(createArray(\'West US\', \'westus\', \'Sweden Central\', \'swedencentral\', \'Australia East\', \'australiaeast\'), parameters(\'solutionLocation\')), parameters(\'solutionLocation\'), \'West US\')]'
       name: '[format(\'{0}-aifd-aisr-cu\', parameters(\'solutionPrefix\'))]'
       sku: 'S0'
   }

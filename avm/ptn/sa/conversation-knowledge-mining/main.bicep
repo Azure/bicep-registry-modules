@@ -45,7 +45,12 @@ param aiFoundryAiProjectConfiguration ckmAiFoundryAiProjectType = {
 @description('Optional. The configuration to apply for the Conversation Knowledge Mining AI Foundry AI Services Content Understanding resource.')
 param aiFoundryAiServicesContentUnderstandingConfiguration ckmAiFoundryAiServicesContentUnderstandingType = {
   name: '${solutionPrefix}-aifd-aisr-cu'
-  location: 'West US'
+  location: contains(
+      ['West US', 'westus', 'Sweden Central', 'swedencentral', 'Australia East', 'australiaeast'],
+      solutionLocation
+    )
+    ? solutionLocation
+    : 'West US'
   sku: 'S0'
 }
 
@@ -223,7 +228,12 @@ var aiFoundryAiProjectSkuName = aiFoundryAiProjectConfiguration.?sku ?? 'Standar
 
 // VARIABLES: AI Foundry AI Service Content Understanding configuration defaults
 var aiFoundryAiServicesContentUnderstandingResourceName = aiFoundryAiServicesContentUnderstandingConfiguration.?name ?? '${solutionPrefix}-aifd-aisr-cu'
-var aiFoundryAiServicesContentUnderstandingLocation = aiFoundryAiServicesContentUnderstandingConfiguration.?location ?? 'West US'
+var aiFoundryAiServicesContentUnderstandingLocation = aiFoundryAiServicesContentUnderstandingConfiguration.?location ?? (contains(
+    ['West US', 'westus', 'Sweden Central', 'swedencentral', 'Australia East', 'australiaeast'],
+    solutionLocation
+  )
+  ? solutionLocation
+  : 'West US')
 var aiFoundryAiServicesContentUnderstandingSkuName = aiFoundryAiServicesContentUnderstandingConfiguration.?sku ?? 'S0'
 
 // VARIABLES: AI Foundry AI Service configuration defaults
