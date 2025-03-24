@@ -161,7 +161,10 @@ var locationProperty = [
 ]
 
 var properties = {
-  linkedResources: linkedResources ?? []
+  linkedResources: map(linkedResources ?? [], resource => {
+    id: resource.resourceId
+    uniqueName: resource.uniqueName
+  })
   cors: {
     corsRules: corsRulesProperty
   }
@@ -229,7 +232,7 @@ type corsRuleType = {
 @description('The type of the linked resource.')
 type linkedResourceType = {
   @description('Required. ARM resource id in the form: \'/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Storage/accounts/{storageName}\'.')
-  id: string
+  resourceId: string
   @description('Required. A provided name which uniquely identifies the linked resource.')
   uniqueName: string
 }

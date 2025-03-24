@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "12706625531908720861"
+      "templateHash": "16766594463975507205"
     },
     "name": "Azure Maps Account",
     "description": "This module deploys an Azure Maps Account."
@@ -33,7 +33,7 @@
     "linkedResourceType": {
       "type": "object",
       "properties": {
-        "id": {
+        "resourceId": {
           "type": "string",
           "metadata": {
             "description": "Required. ARM resource id in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Storage/accounts/{storageName}'."
@@ -335,9 +335,9 @@
     },
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
-    "encryptionProperties": "[if(not(empty(parameters('customerManagedKey'))), createObject('encryption', createObject('customerManagedKeyEncryption', createObject('keyEncryptionKeyIdentity', createObject('userAssignedIdentityResourceId', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '//'), '/')[2], split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '////'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), 'dummyMsi'), '/'))), null()), 'identityType', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), 'userAssignedIdentity', 'systemAssignedIdentity')), 'keyEncryptionKeyUrl', tryGet(parameters('customerManagedKey'), 'keyEncryptionKeyUrl'))), 'requireInfrastructureEncryption', parameters('requireInfrastructureEncryption')), createObject())]",
+    "encryptionProperties": "[if(not(empty(parameters('customerManagedKey'))), createObject('encryption', createObject('customerManagedKeyEncryption', createObject('keyEncryptionKeyIdentity', createObject('userAssignedIdentityResourceId', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2], split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/'))), null()), 'identityType', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), 'userAssignedIdentity', 'systemAssignedIdentity')), 'keyEncryptionKeyUrl', tryGet(parameters('customerManagedKey'), 'keyEncryptionKeyUrl'))), 'requireInfrastructureEncryption', parameters('requireInfrastructureEncryption')), createObject())]",
     "properties": {
-      "linkedResources": "[coalesce(parameters('linkedResources'), createArray())]",
+      "linkedResources": "[map(coalesce(parameters('linkedResources'), createArray()), lambda('resource', createObject('id', lambdaVariables('resource').resourceId, 'uniqueName', lambdaVariables('resource').uniqueName)))]",
       "cors": {
         "corsRules": "[variables('corsRulesProperty')]"
       },
@@ -371,9 +371,9 @@
       "existing": true,
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
       "apiVersion": "2023-01-31",
-      "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '//'), '/')[2]]",
-      "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '////'), '/')[4]]",
-      "name": "[last(split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), 'dummyMsi'), '/'))]"
+      "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]]",
+      "name": "[last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/'))]"
     },
     "mapsAccount": {
       "type": "Microsoft.Maps/accounts",

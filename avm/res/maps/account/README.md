@@ -121,7 +121,7 @@ module account 'br/public:avm/res/maps/account:<version>' = {
     kind: 'Gen2'
     linkedResources: [
       {
-        id: '<id>'
+        resourceId: '<resourceId>'
         uniqueName: '<uniqueName>'
       }
     ]
@@ -139,7 +139,19 @@ module account 'br/public:avm/res/maps/account:<version>' = {
     roleAssignments: [
       {
         principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Azure Maps Data Reader'
+      }
+      {
+        name: '<name>'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
     sku: 'G2'
@@ -198,7 +210,7 @@ module account 'br/public:avm/res/maps/account:<version>' = {
     "linkedResources": {
       "value": [
         {
-          "id": "<id>",
+          "resourceId": "<resourceId>",
           "uniqueName": "<uniqueName>"
         }
       ]
@@ -224,7 +236,19 @@ module account 'br/public:avm/res/maps/account:<version>' = {
       "value": [
         {
           "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Azure Maps Data Reader"
+        },
+        {
+          "name": "<name>",
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
         }
       ]
     },
@@ -275,7 +299,7 @@ param disableLocalAuth = true
 param kind = 'Gen2'
 param linkedResources = [
   {
-    id: '<id>'
+    resourceId: '<resourceId>'
     uniqueName: '<uniqueName>'
   }
 ]
@@ -293,7 +317,19 @@ param managedIdentities = {
 param roleAssignments = [
   {
     principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Azure Maps Data Reader'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
   }
 ]
 param sku = 'G2'
@@ -335,7 +371,6 @@ module account 'br/public:avm/res/maps/account:<version>' = {
     ]
     disableLocalAuth: true
     kind: 'Gen2'
-    location: '<location>'
     locations: [
       'eastus'
       'westeurope'
@@ -385,9 +420,6 @@ module account 'br/public:avm/res/maps/account:<version>' = {
     "kind": {
       "value": "Gen2"
     },
-    "location": {
-      "value": "<location>"
-    },
     "locations": {
       "value": [
         "eastus",
@@ -433,7 +465,6 @@ param corsRules = [
 ]
 param disableLocalAuth = true
 param kind = 'Gen2'
-param location = '<location>'
 param locations = [
   'eastus'
   'westeurope'
@@ -576,10 +607,10 @@ The array of associated resources to the Maps account. Linked resource in the ar
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`id`](#parameter-linkedresourcesid) | string | ARM resource id in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Storage/accounts/{storageName}'. |
+| [`resourceId`](#parameter-linkedresourcesresourceid) | string | ARM resource id in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Storage/accounts/{storageName}'. |
 | [`uniqueName`](#parameter-linkedresourcesuniquename) | string | A provided name which uniquely identifies the linked resource. |
 
-### Parameter: `linkedResources.id`
+### Parameter: `linkedResources.resourceId`
 
 ARM resource id in the form: '/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Storage/accounts/{storageName}'.
 

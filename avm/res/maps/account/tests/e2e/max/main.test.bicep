@@ -112,7 +112,7 @@ module testDeployment '../../../main.bicep' = [
       ]
       linkedResources: [
         {
-          id: nestedDependencies.outputs.storageAccountResourceId
+          resourceId: nestedDependencies.outputs.storageAccountResourceId
           uniqueName: nestedDependencies.outputs.storageAccountName
         }
       ]
