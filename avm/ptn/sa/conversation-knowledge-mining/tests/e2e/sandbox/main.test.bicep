@@ -69,11 +69,14 @@ var AIServicesAllowedLocations = [
   'Jio India Central'
 ]
 
-var resourceGroupLocation = contains(AIServicesAllowedLocations, resourceLocation) ? resourceLocation : 'East US'
+//var resourceGroupLocation = contains(AIServicesAllowedLocations, resourceLocation) ? resourceLocation : 'East US'
+
+#disable-next-line no-hardcoded-location // Just a value to avoid ongoing capacity challenges
+var enforcedLocation = 'australiaeast'
 
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
-  location: resourceGroupLocation
+  location: enforcedLocation
 }
 
 @batchSize(1)
@@ -83,6 +86,10 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       solutionPrefix: '${namePrefix}${serviceShort}'
+      //       webAppServerFarmConfiguration: {
+      //        location: enforcedLocation
+      //        webAppLocation: enforcedLocation
+      //    }
     }
   }
 ]
