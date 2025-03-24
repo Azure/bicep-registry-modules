@@ -201,7 +201,7 @@ param solutionPrefix = 'sbxdft'
 | [`managedIdentityConfiguration`](#parameter-managedidentityconfiguration) | object | The configuration to apply for the Conversation Knowledge Mining Managed Identity resource. |
 | [`scriptCopyDataConfiguration`](#parameter-scriptcopydataconfiguration) | object | The configuration to apply for the Conversation Knowledge Mining Copy Data Script resource. |
 | [`scriptIndexDataConfiguration`](#parameter-scriptindexdataconfiguration) | object | The configuration to apply for the Conversation Knowledge Mining Copy Data Script resource. |
-| [`solutionLocation`](#parameter-solutionlocation) | string | Location for all the deployed Azure resources except databases. Defaults to East US. |
+| [`solutionLocation`](#parameter-solutionlocation) | string | Location for all the deployed Azure resources except databases. Defaults to the location of the Resource Group. |
 | [`sqlServerConfiguration`](#parameter-sqlserverconfiguration) | object | The configuration to apply for the Conversation Knowledge Mining SQL Server resource. |
 | [`storageAccountConfiguration`](#parameter-storageaccountconfiguration) | object | The configuration to apply for the Conversation Knowledge Mining Storage Account resource. |
 | [`tags`](#parameter-tags) | object | The tags to apply to all deployed Azure resources. |
@@ -1451,11 +1451,11 @@ The Url where the Copy Data Script is located.
 
 ### Parameter: `solutionLocation`
 
-Location for all the deployed Azure resources except databases. Defaults to East US.
+Location for all the deployed Azure resources except databases. Defaults to the location of the Resource Group.
 
 - Required: No
 - Type: string
-- Default: `'East US'`
+- Default: `[resourceGroup().location]`
 
 ### Parameter: `sqlServerConfiguration`
 
