@@ -2,13 +2,13 @@ metadata name = 'Kusto Cluster Database Principal Assignments'
 metadata description = 'This module deploys a Kusto Cluster Database Principal Assignment.'
 
 @maxLength(22)
-@description('Conditional. The name of the Kusto cluster.')
-param clusterName string
+@description('Required. The name of the Kusto cluster.')
+param kustoClusterName string
 
 @minLength(4)
 @maxLength(22)
-@description('Conditional. The name of the parent Kusto Cluster Database. Required if the template is used in a standalone deployment.')
-param databaseName string
+@description('Required. The name of the parent Kusto Cluster Database. Required if the template is used in a standalone deployment.')
+param kustoDatabaseName string
 
 @description('Required. The principal assignement for the Kusto Cluster Database.')
 param databasePrincipalAssignment databasePrincipalAssignmentType
@@ -19,10 +19,10 @@ param databasePrincipalAssignment databasePrincipalAssignmentType
 
 
 resource cluster 'Microsoft.Kusto/clusters@2024-04-13' existing  = {
-  name: clusterName
+  name: kustoClusterName
 
   resource database 'databases@2024-04-13' existing = {
-    name: databaseName
+    name: kustoDatabaseName
   }
 }
 

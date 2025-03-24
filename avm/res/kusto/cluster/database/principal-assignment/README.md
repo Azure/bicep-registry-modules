@@ -21,13 +21,8 @@ This module deploys a Kusto Cluster Database Principal Assignment.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`databasePrincipalAssignment`](#parameter-databaseprincipalassignment) | object | The principal assignement for the Kusto Cluster Database. |
-
-**Conditional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`clusterName`](#parameter-clustername) | string | The name of the Kusto cluster. |
-| [`databaseName`](#parameter-databasename) | string | The name of the parent Kusto Cluster Database. Required if the template is used in a standalone deployment. |
+| [`kustoClusterName`](#parameter-kustoclustername) | string | The name of the Kusto cluster. |
+| [`kustoDatabaseName`](#parameter-kustodatabasename) | string | The name of the parent Kusto Cluster Database. Required if the template is used in a standalone deployment. |
 
 ### Parameter: `databasePrincipalAssignment`
 
@@ -92,14 +87,14 @@ The tenant id of the principal.
 - Required: Yes
 - Type: string
 
-### Parameter: `clusterName`
+### Parameter: `kustoClusterName`
 
 The name of the Kusto cluster.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `databaseName`
+### Parameter: `kustoDatabaseName`
 
 The name of the parent Kusto Cluster Database. Required if the template is used in a standalone deployment.
 

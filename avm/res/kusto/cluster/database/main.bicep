@@ -50,8 +50,8 @@ module database_readWrite_PrincipalAssignment './principal-assignment/main.bicep
   for (principalAssignment, index) in (databasePrincipalAssignments ?? []): {
     name: '${uniqueString(deployment().name, location)}-KustoDatabase-PrincipalAssignment-${index}'
     params: {
-      clusterName: kustoClusterName
-      databaseName: databaseKind == 'ReadOnlyFollowing' ? database_readOnly.name : database_readWrite.name
+      kustoClusterName: kustoClusterName
+      kustoDatabaseName: databaseKind == 'ReadOnlyFollowing' ? database_readOnly.name : database_readWrite.name
       databasePrincipalAssignment: principalAssignment
     }
   }
