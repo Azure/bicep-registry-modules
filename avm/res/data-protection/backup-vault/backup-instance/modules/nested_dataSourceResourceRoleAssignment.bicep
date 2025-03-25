@@ -21,7 +21,7 @@ resource roleAssignment_storageAccount 'Microsoft.Authorization/roleAssignments@
   }
 }
 
-resource disk 'Microsoft.Storage/storageAccounts@2023-04-01' existing = if (resourceType == 'Microsoft.Compute/disks') {
+resource disk 'Microsoft.Compute/disks@2024-03-02' existing = if (resourceType == 'Microsoft.Compute/disks') {
   name: last(split(resourceId, '/'))
 }
 
