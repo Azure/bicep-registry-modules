@@ -26,6 +26,13 @@ resource actionGroup 'Microsoft.Insights/actionGroups@2023-01-01' = {
   properties: {
     enabled: true
     groupShortName: 'superShort'
+    emailReceivers: [
+      {
+        emailAddress: 'avm@saysHi.com'
+        name: 'notification-email'
+        useCommonAlertSchema: true
+      }
+    ]
   }
 }
 
