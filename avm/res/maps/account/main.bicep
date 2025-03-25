@@ -181,7 +181,39 @@ resource mapsAccount 'Microsoft.Maps/accounts@2024-07-01-preview' = {
   identity: identity
   kind: kind
   tags: tags
-  properties: union(encryptionProperties, properties)
+  properties: {
+    linkedResources: map(linkedResources ?? [], resource => {
+      id: resource.resourceId
+      uniqueName: resource.uniqueName
+    })
+    cors: {
+      corsRules: corsRulesProperty
+    }
+    disableLocalAuth: disableLocalAuth
+    locations: locationProperty
+    ...(!empty(customerManagedKey)
+      ? {
+          encryption: {
+            customerManagedKeyEncryption: {
+              keyEncryptionKeyIdentity: {
+                userAssignedIdentityResourceId: !empty(customerManagedKey.?userAssignedIdentityResourceId)
+                  ? cMKUserAssignedIdentity.id
+                  : null
+                identityType: !empty(customerManagedKey.?userAssignedIdentityResourceId)
+                  ? 'userAssignedIdentity'
+                  : 'systemAssignedIdentity'
+              }
+              keyEncryptionKeyUrl: !empty(customerManagedKey.?keyVersion ?? '')
+                ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.?keyVersion}'
+                : (customerManagedKey.?autoRotationEnabled ?? true)
+                    ? cMKKeyVault::cMKKey.properties.keyUri
+                    : cMKKeyVault::cMKKey.properties.keyUriWithVersion
+            }
+            infrastructureEncryption: requireInfrastructureEncryption // Property renamed
+          }
+        }
+      : {})
+  }
 }
 
 resource mapsAccount_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
