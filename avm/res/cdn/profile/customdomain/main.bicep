@@ -83,10 +83,10 @@ output resourceId string = customDomain.id
 output resourceGroupName string = resourceGroup().name
 
 @description('The DNS validation records.')
-output dnsValidation dnsValidationType = {
-  dnsTxtRecordName: '_dnsauth.${customDomain.properties.hostName}' ?? ''
-  dnsTxtRecordValue: customDomain.properties.validationProperties.validationToken ?? ''
-  dnsTxtRecordExpiry: customDomain.properties.validationProperties.expirationDate ?? ''
+output dnsValidation dnsValidationOutputType = {
+  dnsTxtRecordName: '_dnsauth.${customDomain.properties.hostName}'
+  dnsTxtRecordValue: customDomain.properties.validationProperties.validationToken
+  dnsTxtRecordExpiry: customDomain.properties.validationProperties.expirationDate
 }
 
 // =============== //
@@ -123,13 +123,13 @@ type customDomainType = {
 
 @export()
 @description('The type of the DNS validation.')
-type dnsValidationType = {
-  @description('Required. The DNS record name.')
-  dnsTxtRecordName: string
+type dnsValidationOutputType = {
+  @description('The DNS record name.')
+  dnsTxtRecordName: string?
 
-  @description('Required. The DNS record value.')
-  dnsTxtRecordValue: string
+  @description('The DNS record value.')
+  dnsTxtRecordValue: string?
 
-  @description('Required. The expiry date of the DNS record.')
-  dnsTxtRecordExpiry: string
+  @description('The expiry date of the DNS record.')
+  dnsTxtRecordExpiry: string?
 }

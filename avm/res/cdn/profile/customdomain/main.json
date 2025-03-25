@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.1.11899",
-      "templateHash": "6303609034063044063"
+      "templateHash": "16176516087789568863"
     },
     "name": "CDN Profiles Custom Domains",
     "description": "This module deploys a CDN Profile Custom Domains."
@@ -83,25 +83,28 @@
         "description": "The type of the custom domain."
       }
     },
-    "dnsValidationType": {
+    "dnsValidationOutputType": {
       "type": "object",
       "properties": {
         "dnsTxtRecordName": {
           "type": "string",
+          "nullable": true,
           "metadata": {
-            "description": "Required. The DNS record name."
+            "description": "The DNS record name."
           }
         },
         "dnsTxtRecordValue": {
           "type": "string",
+          "nullable": true,
           "metadata": {
-            "description": "Required. The DNS record value."
+            "description": "The DNS record value."
           }
         },
         "dnsTxtRecordExpiry": {
           "type": "string",
+          "nullable": true,
           "metadata": {
-            "description": "Required. The expiry date of the DNS record."
+            "description": "The expiry date of the DNS record."
           }
         }
       },
@@ -235,14 +238,14 @@
       "value": "[resourceGroup().name]"
     },
     "dnsValidation": {
-      "$ref": "#/definitions/dnsValidationType",
+      "$ref": "#/definitions/dnsValidationOutputType",
       "metadata": {
         "description": "The DNS validation records."
       },
       "value": {
-        "dnsTxtRecordName": "[coalesce(format('_dnsauth.{0}', reference('customDomain').hostName), '')]",
-        "dnsTxtRecordValue": "[coalesce(reference('customDomain').validationProperties.validationToken, '')]",
-        "dnsTxtRecordExpiry": "[coalesce(reference('customDomain').validationProperties.expirationDate, '')]"
+        "dnsTxtRecordName": "[format('_dnsauth.{0}', reference('customDomain').hostName)]",
+        "dnsTxtRecordValue": "[reference('customDomain').validationProperties.validationToken]",
+        "dnsTxtRecordExpiry": "[reference('customDomain').validationProperties.expirationDate]"
       }
     }
   }
