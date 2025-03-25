@@ -113,7 +113,7 @@ module account 'br/public:avm/res/maps/account:<version>' = {
       }
     ]
     customerManagedKey: {
-      keyEncryptionKeyUrl: '<keyEncryptionKeyUrl>'
+      keyName: '<keyName>'
       keyVaultResourceId: '<keyVaultResourceId>'
       userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
     }
@@ -196,7 +196,7 @@ module account 'br/public:avm/res/maps/account:<version>' = {
     },
     "customerManagedKey": {
       "value": {
-        "keyEncryptionKeyUrl": "<keyEncryptionKeyUrl>",
+        "keyName": "<keyName>",
         "keyVaultResourceId": "<keyVaultResourceId>",
         "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
       }
@@ -291,7 +291,7 @@ param corsRules = [
   }
 ]
 param customerManagedKey = {
-  keyEncryptionKeyUrl: '<keyEncryptionKeyUrl>'
+  keyName: '<keyName>'
   keyVaultResourceId: '<keyVaultResourceId>'
   userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
 }
@@ -542,32 +542,48 @@ The customer managed key definition.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`keyEncryptionKeyUrl`](#parameter-customermanagedkeykeyencryptionkeyurl) | string | key encryption key Url, versioned or unversioned. Ex: https://contosovault.vault.azure.net/keys/contosokek/562a4bb76b524a1493a6afe8e536ee78 or https://contosovault.vault.azure.net/keys/contosokek. |
-| [`keyVaultResourceId`](#parameter-customermanagedkeykeyvaultresourceid) | string | The resource ID of the Key Vault. |
+| [`keyName`](#parameter-customermanagedkeykeyname) | string | The name of the customer managed key to use for encryption. |
+| [`keyVaultResourceId`](#parameter-customermanagedkeykeyvaultresourceid) | string | The resource ID of a key vault to reference a customer managed key for encryption from. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`userAssignedIdentityResourceId`](#parameter-customermanagedkeyuserassignedidentityresourceid) | string | The resource ID of the user assigned identity to use for encryption. |
+| [`autoRotationEnabled`](#parameter-customermanagedkeyautorotationenabled) | bool | Enable or disable auto-rotating to the latest key version. Default is `true`. If set to `false`, the latest key version at the time of the deployment is used. |
+| [`keyVersion`](#parameter-customermanagedkeykeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationEnabled' setting. |
+| [`userAssignedIdentityResourceId`](#parameter-customermanagedkeyuserassignedidentityresourceid) | string | User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use. |
 
-### Parameter: `customerManagedKey.keyEncryptionKeyUrl`
+### Parameter: `customerManagedKey.keyName`
 
-key encryption key Url, versioned or unversioned. Ex: https://contosovault.vault.azure.net/keys/contosokek/562a4bb76b524a1493a6afe8e536ee78 or https://contosovault.vault.azure.net/keys/contosokek.
+The name of the customer managed key to use for encryption.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `customerManagedKey.keyVaultResourceId`
 
-The resource ID of the Key Vault.
+The resource ID of a key vault to reference a customer managed key for encryption from.
 
 - Required: Yes
 - Type: string
 
+### Parameter: `customerManagedKey.autoRotationEnabled`
+
+Enable or disable auto-rotating to the latest key version. Default is `true`. If set to `false`, the latest key version at the time of the deployment is used.
+
+- Required: No
+- Type: bool
+
+### Parameter: `customerManagedKey.keyVersion`
+
+The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationEnabled' setting.
+
+- Required: No
+- Type: string
+
 ### Parameter: `customerManagedKey.userAssignedIdentityResourceId`
 
-The resource ID of the user assigned identity to use for encryption.
+User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.
 
 - Required: No
 - Type: string
