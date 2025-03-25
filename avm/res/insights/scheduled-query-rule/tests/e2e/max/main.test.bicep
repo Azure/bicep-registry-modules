@@ -61,11 +61,9 @@ module testDeployment '../../../main.bicep' = [
         actionGroupResourceIds: [
           nestedDependencies.outputs.actionGroupResourceId
         ]
-        actionProperties: {
-          'Icm.propertyA': 'valueA'
-        }
         customProperties: {
-          propertyB: 'valueB'
+          'Additional Details': 'Evaluation windowStartTime: \${data.alertContext.condition.windowStartTime}. windowEndTime: \${data.alertContext.condition.windowEndTime}'
+          'Alert \${data.essentials.monitorCondition} reason': '\${data.alertContext.condition.allOf[0].metricName} \${data.alertContext.condition.allOf[0].operator} \${data.alertContext.condition.allOf[0].threshold} \${data.essentials.monitorCondition}. The value is \${data.alertContext.condition.allOf[0].metricValue}'
         }
       }
       managedIdentities: {
