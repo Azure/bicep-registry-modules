@@ -5,12 +5,14 @@ var resourceType = '${split(resourceId, '/')[6]}/${split(resourceId, '/')[7]}'
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2023-04-01' existing = if (resourceType == 'Microsoft.Storage/storageAccounts') {
   name: last(split(resourceId, '/'))
+  scope: resourceGroup(split(resourceId, '/')[2], split(resourceId, '/')[4])
 }
 
 // Assign Storage Blob Data Contributor RBAC role
 resource roleAssignment_storageAccount 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (resourceType == 'Microsoft.Storage/storageAccounts') {
   name: guid('${resourceId}-${principalId}-Storage-Blob-Data-Contributor')
-  scope: storageAccount
+  // scope: storageAccount
+  // scope: resourceGroup(split(resourceId, '/')[2], split(resourceId, '/')[4])
   properties: {
     roleDefinitionId: subscriptionResourceId(
       'Microsoft.Authorization/roleDefinitions',
@@ -28,7 +30,7 @@ resource disk 'Microsoft.Compute/disks@2024-03-02' existing = if (resourceType =
 // Assign Storage Blob Data Contributor RBAC role
 resource roleAssignment_disk 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (resourceType == 'Microsoft.Compute/disks') {
   name: guid('${resourceId}-${principalId}-XXX')
-  scope: disk
+  // scope: resourceGroup(split(resourceId, '/')[2], split(resourceId, '/')[4])
   properties: {
     roleDefinitionId: subscriptionResourceId(
       'Microsoft.Authorization/roleDefinitions',
@@ -41,7 +43,7 @@ resource roleAssignment_disk 'Microsoft.Authorization/roleAssignments@2022-04-01
 
 resource roleAssignment_snapshotRG 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (resourceType == 'Microsoft.Compute/disks') {
   name: guid('${resourceId}-${principalId}-YYY')
-  scope: disk
+  // scope: resourceGroup(split(resourceId, '/')[2], split(resourceId, '/')[4])
   properties: {
     roleDefinitionId: subscriptionResourceId(
       'Microsoft.Authorization/roleDefinitions',
