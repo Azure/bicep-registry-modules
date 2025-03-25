@@ -109,9 +109,9 @@ module testDeployment '../../../main.bicep' = {
           }
           overrideQosPolicy: false
           qosPolicyOverrides: {
-            bandwidthPercentage_SMB: '50'
-            priorityValue8021Action_Cluster: '7'
-            priorityValue8021Action_SMB: '3'
+            bandwidthPercentageSMB: '50'
+            priorityValue8021ActionCluster: '7'
+            priorityValue8021ActionSMB: '3'
           }
           overrideVirtualSwitchConfiguration: false
           virtualSwitchConfigurationOverrides: {
@@ -131,9 +131,9 @@ module testDeployment '../../../main.bicep' = {
           }
           overrideQosPolicy: false
           qosPolicyOverrides: {
-            bandwidthPercentage_SMB: '50'
-            priorityValue8021Action_Cluster: '7'
-            priorityValue8021Action_SMB: '3'
+            bandwidthPercentageSMB: '50'
+            priorityValue8021ActionCluster: '7'
+            priorityValue8021ActionSMB: '3'
           }
           overrideVirtualSwitchConfiguration: false
           virtualSwitchConfigurationOverrides: {
@@ -153,9 +153,9 @@ module testDeployment '../../../main.bicep' = {
           }
           overrideQosPolicy: true
           qosPolicyOverrides: {
-            bandwidthPercentage_SMB: '50'
-            priorityValue8021Action_Cluster: '7'
-            priorityValue8021Action_SMB: '3'
+            bandwidthPercentageSMB: '50'
+            priorityValue8021ActionCluster: '7'
+            priorityValue8021ActionSMB: '3'
           }
           overrideVirtualSwitchConfiguration: false
           virtualSwitchConfigurationOverrides: {
@@ -168,10 +168,12 @@ module testDeployment '../../../main.bicep' = {
       storageConnectivitySwitchless: false
       storageNetworks: [
         {
+          name: 'StorageNetwork0'
           adapterName: 'smb0'
           vlan: '711'
         }
         {
+          name: 'StorageNetwork1'
           adapterName: 'smb1'
           vlan: '712'
         }

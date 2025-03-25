@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "3963124488380176930"
+      "version": "0.32.4.45862",
+      "templateHash": "16645481919886666314"
     },
     "name": "Azure Stack HCI Cluster",
     "description": "This module deploys an Azure Stack HCI Cluster on the provided Arc Machines."
@@ -79,19 +79,19 @@
         "qosPolicyOverrides": {
           "type": "object",
           "properties": {
-            "bandwidthPercentage_SMB": {
+            "bandwidthPercentageSMB": {
               "type": "string",
               "metadata": {
                 "description": "Required. The bandwidthPercentage for the network intent. Recommend 50."
               }
             },
-            "priorityValue8021Action_Cluster": {
+            "priorityValue8021ActionCluster": {
               "type": "string",
               "metadata": {
                 "description": "Required. Recommend 7."
               }
             },
-            "priorityValue8021Action_SMB": {
+            "priorityValue8021ActionSMB": {
               "type": "string",
               "metadata": {
                 "description": "Required. Recommend 3."
@@ -182,6 +182,12 @@
     "storageNetworksType": {
       "type": "object",
       "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the storage network."
+          }
+        },
         "adapterName": {
           "type": "string",
           "metadata": {
@@ -444,6 +450,9 @@
         },
         "networkIntents": {
           "type": "array",
+          "items": {
+            "$ref": "#/definitions/networkIntentType"
+          },
           "metadata": {
             "description": "Required. An array of Network ATC Network Intent objects that define the Compute, Management, and Storage network configuration for the cluster."
           }
@@ -463,6 +472,9 @@
         },
         "storageNetworks": {
           "type": "array",
+          "items": {
+            "$ref": "#/definitions/storageNetworksType"
+          },
           "metadata": {
             "description": "Required. An array of JSON objects that define the storage network configuration for the cluster. Each object should contain the adapterName, VLAN properties, and (optionally) IP configurations."
           }
@@ -645,9 +657,8 @@
     },
     "deploymentSettings": {
       "$ref": "#/definitions/deploymentSettingsType",
-      "nullable": true,
       "metadata": {
-        "description": "Optional. The deployment settings of the cluster."
+        "description": "Required. The deployment settings of the cluster."
       }
     },
     "roleAssignments": {
@@ -948,8 +959,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "5238695736774441169"
+              "version": "0.32.4.45862",
+              "templateHash": "18231557278397526039"
             }
           },
           "parameters": {
@@ -1278,8 +1289,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "9536857013030923630"
+              "version": "0.32.4.45862",
+              "templateHash": "3701439978420477660"
             },
             "name": "Azure Stack HCI Cluster Deployment Settings",
             "description": "This module deploys an Azure Stack HCI Cluster Deployment Settings resource."
@@ -1621,7 +1632,7 @@
                               "name": "storageNetworks",
                               "count": "[length(parameters('storageNetworks'))]",
                               "input": {
-                                "name": "[format('StorageNetwork{0}', add(copyIndex('storageNetworks'), 1))]",
+                                "name": "[parameters('storageNetworks')[copyIndex('storageNetworks')].name]",
                                 "networkAdapterName": "[parameters('storageNetworks')[copyIndex('storageNetworks')].adapterName]",
                                 "vlanId": "[parameters('storageNetworks')[copyIndex('storageNetworks')].vlan]",
                                 "storageAdapterIPInfo": "[tryGet(parameters('storageNetworks')[copyIndex('storageNetworks')], 'storageAdapterIPInfo')]"
