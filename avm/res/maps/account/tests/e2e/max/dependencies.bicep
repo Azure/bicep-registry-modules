@@ -64,6 +64,9 @@ resource strorageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' = {
   }
 }
 
+@description('The name of the created Key Vault encryption key.')
+output keyVaultKeyName string = keyVault::key.name
+
 @description('The resource ID of the created Key Vault.')
 output keyVaultResourceId string = keyVault.id
 
