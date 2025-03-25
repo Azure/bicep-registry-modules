@@ -62,8 +62,6 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
         '<id>'
       ]
     }
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -90,10 +88,6 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
           "<id>"
         ]
       }
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -116,8 +110,6 @@ param networkManagerScopes = {
     '<id>'
   ]
 }
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -1140,7 +1132,6 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
       ]
     }
     // Non-required parameters
-    location: '<location>'
     networkManagerScopeAccesses: [
       'SecurityAdmin'
     ]
@@ -1177,9 +1168,6 @@ module networkManager 'br/public:avm/res/network/network-manager:<version>' = {
       }
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
     "networkManagerScopeAccesses": {
       "value": [
         "SecurityAdmin"
@@ -1214,7 +1202,6 @@ param networkManagerScopes = {
   ]
 }
 // Non-required parameters
-param location = '<location>'
 param networkManagerScopeAccesses = [
   'SecurityAdmin'
 ]

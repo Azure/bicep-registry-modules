@@ -322,6 +322,12 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
         ]
       }
     }
+    scaleSettings: {
+      cooldownPeriod: 500
+      maxReplicas: 11
+      minReplicas: 4
+      pollingInterval: 45
+    }
     secrets: [
       {
         name: 'containerappstoredsecret'
@@ -451,6 +457,14 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
         }
       }
     },
+    "scaleSettings": {
+      "value": {
+        "cooldownPeriod": 500,
+        "maxReplicas": 11,
+        "minReplicas": 4,
+        "pollingInterval": 45
+      }
+    },
     "secrets": {
       "value": [
         {
@@ -565,6 +579,12 @@ param runtime = {
       }
     ]
   }
+}
+param scaleSettings = {
+  cooldownPeriod: 500
+  maxReplicas: 11
+  minReplicas: 4
+  pollingInterval: 45
 }
 param secrets = [
   {
@@ -951,9 +971,7 @@ param tags = {
 | [`revisionSuffix`](#parameter-revisionsuffix) | string | User friendly suffix that is appended to the revision name. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`runtime`](#parameter-runtime) | object | Runtime configuration for the Container App. |
-| [`scaleMaxReplicas`](#parameter-scalemaxreplicas) | int | Maximum number of container replicas. Defaults to 10 if not set. |
-| [`scaleMinReplicas`](#parameter-scaleminreplicas) | int | Minimum number of container replicas. Defaults to 3 if not set. |
-| [`scaleRules`](#parameter-scalerules) | array | Scaling rules. |
+| [`scaleSettings`](#parameter-scalesettings) | object | The scaling settings of the service. |
 | [`secrets`](#parameter-secrets) | array | The secrets of the Container App. |
 | [`service`](#parameter-service) | object | Dev ContainerApp service type. |
 | [`serviceBinds`](#parameter-servicebinds) | array | List of container app services bound to the app. |
@@ -1898,29 +1916,119 @@ Name of the logger.
 - Required: Yes
 - Type: string
 
-### Parameter: `scaleMaxReplicas`
+### Parameter: `scaleSettings`
 
-Maximum number of container replicas. Defaults to 10 if not set.
+The scaling settings of the service.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      maxReplicas: 10
+      minReplicas: 3
+  }
+  ```
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`maxReplicas`](#parameter-scalesettingsmaxreplicas) | int | The maximum number of replicas. |
+| [`minReplicas`](#parameter-scalesettingsminreplicas) | int | The minimum number of replicas. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`cooldownPeriod`](#parameter-scalesettingscooldownperiod) | int | The cooldown period in seconds. |
+| [`pollingInterval`](#parameter-scalesettingspollinginterval) | int | The polling interval in seconds. |
+| [`rules`](#parameter-scalesettingsrules) | array | The scaling rules. |
+
+### Parameter: `scaleSettings.maxReplicas`
+
+The maximum number of replicas.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `scaleSettings.minReplicas`
+
+The minimum number of replicas.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `scaleSettings.cooldownPeriod`
+
+The cooldown period in seconds.
 
 - Required: No
 - Type: int
-- Default: `10`
 
-### Parameter: `scaleMinReplicas`
+### Parameter: `scaleSettings.pollingInterval`
 
-Minimum number of container replicas. Defaults to 3 if not set.
+The polling interval in seconds.
 
 - Required: No
 - Type: int
-- Default: `3`
 
-### Parameter: `scaleRules`
+### Parameter: `scaleSettings.rules`
 
-Scaling rules.
+The scaling rules.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-scalesettingsrulesname) | string | The name of the scaling rule. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`azureQueue`](#parameter-scalesettingsrulesazurequeue) | object | The Azure Queue based scaling rule. |
+| [`custom`](#parameter-scalesettingsrulescustom) | object | The custom scaling rule. |
+| [`http`](#parameter-scalesettingsruleshttp) | object | The HTTP requests based scaling rule. |
+| [`tcp`](#parameter-scalesettingsrulestcp) | object | The TCP based scaling rule. |
+
+### Parameter: `scaleSettings.rules.name`
+
+The name of the scaling rule.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `scaleSettings.rules.azureQueue`
+
+The Azure Queue based scaling rule.
+
+- Required: No
+- Type: object
+
+### Parameter: `scaleSettings.rules.custom`
+
+The custom scaling rule.
+
+- Required: No
+- Type: object
+
+### Parameter: `scaleSettings.rules.http`
+
+The HTTP requests based scaling rule.
+
+- Required: No
+- Type: object
+
+### Parameter: `scaleSettings.rules.tcp`
+
+The TCP based scaling rule.
+
+- Required: No
+- Type: object
 
 ### Parameter: `secrets`
 

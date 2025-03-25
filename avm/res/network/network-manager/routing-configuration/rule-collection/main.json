@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "9240364702512586570"
+      "version": "0.33.13.18514",
+      "templateHash": "10571757562663540488"
     },
     "name": "Network Manager Routing Configuration Rule Collections",
     "description": "This module deploys an Network Manager Routing Configuration Rule Collection.\nRouting configurations are the building blocks of UDR management. They're used to describe the desired routing behavior for a network group. Each routing configuration contains one ore more rule collections. Warning: A rule collection without a rule will cause a deployment of routing configuration to fail in network manager."
@@ -87,6 +87,7 @@
         }
       },
       "metadata": {
+        "description": "The type for the destination.",
         "__bicep_imported_from!": {
           "sourceTemplate": "rule/main.bicep"
         }
@@ -117,6 +118,7 @@
         }
       },
       "metadata": {
+        "description": "The type of the next hop.",
         "__bicep_imported_from!": {
           "sourceTemplate": "rule/main.bicep"
         }
@@ -237,8 +239,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "10535917161454379553"
+              "version": "0.33.13.18514",
+              "templateHash": "11763316582891802886"
             },
             "name": "Network Manager Routing configuration Rule Collection Rules",
             "description": "This module deploys an Azure Virtual Network Manager (AVNM) Routing Configuration Rule Collection Rule.\nA Routing configuration contains a set of rule collections. Each rule collection contains one or more routing rules."
@@ -265,7 +267,8 @@
                 }
               },
               "metadata": {
-                "__bicep_export!": true
+                "__bicep_export!": true,
+                "description": "The type for the destination."
               }
             },
             "nextHopType": {
@@ -293,7 +296,8 @@
                 }
               },
               "metadata": {
-                "__bicep_export!": true
+                "__bicep_export!": true,
+                "description": "The type of the next hop."
               }
             }
           },
