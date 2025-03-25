@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "2814630295977960435"
+      "templateHash": "15630844316433441786"
     },
     "name": "App Service Landing Zone Accelerator",
     "description": "This Azure App Service pattern module represents an Azure App Service deployment aligned with the cloud adoption framework"
@@ -1573,7 +1573,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "11018623915298116143"
+              "templateHash": "18117342784969026945"
             }
           },
           "definitions": {
@@ -29342,6 +29342,9 @@
                   "location": {
                     "value": "[parameters('location')]"
                   },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
+                  },
                   "idAfdPeAutoApproverName": {
                     "value": "[variables('resourceNames').idAfdApprovePeAutoApprover]"
                   },
@@ -29356,7 +29359,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.33.93.31351",
-                      "templateHash": "15132068755733756324"
+                      "templateHash": "2433581731903163838"
                     }
                   },
                   "parameters": {
@@ -29385,6 +29388,12 @@
                       "defaultValue": {},
                       "metadata": {
                         "description": "Optional. The tags to be assigned to the created resources."
+                      }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "metadata": {
+                        "description": "Required. Whether to enable deployment telemetry."
                       }
                     }
                   },
@@ -29462,7 +29471,7 @@
                             "value": "[parameters('location')]"
                           },
                           "enableTelemetry": {
-                            "value": true
+                            "value": "[parameters('enableTelemetry')]"
                           },
                           "tags": {
                             "value": "[parameters('tags')]"

@@ -295,6 +295,7 @@ module autoApproveAfdPe '../front-door/approve-afd-pe.module.bicep' = if (autoAp
   scope: resourceGroup(resourceGroupName)
   params: {
     location: location
+    enableTelemetry: enableTelemetry
     idAfdPeAutoApproverName: resourceNames.idAfdApprovePeAutoApprover
     tags: tags
   }

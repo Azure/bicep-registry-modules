@@ -10,6 +10,9 @@ param idAfdPeAutoApproverName string = guid(resourceGroup().id, 'userAssignedIde
 @description('Optional. The tags to be assigned to the created resources.')
 param tags object = {}
 
+@description('Required. Whether to enable deployment telemetry.')
+param enableTelemetry bool
+
 var roleAssignmentName = guid(resourceGroup().id, 'contributor')
 var contributorRoleDefinitionId = resourceId(
   'Microsoft.Authorization/roleDefinitions',
@@ -25,7 +28,7 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
   params: {
     name: idAfdPeAutoApproverName
     location: location
-    enableTelemetry: true
+    enableTelemetry: enableTelemetry
     tags: tags
   }
 }
