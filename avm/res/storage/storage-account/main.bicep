@@ -177,6 +177,10 @@ param customerManagedKey customerManagedKeyWithAutoRotateType?
 @description('Optional. The SAS expiration period. DD.HH:MM:SS.')
 param sasExpirationPeriod string = ''
 
+@description('Optional. The SAS expiration action. Allowed values are Block and Log.')
+@allowed(['Block', 'Log'])
+param sasExpirationAction string = 'Log'
+
 @description('Optional. The keyType to use with Queue & Table services.')
 @allowed([
   'Account'
@@ -416,7 +420,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' = {
     accessTier: (kind != 'Storage' && kind != 'BlockBlobStorage') ? accessTier : null
     sasPolicy: !empty(sasExpirationPeriod)
       ? {
-          expirationAction: 'Log'
+          expirationAction: sasExpirationAction
           sasExpirationPeriod: sasExpirationPeriod
         }
       : null
