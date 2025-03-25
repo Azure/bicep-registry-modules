@@ -32,8 +32,9 @@ param linkedResources linkedResourceType[]?
 @description('Optional. Allows toggle functionality on Azure Policy to disable Azure Maps local authentication support. This will disable Shared Keys and Shared Access Signature Token authentication from any usage. Default is true.')
 param disableLocalAuth bool = true
 
+import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The customer managed key definition.')
-param customerManagedKey customerManagedKeyType?
+param customerManagedKey customerManagedKeyWithAutoRotateType?
 
 @description('Optional. Enable infrastructure encryption (double encryption). Note, this setting requires the configuration of Customer-Managed-Keys (CMK) via the corresponding module parameters.')
 @allowed(['enabled', 'disabled'])
