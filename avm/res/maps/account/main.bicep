@@ -173,17 +173,6 @@ var locationProperty = [
   }
 ]
 
-var properties = {
-  linkedResources: map(linkedResources ?? [], resource => {
-    id: resource.resourceId
-    uniqueName: resource.uniqueName
-  })
-  cors: {
-    corsRules: corsRulesProperty
-  }
-  disableLocalAuth: disableLocalAuth
-  locations: locationProperty
-}
 
 resource mapsAccount 'Microsoft.Maps/accounts@2024-07-01-preview' = {
   name: name
