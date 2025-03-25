@@ -142,24 +142,6 @@ resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empt
   }
 }
 
-var encryptionProperties = !empty(customerManagedKey)
-  ? {
-      encryption: {
-        customerManagedKeyEncryption: {
-          keyEncryptionKeyIdentity: {
-            userAssignedIdentityResourceId: !empty(customerManagedKey.?userAssignedIdentityResourceId)
-              ? cMKUserAssignedIdentity.id
-              : null
-            identityType: !empty(customerManagedKey.?userAssignedIdentityResourceId)
-              ? 'userAssignedIdentity'
-              : 'systemAssignedIdentity'
-          }
-          keyEncryptionKeyUrl: customerManagedKey.?keyEncryptionKeyUrl
-        }
-      }
-      requireInfrastructureEncryption: requireInfrastructureEncryption
-    }
-  : {}
 
 var corsRulesProperty = [
   for rule in corsRules ?? []: {
