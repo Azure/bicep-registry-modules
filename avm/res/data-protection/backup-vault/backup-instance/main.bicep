@@ -16,25 +16,37 @@ param dataSourceInfo dataSourceInfoType
 @description('Required. Gets or sets the policy information.')
 param policyInfo policyInfoType
 
+// var resourceType = '${split(dataSourceInfo.resourceID, '/')[6]}/${split(dataSourceInfo.resourceID, '/')[7]}'
+
 resource backupVault 'Microsoft.DataProtection/backupVaults@2023-05-01' existing = {
   name: backupVaultName
 }
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2023-04-01' existing = if (dataSourceInfo.datasourceType == 'AzureStorage') {
-  name: dataSourceInfo.resourceName
-}
+// resource storageAccount 'Microsoft.Storage/storageAccounts@2023-04-01' existing = if (resourceType == 'Microsoft.Storage/storageAccounts') {
+//   name: last(split(dataSourceInfo.resourceID, '/'))
+//   scope: resourceGroup(split(dataSourceInfo.resourceID, '/')[2], split(dataSourceInfo.resourceID, '/')[4])
+// }
 
-// Req: assign permission on storage or on disk (storage account backup contributor)
-resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(resourceGroup().id, storageAccount.id, backupVault.id)
-  scope: storageAccount
-  properties: {
-    roleDefinitionId: subscriptionResourceId(
-      'Microsoft.Authorization/roleDefinitions',
-      'e5e2a7ff-d759-4cd2-bb51-3152d37e2eb1' // Storage Account Backup Contributor
-    )
+// // Req: assign permission on storage or on disk (storage account backup contributor)
+// resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+//   name: guid(resourceGroup().id, storageAccount.id, backupVault.id)
+//   scope: storageAccount
+//   properties: {
+//     roleDefinitionId: subscriptionResourceId(
+//       'Microsoft.Authorization/roleDefinitions',
+//       'e5e2a7ff-d759-4cd2-bb51-3152d37e2eb1' // Storage Account Backup Contributor
+//     )
+//     principalId: backupVault.identity.principalId
+//     principalType: 'ServicePrincipal'
+//   }
+// }
+
+module backupInstance_dataSourceResource_rbac 'modules/nested_dataSourceResourceRoleAssignment.bicep' = {
+  name: '${backupVault.name}-dataSourceResource-rbac'
+  scope: resourceGroup(split(dataSourceInfo.resourceID, '/')[2], split(dataSourceInfo.resourceID, '/')[4])
+  params: {
+    resourceId: dataSourceInfo.resourceID
     principalId: backupVault.identity.principalId
-    principalType: 'ServicePrincipal'
   }
 }
 
@@ -45,6 +57,13 @@ resource backupInstance 'Microsoft.DataProtection/backupVaults/backupInstances@2
     objectType: objectType
     dataSourceInfo: dataSourceInfo
     policyInfo: policyInfo
+    // tags: tags
+    // datasourceAuthCredentials
+    // identityDetails
+    // dataSourceSetInfo
+    // friendlyName
+    // resourceGuardOperationRequests
+    // validationType
   }
 }
 
@@ -65,49 +84,37 @@ output resourceGroupName string = resourceGroup().name
 @export()
 @description('The type for data source info properties.')
 type dataSourceInfoType = {
+  datasourceType: string? //TODO check allowed values
   objectType: 'Datasource'
   resourceID: string
-  resourceLocation: string
-  resourceName: string
-  resourceProperties: {
-    objectType: string
-    // For remaining properties, see BaseResourceProperties objects
-  }
-  resourceType: string
-  resourceUri: string
+  resourceLocation: string?
+  resourceName: string?
+  // resourceProperties: object?
+  resourceType: string?
+  resourceUri: string?
 }
 
 @export()
 @description('The type for policy info properties.')
 type policyInfoType = {
   policyId: string
-  // objectType: string
-  // resourceID: string
-  // resourceLocation: string
-  // resourceName: string
-  // resourceProperties: {
-  //   objectType: string
-  //   // For remaining properties, see BaseResourceProperties objects
-  // }
-  // resourceType: string
-  // resourceUri: string
+  // policyParameters: {
+  //   backupDatasourceParametersList: backupDatasourceParameterType[]?
+  //   dataStoreParametersList: dataStoreParameterType[]?
+  // }?
 }
 
-// policyInfo: {
-// policyId: 'string'
-// policyParameters: {
-// backupDatasourceParametersList: [
-// {
-// objectType: 'string'
-// // For remaining properties, see BackupDatasourceParameters objects
+// @export() //TODO: implement discriminator
+// @description('The type for backupDatasourceParameter properties.')
+// type backupDatasourceParameterType = {
+//   objectType: 'BlobBackupDatasourceParameters' | 'KubernetesClusterBackupDatasourceParameters'
+//   // containersList: string[]
 // }
-// ]
-// dataStoreParametersList: [
-// {
-// dataStoreType: 'string'
-// objectType: 'string'
-// // For remaining properties, see DataStoreParameters objects
-// }
-// ]
-// }
+
+// @export()
+// @description('The type for dataStoreParameter properties.')
+// type dataStoreParameterType = {
+//   objectType: 'AzureOperationalStoreParameters'
+//   dataStoreType: 'ArchiveStore' | 'OperationalStore' | 'VaultStore'
+//   resourceGroupId: string?
 // }

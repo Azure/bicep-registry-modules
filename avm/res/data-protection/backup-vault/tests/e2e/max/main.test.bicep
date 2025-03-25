@@ -36,6 +36,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    diskName: 'dep-${namePrefix}-disk-${serviceShort}'
     location: resourceLocation
   }
 }
@@ -137,6 +138,23 @@ module testDeployment '../../../main.bicep' = [
                 objectType: 'AzureRetentionRule'
               }
             ]
+          }
+        }
+      ]
+      backupInstances: [
+        {
+          name: '${namePrefix}${serviceShort}disk001'
+          dataSourceInfo: {
+            objectType: 'Datasource'
+            datasourceType: 'Microsoft.Compute/disks'
+            resourceID: nestedDependencies.outputs.diskResourceId
+          }
+          policyInfo: {
+            policyId: resourceId(
+              'Microsoft.DataProtection/backupVaults/backupPolicies',
+              'dep-${namePrefix}-dataprotection.backupvaults-${serviceShort}-rg',
+              'DefaultPolicy'
+            )
           }
         }
       ]
