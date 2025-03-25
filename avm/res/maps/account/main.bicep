@@ -269,15 +269,3 @@ type linkedResourceType = {
   @description('Required. A provided name which uniquely identifies the linked resource.')
   uniqueName: string
 }
-
-@export()
-@description('The type of the customer managed key encryption.')
-type customerManagedKeyType = {
-  @description('Required. The resource ID of the Key Vault.')
-  keyVaultResourceId: string
-  #disable-next-line no-hardcoded-env-urls
-  @description('Required. key encryption key Url, versioned or unversioned. Ex: https://contosovault.vault.azure.net/keys/contosokek/562a4bb76b524a1493a6afe8e536ee78 or https://contosovault.vault.azure.net/keys/contosokek.')
-  keyEncryptionKeyUrl: string
-  @description('Optional. The resource ID of the user assigned identity to use for encryption.')
-  userAssignedIdentityResourceId: string?
-}
