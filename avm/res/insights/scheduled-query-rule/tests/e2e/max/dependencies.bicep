@@ -18,6 +18,9 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2021-06-01' = {
   name: logAnalyticsWorkspaceName
   location: location
+  properties: {
+    publicNetworkAccessForQuery: 'Enabled'
+  }
 }
 
 resource actionGroup 'Microsoft.Insights/actionGroups@2023-01-01' = {
