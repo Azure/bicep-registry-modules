@@ -78,6 +78,3 @@ output storageAccountResourceId string = strorageAccount.id
 
 @description('The name of the storage account.')
 output storageAccountName string = strorageAccount.name
-
-@description('The key uri of the created encryption key.')
-output keyUri string = keyVault::key.properties.keyUri
