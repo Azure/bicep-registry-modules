@@ -702,7 +702,6 @@ Description of the scaling plan.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `diagnosticSettings`
 
@@ -830,7 +829,6 @@ Friendly name of the scaling plan.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `hostPoolType`
 
@@ -1509,7 +1507,6 @@ URL to customer ADFS server for signing WVD SSO certificates.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `ssoClientId`
 
@@ -1517,7 +1514,6 @@ ClientId for the registered Relying Party used to issue WVD SSO certificates.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `ssoClientSecretKeyVaultPath`
 
@@ -1525,7 +1521,6 @@ Path to Azure KeyVault storing the secret used for communication to ADFS.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `ssoSecretType`
 
@@ -1533,7 +1528,6 @@ The type of single sign on Secret Type.
 
 - Required: No
 - Type: string
-- Default: `''`
 - Allowed:
   ```Bicep
   [
@@ -1582,7 +1576,6 @@ The necessary information for adding more VMs to this Host Pool.
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `baseTime`
 

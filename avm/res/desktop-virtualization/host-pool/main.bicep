@@ -8,10 +8,10 @@ param name string
 param location string = resourceGroup().location
 
 @sys.description('Optional. Friendly name of the scaling plan.')
-param friendlyName string = ''
+param friendlyName string?
 
 @sys.description('Optional. Description of the scaling plan.')
-param description string = ''
+param description string?
 
 @sys.description('Optional. Set this parameter to Personal if you would like to enable Persistent Desktop experience. Defaults to Pooled.')
 @allowed([
@@ -59,7 +59,7 @@ param customRdpProperty string = 'audiocapturemode:i:1;audiomode:i:0;drivestored
 param validationEnvironment bool = false
 
 @sys.description('Optional. The necessary information for adding more VMs to this Host Pool.')
-param vmTemplate object = {}
+param vmTemplate object?
 
 @sys.description('Optional. Host Pool token validity length. Usage: \'PT8H\' - valid for 8 hours; \'P5D\' - valid for 5 days; \'P1Y\' - valid for 1 year. When not provided, the token will be valid for 8 hours.')
 param tokenValidityLength string = 'PT8H'
@@ -94,14 +94,14 @@ param agentUpdate object = {
 param ring int = -1
 
 @sys.description('Optional. URL to customer ADFS server for signing WVD SSO certificates.')
-param ssoadfsAuthority string = ''
+param ssoadfsAuthority string?
 
 @sys.description('Optional. ClientId for the registered Relying Party used to issue WVD SSO certificates.')
-param ssoClientId string = ''
+param ssoClientId string?
 
 @sys.description('Optional. Path to Azure KeyVault storing the secret used for communication to ADFS.')
 #disable-next-line secure-secrets-in-params
-param ssoClientSecretKeyVaultPath string = ''
+param ssoClientSecretKeyVaultPath string?
 
 @sys.description('Optional. The type of single sign on Secret Type.')
 @allowed([
@@ -112,7 +112,7 @@ param ssoClientSecretKeyVaultPath string = ''
   'SharedKeyInKeyVault'
 ])
 #disable-next-line secure-secrets-in-params
-param ssoSecretType string = ''
+param ssoSecretType string?
 
 @sys.description('Optional. Tags of the resource.')
 param tags object?
@@ -213,7 +213,7 @@ resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2024-04-03' = {
       token: null
       registrationTokenOperation: 'Update'
     }
-    vmTemplate: ((!empty(vmTemplate)) ? null : string(vmTemplate))
+    vmTemplate: string(vmTemplate)
     agentUpdate: agentUpdate
     ring: ring != -1 ? ring : null
     ssoadfsAuthority: ssoadfsAuthority

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "12616067260535228543"
+      "templateHash": "9536593077830562403"
     },
     "name": "Azure Virtual Desktop Host Pool",
     "description": "This module deploys an Azure Virtual Desktop Host Pool"
@@ -545,14 +545,14 @@
     },
     "friendlyName": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Friendly name of the scaling plan."
       }
     },
     "description": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Description of the scaling plan."
       }
@@ -638,7 +638,7 @@
     },
     "vmTemplate": {
       "type": "object",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
         "description": "Optional. The necessary information for adding more VMs to this Host Pool."
       }
@@ -701,28 +701,28 @@
     },
     "ssoadfsAuthority": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. URL to customer ADFS server for signing WVD SSO certificates."
       }
     },
     "ssoClientId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. ClientId for the registered Relying Party used to issue WVD SSO certificates."
       }
     },
     "ssoClientSecretKeyVaultPath": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Path to Azure KeyVault storing the secret used for communication to ADFS."
       }
     },
     "ssoSecretType": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "allowedValues": [
         "",
         "Certificate",
@@ -854,7 +854,7 @@
           "token": null,
           "registrationTokenOperation": "Update"
         },
-        "vmTemplate": "[if(not(empty(parameters('vmTemplate'))), null(), string(parameters('vmTemplate')))]",
+        "vmTemplate": "[string(parameters('vmTemplate'))]",
         "agentUpdate": "[parameters('agentUpdate')]",
         "ring": "[if(not(equals(parameters('ring'), -1)), parameters('ring'), null())]",
         "ssoadfsAuthority": "[parameters('ssoadfsAuthority')]",
