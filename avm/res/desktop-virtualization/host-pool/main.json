@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "9536593077830562403"
+      "templateHash": "16208398470759954236"
     },
     "name": "Azure Virtual Desktop Host Pool",
     "description": "This module deploys an Azure Virtual Desktop Host Pool"
@@ -854,7 +854,7 @@
           "token": null,
           "registrationTokenOperation": "Update"
         },
-        "vmTemplate": "[string(parameters('vmTemplate'))]",
+        "vmTemplate": "[if(not(empty(parameters('vmTemplate'))), null(), string(parameters('vmTemplate')))]",
         "agentUpdate": "[parameters('agentUpdate')]",
         "ring": "[if(not(equals(parameters('ring'), -1)), parameters('ring'), null())]",
         "ssoadfsAuthority": "[parameters('ssoadfsAuthority')]",
