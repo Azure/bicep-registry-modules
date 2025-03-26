@@ -193,15 +193,17 @@ function Invoke-ResourceRemoval {
             $resourceName = Split-Path $ResourceId -Leaf
             $vault = Get-AzDataProtectionBackupVault -ResourceGroupName $resourceGroupName -VaultName $resourceName
 
-            # Disable immutability
+            # Disable vault immutability
             if ($vault.ImmutabilityState -ne 'Disabled') {
+                Write-Verbose ('Disabling immutability on vault [{0}]' -f $resourceName) -Verbose
                 if ($PSCmdlet.ShouldProcess(('Immutability on vault [{0}]' -f $resourceName), 'Update')) {
                     $null = Update-AzDataProtectionBackupVault -ResourceGroupName $resourceGroupName -VaultName $resourceName -ImmutabilityState Disabled
                 }
             }
 
-            # Disable soft-delete
+            # Disable vault soft-deletion
             if ($vault.SoftDeleteState -ne 'Off') {
+                Write-Verbose ('Disabling soft-deletion on vault [{0}]' -f $resourceName) -Verbose
                 if ($PSCmdlet.ShouldProcess(('Soft-delete on vault [{0}]' -f $resourceName), 'Update')) {
                     $null = Update-AzDataProtectionBackupVault -ResourceGroupName $resourceGroupName -VaultName $resourceName -SoftDeleteState Off
                 }
@@ -210,7 +212,7 @@ function Invoke-ResourceRemoval {
             # Undo soft-deleted backup instances
             $softDeletedBackupInstances = Get-AzDataProtectionSoftDeletedBackupInstance -ResourceGroupName $resourceGroupName -VaultName $resourceName
             foreach ($softDeletedBackupInstance in $softDeletedBackupInstances) {
-                Write-Verbose ('Removing Backup instance [{0}] from vault [{1}]' -f $softDeletedBackupInstance.Name, $resourceName) -Verbose
+                Write-Verbose ('Removing Backup instance soft deletion [{0}] from vault [{1}]' -f $softDeletedBackupInstance.Name, $resourceName) -Verbose
                 if ($PSCmdlet.ShouldProcess(('Soft deletion on backup instance [{0}] from vault [{1}]' -f $softDeletedBackupInstance.Name, $resourceName), 'Undo')) {
                     $null = Undo-AzDataProtectionBackupInstanceDeletion -ResourceGroupName $resourceGroupName -VaultName $resourceName -BackupInstanceName $softDeletedBackupInstance.name
                 }
