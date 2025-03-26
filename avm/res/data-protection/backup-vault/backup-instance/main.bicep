@@ -7,8 +7,8 @@ param backupVaultName string
 @description('Required. The name of the backup instance.')
 param name string
 
-@description('Optional. The backup instance object type.')
-param objectType string = 'BackupInstance'
+// @description('Optional. The backup instance object type.')
+// param objectType string = 'BackupInstance'
 
 @description('Required. Gets or sets the data source information.')
 param dataSourceInfo dataSourceInfoType
@@ -54,7 +54,7 @@ resource backupInstance 'Microsoft.DataProtection/backupVaults/backupInstances@2
   name: name
   parent: backupVault
   properties: {
-    objectType: objectType
+    objectType: 'BackupInstance'
     dataSourceInfo: dataSourceInfo
     policyInfo: policyInfo
     // tags: tags
@@ -99,7 +99,6 @@ type dataSourceInfoType = {
 type policyInfoType = {
   policyId: string
   policyParameters: object?
-  name: string?
   // policyParameters: {
   //   backupDatasourceParametersList: backupDatasourceParameterType[]?
   //   dataStoreParametersList: dataStoreParameterType[]?

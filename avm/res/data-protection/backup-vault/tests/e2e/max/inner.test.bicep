@@ -11,10 +11,10 @@ param vaultName string = 'vault${uniqueString(resourceGroup().id)}'
 @description('Name of the Backup Policy')
 param backupPolicyName string = 'policy${uniqueString(resourceGroup().id)}'
 
-// @description('Retention duration in days')
-// @minValue(1)
-// @maxValue(35)
-// param retentionDays int = 30
+@description('Retention duration in days')
+@minValue(1)
+@maxValue(35)
+param retentionDays int = 30
 
 @description('Name of the Disk')
 param diskName string = 'disk${uniqueString(resourceGroup().id)}'
@@ -25,20 +25,20 @@ param location string = resourceGroup().location
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'dpbvmax'
 
-// var roleDefinitionIdForDisk = subscriptionResourceId(
-//   'Microsoft.Authorization/roleDefinitions',
-//   '3e5e47e6-65f7-47ef-90b5-e5dd4d455f24'
-// )
-// var roleDefinitionIdForSnapshotRG = subscriptionResourceId(
-//   'Microsoft.Authorization/roleDefinitions',
-//   '7efff54f-a5b4-42b5-a1c5-5411624893ce'
-// )
+var roleDefinitionIdForDisk = subscriptionResourceId(
+  'Microsoft.Authorization/roleDefinitions',
+  '3e5e47e6-65f7-47ef-90b5-e5dd4d455f24'
+)
+var roleDefinitionIdForSnapshotRG = subscriptionResourceId(
+  'Microsoft.Authorization/roleDefinitions',
+  '7efff54f-a5b4-42b5-a1c5-5411624893ce'
+)
 var dataSourceType = 'Microsoft.Compute/disks'
 var resourceType = 'Microsoft.Compute/disks'
-// var retentionDuration = 'P${retentionDays}D'
-// var repeatingTimeInterval = 'R/2021-05-20T22:00:00+00:00/PT4H'
-// var roleNameGuidForDisk = guid(resourceGroup().id, roleDefinitionIdForDisk, backupVault.id)
-// var roleNameGuidForSnapshotRG = guid(resourceGroup().id, roleDefinitionIdForSnapshotRG, backupVault.id)
+var retentionDuration = 'P${retentionDays}D'
+var repeatingTimeInterval = 'R/2021-05-20T22:00:00+00:00/PT4H'
+var roleNameGuidForDisk = guid(resourceGroup().id, roleDefinitionIdForDisk, backupVault.id)
+var roleNameGuidForSnapshotRG = guid(resourceGroup().id, roleDefinitionIdForSnapshotRG, backupVault.id)
 
 resource computeDisk 'Microsoft.Compute/disks@2020-12-01' = {
   name: diskName
@@ -145,7 +145,6 @@ module testDeployment '../../../main.bicep' = [
               resourceGroup().name,
               backupPolicyName
             )
-            name: backupPolicyName
             policyParameters: {
               dataStoreParametersList: [
                 {
@@ -283,7 +282,7 @@ module testDeployment '../../../main.bicep' = [
 //   ]
 // }
 
-// resource backupInstance 'Microsoft.DataProtection/backupvaults/backupInstances@2021-01-01' = {
+// resource backupInstance 'Microsoft.DataProtection/backupVaults/backupInstances@2024-04-01' = {
 //   parent: backupVault
 //   name: diskName
 //   properties: {
