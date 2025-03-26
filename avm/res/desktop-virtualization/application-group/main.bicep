@@ -22,10 +22,10 @@ param hostpoolName string
 param friendlyName string = name
 
 @sys.description('Optional. Description of the application group.')
-param description string = ''
+param description string?
 
 @sys.description('Optional. List of applications to be created in the Application Group.')
-param applications array = []
+param applications array?
 
 @sys.description('Optional. Tags of the resource.')
 param tags object?
@@ -117,19 +117,19 @@ resource appGroup 'Microsoft.DesktopVirtualization/applicationGroups@2023-09-05'
 }
 
 module appGroup_applications 'application/main.bicep' = [
-  for (application, index) in applications: {
+  for (application, index) in applications ?? []: {
     name: '${uniqueString(deployment().name, location)}-AppGroup-App-${index}'
     params: {
       name: application.name
       applicationGroupName: appGroup.name
-      description: contains(application, 'description') ? application.description : ''
-      friendlyName: contains(application, 'friendlyName') ? application.friendlyName : appGroup.name
+      description: application.?description
+      friendlyName: application.?friendlyName ?? appGroup.name
       filePath: application.filePath
-      commandLineSetting: contains(application, 'commandLineSetting') ? application.commandLineSetting : 'DoNotAllow'
-      commandLineArguments: contains(application, 'commandLineArguments') ? application.commandLineArguments : ''
-      showInPortal: contains(application, 'showInPortal') ? application.showInPortal : false
-      iconPath: contains(application, 'iconPath') ? application.iconPath : application.filePath
-      iconIndex: contains(application, 'iconIndex') ? application.iconIndex : 0
+      commandLineSetting: application.?commandLineSetting
+      commandLineArguments: application.?commandLineArguments
+      showInPortal: application.?showInPortal
+      iconPath: application.?iconPath ?? application.filePath
+      iconIndex: application.?iconIndex
     }
   }
 ]
