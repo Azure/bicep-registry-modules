@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "9086117544259386916"
+      "templateHash": "12106852997815543705"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs."
@@ -101,7 +101,7 @@
         "description": "The type describing an OS disk."
       }
     },
-    "dataDisksType": {
+    "dataDiskType": {
       "type": "object",
       "properties": {
         "name": {
@@ -425,7 +425,7 @@
     "dataDisks": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/dataDisksType"
+        "$ref": "#/definitions/dataDiskType"
       },
       "nullable": true,
       "metadata": {
