@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "12598877839179564782"
+      "version": "0.34.44.8038",
+      "templateHash": "4456611630957353716"
     },
     "name": "Static Web Apps",
     "description": "This module deploys a Static Web App."
@@ -581,7 +581,7 @@
       },
       "nullable": true,
       "metadata": {
-        "description": "Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Note, requires the 'sku' to be 'Standard'."
+        "description": "Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Note, requires the 'sku' to be 'Standard'. Supplying a `privateDnsZoneGroup` Configuration will allow the private endpoint to point to a already craeted zone group, without this is `createPrivateDnsZone` is enabled it will use the output of the newly created zone."
       }
     },
     "tags": {
@@ -803,8 +803,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "2121286598355970912"
+              "version": "0.34.44.8038",
+              "templateHash": "13255454067128443657"
             },
             "name": "Static Web App Site Linked Backends",
             "description": "This module deploys a Custom Function App into a Static Web App Site using the Linked Backends property."
@@ -904,8 +904,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "10889979072442755743"
+              "version": "0.34.44.8038",
+              "templateHash": "10411947595066907075"
             },
             "name": "Static Web App Site Config",
             "description": "This module deploys a Static Web App Site Config."
@@ -998,8 +998,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "10889979072442755743"
+              "version": "0.34.44.8038",
+              "templateHash": "10411947595066907075"
             },
             "name": "Static Web App Site Config",
             "description": "This module deploys a Static Web App Site Config."
@@ -1093,8 +1093,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "10915453834048667608"
+              "version": "0.34.44.8038",
+              "templateHash": "13361505089055584794"
             },
             "name": "Static Web App Site Custom Domains",
             "description": "This module deploys a Static Web App Site Custom Domain."
