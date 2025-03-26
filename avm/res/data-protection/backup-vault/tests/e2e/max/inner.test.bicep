@@ -37,8 +37,8 @@ var dataSourceType = 'Microsoft.Compute/disks'
 var resourceType = 'Microsoft.Compute/disks'
 var retentionDuration = 'P${retentionDays}D'
 var repeatingTimeInterval = 'R/2021-05-20T22:00:00+00:00/PT4H'
-var roleNameGuidForDisk = guid(resourceGroup().id, roleDefinitionIdForDisk, backupVault.id)
-var roleNameGuidForSnapshotRG = guid(resourceGroup().id, roleDefinitionIdForSnapshotRG, backupVault.id)
+// var roleNameGuidForDisk = guid(resourceGroup().id, roleDefinitionIdForDisk, backupVault.id)
+// var roleNameGuidForSnapshotRG = guid(resourceGroup().id, roleDefinitionIdForSnapshotRG, backupVault.id)
 
 resource computeDisk 'Microsoft.Compute/disks@2020-12-01' = {
   name: diskName
