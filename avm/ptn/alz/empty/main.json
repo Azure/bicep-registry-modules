@@ -1,0 +1,14 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.33.13.18514",
+      "templateHash": "10076444544261222883"
+    },
+    "name": "avm/ptn/alz/empty",
+    "description": "Azure Landing Zones - Bicep - Empty"
+  },
+  "resources": []
+}
