@@ -17,7 +17,7 @@ param managementGroupParentId string?
 
 param subscriptionsToPlaceInManagementGroup array = []
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create on the management group.')
 param managementGroupRoleAssignments roleAssignmentType[]?
 
@@ -438,7 +438,7 @@ type policyAssignmentType = {
   @description('Optional. The policy excluded scopes.')
   notScopes: string[]?
 
-  @description('Optinal? The location of the policy assignment. Only required when utilizing managed identity, as sets location of system assigned managed identity, if created.')
+  @description('Optional. The location of the policy assignment. Only required when utilizing managed identity, as sets location of system assigned managed identity, if created.')
   location: string?
 
   @description('Optional. The policy property value override. Allows changing the effect of a policy definition without modifying the underlying policy definition or using a parameterized effect in the policy definition.')
