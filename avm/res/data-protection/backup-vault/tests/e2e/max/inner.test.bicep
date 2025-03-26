@@ -52,68 +52,68 @@ module testDeployment '../../../main.bicep' = [
       managedIdentities: {
         systemAssigned: true
       }
-      backupPolicies: [
-        {
-          name: backupPolicyName
-          properties: {
-            datasourceTypes: [
-              'Microsoft.Compute/disks'
-            ]
-            objectType: 'BackupPolicy'
-            policyRules: [
-              {
-                backupParameters: {
-                  backupType: 'Incremental'
-                  objectType: 'AzureBackupParams'
-                }
-                dataStore: {
-                  dataStoreType: 'OperationalStore'
-                  objectType: 'DataStoreInfoBase'
-                }
-                name: 'BackupDaily'
-                objectType: 'AzureBackupRule'
-                trigger: {
-                  objectType: 'ScheduleBasedTriggerContext'
-                  schedule: {
-                    repeatingTimeIntervals: [
-                      'R/2022-05-31T23:30:00+01:00/P1D'
-                    ]
-                    timeZone: 'W. Europe Standard Time'
-                  }
-                  taggingCriteria: [
-                    {
-                      isDefault: true
-                      taggingPriority: 99
-                      tagInfo: {
-                        id: 'Default_'
-                        tagName: 'Default'
-                      }
-                    }
-                  ]
-                }
-              }
-              {
-                isDefault: true
-                lifecycles: [
-                  {
-                    deleteAfter: {
-                      duration: 'P7D'
-                      objectType: 'AbsoluteDeleteOption'
-                    }
-                    sourceDataStore: {
-                      dataStoreType: 'OperationalStore'
-                      objectType: 'DataStoreInfoBase'
-                    }
-                    targetDataStoreCopySettings: []
-                  }
-                ]
-                name: 'Default'
-                objectType: 'AzureRetentionRule'
-              }
-            ]
-          }
-        }
-      ]
+      // backupPolicies: [
+      //   {
+      //     name: backupPolicyName
+      //     properties: {
+      //       datasourceTypes: [
+      //         'Microsoft.Compute/disks'
+      //       ]
+      //       objectType: 'BackupPolicy'
+      //       policyRules: [
+      //         {
+      //           backupParameters: {
+      //             backupType: 'Incremental'
+      //             objectType: 'AzureBackupParams'
+      //           }
+      //           dataStore: {
+      //             dataStoreType: 'OperationalStore'
+      //             objectType: 'DataStoreInfoBase'
+      //           }
+      //           name: 'BackupDaily'
+      //           objectType: 'AzureBackupRule'
+      //           trigger: {
+      //             objectType: 'ScheduleBasedTriggerContext'
+      //             schedule: {
+      //               repeatingTimeIntervals: [
+      //                 'R/2022-05-31T23:30:00+01:00/P1D'
+      //               ]
+      //               timeZone: 'W. Europe Standard Time'
+      //             }
+      //             taggingCriteria: [
+      //               {
+      //                 isDefault: true
+      //                 taggingPriority: 99
+      //                 tagInfo: {
+      //                   id: 'Default_'
+      //                   tagName: 'Default'
+      //                 }
+      //               }
+      //             ]
+      //           }
+      //         }
+      //         {
+      //           isDefault: true
+      //           lifecycles: [
+      //             {
+      //               deleteAfter: {
+      //                 duration: 'P7D'
+      //                 objectType: 'AbsoluteDeleteOption'
+      //               }
+      //               sourceDataStore: {
+      //                 dataStoreType: 'OperationalStore'
+      //                 objectType: 'DataStoreInfoBase'
+      //               }
+      //               targetDataStoreCopySettings: []
+      //             }
+      //           ]
+      //           name: 'Default'
+      //           objectType: 'AzureRetentionRule'
+      //         }
+      //       ]
+      //     }
+      //   }
+      // ]
       lock: {
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
@@ -143,76 +143,76 @@ module testDeployment '../../../main.bicep' = [
 //   }
 // }
 
-// resource backupPolicy 'Microsoft.DataProtection/backupVaults/backupPolicies@2021-01-01' = {
-//   parent: backupVault
-//   name: backupPolicyName
-//   properties: {
-//     policyRules: [
-//       {
-//         backupParameters: {
-//           backupType: 'Incremental'
-//           objectType: 'AzureBackupParams'
-//         }
-//         trigger: {
-//           schedule: {
-//             repeatingTimeIntervals: [
-//               repeatingTimeInterval
-//             ]
-//             timeZone: 'UTC'
-//           }
-//           taggingCriteria: [
-//             {
-//               tagInfo: {
-//                 tagName: 'Default'
-//                 id: 'Default_'
-//               }
-//               taggingPriority: 99
-//               isDefault: true
-//             }
-//           ]
-//           objectType: 'ScheduleBasedTriggerContext'
-//         }
-//         dataStore: {
-//           dataStoreType: 'OperationalStore'
-//           objectType: 'DataStoreInfoBase'
-//         }
-//         name: 'BackupHourly'
-//         objectType: 'AzureBackupRule'
-//       }
-//       {
-//         lifecycles: [
-//           {
-//             sourceDataStore: {
-//               dataStoreType: 'OperationalStore'
-//               objectType: 'DataStoreInfoBase'
-//             }
-//             deleteAfter: {
-//               objectType: 'AbsoluteDeleteOption'
-//               duration: retentionDuration
-//             }
-//           }
-//         ]
-//         isDefault: true
-//         name: 'Default'
-//         objectType: 'AzureRetentionRule'
-//         ruleType: 'Retention'
-//       }
-//     ]
-//     datasourceTypes: [
-//       dataSourceType
-//     ]
-//     objectType: 'BackupPolicy'
-//   }
-// }
+resource backupPolicy 'Microsoft.DataProtection/backupVaults/backupPolicies@2021-01-01' = {
+  parent: backupVault
+  name: backupPolicyName
+  properties: {
+    policyRules: [
+      {
+        backupParameters: {
+          backupType: 'Incremental'
+          objectType: 'AzureBackupParams'
+        }
+        trigger: {
+          schedule: {
+            repeatingTimeIntervals: [
+              repeatingTimeInterval
+            ]
+            timeZone: 'UTC'
+          }
+          taggingCriteria: [
+            {
+              tagInfo: {
+                tagName: 'Default'
+                id: 'Default_'
+              }
+              taggingPriority: 99
+              isDefault: true
+            }
+          ]
+          objectType: 'ScheduleBasedTriggerContext'
+        }
+        dataStore: {
+          dataStoreType: 'OperationalStore'
+          objectType: 'DataStoreInfoBase'
+        }
+        name: 'BackupHourly'
+        objectType: 'AzureBackupRule'
+      }
+      {
+        lifecycles: [
+          {
+            sourceDataStore: {
+              dataStoreType: 'OperationalStore'
+              objectType: 'DataStoreInfoBase'
+            }
+            deleteAfter: {
+              objectType: 'AbsoluteDeleteOption'
+              duration: retentionDuration
+            }
+          }
+        ]
+        isDefault: true
+        name: 'Default'
+        objectType: 'AzureRetentionRule'
+        ruleType: 'Retention'
+      }
+    ]
+    datasourceTypes: [
+      dataSourceType
+    ]
+    objectType: 'BackupPolicy'
+  }
+}
 
 resource backupVault 'Microsoft.DataProtection/backupVaults@2021-01-01' existing = {
   name: vaultName
 }
 
-resource backupPolicy 'Microsoft.DataProtection/backupVaults/backupPolicies@2021-01-01' existing = {
-  parent: backupVault
-  name: backupPolicyName
-}
+// resource backupPolicy 'Microsoft.DataProtection/backupVaults/backupPolicies@2021-01-01' existing = {
+//   parent: backupVault
+//   name: backupPolicyName
+// }
 
 resource computeDisk 'Microsoft.Compute/disks@2020-12-01' = {
   name: diskName
