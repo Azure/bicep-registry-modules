@@ -37,7 +37,7 @@ function Set-AvmGitHubIssueOwnerConfig {
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Get-AvmCsvData.ps1')
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Add-GithubIssueToProject.ps1')
 
-    $issue = gh issue view $IssueUrl.Replace('api.', '').Replace('repos/', '') --json 'author,title,url,assignees,body,comments' --repo $Repo | ConvertFrom-Json -Depth 100
+    $issue = gh issue view $IssueUrl.Replace('api.', '').Replace('repos/', '') --json 'author,title,url,assignees,body,comments,labels' --repo $Repo | ConvertFrom-Json -Depth 100
 
     if ($issue.title.StartsWith('[AVM Module Issue]')) {
         $moduleName = ($issue.body.Split("`n") -match 'avm/(?:res|ptn|utl)')[0].Trim().Replace(' ', '')
@@ -109,7 +109,7 @@ function Set-AvmGitHubIssueOwnerConfig {
         $moduleTypeLabel = $moduleIndex -eq 'Bicep-Resource' ? 'Class: Resource Module :package:' : 'Class: Pattern Module :package:'
 
         if ($issue.labels.name -notcontains $moduleTypeLabel) {
-            if ($PSCmdlet.ShouldProcess("class label to issue [$($issue.title)]")) {
+            if ($PSCmdlet.ShouldProcess("add class label to issue [$($issue.title)]")) {
                 gh issue edit $issue.url --add-label $moduleTypeLabel --repo $Repo
             }
         }
