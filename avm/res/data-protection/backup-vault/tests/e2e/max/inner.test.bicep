@@ -49,7 +49,7 @@ module testDeployment '../../../main.bicep' = [
       name: vaultName
       location: location
       azureMonitorAlertSettingsAlertsForAllJobFailures: 'Disabled'
-      immutabilitySettingState: 'Enabled'
+      immutabilitySettingState: 'Unlocked'
       managedIdentities: {
         systemAssigned: true
       }
