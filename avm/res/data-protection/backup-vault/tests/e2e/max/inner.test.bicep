@@ -261,7 +261,7 @@ resource backupInstance 'Microsoft.DataProtection/backupvaults/backupInstances@2
       resourceName: diskName
       resourceType: resourceType
       resourceUri: computeDisk.id
-      location: location
+      resourceLocation: location
       datasourceType: dataSourceType
     }
     policyInfo: {
