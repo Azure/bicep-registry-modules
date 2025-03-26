@@ -118,7 +118,6 @@ param allowBlobPublicAccess bool = false
 
 @allowed([
   'TLS1_2'
-  'TLS1_3'
 ])
 @description('Optional. Set the minimum TLS version on request to storage. The TLS versions 1.0 and 1.1 are deprecated and not supported anymore.')
 param minimumTlsVersion string = 'TLS1_2'
@@ -177,6 +176,10 @@ param customerManagedKey customerManagedKeyWithAutoRotateType?
 
 @description('Optional. The SAS expiration period. DD.HH:MM:SS.')
 param sasExpirationPeriod string = ''
+
+@description('Optional. The SAS expiration action. Allowed values are Block and Log.')
+@allowed(['Block', 'Log'])
+param sasExpirationAction string = 'Log'
 
 @description('Optional. The keyType to use with Queue & Table services.')
 @allowed([
@@ -417,7 +420,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' = {
     accessTier: (kind != 'Storage' && kind != 'BlockBlobStorage') ? accessTier : null
     sasPolicy: !empty(sasExpirationPeriod)
       ? {
-          expirationAction: 'Log'
+          expirationAction: sasExpirationAction
           sasExpirationPeriod: sasExpirationPeriod
         }
       : null

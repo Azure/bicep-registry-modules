@@ -2069,17 +2069,17 @@ The credentials for the connection.
 | :-- | :-- | :-- |
 | [`clientId`](#parameter-connectionsconnectionpropertiesauthtype-oauth2credentialsclientid) | string | The connection client ID in the format of UUID. |
 | [`clientSecret`](#parameter-connectionsconnectionpropertiesauthtype-oauth2credentialsclientsecret) | string | The connection client secret. |
-| [`tenantId`](#parameter-connectionsconnectionpropertiesauthtype-oauth2credentialstenantid) | string | The connection tenant ID. Required by QuickBooks and Xero connection categories. |
 
 **Conditional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`authUrl`](#parameter-connectionsconnectionpropertiesauthtype-oauth2credentialsauthurl) | string | The connection auth URL. Required by Concur connection category. |
-| [`developerToken`](#parameter-connectionsconnectionpropertiesauthtype-oauth2credentialsdevelopertoken) | string | The connection developer token. Required by GoogleAdWords connection category. |
-| [`password`](#parameter-connectionsconnectionpropertiesauthtype-oauth2credentialspassword) | string | The connection password. Required by Concur and ServiceNow connection categories where AccessToken grant type is 'Password'. |
-| [`refreshToken`](#parameter-connectionsconnectionpropertiesauthtype-oauth2credentialsrefreshtoken) | string | The connection refresh token. Required by GoogleBigQuery, GoogleAdWords, Hubspot, QuickBooks, Square, Xero and Zoho connection categories. |
-| [`username`](#parameter-connectionsconnectionpropertiesauthtype-oauth2credentialsusername) | string | The connection username. Required by Concur and ServiceNow connection categories where AccessToken grant type is 'Password'. |
+| [`authUrl`](#parameter-connectionsconnectionpropertiesauthtype-oauth2credentialsauthurl) | string | The connection auth URL. Required if connection category is Concur. |
+| [`developerToken`](#parameter-connectionsconnectionpropertiesauthtype-oauth2credentialsdevelopertoken) | string | The connection developer token. Required if connection category is GoogleAdWords. |
+| [`password`](#parameter-connectionsconnectionpropertiesauthtype-oauth2credentialspassword) | string | The connection password. Required if connection category is Concur or ServiceNow where AccessToken grant type is 'Password'. |
+| [`refreshToken`](#parameter-connectionsconnectionpropertiesauthtype-oauth2credentialsrefreshtoken) | string | The connection refresh token. Required if connection category is GoogleBigQuery, GoogleAdWords, Hubspot, QuickBooks, Square, Xero or Zoho. |
+| [`tenantId`](#parameter-connectionsconnectionpropertiesauthtype-oauth2credentialstenantid) | string | The connection tenant ID. Required if connection category is QuickBooks or Xero. |
+| [`username`](#parameter-connectionsconnectionpropertiesauthtype-oauth2credentialsusername) | string | The connection username. Required if connection category is Concur or ServiceNow where AccessToken grant type is 'Password'. |
 
 ### Parameter: `connections.connectionProperties.authType-OAuth2.credentials.clientId`
 
@@ -2095,44 +2095,44 @@ The connection client secret.
 - Required: Yes
 - Type: string
 
-### Parameter: `connections.connectionProperties.authType-OAuth2.credentials.tenantId`
-
-The connection tenant ID. Required by QuickBooks and Xero connection categories.
-
-- Required: No
-- Type: string
-
 ### Parameter: `connections.connectionProperties.authType-OAuth2.credentials.authUrl`
 
-The connection auth URL. Required by Concur connection category.
+The connection auth URL. Required if connection category is Concur.
 
 - Required: No
 - Type: string
 
 ### Parameter: `connections.connectionProperties.authType-OAuth2.credentials.developerToken`
 
-The connection developer token. Required by GoogleAdWords connection category.
+The connection developer token. Required if connection category is GoogleAdWords.
 
 - Required: No
 - Type: string
 
 ### Parameter: `connections.connectionProperties.authType-OAuth2.credentials.password`
 
-The connection password. Required by Concur and ServiceNow connection categories where AccessToken grant type is 'Password'.
+The connection password. Required if connection category is Concur or ServiceNow where AccessToken grant type is 'Password'.
 
 - Required: No
 - Type: string
 
 ### Parameter: `connections.connectionProperties.authType-OAuth2.credentials.refreshToken`
 
-The connection refresh token. Required by GoogleBigQuery, GoogleAdWords, Hubspot, QuickBooks, Square, Xero and Zoho connection categories.
+The connection refresh token. Required if connection category is GoogleBigQuery, GoogleAdWords, Hubspot, QuickBooks, Square, Xero or Zoho.
+
+- Required: No
+- Type: string
+
+### Parameter: `connections.connectionProperties.authType-OAuth2.credentials.tenantId`
+
+The connection tenant ID. Required if connection category is QuickBooks or Xero.
 
 - Required: No
 - Type: string
 
 ### Parameter: `connections.connectionProperties.authType-OAuth2.credentials.username`
 
-The connection username. Required by Concur and ServiceNow connection categories where AccessToken grant type is 'Password'.
+The connection username. Required if connection category is Concur or ServiceNow where AccessToken grant type is 'Password'.
 
 - Required: No
 - Type: string
@@ -2331,7 +2331,7 @@ The credentials for the connection.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`securityToken`](#parameter-connectionsconnectionpropertiesauthtype-usernamepasswordcredentialssecuritytoken) | string | The connection security token. Required by connections like SalesForce for extra security in addition to 'UsernamePassword'. |
+| [`securityToken`](#parameter-connectionsconnectionpropertiesauthtype-usernamepasswordcredentialssecuritytoken) | string | The connection security token. Required if connection is like SalesForce for extra security in addition to 'UsernamePassword'. |
 
 ### Parameter: `connections.connectionProperties.authType-UsernamePassword.credentials.password`
 
@@ -2349,7 +2349,7 @@ The connection username.
 
 ### Parameter: `connections.connectionProperties.authType-UsernamePassword.credentials.securityToken`
 
-The connection security token. Required by connections like SalesForce for extra security in addition to 'UsernamePassword'.
+The connection security token. Required if connection is like SalesForce for extra security in addition to 'UsernamePassword'.
 
 - Required: No
 - Type: string
