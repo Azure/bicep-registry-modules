@@ -4,7 +4,7 @@ targetScope = 'resourceGroup'
 metadata name = 'Conversation Knowledge Mining Solution Accelerator'
 metadata description = '''This module deploys the [Conversation Knowledge Mining Solution Accelerator](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator).
 
-> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator product. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.
+> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.
 '''
 
 // ========== Parameters ========== //
@@ -180,7 +180,7 @@ param sqlServerConfiguration ckmSqlServerType = {
   name: '${solutionPrefix}-sqls'
   location: databasesLocation
   administratorLogin: 'sqladmin'
-  administratorPassword: 'TestPassword_1234'
+  administratorPassword: guid(solutionPrefix, subscription().subscriptionId)
   databaseName: '${solutionPrefix}-ckmdb'
   databaseSkuName: 'GP_Gen5_2'
   databaseSkuTier: 'GeneralPurpose'
@@ -388,7 +388,10 @@ var scriptIndexDataScriptUrl = scriptIndexDataConfiguration.?scriptUrl ?? 'https
 var sqlServerResourceName = sqlServerConfiguration.?name ?? '${solutionPrefix}-sqls'
 var sqlServerLocation = sqlServerConfiguration.?location ?? databasesLocation
 var sqlServerAdministratorLogin = sqlServerConfiguration.?administratorLogin ?? 'sqladmin'
-var sqlServerAdministratorPassword = sqlServerConfiguration.?administratorPassword ?? 'TestPassword_1234'
+var sqlServerAdministratorPassword = sqlServerConfiguration.?administratorPassword ?? guid(
+  solutionPrefix,
+  subscription().subscriptionId
+)
 var sqlServerDatabaseName = sqlServerConfiguration.?databaseName ?? '${solutionPrefix}-ckmdb'
 var sqlServerDatabaseSkuName = sqlServerConfiguration.?databaseSkuName ?? 'GP_Gen5_2'
 var sqlServerDatabaseSkuTier = sqlServerConfiguration.?databaseSkuTier ?? 'GeneralPurpose'
