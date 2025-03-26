@@ -207,11 +207,21 @@ function Invoke-ResourceRemoval {
                 }
             }
 
+            # Undo soft-deleted backup instances
+            $softDeletedBackupInstances = Get-AzDataProtectionSoftDeletedBackupInstance -ResourceGroupName $resourceGroupName -VaultName $resourceName
+            foreach ($softDeletedBackupInstance in $softDeletedBackupInstances) {
+                Write-Verbose ('Removing Backup instance [{0}] from vault [{1}]' -f $softDeletedBackupInstance.Name, $resourceName) -Verbose
+                if ($PSCmdlet.ShouldProcess(('Soft deletion on backup instance [{0}] from vault [{1}]' -f $softDeletedBackupInstance.Name, $resourceName), 'Undo')) {
+                    $null = Undo-AzDataProtectionBackupInstanceDeletion -ResourceGroupName $resourceGroupName -VaultName $resourceName -BackupInstanceName $softDeletedBackupInstance.name
+                }
+            }
+
             # Actual removal
             # --------------
             # Remove backup instances
             # TODO get soft deleted instances https://learn.microsoft.com/en-us/powershell/module/az.dataprotection/get-azdataprotectionsoftdeletedbackupinstance?view=azps-13.2.0
             # TODO undo soft deletion https://learn.microsoft.com/en-us/powershell/module/az.dataprotection/undo-azdataprotectionbackupinstancedeletion?view=azps-13.2.0
+
             $backupInstances = Get-AzDataProtectionBackupInstance -ResourceGroupName $resourceGroupName -VaultName $resourceName
             foreach ($backupInstance in $backupInstances) {
                 Write-Verbose ('Removing Backup instance [{0}] from vault [{1}]' -f $backupInstance.Name, $resourceName) -Verbose
@@ -235,34 +245,11 @@ function Invoke-ResourceRemoval {
                 $null = Remove-AzDataProtectionBackupVault -ResourceGroupName $resourceGroupName -VaultName $resourceName
             }
 
-            break
-            # if ((Get-AzRecoveryServicesVaultProperty -VaultId $ResourceId).SoftDeleteFeatureState -ne 'Disabled') {
-            #     if ($PSCmdlet.ShouldProcess(('Soft-delete on RSV [{0}]' -f $ResourceId), 'Set')) {
-            #         $null = Set-AzRecoveryServicesVaultProperty -VaultId $ResourceId -SoftDeleteFeatureState 'Disable'
-            #     }
-            # }
-
-            # $backupItems = Get-AzRecoveryServicesBackupItem -BackupManagementType 'AzureVM' -WorkloadType 'AzureVM' -VaultId $ResourceId
-            # foreach ($backupItem in $backupItems) {
-            #     Write-Verbose ('Removing Backup item [{0}] from RSV [{1}]' -f $backupItem.Name, $ResourceId) -Verbose
-
-            #     if ($backupItem.DeleteState -eq 'ToBeDeleted') {
-            #         if ($PSCmdlet.ShouldProcess('Soft-deleted backup data removal', 'Undo')) {
-            #             $null = Undo-AzRecoveryServicesBackupItemDeletion -Item $backupItem -VaultId $ResourceId -Force
-            #         }
-            #     }
-
-            #     if ($PSCmdlet.ShouldProcess(('Backup item [{0}] from RSV [{1}]' -f $backupItem.Name, $ResourceId), 'Remove')) {
-            #         $null = Disable-AzRecoveryServicesBackupProtection -Item $backupItem -VaultId $ResourceId -RemoveRecoveryPoints -Force
-            #     }
-            # }
-
-            # # Actual removal
-            # # --------------
             # if ($PSCmdlet.ShouldProcess("Resource with ID [$ResourceId]", 'Remove')) {
             #     $null = Remove-AzResource -ResourceId $ResourceId -Force -ErrorAction 'Stop'
             # }
-            # break
+
+            break
         }
         'Microsoft.OperationalInsights/workspaces' {
             $resourceGroupName = $ResourceId.Split('/')[4]
