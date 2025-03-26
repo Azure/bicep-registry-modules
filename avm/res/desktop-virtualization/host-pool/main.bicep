@@ -132,8 +132,6 @@ import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-commo
 @sys.description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingLogsOnlyType[]?
 
-var enableReferencedModulesTelemetry = false
-
 var builtInRoleNames = {
   Owner: '/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
   Contributor: '/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -223,10 +221,13 @@ resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2024-04-03' = {
   }
 }
 
-module hostPool_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
+module hostPool_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-hostPool-PrivateEndpoint-${index}'
-    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
+    scope: resourceGroup(
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
+    )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(hostPool.id, '/'))}-${privateEndpoint.?service ?? 'connection'}-${index}'
       privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
@@ -257,7 +258,7 @@ module hostPool_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
-      enableTelemetry: enableReferencedModulesTelemetry
+      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',
@@ -337,12 +338,40 @@ output name string = hostPool.name
 output location string = hostPool.location
 
 @sys.description('The private endpoints of the host pool.')
-output privateEndpoints array = [
-  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
-    name: hostPool_privateEndpoints[i].outputs.name
-    resourceId: hostPool_privateEndpoints[i].outputs.resourceId
-    groupId: hostPool_privateEndpoints[i].outputs.groupId
-    customDnsConfig: hostPool_privateEndpoints[i].outputs.customDnsConfig
-    networkInterfaceIds: hostPool_privateEndpoints[i].outputs.networkInterfaceIds
+output privateEndpoints privateEndpointOutputType[] = [
+  for (pe, index) in (privateEndpoints ?? []): {
+    name: hostPool_privateEndpoints[index].outputs.name
+    resourceId: hostPool_privateEndpoints[index].outputs.resourceId
+    groupId: hostPool_privateEndpoints[index].outputs.?groupId!
+    customDnsConfigs: hostPool_privateEndpoints[index].outputs.customDnsConfigs
+    networkInterfaceResourceIds: hostPool_privateEndpoints[index].outputs.networkInterfaceResourceIds
   }
 ]
+
+// =============== //
+//   Definitions   //
+// =============== //
+
+@export()
+type privateEndpointOutputType = {
+  @sys.description('The name of the private endpoint.')
+  name: string
+
+  @sys.description('The resource ID of the private endpoint.')
+  resourceId: string
+
+  @sys.description('The group Id for the private endpoint Group.')
+  groupId: string?
+
+  @sys.description('The custom DNS configurations of the private endpoint.')
+  customDnsConfigs: {
+    @sys.description('FQDN that resolves to private endpoint IP address.')
+    fqdn: string?
+
+    @sys.description('A list of private IP addresses of the private endpoint.')
+    ipAddresses: string[]
+  }[]
+
+  @sys.description('The IDs of the network interfaces associated with the private endpoint.')
+  networkInterfaceResourceIds: string[]
+}
