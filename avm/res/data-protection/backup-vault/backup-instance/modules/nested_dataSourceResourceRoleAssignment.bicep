@@ -5,13 +5,12 @@ var resourceType = '${split(resourceId, '/')[6]}/${split(resourceId, '/')[7]}'
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2023-04-01' existing = if (resourceType == 'Microsoft.Storage/storageAccounts') {
   name: last(split(resourceId, '/'))
-  scope: resourceGroup(split(resourceId, '/')[2], split(resourceId, '/')[4])
 }
 
 // Assign Storage Blob Data Contributor RBAC role
 resource roleAssignment_storageAccount 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (resourceType == 'Microsoft.Storage/storageAccounts') {
   name: guid('${resourceId}-${principalId}-Storage-Blob-Data-Contributor')
-  // scope: storageAccount
+  scope: storageAccount
   // scope: resourceGroup(split(resourceId, '/')[2], split(resourceId, '/')[4])
   properties: {
     roleDefinitionId: subscriptionResourceId(
