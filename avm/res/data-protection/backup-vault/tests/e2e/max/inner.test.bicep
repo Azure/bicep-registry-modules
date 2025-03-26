@@ -40,108 +40,108 @@ var repeatingTimeInterval = 'R/2021-05-20T22:00:00+00:00/PT4H'
 var roleNameGuidForDisk = guid(resourceGroup().id, roleDefinitionIdForDisk, backupVault.id)
 var roleNameGuidForSnapshotRG = guid(resourceGroup().id, roleDefinitionIdForSnapshotRG, backupVault.id)
 
-// @batchSize(1)
-// module testDeployment '../../../main.bicep' = [
-//   for iteration in ['init', 'idem']: {
-//     // scope: resourceGroup
-//     name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
-//     params: {
-//       name: vaultName
-//       location: location
-//       azureMonitorAlertSettingsAlertsForAllJobFailures: 'Disabled'
-//       managedIdentities: {
-//         systemAssigned: true
-//       }
-//       // backupPolicies: [
-//       //   {
-//       //     name: backupPolicyName
-//       //     properties: {
-//       //       datasourceTypes: [
-//       //         'Microsoft.Compute/disks'
-//       //       ]
-//       //       objectType: 'BackupPolicy'
-//       //       policyRules: [
-//       //         {
-//       //           backupParameters: {
-//       //             backupType: 'Incremental'
-//       //             objectType: 'AzureBackupParams'
-//       //           }
-//       //           dataStore: {
-//       //             dataStoreType: 'OperationalStore'
-//       //             objectType: 'DataStoreInfoBase'
-//       //           }
-//       //           name: 'BackupDaily'
-//       //           objectType: 'AzureBackupRule'
-//       //           trigger: {
-//       //             objectType: 'ScheduleBasedTriggerContext'
-//       //             schedule: {
-//       //               repeatingTimeIntervals: [
-//       //                 'R/2022-05-31T23:30:00+01:00/P1D'
-//       //               ]
-//       //               timeZone: 'W. Europe Standard Time'
-//       //             }
-//       //             taggingCriteria: [
-//       //               {
-//       //                 isDefault: true
-//       //                 taggingPriority: 99
-//       //                 tagInfo: {
-//       //                   id: 'Default_'
-//       //                   tagName: 'Default'
-//       //                 }
-//       //               }
-//       //             ]
-//       //           }
-//       //         }
-//       //         {
-//       //           isDefault: true
-//       //           lifecycles: [
-//       //             {
-//       //               deleteAfter: {
-//       //                 duration: 'P7D'
-//       //                 objectType: 'AbsoluteDeleteOption'
-//       //               }
-//       //               sourceDataStore: {
-//       //                 dataStoreType: 'OperationalStore'
-//       //                 objectType: 'DataStoreInfoBase'
-//       //               }
-//       //               targetDataStoreCopySettings: []
-//       //             }
-//       //           ]
-//       //           name: 'Default'
-//       //           objectType: 'AzureRetentionRule'
-//       //         }
-//       //       ]
-//       //     }
-//       //   }
-//       // ]
-//       lock: {
-//         kind: 'CanNotDelete'
-//         name: 'myCustomLockName'
-//       }
-//       tags: {
-//         'hidden-title': 'This is visible in the resource name'
-//         Environment: 'Non-Prod'
-//         Role: 'DeploymentValidation'
-//       }
-//     }
-//   }
-// ]
-
-resource backupVault 'Microsoft.DataProtection/backupVaults@2021-01-01' = {
-  name: vaultName
-  location: location
-  identity: {
-    type: 'systemAssigned'
-  }
-  properties: {
-    storageSettings: [
-      {
-        datastoreType: 'VaultStore'
-        type: vaultStorageRedundancy
+@batchSize(1)
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    // scope: resourceGroup
+    name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: vaultName
+      location: location
+      azureMonitorAlertSettingsAlertsForAllJobFailures: 'Disabled'
+      managedIdentities: {
+        systemAssigned: true
       }
-    ]
+      // backupPolicies: [
+      //   {
+      //     name: backupPolicyName
+      //     properties: {
+      //       datasourceTypes: [
+      //         'Microsoft.Compute/disks'
+      //       ]
+      //       objectType: 'BackupPolicy'
+      //       policyRules: [
+      //         {
+      //           backupParameters: {
+      //             backupType: 'Incremental'
+      //             objectType: 'AzureBackupParams'
+      //           }
+      //           dataStore: {
+      //             dataStoreType: 'OperationalStore'
+      //             objectType: 'DataStoreInfoBase'
+      //           }
+      //           name: 'BackupDaily'
+      //           objectType: 'AzureBackupRule'
+      //           trigger: {
+      //             objectType: 'ScheduleBasedTriggerContext'
+      //             schedule: {
+      //               repeatingTimeIntervals: [
+      //                 'R/2022-05-31T23:30:00+01:00/P1D'
+      //               ]
+      //               timeZone: 'W. Europe Standard Time'
+      //             }
+      //             taggingCriteria: [
+      //               {
+      //                 isDefault: true
+      //                 taggingPriority: 99
+      //                 tagInfo: {
+      //                   id: 'Default_'
+      //                   tagName: 'Default'
+      //                 }
+      //               }
+      //             ]
+      //           }
+      //         }
+      //         {
+      //           isDefault: true
+      //           lifecycles: [
+      //             {
+      //               deleteAfter: {
+      //                 duration: 'P7D'
+      //                 objectType: 'AbsoluteDeleteOption'
+      //               }
+      //               sourceDataStore: {
+      //                 dataStoreType: 'OperationalStore'
+      //                 objectType: 'DataStoreInfoBase'
+      //               }
+      //               targetDataStoreCopySettings: []
+      //             }
+      //           ]
+      //           name: 'Default'
+      //           objectType: 'AzureRetentionRule'
+      //         }
+      //       ]
+      //     }
+      //   }
+      // ]
+      lock: {
+        kind: 'CanNotDelete'
+        name: 'myCustomLockName'
+      }
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
+      }
+    }
   }
-}
+]
+
+// resource backupVault 'Microsoft.DataProtection/backupVaults@2021-01-01' = {
+//   name: vaultName
+//   location: location
+//   identity: {
+//     type: 'systemAssigned'
+//   }
+//   properties: {
+//     storageSettings: [
+//       {
+//         datastoreType: 'VaultStore'
+//         type: vaultStorageRedundancy
+//       }
+//     ]
+//   }
+// }
 
 resource backupPolicy 'Microsoft.DataProtection/backupVaults/backupPolicies@2021-01-01' = {
   parent: backupVault
@@ -206,9 +206,9 @@ resource backupPolicy 'Microsoft.DataProtection/backupVaults/backupPolicies@2021
   }
 }
 
-// resource backupVault 'Microsoft.DataProtection/backupVaults@2021-01-01' existing = {
-//   name: vaultName
-// }
+resource backupVault 'Microsoft.DataProtection/backupVaults@2021-01-01' existing = {
+  name: vaultName
+}
 
 // resource backupPolicy 'Microsoft.DataProtection/backupVaults/backupPolicies@2021-01-01' existing = {
 //   parent: backupVault
