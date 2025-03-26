@@ -25,7 +25,7 @@ param filePath string
 param commandLineSetting string = 'DoNotAllow'
 
 @sys.description('Optional. Command-Line Arguments for the Application.')
-param commandLineArguments string
+param commandLineArguments string?
 
 @sys.description('Optional. Specifies whether to show the RemoteApp program in the RD Web Access server.')
 param showInPortal bool = false

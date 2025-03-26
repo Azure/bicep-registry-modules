@@ -73,7 +73,7 @@ The name of the parent Application Group to create the application(s) in. Requir
 
 Command-Line Arguments for the Application.
 
-- Required: Yes
+- Required: No
 - Type: string
 
 ### Parameter: `commandLineSetting`

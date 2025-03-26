@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "6995744456621604734"
+      "templateHash": "840069562099785569"
     },
     "name": "Azure Virtual Desktop Application Group",
     "description": "This module deploys an Azure Virtual Desktop Application Group."
@@ -503,7 +503,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "5651935781333048312"
+              "templateHash": "15850672413939004144"
             },
             "name": "Azure Virtual Desktop Application Group Application",
             "description": "This module deploys an Azure Virtual Desktop Application Group Application."
@@ -554,6 +554,7 @@
             },
             "commandLineArguments": {
               "type": "string",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Command-Line Arguments for the Application."
               }
