@@ -132,6 +132,8 @@ import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-commo
 @sys.description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingLogsOnlyType[]?
 
+var enableReferencedModulesTelemetry = false
+
 var builtInRoleNames = {
   Owner: '/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
   Contributor: '/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c'
