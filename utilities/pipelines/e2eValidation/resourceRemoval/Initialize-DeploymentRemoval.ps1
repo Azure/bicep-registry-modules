@@ -104,8 +104,8 @@ function Initialize-DeploymentRemoval {
             'Microsoft.NetApp/netAppAccounts/capacityPools', # Must be deleted before netapp account because the Resource Provider does not allow deleting the account as long as it has nested resources
             'Microsoft.Network/virtualNetworkGateways', # Must be deleted before the Public IP that is associated with it
             'Microsoft.Network/loadBalancers', # Must be deleted before e.g. a GatewaySubnet that is associated with it
-            'Microsoft.DataProtection/backupVaults/backupInstances', # Must be deleted before backup vault because the Resource Provider does not allow deleting the vault as long as it has nested resources
-            'Microsoft.DataProtection/backupVaults/backupPolicies', # Must be deleted before backup vault because the Resource Provider does not allow deleting the vault as long as it has nested resources
+            # 'Microsoft.DataProtection/backupVaults/backupInstances', # Must be deleted before backup vault because the Resource Provider does not allow deleting the vault as long as it has nested resources
+            # 'Microsoft.DataProtection/backupVaults/backupPolicies', # Must be deleted before backup vault because the Resource Provider does not allow deleting the vault as long as it has nested resources
             # 'Microsoft.DataProtection/backupVaults', # Must be deleted after its children because the Resource Provider does not allow deleting the vault as long as it has nested resources
             'Microsoft.Resources/resourceGroups'
         )
