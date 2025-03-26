@@ -22,6 +22,9 @@ param diskName string = 'disk${uniqueString(resourceGroup().id)}'
 @description('Location for all resources')
 param location string = resourceGroup().location
 
+@description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
+param serviceShort string = 'dpbvmax'
+
 var roleDefinitionIdForDisk = subscriptionResourceId(
   'Microsoft.Authorization/roleDefinitions',
   '3e5e47e6-65f7-47ef-90b5-e5dd4d455f24'
@@ -37,82 +40,178 @@ var repeatingTimeInterval = 'R/2021-05-20T22:00:00+00:00/PT4H'
 var roleNameGuidForDisk = guid(resourceGroup().id, roleDefinitionIdForDisk, backupVault.id)
 var roleNameGuidForSnapshotRG = guid(resourceGroup().id, roleDefinitionIdForSnapshotRG, backupVault.id)
 
-resource backupVault 'Microsoft.DataProtection/backupVaults@2021-01-01' = {
-  name: vaultName
-  location: location
-  identity: {
-    type: 'systemAssigned'
-  }
-  properties: {
-    storageSettings: [
-      {
-        datastoreType: 'VaultStore'
-        type: vaultStorageRedundancy
+@batchSize(1)
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    // scope: resourceGroup
+    name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: vaultName
+      location: location
+      azureMonitorAlertSettingsAlertsForAllJobFailures: 'Disabled'
+      managedIdentities: {
+        systemAssigned: true
       }
-    ]
+      backupPolicies: [
+        {
+          name: backupPolicyName
+          properties: {
+            datasourceTypes: [
+              'Microsoft.Compute/disks'
+            ]
+            objectType: 'BackupPolicy'
+            policyRules: [
+              {
+                backupParameters: {
+                  backupType: 'Incremental'
+                  objectType: 'AzureBackupParams'
+                }
+                dataStore: {
+                  dataStoreType: 'OperationalStore'
+                  objectType: 'DataStoreInfoBase'
+                }
+                name: 'BackupDaily'
+                objectType: 'AzureBackupRule'
+                trigger: {
+                  objectType: 'ScheduleBasedTriggerContext'
+                  schedule: {
+                    repeatingTimeIntervals: [
+                      'R/2022-05-31T23:30:00+01:00/P1D'
+                    ]
+                    timeZone: 'W. Europe Standard Time'
+                  }
+                  taggingCriteria: [
+                    {
+                      isDefault: true
+                      taggingPriority: 99
+                      tagInfo: {
+                        id: 'Default_'
+                        tagName: 'Default'
+                      }
+                    }
+                  ]
+                }
+              }
+              {
+                isDefault: true
+                lifecycles: [
+                  {
+                    deleteAfter: {
+                      duration: 'P7D'
+                      objectType: 'AbsoluteDeleteOption'
+                    }
+                    sourceDataStore: {
+                      dataStoreType: 'OperationalStore'
+                      objectType: 'DataStoreInfoBase'
+                    }
+                    targetDataStoreCopySettings: []
+                  }
+                ]
+                name: 'Default'
+                objectType: 'AzureRetentionRule'
+              }
+            ]
+          }
+        }
+      ]
+      lock: {
+        kind: 'CanNotDelete'
+        name: 'myCustomLockName'
+      }
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
+      }
+    }
   }
+]
+
+// resource backupVault 'Microsoft.DataProtection/backupVaults@2021-01-01' = {
+//   name: vaultName
+//   location: location
+//   identity: {
+//     type: 'systemAssigned'
+//   }
+//   properties: {
+//     storageSettings: [
+//       {
+//         datastoreType: 'VaultStore'
+//         type: vaultStorageRedundancy
+//       }
+//     ]
+//   }
+// }
+
+// resource backupPolicy 'Microsoft.DataProtection/backupVaults/backupPolicies@2021-01-01' = {
+//   parent: backupVault
+//   name: backupPolicyName
+//   properties: {
+//     policyRules: [
+//       {
+//         backupParameters: {
+//           backupType: 'Incremental'
+//           objectType: 'AzureBackupParams'
+//         }
+//         trigger: {
+//           schedule: {
+//             repeatingTimeIntervals: [
+//               repeatingTimeInterval
+//             ]
+//             timeZone: 'UTC'
+//           }
+//           taggingCriteria: [
+//             {
+//               tagInfo: {
+//                 tagName: 'Default'
+//                 id: 'Default_'
+//               }
+//               taggingPriority: 99
+//               isDefault: true
+//             }
+//           ]
+//           objectType: 'ScheduleBasedTriggerContext'
+//         }
+//         dataStore: {
+//           dataStoreType: 'OperationalStore'
+//           objectType: 'DataStoreInfoBase'
+//         }
+//         name: 'BackupHourly'
+//         objectType: 'AzureBackupRule'
+//       }
+//       {
+//         lifecycles: [
+//           {
+//             sourceDataStore: {
+//               dataStoreType: 'OperationalStore'
+//               objectType: 'DataStoreInfoBase'
+//             }
+//             deleteAfter: {
+//               objectType: 'AbsoluteDeleteOption'
+//               duration: retentionDuration
+//             }
+//           }
+//         ]
+//         isDefault: true
+//         name: 'Default'
+//         objectType: 'AzureRetentionRule'
+//         ruleType: 'Retention'
+//       }
+//     ]
+//     datasourceTypes: [
+//       dataSourceType
+//     ]
+//     objectType: 'BackupPolicy'
+//   }
+// }
+
+resource backupVault 'Microsoft.DataProtection/backupVaults@2021-01-01' existing = {
+  name: vaultName
 }
 
-resource backupPolicy 'Microsoft.DataProtection/backupVaults/backupPolicies@2021-01-01' = {
+resource backupPolicy 'Microsoft.DataProtection/backupVaults/backupPolicies@2021-01-01' existing = {
   parent: backupVault
   name: backupPolicyName
-  properties: {
-    policyRules: [
-      {
-        backupParameters: {
-          backupType: 'Incremental'
-          objectType: 'AzureBackupParams'
-        }
-        trigger: {
-          schedule: {
-            repeatingTimeIntervals: [
-              repeatingTimeInterval
-            ]
-            timeZone: 'UTC'
-          }
-          taggingCriteria: [
-            {
-              tagInfo: {
-                tagName: 'Default'
-                id: 'Default_'
-              }
-              taggingPriority: 99
-              isDefault: true
-            }
-          ]
-          objectType: 'ScheduleBasedTriggerContext'
-        }
-        dataStore: {
-          dataStoreType: 'OperationalStore'
-          objectType: 'DataStoreInfoBase'
-        }
-        name: 'BackupHourly'
-        objectType: 'AzureBackupRule'
-      }
-      {
-        lifecycles: [
-          {
-            sourceDataStore: {
-              dataStoreType: 'OperationalStore'
-              objectType: 'DataStoreInfoBase'
-            }
-            deleteAfter: {
-              objectType: 'AbsoluteDeleteOption'
-              duration: retentionDuration
-            }
-          }
-        ]
-        isDefault: true
-        name: 'Default'
-        objectType: 'AzureRetentionRule'
-        ruleType: 'Retention'
-      }
-    ]
-    datasourceTypes: [
-      dataSourceType
-    ]
-    objectType: 'BackupPolicy'
-  }
 }
 
 resource computeDisk 'Microsoft.Compute/disks@2020-12-01' = {
@@ -161,7 +260,7 @@ resource backupInstance 'Microsoft.DataProtection/backupvaults/backupInstances@2
       resourceName: diskName
       resourceType: resourceType
       resourceUri: computeDisk.id
-      resourceLocation: location
+      location: location
       datasourceType: dataSourceType
     }
     policyInfo: {
