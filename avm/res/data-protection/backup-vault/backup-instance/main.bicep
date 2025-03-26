@@ -98,6 +98,8 @@ type dataSourceInfoType = {
 @description('The type for policy info properties.')
 type policyInfoType = {
   policyId: string
+  policyParameters: object?
+  name: string?
   // policyParameters: {
   //   backupDatasourceParametersList: backupDatasourceParameterType[]?
   //   dataStoreParametersList: dataStoreParameterType[]?
