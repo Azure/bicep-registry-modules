@@ -180,7 +180,7 @@ param sqlServerConfiguration ckmSqlServerType = {
   name: '${solutionPrefix}-sqls'
   location: databasesLocation
   administratorLogin: 'sqladmin'
-  administratorPassword: 'TestPassword_1234'
+  administratorPassword: guid(solutionPrefix, subscription().subscriptionId)
   databaseName: '${solutionPrefix}-ckmdb'
   databaseSkuName: 'GP_Gen5_2'
   databaseSkuTier: 'GeneralPurpose'
@@ -388,7 +388,10 @@ var scriptIndexDataScriptUrl = scriptIndexDataConfiguration.?scriptUrl ?? 'https
 var sqlServerResourceName = sqlServerConfiguration.?name ?? '${solutionPrefix}-sqls'
 var sqlServerLocation = sqlServerConfiguration.?location ?? databasesLocation
 var sqlServerAdministratorLogin = sqlServerConfiguration.?administratorLogin ?? 'sqladmin'
-var sqlServerAdministratorPassword = sqlServerConfiguration.?administratorPassword ?? 'TestPassword_1234'
+var sqlServerAdministratorPassword = sqlServerConfiguration.?administratorPassword ?? guid(
+  solutionPrefix,
+  subscription().subscriptionId
+)
 var sqlServerDatabaseName = sqlServerConfiguration.?databaseName ?? '${solutionPrefix}-ckmdb'
 var sqlServerDatabaseSkuName = sqlServerConfiguration.?databaseSkuName ?? 'GP_Gen5_2'
 var sqlServerDatabaseSkuTier = sqlServerConfiguration.?databaseSkuTier ?? 'GeneralPurpose'

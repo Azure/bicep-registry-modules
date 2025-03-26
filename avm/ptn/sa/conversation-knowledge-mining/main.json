@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "17579274417877880356"
+      "templateHash": "9822454905105443611"
     },
     "name": "Conversation Knowledge Mining Solution Accelerator",
     "description": "This module deploys the [Conversation Knowledge Mining Solution Accelerator](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator).\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator product. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -1245,7 +1245,7 @@
         "name": "[format('{0}-sqls', parameters('solutionPrefix'))]",
         "location": "[parameters('databasesLocation')]",
         "administratorLogin": "sqladmin",
-        "administratorPassword": "TestPassword_1234",
+        "administratorPassword": "[guid(parameters('solutionPrefix'), subscription().subscriptionId)]",
         "databaseName": "[format('{0}-ckmdb', parameters('solutionPrefix'))]",
         "databaseSkuName": "GP_Gen5_2",
         "databaseSkuTier": "GeneralPurpose",
@@ -1414,7 +1414,7 @@
     "sqlServerResourceName": "[coalesce(tryGet(parameters('sqlServerConfiguration'), 'name'), format('{0}-sqls', parameters('solutionPrefix')))]",
     "sqlServerLocation": "[coalesce(tryGet(parameters('sqlServerConfiguration'), 'location'), parameters('databasesLocation'))]",
     "sqlServerAdministratorLogin": "[coalesce(tryGet(parameters('sqlServerConfiguration'), 'administratorLogin'), 'sqladmin')]",
-    "sqlServerAdministratorPassword": "[coalesce(tryGet(parameters('sqlServerConfiguration'), 'administratorPassword'), 'TestPassword_1234')]",
+    "sqlServerAdministratorPassword": "[coalesce(tryGet(parameters('sqlServerConfiguration'), 'administratorPassword'), guid(parameters('solutionPrefix'), subscription().subscriptionId))]",
     "sqlServerDatabaseName": "[coalesce(tryGet(parameters('sqlServerConfiguration'), 'databaseName'), format('{0}-ckmdb', parameters('solutionPrefix')))]",
     "sqlServerDatabaseSkuName": "[coalesce(tryGet(parameters('sqlServerConfiguration'), 'databaseSkuName'), 'GP_Gen5_2')]",
     "sqlServerDatabaseSkuTier": "[coalesce(tryGet(parameters('sqlServerConfiguration'), 'databaseSkuTier'), 'GeneralPurpose')]",
