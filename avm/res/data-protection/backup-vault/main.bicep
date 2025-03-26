@@ -237,7 +237,7 @@ module backupVault_backupInstances 'backup-instance/main.bicep' = [
     params: {
       backupVaultName: backupVault.name
       name: backupInstance.name
-      objectType: 'Datasource'
+      // objectType: 'Datasource'
       dataSourceInfo: backupInstance.dataSourceInfo
       policyInfo: backupInstance.policyInfo
     }
