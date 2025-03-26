@@ -106,7 +106,7 @@ function Initialize-DeploymentRemoval {
             'Microsoft.Network/loadBalancers', # Must be deleted before e.g. a GatewaySubnet that is associated with it
             # 'Microsoft.DataProtection/backupVaults/backupInstances', # Must be deleted before backup vault because the Resource Provider does not allow deleting the vault as long as it has nested resources
             # 'Microsoft.DataProtection/backupVaults/backupPolicies', # Must be deleted before backup vault because the Resource Provider does not allow deleting the vault as long as it has nested resources
-            # 'Microsoft.DataProtection/backupVaults', # Must be deleted after its children because the Resource Provider does not allow deleting the vault as long as it has nested resources
+            'Microsoft.DataProtection/backupVaults', # This resource has a custom removal logic and hence needs to be deleted before its resource group
             'Microsoft.Resources/resourceGroups'
         )
 

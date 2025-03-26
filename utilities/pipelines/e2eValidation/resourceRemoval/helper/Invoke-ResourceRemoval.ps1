@@ -187,6 +187,7 @@ function Invoke-ResourceRemoval {
             break
         }
         'Microsoft.DataProtection/backupVaults' {
+            # This Resource Provider does not allow deleting the vault as long as it has nested resources
             # Pre-Removal
             # -----------
             $resourceGroupName = $ResourceId.Split('/')[4]
@@ -221,9 +222,6 @@ function Invoke-ResourceRemoval {
             # Actual removal
             # --------------
             # Remove backup instances
-            # TODO get soft deleted instances https://learn.microsoft.com/en-us/powershell/module/az.dataprotection/get-azdataprotectionsoftdeletedbackupinstance?view=azps-13.2.0
-            # TODO undo soft deletion https://learn.microsoft.com/en-us/powershell/module/az.dataprotection/undo-azdataprotectionbackupinstancedeletion?view=azps-13.2.0
-
             $backupInstances = Get-AzDataProtectionBackupInstance -ResourceGroupName $resourceGroupName -VaultName $resourceName
             foreach ($backupInstance in $backupInstances) {
                 Write-Verbose ('Removing Backup instance [{0}] from vault [{1}]' -f $backupInstance.Name, $resourceName) -Verbose
