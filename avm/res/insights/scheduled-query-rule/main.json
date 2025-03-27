@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.1.11899",
-      "templateHash": "416215529996481892"
+      "templateHash": "16899943900436263513"
     },
     "name": "Scheduled Query Rules",
     "description": "This module deploys a Scheduled Query Rule."
@@ -430,6 +430,14 @@
         "description": "The location the resource was deployed into."
       },
       "value": "[reference('queryRule', '2023-03-15-preview', 'full').location]"
+    },
+    "systemAssignedMIPrincipalId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "The principal ID of the system assigned identity."
+      },
+      "value": "[tryGet(tryGet(reference('queryRule', '2023-03-15-preview', 'full'), 'identity'), 'principalId')]"
     }
   }
 }
