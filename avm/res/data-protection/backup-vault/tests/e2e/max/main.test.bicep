@@ -131,9 +131,9 @@ module testDeployment '../../../main.bicep' = [
           dataSourceInfo: {
             objectType: 'Datasource'
             resourceID: nestedDependencies.outputs.diskResourceId
-            // resourceName: diskName
-            // resourceType: resourceType
-            // resourceUri: computeDisk.id
+            resourceName: last(split(nestedDependencies.outputs.diskResourceId, '/'))
+            resourceType: 'Microsoft.Compute/disks'
+            resourceUri: nestedDependencies.outputs.diskResourceId
             resourceLocation: resourceLocation
             datasourceType: 'Microsoft.Compute/disks'
           }
