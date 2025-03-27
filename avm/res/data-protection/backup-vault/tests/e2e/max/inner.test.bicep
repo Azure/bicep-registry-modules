@@ -122,11 +122,12 @@ module testDeployment '../../../main.bicep' = [
             datasourceType: 'Microsoft.Compute/disks'
           }
           policyInfo: {
-            policyId: resourceId(
-              'Microsoft.DataProtection/backupVaults/backupPolicies',
-              resourceGroupName,
-              backupPolicyName
-            )
+            policyName: backupPolicyName
+            // policyId: resourceId(
+            //   'Microsoft.DataProtection/backupVaults/backupPolicies',
+            //   resourceGroupName,
+            //   backupPolicyName
+            // )
             policyParameters: {
               dataStoreParametersList: [
                 {

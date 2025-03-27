@@ -20,8 +20,16 @@ param policyInfo policyInfoType
 
 resource backupVault 'Microsoft.DataProtection/backupVaults@2023-05-01' existing = {
   name: backupVaultName
+
+  resource backupPolicy 'backupPolicies@2023-05-01' existing = {
+    name: policyInfo.policyName
+  }
 }
 
+var policyInfoVar = {
+  policyId: backupVault::backupPolicy.id
+  policyParameters: policyInfo.policyParameters
+}
 // resource storageAccount 'Microsoft.Storage/storageAccounts@2023-04-01' existing = if (resourceType == 'Microsoft.Storage/storageAccounts') {
 //   name: last(split(dataSourceInfo.resourceID, '/'))
 //   scope: resourceGroup(split(dataSourceInfo.resourceID, '/')[2], split(dataSourceInfo.resourceID, '/')[4])
@@ -56,7 +64,7 @@ resource backupInstance 'Microsoft.DataProtection/backupVaults/backupInstances@2
   properties: {
     objectType: 'BackupInstance'
     dataSourceInfo: dataSourceInfo
-    policyInfo: policyInfo
+    policyInfo: policyInfoVar
     // tags: tags
     // datasourceAuthCredentials
     // identityDetails
@@ -100,8 +108,9 @@ type dataSourceInfoType = {
 @export()
 @description('The type for policy info properties.')
 type policyInfoType = {
-  policyId: string
-  policyParameters: object?
+  policyName: string
+  policyId: string?
+  policyParameters: object
   // policyParameters: {
   //   backupDatasourceParametersList: backupDatasourceParameterType[]?
   //   dataStoreParametersList: dataStoreParameterType[]?
