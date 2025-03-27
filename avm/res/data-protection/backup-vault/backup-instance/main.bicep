@@ -13,6 +13,9 @@ param name string
 @description('Required. Gets or sets the data source information.')
 param dataSourceInfo dataSourceInfoType
 
+@description('Optional. Gets or sets the data source set information.')
+param dataSourceSetInfo dataSourceSetInfoType?
+
 @description('Required. Gets or sets the policy information.')
 param policyInfo policyInfoType
 
@@ -64,6 +67,7 @@ resource backupInstance 'Microsoft.DataProtection/backupVaults/backupInstances@2
   properties: {
     objectType: 'BackupInstance'
     dataSourceInfo: dataSourceInfo
+    dataSourceSetInfo: dataSourceSetInfo
     policyInfo: policyInfoVar
     // tags: tags
     // datasourceAuthCredentials
@@ -97,6 +101,20 @@ output resourceGroupName string = resourceGroup().name
 type dataSourceInfoType = {
   datasourceType: string? //TODO check allowed values
   objectType: 'Datasource'
+  resourceID: string
+  resourceLocation: string?
+  resourceName: string?
+  // resourceProperties: object?
+  resourceType: string?
+  resourceUri: string?
+}
+
+//TODO: add all descriptions
+@export()
+@description('The type for data source set info properties.')
+type dataSourceSetInfoType = {
+  datasourceType: string? //TODO check allowed values
+  objectType: 'DatasourceSet'
   resourceID: string
   resourceLocation: string?
   resourceName: string?
