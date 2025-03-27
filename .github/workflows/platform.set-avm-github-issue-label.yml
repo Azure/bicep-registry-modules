@@ -1,13 +1,14 @@
-# Workflow for notifying and assigning issues on creation
-name: .Platform - Set GitHub issue owner config
+# Workflow for checking issues if correct labels are applied and corrects if necessary
+name: .Platform - Set GitHub issue label
 
 on:
-  issues:
-    types: [opened]
+  schedule:
+    - cron: "30 2 * * *" # Every day at 2:30 am
+  workflow_dispatch:
 
 jobs:
-  SetAvmGitHubIssueOwnerConfig:
-    name: Set-AvmGitHubIssueOwnerConfig
+  SetAvmGitHubIssueLabel:
+    name: Set-AvmGitHubIssueLabel
     runs-on: ubuntu-latest
     permissions:
       issues: write
@@ -37,4 +38,4 @@ jobs:
           Write-Verbose "Invoke task with" -Verbose
           Write-Verbose ($functionInput | ConvertTo-Json | Out-String) -Verbose
 
-          Set-AvmGitHubIssueLabel @functionInput -Verbose # -WhatIf
+          Set-AvmGitHubIssueLabel @functionInput -Verbose
