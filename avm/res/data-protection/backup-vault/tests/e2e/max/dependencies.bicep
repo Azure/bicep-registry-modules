@@ -12,14 +12,14 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-
   location: location
 }
 
-resource disk 'Microsoft.Compute/disks@2024-03-02' = {
+resource computeDisk 'Microsoft.Compute/disks@2020-12-01' = {
   name: diskName
   location: location
   properties: {
-    diskSizeGB: 10
     creationData: {
       createOption: 'Empty'
     }
+    diskSizeGB: 200
   }
 }
 
@@ -30,4 +30,7 @@ output managedIdentityPrincipalId string = managedIdentity.properties.principalI
 output managedIdentityResourceId string = managedIdentity.id
 
 @description('The resource ID of the created Managed Disk.')
-output diskResourceId string = disk.id
+output diskResourceId string = computeDisk.id
+
+@description('The resource ID of the created Managed Disk.')
+output diskName string = computeDisk.name

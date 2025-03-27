@@ -22,7 +22,7 @@ param namePrefix string = '#_namePrefix_#'
 
 var resourceLocation = 'uksouth'
 
-var backupPolicyName = '${namePrefix}${serviceShort}policy001'
+var backupPolicyName = 'policy${uniqueString(resourceGroup.id)}'
 
 // ============ //
 // Dependencies //
@@ -56,7 +56,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}001'
+      name: 'vault${uniqueString(resourceGroup.id)}'
       location: resourceLocation
       azureMonitorAlertSettingsAlertsForAllJobFailures: 'Disabled'
       immutabilitySettingState: 'Unlocked'
@@ -128,11 +128,11 @@ module testDeployment '../../../main.bicep' = [
       backupInstances: [
         {
           // name: '${namePrefix}${serviceShort}disk001'
-          name: last(split(nestedDependencies.outputs.diskResourceId, '/'))
+          name: nestedDependencies.outputs.diskName
           dataSourceInfo: {
             objectType: 'Datasource'
             resourceID: nestedDependencies.outputs.diskResourceId
-            resourceName: last(split(nestedDependencies.outputs.diskResourceId, '/'))
+            resourceName: nestedDependencies.outputs.diskName
             resourceType: 'Microsoft.Compute/disks'
             resourceUri: nestedDependencies.outputs.diskResourceId
             resourceLocation: resourceLocation
