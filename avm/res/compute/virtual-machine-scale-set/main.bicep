@@ -617,12 +617,17 @@ resource vmss 'Microsoft.Compute/virtualMachineScaleSets@2024-07-01' = {
                 properties: {
                   publisher: 'Microsoft.ManagedServices'
                   type: (osType == 'Windows' ? 'ApplicationHealthWindows' : 'ApplicationHealthLinux')
-                  typeHandlerVersion: extensionHealthConfig.?typeHandlerVersion ?? '1.0'
+                  typeHandlerVersion: extensionHealthConfig.?typeHandlerVersion ?? '2.0'
                   autoUpgradeMinorVersion: extensionHealthConfig.?autoUpgradeMinorVersion ?? false
                   settings: {
                     protocol: extensionHealthConfig.?protocol ?? 'http'
                     port: extensionHealthConfig.?port ?? 80
-                    requestPath: extensionHealthConfig.?requestPath ?? '/'
+                    requestPath: extensionHealthConfig.?requestPath ?? ((contains(extensionHealthConfig, 'protocol') && extensionHealthConfig.protocol != 'tcp')
+                      ? '/'
+                      : '')
+                    intervalInSeconds: extensionHealthConfig.?intervalInSeconds ?? 5
+                    numberOfProbes: extensionHealthConfig.?numberOfProbes ?? 1
+                    gracePeriod: extensionHealthConfig.?gracePeriod ?? 5
                   }
                 }
               }
