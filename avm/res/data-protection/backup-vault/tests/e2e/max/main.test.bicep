@@ -127,7 +127,8 @@ module testDeployment '../../../main.bicep' = [
       ]
       backupInstances: [
         {
-          name: '${namePrefix}${serviceShort}disk001'
+          // name: '${namePrefix}${serviceShort}disk001'
+          name: last(split(nestedDependencies.outputs.diskResourceId, '/'))
           dataSourceInfo: {
             objectType: 'Datasource'
             resourceID: nestedDependencies.outputs.diskResourceId
