@@ -22,14 +22,14 @@ param volumeName string
 @description('Required. The name of the capacity pool containing the volume.')
 param capacityPoolName string
 
-resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2024-07-01' existing = {
+resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2024-09-01' existing = {
   name: netAppAccountName
 
-  resource backupVault 'backupVaults@2024-07-01' existing = {
+  resource backupVault 'backupVaults@2024-09-01' existing = {
     name: backupVaultName
   }
 
-  resource remoteCapacityPool 'capacityPools@2024-07-01' existing = {
+  resource remoteCapacityPool 'capacityPools@2024-09-01' existing = {
     name: capacityPoolName
 
     resource volume 'volumes@2024-07-01' existing = {
@@ -38,7 +38,7 @@ resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2024-07-01' existing = {
   }
 }
 
-resource backup 'Microsoft.NetApp/netAppAccounts/backupVaults/backups@2024-07-01' = {
+resource backup 'Microsoft.NetApp/netAppAccounts/backupVaults/backups@2024-09-01' = {
   name: name
   parent: netAppAccount::backupVault
   properties: {
