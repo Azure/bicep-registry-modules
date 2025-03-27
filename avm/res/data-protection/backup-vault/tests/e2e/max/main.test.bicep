@@ -48,7 +48,8 @@ module nestedDependencies 'dependencies.bicep' = {
 // Test Execution //
 // ============== //
 
-var backupPolicyName = '${namePrefix}${serviceShort}policy001'
+var diskBackupPolicyName = '${namePrefix}${serviceShort}diskpolicy001'
+var blobBackupPolicyName = '${namePrefix}${serviceShort}blobpolicy001'
 
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
@@ -65,7 +66,7 @@ module testDeployment '../../../main.bicep' = [
       }
       backupPolicies: [
         {
-          name: backupPolicyName
+          name: diskBackupPolicyName
           properties: {
             datasourceTypes: [
               'Microsoft.Compute/disks'
@@ -104,6 +105,8 @@ module testDeployment '../../../main.bicep' = [
                 }
               }
               {
+                name: 'Default'
+                objectType: 'AzureRetentionRule'
                 isDefault: true
                 lifecycles: [
                   {
@@ -118,8 +121,66 @@ module testDeployment '../../../main.bicep' = [
                     targetDataStoreCopySettings: []
                   }
                 ]
+              }
+            ]
+          }
+        }
+        {
+          name: blobBackupPolicyName
+          properties: {
+            datasourceTypes: [
+              'Microsoft.Storage/storageAccounts/blobServices'
+            ]
+            objectType: 'BackupPolicy'
+            policyRules: [
+              {
+                name: 'BackupDaily'
+                objectType: 'AzureBackupRule'
+                backupParameters: {
+                  backupType: 'Discrete'
+                  objectType: 'AzureBackupParams'
+                }
+                dataStore: {
+                  dataStoreType: 'VaultStore'
+                  objectType: 'DataStoreInfoBase'
+                }
+                trigger: {
+                  objectType: 'ScheduleBasedTriggerContext'
+                  schedule: {
+                    repeatingTimeIntervals: [
+                      'R/2025-03-01T23:30:00+01:00/P1D'
+                    ]
+                    timeZone: 'UTC'
+                  }
+                  taggingCriteria: [
+                    {
+                      isDefault: true
+                      taggingPriority: 99
+                      tagInfo: {
+                        id: 'Default_'
+                        tagName: 'Default'
+                      }
+                    }
+                  ]
+                }
+              }
+              {
                 name: 'Default'
                 objectType: 'AzureRetentionRule'
+                isDefault: true
+                lifecycles: [
+                  {
+                    deleteAfter: {
+                      duration: 'P7D'
+                      objectType: 'AbsoluteDeleteOption'
+                    }
+                    sourceDataStore: {
+                      dataStoreType: 'OperationalStore'
+                      objectType: 'DataStoreInfoBase'
+                    }
+                    targetDataStoreCopySettings: []
+                  }
+                ]
               }
             ]
           }
@@ -138,7 +199,7 @@ module testDeployment '../../../main.bicep' = [
             datasourceType: 'Microsoft.Compute/disks'
           }
           policyInfo: {
-            policyName: backupPolicyName
+            policyName: diskBackupPolicyName
             policyParameters: {
               dataStoreParametersList: [
                 {
