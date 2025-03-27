@@ -37,17 +37,30 @@ var dataSourceType = 'Microsoft.Compute/disks'
 var resourceType = 'Microsoft.Compute/disks'
 var retentionDuration = 'P${retentionDays}D'
 var repeatingTimeInterval = 'R/2021-05-20T22:00:00+00:00/PT4H'
+
+var resourceLocation = 'uksouth'
+
 // var roleNameGuidForDisk = guid(resourceGroup().id, roleDefinitionIdForDisk, backupVault.id)
 // var roleNameGuidForSnapshotRG = guid(resourceGroup().id, roleDefinitionIdForSnapshotRG, backupVault.id)
 
-resource computeDisk 'Microsoft.Compute/disks@2020-12-01' = {
-  name: diskName
-  location: location
-  properties: {
-    creationData: {
-      createOption: 'Empty'
-    }
-    diskSizeGB: 200
+// resource computeDisk 'Microsoft.Compute/disks@2020-12-01' = {
+//   name: diskName
+//   location: location
+//   properties: {
+//     creationData: {
+//       createOption: 'Empty'
+//     }
+//     diskSizeGB: 200
+//   }
+// }
+
+module nestedDependencies 'dependencies.bicep' = {
+  scope: resourceGroup()
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  params: {
+    // managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    diskName: 'disk${uniqueString(resourceGroup().id)}'
+    location: resourceLocation
   }
 }
 
@@ -128,13 +141,13 @@ module testDeployment '../../../main.bicep' = [
       ]
       backupInstances: [
         {
-          name: computeDisk.name
+          name: nestedDependencies.outputs.diskName
           dataSourceInfo: {
             objectType: 'Datasource'
-            resourceID: computeDisk.id
+            resourceID: nestedDependencies.outputs.diskResourceId
             resourceName: diskName
             resourceType: resourceType
-            resourceUri: computeDisk.id
+            resourceUri: nestedDependencies.outputs.diskResourceId
             resourceLocation: location
             datasourceType: dataSourceType
           }
