@@ -24,11 +24,15 @@ param namePrefix string = '#_namePrefix_#'
 @secure()
 param password string = newGuid()
 
+// Hardcoded to 'westus3' because App Service PV3 plans are not available in all regions
+#disable-next-line no-hardcoded-location
+var enforcedLocation = 'westus3'
+
 // Diagnostics
 // ===========
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: diagnosticsResourceGroupName
-  location: resourceLocation
+  location: enforcedLocation
 }
 
 module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
@@ -39,7 +43,7 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
     logAnalyticsWorkspaceName: 'dep-law-${serviceShort}'
     eventHubNamespaceEventHubName: 'dep-evh-${serviceShort}01'
     eventHubNamespaceName: 'dep-evhns-${serviceShort}01'
-    location: resourceLocation
+    location: enforcedLocation
   }
 }
 
@@ -52,6 +56,7 @@ module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
+      location: enforcedLocation
       workloadName: serviceShort
       tags: {
         environment: 'test'
