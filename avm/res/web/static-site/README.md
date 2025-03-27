@@ -649,7 +649,7 @@ param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
-| [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Note, requires the 'sku' to be 'Standard'. Supplying a `privateDnsZoneGroup` Configuration will allow the private endpoint to point to a already craeted zone group, without this is `createPrivateDnsZone` is enabled it will use the output of the newly created zone. |
+| [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Note, requires the 'sku' to be 'Standard'. Supplying the `privateDnsZoneGroup` configuration will allow the private endpoint to point to an already existing zone group. If not provided and `createPrivateDnsZone` being enabled, it will create and use the newly created zone group. |
 | [`provider`](#parameter-provider) | string | The provider that submitted the last deployment to the primary environment of the static site. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set. |
 | [`repositoryToken`](#parameter-repositorytoken) | securestring | The Personal Access Token for accessing the GitHub repository. |
@@ -849,7 +849,7 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 
 ### Parameter: `privateEndpoints`
 
-Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Note, requires the 'sku' to be 'Standard'. Supplying a `privateDnsZoneGroup` Configuration will allow the private endpoint to point to a already craeted zone group, without this is `createPrivateDnsZone` is enabled it will use the output of the newly created zone.
+Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Note, requires the 'sku' to be 'Standard'. Supplying the `privateDnsZoneGroup` configuration will allow the private endpoint to point to an already existing zone group. If not provided and `createPrivateDnsZone` being enabled, it will create and use the newly created zone group.
 
 - Required: No
 - Type: array
