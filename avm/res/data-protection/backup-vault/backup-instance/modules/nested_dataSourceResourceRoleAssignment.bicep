@@ -22,9 +22,9 @@ resource roleAssignment_storageAccount 'Microsoft.Authorization/roleAssignments@
   }
 }
 
-resource disk 'Microsoft.Compute/disks@2024-03-02' existing = if (resourceType == 'Microsoft.Compute/disks') {
-  name: last(split(resourceId, '/'))
-}
+// resource disk 'Microsoft.Compute/disks@2024-03-02' existing = if (resourceType == 'Microsoft.Compute/disks') {
+//   name: last(split(resourceId, '/'))
+// }
 
 // Assign Storage Blob Data Contributor RBAC role
 resource roleAssignment_disk 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (resourceType == 'Microsoft.Compute/disks') {

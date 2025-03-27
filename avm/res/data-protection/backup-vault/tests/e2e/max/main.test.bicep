@@ -38,6 +38,7 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
+    storageAccountName: 'dep${namePrefix}sa${serviceShort}01'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     diskName: 'dep-${namePrefix}-dsk-${serviceShort}'
     location: resourceLocation
@@ -187,6 +188,31 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       backupInstances: [
+        {
+          name: nestedDependencies.outputs.storageAccountName
+          dataSourceInfo: {
+            objectType: 'Datasource'
+            resourceID: nestedDependencies.outputs.storageAccountResourceId
+            resourceName: nestedDependencies.outputs.storageAccountName
+            resourceType: 'Microsoft.Storage/storageAccounts'
+            resourceUri: nestedDependencies.outputs.storageAccountResourceId
+            resourceLocation: resourceLocation
+            datasourceType: 'Microsoft.Storage/storageAccounts/blobServices'
+          }
+          policyInfo: {
+            policyName: blobBackupPolicyName
+            policyParameters: {
+              backupDatasourceParametersList: [
+                {
+                  objectType: 'BlobBackupDatasourceParameters'
+                  containersList: [
+                    'container001'
+                  ]
+                }
+              ]
+            }
+          }
+        }
         {
           name: nestedDependencies.outputs.diskName
           dataSourceInfo: {
