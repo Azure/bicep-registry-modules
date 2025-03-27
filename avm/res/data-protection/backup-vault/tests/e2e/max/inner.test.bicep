@@ -1,21 +1,3 @@
-@description('Name of the Vault')
-param vaultName string = 'vault${uniqueString(resourceGroup().id)}'
-
-// @description('Change Vault Storage Type (not allowed if the vault has registered backups)')
-// @allowed([
-//   'LocallyRedundant'
-//   'GeoRedundant'
-// ])
-// param vaultStorageRedundancy string = 'GeoRedundant'
-
-@description('Name of the Backup Policy')
-param backupPolicyName string = 'policy${uniqueString(resourceGroup().id)}'
-
-@description('Retention duration in days')
-@minValue(1)
-@maxValue(35)
-param retentionDays int = 30
-
 @description('Required. The name of the managed disk to create.')
 param diskName string
 
@@ -25,23 +7,12 @@ param location string = resourceGroup().location
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'dpbvmax'
 
-var roleDefinitionIdForDisk = subscriptionResourceId(
-  'Microsoft.Authorization/roleDefinitions',
-  '3e5e47e6-65f7-47ef-90b5-e5dd4d455f24'
-)
-var roleDefinitionIdForSnapshotRG = subscriptionResourceId(
-  'Microsoft.Authorization/roleDefinitions',
-  '7efff54f-a5b4-42b5-a1c5-5411624893ce'
-)
-var dataSourceType = 'Microsoft.Compute/disks'
-var resourceType = 'Microsoft.Compute/disks'
-var retentionDuration = 'P${retentionDays}D'
-var repeatingTimeInterval = 'R/2021-05-20T22:00:00+00:00/PT4H'
+@description('Optional. A token to inject into the name of each resource.')
+param namePrefix string = '#_namePrefix_#'
 
 var resourceLocation = 'uksouth'
 
-// var roleNameGuidForDisk = guid(resourceGroup().id, roleDefinitionIdForDisk, backupVault.id)
-// var roleNameGuidForSnapshotRG = guid(resourceGroup().id, roleDefinitionIdForSnapshotRG, backupVault.id)
+var backupPolicyName = '${namePrefix}${serviceShort}policy001'
 
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup()
@@ -59,7 +30,7 @@ module testDeployment '../../../main.bicep' = [
     // scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: vaultName
+      name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
       azureMonitorAlertSettingsAlertsForAllJobFailures: 'Disabled'
       immutabilitySettingState: 'Unlocked'
@@ -134,11 +105,11 @@ module testDeployment '../../../main.bicep' = [
           dataSourceInfo: {
             objectType: 'Datasource'
             resourceID: nestedDependencies.outputs.diskResourceId
-            resourceName: diskName
-            resourceType: resourceType
+            resourceName: nestedDependencies.outputs.diskName
+            resourceType: 'Microsoft.Compute/disks'
             resourceUri: nestedDependencies.outputs.diskResourceId
             resourceLocation: resourceLocation
-            datasourceType: dataSourceType
+            datasourceType: 'Microsoft.Compute/disks'
           }
           policyInfo: {
             policyId: resourceId(
