@@ -132,10 +132,10 @@ module testDeployment '../../../main.bicep' = [
           dataSourceInfo: {
             objectType: 'Datasource'
             resourceID: computeDisk.id
-            // resourceName: diskName
-            // resourceType: resourceType
-            // resourceUri: computeDisk.id
-            // resourceLocation: location
+            resourceName: diskName
+            resourceType: resourceType
+            resourceUri: computeDisk.id
+            resourceLocation: location
             datasourceType: dataSourceType
           }
           policyInfo: {
@@ -144,15 +144,15 @@ module testDeployment '../../../main.bicep' = [
               resourceGroup().name,
               backupPolicyName
             )
-            // policyParameters: {
-            //   dataStoreParametersList: [
-            //     {
-            //       objectType: 'AzureOperationalStoreParameters'
-            //       dataStoreType: 'OperationalStore'
-            //       resourceGroupId: resourceGroup().id
-            //     }
-            //   ]
-            // }
+            policyParameters: {
+              dataStoreParametersList: [
+                {
+                  objectType: 'AzureOperationalStoreParameters'
+                  dataStoreType: 'OperationalStore'
+                  resourceGroupId: resourceGroup().id
+                }
+              ]
+            }
           }
         }
       ]
