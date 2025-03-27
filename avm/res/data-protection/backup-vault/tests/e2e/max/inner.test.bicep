@@ -1,4 +1,4 @@
-targetScope = 'subscription'
+// targetScope = 'subscription'
 
 @description('Required. The name of the managed disk to create.')
 param diskName string
@@ -8,7 +8,7 @@ param diskName string
 param resourceGroupName string = 'dep-${namePrefix}-dataprotection.backupvaults-${serviceShort}-rg'
 
 @description('Location for all resources')
-param location string = deployment().location
+param location string = resourceGroup().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'dpbvmax'
@@ -20,12 +20,12 @@ var resourceLocation = 'uksouth'
 
 var backupPolicyName = '${namePrefix}${serviceShort}policy001'
 
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' existing = {
-  name: resourceGroupName
-}
+// resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' existing = {
+//   name: resourceGroupName
+// }
 
 module nestedDependencies 'dependencies.bicep' = {
-  scope: resourceGroup
+  scope: resourceGroup()
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     // managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
@@ -37,7 +37,7 @@ module nestedDependencies 'dependencies.bicep' = {
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
-    scope: resourceGroup
+    scope: resourceGroup()
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
@@ -132,7 +132,7 @@ module testDeployment '../../../main.bicep' = [
                 {
                   objectType: 'AzureOperationalStoreParameters'
                   dataStoreType: 'OperationalStore'
-                  resourceGroupId: resourceGroup.id
+                  resourceGroupId: resourceGroup().id
                 }
               ]
             }
