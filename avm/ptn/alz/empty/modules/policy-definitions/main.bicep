@@ -7,14 +7,14 @@ resource mgCustomPolicyDefinitions 'Microsoft.Authorization/policyDefinitions@20
   for (polDef, index) in (managementGroupCustomPolicyDefinitions ?? []): {
     name: polDef.name
     properties: {
-      description: polDef.properties.description
-      displayName: polDef.properties.displayName
-      metadata: polDef.properties.metadata
-      mode: polDef.properties.mode
-      parameters: polDef.properties.parameters
-      policyType: polDef.properties.policyType
+      description: polDef.properties.?description
+      displayName: polDef.properties.?displayName
+      metadata: polDef.properties.?metadata
+      mode: polDef.properties.?mode
+      parameters: polDef.properties.?parameters
+      policyType: polDef.properties.?policyType
       policyRule: polDef.properties.policyRule
-      version: polDef.properties.version
+      version: polDef.properties.?version
     }
   }
 ]

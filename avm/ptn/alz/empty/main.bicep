@@ -26,10 +26,11 @@ param managementGroupCustomRoleDefinitions roleDefinitionType[]?
 
 import { policyDefinitionType } from 'modules/policy-definitions/main.bicep'
 @description('Optional. Policy definitions to create on the management group.')
-param managementGroupCustomPolicyDefinitions policyDefinitionType[]? //Convert to RDT?
+param managementGroupCustomPolicyDefinitions policyDefinitionType[]?
 
+import { policySetDefinitionsType } from 'modules/policy-set-definitions/main.bicep'
 @description('Optional. Policy set definitions to create on the management group.')
-param managementGroupCustomPolicySetDefinitions policySetDefinitionsType[]? //Convert to RDT?
+param managementGroupCustomPolicySetDefinitions policySetDefinitionsType[]?
 
 @description('Optional. Array of policy assignments to create on the management group.')
 param managementGroupPolicyAssignments policyAssignmentType[]?
@@ -157,42 +158,25 @@ module mgCustomPolicyDefinitions 'modules/policy-definitions/main.bicep' = if (!
 }
 
 // Custom Policy Set Definitions/Initiatives Created on Management Group (Optional)
-resource mgCustomPolicySetDefinitions 'Microsoft.Authorization/policySetDefinitions@2025-01-01' = [
-  for (polSetDef, index) in (managementGroupCustomPolicySetDefinitions ?? []): {
-    dependsOn: [
-      mgCustomPolicyDefinitions
-    ]
-    name: polSetDef.libSetDefinition.name
-    properties: {
-      description: polSetDef.libSetDefinition.properties.description
-      displayName: polSetDef.libSetDefinition.properties.displayName
-      metadata: polSetDef.libSetDefinition.properties.metadata
-      parameters: polSetDef.libSetDefinition.properties.parameters
-      policyType: polSetDef.libSetDefinition.properties.policyType
-      version: polSetDef.libSetDefinition.properties.version
-      policyDefinitions: [
-        for polDef in polSetDef.libSetChildDefinitions: {
-          policyDefinitionReferenceId: polDef.definitionReferenceId
-          policyDefinitionId: polDef.definitionId
-          parameters: polDef.definitionParameters
-          groupNames: polDef.definitionGroups
-          definitionVersion: polDef.definitionVersion
-        }
-      ]
-      policyDefinitionGroups: polSetDef.libSetDefinition.properties.policyDefinitionGroups
-    }
-  }
-]
+// module mgCustomPolicySetDefinitions 'modules/policy-set-definitions/main.bicep' = if (!empty(managementGroupCustomPolicySetDefinitions)) {
+//   scope: managementGroup(managementGroupName)
+//   dependsOn: [
+//     mgCustomPolicyDefinitions
+//   ]
+//   name: deploymentNames.mgPolicySetDefinitions
+//   params: {
+//     managementGroupCustomPolicySetDefinitions: managementGroupCustomPolicySetDefinitions
+//   }
+// }
 
 // Policy Assignments Created on Management Group (Optional)
-
-// **Add support for versioning and assignment type **
+// ***** Add support for versioning and assignment type *****
 module mgPolicyAssignments 'br/public:avm/ptn/authorization/policy-assignment:0.3.0' = [
   for (polAsi, index) in (managementGroupPolicyAssignments ?? []): {
     scope: managementGroup(managementGroupName)
     dependsOn: [
       mgCustomPolicyDefinitions
-      mgCustomPolicySetDefinitions
+      // mgCustomPolicySetDefinitions
     ]
     name: take('${deploymentNames.mgPolicyAssignments}-${uniqueString(managementGroupName, polAsi.name)}', 64)
     params: {
@@ -291,73 +275,6 @@ output managementGroupCustomRoleDefinitionIds array = [
 ]
 
 // Types
-@export()
-@description('A type for policy set definitions.')
-type policySetDefinitionsType = {
-  @maxLength(128)
-  @description('Required. Specifies the name of the policy set definition. Maximum length is 128 characters for management group scope.')
-  name: string
-
-  @maxLength(128)
-  @description('Optional. The display name of the policy set definition. Maximum length is 128 characters.')
-  displayName: string?
-
-  @maxLength(512)
-  @description('Optional. The description of the policy set definition. Maximum length is 512 characters.')
-  description: string?
-
-  @description('Optional. The metadata of the policy set definition. Metadata is an open ended object and is typically a collection of key-value pairs.')
-  metadata: object?
-
-  @description('Optional. Parameters for the policy set definition if needed.')
-  parameters: object?
-
-  @description('Required. The type of policy set definition. For more information, see https://aka.ms/azure-policy-type.')
-  policyType: 'Builtin' | 'Custom' | 'NotSpecified' | 'Static'
-
-  @description('Required. The policy definitions in the policy set definition.')
-  policyDefinitions: policyDefinitionReferenceType[]
-
-  @description('Optional. The policy definition groups in the policy set definition.')
-  policyDefinitionGroups: policyDefinitionGroupType[]?
-
-  @description('Optional. The policy set definition version in #.#.# format. For example, 1.0.0.')
-  version: string?
-}
-
-type policyDefinitionReferenceType = {
-  @description('Optional. A unique ID (within the policy set definition) for this policy definition reference.')
-  policyDefinitionReferenceId: string?
-
-  @description('Required. The ID of the policy definition or policy set definition.')
-  policyDefinitionId: string
-
-  @description('Optional. The policy definition parameters.')
-  parameters: object?
-
-  @description('Optional. The name of the groups that this policy definition reference belongs to.')
-  groupNames: string[]
-
-  @description('Optional. The version of the policy definition to use.')
-  definitionVersion: string?
-}
-
-type policyDefinitionGroupType = {
-  @description('Required. The name of the group.')
-  name: string
-
-  @description('Optional. The display name of the group.')
-  displayName: string?
-
-  @description('Optional. The description of the group.')
-  description: string?
-
-  @description('Optional. The category of the group.')
-  category: string?
-
-  @description('Optional. A resource ID of a resource that contains additional metadata about the group.')
-  additionalMetadataId: string?
-}
 
 @export()
 @description('A type for policy assignments.')

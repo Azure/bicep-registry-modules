@@ -13,6 +13,7 @@
       "source": "https://github.com/Azure/Enterprise-Scale/",
       "version": "1.0.0"
     },
+    "version": "1.0.0",
     "parameters": {
       "effect": {
         "allowedValues": [
@@ -36,7 +37,8 @@
           }
         },
         "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/b03bb370-5249-4ea4-9fce-2552e87e45fa",
-        "policyDefinitionReferenceId": "AuditDisksOsTrustedLaunch"
+        "policyDefinitionReferenceId": "AuditDisksOsTrustedLaunch",
+        "definitionVersion": "1.*.*"
       },
       {
         "groupNames": [],
@@ -46,7 +48,8 @@
           }
         },
         "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/c95b54ad-0614-4633-ab29-104b01235cbf",
-        "policyDefinitionReferenceId": "AuditTrustedLaunchEnabled"
+        "policyDefinitionReferenceId": "AuditTrustedLaunchEnabled",
+        "definitionVersion": "1.*.*"
       }
     ],
     "policyType": "Custom"
