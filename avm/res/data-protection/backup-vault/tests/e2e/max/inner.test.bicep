@@ -16,11 +16,11 @@ param backupPolicyName string = 'policy${uniqueString(resourceGroup().id)}'
 @maxValue(35)
 param retentionDays int = 30
 
-@description('Name of the Disk')
-param diskName string = 'disk${uniqueString(resourceGroup().id)}'
+@description('Required. The name of the managed disk to create.')
+param diskName string
 
-@description('Location for all resources')
-param location string = resourceGroup().location
+// @description('Location for all resources')
+// param location string = resourceGroup().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'dpbvmax'
@@ -59,7 +59,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     // managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    diskName: 'disk${uniqueString(resourceGroup().id)}'
+    diskName: diskName
     location: resourceLocation
   }
 }
@@ -68,10 +68,10 @@ module nestedDependencies 'dependencies.bicep' = {
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     // scope: resourceGroup
-    name: '${uniqueString(deployment().name, location)}-test-${serviceShort}-${iteration}'
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: vaultName
-      location: location
+      location: resourceLocation
       azureMonitorAlertSettingsAlertsForAllJobFailures: 'Disabled'
       immutabilitySettingState: 'Unlocked'
       managedIdentities: {
@@ -148,7 +148,7 @@ module testDeployment '../../../main.bicep' = [
             resourceName: diskName
             resourceType: resourceType
             resourceUri: nestedDependencies.outputs.diskResourceId
-            resourceLocation: location
+            resourceLocation: resourceLocation
             datasourceType: dataSourceType
           }
           policyInfo: {

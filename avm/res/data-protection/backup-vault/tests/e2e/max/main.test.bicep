@@ -41,7 +41,7 @@ module nestedDependencies 'inner.test.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     // managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    diskName: 'disk${uniqueString(resourceGroup.id)}'
+    diskName: 'dep-${namePrefix}-dsk-${serviceShort}'
     location: resourceLocation
   }
 }
