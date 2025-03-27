@@ -37,7 +37,7 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 
 module nestedDependencies 'inner.test.bicep' = {
   // module nestedDependencies 'dependencies.bicep' = {
-  // scope: resourceGroup
+  scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     // managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
