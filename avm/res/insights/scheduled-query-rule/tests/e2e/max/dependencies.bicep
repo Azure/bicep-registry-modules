@@ -15,14 +15,6 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-
   location: location
 }
 
-// resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2021-06-01' = {
-//   name: logAnalyticsWorkspaceName
-//   location: location
-//   properties: {
-//     publicNetworkAccessForQuery: 'Enabled'
-//   }
-// }
-
 module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.11.1' = {
   params: {
     name: logAnalyticsWorkspaceName
