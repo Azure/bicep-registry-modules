@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "8805344181328950442"
+      "templateHash": "14755651359792896972"
     },
     "name": "avm/ptn/alz/empty",
     "description": "Azure Landing Zones - Bicep - Empty"
@@ -367,7 +367,7 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optinal? The location of the policy assignment. Only required when utilizing managed identity, as sets location of system assigned managed identity, if created."
+            "description": "Optional. The location of the policy assignment. Only required when utilizing managed identity, as sets location of system assigned managed identity, if created."
           }
         },
         "overrides": {
@@ -639,7 +639,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.3.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     }

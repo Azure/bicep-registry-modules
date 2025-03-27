@@ -24,6 +24,7 @@ param managementGroupRoleAssignments roleAssignmentType[]?
 @description('Optional. Array of custom role definitions to create on the management group.')
 param managementGroupCustomRoleDefinitions roleDefinitionType[]?
 
+import { policyDefinitionType } from 'modules/policy-definitions/main.bicep'
 @description('Optional. Policy definitions to create on the management group.')
 param managementGroupCustomPolicyDefinitions policyDefinitionType[]? //Convert to RDT?
 
@@ -113,6 +114,7 @@ var deploymentNames = {
   mgRoleDefinitions: '${uniqueString(deployment().name, location)}-alz-mg-rbac-def-${managementGroupName}'
   mgRoleDefinitionsWait: '${uniqueString(deployment().name, location)}-alz-mg-wait-${managementGroupName}'
   mgPolicyDefinitions: '${uniqueString(deployment().name, location)}-alz-mg-pol-def-${managementGroupName}'
+  mgPolicySetDefinitions: '${uniqueString(deployment().name, location)}-alz-mg-pol-init-${managementGroupName}'
   mgPolicyAssignments: '${uniqueString(deployment().name, location)}-alz-mg-pol-asi-${managementGroupName}'
 }
 
@@ -146,20 +148,13 @@ resource mgSubPlacement 'Microsoft.Management/managementGroups/subscriptions@202
 ]
 
 // Custom Policy Definitions Created on Management Group (Optional)
-resource mgCustomPolicyDefinitions 'Microsoft.Authorization/policyDefinitions@2025-01-01' = [
-  for (polDef, index) in (managementGroupCustomPolicyDefinitions ?? []): {
-    name: polDef.libDefinition.name
-    properties: {
-      description: polDef.libDefinition.properties.description
-      displayName: polDef.libDefinition.properties.displayName
-      metadata: polDef.libDefinition.properties.metadata
-      mode: polDef.libDefinition.properties.mode
-      parameters: polDef.libDefinition.properties.parameters
-      policyType: polDef.libDefinition.properties.policyType
-      policyRule: polDef.libDefinition.properties.policyRule
-    }
+module mgCustomPolicyDefinitions 'modules/policy-definitions/main.bicep' = if (!empty(managementGroupCustomPolicyDefinitions)) {
+  scope: managementGroup(managementGroupName)
+  name: deploymentNames.mgPolicyDefinitions
+  params: {
+    managementGroupCustomPolicyDefinitions: managementGroupCustomPolicyDefinitions
   }
-]
+}
 
 // Custom Policy Set Definitions/Initiatives Created on Management Group (Optional)
 resource mgCustomPolicySetDefinitions 'Microsoft.Authorization/policySetDefinitions@2025-01-01' = [
@@ -195,6 +190,10 @@ resource mgCustomPolicySetDefinitions 'Microsoft.Authorization/policySetDefiniti
 module mgPolicyAssignments 'br/public:avm/ptn/authorization/policy-assignment:0.3.0' = [
   for (polAsi, index) in (managementGroupPolicyAssignments ?? []): {
     scope: managementGroup(managementGroupName)
+    dependsOn: [
+      mgCustomPolicyDefinitions
+      mgCustomPolicySetDefinitions
+    ]
     name: take('${deploymentNames.mgPolicyAssignments}-${uniqueString(managementGroupName, polAsi.name)}', 64)
     params: {
       name: polAsi.name
@@ -292,37 +291,6 @@ output managementGroupCustomRoleDefinitionIds array = [
 ]
 
 // Types
-@export()
-@description('A type for policy definitions.')
-type policyDefinitionType = {
-  @maxLength(128)
-  @description('Required. Specifies the name of the policy definition. Maximum length is 128 characters for management group scope.')
-  name: string
-
-  @maxLength(128)
-  @description('Optional. The display name of the policy definition. Maximum length is 128 characters.')
-  displayName: string?
-
-  @maxLength(512)
-  @description('Optional. The description of the policy definition. Maximum length is 512 characters.')
-  description: string?
-
-  @description('Optional. The metadata of the policy definition. Metadata is an open ended object and is typically a collection of key-value pairs.')
-  metadata: object?
-
-  @description('Required. The policy definition mode. Recommended value is `All`. For more information, see https://aka.ms/azure-policy-mode.')
-  mode: string
-
-  @description('Optional. Parameters for the policy definition if needed.')
-  parameters: object?
-
-  @description('Required. The type of policy definition. For more information, see https://aka.ms/azure-policy-type.')
-  policyType: 'Builtin' | 'Custom' | 'NotSpecified' | 'Static'
-
-  @description('Required. The policy rule. The policy rule is a JSON string that represents the policy rule. For more information, see https://aka.ms/azure-policy-definition-structure.')
-  policyRule: string
-}
-
 @export()
 @description('A type for policy set definitions.')
 type policySetDefinitionsType = {
