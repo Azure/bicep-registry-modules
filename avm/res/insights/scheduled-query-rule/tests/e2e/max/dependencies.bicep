@@ -15,11 +15,24 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-
   location: location
 }
 
-resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2021-06-01' = {
-  name: logAnalyticsWorkspaceName
-  location: location
-  properties: {
-    publicNetworkAccessForQuery: 'Enabled'
+// resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2021-06-01' = {
+//   name: logAnalyticsWorkspaceName
+//   location: location
+//   properties: {
+//     publicNetworkAccessForQuery: 'Enabled'
+//   }
+// }
+
+module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.11.1' = {
+  params: {
+    name: logAnalyticsWorkspaceName
+    roleAssignments: [
+      {
+        principalId: managedIdentity.properties.principalId
+        roleDefinitionIdOrName: 'Reader'
+        principalType: 'ServicePrincipal'
+      }
+    ]
   }
 }
 
@@ -43,7 +56,7 @@ resource actionGroup 'Microsoft.Insights/actionGroups@2023-01-01' = {
 output managedIdentityPrincipalId string = managedIdentity.properties.principalId
 
 @description('The resource ID of the created Log Analytics Workspace.')
-output logAnalyticsWorkspaceResourceId string = logAnalyticsWorkspace.id
+output logAnalyticsWorkspaceResourceId string = logAnalyticsWorkspace.outputs.resourceId
 
 @description('The resource ID of the created Action Group.')
 output actionGroupResourceId string = actionGroup.id
