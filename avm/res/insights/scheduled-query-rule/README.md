@@ -1,5 +1,10 @@
 # Scheduled Query Rules `[Microsoft.Insights/scheduledQueryRules]`
 
+> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
+> 
+> - Only security and bug fixes are being handled by the AVM core team at present.
+> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
+
 This module deploys a Scheduled Query Rule.
 
 ## Navigation
@@ -243,11 +248,9 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
       actionGroupResourceIds: [
         '<actionGroupResourceId>'
       ]
-      actionProperties: {
-        'Icm.propertyA': 'valueA'
-      }
       customProperties: {
-        propertyB: 'valueB'
+        'Additional Details': 'Evaluation windowStartTime: \${data.alertContext.condition.windowStartTime}. windowEndTime: \${data.alertContext.condition.windowEndTime}'
+        'Alert \${data.essentials.monitorCondition} reason': '\${data.alertContext.condition.allOf[0].metricName} \${data.alertContext.condition.allOf[0].operator} \${data.alertContext.condition.allOf[0].threshold} \${data.essentials.monitorCondition}. The value is \${data.alertContext.condition.allOf[0].metricValue}'
       }
     }
     alertDescription: 'My sample Alert'
@@ -352,11 +355,9 @@ module scheduledQueryRule 'br/public:avm/res/insights/scheduled-query-rule:<vers
         "actionGroupResourceIds": [
           "<actionGroupResourceId>"
         ],
-        "actionProperties": {
-          "Icm.propertyA": "valueA"
-        },
         "customProperties": {
-          "propertyB": "valueB"
+          "Additional Details": "Evaluation windowStartTime: \\${data.alertContext.condition.windowStartTime}. windowEndTime: \\${data.alertContext.condition.windowEndTime}",
+          "Alert \\${data.essentials.monitorCondition} reason": "\\${data.alertContext.condition.allOf[0].metricName} \\${data.alertContext.condition.allOf[0].operator} \\${data.alertContext.condition.allOf[0].threshold} \\${data.essentials.monitorCondition}. The value is \\${data.alertContext.condition.allOf[0].metricValue}"
         }
       }
     },
@@ -477,11 +478,9 @@ param actions = {
   actionGroupResourceIds: [
     '<actionGroupResourceId>'
   ]
-  actionProperties: {
-    'Icm.propertyA': 'valueA'
-  }
   customProperties: {
-    propertyB: 'valueB'
+    'Additional Details': 'Evaluation windowStartTime: \${data.alertContext.condition.windowStartTime}. windowEndTime: \${data.alertContext.condition.windowEndTime}'
+    'Alert \${data.essentials.monitorCondition} reason': '\${data.alertContext.condition.allOf[0].metricName} \${data.alertContext.condition.allOf[0].operator} \${data.alertContext.condition.allOf[0].threshold} \${data.essentials.monitorCondition}. The value is \${data.alertContext.condition.allOf[0].metricValue}'
   }
 }
 param alertDescription = 'My sample Alert'
@@ -1130,6 +1129,7 @@ List of resource type of the target resource(s) on which the alert is created/up
 | `name` | string | The Name of the created scheduled query rule. |
 | `resourceGroupName` | string | The Resource Group of the created scheduled query rule. |
 | `resourceId` | string | The resource ID of the created scheduled query rule. |
+| `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 
 ## Cross-referenced modules
 
