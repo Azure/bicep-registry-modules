@@ -144,15 +144,15 @@ module testDeployment '../../../main.bicep' = [
               resourceGroup.name,
               backupPolicyName
             )
-            // policyParameters: {
-            //   dataStoreParametersList: [
-            //     {
-            //       objectType: 'AzureOperationalStoreParameters'
-            //       dataStoreType: 'OperationalStore'
-            //       resourceGroupId: resourceGroup().id
-            //     }
-            //   ]
-            // }
+            policyParameters: {
+              dataStoreParametersList: [
+                {
+                  objectType: 'AzureOperationalStoreParameters'
+                  dataStoreType: 'OperationalStore'
+                  resourceGroupId: resourceGroup.id
+                }
+              ]
+            }
           }
         }
       ]
