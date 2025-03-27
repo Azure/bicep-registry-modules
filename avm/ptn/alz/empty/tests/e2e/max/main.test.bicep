@@ -159,20 +159,20 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
-      // managementGroupCustomPolicySetDefinitions: [
-      //   for policy in alzCustomPolicySetDefsJson: {
-      //     name: policy.name
-      //     properties: {
-      //       description: policy.properties.description
-      //       displayName: policy.properties.displayName
-      //       metadata: policy.properties.metadata
-      //       parameters: policy.properties.parameters
-      //       policyType: policy.properties.policyType
-      //       version: policy.properties.version
-      //       policyDefinitions: policy.properties.policyDefinitions
-      //     }
-      //   }
-      // ]
+      managementGroupCustomPolicySetDefinitions: [
+        for policy in alzCustomPolicySetDefsJson: {
+          name: policy.name
+          properties: {
+            description: policy.properties.description
+            displayName: policy.properties.displayName
+            metadata: policy.properties.metadata
+            parameters: policy.properties.parameters
+            policyType: policy.properties.policyType
+            version: policy.properties.version
+            policyDefinitions: policy.properties.policyDefinitions
+          }
+        }
+      ]
     }
   }
 ]

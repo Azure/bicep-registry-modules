@@ -158,16 +158,16 @@ module mgCustomPolicyDefinitions 'modules/policy-definitions/main.bicep' = if (!
 }
 
 // Custom Policy Set Definitions/Initiatives Created on Management Group (Optional)
-// module mgCustomPolicySetDefinitions 'modules/policy-set-definitions/main.bicep' = if (!empty(managementGroupCustomPolicySetDefinitions)) {
-//   scope: managementGroup(managementGroupName)
-//   dependsOn: [
-//     mgCustomPolicyDefinitions
-//   ]
-//   name: deploymentNames.mgPolicySetDefinitions
-//   params: {
-//     managementGroupCustomPolicySetDefinitions: managementGroupCustomPolicySetDefinitions
-//   }
-// }
+module mgCustomPolicySetDefinitions 'modules/policy-set-definitions/main.bicep' = if (!empty(managementGroupCustomPolicySetDefinitions)) {
+  scope: managementGroup(managementGroupName)
+  dependsOn: [
+    mgCustomPolicyDefinitions
+  ]
+  name: deploymentNames.mgPolicySetDefinitions
+  params: {
+    managementGroupCustomPolicySetDefinitions: managementGroupCustomPolicySetDefinitions
+  }
+}
 
 // Policy Assignments Created on Management Group (Optional)
 // ***** Add support for versioning and assignment type *****
@@ -176,7 +176,7 @@ module mgPolicyAssignments 'br/public:avm/ptn/authorization/policy-assignment:0.
     scope: managementGroup(managementGroupName)
     dependsOn: [
       mgCustomPolicyDefinitions
-      // mgCustomPolicySetDefinitions
+      mgCustomPolicySetDefinitions
     ]
     name: take('${deploymentNames.mgPolicyAssignments}-${uniqueString(managementGroupName, polAsi.name)}', 64)
     params: {

@@ -7,22 +7,22 @@ resource mgCustomPolicySetDefinitions 'Microsoft.Authorization/policySetDefiniti
   for (polSetDef, index) in (managementGroupCustomPolicySetDefinitions ?? []): {
     name: polSetDef.name
     properties: {
-      description: polSetDef.properties.description
-      displayName: polSetDef.properties.displayName
-      metadata: polSetDef.properties.metadata
-      parameters: polSetDef.properties.parameters
-      policyType: polSetDef.properties.policyType
-      version: polSetDef.properties.version
+      description: polSetDef.properties.?description
+      displayName: polSetDef.properties.?displayName
+      metadata: polSetDef.properties.?metadata
+      parameters: polSetDef.properties.?parameters
+      policyType: polSetDef.properties.?policyType
+      version: polSetDef.properties.?version
       policyDefinitions: [
-        for polDef in polSetDef.libSetChildDefinitions: {
-          policyDefinitionReferenceId: polDef.definitionReferenceId
-          policyDefinitionId: polDef.definitionId
-          parameters: polDef.definitionParameters
-          groupNames: polDef.definitionGroups
-          definitionVersion: polDef.definitionVersion
+        for polDef in polSetDef.properties.policyDefinitions: {
+          policyDefinitionReferenceId: polDef.?policyDefinitionReferenceId
+          policyDefinitionId: polDef.policyDefinitionId
+          parameters: polDef.?parameters
+          groupNames: polDef.?groupNames
+          definitionVersion: polDef.?definitionVersion
         }
       ]
-      policyDefinitionGroups: polSetDef.properties.policyDefinitionGroups
+      policyDefinitionGroups: polSetDef.properties.?policyDefinitionGroups
     }
   }
 ]
