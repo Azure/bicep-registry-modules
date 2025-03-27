@@ -59,7 +59,7 @@ param customRdpProperty string = 'audiocapturemode:i:1;audiomode:i:0;drivestored
 param validationEnvironment bool = false
 
 @sys.description('Optional. The necessary information for adding more VMs to this Host Pool.')
-param vmTemplate object?
+param vmTemplate object = {}
 
 @sys.description('Optional. Host Pool token validity length. Usage: \'PT8H\' - valid for 8 hours; \'P5D\' - valid for 5 days; \'P1Y\' - valid for 1 year. When not provided, the token will be valid for 8 hours.')
 param tokenValidityLength string = 'PT8H'

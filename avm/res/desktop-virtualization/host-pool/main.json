@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "16208398470759954236"
+      "templateHash": "12813112284970416578"
     },
     "name": "Azure Virtual Desktop Host Pool",
     "description": "This module deploys an Azure Virtual Desktop Host Pool"
@@ -638,7 +638,7 @@
     },
     "vmTemplate": {
       "type": "object",
-      "nullable": true,
+      "defaultValue": {},
       "metadata": {
         "description": "Optional. The necessary information for adding more VMs to this Host Pool."
       }

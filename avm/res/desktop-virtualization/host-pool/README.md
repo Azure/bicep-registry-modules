@@ -1576,6 +1576,7 @@ The necessary information for adding more VMs to this Host Pool.
 
 - Required: No
 - Type: object
+- Default: `{}`
 
 ### Parameter: `baseTime`
 
