@@ -65,6 +65,9 @@ resource backupInstance 'Microsoft.DataProtection/backupVaults/backupInstances@2
     // resourceGuardOperationRequests
     // validationType
   }
+  dependsOn: [
+    backupInstance_dataSourceResource_rbac
+  ]
 }
 
 @description('The name of the backup instance.')
