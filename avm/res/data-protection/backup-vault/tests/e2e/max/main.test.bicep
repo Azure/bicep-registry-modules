@@ -282,7 +282,7 @@ module testDeployment '../../../main.bicep' = [
   }
 ]
 
-module postDeployment 'postDeployment.bicep' = {
+module postDeployment 'postdeployment.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
