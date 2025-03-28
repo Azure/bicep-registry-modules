@@ -660,12 +660,6 @@ param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`templateProperties`](#parameter-templateproperties) | object | Template Options for the static site. |
 
-**Condiitonal parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`customPrivateDnsZoneResourceId`](#parameter-customprivatednszoneresourceid) | string | If you choose to create your own private DNS Zone, you can provide the resource ID of the private DNS Zone here. Required if `createPrivateDnsZone` is enabled and a `privateEndpoint` configuration is supplied. |
-
 ### Parameter: `name`
 
 The name of the static site.
@@ -1444,14 +1438,6 @@ Template Options for the static site.
 
 - Required: No
 - Type: object
-
-### Parameter: `customPrivateDnsZoneResourceId`
-
-If you choose to create your own private DNS Zone, you can provide the resource ID of the private DNS Zone here. Required if `createPrivateDnsZone` is enabled and a `privateEndpoint` configuration is supplied.
-
-- Required: No
-- Type: string
-- Default: `''`
 
 ## Outputs
 

@@ -106,9 +106,6 @@ param createPrivateDnsZone string = 'Enabled'
 @description('Conditional. The Virtual Network Resource Id to use for the private DNS Zone Vnet Link. Required if `createPrivateDnsZone` is set to `Enabled` and a Private Endpoint Configuration is supplied.')
 param virtualNetworkResourceId string = ''
 
-@description('Condiitonal. If you choose to create your own private DNS Zone, you can provide the resource ID of the private DNS Zone here. Required if `createPrivateDnsZone` is enabled and a `privateEndpoint` configuration is supplied.')
-param customPrivateDnsZoneResourceId string = ''
-
 var enableReferencedModulesTelemetry = false
 
 var formattedUserAssignedIdentities = reduce(
@@ -327,12 +324,10 @@ module staticSite_privateEndpoints 'br/public:avm/res/network/private-endpoint:0
         'Full'
       ).location
       lock: privateEndpoint.?lock ?? lock
-      privateDnsZoneGroup: {
+      privateDnsZoneGroup: privateEndpoint.?privateDnsZoneGroup ?? {
         privateDnsZoneGroupConfigs: [
           {
-            privateDnsZoneResourceId: (createPrivateDnsZone != 'Disabled')
-              ? staticSite_privateDnsZone.outputs.resourceId
-              : customPrivateDnsZoneResourceId
+            privateDnsZoneResourceId: staticSite_privateDnsZone.outputs.resourceId
           }
         ]
       }

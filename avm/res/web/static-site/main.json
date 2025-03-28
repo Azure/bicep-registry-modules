@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "14435545802396424419"
+      "templateHash": "16268801724082727900"
     },
     "name": "Static Web Apps",
     "description": "This module deploys a Static Web App."
@@ -664,13 +664,6 @@
       "defaultValue": "",
       "metadata": {
         "description": "Conditional. The Virtual Network Resource Id to use for the private DNS Zone Vnet Link. Required if `createPrivateDnsZone` is set to `Enabled` and a Private Endpoint Configuration is supplied."
-      }
-    },
-    "customPrivateDnsZoneResourceId": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Condiitonal. If you choose to create your own private DNS Zone, you can provide the resource ID of the private DNS Zone here. Required if `createPrivateDnsZone` is enabled and a `privateEndpoint` configuration is supplied."
       }
     }
   },
@@ -4239,13 +4232,7 @@
             "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'lock'), parameters('lock'))]"
           },
           "privateDnsZoneGroup": {
-            "value": {
-              "privateDnsZoneGroupConfigs": [
-                {
-                  "privateDnsZoneResourceId": "[if(not(equals(parameters('createPrivateDnsZone'), 'Disabled')), reference('staticSite_privateDnsZone').outputs.resourceId.value, parameters('customPrivateDnsZoneResourceId'))]"
-                }
-              ]
-            }
+            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateDnsZoneGroup'), createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', reference('staticSite_privateDnsZone').outputs.resourceId.value))))]"
           },
           "roleAssignments": {
             "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'roleAssignments')]"
