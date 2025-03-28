@@ -188,40 +188,40 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       backupInstances: [
-        {
-          name: nestedDependencies.outputs.storageAccountName
-          dataSourceInfo: {
-            objectType: 'Datasource'
-            resourceID: nestedDependencies.outputs.storageAccountResourceId
-            resourceName: nestedDependencies.outputs.storageAccountName
-            resourceType: 'Microsoft.Storage/storageAccounts'
-            resourceUri: nestedDependencies.outputs.storageAccountResourceId
-            resourceLocation: resourceLocation
-            datasourceType: 'Microsoft.Storage/storageAccounts/blobServices'
-          }
-          dataSourceSetInfo: {
-            objectType: 'DatasourceSet'
-            resourceID: nestedDependencies.outputs.storageAccountResourceId
-            resourceName: nestedDependencies.outputs.storageAccountName
-            resourceType: 'Microsoft.Storage/storageAccounts'
-            resourceUri: nestedDependencies.outputs.storageAccountResourceId
-            resourceLocation: resourceLocation
-            datasourceType: 'Microsoft.Storage/storageAccounts/blobServices'
-          }
-          policyInfo: {
-            policyName: blobBackupPolicyName
-            policyParameters: {
-              backupDatasourceParametersList: [
-                {
-                  objectType: 'BlobBackupDatasourceParameters'
-                  containersList: [
-                    'container001'
-                  ]
-                }
-              ]
-            }
-          }
-        }
+        // {
+        //   name: nestedDependencies.outputs.storageAccountName
+        //   dataSourceInfo: {
+        //     objectType: 'Datasource'
+        //     resourceID: nestedDependencies.outputs.storageAccountResourceId
+        //     resourceName: nestedDependencies.outputs.storageAccountName
+        //     resourceType: 'Microsoft.Storage/storageAccounts'
+        //     resourceUri: nestedDependencies.outputs.storageAccountResourceId
+        //     resourceLocation: resourceLocation
+        //     datasourceType: 'Microsoft.Storage/storageAccounts/blobServices'
+        //   }
+        //   dataSourceSetInfo: {
+        //     objectType: 'DatasourceSet'
+        //     resourceID: nestedDependencies.outputs.storageAccountResourceId
+        //     resourceName: nestedDependencies.outputs.storageAccountName
+        //     resourceType: 'Microsoft.Storage/storageAccounts'
+        //     resourceUri: nestedDependencies.outputs.storageAccountResourceId
+        //     resourceLocation: resourceLocation
+        //     datasourceType: 'Microsoft.Storage/storageAccounts/blobServices'
+        //   }
+        //   policyInfo: {
+        //     policyName: blobBackupPolicyName
+        //     policyParameters: {
+        //       backupDatasourceParametersList: [
+        //         {
+        //           objectType: 'BlobBackupDatasourceParameters'
+        //           containersList: [
+        //             'container001'
+        //           ]
+        //         }
+        //       ]
+        //     }
+        //   }
+        // }
         {
           name: nestedDependencies.outputs.diskName
           dataSourceInfo: {
@@ -282,53 +282,17 @@ module testDeployment '../../../main.bicep' = [
   }
 ]
 
-// resource backupVault 'Microsoft.DataProtection/backupVaults@2023-05-01' existing = {
-//   name: '${namePrefix}${serviceShort}001'
-
-//   resource backupPolicy 'backupPolicies@2023-05-01' existing = {
-//     name: policyInfo.policyName
-//   }
-// }
-
-// resource backupInstance 'Microsoft.DataProtection/backupVaults/backupInstances@2022-05-01' = {
-//   parent: vault
-//   name: storageAccountName
-//   properties: {
-//     objectType: 'BackupInstance'
-//     friendlyName: storageAccountName
-//     dataSourceInfo: {
-//       objectType: 'Datasource'
-//       resourceID: storageAccount.id
-//       resourceName: storageAccountName
-//       resourceType: resourceType
-//       resourceUri: storageAccount.id
-//       resourceLocation: location
-//       datasourceType: dataSourceType
-//     }
-//     dataSourceSetInfo: {
-//       objectType: 'DatasourceSet'
-//       resourceID: storageAccount.id
-//       resourceName: storageAccountName
-//       resourceType: resourceType
-//       resourceUri: storageAccount.id
-//       resourceLocation: location
-//       datasourceType: dataSourceType
-//     }
-//     policyInfo: {
-//       policyId: backupPolicy.id
-//       name: backupPolicyName
-//       policyParameters: {
-//         backupDatasourceParametersList: [
-//           {
-//             objectType: 'BlobBackupDatasourceParameters'
-//             containersList: containerList
-//           }
-//         ]
-//       }
-//     }
-//   }
-//   dependsOn: [
-//     roleAssignment
-//     storageContainerList
-//   ]
-// }
+module postDeployment 'postDeployment.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  params: {
+    storageAccountName: 'dep${namePrefix}sa${serviceShort}01'
+    storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
+    backupVaultName: '${namePrefix}${serviceShort}001'
+    blobBackupPolicyName: blobBackupPolicyName
+    location: resourceLocation
+  }
+  dependsOn: [
+    testDeployment
+  ]
+}
