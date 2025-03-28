@@ -1,6 +1,41 @@
 @description('Optional. The location to deploy to.')
 param location string = resourceGroup().location
 
+@description('Operational tier backup retention duration in days')
+@minValue(1)
+@maxValue(360)
+param operationalTierRetentionInDays int = 30
+
+@description('Vault tier default backup retention duration in days')
+@minValue(7)
+@maxValue(3650)
+param vaultTierDefaultRetentionInDays int = 30
+
+@description('Vault tier weekly backup retention duration in weeks')
+@minValue(4)
+@maxValue(521)
+param vaultTierWeeklyRetentionInWeeks int = 30
+
+@description('Vault tier monthly backup retention duration in months')
+@minValue(5)
+@maxValue(116)
+param vaultTierMonthlyRetentionInMonths int = 30
+
+@description('Vault tier yearly backup retention duration in years')
+@minValue(1)
+@maxValue(10)
+param vaultTierYearlyRetentionInYears int = 10
+
+@description('Vault tier daily backup schedule time')
+param vaultTierDailyBackupScheduleTime string = '06:00'
+
+var operationalTierRetentionDuration = 'P${operationalTierRetentionInDays}D'
+var vaultTierDefaultRetentionDuration = 'P${vaultTierDefaultRetentionInDays}D'
+var vaultTierWeeklyRetentionDuration = 'P${vaultTierWeeklyRetentionInWeeks}W'
+var vaultTierMonthlyRetentionDuration = 'P${vaultTierMonthlyRetentionInMonths}M'
+var vaultTierYearlyRetentionDuration = 'P${vaultTierYearlyRetentionInYears}Y'
+var repeatingTimeIntervals = 'R/2024-05-06T${vaultTierDailyBackupScheduleTime}:00+00:00/P1D'
+
 param backupVaultName string
 
 param blobBackupPolicyName string
@@ -14,8 +49,190 @@ param storageAccountResourceId string
 resource backupVault 'Microsoft.DataProtection/backupVaults@2023-05-01' existing = {
   name: backupVaultName
 
-  resource backupPolicy 'backupPolicies@2023-05-01' existing = {
-    name: blobBackupPolicyName
+  // resource backupPolicy 'backupPolicies@2023-05-01' existing = {
+  //   name: blobBackupPolicyName
+  // }
+}
+
+resource backupPolicy 'Microsoft.DataProtection/backupVaults/backupPolicies@2022-05-01' = {
+  parent: backupVault
+  name: blobBackupPolicyName
+  properties: {
+    policyRules: [
+      {
+        name: 'Default'
+        objectType: 'AzureRetentionRule'
+        isDefault: true
+        lifecycles: [
+          {
+            deleteAfter: {
+              duration: operationalTierRetentionDuration
+              objectType: 'AbsoluteDeleteOption'
+            }
+            sourceDataStore: {
+              dataStoreType: 'OperationalStore'
+              objectType: 'DataStoreInfoBase'
+            }
+            targetDataStoreCopySettings: []
+          }
+        ]
+      }
+      {
+        name: 'Yearly'
+        objectType: 'AzureRetentionRule'
+        isDefault: false
+        lifecycles: [
+          {
+            deleteAfter: {
+              duration: vaultTierYearlyRetentionDuration
+              objectType: 'AbsoluteDeleteOption'
+            }
+            sourceDataStore: {
+              dataStoreType: 'VaultStore'
+              objectType: 'DataStoreInfoBase'
+            }
+            targetDataStoreCopySettings: []
+          }
+        ]
+      }
+      {
+        name: 'Monthly'
+        objectType: 'AzureRetentionRule'
+        isDefault: false
+        lifecycles: [
+          {
+            deleteAfter: {
+              duration: vaultTierMonthlyRetentionDuration
+              objectType: 'AbsoluteDeleteOption'
+            }
+            sourceDataStore: {
+              dataStoreType: 'VaultStore'
+              objectType: 'DataStoreInfoBase'
+            }
+            targetDataStoreCopySettings: []
+          }
+        ]
+      }
+      {
+        name: 'Weekly'
+        objectType: 'AzureRetentionRule'
+        isDefault: false
+        lifecycles: [
+          {
+            deleteAfter: {
+              duration: vaultTierWeeklyRetentionDuration
+              objectType: 'AbsoluteDeleteOption'
+            }
+            sourceDataStore: {
+              dataStoreType: 'VaultStore'
+              objectType: 'DataStoreInfoBase'
+            }
+            targetDataStoreCopySettings: []
+          }
+        ]
+      }
+      {
+        name: 'Default'
+        objectType: 'AzureRetentionRule'
+        isDefault: true
+        lifecycles: [
+          {
+            deleteAfter: {
+              duration: vaultTierDefaultRetentionDuration
+              objectType: 'AbsoluteDeleteOption'
+            }
+            sourceDataStore: {
+              dataStoreType: 'VaultStore'
+              objectType: 'DataStoreInfoBase'
+            }
+            targetDataStoreCopySettings: []
+          }
+        ]
+      }
+      {
+        name: 'BackupDaily'
+        objectType: 'AzureBackupRule'
+        backupParameters: {
+          backupType: 'Discrete'
+          objectType: 'AzureBackupParams'
+        }
+        dataStore: {
+          dataStoreType: 'VaultStore'
+          objectType: 'DataStoreInfoBase'
+        }
+        trigger: {
+          schedule: {
+            timeZone: 'UTC'
+            repeatingTimeIntervals: [
+              repeatingTimeIntervals
+            ]
+          }
+          taggingCriteria: [
+            {
+              isDefault: false
+              taggingPriority: 10
+              tagInfo: {
+                id: 'Yearly_'
+                tagName: 'Yearly'
+              }
+              criteria: [
+                {
+                  absoluteCriteria: [
+                    'FirstOfYear'
+                  ]
+                  objectType: 'ScheduleBasedBackupCriteria'
+                }
+              ]
+            }
+            {
+              isDefault: false
+              taggingPriority: 15
+              tagInfo: {
+                id: 'Monthly_'
+                tagName: 'Monthly'
+              }
+              criteria: [
+                {
+                  absoluteCriteria: [
+                    'FirstOfMonth'
+                  ]
+                  objectType: 'ScheduleBasedBackupCriteria'
+                }
+              ]
+            }
+            {
+              isDefault: false
+              taggingPriority: 20
+              tagInfo: {
+                id: 'Weekly_'
+                tagName: 'Weekly'
+              }
+              criteria: [
+                {
+                  absoluteCriteria: [
+                    'FirstOfWeek'
+                  ]
+                  objectType: 'ScheduleBasedBackupCriteria'
+                }
+              ]
+            }
+            {
+              isDefault: true
+              taggingPriority: 99
+              tagInfo: {
+                id: 'Default_'
+                tagName: 'Default'
+              }
+            }
+          ]
+          objectType: 'ScheduleBasedTriggerContext'
+        }
+      }
+    ]
+    datasourceTypes: [
+      'Microsoft.Storage/storageAccounts/blobServices'
+    ]
+    objectType: 'BackupPolicy'
   }
 }
 
@@ -111,4 +328,7 @@ module backupInstance '../../../backup-instance/main.bicep' = {
       }
     }
   }
+  dependsOn: [
+    backupPolicy
+  ]
 }
