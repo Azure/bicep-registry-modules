@@ -21,7 +21,7 @@ param billingType string = 'MeteredData'
 ])
 param encapsulation string = 'Dot1Q'
 
-@description('Optional. Properties of the ExpressRouteLink type.')
+@description('Optional. The set of physical links of the ExpressRoutePort resource.')
 param links linkType[]?
 
 @description('Required. This is the name of the peering location and not the ARM resource location. It must exactly match one of the available peering locations from List ExpressRoute Service Providers API call.')
