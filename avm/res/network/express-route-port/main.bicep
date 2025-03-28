@@ -21,7 +21,7 @@ param billingType string = 'MeteredData'
 ])
 param encapsulation string = 'Dot1Q'
 
-@description('Optional. Properties of the ExpressRouteLink.')
+@description('Optional. Properties of the ExpressRouteLink type.')
 param links linkType[]?
 
 @description('Required. This is the name of the peering location and not the ARM resource location. It must exactly match one of the available peering locations from List ExpressRoute Service Providers API call.')
@@ -37,6 +37,10 @@ param lock lockType?
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
+
+import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
+@description('Optional. The managed identity definition for this resource.')
+param managedIdentities managedIdentityOnlyUserAssignedType?
 
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
@@ -73,6 +77,19 @@ var formattedRoleAssignments = [
   })
 ]
 
+var formattedUserAssignedIdentities = reduce(
+  map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
+  {},
+  (cur, next) => union(cur, next)
+) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
+
+var identity = !empty(managedIdentities)
+  ? {
+      type: !empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None'
+      userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
+    }
+  : null
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.network-expressrouteport.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
@@ -107,6 +124,7 @@ resource expressRoutePort 'Microsoft.Network/ExpressRoutePorts@2024-05-01' = {
   name: name
   location: location
   tags: tags
+  identity: identity
   properties: {
     bandwidthInGbps: bandwidthInGbps
     billingType: billingType

@@ -11,3 +11,6 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-
 
 @description('The principal ID of the created Managed Identity.')
 output managedIdentityPrincipalId string = managedIdentity.properties.principalId
+
+@description('The ID of the created Managed Identity.')
+output managedIdentityId string = managedIdentity.id
