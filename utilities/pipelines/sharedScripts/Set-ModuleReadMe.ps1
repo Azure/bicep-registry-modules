@@ -1303,7 +1303,7 @@ function ConvertTo-FormattedJSONParameterObject {
         }
 
         # Escape characters that would be invalid in JSON
-        $line = $line -replace '\\$', '\$' # Replace "abc: \${xzy}" with "abc: \\${xzy}"
+        $line = $line -replace '\\\$', '\\$' # Replace "abc: \${xzy}" with "abc: \\${xzy}"
 
         # Overwrite value
         $paramInJSONFormatArray[$index] = $line
