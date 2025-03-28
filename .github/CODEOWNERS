@@ -100,6 +100,7 @@
 /avm/res/hybrid-compute/gateway/ @Azure/avm-res-hybridcompute-gateway-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/hybrid-compute/license/ @Azure/avm-res-hybridcompute-license-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/hybrid-compute/machine/ @Azure/avm-res-hybridcompute-machine-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/res/hybrid-container-service/provisioned-cluster-instance/ @Azure/avm-res-hybridcontainerservice-provisionedclusterinstance-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/insights/action-group/ @Azure/avm-res-insights-actiongroup-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/insights/activity-log-alert/ @Azure/avm-res-insights-activitylogalert-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/insights/component/ @Azure/avm-res-insights-component-module-owners-bicep @Azure/avm-module-reviewers-bicep

@@ -1,4 +1,4 @@
-name: "avm.ptn.mgmt-groups.subscription-placement"
+name: "avm.res.hybrid-container-service.provisioned-cluster-instance"
 
 on:
   workflow_dispatch:
@@ -18,21 +18,25 @@ on:
         description: "Remove deployed module"
         required: false
         default: true
+      customLocation:
+        type: string
+        description: "Default location overwrite (e.g., eastus)"
+        required: false
   push:
     branches:
       - main
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
-      - ".github/workflows/avm.ptn.mgmt-groups.subscription-placement.yml"
-      - "avm/ptn/mgmt-groups/subscription-placement/**"
-      - "utilities/pipelines/**"
-      - "!utilities/pipelines/platform/**"
+      - ".github/workflows/avm.res.hybrid-container-service.provisioned-cluster-instance.yml"
+      - "avm/res/hybrid-container-service/provisioned-cluster-instance/**"
+      - "avm/utilities/pipelines/**"
+      - "!avm/utilities/pipelines/platform/**"
       - "!*/**/README.md"
 
 env:
-  modulePath: "avm/ptn/mgmt-groups/subscription-placement"
-  workflowPath: ".github/workflows/avm.ptn.mgmt-groups.subscription-placement.yml"
+  modulePath: "avm/res/hybrid-container-service/provisioned-cluster-instance"
+  workflowPath: ".github/workflows/avm.res.hybrid-container-service.provisioned-cluster-instance.yml"
 
 concurrency:
   group: ${{ github.workflow }}
