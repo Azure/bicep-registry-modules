@@ -19,21 +19,66 @@ resource backupVault 'Microsoft.DataProtection/backupVaults@2023-05-01' existing
   }
 }
 
-module backupInstance_dataSourceResource_rbac '../../../backup-instance/modules/nested_dataSourceResourceRoleAssignment.bicep' = {
-  name: '${backupVault.name}-dataSourceResource-rbac'
-  // scope: resourceGroup(split(dataSourceInfo.resourceID, '/')[2], split(dataSourceInfo.resourceID, '/')[4])
-  params: {
-    resourceId: storageAccountResourceId
-    principalId: backupVault.identity.principalId
-  }
-}
+// module backupInstance_dataSourceResource_rbac '../../../backup-instance/modules/nested_dataSourceResourceRoleAssignment.bicep' = {
+//   name: '${backupVault.name}-dataSourceResource-rbac'
+//   // scope: resourceGroup(split(dataSourceInfo.resourceID, '/')[2], split(dataSourceInfo.resourceID, '/')[4])
+//   params: {
+//     resourceId: storageAccountResourceId
+//     principalId: backupVault.identity.principalId
+//   }
+// }
 
-resource backupInstance 'Microsoft.DataProtection/backupVaults/backupInstances@2024-04-01' = {
-  parent: backupVault
+// resource backupInstance 'Microsoft.DataProtection/backupVaults/backupInstances@2024-04-01' = {
+//   parent: backupVault
+//   name: storageAccountName
+//   properties: {
+//     objectType: 'BackupInstance'
+//     friendlyName: storageAccountName
+//     dataSourceInfo: {
+//       objectType: 'Datasource'
+//       resourceID: storageAccountResourceId
+//       resourceName: storageAccountName
+//       resourceType: 'Microsoft.Storage/storageAccounts'
+//       resourceUri: storageAccountResourceId
+//       resourceLocation: location
+//       datasourceType: 'Microsoft.Storage/storageAccounts/blobServices'
+//     }
+//     dataSourceSetInfo: {
+//       objectType: 'DatasourceSet'
+//       resourceID: storageAccountResourceId
+//       resourceName: storageAccountName
+//       resourceType: 'Microsoft.Storage/storageAccounts'
+//       resourceUri: storageAccountResourceId
+//       resourceLocation: location
+//       datasourceType: 'Microsoft.Storage/storageAccounts/blobServices'
+//     }
+//     policyInfo: {
+//       policyId: backupVault::backupPolicy.id
+//       // name: blobBackupPolicyName
+//       policyParameters: {
+//         backupDatasourceParametersList: [
+//           {
+//             objectType: 'BlobBackupDatasourceParameters'
+//             containersList: [
+//               'container001'
+//             ]
+//           }
+//         ]
+//       }
+//     }
+//   }
+//   dependsOn: [
+//     backupInstance_dataSourceResource_rbac
+//   ]
+// }
+
+module backupInstance '../../../backup-instance/main.bicep' = {
+  // parent: backupVault
   name: storageAccountName
-  properties: {
-    objectType: 'BackupInstance'
-    friendlyName: storageAccountName
+  params: {
+    backupVaultName: backupVaultName
+    name: storageAccountName
+    // friendlyName: storageAccountName
     dataSourceInfo: {
       objectType: 'Datasource'
       resourceID: storageAccountResourceId
@@ -53,8 +98,7 @@ resource backupInstance 'Microsoft.DataProtection/backupVaults/backupInstances@2
       datasourceType: 'Microsoft.Storage/storageAccounts/blobServices'
     }
     policyInfo: {
-      policyId: backupVault::backupPolicy.id
-      // name: blobBackupPolicyName
+      policyName: blobBackupPolicyName
       policyParameters: {
         backupDatasourceParametersList: [
           {
@@ -67,7 +111,4 @@ resource backupInstance 'Microsoft.DataProtection/backupVaults/backupInstances@2
       }
     }
   }
-  dependsOn: [
-    backupInstance_dataSourceResource_rbac
-  ]
 }
