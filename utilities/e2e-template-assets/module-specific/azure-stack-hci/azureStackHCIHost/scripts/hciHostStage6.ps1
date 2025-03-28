@@ -327,7 +327,81 @@ $arcInitializationJobs = Invoke-Command -VMName (Get-VM).Name -Credential $admin
     }
 
     try {
-        Invoke-AzStackHciArcInitialization -SubscriptionID $subscriptionId -ResourceGroup $resourceGroupName -TenantID $tenantId -Cloud AzureCloud -AccountID $accountName -ArmAccessToken $t -Region $location -ErrorAction Stop @optionalParameters
+        # Invoke-AzStackHciArcInitialization -SubscriptionID $subscriptionId -ResourceGroup $resourceGroupName -TenantID $tenantId -Cloud AzureCloud -AccountID $accountName -ArmAccessToken $t -Region $location -ErrorAction Stop @optionalParameters
+
+        function Install-ModuleIfMissing {
+            param(
+                [Parameter(Mandatory = $true)]
+                [string]$Name,
+                [Parameter(Mandatory = $false)]
+                [string]$Repository = 'PSGallery',
+                [Parameter(Mandatory = $false)]
+                [switch]$Force,
+                [Parameter(Mandatory = $false)]
+                [switch]$AllowClobber
+            )
+            $module = Get-Module -Name $Name -ListAvailable
+            if (!$module) {
+                Install-Module -Name $Name -Repository $Repository -Force:$Force -AllowClobber:$AllowClobber
+            }
+        }
+
+        wget -Uri 'https://aka.ms/AzureConnectedMachineAgent' -OutFile "$env:TEMP\AzureConnectedMachineAgent.msi"
+        msiexec /i "$env:TEMP\AzureConnectedMachineAgent.msi" /l*v "$env:TEMP\AzureConnectedMachineAgentInstall.log" /qn
+
+        Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force -Confirm:$false
+        Install-ModuleIfMissing -Name Az -Repository PSGallery -Force
+        Install-ModuleIfMissing -Name Az.Accounts -Force -AllowClobber
+        Install-ModuleIfMissing -Name Az.ConnectedMachine -Force -AllowClobber
+        Install-ModuleIfMissing -Name Az.Resources -Force -AllowClobber
+
+        $machineName = [System.Net.Dns]::GetHostName()
+        $correlationID = New-Guid
+
+        $azcmagentPath = "$env:ProgramW6432\AzureConnectedMachineAgent\azcmagent.exe"
+        & "$azcmagentPath" --version
+        & "$azcmagentPath" connect --resource-group "$resourceGroupName" --resource-name "$machineName" --tenant-id "$tenantId" --location "$location" --subscription-id "$subscriptionId" --cloud 'AzureCloud' --correlation-id "$correlationID" --access-token "$t";
+        if ($LASTEXITCODE -ne 0) {
+            throw 'Arc server connection failed'
+        }
+
+        Write-Output 'PUT edge device resource to install mandatory extensions'
+        $uri = "https://management.azure.com/subscriptions/$subscriptionId/resourceGroups/$resourceGroupName/providers/Microsoft.HybridCompute/machines/$machineName/providers/Microsoft.AzureStackHCI/edgeDevices/default?api-version=2024-04-01"
+        $body = @{
+            'kind'       = 'HCI';
+            'properties' = @{};
+        }
+        $headers = @{
+            'Authorization' = "Bearer $t";
+        }
+        Invoke-RestMethod -Uri $uri -Method Put -Headers $headers -Body ($body | ConvertTo-Json) -ContentType 'application/json'
+
+        Write-Output 'Waiting for Edge device resource to be ready'
+        Start-Sleep -Seconds 600
+        $waitInterval = 60
+        $maxWaitCount = 15
+        $ready = $false
+        for ($waitCount = 0; $job.JobState -ne 'Transferred' -and $waitCount -lt $maxWaitCount; $waitCount++) {
+            $headers = @{
+                'Authorization' = "Bearer $t";
+            }
+            try {
+                $response = Invoke-RestMethod -Uri $uri -Method Get -Headers $headers
+                if ($response.properties.provisioningState -eq 'Succeeded') {
+                    $ready = $true
+                    break
+                }
+            } catch {
+                Write-Output "Failed to get Edge device resource: $_"
+            } finally {
+                Write-Output 'Waiting for Edge device resource to be ready'
+                Start-Sleep -Seconds $waitInterval
+            }
+        }
+
+        if (!$ready) {
+            throw 'Edge device resource is not ready after 30 minutes.'
+        }
     } catch {
         Write-Error $_ -ErrorAction Stop
     }
