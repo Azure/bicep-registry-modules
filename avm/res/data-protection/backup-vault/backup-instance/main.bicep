@@ -72,7 +72,6 @@ resource backupInstance 'Microsoft.DataProtection/backupVaults/backupInstances@2
     // tags: tags
     // datasourceAuthCredentials
     // identityDetails
-    // dataSourceSetInfo
     // friendlyName
     // resourceGuardOperationRequests
     // validationType
