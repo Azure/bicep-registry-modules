@@ -21,22 +21,22 @@ param volumes volumeType[]?
 @sys.description('Optional. List of Virtual Network Rules, permitting virtual network subnet to connect to the resource through service endpoint. Each Elastic SAN Volume Group supports up to 200 virtual network rules.')
 param virtualNetworkRules virtualNetworkRuleType[]?
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @sys.description('Optional. The managed identity definition for this resource. The Elastic SAN Volume Group supports the following identity combinations: no identity is specified, only system-assigned identity is specified, only user-assigned identity is specified, and both system-assigned and user-assigned identities are specified. A maximum of one user-assigned identity is supported.')
 param managedIdentities managedIdentityAllType?
 
-import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
+import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @sys.description('Optional. The customer managed key definition. This parameter enables the encryption of Elastic SAN Volume Group using a customer-managed key. Currently, the only supported configuration is to use the same user-assigned identity for both \'managedIdentities.userAssignedResourceIds\' and \'customerManagedKey.userAssignedIdentityResourceId\'. Other configurations such as system-assigned identity are not supported. Ensure that the specified user-assigned identity has the \'Key Vault Crypto Service Encryption User\' role access to both the key vault and the key itself. The key vault must also have purge protection enabled.')
 param customerManagedKey customerManagedKeyType? // This requires KV with enabled purge protection
 
-import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @sys.description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointSingleServiceType[]?
 
 @sys.description('Optional. Tags of the Elastic SAN Volume Group resource.')
 param tags object?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @sys.description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -81,22 +81,22 @@ resource elasticSan 'Microsoft.ElasticSan/elasticSans@2023-01-01' existing = {
 }
 
 resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
-  name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
+  name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
   scope: resourceGroup(
-    split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
-    split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
+    split(customerManagedKey.?keyVaultResourceId!, '/')[2],
+    split(customerManagedKey.?keyVaultResourceId!, '/')[4]
   )
 
   resource cMKKey 'keys@2023-07-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
-    name: customerManagedKey.?keyName ?? 'dummyKey'
+    name: customerManagedKey.?keyName!
   }
 }
 
 resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
-  name: last(split(customerManagedKey.?userAssignedIdentityResourceId ?? 'dummyMsi', '/'))
+  name: last(split(customerManagedKey.?userAssignedIdentityResourceId!, '/'))
   scope: resourceGroup(
-    split((customerManagedKey.?userAssignedIdentityResourceId ?? '//'), '/')[2],
-    split((customerManagedKey.?userAssignedIdentityResourceId ?? '////'), '/')[4]
+    split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[2],
+    split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[4]
   )
 }
 
@@ -120,7 +120,7 @@ resource volumeGroup 'Microsoft.ElasticSan/elasticSans/volumegroups@2023-01-01' 
                 keyName: customerManagedKey!.keyName
                 keyVaultUri: cMKKeyVault.properties.vaultUri
                 keyVersion: !empty(customerManagedKey.?keyVersion ?? '')
-                  ? customerManagedKey!.keyVersion
+                  ? customerManagedKey!.?keyVersion
                   : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
               }
             : null
@@ -145,10 +145,13 @@ module volumeGroup_volumes 'volume/main.bicep' = [
   }
 ]
 
-module volumeGroup_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.9.0' = [
+module volumeGroup_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-ElasticSan-PrivateEndpoint-${index}'
-    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
+    scope: resourceGroup(
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
+    )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(elasticSan.id, '/'))}-${privateEndpoint.?service ?? volumeGroup.name}-${index}'
       privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
@@ -232,20 +235,43 @@ output volumes volumeOutputType[] = [
 ]
 
 @sys.description('The private endpoints of the Elastic SAN Volume Group.')
-output privateEndpoints array = [
-  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
-    name: volumeGroup_privateEndpoints[i].outputs.name
-    location: volumeGroup_privateEndpoints[i].outputs.location
-    resourceId: volumeGroup_privateEndpoints[i].outputs.resourceId
-    groupId: volumeGroup_privateEndpoints[i].outputs.groupId
-    customDnsConfig: volumeGroup_privateEndpoints[i].outputs.customDnsConfig
-    networkInterfaceResourceIds: volumeGroup_privateEndpoints[i].outputs.networkInterfaceResourceIds
+output privateEndpoints privateEndpointOutputType[] = [
+  for (item, index) in (privateEndpoints ?? []): {
+    name: volumeGroup_privateEndpoints[index].outputs.name
+    resourceId: volumeGroup_privateEndpoints[index].outputs.resourceId
+    groupId: volumeGroup_privateEndpoints[index].outputs.?groupId!
+    customDnsConfigs: volumeGroup_privateEndpoints[index].outputs.customDnsConfigs
+    networkInterfaceResourceIds: volumeGroup_privateEndpoints[index].outputs.networkInterfaceResourceIds
   }
 ]
 
 // ================ //
 // Definitions      //
 // ================ //
+
+@export()
+type privateEndpointOutputType = {
+  @description('The name of the private endpoint.')
+  name: string
+
+  @description('The resource ID of the private endpoint.')
+  resourceId: string
+
+  @description('The group Id for the private endpoint Group.')
+  groupId: string?
+
+  @description('The custom DNS configurations of the private endpoint.')
+  customDnsConfigs: {
+    @description('FQDN that resolves to private endpoint IP address.')
+    fqdn: string?
+
+    @description('A list of private IP addresses of the private endpoint.')
+    ipAddresses: string[]
+  }[]
+
+  @description('The IDs of the network interfaces associated with the private endpoint.')
+  networkInterfaceResourceIds: string[]
+}
 
 import { volumeSnapshotType, volumeSnapshotOutputType } from 'volume/main.bicep'
 

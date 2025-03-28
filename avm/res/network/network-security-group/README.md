@@ -8,6 +8,7 @@ This module deploys a Network security Group (NSG).
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -44,10 +45,7 @@ This instance deploys the module with the minimum set of required parameters.
 module networkSecurityGroup 'br/public:avm/res/network/network-security-group:<version>' = {
   name: 'networkSecurityGroupDeployment'
   params: {
-    // Required parameters
     name: 'nnsgmin001'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -64,13 +62,8 @@ module networkSecurityGroup 'br/public:avm/res/network/network-security-group:<v
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
     "name": {
       "value": "nnsgmin001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -86,10 +79,7 @@ module networkSecurityGroup 'br/public:avm/res/network/network-security-group:<v
 ```bicep-params
 using 'br/public:avm/res/network/network-security-group:<version>'
 
-// Required parameters
 param name = 'nnsgmin001'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -563,7 +553,6 @@ module networkSecurityGroup 'br/public:avm/res/network/network-security-group:<v
     // Required parameters
     name: 'nnsgwaf001'
     // Non-required parameters
-    location: '<location>'
     securityRules: [
       {
         name: 'deny-hop-outbound'
@@ -608,9 +597,6 @@ module networkSecurityGroup 'br/public:avm/res/network/network-security-group:<v
       "value": "nnsgwaf001"
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
     "securityRules": {
       "value": [
         {
@@ -655,7 +641,6 @@ using 'br/public:avm/res/network/network-security-group:<version>'
 // Required parameters
 param name = 'nnsgwaf001'
 // Non-required parameters
-param location = '<location>'
 param securityRules = [
   {
     name: 'deny-hop-outbound'
@@ -1095,8 +1080,6 @@ Network protocol this rule applies to.
     'Udp'
   ]
   ```
-- MinValue: 100
-- MaxValue: 4096
 
 ### Parameter: `securityRules.properties.description`
 
@@ -1104,8 +1087,6 @@ The description of the security rule.
 
 - Required: No
 - Type: string
-- MinValue: 100
-- MaxValue: 4096
 
 ### Parameter: `securityRules.properties.destinationAddressPrefix`
 
@@ -1113,8 +1094,6 @@ Optional. The destination address prefix. CIDR or destination IP range. Asterisk
 
 - Required: No
 - Type: string
-- MinValue: 100
-- MaxValue: 4096
 
 ### Parameter: `securityRules.properties.destinationAddressPrefixes`
 
@@ -1122,8 +1101,6 @@ The destination address prefixes. CIDR or destination IP ranges.
 
 - Required: No
 - Type: array
-- MinValue: 100
-- MaxValue: 4096
 
 ### Parameter: `securityRules.properties.destinationApplicationSecurityGroupResourceIds`
 
@@ -1131,8 +1108,6 @@ The resource IDs of the application security groups specified as destination.
 
 - Required: No
 - Type: array
-- MinValue: 100
-- MaxValue: 4096
 
 ### Parameter: `securityRules.properties.destinationPortRange`
 
@@ -1140,8 +1115,6 @@ The destination port or range. Integer or range between 0 and 65535. Asterisk "*
 
 - Required: No
 - Type: string
-- MinValue: 100
-- MaxValue: 4096
 
 ### Parameter: `securityRules.properties.destinationPortRanges`
 
@@ -1149,8 +1122,6 @@ The destination port ranges.
 
 - Required: No
 - Type: array
-- MinValue: 100
-- MaxValue: 4096
 
 ### Parameter: `securityRules.properties.sourceAddressPrefix`
 
@@ -1158,8 +1129,6 @@ The CIDR or source IP range. Asterisk "*" can also be used to match all source I
 
 - Required: No
 - Type: string
-- MinValue: 100
-- MaxValue: 4096
 
 ### Parameter: `securityRules.properties.sourceAddressPrefixes`
 
@@ -1167,8 +1136,6 @@ The CIDR or source IP ranges.
 
 - Required: No
 - Type: array
-- MinValue: 100
-- MaxValue: 4096
 
 ### Parameter: `securityRules.properties.sourceApplicationSecurityGroupResourceIds`
 
@@ -1176,8 +1143,6 @@ The resource IDs of the application security groups specified as source.
 
 - Required: No
 - Type: array
-- MinValue: 100
-- MaxValue: 4096
 
 ### Parameter: `securityRules.properties.sourcePortRange`
 
@@ -1185,8 +1150,6 @@ The source port or range. Integer or range between 0 and 65535. Asterisk "*" can
 
 - Required: No
 - Type: string
-- MinValue: 100
-- MaxValue: 4096
 
 ### Parameter: `securityRules.properties.sourcePortRanges`
 
@@ -1194,8 +1157,6 @@ The source port ranges.
 
 - Required: No
 - Type: array
-- MinValue: 100
-- MaxValue: 4096
 
 ### Parameter: `tags`
 
@@ -1212,6 +1173,14 @@ Tags of the NSG resource.
 | `name` | string | The name of the network security group. |
 | `resourceGroupName` | string | The resource group the network security group was deployed into. |
 | `resourceId` | string | The resource ID of the network security group. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

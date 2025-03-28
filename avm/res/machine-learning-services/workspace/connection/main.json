@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "10473859406464148345"
+      "version": "0.34.1.11899",
+      "templateHash": "4178207464644684155"
     },
     "name": "Machine Learning Services Workspaces Connections",
     "description": "This module creates a connection in a Machine Learning Services workspace."
@@ -60,6 +60,7 @@
         "Dynamics",
         "DynamicsAx",
         "DynamicsCrm",
+        "Elasticsearch",
         "Eloqua",
         "FileServer",
         "FtpServer",
@@ -79,6 +80,7 @@
         "Informix",
         "Jira",
         "Magento",
+        "ManagedOnlineEndpoint",
         "MariaDb",
         "Marketo",
         "MicrosoftAccess",
@@ -95,6 +97,7 @@
         "OracleServiceCloud",
         "PayPal",
         "Phoenix",
+        "Pinecone",
         "PostgreSql",
         "Presto",
         "PythonFeed",
@@ -179,7 +182,7 @@
           }
         },
         "credentials": {
-          "$ref": "#/definitions/workspaceConnectionAccountKey",
+          "$ref": "#/definitions/workspaceConnectionAccountKeyType",
           "metadata": {
             "description": "Required. The credentials for the connection."
           }
@@ -395,7 +398,7 @@
         }
       }
     },
-    "workspaceConnectionAccountKey": {
+    "workspaceConnectionAccountKeyType": {
       "type": "object",
       "properties": {
         "key": {
@@ -441,7 +444,7 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Conditional. The connection auth URL. Required by Concur connection category."
+            "description": "Conditional. The connection auth URL. Required if connection category is Concur."
           }
         },
         "clientId": {
@@ -462,35 +465,35 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Conditional. The connection developer token. Required by GoogleAdWords connection category."
+            "description": "Conditional. The connection developer token. Required if connection category is GoogleAdWords."
           }
         },
         "password": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Conditional. The connection password. Required by Concur and ServiceNow connection categories where AccessToken grant type is 'Password'."
+            "description": "Conditional. The connection password. Required if connection category is Concur or ServiceNow where AccessToken grant type is 'Password'."
           }
         },
         "refreshToken": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Conditional. The connection refresh token. Required by GoogleBigQuery, GoogleAdWords, Hubspot, QuickBooks, Square, Xero and Zoho connection categories."
+            "description": "Conditional. The connection refresh token. Required if connection category is GoogleBigQuery, GoogleAdWords, Hubspot, QuickBooks, Square, Xero or Zoho."
           }
         },
         "tenantId": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Required. The connection tenant ID. Required by QuickBooks and Xero connection categories."
+            "description": "Conditional. The connection tenant ID. Required if connection category is QuickBooks or Xero."
           }
         },
         "username": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Conditional. The connection username. Required by Concur and ServiceNow connection categories where AccessToken grant type is 'Password'."
+            "description": "Conditional. The connection username. Required if connection category is Concur or ServiceNow where AccessToken grant type is 'Password'."
           }
         }
       }
@@ -553,7 +556,7 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Conditional. The connection security token. Required by connections like SalesForce for extra security in addition to 'UsernamePassword'."
+            "description": "Conditional. The connection security token. Required if connection is like SalesForce for extra security in addition to 'UsernamePassword'."
           }
         },
         "username": {
@@ -574,6 +577,9 @@
           },
           "AccessKey": {
             "$ref": "#/definitions/accessKeyAuthTypeWorkspaceConnectionPropertyType"
+          },
+          "AccountKey": {
+            "$ref": "#/definitions/accountKeyAuthTypeWorkspaceConnectionPropertyType"
           },
           "ApiKey": {
             "$ref": "#/definitions/apiKeyAuthWorkspaceConnectionPropertyType"
@@ -688,7 +694,7 @@
     },
     "connection": {
       "type": "Microsoft.MachineLearningServices/workspaces/connections",
-      "apiVersion": "2024-04-01",
+      "apiVersion": "2024-10-01",
       "name": "[format('{0}/{1}', parameters('machineLearningWorkspaceName'), parameters('name'))]",
       "properties": "[union(createObject('category', parameters('category'), 'expiryTime', parameters('expiryTime'), 'isSharedToAll', parameters('isSharedToAll'), 'metadata', parameters('metadata'), 'sharedUserList', parameters('sharedUserList'), 'target', parameters('target'), 'value', parameters('value')), parameters('connectionProperties'))]"
     }

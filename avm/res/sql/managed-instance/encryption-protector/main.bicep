@@ -17,11 +17,11 @@ param serverKeyType string = 'ServiceManaged'
 @description('Optional. Key auto rotation opt-in flag.')
 param autoRotationEnabled bool = false
 
-resource managedInstance 'Microsoft.Sql/managedInstances@2023-08-01-preview' existing = {
+resource managedInstance 'Microsoft.Sql/managedInstances@2024-05-01-preview' existing = {
   name: managedInstanceName
 }
 
-resource encryptionProtector 'Microsoft.Sql/managedInstances/encryptionProtector@2022-05-01-preview' = {
+resource encryptionProtector 'Microsoft.Sql/managedInstances/encryptionProtector@2024-05-01-preview' = {
   name: 'current'
   parent: managedInstance
   properties: {

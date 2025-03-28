@@ -14,8 +14,8 @@ This module deploys an Azure NetApp Files Capacity Pool.
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.NetApp/netAppAccounts/capacityPools` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-07-01/netAppAccounts/capacityPools) |
-| `Microsoft.NetApp/netAppAccounts/capacityPools/volumes` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-07-01/netAppAccounts/capacityPools/volumes) |
+| `Microsoft.NetApp/netAppAccounts/capacityPools` | [2024-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-09-01/netAppAccounts/capacityPools) |
+| `Microsoft.NetApp/netAppAccounts/capacityPools/volumes` | [2024-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-09-01/netAppAccounts/capacityPools/volumes) |
 
 ## Parameters
 
@@ -24,7 +24,7 @@ This module deploys an Azure NetApp Files Capacity Pool.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | The name of the capacity pool. |
-| [`size`](#parameter-size) | int | Provisioned size of the pool (in bytes). Allowed values are in 4TiB chunks (value must be multiply of 4398046511104). |
+| [`size`](#parameter-size) | int | Provisioned size of the pool in Tebibytes (TiB). |
 
 **Conditional parameters**
 
@@ -54,10 +54,12 @@ The name of the capacity pool.
 
 ### Parameter: `size`
 
-Provisioned size of the pool (in bytes). Allowed values are in 4TiB chunks (value must be multiply of 4398046511104).
+Provisioned size of the pool in Tebibytes (TiB).
 
 - Required: Yes
 - Type: int
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `netAppAccountName`
 
@@ -253,6 +255,7 @@ List of volumes to create in the capacity pool.
 | [`name`](#parameter-volumesname) | string | The name of the pool volume. |
 | [`subnetResourceId`](#parameter-volumessubnetresourceid) | string | The Azure Resource URI for a delegated subnet. Must have the delegation Microsoft.NetApp/volumes. |
 | [`usageThreshold`](#parameter-volumesusagethreshold) | int | Maximum storage quota allowed for a file system in bytes. |
+| [`zone`](#parameter-volumeszone) | int | The Availability Zone to place the resource in. If set to 0, then Availability Zone is not set. |
 
 **Optional parameters**
 
@@ -269,14 +272,13 @@ List of volumes to create in the capacity pool.
 | [`keyVaultPrivateEndpointResourceId`](#parameter-volumeskeyvaultprivateendpointresourceid) | string | The resource ID of the key vault private endpoint. |
 | [`location`](#parameter-volumeslocation) | string | Location of the pool volume. |
 | [`networkFeatures`](#parameter-volumesnetworkfeatures) | string | Network feature for the volume. |
-| [`protocolTypes`](#parameter-volumesprotocoltypes) | array | Set of protocol types. |
+| [`protocolTypes`](#parameter-volumesprotocoltypes) | array | Set of protocol types. Default value is `['NFSv3']`. If you are creating a dual-stack volume, set either `['NFSv3','CIFS']` or `['NFSv4.1','CIFS']`. |
 | [`roleAssignments`](#parameter-volumesroleassignments) | array | Array of role assignments to create. |
 | [`serviceLevel`](#parameter-volumesservicelevel) | string | The pool service level. Must match the one of the parent capacity pool. |
 | [`smbContinuouslyAvailable`](#parameter-volumessmbcontinuouslyavailable) | bool | Enables continuously available share property for SMB volume. Only applicable for SMB volume. |
 | [`smbEncryption`](#parameter-volumessmbencryption) | bool | Enables SMB encryption. Only applicable for SMB/DualProtocol volume. |
 | [`smbNonBrowsable`](#parameter-volumessmbnonbrowsable) | string | Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProtocol volume. |
 | [`volumeType`](#parameter-volumesvolumetype) | string | The type of the volume. DataProtection volumes are used for replication. |
-| [`zones`](#parameter-volumeszones) | array | Zone where the volume will be placed. |
 
 ### Parameter: `volumes.name`
 
@@ -295,6 +297,13 @@ The Azure Resource URI for a delegated subnet. Must have the delegation Microsof
 ### Parameter: `volumes.usageThreshold`
 
 Maximum storage quota allowed for a file system in bytes.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `volumes.zone`
+
+The Availability Zone to place the resource in. If set to 0, then Availability Zone is not set.
 
 - Required: Yes
 - Type: int
@@ -702,10 +711,18 @@ Network feature for the volume.
 
 ### Parameter: `volumes.protocolTypes`
 
-Set of protocol types.
+Set of protocol types. Default value is `['NFSv3']`. If you are creating a dual-stack volume, set either `['NFSv3','CIFS']` or `['NFSv4.1','CIFS']`.
 
 - Required: No
 - Type: array
+- Allowed:
+  ```Bicep
+  [
+    'CIFS'
+    'NFSv3'
+    'NFSv4.1'
+  ]
+  ```
 
 ### Parameter: `volumes.roleAssignments`
 
@@ -861,13 +878,6 @@ The type of the volume. DataProtection volumes are used for replication.
 - Required: No
 - Type: string
 
-### Parameter: `volumes.zones`
-
-Zone where the volume will be placed.
-
-- Required: No
-- Type: array
-
 ## Outputs
 
 | Output | Type | Description |
@@ -884,4 +894,4 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |

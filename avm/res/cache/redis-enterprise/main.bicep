@@ -145,6 +145,8 @@ param diagnosticSettings diagnosticSettingMetricsOnlyType[]?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+var enableReferencedModulesTelemetry = false
+
 var isAmr = startsWith(skuName, 'Balanced') || startsWith(skuName, 'ComputeOptimized') || startsWith(
   skuName,
   'FlashOptimized'
@@ -375,7 +377,7 @@ module redisEnterprise_privateEndpoints 'br/public:avm/res/network/private-endpo
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
-      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',
