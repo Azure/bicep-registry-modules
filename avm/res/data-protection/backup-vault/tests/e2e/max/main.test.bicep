@@ -284,7 +284,7 @@ module testDeployment '../../../main.bicep' = [
 
 module postDeployment 'postdeployment.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  name: '${uniqueString(deployment().name, resourceLocation)}-postdeployment'
   params: {
     storageAccountName: 'dep${namePrefix}sa${serviceShort}01'
     storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
