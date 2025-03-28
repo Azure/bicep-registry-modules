@@ -56,7 +56,7 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
       }
     }
     customLocationResourecId: '<customLocationResourecId>'
-    name: 'hcspcimin001'
+    name: 'hcpcimin001'
     // Non-required parameters
     keyVaultName: '<keyVaultName>'
   }
@@ -89,7 +89,7 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
       "value": "<customLocationResourecId>"
     },
     "name": {
-      "value": "hcspcimin001"
+      "value": "hcpcimin001"
     },
     // Non-required parameters
     "keyVaultName": {
@@ -118,7 +118,7 @@ param cloudProviderProfile = {
   }
 }
 param customLocationResourecId = '<customLocationResourecId>'
-param name = 'hcspcimin001'
+param name = 'hcpcimin001'
 // Non-required parameters
 param keyVaultName = '<keyVaultName>'
 ```
@@ -148,7 +148,7 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
       }
     }
     customLocationResourecId: '<customLocationResourecId>'
-    name: 'hcspcimax001'
+    name: 'hcpcimax001'
     // Non-required parameters
     agentPoolProfiles: [
       {
@@ -239,7 +239,7 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
       "value": "<customLocationResourecId>"
     },
     "name": {
-      "value": "hcspcimax001"
+      "value": "hcpcimax001"
     },
     // Non-required parameters
     "agentPoolProfiles": {
@@ -352,7 +352,7 @@ param cloudProviderProfile = {
   }
 }
 param customLocationResourecId = '<customLocationResourecId>'
-param name = 'hcspcimax001'
+param name = 'hcpcimax001'
 // Non-required parameters
 param agentPoolProfiles = [
   {
@@ -440,7 +440,7 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
       }
     }
     customLocationResourecId: '<customLocationResourecId>'
-    name: 'hcspciwaf001'
+    name: 'hcpciwaf001'
     // Non-required parameters
     agentPoolProfiles: [
       {
@@ -505,7 +505,7 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
       "value": "<customLocationResourecId>"
     },
     "name": {
-      "value": "hcspciwaf001"
+      "value": "hcpciwaf001"
     },
     // Non-required parameters
     "agentPoolProfiles": {
@@ -574,7 +574,7 @@ param cloudProviderProfile = {
   }
 }
 param customLocationResourecId = '<customLocationResourecId>'
-param name = 'hcspciwaf001'
+param name = 'hcpciwaf001'
 // Non-required parameters
 param agentPoolProfiles = [
   {
