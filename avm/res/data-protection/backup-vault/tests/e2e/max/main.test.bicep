@@ -281,3 +281,54 @@ module testDeployment '../../../main.bicep' = [
     }
   }
 ]
+
+// resource backupVault 'Microsoft.DataProtection/backupVaults@2023-05-01' existing = {
+//   name: '${namePrefix}${serviceShort}001'
+
+//   resource backupPolicy 'backupPolicies@2023-05-01' existing = {
+//     name: policyInfo.policyName
+//   }
+// }
+
+// resource backupInstance 'Microsoft.DataProtection/backupVaults/backupInstances@2022-05-01' = {
+//   parent: vault
+//   name: storageAccountName
+//   properties: {
+//     objectType: 'BackupInstance'
+//     friendlyName: storageAccountName
+//     dataSourceInfo: {
+//       objectType: 'Datasource'
+//       resourceID: storageAccount.id
+//       resourceName: storageAccountName
+//       resourceType: resourceType
+//       resourceUri: storageAccount.id
+//       resourceLocation: location
+//       datasourceType: dataSourceType
+//     }
+//     dataSourceSetInfo: {
+//       objectType: 'DatasourceSet'
+//       resourceID: storageAccount.id
+//       resourceName: storageAccountName
+//       resourceType: resourceType
+//       resourceUri: storageAccount.id
+//       resourceLocation: location
+//       datasourceType: dataSourceType
+//     }
+//     policyInfo: {
+//       policyId: backupPolicy.id
+//       name: backupPolicyName
+//       policyParameters: {
+//         backupDatasourceParametersList: [
+//           {
+//             objectType: 'BlobBackupDatasourceParameters'
+//             containersList: containerList
+//           }
+//         ]
+//       }
+//     }
+//   }
+//   dependsOn: [
+//     roleAssignment
+//     storageContainerList
+//   ]
+// }

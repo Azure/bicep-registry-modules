@@ -238,7 +238,7 @@ module backupVault_backupInstances 'backup-instance/main.bicep' = [
       backupVaultName: backupVault.name
       name: backupInstance.name
       dataSourceInfo: backupInstance.dataSourceInfo
-      dataSourceSetInfo: backupInstance.dataSourceSetInfo
+      // dataSourceSetInfo: backupInstance.dataSourceSetInfo
       policyInfo: backupInstance.policyInfo
     }
     dependsOn: [
