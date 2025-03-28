@@ -132,7 +132,7 @@ module expressRoutePort 'br/public:avm/res/network/express-route-port:<version>'
     }
     managedIdentities: {
       userAssignedResourceIds: [
-        '<managedIdentityId>'
+        '<managedIdentityResourceId>'
       ]
     }
     roleAssignments: [
@@ -209,7 +209,7 @@ module expressRoutePort 'br/public:avm/res/network/express-route-port:<version>'
     "managedIdentities": {
       "value": {
         "userAssignedResourceIds": [
-          "<managedIdentityId>"
+          "<managedIdentityResourceId>"
         ]
       }
     },
@@ -270,7 +270,7 @@ param lock = {
 }
 param managedIdentities = {
   userAssignedResourceIds: [
-    '<managedIdentityId>'
+    '<managedIdentityResourceId>'
   ]
 }
 param roleAssignments = [
@@ -380,7 +380,7 @@ param peeringLocation = 'Airtel-Chennai2-CLS'
 | [`billingType`](#parameter-billingtype) | string | Chosen SKU family of ExpressRoute circuit. Choose from MeteredData or UnlimitedData SKU families. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`encapsulation`](#parameter-encapsulation) | string | Encapsulation method on physical ports. |
-| [`links`](#parameter-links) | array | Properties of the ExpressRouteLink type. |
+| [`links`](#parameter-links) | array | The set of physical links of the ExpressRoutePort resource. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
@@ -448,7 +448,7 @@ Encapsulation method on physical ports.
 
 ### Parameter: `links`
 
-Properties of the ExpressRouteLink type.
+The set of physical links of the ExpressRoutePort resource.
 
 - Required: No
 - Type: array
