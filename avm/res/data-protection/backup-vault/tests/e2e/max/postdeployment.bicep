@@ -19,6 +19,15 @@ resource backupVault 'Microsoft.DataProtection/backupVaults@2023-05-01' existing
   }
 }
 
+module backupInstance_dataSourceResource_rbac '../../../backup-instance/modules/nested_dataSourceResourceRoleAssignment.bicep' = {
+  name: '${backupVault.name}-dataSourceResource-rbac'
+  // scope: resourceGroup(split(dataSourceInfo.resourceID, '/')[2], split(dataSourceInfo.resourceID, '/')[4])
+  params: {
+    resourceId: storageAccountResourceId
+    principalId: backupVault.identity.principalId
+  }
+}
+
 resource backupInstance 'Microsoft.DataProtection/backupVaults/backupInstances@2024-04-01' = {
   parent: backupVault
   name: storageAccountName
@@ -58,4 +67,7 @@ resource backupInstance 'Microsoft.DataProtection/backupVaults/backupInstances@2
       }
     }
   }
+  dependsOn: [
+    backupInstance_dataSourceResource_rbac
+  ]
 }
