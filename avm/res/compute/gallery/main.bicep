@@ -19,16 +19,16 @@ param enableTelemetry bool = true
 param description string?
 
 @sys.description('Optional. Applications to create.')
-param applications applicationsType[]?
+param applications applicationType[]?
 
 @sys.description('Optional. Images to create.')
 param images imageType[]? // use a UDT here to not overload the main module, as it has images and applications parameters
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @sys.description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @sys.description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -219,6 +219,7 @@ output imageResourceIds array = [
 
 import { identifierType, purchasePlanType, resourceRangeType } from './image/main.bicep'
 @export()
+@sys.description('The type of an image.')
 type imageType = {
   @sys.description('Required. Name of the image definition.')
   @minLength(1)
@@ -290,7 +291,10 @@ type imageType = {
 }
 
 import { customActionType } from './application/main.bicep'
-type applicationsType = {
+
+@export()
+@sys.description('The type of an application.')
+type applicationType = {
   @sys.description('Required. Name of the application definition.')
   @minLength(1)
   @maxLength(80)
