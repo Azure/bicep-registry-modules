@@ -76,8 +76,9 @@ param hyperVGeneration ('V1' | 'V2')?
 @sys.description('Optional. The disk controllers that an OS disk supports.')
 param diskControllerType ('SCSI' | 'SCSI, NVMe' | 'NVMe, SCSI')?
 
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @sys.description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+param roleAssignments roleAssignmentType[]?
 
 @sys.description('Optional. Tags for all the image.')
 @metadata({
@@ -218,33 +219,8 @@ output location string = image.location
 //   Definitions   //
 // =============== //
 
-type roleAssignmentType = {
-  @sys.description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
-  name: string?
-
-  @sys.description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
-
-  @sys.description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
-
-  @sys.description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
-
-  @sys.description('Optional. The description of the role assignment.')
-  description: string?
-
-  @sys.description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
-
-  @sys.description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
-
-  @sys.description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?
-
 @export()
+@sys.description('The type for a resource range.')
 type resourceRangeType = {
   @sys.description('Optional. The minimum number of the resource.')
   @minValue(1)
@@ -254,6 +230,7 @@ type resourceRangeType = {
   max: int?
 }
 
+@sys.description('The type for a list of disallowed disk types.')
 type disallowedType = {
   @sys.description('Required. A list of disk types.')
   @metadata({ example: '''
@@ -261,9 +238,10 @@ type disallowedType = {
     'Standard_LRS'
   ]''' })
   diskTypes: string[]
-}?
+}
 
 @export()
+@sys.description('The type for an image identifier.')
 type identifierType = {
   @sys.description('Required. The name of the gallery image definition publisher.')
   publisher: string
@@ -276,6 +254,7 @@ type identifierType = {
 }
 
 @export()
+@sys.description('The type for an image purchase plan.')
 type purchasePlanType = {
   @sys.description('Required. The plan ID.')
   name: string
@@ -285,4 +264,4 @@ type purchasePlanType = {
 
   @sys.description('Required. The publisher ID.')
   publisher: string
-}?
+}
