@@ -2286,6 +2286,7 @@ param vulnerabilityAssessmentsObj = {
 | [`federatedClientId`](#parameter-federatedclientid) | string | The Client id used for cross tenant CMK scenario. |
 | [`firewallRules`](#parameter-firewallrules) | array | The firewall rules to create in the server. |
 | [`isIPv6Enabled`](#parameter-isipv6enabled) | string | Whether or not to enable IPv6 support for this server. |
+| [`keys`](#parameter-keys) | array | The keys to configure. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
@@ -3700,6 +3701,50 @@ Whether or not to enable IPv6 support for this server.
     'Enabled'
   ]
   ```
+
+### Parameter: `keys`
+
+The keys to configure.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-keysname) | string | The name of the key. Must follow the [<keyVaultName>_<keyName>_<keyVersion>] pattern. |
+| [`serverKeyType`](#parameter-keysserverkeytype) | string | The server key type. |
+| [`uri`](#parameter-keysuri) | string | The URI of the server key. If the ServerKeyType is AzureKeyVault, then the URI is required. The AKV URI is required to be in this format: 'https://YourVaultName.azure.net/keys/YourKeyName/YourKeyVersion'. |
+
+### Parameter: `keys.name`
+
+The name of the key. Must follow the [<keyVaultName>_<keyName>_<keyVersion>] pattern.
+
+- Required: No
+- Type: string
+
+### Parameter: `keys.serverKeyType`
+
+The server key type.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AzureKeyVault'
+    'ServiceManaged'
+  ]
+  ```
+
+### Parameter: `keys.uri`
+
+The URI of the server key. If the ServerKeyType is AzureKeyVault, then the URI is required. The AKV URI is required to be in this format: 'https://YourVaultName.azure.net/keys/YourKeyName/YourKeyVersion'.
+
+- Required: No
+- Type: string
 
 ### Parameter: `location`
 

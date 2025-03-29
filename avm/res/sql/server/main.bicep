@@ -50,6 +50,9 @@ param virtualNetworkRules virtualNetworkRuleType[] = []
 @description('Optional. The security alert policies to create in the server.')
 param securityAlertPolicies securityAlerPolicyType[] = []
 
+@description('Optional. The keys to configure.')
+param keys keyType[] = []
+
 import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The customer managed key definition for server TDE.')
 param customerManagedKey customerManagedKeyWithAutoRotateType?
@@ -464,7 +467,19 @@ module server_vulnerabilityAssessment 'vulnerability-assessment/main.bicep' = if
   ]
 }
 
-module server_key 'key/main.bicep' = if (customerManagedKey != null) {
+module server_keys 'key/main.bicep' = [
+  for (key, index) in keys: {
+    name: '${uniqueString(deployment().name, location)}-Sql-Key-${index}'
+    params: {
+      serverName: server.name
+      name: key.?name
+      serverKeyType: key.?serverKeyType
+      uri: key.?uri
+    }
+  }
+]
+
+module cmk_key 'key/main.bicep' = if (customerManagedKey != null) {
   name: '${uniqueString(deployment().name, location)}-Sql-Key'
   params: {
     serverName: server.name
@@ -482,7 +497,7 @@ module server_encryptionProtector 'encryption-protector/main.bicep' = if (custom
   name: '${uniqueString(deployment().name, location)}-Sql-EncryProtector'
   params: {
     sqlServerName: server.name
-    serverKeyName: server_key.outputs.name
+    serverKeyName: cmk_key.outputs.name
     serverKeyType: 'AzureKeyVault'
     autoRotationEnabled: customerManagedKey.?autoRotationEnabled
   }
