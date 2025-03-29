@@ -228,11 +228,13 @@ resource server 'Microsoft.Sql/servers@2023-08-01-preview' = {
     administrators: union({ administratorType: 'ActiveDirectory' }, administrators ?? {})
     federatedClientId: federatedClientId
     isIPv6Enabled: isIPv6Enabled
-    keyId: !empty(customerManagedKey.?keyVersion)
-      ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.?keyVersion}'
-      : (customerManagedKey.?autoRotationEnabled ?? true)
-          ? cMKKeyVault::cMKKey.properties.keyUri
-          : cMKKeyVault::cMKKey.properties.keyUriWithVersion
+    keyId: customerManagedKey != null
+      ? !empty(customerManagedKey.?keyVersion)
+          ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.?keyVersion}'
+          : (customerManagedKey.?autoRotationEnabled ?? true)
+              ? cMKKeyVault::cMKKey.properties.keyUri
+              : cMKKeyVault::cMKKey.properties.keyUriWithVersion
+      : null
     version: '12.0'
     minimalTlsVersion: minimalTlsVersion
     primaryUserAssignedIdentityId: !empty(primaryUserAssignedIdentityId) ? primaryUserAssignedIdentityId : null
