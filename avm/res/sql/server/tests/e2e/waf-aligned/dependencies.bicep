@@ -112,3 +112,6 @@ output keyVaultKeyName string = keyVault::key.name
 
 @description('The name of the created Key Vault.')
 output keyVaultName string = keyVault.name
+
+@description('The resource ID of the created Key Vault.')
+output keyVaultResourceId string = keyVault.id
