@@ -295,7 +295,7 @@ module backupInstance '../../../backup-instance/main.bicep' = {
   params: {
     backupVaultName: backupVaultName
     name: storageAccountName
-    // friendlyName: storageAccountName
+    friendlyName: storageAccountName
     dataSourceInfo: {
       objectType: 'Datasource'
       resourceID: storageAccountResourceId
@@ -332,3 +332,42 @@ module backupInstance '../../../backup-instance/main.bicep' = {
     backupPolicy
   ]
 }
+
+// "properties": {
+// "dataSourceInfo": {
+// "datasourceType": "Microsoft.Storage/storageAccounts/blobServices",
+// "objectType": "Datasource",
+// "resourceID": "[parameters('storageAccounts_testmanualdelete_externalid')]",
+// "resourceLocation": "uksouth",
+// "resourceName": "testmanualdelete",
+// "resourceType": "Microsoft.Storage/storageAccounts",
+// "resourceUri": "[parameters('storageAccounts_testmanualdelete_externalid')]"
+// },
+// "dataSourceSetInfo": {
+// "datasourceType": "Microsoft.Storage/storageAccounts/blobServices",
+// "objectType": "DatasourceSet",
+// "resourceID": "[parameters('storageAccounts_testmanualdelete_externalid')]",
+// "resourceLocation": "uksouth",
+// "resourceName": "testmanualdelete",
+// "resourceType": "Microsoft.Storage/storageAccounts",
+// "resourceUri": "[parameters('storageAccounts_testmanualdelete_externalid')]"
+// },
+// "friendlyName": "testmanualdelete",
+// "identityDetails": {
+// "useSystemAssignedIdentity": true
+// },
+// "objectType": "BackupInstance",
+// "policyInfo": {
+// "policyId": "[resourceId('Microsoft.DataProtection/backupVaults/backupPolicies', parameters('backupVaults_avmxdpbvmax001_name'), 'Testmanual')]",
+// "policyParameters": {
+// "backupDatasourceParametersList": [
+// {
+// "containersList": [
+// "c001"
+// ],
+// "objectType": "BlobBackupDatasourceParameters"
+// }
+// ]
+// }
+// }
+// }

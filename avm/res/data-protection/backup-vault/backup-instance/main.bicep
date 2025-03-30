@@ -7,6 +7,9 @@ param backupVaultName string
 @description('Required. The name of the backup instance.')
 param name string
 
+@description('Optional. The friendly name of the backup instance.')
+param friendlyName string?
+
 // @description('Optional. The backup instance object type.')
 // param objectType string = 'BackupInstance'
 
@@ -65,6 +68,7 @@ resource backupInstance 'Microsoft.DataProtection/backupVaults/backupInstances@2
   name: name
   parent: backupVault
   properties: {
+    friendlyName: friendlyName
     objectType: 'BackupInstance'
     dataSourceInfo: dataSourceInfo
     dataSourceSetInfo: dataSourceSetInfo
