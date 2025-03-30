@@ -38,6 +38,14 @@ var repeatingTimeIntervals = 'R/2024-05-06T${vaultTierDailyBackupScheduleTime}:0
 
 param backupVaultName string
 
+@description('Change Vault Storage Type (not allowed if the vault has registered backups)')
+@allowed([
+  'LocallyRedundant'
+  'ZoneRedundant'
+  'GeoRedundant'
+])
+param vaultStorageRedundancy string = 'GeoRedundant'
+
 param blobBackupPolicyName string
 
 @description('Required. The name of the storage account to create.')
@@ -49,12 +57,28 @@ param storageAccountResourceId string
 var dataSourceType = 'Microsoft.Storage/storageAccounts/blobServices'
 var resourceType = 'Microsoft.Storage/storageAccounts'
 
-resource vault 'Microsoft.DataProtection/backupVaults@2023-05-01' existing = {
-  name: backupVaultName
+// resource vault 'Microsoft.DataProtection/backupVaults@2023-05-01' existing = {
+//   name: backupVaultName
 
-  // resource backupPolicy 'backupPolicies@2023-05-01' existing = {
-  //   name: blobBackupPolicyName
-  // }
+//   // resource backupPolicy 'backupPolicies@2023-05-01' existing = {
+//   //   name: blobBackupPolicyName
+//   // }
+// }
+
+resource vault 'Microsoft.DataProtection/backupVaults@2022-05-01' = {
+  name: backupVaultName
+  location: location
+  identity: {
+    type: 'systemAssigned'
+  }
+  properties: {
+    storageSettings: [
+      {
+        datastoreType: 'VaultStore'
+        type: vaultStorageRedundancy
+      }
+    ]
+  }
 }
 
 resource backupPolicy 'Microsoft.DataProtection/backupVaults/backupPolicies@2022-05-01' = {
