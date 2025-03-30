@@ -49,192 +49,192 @@ param storageAccountResourceId string
 resource backupVault 'Microsoft.DataProtection/backupVaults@2023-05-01' existing = {
   name: backupVaultName
 
-  resource backupPolicy 'backupPolicies@2023-05-01' existing = {
-    name: blobBackupPolicyName
-  }
+  // resource backupPolicy 'backupPolicies@2023-05-01' existing = {
+  //   name: blobBackupPolicyName
+  // }
 }
 
-// resource backupPolicy 'Microsoft.DataProtection/backupVaults/backupPolicies@2022-05-01' = {
-//   parent: backupVault
-//   name: blobBackupPolicyName
-//   properties: {
-//     policyRules: [
-//       {
-//         name: 'Default'
-//         objectType: 'AzureRetentionRule'
-//         isDefault: true
-//         lifecycles: [
-//           {
-//             deleteAfter: {
-//               duration: operationalTierRetentionDuration
-//               objectType: 'AbsoluteDeleteOption'
-//             }
-//             sourceDataStore: {
-//               dataStoreType: 'OperationalStore'
-//               objectType: 'DataStoreInfoBase'
-//             }
-//             targetDataStoreCopySettings: []
-//           }
-//         ]
-//       }
-//       {
-//         name: 'Yearly'
-//         objectType: 'AzureRetentionRule'
-//         isDefault: false
-//         lifecycles: [
-//           {
-//             deleteAfter: {
-//               duration: vaultTierYearlyRetentionDuration
-//               objectType: 'AbsoluteDeleteOption'
-//             }
-//             sourceDataStore: {
-//               dataStoreType: 'VaultStore'
-//               objectType: 'DataStoreInfoBase'
-//             }
-//             targetDataStoreCopySettings: []
-//           }
-//         ]
-//       }
-//       {
-//         name: 'Monthly'
-//         objectType: 'AzureRetentionRule'
-//         isDefault: false
-//         lifecycles: [
-//           {
-//             deleteAfter: {
-//               duration: vaultTierMonthlyRetentionDuration
-//               objectType: 'AbsoluteDeleteOption'
-//             }
-//             sourceDataStore: {
-//               dataStoreType: 'VaultStore'
-//               objectType: 'DataStoreInfoBase'
-//             }
-//             targetDataStoreCopySettings: []
-//           }
-//         ]
-//       }
-//       {
-//         name: 'Weekly'
-//         objectType: 'AzureRetentionRule'
-//         isDefault: false
-//         lifecycles: [
-//           {
-//             deleteAfter: {
-//               duration: vaultTierWeeklyRetentionDuration
-//               objectType: 'AbsoluteDeleteOption'
-//             }
-//             sourceDataStore: {
-//               dataStoreType: 'VaultStore'
-//               objectType: 'DataStoreInfoBase'
-//             }
-//             targetDataStoreCopySettings: []
-//           }
-//         ]
-//       }
-//       {
-//         name: 'Default'
-//         objectType: 'AzureRetentionRule'
-//         isDefault: true
-//         lifecycles: [
-//           {
-//             deleteAfter: {
-//               duration: vaultTierDefaultRetentionDuration
-//               objectType: 'AbsoluteDeleteOption'
-//             }
-//             sourceDataStore: {
-//               dataStoreType: 'VaultStore'
-//               objectType: 'DataStoreInfoBase'
-//             }
-//             targetDataStoreCopySettings: []
-//           }
-//         ]
-//       }
-//       {
-//         name: 'BackupDaily'
-//         objectType: 'AzureBackupRule'
-//         backupParameters: {
-//           backupType: 'Discrete'
-//           objectType: 'AzureBackupParams'
-//         }
-//         dataStore: {
-//           dataStoreType: 'VaultStore'
-//           objectType: 'DataStoreInfoBase'
-//         }
-//         trigger: {
-//           schedule: {
-//             timeZone: 'UTC'
-//             repeatingTimeIntervals: [
-//               repeatingTimeIntervals
-//             ]
-//           }
-//           taggingCriteria: [
-//             {
-//               isDefault: false
-//               taggingPriority: 10
-//               tagInfo: {
-//                 id: 'Yearly_'
-//                 tagName: 'Yearly'
-//               }
-//               criteria: [
-//                 {
-//                   absoluteCriteria: [
-//                     'FirstOfYear'
-//                   ]
-//                   objectType: 'ScheduleBasedBackupCriteria'
-//                 }
-//               ]
-//             }
-//             {
-//               isDefault: false
-//               taggingPriority: 15
-//               tagInfo: {
-//                 id: 'Monthly_'
-//                 tagName: 'Monthly'
-//               }
-//               criteria: [
-//                 {
-//                   absoluteCriteria: [
-//                     'FirstOfMonth'
-//                   ]
-//                   objectType: 'ScheduleBasedBackupCriteria'
-//                 }
-//               ]
-//             }
-//             {
-//               isDefault: false
-//               taggingPriority: 20
-//               tagInfo: {
-//                 id: 'Weekly_'
-//                 tagName: 'Weekly'
-//               }
-//               criteria: [
-//                 {
-//                   absoluteCriteria: [
-//                     'FirstOfWeek'
-//                   ]
-//                   objectType: 'ScheduleBasedBackupCriteria'
-//                 }
-//               ]
-//             }
-//             {
-//               isDefault: true
-//               taggingPriority: 99
-//               tagInfo: {
-//                 id: 'Default_'
-//                 tagName: 'Default'
-//               }
-//             }
-//           ]
-//           objectType: 'ScheduleBasedTriggerContext'
-//         }
-//       }
-//     ]
-//     datasourceTypes: [
-//       'Microsoft.Storage/storageAccounts/blobServices'
-//     ]
-//     objectType: 'BackupPolicy'
-//   }
-// }
+resource backupPolicy 'Microsoft.DataProtection/backupVaults/backupPolicies@2022-05-01' = {
+  parent: backupVault
+  name: blobBackupPolicyName
+  properties: {
+    policyRules: [
+      {
+        name: 'Default'
+        objectType: 'AzureRetentionRule'
+        isDefault: true
+        lifecycles: [
+          {
+            deleteAfter: {
+              duration: operationalTierRetentionDuration
+              objectType: 'AbsoluteDeleteOption'
+            }
+            sourceDataStore: {
+              dataStoreType: 'OperationalStore'
+              objectType: 'DataStoreInfoBase'
+            }
+            targetDataStoreCopySettings: []
+          }
+        ]
+      }
+      {
+        name: 'Yearly'
+        objectType: 'AzureRetentionRule'
+        isDefault: false
+        lifecycles: [
+          {
+            deleteAfter: {
+              duration: vaultTierYearlyRetentionDuration
+              objectType: 'AbsoluteDeleteOption'
+            }
+            sourceDataStore: {
+              dataStoreType: 'VaultStore'
+              objectType: 'DataStoreInfoBase'
+            }
+            targetDataStoreCopySettings: []
+          }
+        ]
+      }
+      {
+        name: 'Monthly'
+        objectType: 'AzureRetentionRule'
+        isDefault: false
+        lifecycles: [
+          {
+            deleteAfter: {
+              duration: vaultTierMonthlyRetentionDuration
+              objectType: 'AbsoluteDeleteOption'
+            }
+            sourceDataStore: {
+              dataStoreType: 'VaultStore'
+              objectType: 'DataStoreInfoBase'
+            }
+            targetDataStoreCopySettings: []
+          }
+        ]
+      }
+      {
+        name: 'Weekly'
+        objectType: 'AzureRetentionRule'
+        isDefault: false
+        lifecycles: [
+          {
+            deleteAfter: {
+              duration: vaultTierWeeklyRetentionDuration
+              objectType: 'AbsoluteDeleteOption'
+            }
+            sourceDataStore: {
+              dataStoreType: 'VaultStore'
+              objectType: 'DataStoreInfoBase'
+            }
+            targetDataStoreCopySettings: []
+          }
+        ]
+      }
+      {
+        name: 'Default'
+        objectType: 'AzureRetentionRule'
+        isDefault: true
+        lifecycles: [
+          {
+            deleteAfter: {
+              duration: vaultTierDefaultRetentionDuration
+              objectType: 'AbsoluteDeleteOption'
+            }
+            sourceDataStore: {
+              dataStoreType: 'VaultStore'
+              objectType: 'DataStoreInfoBase'
+            }
+            targetDataStoreCopySettings: []
+          }
+        ]
+      }
+      {
+        name: 'BackupDaily'
+        objectType: 'AzureBackupRule'
+        backupParameters: {
+          backupType: 'Discrete'
+          objectType: 'AzureBackupParams'
+        }
+        dataStore: {
+          dataStoreType: 'VaultStore'
+          objectType: 'DataStoreInfoBase'
+        }
+        trigger: {
+          schedule: {
+            timeZone: 'UTC'
+            repeatingTimeIntervals: [
+              repeatingTimeIntervals
+            ]
+          }
+          taggingCriteria: [
+            {
+              isDefault: false
+              taggingPriority: 10
+              tagInfo: {
+                id: 'Yearly_'
+                tagName: 'Yearly'
+              }
+              criteria: [
+                {
+                  absoluteCriteria: [
+                    'FirstOfYear'
+                  ]
+                  objectType: 'ScheduleBasedBackupCriteria'
+                }
+              ]
+            }
+            {
+              isDefault: false
+              taggingPriority: 15
+              tagInfo: {
+                id: 'Monthly_'
+                tagName: 'Monthly'
+              }
+              criteria: [
+                {
+                  absoluteCriteria: [
+                    'FirstOfMonth'
+                  ]
+                  objectType: 'ScheduleBasedBackupCriteria'
+                }
+              ]
+            }
+            {
+              isDefault: false
+              taggingPriority: 20
+              tagInfo: {
+                id: 'Weekly_'
+                tagName: 'Weekly'
+              }
+              criteria: [
+                {
+                  absoluteCriteria: [
+                    'FirstOfWeek'
+                  ]
+                  objectType: 'ScheduleBasedBackupCriteria'
+                }
+              ]
+            }
+            {
+              isDefault: true
+              taggingPriority: 99
+              tagInfo: {
+                id: 'Default_'
+                tagName: 'Default'
+              }
+            }
+          ]
+          objectType: 'ScheduleBasedTriggerContext'
+        }
+      }
+    ]
+    datasourceTypes: [
+      'Microsoft.Storage/storageAccounts/blobServices'
+    ]
+    objectType: 'BackupPolicy'
+  }
+}
 
 // module backupInstance_dataSourceResource_rbac '../../../backup-instance/modules/nested_dataSourceResourceRoleAssignment.bicep' = {
 //   name: '${backupVault.name}-dataSourceResource-rbac'

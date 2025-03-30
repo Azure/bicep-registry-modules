@@ -10,6 +10,12 @@ param diskName string
 @description('Required. The name of the storage account to create.')
 param storageAccountName string
 
+@description('List of the containers to be protected')
+param containerList array = [
+  'container1'
+  'container2'
+]
+
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
   name: managedIdentityName
   location: location
@@ -26,28 +32,44 @@ resource computeDisk 'Microsoft.Compute/disks@2020-12-01' = {
   }
 }
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
+// resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
+//   name: storageAccountName
+//   location: location
+//   kind: 'StorageV2'
+//   sku: {
+//     name: 'Standard_LRS'
+//   }
+//   properties: {
+//     allowBlobPublicAccess: false
+//   }
+
+//   resource blobServices 'blobServices@2022-09-01' = {
+//     name: 'default'
+
+//     resource container 'containers@2022-09-01' = {
+//       name: 'container001'
+//       properties: {
+//         publicAccess: 'None'
+//       }
+//     }
+//   }
+// }
+
+resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
   name: storageAccountName
   location: location
   kind: 'StorageV2'
   sku: {
-    name: 'Standard_LRS'
-  }
-  properties: {
-    allowBlobPublicAccess: false
-  }
-
-  resource blobServices 'blobServices@2022-09-01' = {
-    name: 'default'
-
-    resource container 'containers@2022-09-01' = {
-      name: 'container001'
-      properties: {
-        publicAccess: 'None'
-      }
-    }
+    name: 'Standard_RAGRS'
+    tier: 'Standard'
   }
 }
+
+resource storageContainerList 'Microsoft.Storage/storageAccounts/blobServices/containers@2023-01-01' = [
+  for item in containerList: {
+    name: '${storageAccount.name}/default/${item}'
+  }
+]
 
 @description('The principal ID of the created Managed Identity.')
 output managedIdentityPrincipalId string = managedIdentity.properties.principalId
