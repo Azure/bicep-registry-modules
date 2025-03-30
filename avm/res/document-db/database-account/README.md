@@ -51,7 +51,7 @@ The following section provides usage examples for the module, which were used to
 - [Plain](#example-9-plain)
 - [Public network restricted access with ACL](#example-10-public-network-restricted-access-with-acl)
 - [SQL Database](#example-11-sql-database)
-- [Deploying with a sql role definision and assignment](#example-12-deploying-with-a-sql-role-definision-and-assignment)
+- [Deploying with a sql role definition and assignment](#example-12-deploying-with-a-sql-role-definition-and-assignment)
 - [API for Table](#example-13-api-for-table)
 - [WAF-aligned](#example-14-waf-aligned)
 
@@ -2641,9 +2641,9 @@ param sqlDatabases = [
 </details>
 <p>
 
-### Example 12: _Deploying with a sql role definision and assignment_
+### Example 12: _Deploying with a sql role definition and assignment_
 
-This instance deploys the module with sql role definision and assignment
+This instance deploys the module with sql role definition and assignment
 
 
 <details>
