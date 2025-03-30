@@ -235,18 +235,8 @@ function Test-ModuleLocally {
             # -------------------------
             if ((Get-Item -Path $ModuleTestFilePath) -is [System.IO.DirectoryInfo]) {
                 $moduleTestFiles = (Get-ChildItem -Path $ModuleTestFilePath -File).FullName
-                $moduleTestFolderPath = $ModuleTestFilePath
             } else {
                 $moduleTestFiles = @($ModuleTestFilePath)
-                $moduleTestFolderPath = Split-Path $ModuleTestFilePath
-            }
-
-            # Check if the deployment test should be bypassed
-            $passCiFilePath = Join-Path $moduleTestFolderPath '.e2eignore'
-            if ((Test-Path $passCiFilePath) -and (-not $ValidateOrDeployParameters.IgnoreE2eIgnore -eq $true)) {
-                Write-Output "File '.e2eignore' exists in the folder: $moduleTestFolderPath"
-                # end here, as the test should be bypassed
-                return
             }
 
             # Construct Token Configuration Input
@@ -296,8 +286,13 @@ function Test-ModuleLocally {
                 if ($ValidationTest) {
                     # Loop through test files
                     foreach ($moduleTestFile in $moduleTestFiles) {
-                        Write-Verbose ('Validating module [{0}] with test file [{1}]' -f $ModuleName, (Split-Path $moduleTestFile -Leaf)) -Verbose
-                        Test-TemplateDeployment @functionInput -TemplateFilePath $moduleTestFile
+                        $ignoreFilePath = Join-Path (Split-Path $moduleTestFile) '.e2eignore'
+                        if ((Test-Path $ignoreFilePath) -and (-not $ValidateOrDeployParameters.IgnoreE2eIgnore -eq $true)) {
+                            Write-Output "File '.e2eignore' exists in the folder: $moduleTestFile"
+                        } else {
+                            Write-Verbose ('Validating module [{0}] with test file [{1}]' -f $ModuleName, (Split-Path $moduleTestFile -Leaf)) -Verbose
+                            Test-TemplateDeployment @functionInput -TemplateFilePath $moduleTestFile
+                        }
                     }
                 }
 
@@ -306,8 +301,13 @@ function Test-ModuleLocally {
                 if ($WhatIfTest) {
                     # Loop through test files
                     foreach ($moduleTestFile in $moduleTestFiles) {
-                        Write-Verbose ('Get Deployment What-If result for module [{0}] with test file [{1}]' -f $ModuleName, (Split-Path $moduleTestFile -Leaf)) -Verbose
-                        Get-TemplateDeploymentWhatIf @functionInput -TemplateFilePath $moduleTestFile
+                        $ignoreFilePath = Join-Path (Split-Path $moduleTestFile) '.e2eignore'
+                        if ((Test-Path $ignoreFilePath) -and (-not $ValidateOrDeployParameters.IgnoreE2eIgnore -eq $true)) {
+                            Write-Output "File '.e2eignore' exists in the folder: $moduleTestFile"
+                        } else {
+                            Write-Verbose ('Get Deployment What-If result for module [{0}] with test file [{1}]' -f $ModuleName, (Split-Path $moduleTestFile -Leaf)) -Verbose
+                            Get-TemplateDeploymentWhatIf @functionInput -TemplateFilePath $moduleTestFile
+                        }
                     }
                 }
 
@@ -317,9 +317,14 @@ function Test-ModuleLocally {
                     $functionInput['retryLimit'] = 1 # Overwrite default of 3
                     # Loop through test files
                     foreach ($moduleTestFile in $moduleTestFiles) {
-                        Write-Verbose ('Deploy Module [{0}] with test file [{1}]' -f $ModuleName, (Split-Path $moduleTestFile -Leaf)) -Verbose
-                        if ($PSCmdlet.ShouldProcess(('Module [{0}] with test file [{1}]' -f $ModuleName, (Split-Path $moduleTestFile -Leaf)), 'Deploy')) {
-                            New-TemplateDeployment @functionInput -TemplateFilePath $moduleTestFile
+                        $ignoreFilePath = Join-Path (Split-Path $moduleTestFile) '.e2eignore'
+                        if ((Test-Path $ignoreFilePath) -and (-not $ValidateOrDeployParameters.IgnoreE2eIgnore -eq $true)) {
+                            Write-Output "File '.e2eignore' exists in the folder: $moduleTestFile"
+                        } else {
+                            Write-Verbose ('Deploy Module [{0}] with test file [{1}]' -f $ModuleName, (Split-Path $moduleTestFile -Leaf)) -Verbose
+                            if ($PSCmdlet.ShouldProcess(('Module [{0}] with test file [{1}]' -f $ModuleName, (Split-Path $moduleTestFile -Leaf)), 'Deploy')) {
+                                New-TemplateDeployment @functionInput -TemplateFilePath $moduleTestFile
+                            }
                         }
                     }
                 }
