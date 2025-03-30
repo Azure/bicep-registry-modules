@@ -46,7 +46,10 @@ param storageAccountName string
 @description('Required. The name of the storage account to create.')
 param storageAccountResourceId string
 
-resource backupVault 'Microsoft.DataProtection/backupVaults@2023-05-01' existing = {
+var dataSourceType = 'Microsoft.Storage/storageAccounts/blobServices'
+var resourceType = 'Microsoft.Storage/storageAccounts'
+
+resource vault 'Microsoft.DataProtection/backupVaults@2023-05-01' existing = {
   name: backupVaultName
 
   // resource backupPolicy 'backupPolicies@2023-05-01' existing = {
@@ -55,7 +58,7 @@ resource backupVault 'Microsoft.DataProtection/backupVaults@2023-05-01' existing
 }
 
 resource backupPolicy 'Microsoft.DataProtection/backupVaults/backupPolicies@2022-05-01' = {
-  parent: backupVault
+  parent: vault
   name: blobBackupPolicyName
   properties: {
     policyRules: [
@@ -230,71 +233,26 @@ resource backupPolicy 'Microsoft.DataProtection/backupVaults/backupPolicies@2022
       }
     ]
     datasourceTypes: [
-      'Microsoft.Storage/storageAccounts/blobServices'
+      dataSourceType
     ]
     objectType: 'BackupPolicy'
   }
 }
 
-// module backupInstance_dataSourceResource_rbac '../../../backup-instance/modules/nested_dataSourceResourceRoleAssignment.bicep' = {
-//   name: '${backupVault.name}-dataSourceResource-rbac'
-//   // scope: resourceGroup(split(dataSourceInfo.resourceID, '/')[2], split(dataSourceInfo.resourceID, '/')[4])
-//   params: {
-//     resourceId: storageAccountResourceId
-//     principalId: backupVault.identity.principalId
-//   }
-// }
-
-// resource backupInstance 'Microsoft.DataProtection/backupVaults/backupInstances@2024-04-01' = {
-//   parent: backupVault
-//   name: storageAccountName
-//   properties: {
-//     objectType: 'BackupInstance'
-//     friendlyName: storageAccountName
-//     dataSourceInfo: {
-//       objectType: 'Datasource'
-//       resourceID: storageAccountResourceId
-//       resourceName: storageAccountName
-//       resourceType: 'Microsoft.Storage/storageAccounts'
-//       resourceUri: storageAccountResourceId
-//       resourceLocation: location
-//       datasourceType: 'Microsoft.Storage/storageAccounts/blobServices'
-//     }
-//     dataSourceSetInfo: {
-//       objectType: 'DatasourceSet'
-//       resourceID: storageAccountResourceId
-//       resourceName: storageAccountName
-//       resourceType: 'Microsoft.Storage/storageAccounts'
-//       resourceUri: storageAccountResourceId
-//       resourceLocation: location
-//       datasourceType: 'Microsoft.Storage/storageAccounts/blobServices'
-//     }
-//     policyInfo: {
-//       policyId: backupVault::backupPolicy.id
-//       // name: blobBackupPolicyName
-//       policyParameters: {
-//         backupDatasourceParametersList: [
-//           {
-//             objectType: 'BlobBackupDatasourceParameters'
-//             containersList: [
-//               'container001'
-//             ]
-//           }
-//         ]
-//       }
-//     }
-//   }
-//   dependsOn: [
-//     backupInstance_dataSourceResource_rbac
-//   ]
-// }
-
-module backupInstance '../../../backup-instance/main.bicep' = {
-  // parent: backupVault
-  name: storageAccountName
+module backupInstance_dataSourceResource_rbac '../../../backup-instance/modules/nested_dataSourceResourceRoleAssignment.bicep' = {
+  name: '${vault.name}-dataSourceResource-rbac'
+  // scope: resourceGroup(split(dataSourceInfo.resourceID, '/')[2], split(dataSourceInfo.resourceID, '/')[4])
   params: {
-    backupVaultName: backupVaultName
-    name: 'testmanualdelete-testmanualdelete-293fe4b2-5be2-419b-9ca1-a3c06c76f0e3'
+    resourceId: storageAccountResourceId
+    principalId: vault.identity.principalId
+  }
+}
+
+resource backupInstance 'Microsoft.DataProtection/backupVaults/backupInstances@2024-04-01' = {
+  parent: vault
+  name: storageAccountName
+  properties: {
+    objectType: 'BackupInstance'
     friendlyName: storageAccountName
     dataSourceInfo: {
       objectType: 'Datasource'
@@ -315,59 +273,65 @@ module backupInstance '../../../backup-instance/main.bicep' = {
       datasourceType: 'Microsoft.Storage/storageAccounts/blobServices'
     }
     policyInfo: {
-      policyName: blobBackupPolicyName
+      policyId: backupPolicy.id
+      // name: blobBackupPolicyName
       policyParameters: {
         backupDatasourceParametersList: [
           {
             objectType: 'BlobBackupDatasourceParameters'
             containersList: [
-              'c001'
+              'container001'
             ]
           }
         ]
       }
     }
   }
-  // dependsOn: [
-  //   backupPolicy
-  // ]
+  dependsOn: [
+    backupInstance_dataSourceResource_rbac
+  ]
 }
 
-// "properties": {
-// "dataSourceInfo": {
-// "datasourceType": "Microsoft.Storage/storageAccounts/blobServices",
-// "objectType": "Datasource",
-// "resourceID": "[parameters('storageAccounts_testmanualdelete_externalid')]",
-// "resourceLocation": "uksouth",
-// "resourceName": "testmanualdelete",
-// "resourceType": "Microsoft.Storage/storageAccounts",
-// "resourceUri": "[parameters('storageAccounts_testmanualdelete_externalid')]"
-// },
-// "dataSourceSetInfo": {
-// "datasourceType": "Microsoft.Storage/storageAccounts/blobServices",
-// "objectType": "DatasourceSet",
-// "resourceID": "[parameters('storageAccounts_testmanualdelete_externalid')]",
-// "resourceLocation": "uksouth",
-// "resourceName": "testmanualdelete",
-// "resourceType": "Microsoft.Storage/storageAccounts",
-// "resourceUri": "[parameters('storageAccounts_testmanualdelete_externalid')]"
-// },
-// "friendlyName": "testmanualdelete",
-// "identityDetails": {
-// "useSystemAssignedIdentity": true
-// },
-// "objectType": "BackupInstance",
-// "policyInfo": {
-// "policyId": "[resourceId('Microsoft.DataProtection/backupVaults/backupPolicies', parameters('backupVaults_avmxdpbvmax001_name'), 'Testmanual')]",
-// "policyParameters": {
-// "backupDatasourceParametersList": [
-// {
-// "containersList": [
-// "c001"
-// ],
-// "objectType": "BlobBackupDatasourceParameters"
-// }
-// ]
-// }
-// }
+// module backupInstance '../../../backup-instance/main.bicep' = {
+//   // parent: backupVault
+//   name: storageAccountName
+//   params: {
+//     backupVaultName: backupVaultName
+//     name: 'testmanualdelete-testmanualdelete-293fe4b2-5be2-419b-9ca1-a3c06c76f0e3'
+//     friendlyName: storageAccountName
+//     dataSourceInfo: {
+//       objectType: 'Datasource'
+//       resourceID: storageAccountResourceId
+//       resourceName: storageAccountName
+//       resourceType: 'Microsoft.Storage/storageAccounts'
+//       resourceUri: storageAccountResourceId
+//       resourceLocation: location
+//       datasourceType: 'Microsoft.Storage/storageAccounts/blobServices'
+//     }
+//     dataSourceSetInfo: {
+//       objectType: 'DatasourceSet'
+//       resourceID: storageAccountResourceId
+//       resourceName: storageAccountName
+//       resourceType: 'Microsoft.Storage/storageAccounts'
+//       resourceUri: storageAccountResourceId
+//       resourceLocation: location
+//       datasourceType: 'Microsoft.Storage/storageAccounts/blobServices'
+//     }
+//     policyInfo: {
+//       policyName: blobBackupPolicyName
+//       policyParameters: {
+//         backupDatasourceParametersList: [
+//           {
+//             objectType: 'BlobBackupDatasourceParameters'
+//             containersList: [
+//               'c001'
+//             ]
+//           }
+//         ]
+//       }
+//     }
+//   }
+//   // dependsOn: [
+//   //   backupPolicy
+//   // ]
 // }
