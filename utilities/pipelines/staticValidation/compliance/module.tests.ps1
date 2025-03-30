@@ -247,7 +247,9 @@ Describe 'File/folder tests' -Tag 'Modules' {
                 [string] $moduleFolderPath
             )
 
-            $wafAlignedFolder = Get-ChildItem -Directory (Join-Path -Path $moduleFolderPath 'tests' 'e2e') -Filter '*waf-aligned'
+            $wafAlignedFolder = Get-ChildItem -Directory (Join-Path -Path $moduleFolderPath 'tests' 'e2e') | Where-Object {
+                $_.Name -match '^(waf-aligned)|.*(waf-aligned)$' # the spec BCPRMNFR1 states, that the folder names should start with defaults|waf-aligned. Since it is a should and not a must, need to check for both cases.
+            }
             $wafAlignedFolder | Should -Not -BeNullOrEmpty
         }
 
@@ -263,7 +265,9 @@ Describe 'File/folder tests' -Tag 'Modules' {
                 return
             }
 
-            $defaultsFolder = Get-ChildItem -Directory (Join-Path -Path $moduleFolderPath 'tests' 'e2e') -Filter '*defaults'
+            $defaultsFolder = Get-ChildItem -Directory (Join-Path -Path $moduleFolderPath 'tests' 'e2e') | Where-Object {
+                $_.Name -match '^(defaults)|.*(defaults)$' # the spec BCPRMNFR1 states, that the folder names should start with defaults|waf-aligned. Since it is a should and not a must, need to check for both cases.
+            }
             $defaultsFolder | Should -Not -BeNullOrEmpty
         }
 
@@ -282,7 +286,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
             }
         }
 
-        It '[<moduleFolderName>] Resource Modules must not skip the "*defaults" or "waf-aligned" tests with a [` .e2eignore `] file.' -TestCases ($topLevelModuleTestCases | Where-Object { $_.moduleType -eq 'res' }) {
+        It '[<moduleFolderName>] Resource Modules must not skip the "defaults" or "waf-aligned" tests with a [` .e2eignore `] file.' -TestCases ($topLevelModuleTestCases | Where-Object { $_.moduleType -eq 'res' }) {
 
             param(
                 [string] $moduleFolderName,
@@ -290,7 +294,9 @@ Describe 'File/folder tests' -Tag 'Modules' {
             )
 
             $incorrectFolders = @()
-            $e2eTestFolderPathList = Get-ChildItem -Directory (Join-Path -Path $moduleFolderPath 'tests' 'e2e') | Where-Object { $_.Name -like '*defaults' -or $_.Name -eq 'waf-aligned' }
+            $e2eTestFolderPathList = Get-ChildItem -Directory (Join-Path -Path $moduleFolderPath 'tests' 'e2e') | Where-Object {
+                $_.Name -match '^(defaults|waf-aligned)|.*(defaults|waf-aligned)$' # the spec BCPRMNFR1 states, that the folder names should start with defaults|waf-aligned. Since it is a should and not a must, need to check for both cases.
+            }
             foreach ($e2eTestFolderPath in $e2eTestFolderPathList) {
                 $filePath = Join-Path -Path $e2eTestFolderPath '.e2eignore'
                 if (Test-Path $filePath) {
