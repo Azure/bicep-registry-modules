@@ -118,14 +118,14 @@ resource acr 'Microsoft.ContainerRegistry/registries@2023-07-01' existing = {
 }
 
 // needed to "convert" resourceIds to principalId
-resource existingManagedIdentities 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = [
+resource existingManagedIdentities 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = [
   for resourceId in (managedIdentities.?userAssignedResourceIds ?? []): if (assignRbacRole) {
     name: last(split(resourceId, '/'))
     scope: resourceGroup(split(resourceId, '/')[2], split(resourceId, '/')[4]) // get the resource group from the managed identity, as it could be in another resource group
   }
 ]
 
-resource newManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = if (!useExistingManagedIdentity && assignRbacRole) {
+resource newManagedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = if (!useExistingManagedIdentity && assignRbacRole) {
   name: managedIdentityName ?? 'id-ContainerRegistryImport'
   location: location
   tags: tags
@@ -159,7 +159,7 @@ resource acrRoleAssignmentNewManagedIdentity 'Microsoft.Authorization/roleAssign
   }
 }
 
-module imageImport 'br/public:avm/res/resources/deployment-script:0.5.0' = {
+module imageImport 'br/public:avm/res/resources/deployment-script:0.5.1' = {
   name: name ?? 'ACR-Import-${last(split(replace(image,':','-'),'/'))}'
   scope: resourceGroup()
   params: {
@@ -172,7 +172,7 @@ module imageImport 'br/public:avm/res/resources/deployment-script:0.5.0' = {
       : { userAssignedResourceIds: [newManagedIdentity.id] }
     kind: 'AzureCLI'
     runOnce: runOnce
-    azCliVersion: '2.63.0' // available tags are listed here: https://mcr.microsoft.com/v2/azure-cli/tags/list
+    azCliVersion: '2.69.0' // available tags are listed here: https://mcr.microsoft.com/v2/azure-cli/tags/list
     timeout: 'PT30M' // set timeout to 30m
     retentionInterval: 'PT1H' // cleanup after 1h
     environmentVariables: [

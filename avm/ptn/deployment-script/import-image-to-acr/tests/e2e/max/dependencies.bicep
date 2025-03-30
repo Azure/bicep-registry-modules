@@ -17,12 +17,17 @@ param storageAccountName string
 param keyVaultName string
 
 var ipRange = '10.0.0.0'
+var tags = {
+  module: 'ptn/deployment-script/import-image-to-acr'
+  test: 'waf-aligned'
+}
 
 module identity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0' = {
   name: managedIdentityName
   params: {
     name: managedIdentityName
     location: location
+    tags: tags
   }
 }
 
@@ -30,6 +35,7 @@ module identity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0
 resource vnet 'Microsoft.Network/virtualNetworks@2023-11-01' = {
   name: virtualNetworkName
   location: location
+  tags: tags
   properties: {
     addressSpace: {
       addressPrefixes: [cidrSubnet(ipRange, 16, 0)]
@@ -63,10 +69,11 @@ resource vnet 'Microsoft.Network/virtualNetworks@2023-11-01' = {
   }
 }
 
-module dnsZoneContainerRegistry 'br/public:avm/res/network/private-dns-zone:0.6.0' = {
+module dnsZoneContainerRegistry 'br/public:avm/res/network/private-dns-zone:0.7.0' = {
   name: '${uniqueString(deployment().name, location)}-dnsZone-ACR'
   params: {
     name: 'privatelink.azurecr.io'
+    tags: tags
     virtualNetworkLinks: [
       {
         name: '${vnet.name}-ContainerRegistry-link'
@@ -77,11 +84,12 @@ module dnsZoneContainerRegistry 'br/public:avm/res/network/private-dns-zone:0.6.
   }
 }
 
-module storage 'br/public:avm/res/storage/storage-account:0.9.1' = {
+module storage 'br/public:avm/res/storage/storage-account:0.19.0' = {
   name: '${uniqueString(resourceGroup().name, location)}-storage'
   params: {
     name: storageAccountName
     location: location
+    tags: tags
     kind: 'StorageV2'
     minimumTlsVersion: 'TLS1_2'
     skuName: 'Standard_LRS'
@@ -112,6 +120,7 @@ module storage 'br/public:avm/res/storage/storage-account:0.9.1' = {
 resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
   name: keyVaultName
   location: location
+  tags: tags
   properties: {
     sku: {
       family: 'A'
@@ -155,7 +164,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
 }
 
 // the container registry to upload the image into
-module acr 'br/public:avm/res/container-registry/registry:0.6.0' = {
+module acr 'br/public:avm/res/container-registry/registry:0.9.1' = {
   name: '${uniqueString(resourceGroup().name, location)}-acr'
   params: {
     name: acrName
