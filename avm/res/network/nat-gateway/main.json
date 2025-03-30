@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "7390004441200914002"
+      "version": "0.34.44.8038",
+      "templateHash": "17580187960155953991"
     },
     "name": "NAT Gateways",
     "description": "This module deploys a NAT Gateway."
@@ -125,7 +125,7 @@
         "description": "Required. Name of the Azure Bastion resource."
       }
     },
-    "zone": {
+    "availabilityZone": {
       "type": "int",
       "allowedValues": [
         -1,
@@ -134,7 +134,7 @@
         3
       ],
       "metadata": {
-        "description": "Required. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone number here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone.To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones) and [Distribute VMs and disks across availability zones](https://learn.microsoft.com/en-us/azure/virtual-machines/disks-high-availability#distribute-vms-and-disks-across-availability-zones)."
+        "description": "Required. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone number here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones) and [Distribute VMs and disks across availability zones](https://learn.microsoft.com/en-us/azure/virtual-machines/disks-high-availability#distribute-vms-and-disks-across-availability-zones)."
       }
     },
     "idleTimeoutInMinutes": {
@@ -264,7 +264,7 @@
         "publicIpPrefixes": "[reference('formattedPublicIpPrefixResourceIds').outputs.formattedResourceIds.value]",
         "publicIpAddresses": "[reference('formattedPublicIpResourceIds').outputs.formattedResourceIds.value]"
       },
-      "zones": "[if(not(equals(parameters('zone'), -1)), createArray(string(parameters('zone'))), null())]",
+      "zones": "[if(not(equals(parameters('availabilityZone'), -1)), createArray(string(parameters('availabilityZone'))), null())]",
       "dependsOn": [
         "formattedPublicIpPrefixResourceIds",
         "formattedPublicIpResourceIds"
@@ -354,7 +354,7 @@
             "value": "[coalesce(tryGet(coalesce(parameters('publicIPAddressObjects'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
           },
           "zones": {
-            "value": "[coalesce(tryGet(coalesce(parameters('publicIPAddressObjects'), createArray())[copyIndex()], 'zones'), if(not(equals(parameters('zone'), -1)), createArray(parameters('zone')), null()))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('publicIPAddressObjects'), createArray())[copyIndex()], 'zones'), if(not(equals(parameters('availabilityZone'), -1)), createArray(parameters('availabilityZone')), null()))]"
           },
           "enableTelemetry": {
             "value": "[variables('enableReferencedModulesTelemetry')]"
@@ -1018,8 +1018,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "235355553896786544"
+              "version": "0.34.44.8038",
+              "templateHash": "17170161255739585601"
             }
           },
           "parameters": {
@@ -1432,8 +1432,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "235355553896786544"
+              "version": "0.34.44.8038",
+              "templateHash": "17170161255739585601"
             }
           },
           "parameters": {

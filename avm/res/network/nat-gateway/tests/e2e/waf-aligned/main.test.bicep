@@ -56,7 +56,7 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      zone: 1
+      availabilityZone: 1
       publicIPAddressObjects: [
         {
           name: '${namePrefix}${serviceShort}001-pip'

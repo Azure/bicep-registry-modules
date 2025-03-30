@@ -50,8 +50,8 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
   name: 'natGatewayDeployment'
   params: {
     // Required parameters
+    availabilityZone: 1
     name: 'nngmin001'
-    zone: 1
   }
 }
 ```
@@ -69,11 +69,11 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "availabilityZone": {
+      "value": 1
+    },
     "name": {
       "value": "nngmin001"
-    },
-    "zone": {
-      "value": 1
     }
   }
 }
@@ -90,8 +90,8 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
 using 'br/public:avm/res/network/nat-gateway:<version>'
 
 // Required parameters
+param availabilityZone = 1
 param name = 'nngmin001'
-param zone = 1
 ```
 
 </details>
@@ -111,8 +111,8 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
   name: 'natGatewayDeployment'
   params: {
     // Required parameters
+    availabilityZone: -1
     name: 'nngepip001'
-    zone: -1
     // Non-required parameters
     publicIpResourceIds: '<publicIpResourceIds>'
   }
@@ -132,11 +132,11 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "availabilityZone": {
+      "value": -1
+    },
     "name": {
       "value": "nngepip001"
-    },
-    "zone": {
-      "value": -1
     },
     // Non-required parameters
     "publicIpResourceIds": {
@@ -157,8 +157,8 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
 using 'br/public:avm/res/network/nat-gateway:<version>'
 
 // Required parameters
+param availabilityZone = -1
 param name = 'nngepip001'
-param zone = -1
 // Non-required parameters
 param publicIpResourceIds = '<publicIpResourceIds>'
 ```
@@ -180,8 +180,8 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
   name: 'natGatewayDeployment'
   params: {
     // Required parameters
+    availabilityZone: 1
     name: 'nngmax001'
-    zone: 1
     // Non-required parameters
     location: '<location>'
     lock: {
@@ -271,11 +271,11 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "availabilityZone": {
+      "value": 1
+    },
     "name": {
       "value": "nngmax001"
-    },
-    "zone": {
-      "value": 1
     },
     // Non-required parameters
     "location": {
@@ -374,8 +374,8 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
 using 'br/public:avm/res/network/nat-gateway:<version>'
 
 // Required parameters
+param availabilityZone = 1
 param name = 'nngmax001'
-param zone = 1
 // Non-required parameters
 param location = '<location>'
 param lock = {
@@ -467,8 +467,8 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
   name: 'natGatewayDeployment'
   params: {
     // Required parameters
+    availabilityZone: -1
     name: 'nngcprx001'
-    zone: -1
     // Non-required parameters
     publicIPPrefixObjects: [
       {
@@ -496,11 +496,11 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "availabilityZone": {
+      "value": -1
+    },
     "name": {
       "value": "nngcprx001"
-    },
-    "zone": {
-      "value": -1
     },
     // Non-required parameters
     "publicIPPrefixObjects": {
@@ -529,8 +529,8 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
 using 'br/public:avm/res/network/nat-gateway:<version>'
 
 // Required parameters
+param availabilityZone = -1
 param name = 'nngcprx001'
-param zone = -1
 // Non-required parameters
 param publicIPPrefixObjects = [
   {
@@ -560,8 +560,8 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
   name: 'natGatewayDeployment'
   params: {
     // Required parameters
+    availabilityZone: 1
     name: 'nngwaf001'
-    zone: 1
     // Non-required parameters
     publicIPAddressObjects: [
       {
@@ -610,11 +610,11 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "availabilityZone": {
+      "value": 1
+    },
     "name": {
       "value": "nngwaf001"
-    },
-    "zone": {
-      "value": 1
     },
     // Non-required parameters
     "publicIPAddressObjects": {
@@ -666,8 +666,8 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
 using 'br/public:avm/res/network/nat-gateway:<version>'
 
 // Required parameters
+param availabilityZone = 1
 param name = 'nngwaf001'
-param zone = 1
 // Non-required parameters
 param publicIPAddressObjects = [
   {
@@ -710,8 +710,8 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`availabilityZone`](#parameter-availabilityzone) | int | If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone number here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones) and [Distribute VMs and disks across availability zones](https://learn.microsoft.com/en-us/azure/virtual-machines/disks-high-availability#distribute-vms-and-disks-across-availability-zones). |
 | [`name`](#parameter-name) | string | Name of the Azure Bastion resource. |
-| [`zone`](#parameter-zone) | int | If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone number here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone.To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones) and [Distribute VMs and disks across availability zones](https://learn.microsoft.com/en-us/azure/virtual-machines/disks-high-availability#distribute-vms-and-disks-across-availability-zones). |
 
 **Optional parameters**
 
@@ -728,16 +728,9 @@ param tags = {
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags for the resource. |
 
-### Parameter: `name`
+### Parameter: `availabilityZone`
 
-Name of the Azure Bastion resource.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `zone`
-
-If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone number here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone.To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones) and [Distribute VMs and disks across availability zones](https://learn.microsoft.com/en-us/azure/virtual-machines/disks-high-availability#distribute-vms-and-disks-across-availability-zones).
+If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone number here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones) and [Distribute VMs and disks across availability zones](https://learn.microsoft.com/en-us/azure/virtual-machines/disks-high-availability#distribute-vms-and-disks-across-availability-zones).
 
 - Required: Yes
 - Type: int
@@ -750,6 +743,13 @@ If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to
     3
   ]
   ```
+
+### Parameter: `name`
+
+Name of the Azure Bastion resource.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `enableTelemetry`
 

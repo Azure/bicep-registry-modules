@@ -11,7 +11,7 @@ param name string
   2
   3
 ])
-param zone int
+param availabilityZone int
 
 @description('Optional. The idle timeout of the NAT gateway.')
 param idleTimeoutInMinutes int = 5
@@ -113,7 +113,7 @@ module publicIPAddresses 'br/public:avm/res/network/public-ip-address:0.5.1' = [
       skuName: 'Standard' // Must be standard
       skuTier: publicIPAddressObject.?skuTier
       tags: publicIPAddressObject.?tags ?? tags
-      zones: publicIPAddressObject.?zones ?? (zone != -1 ? [zone] : null)
+      zones: publicIPAddressObject.?zones ?? (availabilityZone != -1 ? [availabilityZone] : null)
       enableTelemetry: enableReferencedModulesTelemetry
       ddosSettings: publicIPAddressObject.?ddosSettings
       dnsSettings: publicIPAddressObject.?dnsSettings
@@ -171,7 +171,7 @@ resource natGateway 'Microsoft.Network/natGateways@2023-04-01' = {
     publicIpPrefixes: formattedPublicIpPrefixResourceIds.outputs.formattedResourceIds
     publicIpAddresses: formattedPublicIpResourceIds.outputs.formattedResourceIds
   }
-  zones: zone != -1 ? [string(zone)] : null
+  zones: availabilityZone != -1 ? [string(availabilityZone)] : null
 }
 
 resource natGateway_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
