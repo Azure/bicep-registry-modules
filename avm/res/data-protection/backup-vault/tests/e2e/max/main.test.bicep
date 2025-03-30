@@ -38,7 +38,7 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
-    storageAccountName: 'dep${namePrefix}sa${serviceShort}02'
+    storageAccountName: 'dep${namePrefix}sa${serviceShort}03'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     diskName: 'dep-${namePrefix}-dsk-${serviceShort}'
     location: resourceLocation
@@ -286,10 +286,11 @@ module postDeployment 'postdeployment.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-postdeployment'
   params: {
-    storageAccountName: 'dep${namePrefix}sa${serviceShort}02'
+    storageAccountName: 'dep${namePrefix}sa${serviceShort}03'
     storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
     backupVaultName: '${namePrefix}${serviceShort}001'
-    blobBackupPolicyName: blobBackupPolicyName
+    // blobBackupPolicyName: blobBackupPolicyName
+    blobBackupPolicyName: 'testmanualdelete'
     location: resourceLocation
   }
   dependsOn: [
