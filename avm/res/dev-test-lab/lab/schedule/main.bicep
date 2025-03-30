@@ -27,7 +27,7 @@ param tags object?
 param dailyRecurrence dailyRecurrenceType?
 
 @sys.description('Optional. If the schedule will occur multiple times a day, specify the hourly recurrence.')
-param hourlyRecurrence hourlyRecurrenceType
+param hourlyRecurrence hourlyRecurrenceType?
 
 @sys.description('Optional. If the schedule will occur only some days of the week, specify the weekly recurrence.')
 param weeklyRecurrence weeklyRecurrenceType?

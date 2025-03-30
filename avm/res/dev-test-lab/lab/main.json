@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "4471529742662871191"
+      "templateHash": "686330583753520204"
     },
     "name": "DevTest Labs",
     "description": "This module deploys a DevTest Lab."
@@ -1771,7 +1771,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "4632504248805639450"
+              "templateHash": "15260716151574235063"
             },
             "name": "DevTest Lab Schedules",
             "description": "This module deploys a DevTest Lab Schedule.\n\nLab schedules are used to modify the settings for auto-shutdown, auto-start for lab virtual machines."
@@ -1923,6 +1923,7 @@
             },
             "hourlyRecurrence": {
               "$ref": "#/definitions/hourlyRecurrenceType",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. If the schedule will occur multiple times a day, specify the hourly recurrence."
               }

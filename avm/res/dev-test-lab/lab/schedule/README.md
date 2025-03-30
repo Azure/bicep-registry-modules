@@ -103,7 +103,7 @@ The time of day the schedule will occur.
 
 If the schedule will occur multiple times a day, specify the hourly recurrence.
 
-- Required: Yes
+- Required: No
 - Type: object
 
 **Required parameters**
