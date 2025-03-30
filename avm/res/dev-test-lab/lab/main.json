@@ -5,164 +5,154 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "11496927656698208589"
+      "version": "0.33.93.31351",
+      "templateHash": "4471529742662871191"
     },
     "name": "DevTest Labs",
     "description": "This module deploys a DevTest Lab."
   },
   "definitions": {
-    "managedIdentitiesType": {
+    "artifactsourceType": {
       "type": "object",
       "properties": {
-        "userAssignedResourceIds": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
+        "name": {
+          "type": "string",
           "metadata": {
-            "description": "Optional. The resource ID(s) to assign to the resource. Currently, a single user-assigned identity is supported per lab."
+            "description": "Required. The name of the artifact source."
+          }
+        },
+        "tags": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The tags of the artifact source."
+          }
+        },
+        "displayName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The display name of the artifact source. Default is the name of the artifact source."
+          }
+        },
+        "branchRef": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The artifact source's branch reference (e.g. main or master)."
+          }
+        },
+        "folderPath": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Conditional. The folder containing artifacts. At least one folder path is required. Required if \"armTemplateFolderPath\" is empty."
+          }
+        },
+        "armTemplateFolderPath": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Conditional. The folder containing Azure Resource Manager templates. Required if \"folderPath\" is empty."
+          }
+        },
+        "sourceType": {
+          "type": "string",
+          "allowedValues": [
+            "GitHub",
+            "StorageAccount",
+            "VsoGit"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The artifact source's type."
+          }
+        },
+        "status": {
+          "type": "string",
+          "allowedValues": [
+            "Disabled",
+            "Enabled"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Indicates if the artifact source is enabled (values: Enabled, Disabled). Default is \"Enabled\"."
+          }
+        },
+        "uri": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The artifact source's URI."
+          }
+        },
+        "securityToken": {
+          "type": "securestring",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The security token to authenticate to the artifact source. Private artifacts use the system-identity of the lab to store the security token for the artifact source in the lab's managed Azure Key Vault. Access to the Azure Key Vault is granted automatically only when the lab is created with a system-assigned identity."
           }
         }
       },
-      "nullable": true
-    },
-    "artifactsourcesType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The name of the artifact source."
-            }
-          },
-          "tags": {
-            "type": "object",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The tags of the artifact source."
-            }
-          },
-          "displayName": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The display name of the artifact source. Default is the name of the artifact source."
-            }
-          },
-          "branchRef": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The artifact source's branch reference (e.g. main or master)."
-            }
-          },
-          "folderPath": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Conditional. The folder containing artifacts. At least one folder path is required. Required if \"armTemplateFolderPath\" is empty."
-            }
-          },
-          "armTemplateFolderPath": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Conditional. The folder containing Azure Resource Manager templates. Required if \"folderPath\" is empty."
-            }
-          },
-          "sourceType": {
-            "type": "string",
-            "allowedValues": [
-              "GitHub",
-              "StorageAccount",
-              "VsoGit"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The artifact source's type."
-            }
-          },
-          "status": {
-            "type": "string",
-            "allowedValues": [
-              "Disabled",
-              "Enabled"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Indicates if the artifact source is enabled (values: Enabled, Disabled). Default is \"Enabled\"."
-            }
-          },
-          "uri": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The artifact source's URI."
-            }
-          },
-          "securityToken": {
-            "type": "securestring",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The security token to authenticate to the artifact source. Private artifacts use the system-identity of the lab to store the security token for the artifact source in the lab's managed Azure Key Vault. Access to the Azure Key Vault is granted automatically only when the lab is created with a system-assigned identity."
-            }
-          }
-        }
-      },
-      "nullable": true
+      "metadata": {
+        "description": "The type for the artifact source."
+      }
     },
     "virtualNetworkType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The name of the virtual network."
-            }
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the virtual network."
+          }
+        },
+        "tags": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The tags of the virtual network."
+          }
+        },
+        "externalProviderResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The external provider resource ID of the virtual network."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The description of the virtual network."
+          }
+        },
+        "allowedSubnets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/allowedSubnetType"
           },
-          "tags": {
-            "type": "object",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The tags of the virtual network."
-            }
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The allowed subnets of the virtual network."
+          }
+        },
+        "subnetOverrides": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/subnetOverrideType"
           },
-          "externalProviderResourceId": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The external provider resource ID of the virtual network."
-            }
-          },
-          "description": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The description of the virtual network."
-            }
-          },
-          "allowedSubnets": {
-            "$ref": "#/definitions/allowedSubnetType",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The allowed subnets of the virtual network."
-            }
-          },
-          "subnetOverrides": {
-            "$ref": "#/definitions/subnetOverrideType",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The subnet overrides of the virtual network."
-            }
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The subnet overrides of the virtual network."
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for the virtual network."
+      }
     },
-    "costsType": {
+    "costType": {
       "type": "object",
       "properties": {
         "tags": {
@@ -332,267 +322,267 @@
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for the cost."
+      }
     },
     "notificationChannelType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "allowedValues": [
-              "autoShutdown",
-              "costThreshold"
-            ],
-            "metadata": {
-              "description": "Required. The name of the notification channel."
-            }
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "allowedValues": [
+            "autoShutdown",
+            "costThreshold"
+          ],
+          "metadata": {
+            "description": "Required. The name of the notification channel."
+          }
+        },
+        "tags": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The tags of the notification channel."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The description of the notification."
+          }
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "type": "string"
           },
-          "tags": {
-            "type": "object",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The tags of the notification channel."
-            }
-          },
-          "description": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The description of the notification."
-            }
-          },
-          "events": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "metadata": {
-              "description": "Required. The list of event for which this notification is enabled. Can be \"AutoShutdown\" or \"Cost\"."
-            }
-          },
-          "emailRecipient": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Conditional. The email recipient to send notifications to (can be a list of semi-colon separated email addresses). Required if \"webHookUrl\" is empty."
-            }
-          },
-          "webHookUrl": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Conditional. The webhook URL to which the notification will be sent. Required if \"emailRecipient\" is empty."
-            }
-          },
-          "notificationLocale": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The locale to use when sending a notification (fallback for unsupported languages is EN)."
-            }
+          "metadata": {
+            "description": "Required. The list of event for which this notification is enabled. Can be \"AutoShutdown\" or \"Cost\"."
+          }
+        },
+        "emailRecipient": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Conditional. The email recipient to send notifications to (can be a list of semi-colon separated email addresses). Required if \"webHookUrl\" is empty."
+          }
+        },
+        "webHookUrl": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Conditional. The webhook URL to which the notification will be sent. Required if \"emailRecipient\" is empty."
+          }
+        },
+        "notificationLocale": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The locale to use when sending a notification (fallback for unsupported languages is EN)."
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for the notification channel."
+      }
     },
-    "policiesType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The name of the policy."
-            }
-          },
-          "description": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The description of the policy."
-            }
-          },
-          "evaluatorType": {
-            "type": "string",
-            "allowedValues": [
-              "AllowedValuesPolicy",
-              "MaxValuePolicy"
-            ],
-            "metadata": {
-              "description": "Required. The evaluator type of the policy (i.e. AllowedValuesPolicy, MaxValuePolicy)."
-            }
-          },
-          "factData": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The fact data of the policy."
-            }
-          },
-          "factName": {
-            "type": "string",
-            "allowedValues": [
-              "EnvironmentTemplate",
-              "GalleryImage",
-              "LabPremiumVmCount",
-              "LabTargetCost",
-              "LabVmCount",
-              "LabVmSize",
-              "ScheduleEditPermission",
-              "UserOwnedLabPremiumVmCount",
-              "UserOwnedLabVmCount",
-              "UserOwnedLabVmCountInSubnet"
-            ],
-            "metadata": {
-              "description": "Required. The fact name of the policy."
-            }
-          },
-          "status": {
-            "type": "string",
-            "allowedValues": [
-              "Disabled",
-              "Enabled"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The status of the policy. Default is \"Enabled\"."
-            }
-          },
-          "threshold": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The threshold of the policy (i.e. a number for MaxValuePolicy, and a JSON array of values for AllowedValuesPolicy)."
-            }
+    "policyType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the policy."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The description of the policy."
+          }
+        },
+        "evaluatorType": {
+          "type": "string",
+          "allowedValues": [
+            "AllowedValuesPolicy",
+            "MaxValuePolicy"
+          ],
+          "metadata": {
+            "description": "Required. The evaluator type of the policy (i.e. AllowedValuesPolicy, MaxValuePolicy)."
+          }
+        },
+        "factData": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The fact data of the policy."
+          }
+        },
+        "factName": {
+          "type": "string",
+          "allowedValues": [
+            "EnvironmentTemplate",
+            "GalleryImage",
+            "LabPremiumVmCount",
+            "LabTargetCost",
+            "LabVmCount",
+            "LabVmSize",
+            "ScheduleEditPermission",
+            "UserOwnedLabPremiumVmCount",
+            "UserOwnedLabVmCount",
+            "UserOwnedLabVmCountInSubnet"
+          ],
+          "metadata": {
+            "description": "Required. The fact name of the policy."
+          }
+        },
+        "status": {
+          "type": "string",
+          "allowedValues": [
+            "Disabled",
+            "Enabled"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The status of the policy. Default is \"Enabled\"."
+          }
+        },
+        "threshold": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The threshold of the policy (i.e. a number for MaxValuePolicy, and a JSON array of values for AllowedValuesPolicy)."
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for the policy."
+      }
     },
     "scheduleType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "allowedValues": [
-              "LabVmAutoStart",
-              "LabVmsShutdown"
-            ],
-            "metadata": {
-              "description": "Required. The name of the schedule."
-            }
-          },
-          "tags": {
-            "type": "object",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The tags of the schedule."
-            }
-          },
-          "taskType": {
-            "type": "string",
-            "allowedValues": [
-              "LabVmsShutdownTask",
-              "LabVmsStartupTask"
-            ],
-            "metadata": {
-              "description": "Required. The task type of the schedule (e.g. LabVmsShutdownTask, LabVmsStartupTask)."
-            }
-          },
-          "dailyRecurrence": {
-            "$ref": "#/definitions/dailyRecurrenceType",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The daily recurrence of the schedule."
-            }
-          },
-          "hourlyRecurrence": {
-            "$ref": "#/definitions/hourlyRecurrenceType",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. If the schedule will occur multiple times a day, specify the hourly recurrence."
-            }
-          },
-          "weeklyRecurrence": {
-            "$ref": "#/definitions/weeklyRecurrenceType",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. If the schedule will occur only some days of the week, specify the weekly recurrence."
-            }
-          },
-          "status": {
-            "type": "string",
-            "allowedValues": [
-              "Disabled",
-              "Enabled"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The status of the schedule (i.e. Enabled, Disabled). Default is \"Enabled\"."
-            }
-          },
-          "targetResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The resource ID to which the schedule belongs."
-            }
-          },
-          "timeZoneId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The time zone ID of the schedule. Defaults to \"Pacific Standard time\"."
-            }
-          },
-          "notificationSettings": {
-            "$ref": "#/definitions/notificationSettingsType",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The notification settings for the schedule."
-            }
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "allowedValues": [
+            "LabVmAutoStart",
+            "LabVmsShutdown"
+          ],
+          "metadata": {
+            "description": "Required. The name of the schedule."
+          }
+        },
+        "tags": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The tags of the schedule."
+          }
+        },
+        "taskType": {
+          "type": "string",
+          "allowedValues": [
+            "LabVmsShutdownTask",
+            "LabVmsStartupTask"
+          ],
+          "metadata": {
+            "description": "Required. The task type of the schedule (e.g. LabVmsShutdownTask, LabVmsStartupTask)."
+          }
+        },
+        "dailyRecurrence": {
+          "$ref": "#/definitions/dailyRecurrenceType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The daily recurrence of the schedule."
+          }
+        },
+        "hourlyRecurrence": {
+          "$ref": "#/definitions/hourlyRecurrenceType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. If the schedule will occur multiple times a day, specify the hourly recurrence."
+          }
+        },
+        "weeklyRecurrence": {
+          "$ref": "#/definitions/weeklyRecurrenceType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. If the schedule will occur only some days of the week, specify the weekly recurrence."
+          }
+        },
+        "status": {
+          "type": "string",
+          "allowedValues": [
+            "Disabled",
+            "Enabled"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The status of the schedule (i.e. Enabled, Disabled). Default is \"Enabled\"."
+          }
+        },
+        "targetResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID to which the schedule belongs."
+          }
+        },
+        "timeZoneId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The time zone ID of the schedule. Defaults to \"Pacific Standard time\"."
+          }
+        },
+        "notificationSettings": {
+          "$ref": "#/definitions/notificationSettingType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The notification settings for the schedule."
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for the schedule."
+      }
     },
     "allowedSubnetType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "allowPublicIp": {
-            "type": "string",
-            "allowedValues": [
-              "Allow",
-              "Default",
-              "Deny"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The permission policy of the subnet for allowing public IP addresses (i.e. Allow, Deny))."
-            }
-          },
-          "resourceId": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The resource ID of the allowed subnet."
-            }
-          },
-          "labSubnetName": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The name of the subnet as seen in the lab."
-            }
+      "type": "object",
+      "properties": {
+        "allowPublicIp": {
+          "type": "string",
+          "allowedValues": [
+            "Allow",
+            "Default",
+            "Deny"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The permission policy of the subnet for allowing public IP addresses (i.e. Allow, Deny))."
+          }
+        },
+        "resourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of the allowed subnet."
+          }
+        },
+        "labSubnetName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the subnet as seen in the lab."
           }
         }
       },
-      "nullable": true,
       "metadata": {
+        "description": "The type for the allowed subnet.",
         "__bicep_imported_from!": {
           "sourceTemplate": "virtualnetwork/main.bicep"
         }
@@ -608,8 +598,8 @@
           }
         }
       },
-      "nullable": true,
       "metadata": {
+        "description": "The type for the daily recurrence of the schedule.",
         "__bicep_imported_from!": {
           "sourceTemplate": "schedule/main.bicep"
         }
@@ -625,8 +615,8 @@
           }
         }
       },
-      "nullable": true,
       "metadata": {
+        "description": "The type for the hourly recurrence of the schedule.",
         "__bicep_imported_from!": {
           "sourceTemplate": "schedule/main.bicep"
         }
@@ -658,7 +648,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     },
@@ -679,18 +669,18 @@
       "metadata": {
         "description": "An AVM-aligned type for a managed identity configuration. To be used if only user-assigned identities are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     },
-    "notificationSettingsType": {
+    "notificationSettingType": {
       "type": "object",
       "properties": {
         "emailRecipient": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Conditional. The email recipient to send notifications to (can be a list of semi-colon separated email addresses). Required if \"webHookUrl\" is empty."
+            "description": "Conditional. The email recipient to send notifications to (can be a list of semi-colon separated email addresses). Required if \"webhookUrl\" is empty."
           }
         },
         "notificationLocale": {
@@ -718,7 +708,7 @@
             "description": "Optional. Time in minutes before event at which notification will be sent. Default is 30 minutes if status is Enabled and not specified."
           }
         },
-        "webHookUrl": {
+        "webhookUrl": {
           "type": "string",
           "nullable": true,
           "metadata": {
@@ -726,8 +716,8 @@
           }
         }
       },
-      "nullable": true,
       "metadata": {
+        "description": "The type for the notification setting.",
         "__bicep_imported_from!": {
           "sourceTemplate": "schedule/main.bicep"
         }
@@ -804,98 +794,95 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     },
     "subnetOverrideType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "labSubnetName": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The name given to the subnet within the lab."
-            }
-          },
-          "resourceId": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The resource ID of the subnet."
-            }
-          },
-          "sharedPublicIpAddressConfiguration": {
-            "type": "object",
-            "properties": {
-              "allowedPorts": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "backendPort": {
-                      "type": "int",
-                      "metadata": {
-                        "description": "Required. Backend port of the target virtual machine."
-                      }
-                    },
-                    "transportProtocol": {
-                      "type": "string",
-                      "allowedValues": [
-                        "Tcp",
-                        "Udp"
-                      ],
-                      "metadata": {
-                        "description": "Required. Protocol type of the port."
-                      }
+      "type": "object",
+      "properties": {
+        "labSubnetName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name given to the subnet within the lab."
+          }
+        },
+        "resourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of the subnet."
+          }
+        },
+        "sharedPublicIpAddressConfiguration": {
+          "type": "object",
+          "properties": {
+            "allowedPorts": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "backendPort": {
+                    "type": "int",
+                    "metadata": {
+                      "description": "Required. Backend port of the target virtual machine."
+                    }
+                  },
+                  "transportProtocol": {
+                    "type": "string",
+                    "allowedValues": [
+                      "Tcp",
+                      "Udp"
+                    ],
+                    "metadata": {
+                      "description": "Required. Protocol type of the port."
                     }
                   }
-                },
-                "metadata": {
-                  "description": "Required. Backend ports that virtual machines on this subnet are allowed to expose."
                 }
+              },
+              "metadata": {
+                "description": "Required. Backend ports that virtual machines on this subnet are allowed to expose."
               }
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The permission policy of the subnet for allowing public IP addresses (i.e. Allow, Deny))."
             }
           },
-          "useInVmCreationPermission": {
-            "type": "string",
-            "allowedValues": [
-              "Allow",
-              "Default",
-              "Deny"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Indicates whether this subnet can be used during virtual machine creation (i.e. Allow, Deny)."
-            }
-          },
-          "usePublicIpAddressPermission": {
-            "type": "string",
-            "allowedValues": [
-              "Allow",
-              "Default",
-              "Deny"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Indicates whether public IP addresses can be assigned to virtual machines on this subnet (i.e. Allow, Deny)."
-            }
-          },
-          "virtualNetworkPoolName": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The virtual network pool associated with this subnet."
-            }
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The permission policy of the subnet for allowing public IP addresses (i.e. Allow, Deny))."
+          }
+        },
+        "useInVmCreationPermission": {
+          "type": "string",
+          "allowedValues": [
+            "Allow",
+            "Default",
+            "Deny"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Indicates whether this subnet can be used during virtual machine creation (i.e. Allow, Deny)."
+          }
+        },
+        "usePublicIpAddressPermission": {
+          "type": "string",
+          "allowedValues": [
+            "Allow",
+            "Default",
+            "Deny"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Indicates whether public IP addresses can be assigned to virtual machines on this subnet (i.e. Allow, Deny)."
+          }
+        },
+        "virtualNetworkPoolName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The virtual network pool associated with this subnet."
           }
         }
       },
-      "nullable": true,
       "metadata": {
+        "description": "The type for the subnet override.",
         "__bicep_imported_from!": {
           "sourceTemplate": "virtualnetwork/main.bicep"
         }
@@ -920,8 +907,8 @@
           }
         }
       },
-      "nullable": true,
       "metadata": {
+        "description": "The type for the weekly recurrence of the schedule.",
         "__bicep_imported_from!": {
           "sourceTemplate": "schedule/main.bicep"
         }
@@ -1114,37 +1101,58 @@
       }
     },
     "virtualnetworks": {
-      "$ref": "#/definitions/virtualNetworkType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/virtualNetworkType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Virtual networks to create for the lab."
       }
     },
     "policies": {
-      "$ref": "#/definitions/policiesType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/policyType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Policies to create for the lab."
       }
     },
     "schedules": {
-      "$ref": "#/definitions/scheduleType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/scheduleType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Schedules to create for the lab."
       }
     },
     "notificationchannels": {
-      "$ref": "#/definitions/notificationChannelType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/notificationChannelType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Conditional. Notification Channels to create for the lab. Required if the schedules property \"notificationSettingsStatus\" is set to \"Enabled."
       }
     },
     "artifactsources": {
-      "$ref": "#/definitions/artifactsourcesType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/artifactsourceType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Artifact sources to create for the lab."
       }
     },
     "costs": {
-      "$ref": "#/definitions/costsType",
+      "$ref": "#/definitions/costType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Costs to create for the lab."
       }
@@ -1307,138 +1315,132 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "10192397482038957377"
+              "version": "0.33.93.31351",
+              "templateHash": "2884005636611674698"
             },
             "name": "DevTest Lab Virtual Networks",
             "description": "This module deploys a DevTest Lab Virtual Network.\n\nLab virtual machines must be deployed into a virtual network. This resource type allows configuring the virtual network and subnet settings used for the lab virtual machines."
           },
           "definitions": {
             "allowedSubnetType": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "allowPublicIp": {
-                    "type": "string",
-                    "allowedValues": [
-                      "Allow",
-                      "Default",
-                      "Deny"
-                    ],
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The permission policy of the subnet for allowing public IP addresses (i.e. Allow, Deny))."
-                    }
-                  },
-                  "resourceId": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. The resource ID of the allowed subnet."
-                    }
-                  },
-                  "labSubnetName": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. The name of the subnet as seen in the lab."
-                    }
+              "type": "object",
+              "properties": {
+                "allowPublicIp": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Allow",
+                    "Default",
+                    "Deny"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The permission policy of the subnet for allowing public IP addresses (i.e. Allow, Deny))."
+                  }
+                },
+                "resourceId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The resource ID of the allowed subnet."
+                  }
+                },
+                "labSubnetName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the subnet as seen in the lab."
                   }
                 }
               },
-              "nullable": true,
               "metadata": {
-                "__bicep_export!": true
+                "__bicep_export!": true,
+                "description": "The type for the allowed subnet."
               }
             },
             "subnetOverrideType": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "labSubnetName": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. The name given to the subnet within the lab."
-                    }
-                  },
-                  "resourceId": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. The resource ID of the subnet."
-                    }
-                  },
-                  "sharedPublicIpAddressConfiguration": {
-                    "type": "object",
-                    "properties": {
-                      "allowedPorts": {
-                        "type": "array",
-                        "items": {
-                          "type": "object",
-                          "properties": {
-                            "backendPort": {
-                              "type": "int",
-                              "metadata": {
-                                "description": "Required. Backend port of the target virtual machine."
-                              }
-                            },
-                            "transportProtocol": {
-                              "type": "string",
-                              "allowedValues": [
-                                "Tcp",
-                                "Udp"
-                              ],
-                              "metadata": {
-                                "description": "Required. Protocol type of the port."
-                              }
+              "type": "object",
+              "properties": {
+                "labSubnetName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name given to the subnet within the lab."
+                  }
+                },
+                "resourceId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The resource ID of the subnet."
+                  }
+                },
+                "sharedPublicIpAddressConfiguration": {
+                  "type": "object",
+                  "properties": {
+                    "allowedPorts": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "backendPort": {
+                            "type": "int",
+                            "metadata": {
+                              "description": "Required. Backend port of the target virtual machine."
+                            }
+                          },
+                          "transportProtocol": {
+                            "type": "string",
+                            "allowedValues": [
+                              "Tcp",
+                              "Udp"
+                            ],
+                            "metadata": {
+                              "description": "Required. Protocol type of the port."
                             }
                           }
-                        },
-                        "metadata": {
-                          "description": "Required. Backend ports that virtual machines on this subnet are allowed to expose."
                         }
+                      },
+                      "metadata": {
+                        "description": "Required. Backend ports that virtual machines on this subnet are allowed to expose."
                       }
-                    },
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The permission policy of the subnet for allowing public IP addresses (i.e. Allow, Deny))."
                     }
                   },
-                  "useInVmCreationPermission": {
-                    "type": "string",
-                    "allowedValues": [
-                      "Allow",
-                      "Default",
-                      "Deny"
-                    ],
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. Indicates whether this subnet can be used during virtual machine creation (i.e. Allow, Deny)."
-                    }
-                  },
-                  "usePublicIpAddressPermission": {
-                    "type": "string",
-                    "allowedValues": [
-                      "Allow",
-                      "Default",
-                      "Deny"
-                    ],
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. Indicates whether public IP addresses can be assigned to virtual machines on this subnet (i.e. Allow, Deny)."
-                    }
-                  },
-                  "virtualNetworkPoolName": {
-                    "type": "string",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The virtual network pool associated with this subnet."
-                    }
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The permission policy of the subnet for allowing public IP addresses (i.e. Allow, Deny))."
+                  }
+                },
+                "useInVmCreationPermission": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Allow",
+                    "Default",
+                    "Deny"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Indicates whether this subnet can be used during virtual machine creation (i.e. Allow, Deny)."
+                  }
+                },
+                "usePublicIpAddressPermission": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Allow",
+                    "Default",
+                    "Deny"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Indicates whether public IP addresses can be assigned to virtual machines on this subnet (i.e. Allow, Deny)."
+                  }
+                },
+                "virtualNetworkPoolName": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The virtual network pool associated with this subnet."
                   }
                 }
               },
-              "nullable": true,
               "metadata": {
-                "__bicep_export!": true
+                "__bicep_export!": true,
+                "description": "The type for the subnet override."
               }
             }
           },
@@ -1476,13 +1478,21 @@
               }
             },
             "allowedSubnets": {
-              "$ref": "#/definitions/allowedSubnetType",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/allowedSubnetType"
+              },
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The allowed subnets of the virtual network."
               }
             },
             "subnetOverrides": {
-              "$ref": "#/definitions/subnetOverrideType",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/subnetOverrideType"
+              },
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The subnet overrides of the virtual network."
               }
@@ -1582,8 +1592,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "2880525563281627917"
+              "version": "0.33.93.31351",
+              "templateHash": "7392286967425478103"
             },
             "name": "DevTest Lab Policy Sets Policies",
             "description": "This module deploys a DevTest Lab Policy Sets Policy.\n\nDevTest lab policies are used to modify the lab settings such as only allowing certain VM Size SKUs, marketplace image types, number of VMs allowed per user and other settings."
@@ -1760,8 +1770,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "13579745508079509440"
+              "version": "0.33.93.31351",
+              "templateHash": "4632504248805639450"
             },
             "name": "DevTest Lab Schedules",
             "description": "This module deploys a DevTest Lab Schedule.\n\nLab schedules are used to modify the settings for auto-shutdown, auto-start for lab virtual machines."
@@ -1777,9 +1787,9 @@
                   }
                 }
               },
-              "nullable": true,
               "metadata": {
-                "__bicep_export!": true
+                "__bicep_export!": true,
+                "description": "The type for the daily recurrence of the schedule."
               }
             },
             "hourlyRecurrenceType": {
@@ -1792,9 +1802,9 @@
                   }
                 }
               },
-              "nullable": true,
               "metadata": {
-                "__bicep_export!": true
+                "__bicep_export!": true,
+                "description": "The type for the hourly recurrence of the schedule."
               }
             },
             "weeklyRecurrenceType": {
@@ -1816,19 +1826,19 @@
                   }
                 }
               },
-              "nullable": true,
               "metadata": {
-                "__bicep_export!": true
+                "__bicep_export!": true,
+                "description": "The type for the weekly recurrence of the schedule."
               }
             },
-            "notificationSettingsType": {
+            "notificationSettingType": {
               "type": "object",
               "properties": {
                 "emailRecipient": {
                   "type": "string",
                   "nullable": true,
                   "metadata": {
-                    "description": "Conditional. The email recipient to send notifications to (can be a list of semi-colon separated email addresses). Required if \"webHookUrl\" is empty."
+                    "description": "Conditional. The email recipient to send notifications to (can be a list of semi-colon separated email addresses). Required if \"webhookUrl\" is empty."
                   }
                 },
                 "notificationLocale": {
@@ -1856,7 +1866,7 @@
                     "description": "Optional. Time in minutes before event at which notification will be sent. Default is 30 minutes if status is Enabled and not specified."
                   }
                 },
-                "webHookUrl": {
+                "webhookUrl": {
                   "type": "string",
                   "nullable": true,
                   "metadata": {
@@ -1864,9 +1874,9 @@
                   }
                 }
               },
-              "nullable": true,
               "metadata": {
-                "__bicep_export!": true
+                "__bicep_export!": true,
+                "description": "The type for the notification setting."
               }
             }
           },
@@ -1906,6 +1916,7 @@
             },
             "dailyRecurrence": {
               "$ref": "#/definitions/dailyRecurrenceType",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. If the schedule will occur once each day of the week, specify the daily recurrence."
               }
@@ -1918,6 +1929,7 @@
             },
             "weeklyRecurrence": {
               "$ref": "#/definitions/weeklyRecurrenceType",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. If the schedule will occur only some days of the week, specify the weekly recurrence."
               }
@@ -1948,7 +1960,8 @@
               }
             },
             "notificationSettings": {
-              "$ref": "#/definitions/notificationSettingsType",
+              "$ref": "#/definitions/notificationSettingType",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The notification settings for the schedule."
               }
@@ -2053,8 +2066,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "1708021683631496569"
+              "version": "0.33.93.31351",
+              "templateHash": "16163472309580870046"
             },
             "name": "DevTest Lab Notification Channels",
             "description": "This module deploys a DevTest Lab Notification Channel.\n\nNotification channels are used by the schedule resource type in order to send notifications or events to email addresses and/or webhooks."
@@ -2231,8 +2244,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "10475367346737056910"
+              "version": "0.33.93.31351",
+              "templateHash": "2430244360590395754"
             },
             "name": "DevTest Lab Artifact Sources",
             "description": "This module deploys a DevTest Lab Artifact Source.\n\nAn artifact source allows you to create custom artifacts for the VMs in the lab, or use Azure Resource Manager templates to create a custom test environment. You must add a private Git repository for the artifacts or Resource Manager templates that your team creates. The repository can be hosted on GitHub or on Azure DevOps Services."
@@ -2448,8 +2461,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "11242252695144325202"
+              "version": "0.33.93.31351",
+              "templateHash": "16138033684801665225"
             },
             "name": "DevTest Lab Costs",
             "description": "This module deploys a DevTest Lab Cost.\n\nManage lab costs by setting a spending target that can be viewed in the Monthly Estimated Cost Trend chart. DevTest Labs can send a notification when spending reaches the specified target threshold."

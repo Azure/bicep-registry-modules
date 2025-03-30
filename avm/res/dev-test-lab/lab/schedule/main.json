@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "13579745508079509440"
+      "version": "0.33.93.31351",
+      "templateHash": "4632504248805639450"
     },
     "name": "DevTest Lab Schedules",
     "description": "This module deploys a DevTest Lab Schedule.\n\nLab schedules are used to modify the settings for auto-shutdown, auto-start for lab virtual machines."
@@ -22,9 +22,9 @@
           }
         }
       },
-      "nullable": true,
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for the daily recurrence of the schedule."
       }
     },
     "hourlyRecurrenceType": {
@@ -37,9 +37,9 @@
           }
         }
       },
-      "nullable": true,
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for the hourly recurrence of the schedule."
       }
     },
     "weeklyRecurrenceType": {
@@ -61,19 +61,19 @@
           }
         }
       },
-      "nullable": true,
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for the weekly recurrence of the schedule."
       }
     },
-    "notificationSettingsType": {
+    "notificationSettingType": {
       "type": "object",
       "properties": {
         "emailRecipient": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Conditional. The email recipient to send notifications to (can be a list of semi-colon separated email addresses). Required if \"webHookUrl\" is empty."
+            "description": "Conditional. The email recipient to send notifications to (can be a list of semi-colon separated email addresses). Required if \"webhookUrl\" is empty."
           }
         },
         "notificationLocale": {
@@ -101,7 +101,7 @@
             "description": "Optional. Time in minutes before event at which notification will be sent. Default is 30 minutes if status is Enabled and not specified."
           }
         },
-        "webHookUrl": {
+        "webhookUrl": {
           "type": "string",
           "nullable": true,
           "metadata": {
@@ -109,9 +109,9 @@
           }
         }
       },
-      "nullable": true,
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for the notification setting."
       }
     }
   },
@@ -151,6 +151,7 @@
     },
     "dailyRecurrence": {
       "$ref": "#/definitions/dailyRecurrenceType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. If the schedule will occur once each day of the week, specify the daily recurrence."
       }
@@ -163,6 +164,7 @@
     },
     "weeklyRecurrence": {
       "$ref": "#/definitions/weeklyRecurrenceType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. If the schedule will occur only some days of the week, specify the weekly recurrence."
       }
@@ -193,7 +195,8 @@
       }
     },
     "notificationSettings": {
-      "$ref": "#/definitions/notificationSettingsType",
+      "$ref": "#/definitions/notificationSettingType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The notification settings for the schedule."
       }
