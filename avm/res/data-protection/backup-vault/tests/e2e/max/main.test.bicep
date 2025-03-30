@@ -282,12 +282,21 @@ module testDeployment '../../../main.bicep' = [
   }
 ]
 
+/subscriptions/cfa4dc0b-3d25-4e58-a70a-7085359080c5/resourceGroups/dep-avma-dataprotection.backupvaults-dpbvmax-rg/providers/Microsoft.Storage/storageAccounts/testmanualdelete
+
+resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' existing = {
+  name: 'testmanualdelete'
+  scope: az.resourceGroup('dep-avma-dataprotection.backupvaults-dpbvmax-rg')
+}
+
 module postDeployment 'postdeployment.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-postdeployment'
   params: {
-    storageAccountName: 'dep${namePrefix}sa${serviceShort}04'
-    storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
+    // storageAccountName: 'dep${namePrefix}sa${serviceShort}04'
+    storageAccountName: 'testmanualdelete'
+    // storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
+    storageAccountResourceId: storageAccount.id
     backupVaultName: '${namePrefix}${serviceShort}001'
     // blobBackupPolicyName: blobBackupPolicyName
     blobBackupPolicyName: 'Testmanual'

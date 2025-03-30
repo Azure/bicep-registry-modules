@@ -294,7 +294,7 @@ module backupInstance '../../../backup-instance/main.bicep' = {
   name: storageAccountName
   params: {
     backupVaultName: backupVaultName
-    name: storageAccountName
+    name: 'testmanualdelete-testmanualdelete-293fe4b2-5be2-419b-9ca1-a3c06c76f0e3'
     friendlyName: storageAccountName
     dataSourceInfo: {
       objectType: 'Datasource'
@@ -321,7 +321,7 @@ module backupInstance '../../../backup-instance/main.bicep' = {
           {
             objectType: 'BlobBackupDatasourceParameters'
             containersList: [
-              'container001'
+              'c001'
             ]
           }
         ]
