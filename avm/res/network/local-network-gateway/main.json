@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "17842911425725300808"
+      "version": "0.34.44.8038",
+      "templateHash": "5079927560650453920"
     },
     "name": "Local Network Gateways",
     "description": "This module deploys a Local Network Gateway."
@@ -39,7 +39,7 @@
       },
       "metadata": {
         "__bicep_export!": true,
-        "description": "The type of BGB settings."
+        "description": "The type of BGP settings."
       }
     },
     "lockType": {
