@@ -46,7 +46,7 @@ The following section provides usage examples for the module, which were used to
 
 - [With an administrator](#example-1-with-an-administrator)
 - [With audit settings](#example-2-with-audit-settings)
-- [Using only defaults](#example-3-using-only-defaults)
+- [Using Customer-Managed-Keys with User-Assigned identity](#example-3-using-customer-managed-keys-with-user-assigned-identity)
 - [Using only defaults](#example-4-using-only-defaults)
 - [Using elastic pool](#example-5-using-elastic-pool)
 - [Using failover groups](#example-6-using-failover-groups)
@@ -242,9 +242,9 @@ param managedIdentities = {
 </details>
 <p>
 
-### Example 3: _Using only defaults_
+### Example 3: _Using Customer-Managed-Keys with User-Assigned identity_
 
-This instance deploys the module with the minimum set of required parameters.
+This instance deploys the module with Customer-Managed-Keys using a User-Assigned Identity to access the key.
 
 
 <details>
@@ -271,7 +271,6 @@ module server 'br/public:avm/res/sql/server:<version>' = {
       keyVaultResourceId: '<keyVaultResourceId>'
       keyVersion: '<keyVersion>'
     }
-    location: '<location>'
     managedIdentities: {
       systemAssigned: false
       userAssignedResourceIds: [
@@ -317,9 +316,6 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         "keyVersion": "<keyVersion>"
       }
     },
-    "location": {
-      "value": "<location>"
-    },
     "managedIdentities": {
       "value": {
         "systemAssigned": false,
@@ -361,7 +357,6 @@ param customerManagedKey = {
   keyVaultResourceId: '<keyVaultResourceId>'
   keyVersion: '<keyVersion>'
 }
-param location = '<location>'
 param managedIdentities = {
   systemAssigned: false
   userAssignedResourceIds: [

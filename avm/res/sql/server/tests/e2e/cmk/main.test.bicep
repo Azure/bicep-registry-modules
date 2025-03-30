@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using only defaults'
-metadata description = 'This instance deploys the module with the minimum set of required parameters.'
+metadata name = 'Using Customer-Managed-Keys with User-Assigned identity'
+metadata description = 'This instance deploys the module with Customer-Managed-Keys using a User-Assigned Identity to access the key.'
 
 // ========== //
 // Parameters //
@@ -50,12 +50,11 @@ module nestedDependencies 'dependencies.bicep' = {
 
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
-  for iteration in ['init']: {
+  for iteration in ['init', 'idem']: {
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      location: resourceLocation
       primaryUserAssignedIdentityId: nestedDependencies.outputs.managedIdentityResourceId
       administrators: {
         azureADOnlyAuthentication: true
