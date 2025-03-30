@@ -1,3 +1,13 @@
+param backupVaultName string
+
+@description('Change Vault Storage Type (not allowed if the vault has registered backups)')
+@allowed([
+  'LocallyRedundant'
+  'ZoneRedundant'
+  'GeoRedundant'
+])
+param vaultStorageRedundancy string = 'GeoRedundant'
+
 @description('Optional. The location to deploy to.')
 param location string = resourceGroup().location
 
@@ -29,22 +39,22 @@ param vaultTierYearlyRetentionInYears int = 10
 @description('Vault tier daily backup schedule time')
 param vaultTierDailyBackupScheduleTime string = '06:00'
 
+@description('List of the containers to be protected')
+param containerList array = [
+  'container1'
+  'container2'
+]
+
+var roleDefinitionId = subscriptionResourceId(
+  'Microsoft.Authorization/roleDefinitions',
+  'e5e2a7ff-d759-4cd2-bb51-3152d37e2eb1'
+)
 var operationalTierRetentionDuration = 'P${operationalTierRetentionInDays}D'
 var vaultTierDefaultRetentionDuration = 'P${vaultTierDefaultRetentionInDays}D'
 var vaultTierWeeklyRetentionDuration = 'P${vaultTierWeeklyRetentionInWeeks}W'
 var vaultTierMonthlyRetentionDuration = 'P${vaultTierMonthlyRetentionInMonths}M'
 var vaultTierYearlyRetentionDuration = 'P${vaultTierYearlyRetentionInYears}Y'
 var repeatingTimeIntervals = 'R/2024-05-06T${vaultTierDailyBackupScheduleTime}:00+00:00/P1D'
-
-param backupVaultName string
-
-@description('Change Vault Storage Type (not allowed if the vault has registered backups)')
-@allowed([
-  'LocallyRedundant'
-  'ZoneRedundant'
-  'GeoRedundant'
-])
-param vaultStorageRedundancy string = 'GeoRedundant'
 
 param blobBackupPolicyName string
 
@@ -263,16 +273,30 @@ resource backupPolicy 'Microsoft.DataProtection/backupVaults/backupPolicies@2022
   }
 }
 
-module backupInstance_dataSourceResource_rbac '../../../backup-instance/modules/nested_dataSourceResourceRoleAssignment.bicep' = {
-  name: '${vault.name}-dataSourceResource-rbac'
-  // scope: resourceGroup(split(dataSourceInfo.resourceID, '/')[2], split(dataSourceInfo.resourceID, '/')[4])
-  params: {
-    resourceId: storageAccountResourceId
-    principalId: vault.identity.principalId
+resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' existing = {
+  name: storageAccountName
+}
+
+// module backupInstance_dataSourceResource_rbac '../../../backup-instance/modules/nested_dataSourceResourceRoleAssignment.bicep' = {
+//   name: '${vault.name}-dataSourceResource-rbac'
+//   // scope: resourceGroup(split(dataSourceInfo.resourceID, '/')[2], split(dataSourceInfo.resourceID, '/')[4])
+//   params: {
+//     resourceId: storageAccountResourceId
+//     principalId: vault.identity.principalId
+//   }
+// }
+
+resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  scope: storageAccount
+  name: guid(vault.id, roleDefinitionId, storageAccount.id)
+  properties: {
+    roleDefinitionId: roleDefinitionId
+    principalId: reference(vault.id, '2021-01-01', 'Full').identity.principalId
+    principalType: 'ServicePrincipal'
   }
 }
 
-resource backupInstance 'Microsoft.DataProtection/backupVaults/backupInstances@2024-04-01' = {
+resource backupInstance 'Microsoft.DataProtection/backupVaults/backupInstances@2022-05-01' = {
   parent: vault
   name: storageAccountName
   properties: {
@@ -280,39 +304,38 @@ resource backupInstance 'Microsoft.DataProtection/backupVaults/backupInstances@2
     friendlyName: storageAccountName
     dataSourceInfo: {
       objectType: 'Datasource'
-      resourceID: storageAccountResourceId
+      resourceID: storageAccount.id
       resourceName: storageAccountName
-      resourceType: 'Microsoft.Storage/storageAccounts'
-      resourceUri: storageAccountResourceId
+      resourceType: resourceType
+      resourceUri: storageAccount.id
       resourceLocation: location
-      datasourceType: 'Microsoft.Storage/storageAccounts/blobServices'
+      datasourceType: dataSourceType
     }
     dataSourceSetInfo: {
       objectType: 'DatasourceSet'
-      resourceID: storageAccountResourceId
+      resourceID: storageAccount.id
       resourceName: storageAccountName
-      resourceType: 'Microsoft.Storage/storageAccounts'
-      resourceUri: storageAccountResourceId
+      resourceType: resourceType
+      resourceUri: storageAccount.id
       resourceLocation: location
-      datasourceType: 'Microsoft.Storage/storageAccounts/blobServices'
+      datasourceType: dataSourceType
     }
     policyInfo: {
       policyId: backupPolicy.id
-      // name: blobBackupPolicyName
+      name: blobBackupPolicyName
       policyParameters: {
         backupDatasourceParametersList: [
           {
             objectType: 'BlobBackupDatasourceParameters'
-            containersList: [
-              'container001'
-            ]
+            containersList: containerList
           }
         ]
       }
     }
   }
   dependsOn: [
-    backupInstance_dataSourceResource_rbac
+    // backupInstance_dataSourceResource_rbac
+    roleAssignment
   ]
 }
 
