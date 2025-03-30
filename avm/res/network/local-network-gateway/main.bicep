@@ -153,7 +153,7 @@ output location string = localNetworkGateway.location
 // =============== //
 
 @export()
-@description('The type of BGB settings.')
+@description('The type of BGP settings.')
 type bgpSettingsType = {
   @description('Required. The BGP speaker\'s ASN.')
   @minValue(0)
