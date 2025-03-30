@@ -282,7 +282,7 @@ module testDeployment '../../../main.bicep' = [
   }
 ]
 
-/subscriptions/cfa4dc0b-3d25-4e58-a70a-7085359080c5/resourceGroups/dep-avma-dataprotection.backupvaults-dpbvmax-rg/providers/Microsoft.Storage/storageAccounts/testmanualdelete
+// /subscriptions/cfa4dc0b-3d25-4e58-a70a-7085359080c5/resourceGroups/dep-avma-dataprotection.backupvaults-dpbvmax-rg/providers/Microsoft.Storage/storageAccounts/testmanualdelete
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' existing = {
   name: 'testmanualdelete'
