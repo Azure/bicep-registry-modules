@@ -45,10 +45,10 @@ param containerList array = [
   'container2'
 ]
 
-var roleDefinitionId = subscriptionResourceId(
-  'Microsoft.Authorization/roleDefinitions',
-  'e5e2a7ff-d759-4cd2-bb51-3152d37e2eb1'
-)
+// var roleDefinitionId = subscriptionResourceId(
+//   'Microsoft.Authorization/roleDefinitions',
+//   'e5e2a7ff-d759-4cd2-bb51-3152d37e2eb1'
+// )
 var operationalTierRetentionDuration = 'P${operationalTierRetentionInDays}D'
 var vaultTierDefaultRetentionDuration = 'P${vaultTierDefaultRetentionInDays}D'
 var vaultTierWeeklyRetentionDuration = 'P${vaultTierWeeklyRetentionInWeeks}W'
@@ -67,29 +67,29 @@ param storageAccountResourceId string
 var dataSourceType = 'Microsoft.Storage/storageAccounts/blobServices'
 var resourceType = 'Microsoft.Storage/storageAccounts'
 
-// resource vault 'Microsoft.DataProtection/backupVaults@2023-05-01' existing = {
-//   name: backupVaultName
-
-//   // resource backupPolicy 'backupPolicies@2023-05-01' existing = {
-//   //   name: blobBackupPolicyName
-//   // }
-// }
-
-resource vault 'Microsoft.DataProtection/backupVaults@2022-05-01' = {
+resource vault 'Microsoft.DataProtection/backupVaults@2023-05-01' existing = {
   name: backupVaultName
-  location: location
-  identity: {
-    type: 'systemAssigned'
-  }
-  properties: {
-    storageSettings: [
-      {
-        datastoreType: 'VaultStore'
-        type: vaultStorageRedundancy
-      }
-    ]
-  }
+
+  // resource backupPolicy 'backupPolicies@2023-05-01' existing = {
+  //   name: blobBackupPolicyName
+  // }
 }
+
+// resource vault 'Microsoft.DataProtection/backupVaults@2022-05-01' = {
+//   name: backupVaultName
+//   location: location
+//   identity: {
+//     type: 'systemAssigned'
+//   }
+//   properties: {
+//     storageSettings: [
+//       {
+//         datastoreType: 'VaultStore'
+//         type: vaultStorageRedundancy
+//       }
+//     ]
+//   }
+// }
 
 resource backupPolicy 'Microsoft.DataProtection/backupVaults/backupPolicies@2022-05-01' = {
   parent: vault
