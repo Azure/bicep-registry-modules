@@ -22,10 +22,6 @@ param namePrefix string = '#_namePrefix_#'
 
 var resourceLocation = 'uksouth'
 
-@description('Vault tier daily backup schedule time')
-var dataSourceType = 'Microsoft.Storage/storageAccounts/blobServices'
-var resourceType = 'Microsoft.Storage/storageAccounts'
-
 // ============ //
 // Dependencies //
 // ============ //
@@ -133,6 +129,10 @@ module testDeployment '../../../main.bicep' = [
         {
           name: blobBackupPolicyName
           properties: {
+            datasourceTypes: [
+              'Microsoft.Storage/storageAccounts/blobServices'
+            ]
+            objectType: 'BackupPolicy'
             policyRules: [
               {
                 name: 'Default'
@@ -202,10 +202,6 @@ module testDeployment '../../../main.bicep' = [
                 }
               }
             ]
-            datasourceTypes: [
-              dataSourceType
-            ]
-            objectType: 'BackupPolicy'
           }
         }
       ]
@@ -221,15 +217,6 @@ module testDeployment '../../../main.bicep' = [
             resourceLocation: resourceLocation
             datasourceType: 'Microsoft.Storage/storageAccounts/blobServices'
           }
-          // dataSourceSetInfo: {
-          //   objectType: 'DatasourceSet'
-          //   resourceID: nestedDependencies.outputs.storageAccountResourceId
-          //   resourceName: nestedDependencies.outputs.storageAccountName
-          //   resourceType: 'Microsoft.Storage/storageAccounts'
-          //   resourceUri: nestedDependencies.outputs.storageAccountResourceId
-          //   resourceLocation: resourceLocation
-          //   datasourceType: 'Microsoft.Storage/storageAccounts/blobServices'
-          // }
           policyInfo: {
             policyName: blobBackupPolicyName
             policyParameters: {
