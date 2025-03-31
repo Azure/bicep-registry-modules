@@ -36,6 +36,7 @@ BeforeDiscovery {
 
     # Load used functions
     . (Join-Path $repoRootPath 'utilities' 'pipelines' 'publish' 'helper' 'Get-ModuleTargetVersion.ps1')
+    . (Join-Path $repoRootPath 'utilities' 'pipelines' 'publish' 'helper' 'Get-ModulePublishedVersions.ps1')
 
     # Building all required files for tests to optimize performance (using thread-safe multithreading) to consume later
     # Collecting paths
@@ -74,8 +75,13 @@ Describe 'File/folder tests' -Tag 'Modules' {
                     isTopLevelModule    = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
                     moduleType          = $moduleType
                     moduleVersionExists = Test-Path (Join-Path -Path $moduleFolderPath 'version.json')
+                    newModuleVersion    = Get-ModuleTargetVersion -ModuleFolderPath $moduleFolderPath -CompareJsonVersion $true
                 }
             }
+        }
+
+        BeforeAll {
+            . (Join-Path $repoRootPath 'utilities' 'pipelines' 'publish' 'helper' 'Get-ModulePublishedVersions.ps1')
         }
 
         It '[<moduleFolderName>] Module should contain a [` main.bicep `] file.' -TestCases $moduleFolderTestCases {
@@ -228,26 +234,22 @@ Describe 'File/folder tests' -Tag 'Modules' {
             }
 
             $changelogContent = Get-Content $changelogFilePath
-
-            # get the next version of the module
-            $moduleVersion = Get-ModuleTargetVersion -ModuleFolderPath $moduleFolderPath
-
             $sections = $changelogContent | Where-Object { $_ -match '^##\s+' }
-            $changelogSection = $sections | Where-Object { $_ -match "^##\s+$moduleVersion" }
+            $changelogSection = $sections | Where-Object { $_ -match "^##\s+$newModuleVersion" }
 
             # the changelog should start with '# Changelog'
             $changelogContent.Length | Should -BeGreaterThan 0 -Because 'the changelog should not be empty'
             $changelogContent[0] + $changelogContent[1] | Should -Be '# Changelog' -Because 'the changelog should start with `# Changelog`, followed by an empty line'
 
-            # check for the presence of the `## $moduleVersion` section
-            $changelogSection | Should -BeIn $sections -Because "the `## $moduleVersion` section should be in the changelog"
+            # check for the presence of the `## $newModuleVersion` section
+            $changelogSection | Should -BeIn $sections -Because "the `## $newModuleVersion` section should be in the changelog"
 
             # only one version section should be present
-            $changelogSection.Count | Should -BeExactly 1 -Because "the `## $moduleVersion` section should be in the changelog only once"
+            $changelogSection.Count | Should -BeExactly 1 -Because "the `## $newModuleVersion` section should be in the changelog only once"
 
             # check for version being the first section. Ignore, if there is only one section
             if ($sections -is [array]) {
-                $sections[0] | Should -Be $changelogSection -Because "the `## $moduleVersion` section should be the first section in the changelog"
+                $sections[0] | Should -Be $changelogSection -Because "the `## $newModuleVersion` section should be the first section in the changelog"
             }
 
             # check for the order of the versions
@@ -263,7 +265,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
                 }
             } else {
                 # special treatment, if there is only one section
-                $sectionContents['## ${moduleVersion}'] += $changelogContent
+                $sectionContents['## ${newModuleVersion}'] += $changelogContent
             }
 
             $invalidChanges = [System.Collections.ArrayList]@()
@@ -277,9 +279,14 @@ Describe 'File/folder tests' -Tag 'Modules' {
                     $invalidChanges += $key
                 }
                 if ((Select-String -InputObject $versionContent -Pattern '\n### Breaking Changes\n' -AllMatches).Matches.Count -ne 1) {
-                    $invalidBreakingChanges += $key
+                    if (($versionContent -split "`n")[-1] -eq '### Breaking Changes') {
+                        # the last line of the changelog section
+                        $emptySections += $key
+                    } else {
+                        $invalidBreakingChanges += $key
+                    }
                 }
-                # the $moduleVersion section must contain content and not only the headings and empty lines. The check for changelog and 0.1.0 is necessary for only one section in the file
+                # the $newModuleVersion section must contain content and not only the headings and empty lines. The check for changelog and 0.1.0 is necessary for only one section in the file
                 if (($sectionContents[$key] | Where-Object { $_ -notmatch '^\s*$' -and $_ -notmatch '^(### Changes|### Breaking Changes|# Changelog|## 0.1.0)$' }).Count -eq 0) {
                     $emptySections += $key
                 }
@@ -318,19 +325,10 @@ Describe 'File/folder tests' -Tag 'Modules' {
 
             # get all tags for a module
             $tagListUrl = "https://mcr.microsoft.com/v2/bicep/avm/$moduleType/$moduleFolderName/tags/list"
-            Write-Verbose "  Getting available tags at '$tagListUrl'..." -Verbose
-            try {
-                $tagListResponse = Invoke-RestMethod -Uri $tagListUrl
-            } catch {
-                $global:anyErrorsOccurred = $true
-                Write-Error "Error occurred while accessing URL: $tagListUrl"
-                Write-Error "Error message: $($_.Exception.Message)"
-                continue
-            }
-            $publishedTags = $tagListResponse.tags | Sort-Object -Culture 'en-US'
+            $publishedTags = Get-ModulePublishedVersions -TagListUrl $tagListUrl
 
             $incorrectVersions = [System.Collections.ArrayList]@()
-            $regex = '##\s(\d+\.\d+\.\d+)\s\('
+            $regex = '##\s(\d+\.\d+\.\d+)'
             foreach ($section in $sections) {
                 if ($section -match $regex) {
                     $version = $matches[1]

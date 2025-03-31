@@ -23,11 +23,7 @@ function Get-ModulePublishedVersions {
         [string] $TagListUrl
     )
 
-    # Load used functions
-    . (Join-Path (Get-Item -Path $PSScriptRoot).FullName 'Get-ModuleVersionChange.ps1')
-    . (Join-Path (Get-Item -Path $PSScriptRoot).FullName 'Get-ModuleTargetPatchVersion.ps1')
-
-    Write-Verbose "  Getting available tags at '$TagListUrl'..." -Verbose
+    Write-Verbose "Getting available tags at '$TagListUrl'..." -Verbose
     try {
         $tagListResponse = Invoke-RestMethod -Uri $TagListUrl
     } catch {
@@ -36,5 +32,6 @@ function Get-ModulePublishedVersions {
         throw $_.Exception
     }
     $publishedTags = $tagListResponse.tags | Sort-Object -Culture 'en-US'
+    Write-Verbose "  Found tags: $($publishedTags -join ', ')" -Verbose
     return $publishedTags
 }
