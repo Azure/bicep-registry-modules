@@ -199,60 +199,6 @@ module testDeployment '../../../main.bicep' = [
                 ]
               }
               {
-                name: 'Yearly'
-                objectType: 'AzureRetentionRule'
-                isDefault: false
-                lifecycles: [
-                  {
-                    deleteAfter: {
-                      duration: vaultTierYearlyRetentionDuration
-                      objectType: 'AbsoluteDeleteOption'
-                    }
-                    sourceDataStore: {
-                      dataStoreType: 'VaultStore'
-                      objectType: 'DataStoreInfoBase'
-                    }
-                    targetDataStoreCopySettings: []
-                  }
-                ]
-              }
-              {
-                name: 'Monthly'
-                objectType: 'AzureRetentionRule'
-                isDefault: false
-                lifecycles: [
-                  {
-                    deleteAfter: {
-                      duration: vaultTierMonthlyRetentionDuration
-                      objectType: 'AbsoluteDeleteOption'
-                    }
-                    sourceDataStore: {
-                      dataStoreType: 'VaultStore'
-                      objectType: 'DataStoreInfoBase'
-                    }
-                    targetDataStoreCopySettings: []
-                  }
-                ]
-              }
-              {
-                name: 'Weekly'
-                objectType: 'AzureRetentionRule'
-                isDefault: false
-                lifecycles: [
-                  {
-                    deleteAfter: {
-                      duration: vaultTierWeeklyRetentionDuration
-                      objectType: 'AbsoluteDeleteOption'
-                    }
-                    sourceDataStore: {
-                      dataStoreType: 'VaultStore'
-                      objectType: 'DataStoreInfoBase'
-                    }
-                    targetDataStoreCopySettings: []
-                  }
-                ]
-              }
-              {
                 name: 'Default'
                 objectType: 'AzureRetentionRule'
                 isDefault: true
@@ -283,60 +229,12 @@ module testDeployment '../../../main.bicep' = [
                 }
                 trigger: {
                   schedule: {
-                    timeZone: 'UTC'
+                    timeZone: 'Arabian Standard Time'
                     repeatingTimeIntervals: [
-                      repeatingTimeIntervals
+                      'R/2025-03-31T00:00:00+04:00/P1D'
                     ]
                   }
                   taggingCriteria: [
-                    {
-                      isDefault: false
-                      taggingPriority: 10
-                      tagInfo: {
-                        id: 'Yearly_'
-                        tagName: 'Yearly'
-                      }
-                      criteria: [
-                        {
-                          absoluteCriteria: [
-                            'FirstOfYear'
-                          ]
-                          objectType: 'ScheduleBasedBackupCriteria'
-                        }
-                      ]
-                    }
-                    {
-                      isDefault: false
-                      taggingPriority: 15
-                      tagInfo: {
-                        id: 'Monthly_'
-                        tagName: 'Monthly'
-                      }
-                      criteria: [
-                        {
-                          absoluteCriteria: [
-                            'FirstOfMonth'
-                          ]
-                          objectType: 'ScheduleBasedBackupCriteria'
-                        }
-                      ]
-                    }
-                    {
-                      isDefault: false
-                      taggingPriority: 20
-                      tagInfo: {
-                        id: 'Weekly_'
-                        tagName: 'Weekly'
-                      }
-                      criteria: [
-                        {
-                          absoluteCriteria: [
-                            'FirstOfWeek'
-                          ]
-                          objectType: 'ScheduleBasedBackupCriteria'
-                        }
-                      ]
-                    }
                     {
                       isDefault: true
                       taggingPriority: 99
