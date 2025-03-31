@@ -320,7 +320,7 @@ module postDeployment 'postdeployment.bicep' = {
 
 module postDeployment2 'postdeployment2.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-postdeployment'
+  name: '${uniqueString(deployment().name, resourceLocation)}-postdeployment2'
   params: {
     storageAccountName: nestedDependencies.outputs.storageAccountName2
     // storageAccountName: 'testmanualdelete'
