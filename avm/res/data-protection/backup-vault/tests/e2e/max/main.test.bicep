@@ -240,15 +240,15 @@ module testDeployment '../../../main.bicep' = [
             resourceLocation: resourceLocation
             datasourceType: 'Microsoft.Storage/storageAccounts/blobServices'
           }
-          dataSourceSetInfo: {
-            objectType: 'DatasourceSet'
-            resourceID: nestedDependencies.outputs.storageAccountResourceId
-            resourceName: nestedDependencies.outputs.storageAccountName
-            resourceType: 'Microsoft.Storage/storageAccounts'
-            resourceUri: nestedDependencies.outputs.storageAccountResourceId
-            resourceLocation: resourceLocation
-            datasourceType: 'Microsoft.Storage/storageAccounts/blobServices'
-          }
+          // dataSourceSetInfo: {
+          //   objectType: 'DatasourceSet'
+          //   resourceID: nestedDependencies.outputs.storageAccountResourceId
+          //   resourceName: nestedDependencies.outputs.storageAccountName
+          //   resourceType: 'Microsoft.Storage/storageAccounts'
+          //   resourceUri: nestedDependencies.outputs.storageAccountResourceId
+          //   resourceLocation: resourceLocation
+          //   datasourceType: 'Microsoft.Storage/storageAccounts/blobServices'
+          // }
           policyInfo: {
             policyName: blobBackupPolicyName
             policyParameters: {
@@ -321,29 +321,29 @@ module testDeployment '../../../main.bicep' = [
   }
 ]
 
-module postDeployment 'postdeployment.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-postdeployment'
-  params: {
-    storageAccountName: nestedDependencies.outputs.storageAccountName2
-    storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId2
-    backupVaultName: '${namePrefix}${serviceShort}002'
-    blobBackupPolicyName: blobBackupPolicyName
-    location: resourceLocation
-  }
-}
+// module postDeployment 'postdeployment.bicep' = {
+//   scope: resourceGroup
+//   name: '${uniqueString(deployment().name, resourceLocation)}-postdeployment'
+//   params: {
+//     storageAccountName: nestedDependencies.outputs.storageAccountName2
+//     storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId2
+//     backupVaultName: '${namePrefix}${serviceShort}002'
+//     blobBackupPolicyName: blobBackupPolicyName
+//     location: resourceLocation
+//   }
+// }
 
-module postDeployment2 'postdeployment2.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-postdeployment2'
-  params: {
-    storageAccountName: nestedDependencies.outputs.storageAccountName
-    storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
-    backupVaultName: '${namePrefix}${serviceShort}001'
-    blobBackupPolicyName: blobBackupPolicyName
-    location: resourceLocation
-  }
-  dependsOn: [
-    testDeployment
-  ]
-}
+// module postDeployment2 'postdeployment2.bicep' = {
+//   scope: resourceGroup
+//   name: '${uniqueString(deployment().name, resourceLocation)}-postdeployment2'
+//   params: {
+//     storageAccountName: nestedDependencies.outputs.storageAccountName
+//     storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
+//     backupVaultName: '${namePrefix}${serviceShort}001'
+//     blobBackupPolicyName: blobBackupPolicyName
+//     location: resourceLocation
+//   }
+//   dependsOn: [
+//     testDeployment
+//   ]
+// }

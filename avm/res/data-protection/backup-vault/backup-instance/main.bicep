@@ -16,13 +16,11 @@ param friendlyName string?
 @description('Required. Gets or sets the data source information.')
 param dataSourceInfo dataSourceInfoType
 
-@description('Optional. Gets or sets the data source set information.')
-param dataSourceSetInfo dataSourceSetInfoType?
+// @description('Optional. Gets or sets the data source set information.')
+// param dataSourceSetInfo dataSourceSetInfoType?
 
 @description('Required. Gets or sets the policy information.')
 param policyInfo policyInfoType
-
-// var resourceType = '${split(dataSourceInfo.resourceID, '/')[6]}/${split(dataSourceInfo.resourceID, '/')[7]}'
 
 resource backupVault 'Microsoft.DataProtection/backupVaults@2023-05-01' existing = {
   name: backupVaultName
@@ -57,7 +55,6 @@ var policyInfoVar = {
 
 module backupInstance_dataSourceResource_rbac 'modules/nested_dataSourceResourceRoleAssignment.bicep' = {
   name: '${backupVault.name}-dataSourceResource-rbac'
-  // scope: resourceGroup(split(dataSourceInfo.resourceID, '/')[2], split(dataSourceInfo.resourceID, '/')[4])
   params: {
     resourceId: dataSourceInfo.resourceID
     principalId: backupVault.identity.principalId
@@ -71,7 +68,7 @@ resource backupInstance 'Microsoft.DataProtection/backupVaults/backupInstances@2
     friendlyName: friendlyName
     objectType: 'BackupInstance'
     dataSourceInfo: dataSourceInfo
-    dataSourceSetInfo: dataSourceSetInfo
+    // dataSourceSetInfo: dataSourceSetInfo
     policyInfo: policyInfoVar
     // tags: tags
     // datasourceAuthCredentials
@@ -111,19 +108,19 @@ type dataSourceInfoType = {
   resourceUri: string?
 }
 
-//TODO: add all descriptions
-@export()
-@description('The type for data source set info properties.')
-type dataSourceSetInfoType = {
-  datasourceType: string? //TODO check allowed values
-  objectType: 'DatasourceSet'
-  resourceID: string
-  resourceLocation: string?
-  resourceName: string?
-  // resourceProperties: object?
-  resourceType: string?
-  resourceUri: string?
-}
+// //TODO: add all descriptions
+// @export()
+// @description('The type for data source set info properties.')
+// type dataSourceSetInfoType = {
+//   datasourceType: string? //TODO check allowed values
+//   objectType: 'DatasourceSet'
+//   resourceID: string
+//   resourceLocation: string?
+//   resourceName: string?
+//   // resourceProperties: object?
+//   resourceType: string?
+//   resourceUri: string?
+// }
 
 @export()
 @description('The type for policy info properties.')

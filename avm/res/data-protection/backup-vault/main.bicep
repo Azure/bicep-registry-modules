@@ -238,7 +238,7 @@ module backupVault_backupInstances 'backup-instance/main.bicep' = [
       backupVaultName: backupVault.name
       name: backupInstance.name
       dataSourceInfo: backupInstance.dataSourceInfo
-      dataSourceSetInfo: backupInstance.dataSourceSetInfo
+      // dataSourceSetInfo: backupInstance.dataSourceSetInfo
       policyInfo: backupInstance.policyInfo
     }
     dependsOn: [
@@ -310,8 +310,8 @@ type backupInstanceType = {
   @description('Required. The name of the backup instance.')
   name: string
 
-  @description('Required. The data source info for the backup instance.')
-  dataSourceInfo: dataSourceInfoType
+  // @description('Required. The data source info for the backup instance.')
+  // dataSourceInfo: dataSourceInfoType
 
   @description('Optional. The data source set info for the backup instance.')
   dataSourceSetInfo: dataSourceSetInfoType?
