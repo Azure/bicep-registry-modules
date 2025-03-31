@@ -303,18 +303,18 @@ type softDeleteSettingType = {
   state: ('AlwaysON' | 'On' | 'Off')
 }
 
-import { dataSourceInfoType, dataSourceSetInfoType, policyInfoType } from 'backup-instance/main.bicep'
+import { dataSourceInfoType, policyInfoType } from 'backup-instance/main.bicep'
 @export()
 @description('The type for a backup instance.')
 type backupInstanceType = {
   @description('Required. The name of the backup instance.')
   name: string
 
-  // @description('Required. The data source info for the backup instance.')
-  // dataSourceInfo: dataSourceInfoType
+  @description('Required. The data source info for the backup instance.')
+  dataSourceInfo: dataSourceInfoType
 
-  @description('Optional. The data source set info for the backup instance.')
-  dataSourceSetInfo: dataSourceSetInfoType?
+  // @description('Optional. The data source set info for the backup instance.')
+  // dataSourceSetInfo: dataSourceSetInfoType?
 
   @description('Required. The policy info for the backup instance.')
   policyInfo: policyInfoType
