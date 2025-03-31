@@ -22,42 +22,9 @@ param namePrefix string = '#_namePrefix_#'
 
 var resourceLocation = 'uksouth'
 
-// TODO replace
-@description('Operational tier backup retention duration in days')
-@minValue(1)
-@maxValue(360)
-param operationalTierRetentionInDays int = 30
-
-@description('Vault tier default backup retention duration in days')
-@minValue(7)
-@maxValue(3650)
-param vaultTierDefaultRetentionInDays int = 30
-
-@description('Vault tier weekly backup retention duration in weeks')
-@minValue(4)
-@maxValue(521)
-param vaultTierWeeklyRetentionInWeeks int = 30
-
-@description('Vault tier monthly backup retention duration in months')
-@minValue(5)
-@maxValue(116)
-param vaultTierMonthlyRetentionInMonths int = 30
-
-@description('Vault tier yearly backup retention duration in years')
-@minValue(1)
-@maxValue(10)
-param vaultTierYearlyRetentionInYears int = 10
-
 @description('Vault tier daily backup schedule time')
-param vaultTierDailyBackupScheduleTime string = '06:00'
 var dataSourceType = 'Microsoft.Storage/storageAccounts/blobServices'
 var resourceType = 'Microsoft.Storage/storageAccounts'
-var operationalTierRetentionDuration = 'P${operationalTierRetentionInDays}D'
-var vaultTierDefaultRetentionDuration = 'P${vaultTierDefaultRetentionInDays}D'
-var vaultTierWeeklyRetentionDuration = 'P${vaultTierWeeklyRetentionInWeeks}W'
-var vaultTierMonthlyRetentionDuration = 'P${vaultTierMonthlyRetentionInMonths}M'
-var vaultTierYearlyRetentionDuration = 'P${vaultTierYearlyRetentionInYears}Y'
-var repeatingTimeIntervals = 'R/2024-05-06T${vaultTierDailyBackupScheduleTime}:00+00:00/P1D'
 
 // ============ //
 // Dependencies //
@@ -108,7 +75,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}002'
+      name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
       azureMonitorAlertSettingsAlertsForAllJobFailures: 'Disabled'
       immutabilitySettingState: 'Unlocked'
@@ -187,7 +154,7 @@ module testDeployment '../../../main.bicep' = [
                 lifecycles: [
                   {
                     deleteAfter: {
-                      duration: operationalTierRetentionDuration
+                      duration: 'P30D'
                       objectType: 'AbsoluteDeleteOption'
                     }
                     sourceDataStore: {
@@ -205,7 +172,7 @@ module testDeployment '../../../main.bicep' = [
                 lifecycles: [
                   {
                     deleteAfter: {
-                      duration: vaultTierDefaultRetentionDuration
+                      duration: 'P90D'
                       objectType: 'AbsoluteDeleteOption'
                     }
                     sourceDataStore: {
@@ -363,7 +330,7 @@ module postDeployment 'postdeployment.bicep' = {
     // storageAccountName: 'testmanualdelete'
     storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
     // storageAccountResourceId: storageAccount.id
-    backupVaultName: '${namePrefix}${serviceShort}001'
+    backupVaultName: '${namePrefix}${serviceShort}002'
     // blobBackupPolicyName: blobBackupPolicyName
     blobBackupPolicyName: blobBackupPolicyName
     location: resourceLocation
@@ -381,7 +348,7 @@ module postDeployment2 'postdeployment2.bicep' = {
     // storageAccountName: 'testmanualdelete'
     storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId2
     // storageAccountResourceId: storageAccount.id
-    backupVaultName: '${namePrefix}${serviceShort}002'
+    backupVaultName: '${namePrefix}${serviceShort}001'
     // blobBackupPolicyName: blobBackupPolicyName
     blobBackupPolicyName: blobBackupPolicyName
     location: resourceLocation
