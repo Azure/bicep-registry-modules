@@ -6,10 +6,10 @@ If you wish to add your own Pester tests for you module create a new <something>
 #>
 
 param (
-    [Parameter(Mandatory = $false)]
+    [Parameter(Mandatory = $true)]
     [array] $moduleFolderPaths,
 
-    [Parameter(Mandatory = $false)]
+    [Parameter(Mandatory = $true)]
     [string] $repoRootPath
 )
 
