@@ -296,33 +296,76 @@ resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   }
 }
 
-resource backupInstance 'Microsoft.DataProtection/backupVaults/backupInstances@2022-05-01' = {
-  parent: vault
+// resource backupInstance 'Microsoft.DataProtection/backupVaults/backupInstances@2022-05-01' = {
+//   parent: vault
+//   name: storageAccountName
+//   properties: {
+//     objectType: 'BackupInstance'
+//     friendlyName: storageAccountName
+//     dataSourceInfo: {
+//       objectType: 'Datasource'
+//       resourceID: storageAccount.id
+//       resourceName: storageAccountName
+//       resourceType: resourceType
+//       resourceUri: storageAccount.id
+//       resourceLocation: location
+//       datasourceType: dataSourceType
+//     }
+//     dataSourceSetInfo: {
+//       objectType: 'DatasourceSet'
+//       resourceID: storageAccount.id
+//       resourceName: storageAccountName
+//       resourceType: resourceType
+//       resourceUri: storageAccount.id
+//       resourceLocation: location
+//       datasourceType: dataSourceType
+//     }
+//     policyInfo: {
+//       policyId: backupPolicy.id
+//       name: blobBackupPolicyName
+//       policyParameters: {
+//         backupDatasourceParametersList: [
+//           {
+//             objectType: 'BlobBackupDatasourceParameters'
+//             containersList: containerList
+//           }
+//         ]
+//       }
+//     }
+//   }
+//   dependsOn: [
+//     // backupInstance_dataSourceResource_rbac
+//     roleAssignment
+//   ]
+// }
+
+module backupInstance '../../../backup-instance/main.bicep' = {
+  // parent: vault
   name: storageAccountName
-  properties: {
-    objectType: 'BackupInstance'
+  params: {
+    backupVaultName: backupVaultName
+    name: storageAccountName
     friendlyName: storageAccountName
     dataSourceInfo: {
       objectType: 'Datasource'
-      resourceID: storageAccount.id
+      resourceID: storageAccountResourceId
       resourceName: storageAccountName
-      resourceType: resourceType
-      resourceUri: storageAccount.id
+      resourceType: 'Microsoft.Storage/storageAccounts'
+      resourceUri: storageAccountResourceId
       resourceLocation: location
-      datasourceType: dataSourceType
+      datasourceType: 'Microsoft.Storage/storageAccounts/blobServices'
     }
     dataSourceSetInfo: {
       objectType: 'DatasourceSet'
-      resourceID: storageAccount.id
+      resourceID: storageAccountResourceId
       resourceName: storageAccountName
-      resourceType: resourceType
-      resourceUri: storageAccount.id
+      resourceType: 'Microsoft.Storage/storageAccounts'
+      resourceUri: storageAccountResourceId
       resourceLocation: location
-      datasourceType: dataSourceType
+      datasourceType: 'Microsoft.Storage/storageAccounts/blobServices'
     }
     policyInfo: {
-      policyId: backupPolicy.id
-      name: blobBackupPolicyName
+      policyName: blobBackupPolicyName
       policyParameters: {
         backupDatasourceParametersList: [
           {
@@ -334,51 +377,6 @@ resource backupInstance 'Microsoft.DataProtection/backupVaults/backupInstances@2
     }
   }
   dependsOn: [
-    // backupInstance_dataSourceResource_rbac
-    roleAssignment
+    backupPolicy
   ]
 }
-
-// module backupInstance '../../../backup-instance/main.bicep' = {
-//   // parent: backupVault
-//   name: storageAccountName
-//   params: {
-//     backupVaultName: backupVaultName
-//     name: 'testmanualdelete-testmanualdelete-293fe4b2-5be2-419b-9ca1-a3c06c76f0e3'
-//     friendlyName: storageAccountName
-//     dataSourceInfo: {
-//       objectType: 'Datasource'
-//       resourceID: storageAccountResourceId
-//       resourceName: storageAccountName
-//       resourceType: 'Microsoft.Storage/storageAccounts'
-//       resourceUri: storageAccountResourceId
-//       resourceLocation: location
-//       datasourceType: 'Microsoft.Storage/storageAccounts/blobServices'
-//     }
-//     dataSourceSetInfo: {
-//       objectType: 'DatasourceSet'
-//       resourceID: storageAccountResourceId
-//       resourceName: storageAccountName
-//       resourceType: 'Microsoft.Storage/storageAccounts'
-//       resourceUri: storageAccountResourceId
-//       resourceLocation: location
-//       datasourceType: 'Microsoft.Storage/storageAccounts/blobServices'
-//     }
-//     policyInfo: {
-//       policyName: blobBackupPolicyName
-//       policyParameters: {
-//         backupDatasourceParametersList: [
-//           {
-//             objectType: 'BlobBackupDatasourceParameters'
-//             containersList: [
-//               'c001'
-//             ]
-//           }
-//         ]
-//       }
-//     }
-//   }
-//   // dependsOn: [
-//   //   backupPolicy
-//   // ]
-// }
