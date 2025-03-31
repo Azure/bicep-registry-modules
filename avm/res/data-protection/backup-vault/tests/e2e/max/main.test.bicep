@@ -22,6 +22,43 @@ param namePrefix string = '#_namePrefix_#'
 
 var resourceLocation = 'uksouth'
 
+// TODO replace
+@description('Operational tier backup retention duration in days')
+@minValue(1)
+@maxValue(360)
+param operationalTierRetentionInDays int = 30
+
+@description('Vault tier default backup retention duration in days')
+@minValue(7)
+@maxValue(3650)
+param vaultTierDefaultRetentionInDays int = 30
+
+@description('Vault tier weekly backup retention duration in weeks')
+@minValue(4)
+@maxValue(521)
+param vaultTierWeeklyRetentionInWeeks int = 30
+
+@description('Vault tier monthly backup retention duration in months')
+@minValue(5)
+@maxValue(116)
+param vaultTierMonthlyRetentionInMonths int = 30
+
+@description('Vault tier yearly backup retention duration in years')
+@minValue(1)
+@maxValue(10)
+param vaultTierYearlyRetentionInYears int = 10
+
+@description('Vault tier daily backup schedule time')
+param vaultTierDailyBackupScheduleTime string = '06:00'
+var dataSourceType = 'Microsoft.Storage/storageAccounts/blobServices'
+var resourceType = 'Microsoft.Storage/storageAccounts'
+var operationalTierRetentionDuration = 'P${operationalTierRetentionInDays}D'
+var vaultTierDefaultRetentionDuration = 'P${vaultTierDefaultRetentionInDays}D'
+var vaultTierWeeklyRetentionDuration = 'P${vaultTierWeeklyRetentionInWeeks}W'
+var vaultTierMonthlyRetentionDuration = 'P${vaultTierMonthlyRetentionInMonths}M'
+var vaultTierYearlyRetentionDuration = 'P${vaultTierYearlyRetentionInYears}Y'
+var repeatingTimeIntervals = 'R/2024-05-06T${vaultTierDailyBackupScheduleTime}:00+00:00/P1D'
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -142,11 +179,97 @@ module testDeployment '../../../main.bicep' = [
         {
           name: blobBackupPolicyName
           properties: {
-            datasourceTypes: [
-              'Microsoft.Storage/storageAccounts/blobServices'
-            ]
-            objectType: 'BackupPolicy'
             policyRules: [
+              {
+                name: 'Default'
+                objectType: 'AzureRetentionRule'
+                isDefault: true
+                lifecycles: [
+                  {
+                    deleteAfter: {
+                      duration: operationalTierRetentionDuration
+                      objectType: 'AbsoluteDeleteOption'
+                    }
+                    sourceDataStore: {
+                      dataStoreType: 'OperationalStore'
+                      objectType: 'DataStoreInfoBase'
+                    }
+                    targetDataStoreCopySettings: []
+                  }
+                ]
+              }
+              {
+                name: 'Yearly'
+                objectType: 'AzureRetentionRule'
+                isDefault: false
+                lifecycles: [
+                  {
+                    deleteAfter: {
+                      duration: vaultTierYearlyRetentionDuration
+                      objectType: 'AbsoluteDeleteOption'
+                    }
+                    sourceDataStore: {
+                      dataStoreType: 'VaultStore'
+                      objectType: 'DataStoreInfoBase'
+                    }
+                    targetDataStoreCopySettings: []
+                  }
+                ]
+              }
+              {
+                name: 'Monthly'
+                objectType: 'AzureRetentionRule'
+                isDefault: false
+                lifecycles: [
+                  {
+                    deleteAfter: {
+                      duration: vaultTierMonthlyRetentionDuration
+                      objectType: 'AbsoluteDeleteOption'
+                    }
+                    sourceDataStore: {
+                      dataStoreType: 'VaultStore'
+                      objectType: 'DataStoreInfoBase'
+                    }
+                    targetDataStoreCopySettings: []
+                  }
+                ]
+              }
+              {
+                name: 'Weekly'
+                objectType: 'AzureRetentionRule'
+                isDefault: false
+                lifecycles: [
+                  {
+                    deleteAfter: {
+                      duration: vaultTierWeeklyRetentionDuration
+                      objectType: 'AbsoluteDeleteOption'
+                    }
+                    sourceDataStore: {
+                      dataStoreType: 'VaultStore'
+                      objectType: 'DataStoreInfoBase'
+                    }
+                    targetDataStoreCopySettings: []
+                  }
+                ]
+              }
+              {
+                name: 'Default'
+                objectType: 'AzureRetentionRule'
+                isDefault: true
+                lifecycles: [
+                  {
+                    deleteAfter: {
+                      duration: vaultTierDefaultRetentionDuration
+                      objectType: 'AbsoluteDeleteOption'
+                    }
+                    sourceDataStore: {
+                      dataStoreType: 'VaultStore'
+                      objectType: 'DataStoreInfoBase'
+                    }
+                    targetDataStoreCopySettings: []
+                  }
+                ]
+              }
               {
                 name: 'BackupDaily'
                 objectType: 'AzureBackupRule'
@@ -159,14 +282,61 @@ module testDeployment '../../../main.bicep' = [
                   objectType: 'DataStoreInfoBase'
                 }
                 trigger: {
-                  objectType: 'ScheduleBasedTriggerContext'
                   schedule: {
-                    repeatingTimeIntervals: [
-                      'R/2025-03-01T23:30:00+01:00/P1D'
-                    ]
                     timeZone: 'UTC'
+                    repeatingTimeIntervals: [
+                      repeatingTimeIntervals
+                    ]
                   }
                   taggingCriteria: [
+                    {
+                      isDefault: false
+                      taggingPriority: 10
+                      tagInfo: {
+                        id: 'Yearly_'
+                        tagName: 'Yearly'
+                      }
+                      criteria: [
+                        {
+                          absoluteCriteria: [
+                            'FirstOfYear'
+                          ]
+                          objectType: 'ScheduleBasedBackupCriteria'
+                        }
+                      ]
+                    }
+                    {
+                      isDefault: false
+                      taggingPriority: 15
+                      tagInfo: {
+                        id: 'Monthly_'
+                        tagName: 'Monthly'
+                      }
+                      criteria: [
+                        {
+                          absoluteCriteria: [
+                            'FirstOfMonth'
+                          ]
+                          objectType: 'ScheduleBasedBackupCriteria'
+                        }
+                      ]
+                    }
+                    {
+                      isDefault: false
+                      taggingPriority: 20
+                      tagInfo: {
+                        id: 'Weekly_'
+                        tagName: 'Weekly'
+                      }
+                      criteria: [
+                        {
+                          absoluteCriteria: [
+                            'FirstOfWeek'
+                          ]
+                          objectType: 'ScheduleBasedBackupCriteria'
+                        }
+                      ]
+                    }
                     {
                       isDefault: true
                       taggingPriority: 99
@@ -176,27 +346,14 @@ module testDeployment '../../../main.bicep' = [
                       }
                     }
                   ]
+                  objectType: 'ScheduleBasedTriggerContext'
                 }
               }
-              {
-                name: 'Default'
-                objectType: 'AzureRetentionRule'
-                isDefault: true
-                lifecycles: [
-                  {
-                    deleteAfter: {
-                      duration: 'P7D'
-                      objectType: 'AbsoluteDeleteOption'
-                    }
-                    sourceDataStore: {
-                      dataStoreType: 'OperationalStore'
-                      objectType: 'DataStoreInfoBase'
-                    }
-                    targetDataStoreCopySettings: []
-                  }
-                ]
-              }
             ]
+            datasourceTypes: [
+              dataSourceType
+            ]
+            objectType: 'BackupPolicy'
           }
         }
       ]
