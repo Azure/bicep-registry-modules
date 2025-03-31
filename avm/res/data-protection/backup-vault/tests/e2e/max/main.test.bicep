@@ -20,6 +20,12 @@ param serviceShort string = 'dpbvmax'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
+@description('List of the containers to be protected')
+param containerList array = [
+  'container1'
+  'container2'
+]
+
 var resourceLocation = 'uksouth'
 
 @description('Vault tier daily backup schedule time')
@@ -222,66 +228,64 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
-      // backupInstances: [
-      //   // {
-      //   //   name: nestedDependencies.outputs.storageAccountName
-      //   //   dataSourceInfo: {
-      //   //     objectType: 'Datasource'
-      //   //     resourceID: nestedDependencies.outputs.storageAccountResourceId
-      //   //     resourceName: nestedDependencies.outputs.storageAccountName
-      //   //     resourceType: 'Microsoft.Storage/storageAccounts'
-      //   //     resourceUri: nestedDependencies.outputs.storageAccountResourceId
-      //   //     resourceLocation: resourceLocation
-      //   //     datasourceType: 'Microsoft.Storage/storageAccounts/blobServices'
-      //   //   }
-      //   //   dataSourceSetInfo: {
-      //   //     objectType: 'DatasourceSet'
-      //   //     resourceID: nestedDependencies.outputs.storageAccountResourceId
-      //   //     resourceName: nestedDependencies.outputs.storageAccountName
-      //   //     resourceType: 'Microsoft.Storage/storageAccounts'
-      //   //     resourceUri: nestedDependencies.outputs.storageAccountResourceId
-      //   //     resourceLocation: resourceLocation
-      //   //     datasourceType: 'Microsoft.Storage/storageAccounts/blobServices'
-      //   //   }
-      //   //   policyInfo: {
-      //   //     policyName: blobBackupPolicyName
-      //   //     policyParameters: {
-      //   //       backupDatasourceParametersList: [
-      //   //         {
-      //   //           objectType: 'BlobBackupDatasourceParameters'
-      //   //           containersList: [
-      //   //             'container001'
-      //   //           ]
-      //   //         }
-      //   //       ]
-      //   //     }
-      //   //   }
-      //   // }
-      //   {
-      //     name: nestedDependencies.outputs.diskName
-      //     dataSourceInfo: {
-      //       objectType: 'Datasource'
-      //       resourceID: nestedDependencies.outputs.diskResourceId
-      //       resourceName: nestedDependencies.outputs.diskName
-      //       resourceType: 'Microsoft.Compute/disks'
-      //       resourceUri: nestedDependencies.outputs.diskResourceId
-      //       resourceLocation: resourceLocation
-      //       datasourceType: 'Microsoft.Compute/disks'
-      //     }
-      //     policyInfo: {
-      //       policyName: diskBackupPolicyName
-      //       policyParameters: {
-      //         dataStoreParametersList: [
-      //           {
-      //             objectType: 'AzureOperationalStoreParameters'
-      //             dataStoreType: 'OperationalStore'
-      //             resourceGroupId: resourceGroup.id
-      //           }
-      //         ]
-      //       }
-      //     }
-      //   }
-      // ]
+      backupInstances: [
+        {
+          name: nestedDependencies.outputs.storageAccountName
+          dataSourceInfo: {
+            objectType: 'Datasource'
+            resourceID: nestedDependencies.outputs.storageAccountResourceId
+            resourceName: nestedDependencies.outputs.storageAccountName
+            resourceType: 'Microsoft.Storage/storageAccounts'
+            resourceUri: nestedDependencies.outputs.storageAccountResourceId
+            resourceLocation: resourceLocation
+            datasourceType: 'Microsoft.Storage/storageAccounts/blobServices'
+          }
+          // dataSourceSetInfo: {
+          //   objectType: 'DatasourceSet'
+          //   resourceID: nestedDependencies.outputs.storageAccountResourceId
+          //   resourceName: nestedDependencies.outputs.storageAccountName
+          //   resourceType: 'Microsoft.Storage/storageAccounts'
+          //   resourceUri: nestedDependencies.outputs.storageAccountResourceId
+          //   resourceLocation: resourceLocation
+          //   datasourceType: 'Microsoft.Storage/storageAccounts/blobServices'
+          // }
+          policyInfo: {
+            policyName: blobBackupPolicyName
+            policyParameters: {
+              backupDatasourceParametersList: [
+                {
+                  objectType: 'BlobBackupDatasourceParameters'
+                  containersList: containerList
+                }
+              ]
+            }
+          }
+        }
+        // {
+        //   name: nestedDependencies.outputs.diskName
+        //   dataSourceInfo: {
+        //     objectType: 'Datasource'
+        //     resourceID: nestedDependencies.outputs.diskResourceId
+        //     resourceName: nestedDependencies.outputs.diskName
+        //     resourceType: 'Microsoft.Compute/disks'
+        //     resourceUri: nestedDependencies.outputs.diskResourceId
+        //     resourceLocation: resourceLocation
+        //     datasourceType: 'Microsoft.Compute/disks'
+        //   }
+        //   policyInfo: {
+        //     policyName: diskBackupPolicyName
+        //     policyParameters: {
+        //       dataStoreParametersList: [
+        //         {
+        //           objectType: 'AzureOperationalStoreParameters'
+        //           dataStoreType: 'OperationalStore'
+        //           resourceGroupId: resourceGroup.id
+        //         }
+        //       ]
+        //     }
+        //   }
+        // }
+      ]
       // roleAssignments: [
       //   {
       //     name: 'cbc3932a-1bee-4318-ae76-d70e1ba399c8'
@@ -317,39 +321,25 @@ module testDeployment '../../../main.bicep' = [
   }
 ]
 
-// // resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' existing = {
-// //   name: 'testmanualdelete'
-// //   scope: az.resourceGroup('dep-avma-dataprotection.backupvaults-dpbvmax-rg')
-// // }
-
 module postDeployment 'postdeployment.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-postdeployment'
   params: {
-    storageAccountName: nestedDependencies.outputs.storageAccountName
-    // storageAccountName: 'testmanualdelete'
-    storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
-    // storageAccountResourceId: storageAccount.id
+    storageAccountName: nestedDependencies.outputs.storageAccountName2
+    storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId2
     backupVaultName: '${namePrefix}${serviceShort}002'
-    // blobBackupPolicyName: blobBackupPolicyName
     blobBackupPolicyName: blobBackupPolicyName
     location: resourceLocation
   }
-  // dependsOn: [
-  //   testDeployment
-  // ]
 }
 
 module postDeployment2 'postdeployment2.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-postdeployment2'
   params: {
-    storageAccountName: nestedDependencies.outputs.storageAccountName2
-    // storageAccountName: 'testmanualdelete'
-    storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId2
-    // storageAccountResourceId: storageAccount.id
+    storageAccountName: nestedDependencies.outputs.storageAccountName
+    storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
     backupVaultName: '${namePrefix}${serviceShort}001'
-    // blobBackupPolicyName: blobBackupPolicyName
     blobBackupPolicyName: blobBackupPolicyName
     location: resourceLocation
   }
