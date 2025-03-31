@@ -126,8 +126,8 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
   params: {
     adminPassword: '<adminPassword>'
     adminUsername: 'azureuser'
-    location: '<location>'
     vmSize: 'Standard_D2s_v4'
+    workloadName: 'applzamin'
   }
 }
 ```
@@ -150,11 +150,11 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
     "adminUsername": {
       "value": "azureuser"
     },
-    "location": {
-      "value": "<location>"
-    },
     "vmSize": {
       "value": "Standard_D2s_v4"
+    },
+    "workloadName": {
+      "value": "applzamin"
     }
   }
 }
@@ -172,8 +172,8 @@ using 'br/public:avm/ptn/app-service-lza/hosting-environment:<version>'
 
 param adminPassword = '<adminPassword>'
 param adminUsername = 'azureuser'
-param location = '<location>'
 param vmSize = 'Standard_D2s_v4'
+param workloadName = 'applzamin'
 ```
 
 </details>
@@ -242,7 +242,6 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    location: '<location>'
     servicePlanDiagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -260,7 +259,7 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
       environment: 'test'
     }
     vmSize: 'Standard_D2s_v4'
-    workloadName: '<workloadName>'
+    workloadName: 'appwaf'
   }
 }
 ```
@@ -339,9 +338,6 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
         }
       ]
     },
-    "location": {
-      "value": "<location>"
-    },
     "servicePlanDiagnosticSettings": {
       "value": [
         {
@@ -366,7 +362,7 @@ module hostingEnvironment 'br/public:avm/ptn/app-service-lza/hosting-environment
       "value": "Standard_D2s_v4"
     },
     "workloadName": {
-      "value": "<workloadName>"
+      "value": "appwaf"
     }
   }
 }
@@ -432,7 +428,6 @@ param frontDoorDiagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
-param location = '<location>'
 param servicePlanDiagnosticSettings = [
   {
     eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -450,7 +445,7 @@ param tags = {
   environment: 'test'
 }
 param vmSize = 'Standard_D2s_v4'
-param workloadName = '<workloadName>'
+param workloadName = 'appwaf'
 ```
 
 </details>

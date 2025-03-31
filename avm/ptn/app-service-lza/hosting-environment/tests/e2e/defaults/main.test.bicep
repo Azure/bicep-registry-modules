@@ -20,9 +20,9 @@ param namePrefix string = '#_namePrefix_#'
 @secure()
 param password string = newGuid()
 
-// Hardcoded to 'westus3' because App Service PV3 plans are not available in all regions
+// Hardcoded to 'australiaeast' because App Service PV3 plans are not available in all regions
 #disable-next-line no-hardcoded-location
-var enforcedLocation = 'westus3'
+var enforcedLocation = 'australiaeast'
 
 // ============== //
 // Test Execution //
@@ -33,7 +33,7 @@ module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      location: enforcedLocation
+      workloadName: '${namePrefix}${serviceShort}'
       vmSize: 'Standard_D2s_v4'
       adminUsername: 'azureuser'
       adminPassword: password
