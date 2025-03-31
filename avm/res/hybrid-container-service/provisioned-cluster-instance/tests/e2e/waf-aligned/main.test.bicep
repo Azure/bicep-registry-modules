@@ -229,7 +229,7 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-aks-${serviceShort}'
   params: {
     name: '${namePrefix}${serviceShort}001'
-    customLocationResourecId: customLocation.id
+    customLocationResourceId: customLocation.id
     keyVaultName: nestedDependencies.outputs.keyVaultName
     cloudProviderProfile: {
       infraNetworkProfile: {
