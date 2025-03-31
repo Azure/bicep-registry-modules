@@ -8,14 +8,29 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-04-01' existing 
 }
 
 // Assign Storage Blob Data Contributor RBAC role
+// resource roleAssignment_storageAccount 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (resourceType == 'Microsoft.Storage/storageAccounts') {
+//   name: guid('${resourceId}-${principalId}-Storage-Blob-Data-Contributor')
+//   scope: storageAccount
+//   // scope: resourceGroup(split(resourceId, '/')[2], split(resourceId, '/')[4])
+//   properties: {
+//     roleDefinitionId: subscriptionResourceId(
+//       'Microsoft.Authorization/roleDefinitions',
+//       'ba92f5b4-2d11-453d-a403-e96b0029c9fe'
+//     )
+//     principalId: principalId
+//     principalType: 'ServicePrincipal'
+//   }
+// }
+
+// Assign Storage Account Backup Contributor RBAC role
 resource roleAssignment_storageAccount 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (resourceType == 'Microsoft.Storage/storageAccounts') {
-  name: guid('${resourceId}-${principalId}-Storage-Blob-Data-Contributor')
+  name: guid('${resourceId}-${principalId}-Storage-Account-Backup-Contributor')
   scope: storageAccount
   // scope: resourceGroup(split(resourceId, '/')[2], split(resourceId, '/')[4])
   properties: {
     roleDefinitionId: subscriptionResourceId(
       'Microsoft.Authorization/roleDefinitions',
-      'ba92f5b4-2d11-453d-a403-e96b0029c9fe'
+      'e5e2a7ff-d759-4cd2-bb51-3152d37e2eb1' // Storage Account Backup Contributor
     )
     principalId: principalId
     principalType: 'ServicePrincipal'
