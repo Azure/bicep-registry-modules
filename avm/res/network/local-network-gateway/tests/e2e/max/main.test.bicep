@@ -56,8 +56,10 @@ module testDeployment '../../../main.bicep' = [
         '192.168.1.0/24'
       ]
       localGatewayPublicIpAddress: '8.8.8.8'
-      localAsn: '65123'
-      localBgpPeeringAddress: '192.168.1.5'
+      bgpSettings: {
+        localAsn: 65123
+        localBgpPeeringAddress: '192.168.1.5'
+      }
       lock: {
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
