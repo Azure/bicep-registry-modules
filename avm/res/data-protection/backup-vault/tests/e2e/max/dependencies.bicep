@@ -86,7 +86,7 @@ resource storageAccount2 'Microsoft.Storage/storageAccounts@2023-01-01' = {
 
 resource storageContainerList2 'Microsoft.Storage/storageAccounts/blobServices/containers@2023-01-01' = [
   for item in containerList: {
-    name: '${storageAccount.name}/default/${item}'
+    name: '${storageAccount2.name}/default/${item}'
   }
 ]
 
