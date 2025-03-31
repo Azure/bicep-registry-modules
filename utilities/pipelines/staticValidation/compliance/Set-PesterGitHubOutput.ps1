@@ -151,9 +151,9 @@ function Set-PesterGitHubOutput {
                 $testFile = $failedTest.ScriptBlock.File -replace ('{0}[\\|\/]*' -f [regex]::Escape($RepoRootPath))
             }
 
-            if ($failedTest.ErrorRecord) {
+            if (-not [String]::IsNullOrEmpty($failedTest.ErrorRecord)) {
                 $testLine = $failedTest.ErrorRecord.TargetObject.Line
-                $errorMessage = ($failedTest.ErrorRecord.TargetObject.Message.Trim() -replace '_', '\_') -replace '\n', '<br>' # Replace new lines with <br> to enable line breaks in markdown
+                $errorMessage = (($failedTest.ErrorRecord.TargetObject.Message ?? '').Trim() -replace '_', '\_') -replace '\n', '<br>' # Replace new lines with <br> to enable line breaks in markdown
 
                 $testReference = '{0}:{1}' -f (Split-Path $testFile -Leaf), $testLine
 
