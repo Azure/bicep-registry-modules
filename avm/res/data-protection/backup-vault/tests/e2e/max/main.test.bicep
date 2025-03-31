@@ -20,11 +20,11 @@ param serviceShort string = 'dpbvmax'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-@description('List of the containers to be protected')
-param containerList array = [
-  'container1'
-  'container2'
-]
+// @description('List of the containers to be protected')
+// param containerList array = [
+//   'container1'
+//   'container2'
+// ]
 
 var resourceLocation = 'uksouth'
 
@@ -48,7 +48,7 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
-    storageAccountName: 'dep${namePrefix}sa${serviceShort}06'
+    storageAccountName: 'dep${namePrefix}sa${serviceShort}01'
     storageAccountContainerList: ['container1', 'container2']
     // storageAccountName2: 'dep${namePrefix}sa${serviceShort}07'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
@@ -256,7 +256,7 @@ module testDeployment '../../../main.bicep' = [
               backupDatasourceParametersList: [
                 {
                   objectType: 'BlobBackupDatasourceParameters'
-                  containersList: containerList
+                  containersList: ['container1', 'container2']
                 }
               ]
             }
