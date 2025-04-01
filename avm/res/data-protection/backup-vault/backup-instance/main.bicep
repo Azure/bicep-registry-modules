@@ -70,14 +70,19 @@ output resourceGroupName string = resourceGroup().name
 type dataSourceInfoType = {
   @description('Required. The data source type of the resource.')
   datasourceType: string
+
   @description('Required. The resource ID of the resource.')
   resourceID: string
+
   @description('Required. The location of the data source.')
   resourceLocation: string
+
   @description('Required. Unique identifier of the resource in the context of parent.')
   resourceName: string
+
   @description('Required. The resource type of the data source.')
   resourceType: string
+
   @description('Required. The Uri of the resource.')
   resourceUri: string
 }
@@ -87,6 +92,7 @@ type dataSourceInfoType = {
 type policyInfoType = {
   @description('Required. The name of the backup instance policy.')
   policyName: string
+
   @description('Required. Policy parameters for the backup instance.')
   policyParameters: object
 }
