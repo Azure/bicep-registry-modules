@@ -445,9 +445,7 @@ output databases array = [
 //   Definitions   //
 // =============== //
 
-import { databasePrincipalAssignmentType } from './database/main.bicep'
-
-import { databaseReadWriteType } from './database/main.bicep'
+import { databasePrincipalAssignmentType, databaseReadWriteType  } from 'database/main.bicep'
 
 @export()
 type acceptedAudienceType = {
