@@ -78,6 +78,7 @@ The following section provides usage examples for the module, which were used to
 - [Using PIM Eligible Role assignments.](#example-6-using-pim-eligible-role-assignments)
 - [Using RBAC conditions.](#example-7-using-rbac-conditions)
 - [Vwan topology.](#example-8-vwan-topology)
+- [Waf-Aligned](#example-9-waf-aligned)
 
 ### Example 1: _Deploy subscription with Bastion._
 
@@ -1615,12 +1616,68 @@ param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 </details>
 <p>
 
+### Example 9: _Waf-Aligned_
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
+  name: 'subVendingDeployment'
+  params: {
+    location: '<location>'
+    name: 'lsvwaf001'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "value": "<location>"
+    },
+    "name": {
+      "value": "lsvwaf001"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/lz/sub-vending:<version>'
+
+param location = '<location>'
+param name = 'lsvwaf001'
+```
+
+</details>
+<p>
+
 ## Parameters
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`customRoleAssignments`](#parameter-customroleassignments) | array | Supply an array of objects containing the details of the custom role assignments to create. |
 | [`deploymentScriptLocation`](#parameter-deploymentscriptlocation) | string | The location of the deployment script. Use region shortnames e.g. uksouth, eastus, etc. |
 | [`deploymentScriptManagedIdentityName`](#parameter-deploymentscriptmanagedidentityname) | string | The name of the user managed identity for the resource providers registration deployment script. |
 | [`deploymentScriptName`](#parameter-deploymentscriptname) | string | The name of the deployment script to register resource providers. |
@@ -1669,6 +1726,269 @@ param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 | [`virtualNetworkVwanEnableInternetSecurity`](#parameter-virtualnetworkvwanenableinternetsecurity) | bool | Enables the ability for the Virtual WAN Hub Connection to learn the default route 0.0.0.0/0 from the Hub.<p> |
 | [`virtualNetworkVwanPropagatedLabels`](#parameter-virtualnetworkvwanpropagatedlabels) | array | An array of virtual hub route table labels to propagate routes to. If left blank/empty the default label will be propagated to only.<p> |
 | [`virtualNetworkVwanPropagatedRouteTablesResourceIds`](#parameter-virtualnetworkvwanpropagatedroutetablesresourceids) | array | An array of of objects of virtual hub route table resource IDs to propagate routes to. If left blank/empty the `defaultRouteTable` will be propagated to only.<p><p>Each object must contain the following `key`:<li>`id` = The Resource ID of the Virtual WAN Virtual Hub Route Table IDs you wish to propagate too<p><p>> **IMPORTANT:** If you provide any Route Tables in this array of objects you must ensure you include also the `defaultRouteTable` Resource ID as an object in the array as it is not added by default when a value is provided for this parameter.<p> |
+
+### Parameter: `customRoleAssignments`
+
+Supply an array of objects containing the details of the custom role assignments to create.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`definition`](#parameter-customroleassignmentsdefinition) | string | The role definition ID or name. |
+| [`principalId`](#parameter-customroleassignmentsprincipalid) | string | The principal ID of the user, group, or service principal. |
+| [`relativeScope`](#parameter-customroleassignmentsrelativescope) | string | The relative scope of the role assignment. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalType`](#parameter-customroleassignmentsprincipaltype) | string | The principal type of the user, group, or service principal. |
+| [`roleAssignmentCondition`](#parameter-customroleassignmentsroleassignmentcondition) | object | The condition for the role assignment. |
+
+### Parameter: `customRoleAssignments.definition`
+
+The role definition ID or name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `customRoleAssignments.principalId`
+
+The principal ID of the user, group, or service principal.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `customRoleAssignments.relativeScope`
+
+The relative scope of the role assignment.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `customRoleAssignments.principalType`
+
+The principal type of the user, group, or service principal.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
+
+### Parameter: `customRoleAssignments.roleAssignmentCondition`
+
+The condition for the role assignment.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`conditionVersion`](#parameter-customroleassignmentsroleassignmentconditionconditionversion) | string | The version of the condition template. |
+| [`delegationCode`](#parameter-customroleassignmentsroleassignmentconditiondelegationcode) | string | The code for a custom condition if no template is used. The user should supply their own custom code if the available templates are not matching their requirements. If a value is provided, this will overwrite any added template. All single quotes needs to be skipped using '. |
+| [`roleConditionType`](#parameter-customroleassignmentsroleassignmentconditionroleconditiontype) | object | The type of template for the role assignment condition. |
+
+### Parameter: `customRoleAssignments.roleAssignmentCondition.conditionVersion`
+
+The version of the condition template.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `customRoleAssignments.roleAssignmentCondition.delegationCode`
+
+The code for a custom condition if no template is used. The user should supply their own custom code if the available templates are not matching their requirements. If a value is provided, this will overwrite any added template. All single quotes needs to be skipped using '.
+
+- Required: No
+- Type: string
+
+### Parameter: `customRoleAssignments.roleAssignmentCondition.roleConditionType`
+
+The type of template for the role assignment condition.
+
+- Required: No
+- Type: object
+- Discriminator: `templateName`
+
+<h4>The available variants are:</h4>
+
+| Variant | Description |
+| :-- | :-- |
+| [`excludeRoles`](#variant-customroleassignmentsroleassignmentconditionroleconditiontypetemplatename-excluderoles) |  |
+| [`constrainRoles`](#variant-customroleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainroles) |  |
+| [`constrainRolesAndPrincipalTypes`](#variant-customroleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolesandprincipaltypes) |  |
+| [`constrainRolesAndPrincipals`](#variant-customroleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolesandprincipals) |  |
+
+### Variant: `customRoleAssignments.roleAssignmentCondition.roleConditionType.templateName-excludeRoles`
+
+
+To use this variant, set the property `templateName` to `excludeRoles`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`ExludededRoles`](#parameter-customroleassignmentsroleassignmentconditionroleconditiontypetemplatename-excluderolesexludededroles) | array | The list of roles that are not allowed to be assigned by the delegate. |
+| [`templateName`](#parameter-customroleassignmentsroleassignmentconditionroleconditiontypetemplatename-excluderolestemplatename) | string | Name of the RBAC condition template. |
+
+### Parameter: `customRoleAssignments.roleAssignmentCondition.roleConditionType.templateName-excludeRoles.ExludededRoles`
+
+The list of roles that are not allowed to be assigned by the delegate.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `customRoleAssignments.roleAssignmentCondition.roleConditionType.templateName-excludeRoles.templateName`
+
+Name of the RBAC condition template.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'excludeRoles'
+  ]
+  ```
+
+### Variant: `customRoleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRoles`
+
+
+To use this variant, set the property `templateName` to `constrainRoles`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`rolesToAssign`](#parameter-customroleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolesrolestoassign) | array | The list of roles that are allowed to be assigned by the delegate. |
+| [`templateName`](#parameter-customroleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolestemplatename) | string | Name of the RBAC condition template. |
+
+### Parameter: `customRoleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRoles.rolesToAssign`
+
+The list of roles that are allowed to be assigned by the delegate.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `customRoleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRoles.templateName`
+
+Name of the RBAC condition template.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'constrainRoles'
+  ]
+  ```
+
+### Variant: `customRoleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRolesAndPrincipalTypes`
+
+
+To use this variant, set the property `templateName` to `constrainRolesAndPrincipalTypes`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principleTypesToAssign`](#parameter-customroleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolesandprincipaltypesprincipletypestoassign) | array | The list of principle types that are allowed to be assigned roles by the delegate. |
+| [`rolesToAssign`](#parameter-customroleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolesandprincipaltypesrolestoassign) | array | The list of roles that are allowed to be assigned by the delegate. |
+| [`templateName`](#parameter-customroleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolesandprincipaltypestemplatename) | string | Name of the RBAC condition template. |
+
+### Parameter: `customRoleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRolesAndPrincipalTypes.principleTypesToAssign`
+
+The list of principle types that are allowed to be assigned roles by the delegate.
+
+- Required: Yes
+- Type: array
+- Allowed:
+  ```Bicep
+  [
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
+
+### Parameter: `customRoleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRolesAndPrincipalTypes.rolesToAssign`
+
+The list of roles that are allowed to be assigned by the delegate.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `customRoleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRolesAndPrincipalTypes.templateName`
+
+Name of the RBAC condition template.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'constrainRolesAndPrincipalTypes'
+  ]
+  ```
+
+### Variant: `customRoleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRolesAndPrincipals`
+
+
+To use this variant, set the property `templateName` to `constrainRolesAndPrincipals`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalsToAssignTo`](#parameter-customroleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolesandprincipalsprincipalstoassignto) | array | The list of principals that are allowed to be assigned roles by the delegate. |
+| [`rolesToAssign`](#parameter-customroleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolesandprincipalsrolestoassign) | array | The list of roles that are allowed to be assigned by the delegate. |
+| [`templateName`](#parameter-customroleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolesandprincipalstemplatename) | string | Name of the RBAC condition template. |
+
+### Parameter: `customRoleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRolesAndPrincipals.principalsToAssignTo`
+
+The list of principals that are allowed to be assigned roles by the delegate.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `customRoleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRolesAndPrincipals.rolesToAssign`
+
+The list of roles that are allowed to be assigned by the delegate.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `customRoleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRolesAndPrincipals.templateName`
+
+Name of the RBAC condition template.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'constrainRolesAndPrincipals'
+  ]
+  ```
 
 ### Parameter: `deploymentScriptLocation`
 
