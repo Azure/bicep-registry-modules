@@ -33,24 +33,19 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   location: resourceLocation
 }
 
-resource resourceGroup_st 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-  name: '${take(resourceGroupName, 87)}-st' // Ensure the resource group name is within the 90 character limit
-  location: resourceLocation
-}
-
-resource resourceGroup_dsk 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-  name: '${take(resourceGroupName, 86)}-dsk' // Ensure the resource group name is within the 90 character limit
+resource resourceGroup_src 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+  name: '${take(resourceGroupName, 86)}-src' // Ensure the resource group name is within the 90 character limit
   location: resourceLocation
 }
 
 module nestedDependencies 'dependencies.bicep' = {
-  scope: resourceGroup_st
+  scope: resourceGroup_src
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     storageAccountName: 'dep${namePrefix}sa${serviceShort}01'
     storageAccountContainerList: ['container1', 'container2']
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    diskName: 'dep-${namePrefix}-dsk-${serviceShort}'
+    diskName: 'dep-${namePrefix}-dsk-${serviceShort}-01'
     location: resourceLocation
   }
 }
@@ -254,7 +249,7 @@ module testDeployment '../../../main.bicep' = {
               {
                 objectType: 'AzureOperationalStoreParameters'
                 dataStoreType: 'OperationalStore'
-                resourceGroupId: resourceGroup_st.id
+                resourceGroupId: resourceGroup_src.id
               }
             ]
           }
@@ -283,10 +278,10 @@ module testDeployment '../../../main.bicep' = {
         principalType: 'ServicePrincipal'
       }
     ]
-    // lock: {
-    //   kind: 'CanNotDelete'
-    //   name: 'myCustomLockName'
-    // }
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
     tags: {
       'hidden-title': 'This is visible in the resource name'
       Environment: 'Non-Prod'
