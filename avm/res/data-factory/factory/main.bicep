@@ -331,7 +331,10 @@ resource dataFactory_roleAssignments 'Microsoft.Authorization/roleAssignments@20
 module dataFactory_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-dataFactory-PrivateEndpoint-${index}'
-    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
+    scope: resourceGroup(
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
+    )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(dataFactory.id, '/'))}-${privateEndpoint.service}-${index}'
       privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
@@ -396,13 +399,13 @@ output systemAssignedMIPrincipalId string? = dataFactory.?identity.?principalId
 output location string = dataFactory.location
 
 @description('The private endpoints of the Data Factory.')
-output privateEndpoints array = [
-  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
-    name: dataFactory_privateEndpoints[i].outputs.name
-    resourceId: dataFactory_privateEndpoints[i].outputs.resourceId
-    groupId: dataFactory_privateEndpoints[i].outputs.groupId
-    customDnsConfig: dataFactory_privateEndpoints[i].outputs.customDnsConfigs
-    networkInterfaceResourceIds: dataFactory_privateEndpoints[i].outputs.networkInterfaceResourceIds
+output privateEndpoints privateEndpointOutputType[] = [
+  for (item, index) in (privateEndpoints ?? []): {
+    name: dataFactory_privateEndpoints[index].outputs.name
+    resourceId: dataFactory_privateEndpoints[index].outputs.resourceId
+    groupId: dataFactory_privateEndpoints[index].outputs.?groupId!
+    customDnsConfigs: dataFactory_privateEndpoints[index].outputs.customDnsConfigs
+    networkInterfaceResourceIds: dataFactory_privateEndpoints[index].outputs.networkInterfaceResourceIds
   }
 ]
 
@@ -462,4 +465,28 @@ type linkedServicesType = {
 
   @description('Optional. The description of the Integration Runtime.')
   description: string?
+}
+
+@export()
+type privateEndpointOutputType = {
+  @description('The name of the private endpoint.')
+  name: string
+
+  @description('The resource ID of the private endpoint.')
+  resourceId: string
+
+  @description('The group Id for the private endpoint Group.')
+  groupId: string?
+
+  @description('The custom DNS configurations of the private endpoint.')
+  customDnsConfigs: {
+    @description('FQDN that resolves to private endpoint IP address.')
+    fqdn: string?
+
+    @description('A list of private IP addresses of the private endpoint.')
+    ipAddresses: string[]
+  }[]
+
+  @description('The IDs of the network interfaces associated with the private endpoint.')
+  networkInterfaceResourceIds: string[]
 }
