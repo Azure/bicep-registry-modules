@@ -73,7 +73,7 @@ resource hubRouteMap 'Microsoft.Network/virtualHubs/routeMaps@2024-01-01' = {
             parameters: [
               {
                 asPath: [
-                  '65051'
+                  '65049'
                 ]
               }
             ]
