@@ -6,13 +6,13 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "10230241951282765422"
+      "templateHash": "11395333038508730086"
     },
     "name": "App ManagedEnvironments",
     "description": "This module deploys an App Managed Environment (also known as a Container App Environment)."
   },
   "definitions": {
-    "certificateObjectType": {
+    "certificateType": {
       "type": "object",
       "properties": {
         "name": {
@@ -95,7 +95,6 @@
           }
         }
       },
-      "nullable": true,
       "metadata": {
         "__bicep_export!": true,
         "description": "The type of the storage."
@@ -457,8 +456,8 @@
         "description": "Optional. The list of storages to mount on the environment."
       }
     },
-    "certificateObject": {
-      "$ref": "#/definitions/certificateObjectType",
+    "certificate": {
+      "$ref": "#/definitions/certificateType",
       "nullable": true,
       "metadata": {
         "description": "Optional. A Managed Environment Certificate."
@@ -553,7 +552,7 @@
           "certificatePassword": "[parameters('certificatePassword')]",
           "certificateValue": "[if(not(empty(parameters('certificateValue'))), parameters('certificateValue'), null())]",
           "dnsSuffix": "[parameters('dnsSuffix')]",
-          "certificateKeyVaultProperties": "[if(not(empty(tryGet(parameters('certificateObject'), 'certificateKeyVaultProperties'))), createObject('identity', tryGet(parameters('certificateObject'), 'certificateKeyVaultProperties', 'identityResourceId'), 'keyVaultUrl', tryGet(parameters('certificateObject'), 'certificateKeyVaultProperties', 'keyVaultUrl')), null())]"
+          "certificateKeyVaultProperties": "[if(not(empty(tryGet(parameters('certificate'), 'certificateKeyVaultProperties'))), createObject('identity', tryGet(parameters('certificate'), 'certificateKeyVaultProperties', 'identityResourceId'), 'keyVaultUrl', tryGet(parameters('certificate'), 'certificateKeyVaultProperties', 'keyVaultUrl')), null())]"
         },
         "openTelemetryConfiguration": "[if(not(empty(parameters('openTelemetryConfiguration'))), parameters('openTelemetryConfiguration'), null())]",
         "peerTrafficConfiguration": {
@@ -614,7 +613,7 @@
       ]
     },
     "managedEnvironment_certificate": {
-      "condition": "[not(empty(parameters('certificateObject')))]",
+      "condition": "[not(empty(parameters('certificate')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-Managed-Environment-Certificate', uniqueString(deployment().name))]",
@@ -625,22 +624,22 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[coalesce(tryGet(parameters('certificateObject'), 'name'), format('cert-{0}', parameters('name')))]"
+            "value": "[coalesce(tryGet(parameters('certificate'), 'name'), format('cert-{0}', parameters('name')))]"
           },
           "managedEnvironmentName": {
             "value": "[parameters('name')]"
           },
           "certificateKeyVaultProperties": {
-            "value": "[tryGet(parameters('certificateObject'), 'certificateKeyVaultProperties')]"
+            "value": "[tryGet(parameters('certificate'), 'certificateKeyVaultProperties')]"
           },
           "certificateType": {
-            "value": "[tryGet(parameters('certificateObject'), 'certificateType')]"
+            "value": "[tryGet(parameters('certificate'), 'certificateType')]"
           },
           "certificateValue": {
-            "value": "[tryGet(parameters('certificateObject'), 'certificateValue')]"
+            "value": "[tryGet(parameters('certificate'), 'certificateValue')]"
           },
           "certificatePassword": {
-            "value": "[tryGet(parameters('certificateObject'), 'certificatePassword')]"
+            "value": "[tryGet(parameters('certificate'), 'certificatePassword')]"
           }
         },
         "template": {

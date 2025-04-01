@@ -172,7 +172,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     name: 'amemax001'
     // Non-required parameters
     appInsightsConnectionString: '<appInsightsConnectionString>'
-    certificateObject: {
+    certificate: {
       certificateKeyVaultProperties: {
         identityResourceId: '<identityResourceId>'
         keyVaultUrl: '<keyVaultUrl>'
@@ -281,7 +281,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     "appInsightsConnectionString": {
       "value": "<appInsightsConnectionString>"
     },
-    "certificateObject": {
+    "certificate": {
       "value": {
         "certificateKeyVaultProperties": {
           "identityResourceId": "<identityResourceId>",
@@ -416,7 +416,7 @@ param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
 param name = 'amemax001'
 // Non-required parameters
 param appInsightsConnectionString = '<appInsightsConnectionString>'
-param certificateObject = {
+param certificate = {
   certificateKeyVaultProperties: {
     identityResourceId: '<identityResourceId>'
     keyVaultUrl: '<keyVaultUrl>'
@@ -793,7 +793,7 @@ param workloadProfiles = [
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`appInsightsConnectionString`](#parameter-appinsightsconnectionstring) | securestring | Application Insights connection string. |
-| [`certificateObject`](#parameter-certificateobject) | object | A Managed Environment Certificate. |
+| [`certificate`](#parameter-certificate) | object | A Managed Environment Certificate. |
 | [`certificatePassword`](#parameter-certificatepassword) | securestring | Password of the certificate used by the custom domain. |
 | [`certificateValue`](#parameter-certificatevalue) | securestring | Certificate to use for the custom domain. PFX or PEM. |
 | [`daprAIConnectionString`](#parameter-dapraiconnectionstring) | securestring | Application Insights connection string used by Dapr to export Service to Service communication telemetry. |
@@ -890,7 +890,7 @@ Application Insights connection string.
 - Type: securestring
 - Default: `''`
 
-### Parameter: `certificateObject`
+### Parameter: `certificate`
 
 A Managed Environment Certificate.
 
@@ -901,13 +901,13 @@ A Managed Environment Certificate.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`certificateKeyVaultProperties`](#parameter-certificateobjectcertificatekeyvaultproperties) | object | A key vault reference. |
-| [`certificatePassword`](#parameter-certificateobjectcertificatepassword) | string | The password of the certificate. |
-| [`certificateType`](#parameter-certificateobjectcertificatetype) | string | The type of the certificate. |
-| [`certificateValue`](#parameter-certificateobjectcertificatevalue) | string | The value of the certificate. PFX or PEM blob. |
-| [`name`](#parameter-certificateobjectname) | string | The name of the certificate. |
+| [`certificateKeyVaultProperties`](#parameter-certificatecertificatekeyvaultproperties) | object | A key vault reference. |
+| [`certificatePassword`](#parameter-certificatecertificatepassword) | string | The password of the certificate. |
+| [`certificateType`](#parameter-certificatecertificatetype) | string | The type of the certificate. |
+| [`certificateValue`](#parameter-certificatecertificatevalue) | string | The value of the certificate. PFX or PEM blob. |
+| [`name`](#parameter-certificatename) | string | The name of the certificate. |
 
-### Parameter: `certificateObject.certificateKeyVaultProperties`
+### Parameter: `certificate.certificateKeyVaultProperties`
 
 A key vault reference.
 
@@ -918,31 +918,31 @@ A key vault reference.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`identityResourceId`](#parameter-certificateobjectcertificatekeyvaultpropertiesidentityresourceid) | string | The resource ID of the identity. This is the identity that will be used to access the key vault. |
-| [`keyVaultUrl`](#parameter-certificateobjectcertificatekeyvaultpropertieskeyvaulturl) | string | A key vault URL referencing the wildcard certificate that will be used for the custom domain. |
+| [`identityResourceId`](#parameter-certificatecertificatekeyvaultpropertiesidentityresourceid) | string | The resource ID of the identity. This is the identity that will be used to access the key vault. |
+| [`keyVaultUrl`](#parameter-certificatecertificatekeyvaultpropertieskeyvaulturl) | string | A key vault URL referencing the wildcard certificate that will be used for the custom domain. |
 
-### Parameter: `certificateObject.certificateKeyVaultProperties.identityResourceId`
+### Parameter: `certificate.certificateKeyVaultProperties.identityResourceId`
 
 The resource ID of the identity. This is the identity that will be used to access the key vault.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `certificateObject.certificateKeyVaultProperties.keyVaultUrl`
+### Parameter: `certificate.certificateKeyVaultProperties.keyVaultUrl`
 
 A key vault URL referencing the wildcard certificate that will be used for the custom domain.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `certificateObject.certificatePassword`
+### Parameter: `certificate.certificatePassword`
 
 The password of the certificate.
 
 - Required: No
 - Type: string
 
-### Parameter: `certificateObject.certificateType`
+### Parameter: `certificate.certificateType`
 
 The type of the certificate.
 
@@ -956,14 +956,14 @@ The type of the certificate.
   ]
   ```
 
-### Parameter: `certificateObject.certificateValue`
+### Parameter: `certificate.certificateValue`
 
 The value of the certificate. PFX or PEM blob.
 
 - Required: No
 - Type: string
 
-### Parameter: `certificateObject.name`
+### Parameter: `certificate.name`
 
 The name of the certificate.
 

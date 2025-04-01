@@ -95,7 +95,7 @@ param infrastructureResourceGroupName string = take('ME_${name}', 63)
 param storages storageType[]?
 
 @description('Optional. A Managed Environment Certificate.')
-param certificateObject certificateObjectType?
+param certificate certificateType?
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -183,10 +183,10 @@ resource managedEnvironment 'Microsoft.App/managedEnvironments@2024-10-02-previe
       certificatePassword: certificatePassword
       certificateValue: !empty(certificateValue) ? certificateValue : null
       dnsSuffix: dnsSuffix
-      certificateKeyVaultProperties: !empty(certificateObject.?certificateKeyVaultProperties)
+      certificateKeyVaultProperties: !empty(certificate.?certificateKeyVaultProperties)
         ? {
-            identity: certificateObject!.?certificateKeyVaultProperties!.identityResourceId
-            keyVaultUrl: certificateObject!.?certificateKeyVaultProperties!.keyVaultUrl
+            identity: certificate!.?certificateKeyVaultProperties!.identityResourceId
+            keyVaultUrl: certificate!.?certificateKeyVaultProperties!.keyVaultUrl
           }
         : null
     }
@@ -267,15 +267,15 @@ resource managedEnvironment_lock 'Microsoft.Authorization/locks@2020-05-01' = if
   scope: managedEnvironment
 }
 
-module managedEnvironment_certificate 'certificates/main.bicep' = if (!empty(certificateObject)) {
+module managedEnvironment_certificate 'certificates/main.bicep' = if (!empty(certificate)) {
   name: '${uniqueString(deployment().name)}-Managed-Environment-Certificate'
   params: {
-    name: certificateObject.?name ?? 'cert-${name}'
+    name: certificate.?name ?? 'cert-${name}'
     managedEnvironmentName: managedEnvironment.name
-    certificateKeyVaultProperties: certificateObject.?certificateKeyVaultProperties
-    certificateType: certificateObject.?certificateType
-    certificateValue: certificateObject.?certificateValue
-    certificatePassword: certificateObject.?certificatePassword
+    certificateKeyVaultProperties: certificate.?certificateKeyVaultProperties
+    certificateType: certificate.?certificateType
+    certificateValue: certificate.?certificateValue
+    certificatePassword: certificate.?certificatePassword
   }
 }
 
@@ -311,7 +311,7 @@ import { certificateKeyVaultPropertiesType } from 'certificates/main.bicep'
 
 @export()
 @description('The type for a certificate.')
-type certificateObjectType = {
+type certificateType = {
   @description('Optional. The name of the certificate.')
   name: string?
 
@@ -342,4 +342,4 @@ type storageType = {
 
   @description('Required. File share name.')
   shareName: string
-}?
+}
