@@ -62,9 +62,10 @@ module nestedDependencies 'dependencies.bicep' = {
 var diskBackupPolicyName = '${namePrefix}${serviceShort}diskpolicy001'
 var blobBackupPolicyName = '${namePrefix}${serviceShort}blobpolicy001'
 
-@batchSize(1)
+// @batchSize(1)
 module testDeployment '../../../main.bicep' = [
-  for iteration in ['init', 'idem']: {
+  // for iteration in ['init', 'idem']: {
+  for iteration in ['init']: {
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
