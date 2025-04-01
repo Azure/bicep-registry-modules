@@ -44,6 +44,7 @@ module subscriptionPlacement 'br/public:avm/ptn/mgmt-groups/subscription-placeme
         disableSubscriptionPlacement: false
         managementGroupId: '<managementGroupId>'
         subscriptionIds: [
+          ''
           '<subVendingSubscriptionId>'
         ]
       }
@@ -70,6 +71,7 @@ module subscriptionPlacement 'br/public:avm/ptn/mgmt-groups/subscription-placeme
           "disableSubscriptionPlacement": false,
           "managementGroupId": "<managementGroupId>",
           "subscriptionIds": [
+            "",
             "<subVendingSubscriptionId>"
           ]
         }
@@ -94,6 +96,7 @@ param parSubscriptionPlacement = [
     disableSubscriptionPlacement: false
     managementGroupId: '<managementGroupId>'
     subscriptionIds: [
+      ''
       '<subVendingSubscriptionId>'
     ]
   }

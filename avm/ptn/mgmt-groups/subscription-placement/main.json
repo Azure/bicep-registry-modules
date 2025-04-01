@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "13512342340467043757"
+      "version": "0.34.44.8038",
+      "templateHash": "17803027931414595389"
     },
     "name": "subscription-placement",
     "description": "This module allows for placement of subscriptions to management groups."
@@ -96,7 +96,7 @@
         "name": "customSubscriptionPlacement",
         "count": "[length(parameters('parSubscriptionPlacement'))]"
       },
-      "condition": "[or(not(empty(parameters('parSubscriptionPlacement')[copyIndex()])), equals(tryGet(parameters('parSubscriptionPlacement')[copyIndex()], 'disableSubscriptionPlacement'), true()))]",
+      "condition": "[equals(tryGet(parameters('parSubscriptionPlacement')[copyIndex()], 'disableSubscriptionPlacement'), true())]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('subPlacment-{0}{1}', uniqueString(parameters('parSubscriptionPlacement')[copyIndex()].managementGroupId), copyIndex())]",
@@ -121,8 +121,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "6413058457168295861"
+              "version": "0.34.44.8038",
+              "templateHash": "822995430469320013"
             }
           },
           "parameters": {
@@ -148,6 +148,7 @@
                 "name": "customSubscriptionPlacement",
                 "count": "[length(parameters('subscriptionIds'))]"
               },
+              "condition": "[not(empty(parameters('subscriptionIds')[copyIndex()]))]",
               "type": "Microsoft.Management/managementGroups/subscriptions",
               "apiVersion": "2023-04-01",
               "name": "[format('{0}/{1}', parameters('managementGroupId'), parameters('subscriptionIds')[copyIndex()])]"
@@ -161,9 +162,7 @@
               },
               "copy": {
                 "count": "[length(parameters('subscriptionIds'))]",
-                "input": {
-                  "name": "[format('{0}/{1}', parameters('managementGroupId'), parameters('subscriptionIds')[copyIndex()])]"
-                }
+                "input": "[if(not(empty(parameters('subscriptionIds')[copyIndex()])), createObject('name', format('{0}/{1}', parameters('managementGroupId'), parameters('subscriptionIds')[copyIndex()])), null())]"
               }
             }
           }
