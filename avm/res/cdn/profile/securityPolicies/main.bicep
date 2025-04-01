@@ -12,7 +12,7 @@ param wafPolicyResourceId string
 
 // param associations associationsType
 @description('Required. Waf associations (see https://learn.microsoft.com/en-us/azure/templates/microsoft.cdn/profiles/securitypolicies?pivots=deployment-language-bicep#securitypolicywebapplicationfirewallassociation for details).')
-param associations associationsType
+param associations associationsType[]
 
 resource profile 'Microsoft.Cdn/profiles@2023-05-01' existing = {
   name: profileName
@@ -32,7 +32,21 @@ resource securityPolicies 'Microsoft.Cdn/profiles/securityPolicies@2024-02-01' =
   }
 }
 
+@description('The name of the secret.')
+output name string = securityPolicies.name
+
+@description('The resource ID of the secret.')
+output resourceId string = securityPolicies.id
+
+@description('The name of the resource group the secret was created in.')
+output resourceGroupName string = resourceGroup().name
+
+// =============== //
+//   Definitions   //
+// =============== //
+
 @export()
+@description('The type of the associations.')
 type associationsType = {
   @description('Required. List of domain resource id to associate with this resource.')
   domains: {
@@ -41,13 +55,4 @@ type associationsType = {
   }[]
   @description('Required. List of patterns to match with this association.')
   patternsToMatch: string[]
-}[]
-
-@description('The name of the secrect.')
-output name string = securityPolicies.name
-
-@description('The resource ID of the secrect.')
-output resourceId string = securityPolicies.id
-
-@description('The name of the resource group the secret was created in.')
-output resourceGroupName string = resourceGroup().name
+}

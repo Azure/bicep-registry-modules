@@ -8,6 +8,7 @@ This module deploys a Metric Alert.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -59,7 +60,6 @@ module metricAlert 'br/public:avm/res/insights/metric-alert:<version>' = {
     }
     name: 'imamin001'
     // Non-required parameters
-    location: 'Global'
     scopes: [
       '<virtualMachineResourceId>'
     ]
@@ -100,9 +100,6 @@ module metricAlert 'br/public:avm/res/insights/metric-alert:<version>' = {
       "value": "imamin001"
     },
     // Non-required parameters
-    "location": {
-      "value": "Global"
-    },
     "scopes": {
       "value": [
         "<virtualMachineResourceId>"
@@ -139,7 +136,6 @@ param criteria = {
 }
 param name = 'imamin001'
 // Non-required parameters
-param location = 'Global'
 param scopes = [
   '<virtualMachineResourceId>'
 ]
@@ -384,7 +380,6 @@ module metricAlert 'br/public:avm/res/insights/metric-alert:<version>' = {
       '<actionGroupResourceId>'
     ]
     evaluationFrequency: 'PT5M'
-    location: 'global'
     scopes: [
       '<appInsightsResourceId>'
       '<pingTestResourceId>'
@@ -432,9 +427,6 @@ module metricAlert 'br/public:avm/res/insights/metric-alert:<version>' = {
     "evaluationFrequency": {
       "value": "PT5M"
     },
-    "location": {
-      "value": "global"
-    },
     "scopes": {
       "value": [
         "<appInsightsResourceId>",
@@ -478,7 +470,6 @@ param actions = [
   '<actionGroupResourceId>'
 ]
 param evaluationFrequency = 'PT5M'
-param location = 'global'
 param scopes = [
   '<appInsightsResourceId>'
   '<pingTestResourceId>'
@@ -533,6 +524,127 @@ Maps to the 'odata.type' field. Specifies the type of the alert criteria.
 
 - Required: Yes
 - Type: object
+- Discriminator: `odata.type`
+
+<h4>The available variants are:</h4>
+
+| Variant | Description |
+| :-- | :-- |
+| [`Microsoft.Azure.Monitor.WebtestLocationAvailabilityCriteria`](#variant-criteriaodatatype-microsoftazuremonitorwebtestlocationavailabilitycriteria) | The alert type for a web test scenario. |
+| [`Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria`](#variant-criteriaodatatype-microsoftazuremonitorsingleresourcemultiplemetriccriteria) | The alert type for a single resource scenario. |
+| [`Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria`](#variant-criteriaodatatype-microsoftazuremonitormultipleresourcemultiplemetriccriteria) | The alert type for multiple resources scenario. |
+
+### Variant: `criteria.odata.type-Microsoft.Azure.Monitor.WebtestLocationAvailabilityCriteria`
+The alert type for a web test scenario.
+
+To use this variant, set the property `odata.type` to `Microsoft.Azure.Monitor.WebtestLocationAvailabilityCriteria`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`componentResourceId`](#parameter-criteriaodatatype-microsoftazuremonitorwebtestlocationavailabilitycriteriacomponentresourceid) | string | The Application Insights resource ID. |
+| [`failedLocationCount`](#parameter-criteriaodatatype-microsoftazuremonitorwebtestlocationavailabilitycriteriafailedlocationcount) | int | The number of failed locations. |
+| [`odata.type`](#parameter-criteriaodatatype-microsoftazuremonitorwebtestlocationavailabilitycriteriaodatatype) | string | The type of the alert criteria. |
+| [`webTestResourceId`](#parameter-criteriaodatatype-microsoftazuremonitorwebtestlocationavailabilitycriteriawebtestresourceid) | string | The Application Insights web test resource ID. |
+
+### Parameter: `criteria.odata.type-Microsoft.Azure.Monitor.WebtestLocationAvailabilityCriteria.componentResourceId`
+
+The Application Insights resource ID.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `criteria.odata.type-Microsoft.Azure.Monitor.WebtestLocationAvailabilityCriteria.failedLocationCount`
+
+The number of failed locations.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `criteria.odata.type-Microsoft.Azure.Monitor.WebtestLocationAvailabilityCriteria.odata.type`
+
+The type of the alert criteria.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  'odata.type': [
+    'Microsoft.Azure.Monitor.WebtestLocationAvailabilityCriteria'
+  ]
+  ```
+
+### Parameter: `criteria.odata.type-Microsoft.Azure.Monitor.WebtestLocationAvailabilityCriteria.webTestResourceId`
+
+The Application Insights web test resource ID.
+
+- Required: Yes
+- Type: string
+
+### Variant: `criteria.odata.type-Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria`
+The alert type for a single resource scenario.
+
+To use this variant, set the property `odata.type` to `Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`allof`](#parameter-criteriaodatatype-microsoftazuremonitorsingleresourcemultiplemetriccriteriaallof) | array | The list of metric criteria for this 'all of' operation. |
+| [`odata.type`](#parameter-criteriaodatatype-microsoftazuremonitorsingleresourcemultiplemetriccriteriaodatatype) | string | The type of the alert criteria. |
+
+### Parameter: `criteria.odata.type-Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria.allof`
+
+The list of metric criteria for this 'all of' operation.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `criteria.odata.type-Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria.odata.type`
+
+The type of the alert criteria.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  'odata.type': [
+    'Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria'
+  ]
+  ```
+
+### Variant: `criteria.odata.type-Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria`
+The alert type for multiple resources scenario.
+
+To use this variant, set the property `odata.type` to `Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`allof`](#parameter-criteriaodatatype-microsoftazuremonitormultipleresourcemultiplemetriccriteriaallof) | array | The list of multiple metric criteria for this 'all of' operation. |
+| [`odata.type`](#parameter-criteriaodatatype-microsoftazuremonitormultipleresourcemultiplemetriccriteriaodatatype) | string | The type of the alert criteria. |
+
+### Parameter: `criteria.odata.type-Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria.allof`
+
+The list of multiple metric criteria for this 'all of' operation.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `criteria.odata.type-Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria.odata.type`
+
+The type of the alert criteria.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  'odata.type': [
+    'Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria'
+  ]
+  ```
 
 ### Parameter: `name`
 
@@ -791,6 +903,14 @@ the period of time (in ISO 8601 duration format) that is used to monitor alert a
 | `name` | string | The name of the metric alert. |
 | `resourceGroupName` | string | The resource group the metric alert was deployed into. |
 | `resourceId` | string | The resource ID of the metric alert. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

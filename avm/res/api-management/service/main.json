@@ -5,13 +5,154 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "10910048486488716481"
+      "version": "0.33.13.18514",
+      "templateHash": "3992066665524837803"
     },
     "name": "API Management Services",
     "description": "This module deploys an API Management Service. The default deployment is set to use a Premium SKU to align with Microsoft WAF-aligned best practices. In most cases, non-prod deployments should use a lower-tier SKU."
   },
   "definitions": {
+    "authorizationServerType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Identifier of the authorization server."
+          }
+        },
+        "displayName": {
+          "type": "string",
+          "maxLength": 50,
+          "metadata": {
+            "description": "Required. API Management Service Authorization Servers name. Must be 1 to 50 characters long."
+          }
+        },
+        "authorizationEndpoint": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. OAuth authorization endpoint. See <http://tools.ietf.org/html/rfc6749#section-3.2>."
+          }
+        },
+        "authorizationMethods": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. HTTP verbs supported by the authorization endpoint. GET must be always present. POST is optional. - HEAD, OPTIONS, TRACE, GET, POST, PUT, PATCH, DELETE."
+          }
+        },
+        "bearerTokenSendingMethods": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the mechanism by which access token is passed to the API. - authorizationHeader or query."
+          }
+        },
+        "clientAuthenticationMethod": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Method of authentication supported by the token endpoint of this authorization server. Possible values are Basic and/or Body. When Body is specified, client credentials and other parameters are passed within the request body in the application/x-www-form-urlencoded format. - Basic or Body."
+          }
+        },
+        "clientId": {
+          "type": "securestring",
+          "metadata": {
+            "description": "Required. Client or app ID registered with this authorization server."
+          }
+        },
+        "clientRegistrationEndpoint": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Optional reference to a page where client or app registration for this authorization server is performed. Contains absolute URL to entity being referenced."
+          }
+        },
+        "clientSecret": {
+          "type": "securestring",
+          "metadata": {
+            "description": "Required. Client or app secret registered with this authorization server. This property will not be filled on 'GET' operations! Use '/listSecrets' POST request to get the value."
+          }
+        },
+        "defaultScope": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Access token scope that is going to be requested by default. Can be overridden at the API level. Should be provided in the form of a string containing space-delimited values."
+          }
+        },
+        "serverDescription": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Description of the authorization server. Can contain HTML formatting tags."
+          }
+        },
+        "grantTypes": {
+          "type": "array",
+          "allowedValues": [
+            "authorizationCode",
+            "clientCredentials",
+            "implicit",
+            "resourceOwnerPassword"
+          ],
+          "metadata": {
+            "description": "Required. Form of an authorization grant, which the client uses to request the access token. - authorizationCode, implicit, resourceOwnerPassword, clientCredentials."
+          }
+        },
+        "resourceOwnerPassword": {
+          "type": "securestring",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Can be optionally specified when resource owner password grant type is supported by this authorization server. Default resource owner password."
+          }
+        },
+        "resourceOwnerUsername": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Can be optionally specified when resource owner password grant type is supported by this authorization server. Default resource owner username."
+          }
+        },
+        "supportState": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. If true, authorization server will include state parameter from the authorization request to its response. Client may use state parameter to raise protocol security."
+          }
+        },
+        "tokenBodyParameters": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/tokenBodyParameterType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Additional parameters required by the token endpoint of this authorization server represented as an array of JSON objects with name and value string properties, i.e. {\"name\" : \"name value\", \"value\": \"a value\"}. - TokenBodyParameterContract object."
+          }
+        },
+        "tokenEndpoint": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. OAuth token endpoint. Contains absolute URI to entity being referenced."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for an authorization server."
+      }
+    },
     "diagnosticSettingFullType": {
       "type": "object",
       "properties": {
@@ -266,6 +407,29 @@
           "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
         }
       }
+    },
+    "tokenBodyParameterType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Body parameter name."
+          }
+        },
+        "value": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Body parameter value."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for a token body parameter.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "authorization-server/main.bicep"
+        }
+      }
     }
   },
   "parameters": {
@@ -489,8 +653,11 @@
       }
     },
     "authorizationServers": {
-      "type": "secureObject",
-      "defaultValue": {},
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/authorizationServerType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Authorization servers."
       }
@@ -571,6 +738,13 @@
       "metadata": {
         "description": "Optional. Public Standard SKU IP V4 based IP address to be associated with Virtual Network deployed service in the region. Supported only for Developer and Premium SKU being deployed in Virtual Network."
       }
+    },
+    "enableDeveloperPortal": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Enable the Developer Portal. The developer portal is not supported on the Consumption SKU."
+      }
     }
   },
   "variables": {
@@ -581,7 +755,6 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
-    "authorizationServerList": "[if(not(empty(parameters('authorizationServers'))), parameters('authorizationServers').secureList, createArray())]",
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "builtInRoleNames": {
@@ -619,7 +792,7 @@
     },
     "service": {
       "type": "Microsoft.ApiManagement/service",
-      "apiVersion": "2023-05-01-preview",
+      "apiVersion": "2024-05-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -643,7 +816,8 @@
         "virtualNetworkConfiguration": "[if(not(empty(parameters('subnetResourceId'))), createObject('subnetResourceId', parameters('subnetResourceId')), null())]",
         "publicIpAddressId": "[if(not(empty(parameters('publicIpAddressResourceId'))), parameters('publicIpAddressResourceId'), null())]",
         "apiVersionConstraint": "[if(not(empty(parameters('minApiVersion'))), createObject('minApiVersion', parameters('minApiVersion')), createObject('minApiVersion', '2021-08-01'))]",
-        "restore": "[parameters('restore')]"
+        "restore": "[parameters('restore')]",
+        "developerPortalStatus": "[if(not(equals(parameters('sku'), 'Consumption')), if(parameters('enableDeveloperPortal'), 'Enabled', 'Disabled'), null())]"
       }
     },
     "service_lock": {
@@ -774,7 +948,7 @@
             "value": "[tryGet(parameters('apis')[copyIndex()], 'authenticationSettings')]"
           },
           "format": {
-            "value": "[coalesce(tryGet(parameters('apis')[copyIndex()], 'format'), 'openapi')]"
+            "value": "[tryGet(parameters('apis')[copyIndex()], 'format')]"
           },
           "isCurrent": {
             "value": "[tryGet(parameters('apis')[copyIndex()], 'isCurrent')]"
@@ -814,8 +988,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "4506327834932641473"
+              "version": "0.33.13.18514",
+              "templateHash": "11063536724422240669"
             },
             "name": "API Management Service APIs",
             "description": "This module deploys an API Management Service API."
@@ -1088,8 +1262,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "10490034185325317076"
+                      "version": "0.33.13.18514",
+                      "templateHash": "8003925948340237461"
                     },
                     "name": "API Management Service APIs Policies",
                     "description": "This module deploys an API Management Service API Policy."
@@ -1234,8 +1408,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "12163322755329801860"
+                      "version": "0.33.13.18514",
+                      "templateHash": "4899675580903703157"
                     },
                     "name": "API Management Service APIs Diagnostics.",
                     "description": "This module deploys an API Management Service API Diagnostics."
@@ -1461,8 +1635,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "6933064912114035873"
+              "version": "0.33.13.18514",
+              "templateHash": "6801592949576181154"
             },
             "name": "API Management Service API Version Sets",
             "description": "This module deploys an API Management Service API Version Set."
@@ -1529,7 +1703,7 @@
     "service_authorizationServers": {
       "copy": {
         "name": "service_authorizationServers",
-        "count": "[length(variables('authorizationServerList'))]"
+        "count": "[length(coalesce(parameters('authorizationServers'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -1544,68 +1718,92 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[variables('authorizationServerList')[copyIndex()].name]"
+            "value": "[coalesce(parameters('authorizationServers'), createArray())[copyIndex()].name]"
           },
           "displayName": {
-            "value": "[variables('authorizationServerList')[copyIndex()].displayName]"
+            "value": "[coalesce(parameters('authorizationServers'), createArray())[copyIndex()].displayName]"
           },
           "authorizationEndpoint": {
-            "value": "[variables('authorizationServerList')[copyIndex()].authorizationEndpoint]"
+            "value": "[coalesce(parameters('authorizationServers'), createArray())[copyIndex()].authorizationEndpoint]"
           },
           "authorizationMethods": {
-            "value": "[coalesce(tryGet(variables('authorizationServerList')[copyIndex()], 'authorizationMethods'), createArray('GET'))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('authorizationServers'), createArray())[copyIndex()], 'authorizationMethods'), createArray('GET'))]"
           },
           "bearerTokenSendingMethods": {
-            "value": "[coalesce(tryGet(variables('authorizationServerList')[copyIndex()], 'bearerTokenSendingMethods'), createArray('authorizationHeader'))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('authorizationServers'), createArray())[copyIndex()], 'bearerTokenSendingMethods'), createArray('authorizationHeader'))]"
           },
           "clientAuthenticationMethod": {
-            "value": "[coalesce(tryGet(variables('authorizationServerList')[copyIndex()], 'clientAuthenticationMethod'), createArray('Basic'))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('authorizationServers'), createArray())[copyIndex()], 'clientAuthenticationMethod'), createArray('Basic'))]"
           },
           "clientId": {
-            "value": "[variables('authorizationServerList')[copyIndex()].clientId]"
+            "value": "[coalesce(parameters('authorizationServers'), createArray())[copyIndex()].clientId]"
           },
           "clientSecret": {
-            "value": "[variables('authorizationServerList')[copyIndex()].clientSecret]"
+            "value": "[coalesce(parameters('authorizationServers'), createArray())[copyIndex()].clientSecret]"
           },
           "clientRegistrationEndpoint": {
-            "value": "[coalesce(tryGet(variables('authorizationServerList')[copyIndex()], 'clientRegistrationEndpoint'), '')]"
+            "value": "[coalesce(tryGet(coalesce(parameters('authorizationServers'), createArray())[copyIndex()], 'clientRegistrationEndpoint'), '')]"
           },
           "defaultScope": {
-            "value": "[coalesce(tryGet(variables('authorizationServerList')[copyIndex()], 'defaultScope'), '')]"
+            "value": "[coalesce(tryGet(coalesce(parameters('authorizationServers'), createArray())[copyIndex()], 'defaultScope'), '')]"
           },
           "grantTypes": {
-            "value": "[variables('authorizationServerList')[copyIndex()].grantTypes]"
+            "value": "[coalesce(parameters('authorizationServers'), createArray())[copyIndex()].grantTypes]"
           },
           "resourceOwnerPassword": {
-            "value": "[coalesce(tryGet(variables('authorizationServerList')[copyIndex()], 'resourceOwnerPassword'), '')]"
+            "value": "[coalesce(tryGet(coalesce(parameters('authorizationServers'), createArray())[copyIndex()], 'resourceOwnerPassword'), '')]"
           },
           "resourceOwnerUsername": {
-            "value": "[coalesce(tryGet(variables('authorizationServerList')[copyIndex()], 'resourceOwnerUsername'), '')]"
+            "value": "[coalesce(tryGet(coalesce(parameters('authorizationServers'), createArray())[copyIndex()], 'resourceOwnerUsername'), '')]"
           },
           "serverDescription": {
-            "value": "[coalesce(tryGet(variables('authorizationServerList')[copyIndex()], 'serverDescription'), '')]"
+            "value": "[coalesce(tryGet(coalesce(parameters('authorizationServers'), createArray())[copyIndex()], 'serverDescription'), '')]"
           },
           "supportState": {
-            "value": "[coalesce(tryGet(variables('authorizationServerList')[copyIndex()], 'supportState'), false())]"
+            "value": "[coalesce(tryGet(coalesce(parameters('authorizationServers'), createArray())[copyIndex()], 'supportState'), false())]"
           },
           "tokenBodyParameters": {
-            "value": "[coalesce(tryGet(variables('authorizationServerList')[copyIndex()], 'tokenBodyParameters'), createArray())]"
+            "value": "[coalesce(tryGet(coalesce(parameters('authorizationServers'), createArray())[copyIndex()], 'tokenBodyParameters'), createArray())]"
           },
           "tokenEndpoint": {
-            "value": "[coalesce(tryGet(variables('authorizationServerList')[copyIndex()], 'tokenEndpoint'), '')]"
+            "value": "[coalesce(tryGet(coalesce(parameters('authorizationServers'), createArray())[copyIndex()], 'tokenEndpoint'), '')]"
           }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "6983473596111316129"
+              "version": "0.33.13.18514",
+              "templateHash": "12052045734240221562"
             },
             "name": "API Management Service Authorization Servers",
             "description": "This module deploys an API Management Service Authorization Server."
+          },
+          "definitions": {
+            "tokenBodyParameterType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. Body parameter name."
+                  }
+                },
+                "value": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. Body parameter value."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for a token body parameter."
+              }
+            }
           },
           "parameters": {
             "name": {
@@ -1695,12 +1893,21 @@
             },
             "grantTypes": {
               "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "allowedValues": [
+                "authorizationCode",
+                "clientCredentials",
+                "implicit",
+                "resourceOwnerPassword"
+              ],
               "metadata": {
                 "description": "Required. Form of an authorization grant, which the client uses to request the access token. - authorizationCode, implicit, resourceOwnerPassword, clientCredentials."
               }
             },
             "resourceOwnerPassword": {
-              "type": "string",
+              "type": "securestring",
               "defaultValue": "",
               "metadata": {
                 "description": "Optional. Can be optionally specified when resource owner password grant type is supported by this authorization server. Default resource owner password."
@@ -1722,9 +1929,12 @@
             },
             "tokenBodyParameters": {
               "type": "array",
+              "items": {
+                "$ref": "#/definitions/tokenBodyParameterType"
+              },
               "defaultValue": [],
               "metadata": {
-                "description": "Optional. Additional parameters required by the token endpoint of this authorization server represented as an array of JSON objects with name and value string properties, i.e. {\"name\" : \"name value\", \"value\": \"a value\"}. - TokenBodyParameterContract object."
+                "description": "Optional. Additional parameters required by the token endpoint of this authorization server represented as an array of JSON objects with name and value string properties."
               }
             },
             "tokenEndpoint": {
@@ -1741,8 +1951,14 @@
             ],
             "setAuthorizationMethods": "[union(parameters('authorizationMethods'), variables('defaultAuthorizationMethods'))]"
           },
-          "resources": [
-            {
+          "resources": {
+            "service": {
+              "existing": true,
+              "type": "Microsoft.ApiManagement/service",
+              "apiVersion": "2023-05-01-preview",
+              "name": "[parameters('apiManagementServiceName')]"
+            },
+            "authorizationServer": {
               "type": "Microsoft.ApiManagement/service/authorizationServers",
               "apiVersion": "2022-08-01",
               "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
@@ -1765,7 +1981,7 @@
                 "clientSecret": "[parameters('clientSecret')]"
               }
             }
-          ],
+          },
           "outputs": {
             "name": {
               "type": "string",
@@ -1840,7 +2056,7 @@
             "value": "[tryGet(parameters('backends')[copyIndex()], 'title')]"
           },
           "tls": {
-            "value": "[tryGet(parameters('backends')[copyIndex()], 'tls')]"
+            "value": "[coalesce(tryGet(parameters('backends')[copyIndex()], 'tls'), createObject('validateCertificateChain', true(), 'validateCertificateName', true()))]"
           }
         },
         "template": {
@@ -1850,8 +2066,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "3000731728856797182"
+              "version": "0.33.13.18514",
+              "templateHash": "13471923779604074887"
             },
             "name": "API Management Service Backends",
             "description": "This module deploys an API Management Service Backend."
@@ -2030,8 +2246,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "16830396354199134703"
+              "version": "0.33.13.18514",
+              "templateHash": "3359248846501864533"
             },
             "name": "API Management Service Caches",
             "description": "This module deploys an API Management Service Cache."
@@ -2184,8 +2400,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "12163322755329801860"
+              "version": "0.33.13.18514",
+              "templateHash": "4899675580903703157"
             },
             "name": "API Management Service APIs Diagnostics.",
             "description": "This module deploys an API Management Service API Diagnostics."
@@ -2413,8 +2629,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "13378170063684269324"
+              "version": "0.33.13.18514",
+              "templateHash": "9439755619586446330"
             },
             "name": "API Management Service Identity Providers",
             "description": "This module deploys an API Management Service Identity Provider."
@@ -2622,8 +2838,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "15370135778757304817"
+              "version": "0.33.13.18514",
+              "templateHash": "13044725911661445483"
             },
             "name": "API Management Service Loggers",
             "description": "This module deploys an API Management Service Logger."
@@ -2766,8 +2982,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "5767723932557197412"
+              "version": "0.33.13.18514",
+              "templateHash": "8157254408403610295"
             },
             "name": "API Management Service Named Values",
             "description": "This module deploys an API Management Service Named Value."
@@ -2903,8 +3119,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "14695705243556531686"
+              "version": "0.33.13.18514",
+              "templateHash": "3588318966794177458"
             },
             "name": "API Management Service Portal Settings",
             "description": "This module deploys an API Management Service Portal Setting."
@@ -3001,8 +3217,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "16179100476766701371"
+              "version": "0.33.13.18514",
+              "templateHash": "12529707644768894354"
             },
             "name": "API Management Service Policies",
             "description": "This module deploys an API Management Service Policy."
@@ -3135,8 +3351,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "2148208274021240641"
+              "version": "0.33.13.18514",
+              "templateHash": "7427869826758534329"
             },
             "name": "API Management Service Products",
             "description": "This module deploys an API Management Service Product."
@@ -3263,8 +3479,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "2698127387846612859"
+                      "version": "0.33.13.18514",
+                      "templateHash": "6881101310103461222"
                     },
                     "name": "API Management Service Products APIs",
                     "description": "This module deploys an API Management Service Product API."
@@ -3352,8 +3568,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "42083819364724220"
+                      "version": "0.33.13.18514",
+                      "templateHash": "7173352386317054073"
                     },
                     "name": "API Management Service Products Groups",
                     "description": "This module deploys an API Management Service Product Group."
@@ -3511,8 +3727,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "8343225388220463177"
+              "version": "0.33.13.18514",
+              "templateHash": "3748720225613039754"
             },
             "name": "API Management Service Subscriptions",
             "description": "This module deploys an API Management Service Subscription."
@@ -3660,14 +3876,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('service', '2023-05-01-preview', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('service', '2024-05-01', 'full'), 'identity'), 'principalId')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('service', '2023-05-01-preview', 'full').location]"
+      "value": "[reference('service', '2024-05-01', 'full').location]"
     }
   }
 }

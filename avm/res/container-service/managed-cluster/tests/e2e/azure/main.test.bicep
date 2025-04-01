@@ -275,6 +275,11 @@ module testDeployment '../../../main.bicep' = [
               timeoutInSeconds: 180
               url: 'https://github.com/mspnp/aks-baseline'
             }
+            kustomizations: {
+              unified: {
+                path: './cluster-manifests'
+              }
+            }
           }
           {
             namespace: 'flux-system-helm'

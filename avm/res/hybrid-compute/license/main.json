@@ -1,0 +1,221 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.33.93.31351",
+      "templateHash": "15046234377831925786"
+    },
+    "name": "Azure Arc License",
+    "description": "This module deploys an Azure Arc License for use with Azure Arc-enabled servers. This module should not be used for other Arc-enabled server scenarios, where the Arc License resource is created automatically by the onboarding process."
+  },
+  "definitions": {
+    "volumeLicenseDetailType": {
+      "type": "object",
+      "properties": {
+        "invoiceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The invoice id for the volume license."
+          }
+        },
+        "programYear": {
+          "type": "string",
+          "allowedValues": [
+            "Year 1",
+            "Year 2",
+            "Year 3"
+          ],
+          "metadata": {
+            "description": "Required. Describes the program year the volume license is for."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a volume license detail."
+      }
+    }
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the Azure Arc License to be created."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. The location of the Azure Arc License to be created."
+      }
+    },
+    "licenseDetailEdition": {
+      "type": "string",
+      "defaultValue": "Standard",
+      "allowedValues": [
+        "Standard",
+        "Datacenter"
+      ],
+      "metadata": {
+        "description": "Optional. Describes the edition of the license. Default is Standard."
+      }
+    },
+    "licenseDetailProcessors": {
+      "type": "int",
+      "defaultValue": 8,
+      "minValue": 8,
+      "metadata": {
+        "description": "Optional. Describes the number of processors."
+      }
+    },
+    "licenseDetailState": {
+      "type": "string",
+      "defaultValue": "Deactivated",
+      "allowedValues": [
+        "Active",
+        "Deactivated"
+      ],
+      "metadata": {
+        "description": "Optional. Describes the license state. Default is Deactivated."
+      }
+    },
+    "licenseDetailTarget": {
+      "type": "string",
+      "defaultValue": "Windows Server 2012 R2",
+      "allowedValues": [
+        "Windows Server 2012 R2",
+        "Windows Server 2012"
+      ],
+      "metadata": {
+        "description": "Optional. Describes the license target server. Default is Windows Server 2012 R2."
+      }
+    },
+    "licenseDetailType": {
+      "type": "string",
+      "defaultValue": "vCore",
+      "allowedValues": [
+        "pCore",
+        "vCore"
+      ],
+      "metadata": {
+        "description": "Optional. Provide the core type (vCore or pCore) needed for this ESU licens. Default is vCore."
+      }
+    },
+    "licenseVolumeLicenseDetails": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/volumeLicenseDetailType"
+      },
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. A list of volume license details."
+      }
+    },
+    "licenseType": {
+      "type": "string",
+      "defaultValue": "ESU",
+      "allowedValues": [
+        "ESU"
+      ],
+      "metadata": {
+        "description": "Optional. The type of the license resource. The value is ESU."
+      }
+    },
+    "tenantId": {
+      "type": "string",
+      "defaultValue": "[tenant().tenantId]",
+      "metadata": {
+        "description": "Optional. The tenant ID of the license resource. Default is the tenant ID of the current subscription."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags of the resource."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    }
+  },
+  "resources": {
+    "license": {
+      "type": "Microsoft.HybridCompute/licenses",
+      "apiVersion": "2024-11-10-preview",
+      "name": "[parameters('name')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "licenseDetails": {
+          "edition": "[parameters('licenseDetailEdition')]",
+          "processors": "[parameters('licenseDetailProcessors')]",
+          "state": "[parameters('licenseDetailState')]",
+          "target": "[parameters('licenseDetailTarget')]",
+          "type": "[parameters('licenseDetailType')]",
+          "volumeLicenseDetails": "[parameters('licenseVolumeLicenseDetails')]"
+        },
+        "licenseType": "[parameters('licenseType')]",
+        "tenantId": "[parameters('tenantId')]"
+      },
+      "tags": "[parameters('tags')]"
+    },
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2023-07-01",
+      "name": "[format('46d3xbcp.res.hybridcompute-license.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the machine."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the machine."
+      },
+      "value": "[resourceId('Microsoft.HybridCompute/licenses', parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the VM was created in."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location the resource was deployed into."
+      },
+      "value": "[reference('license', '2024-11-10-preview', 'full').location]"
+    }
+  }
+}

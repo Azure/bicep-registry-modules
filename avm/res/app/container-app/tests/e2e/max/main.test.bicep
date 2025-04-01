@@ -95,19 +95,17 @@ module testDeployment '../../../main.bicep' = [
           nestedDependencies.outputs.managedIdentityResourceId
         ]
       }
-      secrets: {
-        secureList: [
-          {
-            name: 'containerappstoredsecret'
-            value: myCustomContainerAppSecret
-          }
-          {
-            name: 'keyvaultstoredsecret'
-            keyVaultUrl: nestedDependencies.outputs.keyVaultSecretURI
-            identity: nestedDependencies.outputs.managedIdentityResourceId
-          }
-        ]
-      }
+      secrets: [
+        {
+          name: 'containerappstoredsecret'
+          value: myCustomContainerAppSecret
+        }
+        {
+          name: 'keyvaultstoredsecret'
+          keyVaultUrl: nestedDependencies.outputs.keyVaultSecretURI
+          identity: nestedDependencies.outputs.managedIdentityResourceId
+        }
+      ]
       containers: [
         {
           name: 'simple-hello-world-container'
@@ -150,13 +148,19 @@ module testDeployment '../../../main.bicep' = [
         java: {
           enableJavaAgent: true
           enableMetrics: false
-          loggerSettings:[
+          loggerSettings: [
             {
               level: 'info'
               logger: 'test'
             }
           ]
         }
+      }
+      scaleSettings: {
+        maxReplicas: 11
+        minReplicas: 4
+        cooldownPeriod: 500
+        pollingInterval: 45
       }
     }
   }

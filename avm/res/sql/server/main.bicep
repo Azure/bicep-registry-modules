@@ -53,6 +53,10 @@ param securityAlertPolicies securityAlerPolicyType[] = []
 @description('Optional. The keys to configure.')
 param keys keyType[] = []
 
+import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+@description('Optional. The customer managed key definition for server TDE.')
+param customerManagedKey customerManagedKeyWithAutoRotateType?
+
 @description('Conditional. The Azure Active Directory (AAD) administrator authentication. Required if no `administratorLogin` & `administratorLoginPassword` is provided.')
 param administrators serverExternalAdministratorType?
 
@@ -60,9 +64,6 @@ param administrators serverExternalAdministratorType?
 @minLength(36)
 @maxLength(36)
 param federatedClientId string?
-
-@description('Optional. A CMK URI of the key to use for encryption.')
-param keyId string?
 
 @allowed([
   '1.0'
@@ -116,9 +117,6 @@ var identity = !empty(managedIdentities)
     }
   : null
 
-@description('Optional. The encryption protection configuration.')
-param encryptionProtectorObj encryptionProtectorType?
-
 @description('Optional. The vulnerability assessment configuration.')
 param vulnerabilityAssessmentsObj vulnerabilityAssessmentType?
 
@@ -132,6 +130,8 @@ param secretsExportConfiguration secretsExportConfigurationType?
 
 @description('Optional. The failover groups configuration.')
 param failoverGroups failoverGroupType[] = []
+
+var enableReferencedModulesTelemetry = false
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
@@ -186,6 +186,18 @@ var formattedRoleAssignments = [
   })
 ]
 
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+  name: last(split(customerManagedKey.?keyVaultResourceId!, '/'))
+  scope: resourceGroup(
+    split(customerManagedKey.?keyVaultResourceId!, '/')[2],
+    split(customerManagedKey.?keyVaultResourceId!, '/')[4]
+  )
+
+  resource cMKKey 'keys@2023-07-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+    name: customerManagedKey.?keyName!
+  }
+}
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.sql-server.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
@@ -216,7 +228,13 @@ resource server 'Microsoft.Sql/servers@2023-08-01-preview' = {
     administrators: union({ administratorType: 'ActiveDirectory' }, administrators ?? {})
     federatedClientId: federatedClientId
     isIPv6Enabled: isIPv6Enabled
-    keyId: keyId
+    keyId: customerManagedKey != null
+      ? !empty(customerManagedKey.?keyVersion)
+          ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.?keyVersion}'
+          : (customerManagedKey.?autoRotationEnabled ?? true)
+              ? cMKKeyVault::cMKKey.properties.keyUri
+              : cMKKeyVault::cMKKey.properties.keyUriWithVersion
+      : null
     version: '12.0'
     minimalTlsVersion: minimalTlsVersion
     primaryUserAssignedIdentityId: !empty(primaryUserAssignedIdentityId) ? primaryUserAssignedIdentityId : null
@@ -343,15 +361,10 @@ module server_elasticPools 'elastic-pool/main.bicep' = [
 module server_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-server-PrivateEndpoint-${index}'
-    scope: !empty(privateEndpoint.?resourceGroupResourceId)
-      ? resourceGroup(
-          split((privateEndpoint.?resourceGroupResourceId ?? '//'), '/')[2],
-          split((privateEndpoint.?resourceGroupResourceId ?? '////'), '/')[4]
-        )
-      : resourceGroup(
-          split((privateEndpoint.?subnetResourceId ?? '//'), '/')[2],
-          split((privateEndpoint.?subnetResourceId ?? '////'), '/')[4]
-        )
+    scope: resourceGroup(
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
+    )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(server.id, '/'))}-${privateEndpoint.?service ?? 'sqlServer'}-${index}'
       privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
@@ -382,7 +395,7 @@ module server_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
-      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',
@@ -468,17 +481,28 @@ module server_keys 'key/main.bicep' = [
   }
 ]
 
-module server_encryptionProtector 'encryption-protector/main.bicep' = if (encryptionProtectorObj != null) {
+module cmk_key 'key/main.bicep' = if (customerManagedKey != null) {
+  name: '${uniqueString(deployment().name, location)}-Sql-Key'
+  params: {
+    serverName: server.name
+    name: '${cMKKeyVault.name}_${customerManagedKey.?keyName}_${customerManagedKey.?keyVersion}'
+    serverKeyType: 'AzureKeyVault'
+    uri: !empty(customerManagedKey.?keyVersion)
+      ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.?keyVersion}'
+      : (customerManagedKey.?autoRotationEnabled ?? true)
+          ? cMKKeyVault::cMKKey.properties.keyUri
+          : cMKKeyVault::cMKKey.properties.keyUriWithVersion
+  }
+}
+
+module server_encryptionProtector 'encryption-protector/main.bicep' = if (customerManagedKey != null) {
   name: '${uniqueString(deployment().name, location)}-Sql-EncryProtector'
   params: {
     sqlServerName: server.name
-    serverKeyName: encryptionProtectorObj!.serverKeyName
-    serverKeyType: encryptionProtectorObj.?serverKeyType
-    autoRotationEnabled: encryptionProtectorObj.?autoRotationEnabled
+    serverKeyName: cmk_key.outputs.name
+    serverKeyType: 'AzureKeyVault'
+    autoRotationEnabled: customerManagedKey.?autoRotationEnabled
   }
-  dependsOn: [
-    server_keys
-  ]
 }
 
 module server_audit_settings 'audit-settings/main.bicep' = if (!empty(auditSettings)) {
@@ -501,11 +525,11 @@ module server_audit_settings 'audit-settings/main.bicep' = if (!empty(auditSetti
 module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfiguration != null) {
   name: '${uniqueString(deployment().name, location)}-secrets-kv'
   scope: resourceGroup(
-    split((secretsExportConfiguration.?keyVaultResourceId ?? '//'), '/')[2],
-    split((secretsExportConfiguration.?keyVaultResourceId ?? '////'), '/')[4]
+    split(secretsExportConfiguration.?keyVaultResourceId!, '/')[2],
+    split(secretsExportConfiguration.?keyVaultResourceId!, '/')[4]
   )
   params: {
-    keyVaultName: last(split(secretsExportConfiguration.?keyVaultResourceId ?? '//', '/'))
+    keyVaultName: last(split(secretsExportConfiguration.?keyVaultResourceId!, '/'))
     secretsToSet: union(
       [],
       contains(secretsExportConfiguration!, 'sqlAdminPasswordSecretName')
@@ -533,6 +557,7 @@ module failover_groups 'failover-group/main.bicep' = [
     name: '${uniqueString(deployment().name, location)}-Sql-FailoverGroup-${index}'
     params: {
       name: failoverGroup.name
+      tags: failoverGroup.?tags ?? tags
       serverName: server.name
       databases: failoverGroup.databases
       partnerServers: failoverGroup.partnerServers
@@ -572,12 +597,12 @@ output exportedSecrets secretsOutputType = (secretsExportConfiguration != null)
 
 @description('The private endpoints of the SQL server.')
 output privateEndpoints privateEndpointOutputType[] = [
-  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
-    name: server_privateEndpoints[i].outputs.name
-    resourceId: server_privateEndpoints[i].outputs.resourceId
-    groupId: server_privateEndpoints[i].outputs.?groupId!
-    customDnsConfigs: server_privateEndpoints[i].outputs.customDnsConfigs
-    networkInterfaceResourceIds: server_privateEndpoints[i].outputs.networkInterfaceResourceIds
+  for (pe, index) in (privateEndpoints ?? []): {
+    name: server_privateEndpoints[index].outputs.name
+    resourceId: server_privateEndpoints[index].outputs.resourceId
+    groupId: server_privateEndpoints[index].outputs.?groupId!
+    customDnsConfigs: server_privateEndpoints[index].outputs.customDnsConfigs
+    networkInterfaceResourceIds: server_privateEndpoints[index].outputs.networkInterfaceResourceIds
   }
 ]
 
@@ -961,6 +986,9 @@ type securityAlerPolicyType = {
 type failoverGroupType = {
   @description('Required. The name of the failover group.')
   name: string
+
+  @description('Optional. Tags of the resource.')
+  tags: object?
 
   @description('Required. List of databases in the failover group.')
   databases: string[]

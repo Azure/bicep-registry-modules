@@ -56,8 +56,9 @@ param vpnServerConfigurationResourceId string?
 @description('Optional. Tags of the resource.')
 param tags object?
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
-param lock lockType
+param lock lockType?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -173,14 +174,6 @@ output location string = p2sVpnGateway.location
 // =============== //
 //   Definitions   //
 // =============== //
-
-type lockType = {
-  @description('Optional. Specify the name of lock.')
-  name: string?
-
-  @description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?
 
 @export()
 @description('Optional. A Type representing the VNET static routes for the P2S VPN Gateway.')

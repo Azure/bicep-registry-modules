@@ -52,7 +52,6 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       logAnalyticsWorkspaceResourceId: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
-      location: resourceLocation
       workloadProfiles: [
         {
           workloadProfileType: 'D4'
@@ -68,8 +67,5 @@ module testDeployment '../../../main.bicep' = [
       infrastructureSubnetId: nestedDependencies.outputs.subnetResourceId
       infrastructureResourceGroupName: 'me-${resourceGroupName}'
     }
-    dependsOn: [
-      nestedDependencies
-    ]
   }
 ]

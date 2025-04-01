@@ -53,7 +53,7 @@ module hubVirtualNetwork 'br/public:avm/res/network/virtual-network:0.5.0' = [
       ddosProtectionPlanResourceId: hub.value.?ddosProtectionPlanResourceId ?? ''
       diagnosticSettings: hub.value.?diagnosticSettings ?? []
       dnsServers: hub.value.?dnsServers ?? []
-      enableTelemetry: hub.value.?enableTelemetry ?? true
+      enableTelemetry: enableTelemetry
       flowTimeoutInMinutes: hub.value.?flowTimeoutInMinutes ?? 0
       location: hub.value.?location ?? ''
       lock: hub.value.?lock ?? {}
@@ -111,13 +111,14 @@ module hubRouteTable 'br/public:avm/res/network/route-table:0.4.0' = [
   for (hub, index) in items(hubVirtualNetworks ?? {}): {
     name: '${uniqueString(deployment().name, location)}-${hub.key}-nrt'
     params: {
-      name: hub.key
+      name: hub.value.?routeTableName ?? hub.key
       location: hub.value.?location ?? location
       disableBgpRoutePropagation: true
-      enableTelemetry: hub.value.?enableTelemetry ?? true
+      enableTelemetry: enableTelemetry
       roleAssignments: hub.value.?roleAssignments ?? []
       routes: hub.value.?routes ?? []
       tags: hub.value.?tags ?? {}
+      lock: hub.value.?lock ?? {}
     }
     dependsOn: hubVirtualNetwork
   }
@@ -144,7 +145,7 @@ module hubBastion 'br/public:avm/res/network/bastion-host:0.4.0' = [
     name: '${uniqueString(deployment().name, location)}-${hub.key}-nbh'
     params: {
       // Required parameters
-      name: hub.key
+      name: hub.value.?bastionHost.?bastionHostName ?? hub.key
       virtualNetworkResourceId: hubVirtualNetwork[index].outputs.resourceId
       // Non-required parameters
       diagnosticSettings: hub.value.?diagnosticSettings ?? []
@@ -153,11 +154,13 @@ module hubBastion 'br/public:avm/res/network/bastion-host:0.4.0' = [
       enableIpConnect: hub.value.?bastionHost.?enableIpConnect ?? false
       enableShareableLink: hub.value.?bastionHost.?enableShareableLink ?? false
       location: hub.value.?location ?? location
-      enableTelemetry: hub.value.?enableTelemetry ?? true
+      enableTelemetry: enableTelemetry
       roleAssignments: hub.value.?roleAssignments ?? []
       scaleUnits: hub.value.?bastionHost.?scaleUnits ?? 4
       skuName: hub.value.?bastionHost.?skuName ?? 'Standard'
       tags: hub.value.?tags ?? {}
+      lock: hub.value.?lock ?? {}
+      enableKerberos: hub.value.?bastionHost.?enableKerberos ?? false
     }
     dependsOn: hubVirtualNetwork
   }
@@ -170,7 +173,7 @@ module hubAzureFirewall 'br/public:avm/res/network/azure-firewall:0.5.1' = [
     name: '${uniqueString(deployment().name, location)}-${hub.key}-naf'
     params: {
       // Required parameters
-      name: hub.key
+      name: hub.value.?azureFirewallSettings.?azureFirewallName ?? hub.key
       // Conditional parameters
       hubIPAddresses: hub.value.?azureFirewallSettings.?hubIpAddresses ?? {}
       virtualHubId: hub.value.?azureFirewallSettings.?virtualHub ?? ''
@@ -180,7 +183,7 @@ module hubAzureFirewall 'br/public:avm/res/network/azure-firewall:0.5.1' = [
       applicationRuleCollections: hub.value.?azureFirewallSettings.?applicationRuleCollections ?? []
       azureSkuTier: hub.value.?azureFirewallSettings.?azureSkuTier ?? {}
       diagnosticSettings: hub.value.?diagnosticSettings ?? []
-      enableTelemetry: hub.value.?enableTelemetry ?? true
+      enableTelemetry: enableTelemetry
       firewallPolicyId: hub.value.?azureFirewallSettings.?firewallPolicyId ?? ''
       location: hub.value.?location ?? location
       lock: hub.value.?lock ?? {}
@@ -383,15 +386,18 @@ type hubVirtualNetworkType = {
       @description('Optional. Enable/Disable shareable link functionality.')
       enableShareableLink: bool?
 
+      @description('Optional. Enable/Disable Kerberos authentication.')
+      enableKerberos: bool?
+
       @description('Optional. The number of scale units for the Bastion host. Defaults to 4.')
       scaleUnits: int?
 
       @description('Optional. The SKU name of the Bastion host. Defaults to Standard.')
-      skuName: string?
-    }?
+      skuName: 'Basic' | 'Developer' | 'Premium' | 'Standard'?
 
-    @description('Optional. Enable/Disable usage telemetry for module.')
-    enableTelemetry: bool?
+      @description('Optional. The name of the bastion host.')
+      bastionHostName: string?
+    }?
 
     @description('Optional. Enable/Disable Azure Bastion for the virtual network.')
     enableBastion: bool?
@@ -429,6 +435,9 @@ type hubVirtualNetworkType = {
     @description('Optional. Routes to add to the virtual network route table.')
     routes: array?
 
+    @description('Optional. The name of the route table.')
+    routeTableName: string?
+
     @description('Optional. The subnets of the virtual network.')
     subnets: array?
 
@@ -461,6 +470,9 @@ type peeringSettingsType = {
 }[]?
 
 type azureFirewallType = {
+  @description('Optional. The name of the Azure Firewall.')
+  azureFirewallName: string?
+
   @description('Optional. Hub IP addresses.')
   hubIpAddresses: object?
 
@@ -474,13 +486,10 @@ type azureFirewallType = {
   applicationRuleCollections: array?
 
   @description('Optional. Azure Firewall SKU.')
-  azureSkuTier: string?
+  azureSkuTier: 'Basic' | 'Standard' | 'Premium'?
 
   @description('Optional. Diagnostic settings.')
   diagnosticSettings: diagnosticSettingType?
-
-  @description('Optional. Enable/Disable usage telemetry for module.')
-  enableTelemetry: bool?
 
   @description('Optional. Firewall policy ID.')
   firewallPolicyId: string?

@@ -201,7 +201,9 @@ module testDeployment '../../../main.bicep' = [
           ]
         }
       ]
-      useResourcePermissions: true
+      features: {
+        enableLogAccessUsingOnlyResourcePermissions: true
+      }
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'
@@ -211,9 +213,5 @@ module testDeployment '../../../main.bicep' = [
         systemAssigned: true
       }
     }
-    dependsOn: [
-      nestedDependencies
-      diagnosticDependencies
-    ]
   }
 ]

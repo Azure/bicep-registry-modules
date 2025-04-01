@@ -20,8 +20,13 @@ Cache for Azure Container Registry (Preview) feature allows users to cache conta
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`registryName`](#parameter-registryname) | string | The name of the parent registry. Required if the template is used in a standalone deployment. |
 | [`sourceRepository`](#parameter-sourcerepository) | string | Source repository pulled from upstream. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`registryName`](#parameter-registryname) | string | The name of the parent registry. Required if the template is used in a standalone deployment. |
 
 **Optional parameters**
 
@@ -31,16 +36,16 @@ Cache for Azure Container Registry (Preview) feature allows users to cache conta
 | [`name`](#parameter-name) | string | The name of the cache rule. Will be derived from the source repository name if not defined. |
 | [`targetRepository`](#parameter-targetrepository) | string | Target repository specified in docker pull command. E.g.: docker pull myregistry.azurecr.io/{targetRepository}:{tag}. |
 
-### Parameter: `registryName`
+### Parameter: `sourceRepository`
 
-The name of the parent registry. Required if the template is used in a standalone deployment.
+Source repository pulled from upstream.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `sourceRepository`
+### Parameter: `registryName`
 
-Source repository pulled from upstream.
+The name of the parent registry. Required if the template is used in a standalone deployment.
 
 - Required: Yes
 - Type: string

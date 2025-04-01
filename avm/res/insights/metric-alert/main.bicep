@@ -66,8 +66,9 @@ param actions array = []
 @description('Required. Maps to the \'odata.type\' field. Specifies the type of the alert criteria.')
 param criteria alertType
 
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
 param tags object?
@@ -139,15 +140,13 @@ resource metricAlert 'Microsoft.Insights/metricAlerts@2018-03-01' = {
     windowSize: windowSize
     targetResourceType: targetResourceType
     targetResourceRegion: targetResourceRegion
-    criteria: union(
-      {
-        'odata.type': criteria['odata.type']
-      },
-      (contains(criteria, 'allof') ? { allof: criteria.allof } : {}),
-      (contains(criteria, 'componentResourceId') ? { componentId: criteria.componentResourceId } : {}),
-      (contains(criteria, 'failedLocationCount') ? { failedLocationCount: criteria.failedLocationCount } : {}),
-      (contains(criteria, 'webTestResourceId') ? { webTestId: criteria.webTestResourceId } : {})
-    )
+    criteria: {
+      'odata.type': criteria['odata.type']
+      ...(contains(criteria, 'allof') ? { allof: criteria.allof } : {})
+      ...(contains(criteria, 'componentResourceId') ? { componentId: criteria.componentResourceId } : {})
+      ...(contains(criteria, 'failedLocationCount') ? { failedLocationCount: criteria.failedLocationCount } : {})
+      ...(contains(criteria, 'webTestResourceId') ? { webTestId: criteria.webTestResourceId } : {})
+    }
     autoMitigate: autoMitigate
     actions: actionGroups
   }
@@ -180,49 +179,44 @@ output resourceId string = metricAlert.id
 
 @description('The location the resource was deployed into.')
 output location string = metricAlert.location
+
 // =============== //
 //   Definitions   //
 // =============== //
 
-type roleAssignmentType = {
-  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
-  name: string?
-
-  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
-
-  @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
-
-  @description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
-
-  @description('Optional. The description of the role assignment.')
-  description: string?
-
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
-
-  @description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
-
-  @description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?
-
+@export()
 @discriminator('odata.type')
 type alertType = alertWebtestType | alertResourceType | alertMultiResourceType
+
+@description('The alert type for a single resource scenario.')
 type alertResourceType = {
+  @description('Required. The type of the alert criteria.')
   'odata.type': 'Microsoft.Azure.Monitor.SingleResourceMultipleMetricCriteria'
-  allof: array
+
+  @description('Required. The list of metric criteria for this \'all of\' operation.')
+  allof: object[]
 }
+
+@description('The alert type for multiple resources scenario.')
 type alertMultiResourceType = {
+  @description('Required. The type of the alert criteria.')
   'odata.type': 'Microsoft.Azure.Monitor.MultipleResourceMultipleMetricCriteria'
-  allof: array
+
+  @description('Required. The list of multiple metric criteria for this \'all of\' operation.')
+  allof: object[]
 }
+
+@description('The alert type for a web test scenario.')
 type alertWebtestType = {
+  @description('Required. The type of the alert criteria.')
   'odata.type': 'Microsoft.Azure.Monitor.WebtestLocationAvailabilityCriteria'
+
+  @description('Required. The Application Insights resource ID.')
   componentResourceId: string
+
+  @description('Required. The number of failed locations.')
   failedLocationCount: int
+
+  @description('Required. The Application Insights web test resource ID.')
   webTestResourceId: string
 }

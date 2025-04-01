@@ -8,7 +8,6 @@ This module deploys an Elastic SAN Volume Group.
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
-- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -41,7 +40,6 @@ This module deploys an Elastic SAN Volume Group.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. This parameter enables the encryption of Elastic SAN Volume Group using a customer-managed key. Currently, the only supported configuration is to use the same user-assigned identity for both 'managedIdentities.userAssignedResourceIds' and 'customerManagedKey.userAssignedIdentityResourceId'. Other configurations such as system-assigned identity are not supported. Ensure that the specified user-assigned identity has the 'Key Vault Crypto Service Encryption User' role access to both the key vault and the key itself. The key vault must also have purge protection enabled. |
-| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. The Elastic SAN Volume Group supports the following identity combinations: no identity is specified, only system-assigned identity is specified, only user-assigned identity is specified, and both system-assigned and user-assigned identities are specified. A maximum of one user-assigned identity is supported. |
@@ -112,14 +110,6 @@ User assigned identity to use when fetching the customer managed key. Required i
 
 - Required: No
 - Type: string
-
-### Parameter: `enableTelemetry`
-
-Enable/Disable usage telemetry for module.
-
-- Required: No
-- Type: bool
-- Default: `True`
 
 ### Parameter: `location`
 
@@ -222,7 +212,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 | [`name`](#parameter-privateendpointsname) | string | The name of the Private Endpoint. |
 | [`privateDnsZoneGroup`](#parameter-privateendpointsprivatednszonegroup) | object | The private DNS Zone Group to configure for the Private Endpoint. |
 | [`privateLinkServiceConnectionName`](#parameter-privateendpointsprivatelinkserviceconnectionname) | string | The name of the private link connection to create. |
-| [`resourceGroupName`](#parameter-privateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different Resource Group than the main resource. |
+| [`resourceGroupResourceId`](#parameter-privateendpointsresourcegroupresourceid) | string | The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
 | [`service`](#parameter-privateendpointsservice) | string | The subresource to deploy the Private Endpoint for. For example "vault" for a Key Vault Private Endpoint. |
 | [`tags`](#parameter-privateendpointstags) | object | Tags to be applied on all resources/Resource Groups in this deployment. |
@@ -475,9 +465,9 @@ The name of the private link connection to create.
 - Required: No
 - Type: string
 
-### Parameter: `privateEndpoints.resourceGroupName`
+### Parameter: `privateEndpoints.resourceGroupResourceId`
 
-Specify if you want to deploy the Private Endpoint into a different Resource Group than the main resource.
+The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used.
 
 - Required: No
 - Type: string
@@ -662,8 +652,6 @@ List of Elastic SAN Volume Snapshots to be created in the Elastic SAN Volume.
 
 - Required: No
 - Type: array
-- MinValue: 1
-- MaxValue: 65536
 
 **Required parameters**
 
@@ -677,8 +665,6 @@ The name of the Elastic SAN Volume Snapshot. The name can only contain lowercase
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 65536
 
 ## Outputs
 
@@ -698,9 +684,5 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.9.0` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.3.0` | Remote reference |
-
-## Data Collection
-
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+| `br/public:avm/res/network/private-endpoint:0.10.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
