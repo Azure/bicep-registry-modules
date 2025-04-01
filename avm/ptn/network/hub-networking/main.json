@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "10817443316191820673"
+      "version": "0.33.13.18514",
+      "templateHash": "17496676315853900773"
     },
     "name": "Hub Networking",
-    "description": "This module is designed to simplify the creation of multi-region hub networks in Azure. It will create a number of virtual networks and subnets, and optionally peer them together in a mesh topology with routing.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module is designed to simplify the creation of multi-region hub networks in Azure. It will create a number of virtual networks and subnets, and optionally peer them together in a mesh topology with routing."
   },
   "definitions": {
     "lockType": {
@@ -281,6 +280,13 @@
                   "description": "Optional. Enable/Disable shareable link functionality."
                 }
               },
+              "enableKerberos": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Enable/Disable Kerberos authentication."
+                }
+              },
               "scaleUnits": {
                 "type": "int",
                 "nullable": true,
@@ -290,22 +296,28 @@
               },
               "skuName": {
                 "type": "string",
+                "allowedValues": [
+                  "Basic",
+                  "Developer",
+                  "Premium",
+                  "Standard"
+                ],
                 "nullable": true,
                 "metadata": {
                   "description": "Optional. The SKU name of the Bastion host. Defaults to Standard."
+                }
+              },
+              "bastionHostName": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The name of the bastion host."
                 }
               }
             },
             "nullable": true,
             "metadata": {
               "description": "Optional. The Azure Bastion config."
-            }
-          },
-          "enableTelemetry": {
-            "type": "bool",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Enable/Disable usage telemetry for module."
             }
           },
           "enableBastion": {
@@ -392,6 +404,13 @@
               "description": "Optional. Routes to add to the virtual network route table."
             }
           },
+          "routeTableName": {
+            "type": "string",
+            "nullable": true,
+            "metadata": {
+              "description": "Optional. The name of the route table."
+            }
+          },
           "subnets": {
             "type": "array",
             "nullable": true,
@@ -474,6 +493,13 @@
     "azureFirewallType": {
       "type": "object",
       "properties": {
+        "azureFirewallName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the Azure Firewall."
+          }
+        },
         "hubIpAddresses": {
           "type": "object",
           "nullable": true,
@@ -504,6 +530,11 @@
         },
         "azureSkuTier": {
           "type": "string",
+          "allowedValues": [
+            "Basic",
+            "Premium",
+            "Standard"
+          ],
           "nullable": true,
           "metadata": {
             "description": "Optional. Azure Firewall SKU."
@@ -514,13 +545,6 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. Diagnostic settings."
-          }
-        },
-        "enableTelemetry": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Enable/Disable usage telemetry for module."
           }
         },
         "firewallPolicyId": {
@@ -703,8 +727,6 @@
       },
       "dependsOn": [
         "hubVirtualNetwork",
-        "[format('hubVirtualNetworkPeer_local[{0}]', copyIndex())]",
-        "[format('hubVirtualNetworkPeer_local[{0}]', copyIndex())]",
         "[format('hubVirtualNetworkPeer_remote[{0}]', copyIndex())]"
       ]
     },
@@ -723,8 +745,6 @@
       },
       "dependsOn": [
         "[format('hubAzureFirewall[{0}]', copyIndex())]",
-        "[format('hubVirtualNetworkPeer_local[{0}]', copyIndex())]",
-        "[format('hubVirtualNetworkPeer_local[{0}]', copyIndex())]",
         "[format('hubVirtualNetworkPeer_remote[{0}]', copyIndex())]",
         "hubVirtualNetworkPeering"
       ]
@@ -759,7 +779,7 @@
             "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'dnsServers'), createArray())]"
           },
           "enableTelemetry": {
-            "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'enableTelemetry'), true())]"
+            "value": "[parameters('enableTelemetry')]"
           },
           "flowTimeoutInMinutes": {
             "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'flowTimeoutInMinutes'), 0)]"
@@ -2345,12 +2365,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "5407453106862679302"
+              "version": "0.33.13.18514",
+              "templateHash": "12612748349298357066"
             },
             "name": "Virtual Networks",
-            "description": "This module deploys a Virtual Network.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Virtual Network."
           },
           "parameters": {
             "name": {
@@ -2412,7 +2431,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key]"
+            "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'routeTableName'), items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key)]"
           },
           "location": {
             "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'location'), parameters('location'))]"
@@ -2421,7 +2440,7 @@
             "value": true
           },
           "enableTelemetry": {
-            "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'enableTelemetry'), true())]"
+            "value": "[parameters('enableTelemetry')]"
           },
           "roleAssignments": {
             "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'roleAssignments'), createArray())]"
@@ -2431,6 +2450,9 @@
           },
           "tags": {
             "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'tags'), createObject())]"
+          },
+          "lock": {
+            "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'lock'), createObject())]"
           }
         },
         "template": {
@@ -2796,7 +2818,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key]"
+            "value": "[coalesce(tryGet(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'bastionHost'), 'bastionHostName'), items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key)]"
           },
           "virtualNetworkResourceId": {
             "value": "[reference(format('hubVirtualNetwork[{0}]', copyIndex())).outputs.resourceId.value]"
@@ -2820,7 +2842,7 @@
             "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'location'), parameters('location'))]"
           },
           "enableTelemetry": {
-            "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'enableTelemetry'), true())]"
+            "value": "[parameters('enableTelemetry')]"
           },
           "roleAssignments": {
             "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'roleAssignments'), createArray())]"
@@ -2833,6 +2855,12 @@
           },
           "tags": {
             "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'tags'), createObject())]"
+          },
+          "lock": {
+            "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'lock'), createObject())]"
+          },
+          "enableKerberos": {
+            "value": "[coalesce(tryGet(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'bastionHost'), 'enableKerberos'), false())]"
           }
         },
         "template": {
@@ -4016,7 +4044,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key]"
+            "value": "[coalesce(tryGet(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'azureFirewallSettings'), 'azureFirewallName'), items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].key)]"
           },
           "hubIPAddresses": {
             "value": "[coalesce(tryGet(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'azureFirewallSettings'), 'hubIpAddresses'), createObject())]"
@@ -4040,7 +4068,7 @@
             "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'diagnosticSettings'), createArray())]"
           },
           "enableTelemetry": {
-            "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'enableTelemetry'), true())]"
+            "value": "[parameters('enableTelemetry')]"
           },
           "firewallPolicyId": {
             "value": "[coalesce(tryGet(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'azureFirewallSettings'), 'firewallPolicyId'), '')]"
@@ -6473,12 +6501,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "16076301727176806098"
+              "version": "0.33.13.18514",
+              "templateHash": "6387445984480361380"
             },
             "name": "Existing Virtual Network Subnets",
-            "description": "This module retrieves an existing Virtual Network Subnet.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module retrieves an existing Virtual Network Subnet."
           },
           "parameters": {
             "subnetName": {
@@ -6556,12 +6583,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "3114934486774261221"
+              "version": "0.33.13.18514",
+              "templateHash": "16777522152108792567"
             },
             "name": "Virtual Network Subnets",
-            "description": "This module deploys a Virtual Network Subnet.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Virtual Network Subnet."
           },
           "definitions": {
             "roleAssignmentType": {
@@ -6792,10 +6818,7 @@
                 "applicationGatewayIPConfigurations": "[parameters('applicationGatewayIPConfigurations')]",
                 "ipAllocations": "[parameters('ipAllocations')]",
                 "serviceEndpointPolicies": "[parameters('serviceEndpointPolicies')]"
-              },
-              "dependsOn": [
-                "virtualNetwork"
-              ]
+              }
             },
             "subnet_roleAssignments": {
               "copy": {
@@ -6909,7 +6932,7 @@
       },
       "copy": {
         "count": "[length(items(coalesce(parameters('hubVirtualNetworks'), createObject())))]",
-        "input": "[if(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.enableAzureFirewall, createObject('resourceGroupName', reference(format('hubAzureFirewall[{0}]', copyIndex())).outputs.resourceGroupName.value, 'location', reference(format('hubAzureFirewall[{0}]', copyIndex())).outputs.location.value, 'name', reference(format('hubAzureFirewall[{0}]', copyIndex())).outputs.name.value, 'resourceId', reference(format('hubAzureFirewall[{0}]', copyIndex())).outputs.resourceId.value), createObject())]"
+        "input": "[if(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value.enableAzureFirewall, createObject('resourceGroupName', reference(format('hubAzureFirewall[{0}]', copyIndex())).outputs.resourceGroupName.value, 'location', reference(format('hubAzureFirewall[{0}]', copyIndex())).outputs.location.value, 'name', reference(format('hubAzureFirewall[{0}]', copyIndex())).outputs.name.value, 'resourceId', reference(format('hubAzureFirewall[{0}]', copyIndex())).outputs.resourceId.value, 'privateIp', reference(format('hubAzureFirewall[{0}]', copyIndex())).outputs.privateIp.value), createObject())]"
       }
     },
     "hubVirtualNetworkSubnets": {

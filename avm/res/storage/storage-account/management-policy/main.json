@@ -4,12 +4,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "16749766572958481061"
+      "version": "0.34.44.8038",
+      "templateHash": "209875127846907847"
     },
     "name": "Storage Account Management Policies",
-    "description": "This module deploys a Storage Account Management Policy.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Storage Account Management Policy."
   },
   "parameters": {
     "storageAccountName": {

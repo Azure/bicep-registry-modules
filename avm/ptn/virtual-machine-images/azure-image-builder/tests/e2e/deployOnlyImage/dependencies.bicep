@@ -236,7 +236,7 @@ module storageAccount_upload 'br/public:avm/res/resources/deployment-script:0.4.
         )
       ]
     }
-    scriptContent: loadTextContent('../../../../../../utilities/e2e-template-assets/scripts/Set-StorageContainerContentByEnvVar.ps1')
+    scriptContent: loadTextContent('../../../../../../../utilities/e2e-template-assets/scripts/Set-StorageContainerContentByEnvVar.ps1')
     environmentVariables: [
       {
         name: '__SCRIPT__${replace(replace(exampleScriptName, '-', '__'), '.', '_') }' // May only be alphanumeric characters & underscores. The upload will replace '_' with '.' and '__' with '-'. E.g., Install__LinuxPowerShell_sh will be Install-LinuxPowerShell.sh

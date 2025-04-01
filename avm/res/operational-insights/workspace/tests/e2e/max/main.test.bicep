@@ -44,7 +44,7 @@ module nestedDependencies 'dependencies.bicep' = {
 
 // Diagnostics
 // ===========
-module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
   params: {
@@ -173,6 +173,12 @@ module testDeployment '../../../main.bicep' = [
           workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
         }
       ]
+      features: {
+        enableLogAccessUsingOnlyResourcePermissions: true
+        disableLocalAuth: true
+        enableDataExport: true
+        immediatePurgeDataOn30Days: true
+      }
       gallerySolutions: [
         {
           name: 'AzureAutomation(${namePrefix}${serviceShort}001)'
@@ -338,7 +344,6 @@ module testDeployment '../../../main.bicep' = [
           ]
         }
       ]
-      useResourcePermissions: true
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'
@@ -370,9 +375,5 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
     }
-    dependsOn: [
-      nestedDependencies
-      diagnosticDependencies
-    ]
   }
 ]

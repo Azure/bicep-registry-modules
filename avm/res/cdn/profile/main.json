@@ -5,163 +5,41 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "14510673865187152138"
+      "version": "0.34.1.11899",
+      "templateHash": "17701152838473898328"
     },
     "name": "CDN Profiles",
-    "description": "This module deploys a CDN Profile.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a CDN Profile."
   },
   "definitions": {
-    "managedIdentitiesType": {
+    "securityPolicyType": {
       "type": "object",
       "properties": {
-        "systemAssigned": {
-          "type": "bool",
-          "nullable": true,
+        "name": {
+          "type": "string",
           "metadata": {
-            "description": "Optional. Enables system assigned managed identity on the resource."
+            "description": "Required. Name of the security policy."
           }
         },
-        "userAssignedResourceIds": {
+        "associations": {
           "type": "array",
           "items": {
-            "type": "string"
+            "$ref": "#/definitions/associationsType"
           },
-          "nullable": true,
           "metadata": {
-            "description": "Optional. The resource ID(s) to assign to the resource."
+            "description": "Required. Domain names and URL patterns to match with this association."
           }
-        }
-      },
-      "nullable": true
-    },
-    "securityPolicyType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. Name of the security policy."
-            }
-          },
-          "associations": {
-            "$ref": "#/definitions/associationsType",
-            "metadata": {
-              "description": "Required. Domain names and URL patterns to match with this association."
-            }
-          },
-          "wafPolicyResourceId": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. Resource ID of WAF policy."
-            }
+        },
+        "wafPolicyResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Resource ID of WAF policy."
           }
         }
       },
       "metadata": {
         "__bicep_export!": true
       }
-    },
-    "lockType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Specify the name of lock."
-          }
-        },
-        "kind": {
-          "type": "string",
-          "allowedValues": [
-            "CanNotDelete",
-            "None",
-            "ReadOnly"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Specify the type of lock."
-          }
-        }
-      },
-      "nullable": true
-    },
-    "roleAssignmentType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
-            }
-          },
-          "roleDefinitionIdOrName": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-            }
-          },
-          "principalId": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-            }
-          },
-          "principalType": {
-            "type": "string",
-            "allowedValues": [
-              "Device",
-              "ForeignGroup",
-              "Group",
-              "ServicePrincipal",
-              "User"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The principal type of the assigned principal ID."
-            }
-          },
-          "description": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The description of the role assignment."
-            }
-          },
-          "condition": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-            }
-          },
-          "conditionVersion": {
-            "type": "string",
-            "allowedValues": [
-              "2.0"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Version of the condition."
-            }
-          },
-          "delegatedManagedIdentityResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The Resource Id of the delegated managed identity resource."
-            }
-          }
-        }
-      },
-      "nullable": true
     },
     "_1.afdRoutecacheConfigurationType": {
       "type": "object",
@@ -178,7 +56,7 @@
                 "description": "Required. List of content types on which compression applies. The value should be a valid MIME type."
               }
             },
-            "iscontentTypeToCompressAll": {
+            "isCompressionEnabled": {
               "type": "bool",
               "nullable": true,
               "metadata": {
@@ -210,6 +88,7 @@
         }
       },
       "metadata": {
+        "description": "The type of the route cache configuration.",
         "__bicep_imported_from!": {
           "sourceTemplate": "afdEndpoint/route/main.bicep"
         }
@@ -325,6 +204,7 @@
         }
       },
       "metadata": {
+        "description": "The type of the route.",
         "__bicep_imported_from!": {
           "sourceTemplate": "afdEndpoint/route/main.bicep"
         }
@@ -373,6 +253,7 @@
         }
       },
       "metadata": {
+        "description": "The type of the health probe settings.",
         "__bicep_imported_from!": {
           "sourceTemplate": "origingroup/main.bicep"
         }
@@ -401,90 +282,9 @@
         }
       },
       "metadata": {
+        "description": "The type of the load balancing settings.",
         "__bicep_imported_from!": {
           "sourceTemplate": "origingroup/main.bicep"
-        }
-      }
-    },
-    "_3.originType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The name of the origion."
-          }
-        },
-        "hostName": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The address of the origin. Domain names, IPv4 addresses, and IPv6 addresses are supported.This should be unique across all origins in an endpoint."
-          }
-        },
-        "enabledState": {
-          "type": "string",
-          "allowedValues": [
-            "Disabled",
-            "Enabled"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Whether to enable health probes to be made against backends defined under backendPools. Health probes can only be disabled if there is a single enabled backend in single enabled backend pool."
-          }
-        },
-        "enforceCertificateNameCheck": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Whether to enable certificate name check at origin level."
-          }
-        },
-        "httpPort": {
-          "type": "int",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The value of the HTTP port. Must be between 1 and 65535."
-          }
-        },
-        "httpsPort": {
-          "type": "int",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The value of the HTTPS port. Must be between 1 and 65535."
-          }
-        },
-        "originHostHeader": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The host header value sent to the origin with each request. If you leave this blank, the request hostname determines this value. Azure Front Door origins, such as Web Apps, Blob Storage, and Cloud Services require this host header value to match the origin hostname by default. This overrides the host header defined at Endpoint."
-          }
-        },
-        "priority": {
-          "type": "int",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Priority of origin in given origin group for load balancing. Higher priorities will not be used for load balancing if any lower priority origin is healthy.Must be between 1 and 5."
-          }
-        },
-        "weight": {
-          "type": "int",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Weight of the origin in given origin group for load balancing. Must be between 1 and 1000."
-          }
-        },
-        "sharedPrivateLinkResource": {
-          "type": "object",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The properties of the private link resource for private origin."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_imported_from!": {
-          "sourceTemplate": "origingroup/origin/main.bicep"
         }
       }
     },
@@ -540,45 +340,44 @@
         }
       },
       "metadata": {
+        "description": "The type of the AFD Endpoint.",
         "__bicep_imported_from!": {
           "sourceTemplate": "afdEndpoint/main.bicep"
         }
       }
     },
     "associationsType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "domains": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. ResourceID to domain that will be associated."
-                  }
+      "type": "object",
+      "properties": {
+        "domains": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. ResourceID to domain that will be associated."
                 }
               }
-            },
-            "metadata": {
-              "description": "Required. List of domain resource id to associate with this resource."
             }
           },
-          "patternsToMatch": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "metadata": {
-              "description": "Required. List of patterns to match with this association."
-            }
+          "metadata": {
+            "description": "Required. List of domain resource id to associate with this resource."
+          }
+        },
+        "patternsToMatch": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "Required. List of patterns to match with this association."
           }
         }
       },
       "metadata": {
+        "description": "The type of the associations.",
         "__bicep_imported_from!": {
           "sourceTemplate": "securityPolicies/main.bicep"
         }
@@ -651,8 +450,221 @@
         }
       },
       "metadata": {
+        "description": "The type of the custom domain.",
         "__bicep_imported_from!": {
           "sourceTemplate": "customdomain/main.bicep"
+        }
+      }
+    },
+    "diagnosticSettingFullType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the diagnostic setting."
+          }
+        },
+        "logCategoriesAndGroups": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "category": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
+                }
+              },
+              "categoryGroup": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
+                }
+              },
+              "enabled": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
+          }
+        },
+        "metricCategories": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "category": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
+                }
+              },
+              "enabled": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
+          }
+        },
+        "logAnalyticsDestinationType": {
+          "type": "string",
+          "allowedValues": [
+            "AzureDiagnostics",
+            "Dedicated"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
+          }
+        },
+        "workspaceResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "storageAccountResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "eventHubAuthorizationRuleResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
+          }
+        },
+        "eventHubName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "marketplacePartnerResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    },
+    "dnsValidationOutputType": {
+      "type": "object",
+      "properties": {
+        "dnsTxtRecordName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "The DNS record name."
+          }
+        },
+        "dnsTxtRecordValue": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "The DNS record value."
+          }
+        },
+        "dnsTxtRecordExpiry": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "The expiry date of the DNS record."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type of the DNS validation.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "customdomain/main.bicep"
+        }
+      }
+    },
+    "lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    },
+    "managedIdentityAllType": {
+      "type": "object",
+      "properties": {
+        "systemAssigned": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enables system assigned managed identity on the resource."
+          }
+        },
+        "userAssignedResourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     },
@@ -699,7 +711,7 @@
         "origins": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/_3.originType"
+            "$ref": "#/definitions/originType"
           },
           "metadata": {
             "description": "Required. The list of origins within the origin group."
@@ -707,6 +719,7 @@
         }
       },
       "metadata": {
+        "description": "The type of the origin group.",
         "__bicep_imported_from!": {
           "sourceTemplate": "origingroup/main.bicep"
         }
@@ -789,8 +802,84 @@
         }
       },
       "metadata": {
+        "description": "The name of the origin type.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "origingroup//origin/main.bicep"
+          "sourceTemplate": "origingroup/origin/main.bicep"
+        }
+      }
+    },
+    "roleAssignmentType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+          }
+        },
+        "roleDefinitionIdOrName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+          }
+        },
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+          }
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "Device",
+            "ForeignGroup",
+            "Group",
+            "ServicePrincipal",
+            "User"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The principal type of the assigned principal ID."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The description of the role assignment."
+          }
+        },
+        "condition": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+          }
+        },
+        "conditionVersion": {
+          "type": "string",
+          "allowedValues": [
+            "2.0"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Version of the condition."
+          }
+        },
+        "delegatedManagedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Resource Id of the delegated managed identity resource."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a role assignment.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     },
@@ -815,6 +904,7 @@
         }
       },
       "metadata": {
+        "description": "The type of the rule set.",
         "__bicep_imported_from!": {
           "sourceTemplate": "ruleset/main.bicep"
         }
@@ -862,6 +952,7 @@
         }
       },
       "metadata": {
+        "description": "The type of the rule.",
         "__bicep_imported_from!": {
           "sourceTemplate": "ruleset/rule/main.bicep"
         }
@@ -885,9 +976,7 @@
     "sku": {
       "type": "string",
       "allowedValues": [
-        "Custom_Verizon",
         "Premium_AzureFrontDoor",
-        "Premium_Verizon",
         "StandardPlus_955BandWidth_ChinaCdn",
         "StandardPlus_AvgBandWidth_ChinaCdn",
         "StandardPlus_ChinaCdn",
@@ -895,8 +984,7 @@
         "Standard_AvgBandWidth_ChinaCdn",
         "Standard_AzureFrontDoor",
         "Standard_ChinaCdn",
-        "Standard_Microsoft",
-        "Standard_Verizon"
+        "Standard_Microsoft"
       ],
       "metadata": {
         "description": "Required. The pricing tier (defines a CDN provider, feature list and rate) of the CDN profile."
@@ -971,7 +1059,10 @@
       }
     },
     "securityPolicies": {
-      "$ref": "#/definitions/securityPolicyType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/securityPolicyType"
+      },
       "defaultValue": [],
       "metadata": {
         "description": "Optional. Array of Security Policy objects (see https://learn.microsoft.com/en-us/azure/templates/microsoft.cdn/profiles/securitypolicies for details)."
@@ -985,19 +1076,25 @@
       }
     },
     "managedIdentities": {
-      "$ref": "#/definitions/managedIdentitiesType",
+      "$ref": "#/definitions/managedIdentityAllType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The managed identity definition for this resource."
       }
     },
     "lock": {
       "$ref": "#/definitions/lockType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The lock settings of the service."
       }
     },
     "roleAssignments": {
-      "$ref": "#/definitions/roleAssignmentType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/roleAssignmentType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Array of role assignments to create."
       }
@@ -1007,6 +1104,16 @@
       "defaultValue": true,
       "metadata": {
         "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    },
+    "diagnosticSettings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/diagnosticSettingFullType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The diagnostic settings of the service."
       }
     }
   },
@@ -1103,6 +1210,47 @@
         "profile"
       ]
     },
+    "profile_diagnosticSettings": {
+      "copy": {
+        "name": "profile_diagnosticSettings",
+        "count": "[length(coalesce(parameters('diagnosticSettings'), createArray()))]"
+      },
+      "type": "Microsoft.Insights/diagnosticSettings",
+      "apiVersion": "2021-05-01-preview",
+      "scope": "[format('Microsoft.Cdn/profiles/{0}', parameters('name'))]",
+      "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
+      "properties": {
+        "copy": [
+          {
+            "name": "metrics",
+            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics'))))]",
+            "input": {
+              "category": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')].category]",
+              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')], 'enabled'), true())]",
+              "timeGrain": null
+            }
+          },
+          {
+            "name": "logs",
+            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs'))))]",
+            "input": {
+              "categoryGroup": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'categoryGroup')]",
+              "category": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'category')]",
+              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'enabled'), true())]"
+            }
+          }
+        ],
+        "storageAccountId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'storageAccountResourceId')]",
+        "workspaceId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'workspaceResourceId')]",
+        "eventHubAuthorizationRuleId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubAuthorizationRuleResourceId')]",
+        "eventHubName": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubName')]",
+        "marketplacePartnerId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'marketplacePartnerResourceId')]",
+        "logAnalyticsDestinationType": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logAnalyticsDestinationType')]"
+      },
+      "dependsOn": [
+        "profile"
+      ]
+    },
     "profile_endpoint": {
       "condition": "[not(empty(parameters('endpointProperties')))]",
       "type": "Microsoft.Resources/deployments",
@@ -1134,12 +1282,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "10963194836019535201"
+              "version": "0.34.1.11899",
+              "templateHash": "6664761063089970451"
             },
             "name": "CDN Profiles Endpoints",
-            "description": "This module deploys a CDN Profile Endpoint.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a CDN Profile Endpoint."
           },
           "parameters": {
             "profileName": {
@@ -1188,10 +1335,7 @@
               "name": "[format('{0}/{1}', parameters('profileName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "properties": "[parameters('properties')]",
-              "tags": "[parameters('tags')]",
-              "dependsOn": [
-                "profile"
-              ]
+              "tags": "[parameters('tags')]"
             },
             "endpoint_origins": {
               "copy": {
@@ -1254,12 +1398,11 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.31.92.45157",
-                      "templateHash": "11497360667926217808"
+                      "version": "0.34.1.11899",
+                      "templateHash": "16716362285142179248"
                     },
                     "name": "CDN Profiles Endpoints Origins",
-                    "description": "This module deploys a CDN Profile Endpoint Origin.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a CDN Profile Endpoint Origin."
                   },
                   "parameters": {
                     "endpointName": {
@@ -1362,19 +1505,13 @@
                       "existing": true,
                       "type": "Microsoft.Cdn/profiles/endpoints",
                       "apiVersion": "2021-06-01",
-                      "name": "[format('{0}/{1}', parameters('profileName'), parameters('endpointName'))]",
-                      "dependsOn": [
-                        "profile"
-                      ]
+                      "name": "[format('{0}/{1}', parameters('profileName'), parameters('endpointName'))]"
                     },
                     "origin": {
                       "type": "Microsoft.Cdn/profiles/endpoints/origins",
                       "apiVersion": "2021-06-01",
                       "name": "[format('{0}/{1}/{2}', parameters('profileName'), parameters('endpointName'), parameters('name'))]",
-                      "properties": "[union(createObject('hostName', parameters('hostName'), 'httpPort', parameters('httpPort'), 'enabled', parameters('enabled'), 'httpsPort', parameters('httpsPort')), if(or(greater(parameters('priority'), 0), greater(parameters('weight'), 0)), createObject('priority', parameters('priority'), 'weight', parameters('weight')), createObject()), if(and(not(empty(parameters('privateLinkAlias'))), not(empty(parameters('privateLinkLocation')))), createObject('privateLinkAlias', parameters('privateLinkAlias'), 'privateLinkLocation', parameters('privateLinkLocation')), createObject()), if(not(empty(parameters('privateLinkResourceId'))), createObject('privateLinkResourceId', parameters('privateLinkResourceId')), createObject()), if(not(empty(parameters('originHostHeader'))), createObject('originHostHeader', parameters('originHostHeader')), createObject()))]",
-                      "dependsOn": [
-                        "endpoint"
-                      ]
+                      "properties": "[union(createObject('hostName', parameters('hostName'), 'httpPort', parameters('httpPort'), 'enabled', parameters('enabled'), 'httpsPort', parameters('httpsPort')), if(or(greater(parameters('priority'), 0), greater(parameters('weight'), 0)), createObject('priority', parameters('priority'), 'weight', parameters('weight')), createObject()), if(and(not(empty(parameters('privateLinkAlias'))), not(empty(parameters('privateLinkLocation')))), createObject('privateLinkAlias', parameters('privateLinkAlias'), 'privateLinkLocation', parameters('privateLinkLocation')), createObject()), if(not(empty(parameters('privateLinkResourceId'))), createObject('privateLinkResourceId', parameters('privateLinkResourceId')), createObject()), if(not(empty(parameters('originHostHeader'))), createObject('originHostHeader', parameters('originHostHeader')), createObject()))]"
                     }
                   },
                   "outputs": {
@@ -1410,8 +1547,7 @@
                 }
               },
               "dependsOn": [
-                "endpoint",
-                "profile"
+                "endpoint"
               ]
             }
           },
@@ -1507,18 +1643,17 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "4792421994565335139"
+              "version": "0.34.1.11899",
+              "templateHash": "5888833893722348732"
             },
             "name": "CDN Profiles Secret",
-            "description": "This module deploys a CDN Profile Secret.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a CDN Profile Secret."
           },
           "parameters": {
             "name": {
               "type": "string",
               "metadata": {
-                "description": "Required. The name of the secrect."
+                "description": "Required. The name of the secret."
               }
             },
             "profileName": {
@@ -1537,7 +1672,7 @@
                 "UrlSigningKey"
               ],
               "metadata": {
-                "description": "Optional. The type of the secrect."
+                "description": "Optional. The type of the secret."
               }
             },
             "secretSourceResourceId": {
@@ -1558,14 +1693,14 @@
               "type": "array",
               "defaultValue": [],
               "metadata": {
-                "description": "Optional. The subject alternative names of the secrect."
+                "description": "Optional. The subject alternative names of the secret."
               }
             },
             "useLatestVersion": {
               "type": "bool",
               "defaultValue": false,
               "metadata": {
-                "description": "Optional. Indicates whether to use the latest version of the secrect."
+                "description": "Optional. Indicates whether to use the latest version of the secret."
               }
             }
           },
@@ -1583,14 +1718,14 @@
             "name": {
               "type": "string",
               "metadata": {
-                "description": "The name of the secrect."
+                "description": "The name of the secret."
               },
               "value": "[parameters('name')]"
             },
             "resourceId": {
               "type": "string",
               "metadata": {
-                "description": "The resource ID of the secrect."
+                "description": "The resource ID of the secret."
               },
               "value": "[resourceId('Microsoft.Cdn/profiles/secrets', parameters('profileName'), parameters('name'))]"
             },
@@ -1657,12 +1792,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "420872064438039619"
+              "version": "0.34.1.11899",
+              "templateHash": "16176516087789568863"
             },
             "name": "CDN Profiles Custom Domains",
-            "description": "This module deploys a CDN Profile Custom Domains.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a CDN Profile Custom Domains."
           },
           "definitions": {
             "customDomainType": {
@@ -1732,7 +1866,38 @@
                 }
               },
               "metadata": {
-                "__bicep_export!": true
+                "__bicep_export!": true,
+                "description": "The type of the custom domain."
+              }
+            },
+            "dnsValidationOutputType": {
+              "type": "object",
+              "properties": {
+                "dnsTxtRecordName": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "The DNS record name."
+                  }
+                },
+                "dnsTxtRecordValue": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "The DNS record value."
+                  }
+                },
+                "dnsTxtRecordExpiry": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "The expiry date of the DNS record."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type of the DNS validation."
               }
             }
           },
@@ -1807,15 +1972,12 @@
             }
           },
           "resources": {
-            "profile::secrect": {
+            "profile::secret": {
               "condition": "[not(empty(parameters('secretName')))]",
               "existing": true,
               "type": "Microsoft.Cdn/profiles/secrets",
               "apiVersion": "2023-05-01",
-              "name": "[format('{0}/{1}', parameters('profileName'), parameters('secretName'))]",
-              "dependsOn": [
-                "profile"
-              ]
+              "name": "[format('{0}/{1}', parameters('profileName'), parameters('secretName'))]"
             },
             "profile": {
               "existing": true,
@@ -1837,10 +1999,7 @@
                   "minimumTlsVersion": "[parameters('minimumTlsVersion')]",
                   "secret": "[if(not(empty(parameters('secretName'))), createObject('id', resourceId('Microsoft.Cdn/profiles/secrets', parameters('profileName'), parameters('secretName'))), null())]"
                 }
-              },
-              "dependsOn": [
-                "profile"
-              ]
+              }
             }
           },
           "outputs": {
@@ -1864,6 +2023,17 @@
                 "description": "The name of the resource group the custom domain was created in."
               },
               "value": "[resourceGroup().name]"
+            },
+            "dnsValidation": {
+              "$ref": "#/definitions/dnsValidationOutputType",
+              "metadata": {
+                "description": "The DNS validation records."
+              },
+              "value": {
+                "dnsTxtRecordName": "[format('_dnsauth.{0}', reference('customDomain').hostName)]",
+                "dnsTxtRecordValue": "[reference('customDomain').validationProperties.validationToken]",
+                "dnsTxtRecordExpiry": "[reference('customDomain').validationProperties.expirationDate]"
+              }
             }
           }
         }
@@ -1916,12 +2086,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "13972056376134412662"
+              "version": "0.34.1.11899",
+              "templateHash": "14114649402369146252"
             },
             "name": "CDN Profiles Origin Group",
-            "description": "This module deploys a CDN Profile Origin Group.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a CDN Profile Origin Group."
           },
           "definitions": {
             "originGroupType": {
@@ -1975,7 +2144,8 @@
                 }
               },
               "metadata": {
-                "__bicep_export!": true
+                "__bicep_export!": true,
+                "description": "The type of the origin group."
               }
             },
             "loadBalancingSettingsType": {
@@ -2001,7 +2171,8 @@
                 }
               },
               "metadata": {
-                "__bicep_export!": true
+                "__bicep_export!": true,
+                "description": "The type of the load balancing settings."
               }
             },
             "healthProbeSettingsType": {
@@ -2047,7 +2218,8 @@
                 }
               },
               "metadata": {
-                "__bicep_export!": true
+                "__bicep_export!": true,
+                "description": "The type of the health probe settings."
               }
             },
             "originType": {
@@ -2127,6 +2299,7 @@
                 }
               },
               "metadata": {
+                "description": "The name of the origin type.",
                 "__bicep_imported_from!": {
                   "sourceTemplate": "origin/main.bicep"
                 }
@@ -2200,10 +2373,7 @@
                 "loadBalancingSettings": "[parameters('loadBalancingSettings')]",
                 "sessionAffinityState": "[parameters('sessionAffinityState')]",
                 "trafficRestorationTimeToHealedOrNewEndpointsInMinutes": "[parameters('trafficRestorationTimeToHealedOrNewEndpointsInMinutes')]"
-              },
-              "dependsOn": [
-                "profile"
-              ]
+              }
             },
             "originGroup_origins": {
               "copy": {
@@ -2263,12 +2433,11 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.31.92.45157",
-                      "templateHash": "7808954044639543840"
+                      "version": "0.34.1.11899",
+                      "templateHash": "3299448810125740577"
                     },
                     "name": "CDN Profiles Origin",
-                    "description": "This module deploys a CDN Profile Origin.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a CDN Profile Origin."
                   },
                   "definitions": {
                     "originType": {
@@ -2348,7 +2517,8 @@
                         }
                       },
                       "metadata": {
-                        "__bicep_export!": true
+                        "__bicep_export!": true,
+                        "description": "The name of the origin type."
                       }
                     }
                   },
@@ -2443,10 +2613,7 @@
                       "existing": true,
                       "type": "Microsoft.Cdn/profiles/originGroups",
                       "apiVersion": "2023-05-01",
-                      "name": "[format('{0}/{1}', parameters('profileName'), parameters('originGroupName'))]",
-                      "dependsOn": [
-                        "profile"
-                      ]
+                      "name": "[format('{0}/{1}', parameters('profileName'), parameters('originGroupName'))]"
                     },
                     "profile": {
                       "existing": true,
@@ -2468,10 +2635,7 @@
                         "priority": "[parameters('priority')]",
                         "sharedPrivateLinkResource": "[parameters('sharedPrivateLinkResource')]",
                         "weight": "[parameters('weight')]"
-                      },
-                      "dependsOn": [
-                        "profile::originGroup"
-                      ]
+                      }
                     }
                   },
                   "outputs": {
@@ -2561,7 +2725,7 @@
             "value": "[parameters('name')]"
           },
           "rules": {
-            "value": "[parameters('ruleSets')[copyIndex()].rules]"
+            "value": "[tryGet(parameters('ruleSets')[copyIndex()], 'rules')]"
           }
         },
         "template": {
@@ -2571,12 +2735,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "6799234533111360012"
+              "version": "0.34.1.11899",
+              "templateHash": "15877646874005216929"
             },
             "name": "CDN Profiles Rule Sets",
-            "description": "This module deploys a CDN Profile rule set.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a CDN Profile rule set."
           },
           "definitions": {
             "ruleSetType": {
@@ -2600,7 +2763,8 @@
                 }
               },
               "metadata": {
-                "__bicep_export!": true
+                "__bicep_export!": true,
+                "description": "The type of the rule set."
               }
             },
             "ruleType": {
@@ -2645,6 +2809,7 @@
                 }
               },
               "metadata": {
+                "description": "The type of the rule.",
                 "__bicep_imported_from!": {
                   "sourceTemplate": "rule/main.bicep"
                 }
@@ -2685,10 +2850,7 @@
             "ruleSet": {
               "type": "Microsoft.Cdn/profiles/ruleSets",
               "apiVersion": "2023-05-01",
-              "name": "[format('{0}/{1}', parameters('profileName'), parameters('name'))]",
-              "dependsOn": [
-                "profile"
-              ]
+              "name": "[format('{0}/{1}', parameters('profileName'), parameters('name'))]"
             },
             "ruleSet_rules": {
               "copy": {
@@ -2733,12 +2895,11 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.31.92.45157",
-                      "templateHash": "5961518761760139272"
+                      "version": "0.34.1.11899",
+                      "templateHash": "9504457217668690067"
                     },
                     "name": "CDN Profiles Rules",
-                    "description": "This module deploys a CDN Profile rule.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a CDN Profile rule."
                   },
                   "definitions": {
                     "ruleType": {
@@ -2783,7 +2944,8 @@
                         }
                       },
                       "metadata": {
-                        "__bicep_export!": true
+                        "__bicep_export!": true,
+                        "description": "The type of the rule."
                       }
                     }
                   },
@@ -2843,10 +3005,7 @@
                       "existing": true,
                       "type": "Microsoft.Cdn/profiles/ruleSets",
                       "apiVersion": "2023-05-01",
-                      "name": "[format('{0}/{1}', parameters('profileName'), parameters('ruleSetName'))]",
-                      "dependsOn": [
-                        "profile"
-                      ]
+                      "name": "[format('{0}/{1}', parameters('profileName'), parameters('ruleSetName'))]"
                     },
                     "profile": {
                       "existing": true,
@@ -2863,10 +3022,7 @@
                         "actions": "[parameters('actions')]",
                         "conditions": "[parameters('conditions')]",
                         "matchProcessingBehavior": "[parameters('matchProcessingBehavior')]"
-                      },
-                      "dependsOn": [
-                        "profile::ruleSet"
-                      ]
+                      }
                     }
                   },
                   "outputs": {
@@ -2968,12 +3124,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "8817136365913068133"
+              "version": "0.34.1.11899",
+              "templateHash": "11569548485086414235"
             },
             "name": "CDN Profiles AFD Endpoints",
-            "description": "This module deploys a CDN Profile AFD Endpoint.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a CDN Profile AFD Endpoint."
           },
           "definitions": {
             "afdEndpointType": {
@@ -3028,7 +3183,8 @@
                 }
               },
               "metadata": {
-                "__bicep_export!": true
+                "__bicep_export!": true,
+                "description": "The type of the AFD Endpoint."
               }
             },
             "_1.afdRoutecacheConfigurationType": {
@@ -3046,7 +3202,7 @@
                         "description": "Required. List of content types on which compression applies. The value should be a valid MIME type."
                       }
                     },
-                    "iscontentTypeToCompressAll": {
+                    "isCompressionEnabled": {
                       "type": "bool",
                       "nullable": true,
                       "metadata": {
@@ -3078,6 +3234,7 @@
                 }
               },
               "metadata": {
+                "description": "The type of the route cache configuration.",
                 "__bicep_imported_from!": {
                   "sourceTemplate": "route/main.bicep"
                 }
@@ -3193,6 +3350,7 @@
                 }
               },
               "metadata": {
+                "description": "The type of the route.",
                 "__bicep_imported_from!": {
                   "sourceTemplate": "route/main.bicep"
                 }
@@ -3277,10 +3435,7 @@
               "properties": {
                 "autoGeneratedDomainNameLabelScope": "[parameters('autoGeneratedDomainNameLabelScope')]",
                 "enabledState": "[parameters('enabledState')]"
-              },
-              "dependsOn": [
-                "profile"
-              ]
+              }
             },
             "afdEndpoint_routes": {
               "copy": {
@@ -3346,12 +3501,11 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.31.92.45157",
-                      "templateHash": "17863230728556651506"
+                      "version": "0.34.1.11899",
+                      "templateHash": "1335284301571538933"
                     },
                     "name": "CDN Profiles AFD Endpoint Route",
-                    "description": "This module deploys a CDN Profile AFD Endpoint route.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a CDN Profile AFD Endpoint route."
                   },
                   "definitions": {
                     "routeType": {
@@ -3464,7 +3618,8 @@
                         }
                       },
                       "metadata": {
-                        "__bicep_export!": true
+                        "__bicep_export!": true,
+                        "description": "The type of the route."
                       }
                     },
                     "afdRoutecacheConfigurationType": {
@@ -3482,7 +3637,7 @@
                                 "description": "Required. List of content types on which compression applies. The value should be a valid MIME type."
                               }
                             },
-                            "iscontentTypeToCompressAll": {
+                            "isCompressionEnabled": {
                               "type": "bool",
                               "nullable": true,
                               "metadata": {
@@ -3512,6 +3667,10 @@
                             "description": "Required. Defines how Frontdoor caches requests that include query strings."
                           }
                         }
+                      },
+                      "metadata": {
+                        "__bicep_export!": true,
+                        "description": "The type of the route cache configuration."
                       }
                     }
                   },
@@ -3640,45 +3799,33 @@
                       "existing": true,
                       "type": "Microsoft.Cdn/profiles/afdEndpoints",
                       "apiVersion": "2023-05-01",
-                      "name": "[format('{0}/{1}', parameters('profileName'), parameters('afdEndpointName'))]",
-                      "dependsOn": [
-                        "profile"
-                      ]
+                      "name": "[format('{0}/{1}', parameters('profileName'), parameters('afdEndpointName'))]"
                     },
                     "profile::customDomains": {
                       "copy": {
-                        "name": "customDomains",
+                        "name": "profile::customDomains",
                         "count": "[length(coalesce(parameters('customDomainNames'), createArray()))]"
                       },
                       "existing": true,
                       "type": "Microsoft.Cdn/profiles/customDomains",
                       "apiVersion": "2023-05-01",
-                      "name": "[format('{0}/{1}', parameters('profileName'), coalesce(parameters('customDomainNames'), createArray())[copyIndex()])]",
-                      "dependsOn": [
-                        "profile"
-                      ]
+                      "name": "[format('{0}/{1}', parameters('profileName'), coalesce(parameters('customDomainNames'), createArray())[copyIndex()])]"
                     },
                     "profile::originGroup": {
                       "existing": true,
                       "type": "Microsoft.Cdn/profiles/originGroups",
                       "apiVersion": "2023-05-01",
-                      "name": "[format('{0}/{1}', parameters('profileName'), parameters('originGroupName'))]",
-                      "dependsOn": [
-                        "profile"
-                      ]
+                      "name": "[format('{0}/{1}', parameters('profileName'), parameters('originGroupName'))]"
                     },
                     "profile::ruleSet": {
                       "copy": {
-                        "name": "ruleSet",
+                        "name": "profile::ruleSet",
                         "count": "[length(parameters('ruleSets'))]"
                       },
                       "existing": true,
                       "type": "Microsoft.Cdn/profiles/ruleSets",
                       "apiVersion": "2023-05-01",
-                      "name": "[format('{0}/{1}', parameters('profileName'), parameters('ruleSets')[copyIndex()].name)]",
-                      "dependsOn": [
-                        "profile"
-                      ]
+                      "name": "[format('{0}/{1}', parameters('profileName'), parameters('ruleSets')[copyIndex()].name)]"
                     },
                     "profile": {
                       "existing": true,
@@ -3718,10 +3865,7 @@
                         "originPath": "[parameters('originPath')]",
                         "patternsToMatch": "[parameters('patternsToMatch')]",
                         "supportedProtocols": "[parameters('supportedProtocols')]"
-                      },
-                      "dependsOn": [
-                        "profile::afdEndpoint"
-                      ]
+                      }
                     }
                   },
                   "outputs": {
@@ -3750,8 +3894,7 @@
                 }
               },
               "dependsOn": [
-                "afdEndpoint",
-                "profile"
+                "afdEndpoint"
               ]
             }
           },
@@ -3790,6 +3933,13 @@
                 "description": "The list of routes assigned to the AFD endpoint."
               },
               "value": "[coalesce(parameters('routes'), createArray())]"
+            },
+            "frontDoorEndpointHostName": {
+              "type": "string",
+              "metadata": {
+                "description": "The host name of the AFD endpoint."
+              },
+              "value": "[reference('afdEndpoint').hostName]"
             }
           }
         }
@@ -3835,49 +3985,46 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "3967677433883074947"
+              "version": "0.34.1.11899",
+              "templateHash": "62661794416974930"
             },
             "name": "CDN Profiles Security Policy",
-            "description": "This module deploys a CDN Profile Security Policy.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a CDN Profile Security Policy."
           },
           "definitions": {
             "associationsType": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "domains": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "id": {
-                          "type": "string",
-                          "metadata": {
-                            "description": "Required. ResourceID to domain that will be associated."
-                          }
+              "type": "object",
+              "properties": {
+                "domains": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "metadata": {
+                          "description": "Required. ResourceID to domain that will be associated."
                         }
                       }
-                    },
-                    "metadata": {
-                      "description": "Required. List of domain resource id to associate with this resource."
                     }
                   },
-                  "patternsToMatch": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    },
-                    "metadata": {
-                      "description": "Required. List of patterns to match with this association."
-                    }
+                  "metadata": {
+                    "description": "Required. List of domain resource id to associate with this resource."
+                  }
+                },
+                "patternsToMatch": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "metadata": {
+                    "description": "Required. List of patterns to match with this association."
                   }
                 }
               },
               "metadata": {
-                "__bicep_export!": true
+                "__bicep_export!": true,
+                "description": "The type of the associations."
               }
             }
           },
@@ -3901,7 +4048,10 @@
               }
             },
             "associations": {
-              "$ref": "#/definitions/associationsType",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/associationsType"
+              },
               "metadata": {
                 "description": "Required. Waf associations (see https://learn.microsoft.com/en-us/azure/templates/microsoft.cdn/profiles/securitypolicies?pivots=deployment-language-bicep#securitypolicywebapplicationfirewallassociation for details)."
               }
@@ -3926,24 +4076,21 @@
                   },
                   "associations": "[parameters('associations')]"
                 }
-              },
-              "dependsOn": [
-                "profile"
-              ]
+              }
             }
           },
           "outputs": {
             "name": {
               "type": "string",
               "metadata": {
-                "description": "The name of the secrect."
+                "description": "The name of the secret."
               },
               "value": "[parameters('name')]"
             },
             "resourceId": {
               "type": "string",
               "metadata": {
-                "description": "The resource ID of the secrect."
+                "description": "The resource ID of the secret."
               },
               "value": "[resourceId('Microsoft.Cdn/profiles/securityPolicies', parameters('profileName'), parameters('name'))]"
             },
@@ -4023,10 +4170,34 @@
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",
+      "nullable": true,
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[coalesce(tryGet(tryGet(reference('profile', '2023-05-01', 'full'), 'identity'), 'principalId'), '')]"
+      "value": "[tryGet(tryGet(reference('profile', '2023-05-01', 'full'), 'identity'), 'principalId')]"
+    },
+    "dnsValidation": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/dnsValidationOutputType"
+      },
+      "metadata": {
+        "description": "The list of records required for custom domains validation."
+      },
+      "copy": {
+        "count": "[length(parameters('customDomains'))]",
+        "input": "[reference(format('profile_customDomains[{0}]', copyIndex())).outputs.dnsValidation.value]"
+      }
+    },
+    "frontDoorEndpointHostNames": {
+      "type": "array",
+      "metadata": {
+        "description": "The list of AFD endpoint host names."
+      },
+      "copy": {
+        "count": "[length(parameters('afdEndpoints'))]",
+        "input": "[reference(format('profile_afdEndpoints[{0}]', copyIndex())).outputs.frontDoorEndpointHostName.value]"
+      }
     }
   }
 }

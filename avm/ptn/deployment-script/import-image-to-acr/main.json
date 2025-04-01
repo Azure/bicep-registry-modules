@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "11351051395125066237"
+      "version": "0.33.13.18514",
+      "templateHash": "17693528873371180336"
     },
     "name": "import-image-to-acr",
-    "description": "This modules deployes an image to an Azure Container Registry.",
-    "owner": "Azure/module-maintainers"
+    "description": "This modules deployes an image to an Azure Container Registry."
   },
   "definitions": {
     "importedImageType": {
@@ -267,8 +266,6 @@
         "principalType": "ServicePrincipal"
       },
       "dependsOn": [
-        "acr",
-        "[format('existingManagedIdentities[{0}]', range(0, length(if(parameters('assignRbacRole'), coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), createArray())))[copyIndex()])]",
         "[format('existingManagedIdentities[{0}]', range(0, length(if(parameters('assignRbacRole'), coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), createArray())))[copyIndex()])]"
       ]
     },
@@ -284,7 +281,6 @@
         "principalType": "ServicePrincipal"
       },
       "dependsOn": [
-        "acr",
         "newManagedIdentity"
       ]
     },
@@ -306,6 +302,9 @@
           },
           "tags": {
             "value": "[parameters('tags')]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           },
           "managedIdentities": "[if(variables('useExistingManagedIdentity'), createObject('value', parameters('managedIdentities')), createObject('value', createObject('userAssignedResourceIds', createArray(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', coalesce(parameters('managedIdentityName'), 'id-ContainerRegistryImport'))))))]",
           "kind": {

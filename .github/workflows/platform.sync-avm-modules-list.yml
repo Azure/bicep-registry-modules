@@ -27,7 +27,7 @@ jobs:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
         run: |
           # Load used functions
-          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'platform' 'Sync-AvmModulesList.ps1')
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'platform' 'Sync-AvmModulesList.ps1')
 
           $functionInput = @{
             Repo     = "${{ github.repository_owner }}/${{ github.event.repository.name }}"

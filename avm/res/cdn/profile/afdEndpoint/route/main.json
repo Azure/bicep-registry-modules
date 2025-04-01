@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "17863230728556651506"
+      "version": "0.34.1.11899",
+      "templateHash": "1335284301571538933"
     },
     "name": "CDN Profiles AFD Endpoint Route",
-    "description": "This module deploys a CDN Profile AFD Endpoint route.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a CDN Profile AFD Endpoint route."
   },
   "definitions": {
     "routeType": {
@@ -123,7 +122,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type of the route."
       }
     },
     "afdRoutecacheConfigurationType": {
@@ -141,7 +141,7 @@
                 "description": "Required. List of content types on which compression applies. The value should be a valid MIME type."
               }
             },
-            "iscontentTypeToCompressAll": {
+            "isCompressionEnabled": {
               "type": "bool",
               "nullable": true,
               "metadata": {
@@ -171,6 +171,10 @@
             "description": "Required. Defines how Frontdoor caches requests that include query strings."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of the route cache configuration."
       }
     }
   },
@@ -299,45 +303,33 @@
       "existing": true,
       "type": "Microsoft.Cdn/profiles/afdEndpoints",
       "apiVersion": "2023-05-01",
-      "name": "[format('{0}/{1}', parameters('profileName'), parameters('afdEndpointName'))]",
-      "dependsOn": [
-        "profile"
-      ]
+      "name": "[format('{0}/{1}', parameters('profileName'), parameters('afdEndpointName'))]"
     },
     "profile::customDomains": {
       "copy": {
-        "name": "customDomains",
+        "name": "profile::customDomains",
         "count": "[length(coalesce(parameters('customDomainNames'), createArray()))]"
       },
       "existing": true,
       "type": "Microsoft.Cdn/profiles/customDomains",
       "apiVersion": "2023-05-01",
-      "name": "[format('{0}/{1}', parameters('profileName'), coalesce(parameters('customDomainNames'), createArray())[copyIndex()])]",
-      "dependsOn": [
-        "profile"
-      ]
+      "name": "[format('{0}/{1}', parameters('profileName'), coalesce(parameters('customDomainNames'), createArray())[copyIndex()])]"
     },
     "profile::originGroup": {
       "existing": true,
       "type": "Microsoft.Cdn/profiles/originGroups",
       "apiVersion": "2023-05-01",
-      "name": "[format('{0}/{1}', parameters('profileName'), parameters('originGroupName'))]",
-      "dependsOn": [
-        "profile"
-      ]
+      "name": "[format('{0}/{1}', parameters('profileName'), parameters('originGroupName'))]"
     },
     "profile::ruleSet": {
       "copy": {
-        "name": "ruleSet",
+        "name": "profile::ruleSet",
         "count": "[length(parameters('ruleSets'))]"
       },
       "existing": true,
       "type": "Microsoft.Cdn/profiles/ruleSets",
       "apiVersion": "2023-05-01",
-      "name": "[format('{0}/{1}', parameters('profileName'), parameters('ruleSets')[copyIndex()].name)]",
-      "dependsOn": [
-        "profile"
-      ]
+      "name": "[format('{0}/{1}', parameters('profileName'), parameters('ruleSets')[copyIndex()].name)]"
     },
     "profile": {
       "existing": true,
@@ -377,10 +369,7 @@
         "originPath": "[parameters('originPath')]",
         "patternsToMatch": "[parameters('patternsToMatch')]",
         "supportedProtocols": "[parameters('supportedProtocols')]"
-      },
-      "dependsOn": [
-        "profile::afdEndpoint"
-      ]
+      }
     }
   },
   "outputs": {

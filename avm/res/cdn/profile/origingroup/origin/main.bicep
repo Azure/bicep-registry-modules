@@ -1,6 +1,5 @@
 metadata name = 'CDN Profiles Origin'
 metadata description = 'This module deploys a CDN Profile Origin.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the origion.')
 param name string
@@ -80,6 +79,7 @@ output resourceGroupName string = resourceGroup().name
 // =============== //
 
 @export()
+@description('The name of the origin type.')
 type originType = {
   @description('Required. The name of the origion.')
   name: string

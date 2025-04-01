@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "420872064438039619"
+      "version": "0.34.1.11899",
+      "templateHash": "16176516087789568863"
     },
     "name": "CDN Profiles Custom Domains",
-    "description": "This module deploys a CDN Profile Custom Domains.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a CDN Profile Custom Domains."
   },
   "definitions": {
     "customDomainType": {
@@ -80,7 +79,38 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type of the custom domain."
+      }
+    },
+    "dnsValidationOutputType": {
+      "type": "object",
+      "properties": {
+        "dnsTxtRecordName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "The DNS record name."
+          }
+        },
+        "dnsTxtRecordValue": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "The DNS record value."
+          }
+        },
+        "dnsTxtRecordExpiry": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "The expiry date of the DNS record."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of the DNS validation."
       }
     }
   },
@@ -155,15 +185,12 @@
     }
   },
   "resources": {
-    "profile::secrect": {
+    "profile::secret": {
       "condition": "[not(empty(parameters('secretName')))]",
       "existing": true,
       "type": "Microsoft.Cdn/profiles/secrets",
       "apiVersion": "2023-05-01",
-      "name": "[format('{0}/{1}', parameters('profileName'), parameters('secretName'))]",
-      "dependsOn": [
-        "profile"
-      ]
+      "name": "[format('{0}/{1}', parameters('profileName'), parameters('secretName'))]"
     },
     "profile": {
       "existing": true,
@@ -185,10 +212,7 @@
           "minimumTlsVersion": "[parameters('minimumTlsVersion')]",
           "secret": "[if(not(empty(parameters('secretName'))), createObject('id', resourceId('Microsoft.Cdn/profiles/secrets', parameters('profileName'), parameters('secretName'))), null())]"
         }
-      },
-      "dependsOn": [
-        "profile"
-      ]
+      }
     }
   },
   "outputs": {
@@ -212,6 +236,17 @@
         "description": "The name of the resource group the custom domain was created in."
       },
       "value": "[resourceGroup().name]"
+    },
+    "dnsValidation": {
+      "$ref": "#/definitions/dnsValidationOutputType",
+      "metadata": {
+        "description": "The DNS validation records."
+      },
+      "value": {
+        "dnsTxtRecordName": "[format('_dnsauth.{0}', reference('customDomain').hostName)]",
+        "dnsTxtRecordValue": "[reference('customDomain').validationProperties.validationToken]",
+        "dnsTxtRecordExpiry": "[reference('customDomain').validationProperties.expirationDate]"
+      }
     }
   }
 }

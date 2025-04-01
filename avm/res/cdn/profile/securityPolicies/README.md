@@ -12,7 +12,7 @@ This module deploys a CDN Profile Security Policy.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Cdn/profiles/securityPolicies` | [2024-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/profiles/securityPolicies) |
+| `Microsoft.Cdn/profiles/securityPolicies` | [2024-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2024-02-01/profiles/securityPolicies) |
 
 ## Parameters
 
@@ -96,6 +96,6 @@ The name of the parent CDN profile. Required if the template is used in a standa
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `name` | string | The name of the secrect. |
+| `name` | string | The name of the secret. |
 | `resourceGroupName` | string | The name of the resource group the secret was created in. |
-| `resourceId` | string | The resource ID of the secrect. |
+| `resourceId` | string | The resource ID of the secret. |

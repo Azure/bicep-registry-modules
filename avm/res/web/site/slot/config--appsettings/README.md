@@ -13,7 +13,7 @@ This module deploys a Site Slot App Setting.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Web/sites/slots/config` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2022-09-01/sites/slots/config) |
+| `Microsoft.Web/sites/slots/config` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/slots/config) |
 
 ## Parameters
 

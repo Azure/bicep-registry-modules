@@ -1,6 +1,5 @@
 metadata name = 'Dns Forwarding Rulesets Virtual Network Links'
 metadata description = 'This template deploys Virtual Network Link in a Dns Forwarding Ruleset.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent DNS Fowarding Rule Set. Required if the template is used in a standalone deployment.')
 param dnsForwardingRulesetName string

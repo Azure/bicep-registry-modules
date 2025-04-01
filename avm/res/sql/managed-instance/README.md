@@ -8,6 +8,7 @@ This module deploys a SQL Managed Instance.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -17,15 +18,15 @@ This module deploys a SQL Managed Instance.
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Sql/managedInstances` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/managedInstances) |
-| `Microsoft.Sql/managedInstances/administrators` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/managedInstances/administrators) |
-| `Microsoft.Sql/managedInstances/databases` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/managedInstances/databases) |
-| `Microsoft.Sql/managedInstances/databases/backupLongTermRetentionPolicies` | [2022-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2022-05-01-preview/managedInstances/databases/backupLongTermRetentionPolicies) |
-| `Microsoft.Sql/managedInstances/databases/backupShortTermRetentionPolicies` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/managedInstances/databases/backupShortTermRetentionPolicies) |
-| `Microsoft.Sql/managedInstances/encryptionProtector` | [2022-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2022-05-01-preview/managedInstances/encryptionProtector) |
-| `Microsoft.Sql/managedInstances/keys` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/managedInstances/keys) |
-| `Microsoft.Sql/managedInstances/securityAlertPolicies` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/managedInstances/securityAlertPolicies) |
-| `Microsoft.Sql/managedInstances/vulnerabilityAssessments` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/managedInstances/vulnerabilityAssessments) |
+| `Microsoft.Sql/managedInstances` | [2024-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2024-05-01-preview/managedInstances) |
+| `Microsoft.Sql/managedInstances/administrators` | [2024-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2024-05-01-preview/managedInstances/administrators) |
+| `Microsoft.Sql/managedInstances/databases` | [2024-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2024-05-01-preview/managedInstances/databases) |
+| `Microsoft.Sql/managedInstances/databases/backupLongTermRetentionPolicies` | [2024-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2024-05-01-preview/managedInstances/databases/backupLongTermRetentionPolicies) |
+| `Microsoft.Sql/managedInstances/databases/backupShortTermRetentionPolicies` | [2024-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2024-05-01-preview/managedInstances/databases/backupShortTermRetentionPolicies) |
+| `Microsoft.Sql/managedInstances/encryptionProtector` | [2024-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2024-05-01-preview/managedInstances/encryptionProtector) |
+| `Microsoft.Sql/managedInstances/keys` | [2024-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2024-05-01-preview/managedInstances/keys) |
+| `Microsoft.Sql/managedInstances/securityAlertPolicies` | [2024-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2024-05-01-preview/managedInstances/securityAlertPolicies) |
+| `Microsoft.Sql/managedInstances/vulnerabilityAssessments` | [2024-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2024-05-01-preview/managedInstances/vulnerabilityAssessments) |
 
 ## Usage examples
 
@@ -58,8 +59,6 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
     administratorLoginPassword: '<administratorLoginPassword>'
     name: 'sqlmimin'
     subnetResourceId: '<subnetResourceId>'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -88,10 +87,6 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
     },
     "subnetResourceId": {
       "value": "<subnetResourceId>"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -112,8 +107,6 @@ param administratorLogin = 'adminUserName'
 param administratorLoginPassword = '<administratorLoginPassword>'
 param name = 'sqlmimin'
 param subnetResourceId = '<subnetResourceId>'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -141,10 +134,10 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
     collation: 'SQL_Latin1_General_CP1_CI_AS'
     databases: [
       {
-        backupLongTermRetentionPolicies: {
+        backupLongTermRetentionPolicy: {
           name: 'default'
         }
-        backupShortTermRetentionPolicies: {
+        backupShortTermRetentionPolicy: {
           name: 'default'
         }
         diagnosticSettings: [
@@ -173,7 +166,7 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    dnsZonePartner: ''
+    dnsZonePartnerResourceId: ''
     encryptionProtectorObj: {
       serverKeyName: '<serverKeyName>'
       serverKeyType: 'AzureKeyVault'
@@ -192,22 +185,25 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
+    maintenanceWindow: 'Custom1'
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
     }
-    primaryUserAssignedIdentityId: '<primaryUserAssignedIdentityId>'
+    primaryUserAssignedIdentityResourceId: '<primaryUserAssignedIdentityResourceId>'
     proxyOverride: 'Proxy'
     publicDataEndpointEnabled: false
     roleAssignments: [
       {
+        name: '4de0cbb1-1f3d-4eb3-ac11-5797f548199b'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -278,10 +274,10 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
     "databases": {
       "value": [
         {
-          "backupLongTermRetentionPolicies": {
+          "backupLongTermRetentionPolicy": {
             "name": "default"
           },
-          "backupShortTermRetentionPolicies": {
+          "backupShortTermRetentionPolicy": {
             "name": "default"
           },
           "diagnosticSettings": [
@@ -313,7 +309,7 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
         }
       ]
     },
-    "dnsZonePartner": {
+    "dnsZonePartnerResourceId": {
       "value": ""
     },
     "encryptionProtectorObj": {
@@ -346,6 +342,9 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
         "name": "myCustomLockName"
       }
     },
+    "maintenanceWindow": {
+      "value": "Custom1"
+    },
     "managedIdentities": {
       "value": {
         "systemAssigned": true,
@@ -354,8 +353,8 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
         ]
       }
     },
-    "primaryUserAssignedIdentityId": {
-      "value": "<primaryUserAssignedIdentityId>"
+    "primaryUserAssignedIdentityResourceId": {
+      "value": "<primaryUserAssignedIdentityResourceId>"
     },
     "proxyOverride": {
       "value": "Proxy"
@@ -366,11 +365,13 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
     "roleAssignments": {
       "value": [
         {
+          "name": "4de0cbb1-1f3d-4eb3-ac11-5797f548199b",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -447,10 +448,10 @@ param subnetResourceId = '<subnetResourceId>'
 param collation = 'SQL_Latin1_General_CP1_CI_AS'
 param databases = [
   {
-    backupLongTermRetentionPolicies: {
+    backupLongTermRetentionPolicy: {
       name: 'default'
     }
-    backupShortTermRetentionPolicies: {
+    backupShortTermRetentionPolicy: {
       name: 'default'
     }
     diagnosticSettings: [
@@ -479,7 +480,7 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
-param dnsZonePartner = ''
+param dnsZonePartnerResourceId = ''
 param encryptionProtectorObj = {
   serverKeyName: '<serverKeyName>'
   serverKeyType: 'AzureKeyVault'
@@ -498,22 +499,25 @@ param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
 }
+param maintenanceWindow = 'Custom1'
 param managedIdentities = {
   systemAssigned: true
   userAssignedResourceIds: [
     '<managedIdentityResourceId>'
   ]
 }
-param primaryUserAssignedIdentityId = '<primaryUserAssignedIdentityId>'
+param primaryUserAssignedIdentityResourceId = '<primaryUserAssignedIdentityResourceId>'
 param proxyOverride = 'Proxy'
 param publicDataEndpointEnabled = false
 param roleAssignments = [
   {
+    name: '4de0cbb1-1f3d-4eb3-ac11-5797f548199b'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'
   }
   {
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -574,7 +578,6 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
     name: 'sqlmivln'
     subnetResourceId: '<subnetResourceId>'
     // Non-required parameters
-    location: '<location>'
     managedIdentities: {
       systemAssigned: true
     }
@@ -630,9 +633,6 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
       "value": "<subnetResourceId>"
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
     "managedIdentities": {
       "value": {
         "systemAssigned": true
@@ -684,7 +684,6 @@ param administratorLoginPassword = '<administratorLoginPassword>'
 param name = 'sqlmivln'
 param subnetResourceId = '<subnetResourceId>'
 // Non-required parameters
-param location = '<location>'
 param managedIdentities = {
   systemAssigned: true
 }
@@ -737,10 +736,10 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
     collation: 'SQL_Latin1_General_CP1_CI_AS'
     databases: [
       {
-        backupLongTermRetentionPolicies: {
+        backupLongTermRetentionPolicy: {
           name: 'default'
         }
-        backupShortTermRetentionPolicies: {
+        backupShortTermRetentionPolicy: {
           name: 'default'
         }
         diagnosticSettings: [
@@ -769,7 +768,7 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    dnsZonePartner: ''
+    dnsZonePartnerResourceId: ''
     encryptionProtectorObj: {
       serverKeyName: '<serverKeyName>'
       serverKeyType: 'AzureKeyVault'
@@ -783,18 +782,14 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
       }
     ]
     licenseType: 'LicenseIncluded'
-    location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
+    maintenanceWindow: 'Custom2'
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
     }
-    primaryUserAssignedIdentityId: '<primaryUserAssignedIdentityId>'
+    primaryUserAssignedIdentityResourceId: '<primaryUserAssignedIdentityResourceId>'
     proxyOverride: 'Proxy'
     publicDataEndpointEnabled: false
     securityAlertPoliciesObj: {
@@ -857,10 +852,10 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
     "databases": {
       "value": [
         {
-          "backupLongTermRetentionPolicies": {
+          "backupLongTermRetentionPolicy": {
             "name": "default"
           },
-          "backupShortTermRetentionPolicies": {
+          "backupShortTermRetentionPolicy": {
             "name": "default"
           },
           "diagnosticSettings": [
@@ -892,7 +887,7 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
         }
       ]
     },
-    "dnsZonePartner": {
+    "dnsZonePartnerResourceId": {
       "value": ""
     },
     "encryptionProtectorObj": {
@@ -916,14 +911,8 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
     "licenseType": {
       "value": "LicenseIncluded"
     },
-    "location": {
-      "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
+    "maintenanceWindow": {
+      "value": "Custom2"
     },
     "managedIdentities": {
       "value": {
@@ -933,8 +922,8 @@ module managedInstance 'br/public:avm/res/sql/managed-instance:<version>' = {
         ]
       }
     },
-    "primaryUserAssignedIdentityId": {
-      "value": "<primaryUserAssignedIdentityId>"
+    "primaryUserAssignedIdentityResourceId": {
+      "value": "<primaryUserAssignedIdentityResourceId>"
     },
     "proxyOverride": {
       "value": "Proxy"
@@ -1007,10 +996,10 @@ param subnetResourceId = '<subnetResourceId>'
 param collation = 'SQL_Latin1_General_CP1_CI_AS'
 param databases = [
   {
-    backupLongTermRetentionPolicies: {
+    backupLongTermRetentionPolicy: {
       name: 'default'
     }
-    backupShortTermRetentionPolicies: {
+    backupShortTermRetentionPolicy: {
       name: 'default'
     }
     diagnosticSettings: [
@@ -1039,7 +1028,7 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
-param dnsZonePartner = ''
+param dnsZonePartnerResourceId = ''
 param encryptionProtectorObj = {
   serverKeyName: '<serverKeyName>'
   serverKeyType: 'AzureKeyVault'
@@ -1053,18 +1042,14 @@ param keys = [
   }
 ]
 param licenseType = 'LicenseIncluded'
-param location = '<location>'
-param lock = {
-  kind: 'CanNotDelete'
-  name: 'myCustomLockName'
-}
+param maintenanceWindow = 'Custom2'
 param managedIdentities = {
   systemAssigned: true
   userAssignedResourceIds: [
     '<managedIdentityResourceId>'
   ]
 }
-param primaryUserAssignedIdentityId = '<primaryUserAssignedIdentityId>'
+param primaryUserAssignedIdentityResourceId = '<primaryUserAssignedIdentityResourceId>'
 param proxyOverride = 'Proxy'
 param publicDataEndpointEnabled = false
 param securityAlertPoliciesObj = {
@@ -1113,7 +1098,7 @@ param vulnerabilityAssessmentsObj = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`primaryUserAssignedIdentityId`](#parameter-primaryuserassignedidentityid) | string | The resource ID of a user assigned identity to be used by default. Required if "userAssignedIdentities" is not empty. |
+| [`primaryUserAssignedIdentityResourceId`](#parameter-primaryuserassignedidentityresourceid) | string | The resource ID of a user assigned identity to be used by default. Required if "userAssignedIdentities" is not empty. |
 
 **Optional parameters**
 
@@ -1123,7 +1108,7 @@ param vulnerabilityAssessmentsObj = {
 | [`collation`](#parameter-collation) | string | Collation of the managed instance. |
 | [`databases`](#parameter-databases) | array | Databases to create in this server. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
-| [`dnsZonePartner`](#parameter-dnszonepartner) | string | The resource ID of another managed instance whose DNS zone this managed instance will share after creation. |
+| [`dnsZonePartnerResourceId`](#parameter-dnszonepartnerresourceid) | string | The resource ID of another managed instance whose DNS zone this managed instance will share after creation. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`encryptionProtectorObj`](#parameter-encryptionprotectorobj) | object | The encryption protection configuration. |
 | [`hardwareFamily`](#parameter-hardwarefamily) | string | If the service has different generations of hardware, for the same SKU, then that can be captured here. |
@@ -1132,8 +1117,9 @@ param vulnerabilityAssessmentsObj = {
 | [`licenseType`](#parameter-licensetype) | string | The license type. Possible values are 'LicenseIncluded' (regular price inclusive of a new SQL license) and 'BasePrice' (discounted AHB price for bringing your own SQL licenses). |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
+| [`maintenanceWindow`](#parameter-maintenancewindow) | string | The maintenance window for the SQL Managed Instance.<p><p>SystemManaged: The system automatically selects a 9-hour maintenance window between 8:00 AM to 5:00 PM local time, Monday - Sunday.<p>Custom1: Weekday window: 10:00 PM to 6:00 AM local time, Monday - Thursday.<p>Custom2: Weekend window: 10:00 PM to 6:00 AM local time, Friday - Sunday.<p> |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
-| [`managedInstanceCreateMode`](#parameter-managedinstancecreatemode) | string | Specifies the mode of database creation. Default: Regular instance creation. Restore: Creates an instance by restoring a set of backups to specific point in time. RestorePointInTime and SourceManagedInstanceId must be specified. |
+| [`managedInstanceCreateMode`](#parameter-managedinstancecreatemode) | string | Specifies the mode of database creation. Default: Regular instance creation. Restore: Creates an instance by restoring a set of backups to specific point in time. RestorePointInTime and sourceManagedInstanceResourceId must be specified. |
 | [`minimalTlsVersion`](#parameter-minimaltlsversion) | string | Minimal TLS version allowed. |
 | [`proxyOverride`](#parameter-proxyoverride) | string | Connection type used for connecting to the instance. |
 | [`publicDataEndpointEnabled`](#parameter-publicdataendpointenabled) | bool | Whether or not the public data endpoint is enabled. |
@@ -1144,7 +1130,7 @@ param vulnerabilityAssessmentsObj = {
 | [`servicePrincipal`](#parameter-serviceprincipal) | string | Service principal type. If using AD Authentication and applying Admin, must be set to `SystemAssigned`. Then Global Admin must allow Reader access to Azure AD for the Service Principal. |
 | [`skuName`](#parameter-skuname) | string | The name of the SKU, typically, a letter + Number code, e.g. P3. |
 | [`skuTier`](#parameter-skutier) | string | The tier or edition of the particular SKU, e.g. Basic, Premium. |
-| [`sourceManagedInstanceId`](#parameter-sourcemanagedinstanceid) | string | The resource identifier of the source managed instance associated with create operation of this instance. |
+| [`sourceManagedInstanceResourceId`](#parameter-sourcemanagedinstanceresourceid) | string | The resource identifier of the source managed instance associated with create operation of this instance. |
 | [`storageSizeInGB`](#parameter-storagesizeingb) | int | Storage size in GB. Minimum value: 32. Maximum value: 8192. Increments of 32 GB allowed only. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`timezoneId`](#parameter-timezoneid) | string | ID of the timezone. Allowed values are timezones supported by Windows. |
@@ -1180,13 +1166,12 @@ The fully qualified resource ID of the subnet on which the SQL managed instance 
 - Required: Yes
 - Type: string
 
-### Parameter: `primaryUserAssignedIdentityId`
+### Parameter: `primaryUserAssignedIdentityResourceId`
 
 The resource ID of a user assigned identity to be used by default. Required if "userAssignedIdentities" is not empty.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `administratorsObj`
 
@@ -1229,7 +1214,7 @@ The diagnostic settings of the service.
 | [`logCategoriesAndGroups`](#parameter-diagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
 | [`marketplacePartnerResourceId`](#parameter-diagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
 | [`metricCategories`](#parameter-diagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
-| [`name`](#parameter-diagnosticsettingsname) | string | The name of diagnostic setting. |
+| [`name`](#parameter-diagnosticsettingsname) | string | The name of the diagnostic setting. |
 | [`storageAccountResourceId`](#parameter-diagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 | [`workspaceResourceId`](#parameter-diagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 
@@ -1339,7 +1324,7 @@ Enable or disable the category explicitly. Default is `true`.
 
 ### Parameter: `diagnosticSettings.name`
 
-The name of diagnostic setting.
+The name of the diagnostic setting.
 
 - Required: No
 - Type: string
@@ -1358,13 +1343,12 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 - Required: No
 - Type: string
 
-### Parameter: `dnsZonePartner`
+### Parameter: `dnsZonePartnerResourceId`
 
 The resource ID of another managed instance whose DNS zone this managed instance will share after creation.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `enableTelemetry`
 
@@ -1396,7 +1380,6 @@ The resource ID of the instance pool this managed server belongs to.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `keys`
 
@@ -1465,6 +1448,21 @@ Specify the name of lock.
 - Required: No
 - Type: string
 
+### Parameter: `maintenanceWindow`
+
+The maintenance window for the SQL Managed Instance.<p><p>SystemManaged: The system automatically selects a 9-hour maintenance window between 8:00 AM to 5:00 PM local time, Monday - Sunday.<p>Custom1: Weekday window: 10:00 PM to 6:00 AM local time, Monday - Thursday.<p>Custom2: Weekend window: 10:00 PM to 6:00 AM local time, Friday - Sunday.<p>
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Custom1'
+    'Custom2'
+    'SystemManaged'
+  ]
+  ```
+
 ### Parameter: `managedIdentities`
 
 The managed identity definition for this resource.
@@ -1477,7 +1475,7 @@ The managed identity definition for this resource.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
-| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
 
 ### Parameter: `managedIdentities.systemAssigned`
 
@@ -1488,14 +1486,14 @@ Enables system assigned managed identity on the resource.
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
-The resource ID(s) to assign to the resource.
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
 
 - Required: No
 - Type: array
 
 ### Parameter: `managedInstanceCreateMode`
 
-Specifies the mode of database creation. Default: Regular instance creation. Restore: Creates an instance by restoring a set of backups to specific point in time. RestorePointInTime and SourceManagedInstanceId must be specified.
+Specifies the mode of database creation. Default: Regular instance creation. Restore: Creates an instance by restoring a set of backups to specific point in time. RestorePointInTime and sourceManagedInstanceResourceId must be specified.
 
 - Required: No
 - Type: string
@@ -1572,7 +1570,6 @@ Specifies the point in time (ISO8601 format) of the source database that will be
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `roleAssignments`
 
@@ -1585,7 +1582,7 @@ Array of role assignments to create.
   - `'Owner'`
   - `'Reader'`
   - `'Reservation Purchaser'`
-  - `'Role Based Access Control Administrator (Preview)'`
+  - `'Role Based Access Control Administrator'`
   - `'SQL DB Contributor'`
   - `'SQL Managed Instance Contributor'`
   - `'SQL Security Manager'`
@@ -1609,6 +1606,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -1655,6 +1653,13 @@ The Resource Id of the delegated managed identity resource.
 ### Parameter: `roleAssignments.description`
 
 The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
@@ -1715,13 +1720,12 @@ The tier or edition of the particular SKU, e.g. Basic, Premium.
 - Type: string
 - Default: `'GeneralPurpose'`
 
-### Parameter: `sourceManagedInstanceId`
+### Parameter: `sourceManagedInstanceResourceId`
 
 The resource identifier of the source managed instance associated with create operation of this instance.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `storageSizeInGB`
 
@@ -1779,6 +1783,14 @@ Whether or not multi-az is enabled.
 | `resourceGroupName` | string | The resource group of the deployed managed instance. |
 | `resourceId` | string | The resource ID of the deployed managed instance. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

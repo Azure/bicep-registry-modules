@@ -1,6 +1,5 @@
 metadata name = 'Virtual Network Subnets'
 metadata description = 'This module deploys a Virtual Network Subnet.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The Name of the subnet resource.')
 param name string
@@ -48,7 +47,7 @@ param addressPrefixes string[]?
 @description('Optional. Set this property to false to disable default outbound connectivity for all VMs in the subnet. This property can only be set at the time of subnet creation and cannot be updated for an existing subnet.')
 param defaultOutboundAccess bool?
 
-@description('Optional. Set this property to Tenant to allow sharing subnet with other subscriptions in your AAD tenant. This property can only be set if defaultOutboundAccess is set to false, both properties can only be set if subnet is empty.')
+@description('Optional. Set this property to Tenant to allow sharing the subnet with other subscriptions in your AAD tenant. This property can only be set if defaultOutboundAccess is set to false, both properties can only be set if the subnet is empty.')
 param sharingScope ('DelegatedServices' | 'Tenant')?
 
 @description('Optional. Application gateway IP configurations of virtual network resource.')
@@ -60,6 +59,9 @@ param serviceEndpointPolicies array = []
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
+
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
@@ -89,6 +91,25 @@ var formattedRoleAssignments = [
       : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
   })
 ]
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.network-virtualnetworksubnet.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-01-01' existing = {
   name: virtualNetworkName

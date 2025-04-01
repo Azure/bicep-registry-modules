@@ -1,6 +1,5 @@
 metadata name = 'ACR Pull permissions'
 metadata description = 'Assigns ACR Pull permissions to access an Azure Container Registry.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the container registry.')
 param containerRegistryName string

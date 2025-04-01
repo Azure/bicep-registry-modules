@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "15386799594233335228"
+      "version": "0.33.93.31351",
+      "templateHash": "13438891749229457866"
     },
     "name": "Key Vaults",
-    "description": "This module deploys a Key Vault.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Key Vault."
   },
   "definitions": {
     "privateEndpointOutputType": {
@@ -99,7 +98,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for a credential output."
       }
     },
     "accessPolicyType": {
@@ -233,7 +233,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for an access policy."
       }
     },
     "secretType": {
@@ -307,7 +308,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for a secret output."
       }
     },
     "keyType": {
@@ -453,7 +455,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for a key."
       }
     },
     "rotationPolicyType": {
@@ -530,6 +533,9 @@
             "description": "Optional. The lifetimeActions for key rotation action."
           }
         }
+      },
+      "metadata": {
+        "description": "The type for a rotation policy."
       }
     },
     "_1.privateEndpointCustomDnsConfigType": {
@@ -554,7 +560,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     },
@@ -596,7 +602,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     },
@@ -637,7 +643,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     },
@@ -759,7 +765,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     },
@@ -789,7 +795,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     },
@@ -828,6 +834,13 @@
           "type": "string",
           "metadata": {
             "description": "Required. Resource ID of the subnet where the endpoint needs to be created."
+          }
+        },
+        "resourceGroupResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used."
           }
         },
         "privateDnsZoneGroup": {
@@ -919,19 +932,12 @@
           "metadata": {
             "description": "Optional. Enable/Disable usage telemetry for module."
           }
-        },
-        "resourceGroupName": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Specify if you want to deploy the Private Endpoint into a different Resource Group than the main resource."
-          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a private endpoint. To be used if the private endpoint's default service / groupId can be assumed (i.e., for services that only have one Private Endpoint type like 'vault' for key vault).",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     },
@@ -1006,7 +1012,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     }
@@ -1212,6 +1218,7 @@
         }
       }
     ],
+    "enableReferencedModulesTelemetry": false,
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Key Vault Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '00482a5a-887f-4fb3-b363-3b7fe8e74483')]",
@@ -1378,148 +1385,147 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "2943121976508120416"
+              "version": "0.33.93.31351",
+              "templateHash": "6321524620984159084"
             },
             "name": "Key Vault Access Policies",
-            "description": "This module deploys a Key Vault Access Policy.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Key Vault Access Policy."
           },
           "definitions": {
             "accessPoliciesType": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "tenantId": {
-                    "type": "string",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The tenant ID that is used for authenticating requests to the key vault."
-                    }
-                  },
-                  "objectId": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. The object ID of a user, service principal or security group in the tenant for the vault."
-                    }
-                  },
-                  "applicationId": {
-                    "type": "string",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. Application ID of the client making request on behalf of a principal."
-                    }
-                  },
-                  "permissions": {
-                    "type": "object",
-                    "properties": {
-                      "keys": {
-                        "type": "array",
-                        "allowedValues": [
-                          "all",
-                          "backup",
-                          "create",
-                          "decrypt",
-                          "delete",
-                          "encrypt",
-                          "get",
-                          "getrotationpolicy",
-                          "import",
-                          "list",
-                          "purge",
-                          "recover",
-                          "release",
-                          "restore",
-                          "rotate",
-                          "setrotationpolicy",
-                          "sign",
-                          "unwrapKey",
-                          "update",
-                          "verify",
-                          "wrapKey"
-                        ],
-                        "nullable": true,
-                        "metadata": {
-                          "description": "Optional. Permissions to keys."
-                        }
-                      },
-                      "secrets": {
-                        "type": "array",
-                        "allowedValues": [
-                          "all",
-                          "backup",
-                          "delete",
-                          "get",
-                          "list",
-                          "purge",
-                          "recover",
-                          "restore",
-                          "set"
-                        ],
-                        "nullable": true,
-                        "metadata": {
-                          "description": "Optional. Permissions to secrets."
-                        }
-                      },
-                      "certificates": {
-                        "type": "array",
-                        "allowedValues": [
-                          "all",
-                          "backup",
-                          "create",
-                          "delete",
-                          "deleteissuers",
-                          "get",
-                          "getissuers",
-                          "import",
-                          "list",
-                          "listissuers",
-                          "managecontacts",
-                          "manageissuers",
-                          "purge",
-                          "recover",
-                          "restore",
-                          "setissuers",
-                          "update"
-                        ],
-                        "nullable": true,
-                        "metadata": {
-                          "description": "Optional. Permissions to certificates."
-                        }
-                      },
-                      "storage": {
-                        "type": "array",
-                        "allowedValues": [
-                          "all",
-                          "backup",
-                          "delete",
-                          "deletesas",
-                          "get",
-                          "getsas",
-                          "list",
-                          "listsas",
-                          "purge",
-                          "recover",
-                          "regeneratekey",
-                          "restore",
-                          "set",
-                          "setsas",
-                          "update"
-                        ],
-                        "nullable": true,
-                        "metadata": {
-                          "description": "Optional. Permissions to storage accounts."
-                        }
+              "type": "object",
+              "properties": {
+                "tenantId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The tenant ID that is used for authenticating requests to the key vault."
+                  }
+                },
+                "objectId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The object ID of a user, service principal or security group in the tenant for the vault."
+                  }
+                },
+                "applicationId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Application ID of the client making request on behalf of a principal."
+                  }
+                },
+                "permissions": {
+                  "type": "object",
+                  "properties": {
+                    "keys": {
+                      "type": "array",
+                      "allowedValues": [
+                        "all",
+                        "backup",
+                        "create",
+                        "decrypt",
+                        "delete",
+                        "encrypt",
+                        "get",
+                        "getrotationpolicy",
+                        "import",
+                        "list",
+                        "purge",
+                        "recover",
+                        "release",
+                        "restore",
+                        "rotate",
+                        "setrotationpolicy",
+                        "sign",
+                        "unwrapKey",
+                        "update",
+                        "verify",
+                        "wrapKey"
+                      ],
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Permissions to keys."
                       }
                     },
-                    "metadata": {
-                      "description": "Required. Permissions the identity has for keys, secrets and certificates."
+                    "secrets": {
+                      "type": "array",
+                      "allowedValues": [
+                        "all",
+                        "backup",
+                        "delete",
+                        "get",
+                        "list",
+                        "purge",
+                        "recover",
+                        "restore",
+                        "set"
+                      ],
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Permissions to secrets."
+                      }
+                    },
+                    "certificates": {
+                      "type": "array",
+                      "allowedValues": [
+                        "all",
+                        "backup",
+                        "create",
+                        "delete",
+                        "deleteissuers",
+                        "get",
+                        "getissuers",
+                        "import",
+                        "list",
+                        "listissuers",
+                        "managecontacts",
+                        "manageissuers",
+                        "purge",
+                        "recover",
+                        "restore",
+                        "setissuers",
+                        "update"
+                      ],
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Permissions to certificates."
+                      }
+                    },
+                    "storage": {
+                      "type": "array",
+                      "allowedValues": [
+                        "all",
+                        "backup",
+                        "delete",
+                        "deletesas",
+                        "get",
+                        "getsas",
+                        "list",
+                        "listsas",
+                        "purge",
+                        "recover",
+                        "regeneratekey",
+                        "restore",
+                        "set",
+                        "setsas",
+                        "update"
+                      ],
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Permissions to storage accounts."
+                      }
                     }
+                  },
+                  "metadata": {
+                    "description": "Required. Permissions the identity has for keys, secrets and certificates."
                   }
                 }
               },
-              "nullable": true
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for an access policy."
+              }
             }
           },
           "parameters": {
@@ -1530,25 +1536,15 @@
               }
             },
             "accessPolicies": {
-              "$ref": "#/definitions/accessPoliciesType",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/accessPoliciesType"
+              },
+              "nullable": true,
               "metadata": {
                 "description": "Optional. An array of 0 to 16 identities that have access to the key vault. All identities in the array must use the same tenant ID as the key vault's tenant ID."
               }
             }
-          },
-          "variables": {
-            "copy": [
-              {
-                "name": "formattedAccessPolicies",
-                "count": "[length(coalesce(parameters('accessPolicies'), createArray()))]",
-                "input": {
-                  "applicationId": "[coalesce(tryGet(coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')], 'applicationId'), '')]",
-                  "objectId": "[coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')].objectId]",
-                  "permissions": "[coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')].permissions]",
-                  "tenantId": "[coalesce(tryGet(coalesce(parameters('accessPolicies'), createArray())[copyIndex('formattedAccessPolicies')], 'tenantId'), tenant().tenantId)]"
-                }
-              }
-            ]
           },
           "resources": {
             "keyVault": {
@@ -1559,14 +1555,22 @@
             },
             "policies": {
               "type": "Microsoft.KeyVault/vaults/accessPolicies",
-              "apiVersion": "2022-07-01",
+              "apiVersion": "2023-07-01",
               "name": "[format('{0}/{1}', parameters('keyVaultName'), 'add')]",
               "properties": {
-                "accessPolicies": "[variables('formattedAccessPolicies')]"
-              },
-              "dependsOn": [
-                "keyVault"
-              ]
+                "copy": [
+                  {
+                    "name": "accessPolicies",
+                    "count": "[length(coalesce(parameters('accessPolicies'), createArray()))]",
+                    "input": {
+                      "applicationId": "[coalesce(tryGet(coalesce(parameters('accessPolicies'), createArray())[copyIndex('accessPolicies')], 'applicationId'), '')]",
+                      "objectId": "[coalesce(parameters('accessPolicies'), createArray())[copyIndex('accessPolicies')].objectId]",
+                      "permissions": "[coalesce(parameters('accessPolicies'), createArray())[copyIndex('accessPolicies')].permissions]",
+                      "tenantId": "[coalesce(tryGet(coalesce(parameters('accessPolicies'), createArray())[copyIndex('accessPolicies')], 'tenantId'), tenant().tenantId)]"
+                    }
+                  }
+                ]
+              }
             }
           },
           "outputs": {
@@ -1647,12 +1651,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "15057494123851631617"
+              "version": "0.33.93.31351",
+              "templateHash": "4741547827723795923"
             },
             "name": "Key Vault Secrets",
-            "description": "This module deploys a Key Vault Secret.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Key Vault Secret."
           },
           "definitions": {
             "roleAssignmentType": {
@@ -1726,7 +1729,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a role assignment.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
                 }
               }
             }
@@ -1837,10 +1840,7 @@
                   "nbf": "[parameters('attributesNbf')]"
                 },
                 "value": "[parameters('value')]"
-              },
-              "dependsOn": [
-                "keyVault"
-              ]
+              }
             },
             "secret_roleAssignments": {
               "copy": {
@@ -1965,12 +1965,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "16374679780625197074"
+              "version": "0.33.93.31351",
+              "templateHash": "12000970886778046699"
             },
             "name": "Key Vault Keys",
-            "description": "This module deploys a Key Vault Key.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Key Vault Key."
           },
           "definitions": {
             "roleAssignmentType": {
@@ -2044,7 +2043,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a role assignment.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
                 }
               }
             }
@@ -2198,10 +2197,7 @@
               "apiVersion": "2022-07-01",
               "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('name'))]",
               "tags": "[parameters('tags')]",
-              "properties": "[shallowMerge(createArray(createObject('attributes', createObject('enabled', parameters('attributesEnabled'), 'exp', parameters('attributesExp'), 'nbf', parameters('attributesNbf')), 'curveName', parameters('curveName'), 'keyOps', parameters('keyOps'), 'keySize', parameters('keySize'), 'kty', parameters('kty'), 'release_policy', coalesce(parameters('releasePolicy'), createObject())), if(not(empty(parameters('rotationPolicy'))), createObject('rotationPolicy', parameters('rotationPolicy')), createObject())))]",
-              "dependsOn": [
-                "keyVault"
-              ]
+              "properties": "[shallowMerge(createArray(createObject('attributes', createObject('enabled', parameters('attributesEnabled'), 'exp', parameters('attributesExp'), 'nbf', parameters('attributesNbf')), 'curveName', parameters('curveName'), 'keyOps', parameters('keyOps'), 'keySize', parameters('keySize'), 'kty', parameters('kty'), 'release_policy', coalesce(parameters('releasePolicy'), createObject())), if(not(empty(parameters('rotationPolicy'))), createObject('rotationPolicy', parameters('rotationPolicy')), createObject())))]"
             },
             "key_roleAssignments": {
               "copy": {
@@ -2277,7 +2273,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-keyVault-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
-      "resourceGroup": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupName'), '')]",
+      "subscriptionId": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[2]]",
+      "resourceGroup": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[4]]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -2293,7 +2290,7 @@
             "value": "[coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId]"
           },
           "enableTelemetry": {
-            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           },
           "location": {
             "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'location'), reference(split(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location)]"
@@ -2330,12 +2327,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "6724714132049298262"
+              "version": "0.33.13.18514",
+              "templateHash": "15954548978129725136"
             },
             "name": "Private Endpoints",
-            "description": "This module deploys a Private Endpoint.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Private Endpoint."
           },
           "definitions": {
             "privateDnsZoneGroupType": {
@@ -2395,50 +2391,6 @@
                   },
                   "metadata": {
                     "description": "Required. Properties of private endpoint IP configurations."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true
-              }
-            },
-            "manualPrivateLinkServiceConnectionType": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The name of the private link service connection."
-                  }
-                },
-                "properties": {
-                  "type": "object",
-                  "properties": {
-                    "groupIds": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      },
-                      "metadata": {
-                        "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`."
-                      }
-                    },
-                    "privateLinkServiceId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The resource id of private link service."
-                      }
-                    },
-                    "requestMessage": {
-                      "type": "string",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars."
-                      }
-                    }
-                  },
-                  "metadata": {
-                    "description": "Required. Properties of private link service connection."
                   }
                 }
               },
@@ -2540,7 +2492,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a lock.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
                 }
               }
             },
@@ -2638,7 +2590,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a role assignment.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
                 }
               }
             }
@@ -2734,11 +2686,11 @@
             "manualPrivateLinkServiceConnections": {
               "type": "array",
               "items": {
-                "$ref": "#/definitions/manualPrivateLinkServiceConnectionType"
+                "$ref": "#/definitions/privateLinkServiceConnectionType"
               },
               "nullable": true,
               "metadata": {
-                "description": "Optional. A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource."
+                "description": "Conditional. A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource. Required if `privateLinkServiceConnections` is empty."
               }
             },
             "privateLinkServiceConnections": {
@@ -2748,7 +2700,7 @@
               },
               "nullable": true,
               "metadata": {
-                "description": "Optional. A grouping of information about the connection to the remote resource."
+                "description": "Conditional. A grouping of information about the connection to the remote resource. Required if `manualPrivateLinkServiceConnections` is empty."
               }
             },
             "enableTelemetry": {
@@ -2785,7 +2737,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.9.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.10.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -2891,12 +2843,11 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.30.23.60470",
-                      "templateHash": "12329174801198479603"
+                      "version": "0.33.13.18514",
+                      "templateHash": "5440815542537978381"
                     },
                     "name": "Private Endpoint Private DNS Zone Groups",
-                    "description": "This module deploys a Private Endpoint Private DNS Zone Group.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a Private Endpoint Private DNS Zone Group."
                   },
                   "definitions": {
                     "privateDnsZoneGroupConfigType": {
@@ -2974,10 +2925,7 @@
                       "name": "[format('{0}/{1}', parameters('privateEndpointName'), parameters('name'))]",
                       "properties": {
                         "privateDnsZoneConfigs": "[variables('privateDnsZoneConfigsVar')]"
-                      },
-                      "dependsOn": [
-                        "privateEndpoint"
-                      ]
+                      }
                     }
                   },
                   "outputs": {
@@ -3039,7 +2987,7 @@
               },
               "value": "[reference('privateEndpoint', '2023-11-01', 'full').location]"
             },
-            "customDnsConfig": {
+            "customDnsConfigs": {
               "type": "array",
               "items": {
                 "$ref": "#/definitions/customDnsConfigType"
@@ -3124,8 +3072,8 @@
         "input": {
           "name": "[reference(format('keyVault_privateEndpoints[{0}]', copyIndex())).outputs.name.value]",
           "resourceId": "[reference(format('keyVault_privateEndpoints[{0}]', copyIndex())).outputs.resourceId.value]",
-          "groupId": "[reference(format('keyVault_privateEndpoints[{0}]', copyIndex())).outputs.groupId.value]",
-          "customDnsConfigs": "[reference(format('keyVault_privateEndpoints[{0}]', copyIndex())).outputs.customDnsConfig.value]",
+          "groupId": "[tryGet(tryGet(reference(format('keyVault_privateEndpoints[{0}]', copyIndex())).outputs, 'groupId'), 'value')]",
+          "customDnsConfigs": "[reference(format('keyVault_privateEndpoints[{0}]', copyIndex())).outputs.customDnsConfigs.value]",
           "networkInterfaceResourceIds": "[reference(format('keyVault_privateEndpoints[{0}]', copyIndex())).outputs.networkInterfaceResourceIds.value]"
         }
       }

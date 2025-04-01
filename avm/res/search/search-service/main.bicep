@@ -1,6 +1,5 @@
 metadata name = 'Search Services'
 metadata description = 'This module deploys a Search Service.'
-metadata owner = 'Azure/module-maintainers'
 
 // ============== //
 //   Parameters   //
@@ -108,6 +107,8 @@ param tags object?
 // ============= //
 //   Variables   //
 // ============= //
+
+var enableReferencedModulesTelemetry = false
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -296,7 +297,7 @@ module searchService_privateEndpoints 'br/public:avm/res/network/private-endpoin
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
-      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',
@@ -335,17 +336,17 @@ module searchService_sharedPrivateLinkResources 'shared-private-link-resource/ma
 module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfiguration != null) {
   name: '${uniqueString(deployment().name, location)}-secrets-kv'
   scope: resourceGroup(
-    split((secretsExportConfiguration.?keyVaultResourceId ?? '//'), '/')[2],
-    split((secretsExportConfiguration.?keyVaultResourceId ?? '////'), '/')[4]
+    split(secretsExportConfiguration.?keyVaultResourceId!, '/')[2],
+    split(secretsExportConfiguration.?keyVaultResourceId!, '/')[4]
   )
   params: {
-    keyVaultName: last(split(secretsExportConfiguration.?keyVaultResourceId ?? '//', '/'))
+    keyVaultName: last(split(secretsExportConfiguration.?keyVaultResourceId!, '/'))
     secretsToSet: union(
       [],
       contains(secretsExportConfiguration!, 'primaryAdminKeyName')
         ? [
             {
-              name: secretsExportConfiguration!.primaryAdminKeyName
+              name: secretsExportConfiguration!.?primaryAdminKeyName
               value: searchService.listAdminKeys().primaryKey
             }
           ]
@@ -353,7 +354,7 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
       contains(secretsExportConfiguration!, 'secondaryAdminKeyName')
         ? [
             {
-              name: secretsExportConfiguration!.secondaryAdminKeyName
+              name: secretsExportConfiguration!.?secondaryAdminKeyName
               value: searchService.listAdminKeys().secondaryKey
             }
           ]
@@ -376,7 +377,7 @@ output resourceId string = searchService.id
 output resourceGroupName string = resourceGroup().name
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = searchService.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = searchService.?identity.?principalId
 
 @description('The location the resource was deployed into.')
 output location string = searchService.location

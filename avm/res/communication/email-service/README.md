@@ -8,6 +8,7 @@ This module deploys an Email Service
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -16,9 +17,9 @@ This module deploys an Email Service
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Communication/emailServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Communication/emailServices) |
-| `Microsoft.Communication/emailServices/domains` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Communication/emailServices/domains) |
-| `Microsoft.Communication/emailServices/domains/senderUsernames` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Communication/emailServices/domains/senderUsernames) |
+| `Microsoft.Communication/emailServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Communication/2023-04-01/emailServices) |
+| `Microsoft.Communication/emailServices/domains` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Communication/2023-04-01/emailServices/domains) |
+| `Microsoft.Communication/emailServices/domains/senderUsernames` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Communication/2023-04-01/emailServices/domains/senderUsernames) |
 
 ## Usage examples
 
@@ -693,6 +694,14 @@ Endpoint tags.
 | `name` | string | The name of the email service. |
 | `resourceGroupName` | string | The resource group the email service was deployed into. |
 | `resourceId` | string | The resource ID of the email service. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

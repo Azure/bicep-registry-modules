@@ -38,12 +38,15 @@ module nestedDependencies 'dependencies.bicep' = {
     location: resourceLocation
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    sshDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
+    sshKeyName: 'dep-${namePrefix}-ssh-${serviceShort}'
+    virtualMachineName: 'dep-${namePrefix}-vm-${serviceShort}'
   }
 }
 
 // Diagnostics
 // ===========
-module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
   params: {
@@ -71,6 +74,15 @@ module testDeployment '../../../main.bicep' = [
         enhancedSecurityState: 'Disabled'
         softDeleteFeatureState: 'Disabled'
       }
+      protectedItems: [
+        {
+          name: 'vm;iaasvmcontainerv2;${resourceGroup.name};${last(split(nestedDependencies.outputs.virtualMachineResourceId, '/'))}'
+          protectionContainerName: 'IaasVMContainer;iaasvmcontainerv2;${resourceGroup.name};${last(split(nestedDependencies.outputs.virtualMachineResourceId, '/'))}'
+          policyName: 'VMpolicy'
+          protectedItemType: 'Microsoft.Compute/virtualMachines'
+          sourceResourceId: nestedDependencies.outputs.virtualMachineResourceId
+        }
+      ]
       backupPolicies: [
         {
           name: 'VMpolicy'
@@ -301,10 +313,6 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
-      backupStorageConfig: {
-        crossRegionRestoreFlag: true
-        storageModelType: 'GeoRedundant'
-      }
       replicationAlertSettings: {
         customEmailAddresses: [
           'test.user@testcompany.com'
@@ -420,15 +428,19 @@ module testDeployment '../../../main.bicep' = [
       monitoringSettings: {
         azureMonitorAlertSettings: {
           alertsForAllJobFailures: 'Enabled'
+          alertsForAllFailoverIssues: 'Enabled'
+          alertsForAllReplicationIssues: 'Enabled'
         }
         classicAlertSettings: {
           alertsForCriticalOperations: 'Enabled'
+          emailNotificationsForSiteRecovery: 'Enabled'
         }
       }
-      securitySettings: {
-        immutabilitySettings: {
-          state: 'Unlocked'
-        }
+      immutabilitySettingState: 'Unlocked'
+      softDeleteSettings: {
+        enhancedSecurityState: 'Enabled'
+        softDeleteRetentionPeriodInDays: 14
+        softDeleteState: 'Enabled'
       }
       tags: {
         'hidden-title': 'This is visible in the resource name'

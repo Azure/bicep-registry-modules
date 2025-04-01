@@ -1,6 +1,5 @@
 metadata name = 'Site App Settings'
 metadata description = 'This module deploys a Site App Setting.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent site resource. Required if the template is used in a standalone deployment.')
 param appName string
@@ -68,19 +67,16 @@ resource app 'Microsoft.Web/sites@2023-12-01' existing = {
 }
 
 resource appInsight 'Microsoft.Insights/components@2020-02-02' existing = if (!empty(appInsightResourceId)) {
-  name: last(split(appInsightResourceId ?? 'dummyName', '/'))
-  scope: resourceGroup(split(appInsightResourceId ?? '//', '/')[2], split(appInsightResourceId ?? '////', '/')[4])
+  name: last(split(appInsightResourceId!, '/'))
+  scope: resourceGroup(split(appInsightResourceId!, '/')[2], split(appInsightResourceId!, '/')[4])
 }
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' existing = if (!empty(storageAccountResourceId)) {
-  name: last(split(storageAccountResourceId ?? 'dummyName', '/'))
-  scope: resourceGroup(
-    split(storageAccountResourceId ?? '//', '/')[2],
-    split(storageAccountResourceId ?? '////', '/')[4]
-  )
+  name: last(split(storageAccountResourceId!, '/'))
+  scope: resourceGroup(split(storageAccountResourceId!, '/')[2], split(storageAccountResourceId!, '/')[4])
 }
 
-resource appSettings 'Microsoft.Web/sites/config@2023-12-01' = {
+resource appSettings 'Microsoft.Web/sites/config@2024-04-01' = {
   name: 'appsettings'
   kind: kind
   parent: app

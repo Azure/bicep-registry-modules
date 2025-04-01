@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "13972056376134412662"
+      "version": "0.34.1.11899",
+      "templateHash": "14114649402369146252"
     },
     "name": "CDN Profiles Origin Group",
-    "description": "This module deploys a CDN Profile Origin Group.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a CDN Profile Origin Group."
   },
   "definitions": {
     "originGroupType": {
@@ -64,7 +63,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type of the origin group."
       }
     },
     "loadBalancingSettingsType": {
@@ -90,7 +90,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type of the load balancing settings."
       }
     },
     "healthProbeSettingsType": {
@@ -136,7 +137,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type of the health probe settings."
       }
     },
     "originType": {
@@ -216,6 +218,7 @@
         }
       },
       "metadata": {
+        "description": "The name of the origin type.",
         "__bicep_imported_from!": {
           "sourceTemplate": "origin/main.bicep"
         }
@@ -289,10 +292,7 @@
         "loadBalancingSettings": "[parameters('loadBalancingSettings')]",
         "sessionAffinityState": "[parameters('sessionAffinityState')]",
         "trafficRestorationTimeToHealedOrNewEndpointsInMinutes": "[parameters('trafficRestorationTimeToHealedOrNewEndpointsInMinutes')]"
-      },
-      "dependsOn": [
-        "profile"
-      ]
+      }
     },
     "originGroup_origins": {
       "copy": {
@@ -352,12 +352,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "7808954044639543840"
+              "version": "0.34.1.11899",
+              "templateHash": "3299448810125740577"
             },
             "name": "CDN Profiles Origin",
-            "description": "This module deploys a CDN Profile Origin.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a CDN Profile Origin."
           },
           "definitions": {
             "originType": {
@@ -437,7 +436,8 @@
                 }
               },
               "metadata": {
-                "__bicep_export!": true
+                "__bicep_export!": true,
+                "description": "The name of the origin type."
               }
             }
           },
@@ -532,10 +532,7 @@
               "existing": true,
               "type": "Microsoft.Cdn/profiles/originGroups",
               "apiVersion": "2023-05-01",
-              "name": "[format('{0}/{1}', parameters('profileName'), parameters('originGroupName'))]",
-              "dependsOn": [
-                "profile"
-              ]
+              "name": "[format('{0}/{1}', parameters('profileName'), parameters('originGroupName'))]"
             },
             "profile": {
               "existing": true,
@@ -557,10 +554,7 @@
                 "priority": "[parameters('priority')]",
                 "sharedPrivateLinkResource": "[parameters('sharedPrivateLinkResource')]",
                 "weight": "[parameters('weight')]"
-              },
-              "dependsOn": [
-                "profile::originGroup"
-              ]
+              }
             }
           },
           "outputs": {

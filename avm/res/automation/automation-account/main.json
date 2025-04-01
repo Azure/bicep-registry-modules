@@ -5,14 +5,76 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "7064248988534134732"
+      "version": "0.33.13.18514",
+      "templateHash": "4065257461932072244"
     },
     "name": "Automation Accounts",
-    "description": "This module deploys an Azure Automation Account.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Azure Automation Account."
   },
   "definitions": {
+    "privateEndpointOutputType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "The name of the private endpoint."
+          }
+        },
+        "resourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "The resource ID of the private endpoint."
+          }
+        },
+        "groupId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "The group Id for the private endpoint Group."
+          }
+        },
+        "customDnsConfigs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "fqdn": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "FQDN that resolves to private endpoint IP address."
+                }
+              },
+              "ipAddresses": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "metadata": {
+                  "description": "A list of private IP addresses of the private endpoint."
+                }
+              }
+            }
+          },
+          "metadata": {
+            "description": "The custom DNS configurations of the private endpoint."
+          }
+        },
+        "networkInterfaceResourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "The IDs of the network interfaces associated with the private endpoint."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
     "credentialType": {
       "type": "object",
       "properties": {
@@ -66,6 +128,83 @@
         "__bicep_export!": true
       }
     },
+    "pwsh72ModuleType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Name of the Powershell72 Automation Account module."
+          }
+        },
+        "location": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The location to deploy the module to."
+          }
+        },
+        "tags": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Tags of the Powershell 72 module resource."
+          }
+        },
+        "uri": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Module package URI, e.g. https://www.powershellgallery.com/api/v2/package."
+          }
+        },
+        "version": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Module version or specify latest to get the latest version."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a PowerShell 7.2 module configuration."
+      }
+    },
+    "python23PackageType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Name of the Python3 Automation Account package."
+          }
+        },
+        "tags": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Tags of the Python3 package resource."
+          }
+        },
+        "uri": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Module package URI, e.g. https://www.powershellgallery.com/api/v2/package."
+          }
+        },
+        "version": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Module version or specify latest to get the latest version."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a Python 2 or 3 module configuration."
+      }
+    },
     "_1.privateEndpointCustomDnsConfigType": {
       "type": "object",
       "properties": {
@@ -88,7 +227,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     },
@@ -130,7 +269,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     },
@@ -171,7 +310,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     },
@@ -208,7 +347,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a customer-managed key. To be used if the resource type does not support auto-rotation of the customer-managed key.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     },
@@ -330,7 +469,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     },
@@ -360,7 +499,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     },
@@ -388,7 +527,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     },
@@ -426,6 +565,13 @@
           "type": "string",
           "metadata": {
             "description": "Required. Resource ID of the subnet where the endpoint needs to be created."
+          }
+        },
+        "resourceGroupResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used."
           }
         },
         "privateDnsZoneGroup": {
@@ -517,19 +663,12 @@
           "metadata": {
             "description": "Optional. Enable/Disable usage telemetry for module."
           }
-        },
-        "resourceGroupName": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Specify if you want to deploy the Private Endpoint into a different resource group than the main resource."
-          }
         }
       },
       "metadata": {
         "description": "An AVM-aligned type for a private endpoint. To be used if the private endpoint's default service / groupId can NOT be assumed (i.e., for services that have more than one subresource, like Storage Account with Blob (blob, table, queue, file, ...).",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     },
@@ -604,7 +743,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     },
@@ -686,6 +825,36 @@
       "defaultValue": [],
       "metadata": {
         "description": "Optional. List of modules to be created in the automation account."
+      }
+    },
+    "powershell72Modules": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/pwsh72ModuleType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. List of powershell72 modules to be created in the automation account."
+      }
+    },
+    "python3Packages": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/python23PackageType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. List of python 3 packages to be created in the automation account."
+      }
+    },
+    "python2Packages": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/python23PackageType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. List of python 2 packages to be created in the automation account."
       }
     },
     "runbooks": {
@@ -826,6 +995,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
+    "enableReferencedModulesTelemetry": false,
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned, UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "builtInRoleNames": {
@@ -846,12 +1016,9 @@
       "existing": true,
       "type": "Microsoft.KeyVault/vaults/keys",
       "apiVersion": "2023-02-01",
-      "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '//'), '/')[2]]",
-      "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '////'), '/')[4]]",
-      "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]",
-      "dependsOn": [
-        "cMKKeyVault"
-      ]
+      "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
+      "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'))]"
     },
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
@@ -878,18 +1045,18 @@
       "existing": true,
       "type": "Microsoft.KeyVault/vaults",
       "apiVersion": "2023-02-01",
-      "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '//'), '/')[2]]",
-      "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '////'), '/')[4]]",
-      "name": "[last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/'))]"
+      "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
+      "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
     },
     "cMKUserAssignedIdentity": {
       "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId')))]",
       "existing": true,
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
       "apiVersion": "2023-01-31",
-      "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '//'), '/')[2]]",
-      "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '////'), '/')[4]]",
-      "name": "[last(split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), 'dummyMsi'), '/'))]"
+      "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]]",
+      "name": "[last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/'))]"
     },
     "automationAccount": {
       "type": "Microsoft.Automation/automationAccounts",
@@ -902,13 +1069,13 @@
         "sku": {
           "name": "[parameters('skuName')]"
         },
-        "encryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('keySource', 'Microsoft.Keyvault', 'identity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), createObject('userAssignedIdentity', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '//'), '/')[2], split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '////'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), 'dummyMsi'), '/')))), null()), 'keyVaultProperties', createObject('keyName', parameters('customerManagedKey').keyName, 'keyvaultUri', reference('cMKKeyVault').vaultUri, 'keyVersion', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'keyVersion'), ''))), parameters('customerManagedKey').keyVersion, last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/'))))), null())]",
+        "encryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('keySource', 'Microsoft.Keyvault', 'identity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), createObject('userAssignedIdentity', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2], split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')))), null()), 'keyVaultProperties', createObject('keyName', parameters('customerManagedKey').keyName, 'keyvaultUri', reference('cMKKeyVault').vaultUri, 'keyVersion', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'keyVersion'), ''))), tryGet(parameters('customerManagedKey'), 'keyVersion'), last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/'))))), null())]",
         "publicNetworkAccess": "[if(not(empty(parameters('publicNetworkAccess'))), if(equals(parameters('publicNetworkAccess'), 'Disabled'), false(), true()), if(not(empty(parameters('privateEndpoints'))), false(), null()))]",
         "disableLocalAuth": "[parameters('disableLocalAuth')]"
       },
       "dependsOn": [
-        "cMKKeyVault",
-        "cMKUserAssignedIdentity"
+        "cMKKeyVault::cMKKey",
+        "cMKKeyVault"
       ]
     },
     "automationAccount_lock": {
@@ -1025,12 +1192,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "3177693922733831864"
+              "version": "0.33.13.18514",
+              "templateHash": "4724766961857917183"
             },
             "name": "Automation Account Credential",
-            "description": "This module deploys Azure Automation Account Credential.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys Azure Automation Account Credential."
           },
           "parameters": {
             "automationAccountName": {
@@ -1080,10 +1246,7 @@
                 "password": "[parameters('password')]",
                 "userName": "[parameters('userName')]",
                 "description": "[coalesce(parameters('description'), '')]"
-              },
-              "dependsOn": [
-                "automationAccount"
-              ]
+              }
             }
           },
           "outputs": {
@@ -1155,12 +1318,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "1826826272421943582"
+              "version": "0.33.13.18514",
+              "templateHash": "15236349277096310785"
             },
             "name": "Automation Account Modules",
-            "description": "This module deploys an Azure Automation Account Module.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Azure Automation Account Module."
           },
           "parameters": {
             "name": {
@@ -1221,10 +1383,7 @@
                   "uri": "[if(not(equals(parameters('version'), 'latest')), format('{0}/{1}/{2}', parameters('uri'), parameters('name'), parameters('version')), format('{0}/{1}', parameters('uri'), parameters('name')))]",
                   "version": "[if(not(equals(parameters('version'), 'latest')), parameters('version'), null())]"
                 }
-              },
-              "dependsOn": [
-                "automationAccount"
-              ]
+              }
             }
           },
           "outputs": {
@@ -1255,6 +1414,416 @@
                 "description": "The location the resource was deployed into."
               },
               "value": "[reference('module', '2022-08-08', 'full').location]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "automationAccount"
+      ]
+    },
+    "automationAccount_powershell72modules": {
+      "copy": {
+        "name": "automationAccount_powershell72modules",
+        "count": "[length(coalesce(parameters('powershell72Modules'), createArray()))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-AutoAccount-Pwsh72Module-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[coalesce(parameters('powershell72Modules'), createArray())[copyIndex()].name]"
+          },
+          "automationAccountName": {
+            "value": "[parameters('name')]"
+          },
+          "version": {
+            "value": "[coalesce(parameters('powershell72Modules'), createArray())[copyIndex()].version]"
+          },
+          "uri": {
+            "value": "[coalesce(parameters('powershell72Modules'), createArray())[copyIndex()].uri]"
+          },
+          "location": {
+            "value": "[tryGet(coalesce(parameters('powershell72Modules'), createArray())[copyIndex()], 'location')]"
+          },
+          "tags": {
+            "value": "[coalesce(tryGet(coalesce(parameters('powershell72Modules'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.33.13.18514",
+              "templateHash": "8322001051342524245"
+            },
+            "name": "Automation Account Powershell72 Modules",
+            "description": "This module deploys a Powershell72 Module in the Automation Account."
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Name of the Powershell72 Automation Account module."
+              }
+            },
+            "automationAccountName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent Automation Account. Required if the template is used in a standalone deployment."
+              }
+            },
+            "uri": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Module package URI, e.g. https://www.powershellgallery.com/api/v2/package."
+              }
+            },
+            "version": {
+              "type": "string",
+              "defaultValue": "latest",
+              "metadata": {
+                "description": "Optional. Module version or specify latest to get the latest version."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Optional. Location for all resources."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Tags of the Powershell 72 module resource."
+              }
+            }
+          },
+          "resources": {
+            "automationAccount": {
+              "existing": true,
+              "type": "Microsoft.Automation/automationAccounts",
+              "apiVersion": "2022-08-08",
+              "name": "[parameters('automationAccountName')]"
+            },
+            "powershell72module": {
+              "type": "Microsoft.Automation/automationAccounts/powerShell72Modules",
+              "apiVersion": "2023-11-01",
+              "name": "[format('{0}/{1}', parameters('automationAccountName'), parameters('name'))]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "contentLink": {
+                  "uri": "[if(not(equals(parameters('version'), 'latest')), format('{0}/{1}/{2}', parameters('uri'), parameters('name'), parameters('version')), format('{0}/{1}', parameters('uri'), parameters('name')))]",
+                  "version": "[if(not(equals(parameters('version'), 'latest')), parameters('version'), null())]"
+                }
+              }
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the deployed module."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the deployed module."
+              },
+              "value": "[resourceId('Microsoft.Automation/automationAccounts/powerShell72Modules', parameters('automationAccountName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group of the deployed module."
+              },
+              "value": "[resourceGroup().name]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location the resource was deployed into."
+              },
+              "value": "[reference('powershell72module', '2023-11-01', 'full').location]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "automationAccount"
+      ]
+    },
+    "automationAccount_python3packages": {
+      "copy": {
+        "name": "automationAccount_python3packages",
+        "count": "[length(coalesce(parameters('python3Packages'), createArray()))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-AutoAccount-Python3Package-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[coalesce(parameters('python3Packages'), createArray())[copyIndex()].name]"
+          },
+          "automationAccountName": {
+            "value": "[parameters('name')]"
+          },
+          "version": {
+            "value": "[coalesce(parameters('python3Packages'), createArray())[copyIndex()].version]"
+          },
+          "uri": {
+            "value": "[coalesce(parameters('python3Packages'), createArray())[copyIndex()].uri]"
+          },
+          "tags": {
+            "value": "[coalesce(tryGet(coalesce(parameters('python3Packages'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.33.13.18514",
+              "templateHash": "3398538921478793121"
+            },
+            "name": "Automation Account Python 3 Packages",
+            "description": "This module deploys a Python3 Package in the Automation Account."
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Name of the Python3 Automation Account package."
+              }
+            },
+            "automationAccountName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent Automation Account. Required if the template is used in a standalone deployment."
+              }
+            },
+            "uri": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Package URI, e.g. https://www.powershellgallery.com/api/v2/package."
+              }
+            },
+            "version": {
+              "type": "string",
+              "defaultValue": "latest",
+              "metadata": {
+                "description": "Optional. Package version or specify latest to get the latest version."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Tags of the Automation Account resource."
+              }
+            }
+          },
+          "resources": {
+            "automationAccount": {
+              "existing": true,
+              "type": "Microsoft.Automation/automationAccounts",
+              "apiVersion": "2022-08-08",
+              "name": "[parameters('automationAccountName')]"
+            },
+            "python3package": {
+              "type": "Microsoft.Automation/automationAccounts/python3Packages",
+              "apiVersion": "2023-11-01",
+              "name": "[format('{0}/{1}', parameters('automationAccountName'), parameters('name'))]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "contentLink": {
+                  "uri": "[if(not(equals(parameters('version'), 'latest')), format('{0}/{1}/{2}', parameters('uri'), parameters('name'), parameters('version')), format('{0}/{1}', parameters('uri'), parameters('name')))]",
+                  "version": "[if(not(equals(parameters('version'), 'latest')), parameters('version'), null())]"
+                }
+              }
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the deployed package."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the deployed package."
+              },
+              "value": "[resourceId('Microsoft.Automation/automationAccounts/python3Packages', parameters('automationAccountName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group of the deployed package."
+              },
+              "value": "[resourceGroup().name]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location the resource was deployed into."
+              },
+              "value": "[reference('python3package', '2023-11-01', 'full').location]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "automationAccount"
+      ]
+    },
+    "automationAccount_python2packages": {
+      "copy": {
+        "name": "automationAccount_python2packages",
+        "count": "[length(coalesce(parameters('python2Packages'), createArray()))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-AutoAccount-Python2Package-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[coalesce(parameters('python2Packages'), createArray())[copyIndex()].name]"
+          },
+          "automationAccountName": {
+            "value": "[parameters('name')]"
+          },
+          "version": {
+            "value": "[coalesce(parameters('python2Packages'), createArray())[copyIndex()].version]"
+          },
+          "uri": {
+            "value": "[coalesce(parameters('python2Packages'), createArray())[copyIndex()].uri]"
+          },
+          "tags": {
+            "value": "[coalesce(tryGet(coalesce(parameters('python2Packages'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.33.13.18514",
+              "templateHash": "14659338227033455504"
+            },
+            "name": "Automation Account Python 2 Packages",
+            "description": "This module deploys a Python2 Package in the Automation Account."
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Name of the Python2 Automation Account package."
+              }
+            },
+            "automationAccountName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent Automation Account. Required if the template is used in a standalone deployment."
+              }
+            },
+            "uri": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Package URI, e.g. https://www.powershellgallery.com/api/v2/package."
+              }
+            },
+            "version": {
+              "type": "string",
+              "defaultValue": "latest",
+              "metadata": {
+                "description": "Optional. Package version or specify latest to get the latest version."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Tags of the Automation Account resource."
+              }
+            }
+          },
+          "resources": {
+            "automationAccount": {
+              "existing": true,
+              "type": "Microsoft.Automation/automationAccounts",
+              "apiVersion": "2022-08-08",
+              "name": "[parameters('automationAccountName')]"
+            },
+            "python2package": {
+              "type": "Microsoft.Automation/automationAccounts/python2Packages",
+              "apiVersion": "2023-11-01",
+              "name": "[format('{0}/{1}', parameters('automationAccountName'), parameters('name'))]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "contentLink": {
+                  "uri": "[if(not(equals(parameters('version'), 'latest')), format('{0}/{1}/{2}', parameters('uri'), parameters('name'), parameters('version')), format('{0}/{1}', parameters('uri'), parameters('name')))]",
+                  "version": "[if(not(equals(parameters('version'), 'latest')), parameters('version'), null())]"
+                }
+              }
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the deployed package."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the deployed package."
+              },
+              "value": "[resourceId('Microsoft.Automation/automationAccounts/python2Packages', parameters('automationAccountName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group of the deployed package."
+              },
+              "value": "[resourceGroup().name]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location the resource was deployed into."
+              },
+              "value": "[reference('python2package', '2023-11-01', 'full').location]"
             }
           }
         }
@@ -1311,12 +1880,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "9390427400811966884"
+              "version": "0.33.13.18514",
+              "templateHash": "5208326913021235093"
             },
             "name": "Automation Account Schedules",
-            "description": "This module deploys an Azure Automation Account Schedule.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Azure Automation Account Schedule."
           },
           "parameters": {
             "name": {
@@ -1496,12 +2064,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "17488627496732697335"
+              "version": "0.33.13.18514",
+              "templateHash": "15639241767839298844"
             },
             "name": "Automation Account Runbooks",
-            "description": "This module deploys an Azure Automation Account Runbook.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Azure Automation Account Runbook."
           },
           "parameters": {
             "name": {
@@ -1611,9 +2178,9 @@
               "existing": true,
               "type": "Microsoft.Storage/storageAccounts",
               "apiVersion": "2022-09-01",
-              "subscriptionId": "[split(coalesce(parameters('scriptStorageAccountResourceId'), '//'), '/')[2]]",
-              "resourceGroup": "[split(coalesce(parameters('scriptStorageAccountResourceId'), '////'), '/')[4]]",
-              "name": "[last(split(coalesce(parameters('scriptStorageAccountResourceId'), 'dummyVault'), '/'))]"
+              "subscriptionId": "[split(parameters('scriptStorageAccountResourceId'), '/')[2]]",
+              "resourceGroup": "[split(parameters('scriptStorageAccountResourceId'), '/')[4]]",
+              "name": "[last(split(parameters('scriptStorageAccountResourceId'), '/'))]"
             },
             "runbook": {
               "type": "Microsoft.Automation/automationAccounts/runbooks",
@@ -1624,12 +2191,8 @@
               "properties": {
                 "runbookType": "[parameters('type')]",
                 "description": "[parameters('description')]",
-                "publishContentLink": "[if(not(empty(parameters('uri'))), if(empty(parameters('uri')), null(), createObject('uri', if(not(empty(parameters('uri'))), if(empty(parameters('scriptStorageAccountResourceId')), parameters('uri'), format('{0}?{1}', parameters('uri'), listAccountSas(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(parameters('scriptStorageAccountResourceId'), '//'), '/')[2], split(coalesce(parameters('scriptStorageAccountResourceId'), '////'), '/')[4]), 'Microsoft.Storage/storageAccounts', last(split(coalesce(parameters('scriptStorageAccountResourceId'), 'dummyVault'), '/'))), '2021-04-01', variables('accountSasProperties')).accountSasToken)), null()), 'version', if(not(empty(parameters('version'))), parameters('version'), null()))), null())]"
-              },
-              "dependsOn": [
-                "automationAccount",
-                "storageAccount"
-              ]
+                "publishContentLink": "[if(not(empty(parameters('uri'))), if(empty(parameters('uri')), null(), createObject('uri', if(not(empty(parameters('uri'))), if(empty(parameters('scriptStorageAccountResourceId')), parameters('uri'), format('{0}?{1}', parameters('uri'), listAccountSas(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('scriptStorageAccountResourceId'), '/')[2], split(parameters('scriptStorageAccountResourceId'), '/')[4]), 'Microsoft.Storage/storageAccounts', last(split(parameters('scriptStorageAccountResourceId'), '/'))), '2021-04-01', variables('accountSasProperties')).accountSasToken)), null()), 'version', if(not(empty(parameters('version'))), parameters('version'), null()))), null())]"
+              }
             }
           },
           "outputs": {
@@ -1704,12 +2267,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "1973660029373842500"
+              "version": "0.33.13.18514",
+              "templateHash": "16349997339796815762"
             },
             "name": "Automation Account Job Schedules",
-            "description": "This module deploys an Azure Automation Account Job Schedule.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Azure Automation Account Job Schedule."
           },
           "parameters": {
             "name": {
@@ -1836,12 +2398,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "11138609945914911372"
+              "version": "0.33.13.18514",
+              "templateHash": "3241581989454144229"
             },
             "name": "Automation Account Variables",
-            "description": "This module deploys an Azure Automation Account Variable.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Azure Automation Account Variable."
           },
           "parameters": {
             "automationAccountName": {
@@ -1951,12 +2512,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "127660536760800360"
+              "version": "0.33.13.18514",
+              "templateHash": "14264843544501356974"
             },
             "name": "Log Analytics Workspace Linked Services",
-            "description": "This module deploys a Log Analytics Workspace Linked Service.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Log Analytics Workspace Linked Service."
           },
           "parameters": {
             "logAnalyticsWorkspaceName": {
@@ -2008,10 +2568,7 @@
               "properties": {
                 "resourceId": "[parameters('resourceId')]",
                 "writeAccessResourceId": "[if(empty(parameters('writeAccessResourceId')), null(), parameters('writeAccessResourceId'))]"
-              },
-              "dependsOn": [
-                "workspace"
-              ]
+              }
             }
           },
           "outputs": {
@@ -2073,7 +2630,7 @@
             "value": "[coalesce(parameters('gallerySolutions'), createArray())[copyIndex()].plan]"
           },
           "enableTelemetry": {
-            "value": "[parameters('enableTelemetry')]"
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
@@ -2083,8 +2640,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "1867653058254938383"
+              "version": "0.32.4.45862",
+              "templateHash": "10255889523646649592"
             },
             "name": "Operations Management Solutions",
             "description": "This module deploys an Operations Management Solution.",
@@ -2159,7 +2716,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.operationsmanagement-solution.{0}.{1}', replace('0.3.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.operationsmanagement-solution.{0}.{1}', replace('0.3.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -2194,10 +2751,7 @@
                 "promotionCode": "",
                 "product": "[parameters('plan').product]",
                 "publisher": "[coalesce(tryGet(parameters('plan'), 'publisher'), 'Microsoft')]"
-              },
-              "dependsOn": [
-                "logAnalyticsWorkspace"
-              ]
+              }
             }
           },
           "outputs": {
@@ -2354,12 +2908,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "10379683657935183144"
+              "version": "0.33.13.18514",
+              "templateHash": "936883737895017732"
             },
             "name": "Automation Account Software Update Configurations",
-            "description": "This module deploys an Azure Automation Account Software Update Configuration.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Azure Automation Account Software Update Configuration."
           },
           "parameters": {
             "name": {
@@ -2738,10 +3291,7 @@
                   "nextRunOffsetMinutes": "[parameters('nextRunOffsetMinutes')]",
                   "description": "[parameters('scheduleDescription')]"
                 }
-              },
-              "dependsOn": [
-                "automationAccount"
-              ]
+              }
             }
           },
           "outputs": {
@@ -2782,7 +3332,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-automationAccount-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
-      "resourceGroup": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupName'), '')]",
+      "subscriptionId": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[2]]",
+      "resourceGroup": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[4]]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -2798,7 +3349,7 @@
             "value": "[coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId]"
           },
           "enableTelemetry": {
-            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           },
           "location": {
             "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'location'), reference(split(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location)]"
@@ -2835,12 +3386,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "1277254088602407590"
+              "version": "0.33.13.18514",
+              "templateHash": "15954548978129725136"
             },
             "name": "Private Endpoints",
-            "description": "This module deploys a Private Endpoint.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Private Endpoint."
           },
           "definitions": {
             "privateDnsZoneGroupType": {
@@ -2862,80 +3412,118 @@
                     "description": "Required. The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones."
                   }
                 }
+              },
+              "metadata": {
+                "__bicep_export!": true
               }
             },
-            "roleAssignmentType": {
-              "type": "array",
-              "items": {
-                "type": "object",
+            "ipConfigurationType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the resource that is unique within a resource group."
+                  }
+                },
                 "properties": {
-                  "name": {
-                    "type": "string",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                  "type": "object",
+                  "properties": {
+                    "groupId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string."
+                      }
+                    },
+                    "memberName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The member name of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string."
+                      }
+                    },
+                    "privateIPAddress": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. A private IP address obtained from the private endpoint's subnet."
+                      }
                     }
                   },
-                  "roleDefinitionIdOrName": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-                    }
-                  },
-                  "principalId": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-                    }
-                  },
-                  "principalType": {
-                    "type": "string",
-                    "allowedValues": [
-                      "Device",
-                      "ForeignGroup",
-                      "Group",
-                      "ServicePrincipal",
-                      "User"
-                    ],
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The principal type of the assigned principal ID."
-                    }
-                  },
-                  "description": {
-                    "type": "string",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The description of the role assignment."
-                    }
-                  },
-                  "condition": {
-                    "type": "string",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-                    }
-                  },
-                  "conditionVersion": {
-                    "type": "string",
-                    "allowedValues": [
-                      "2.0"
-                    ],
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. Version of the condition."
-                    }
-                  },
-                  "delegatedManagedIdentityResourceId": {
-                    "type": "string",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The Resource Id of the delegated managed identity resource."
-                    }
+                  "metadata": {
+                    "description": "Required. Properties of private endpoint IP configurations."
                   }
                 }
               },
-              "nullable": true
+              "metadata": {
+                "__bicep_export!": true
+              }
+            },
+            "privateLinkServiceConnectionType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the private link service connection."
+                  }
+                },
+                "properties": {
+                  "type": "object",
+                  "properties": {
+                    "groupIds": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "metadata": {
+                        "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`."
+                      }
+                    },
+                    "privateLinkServiceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The resource id of private link service."
+                      }
+                    },
+                    "requestMessage": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars."
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "description": "Required. Properties of private link service connection."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true
+              }
+            },
+            "customDnsConfigType": {
+              "type": "object",
+              "properties": {
+                "fqdn": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. FQDN that resolves to private endpoint IP address."
+                  }
+                },
+                "ipAddresses": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "metadata": {
+                    "description": "Required. A list of private IP addresses of the private endpoint."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true
+              }
             },
             "lockType": {
               "type": "object",
@@ -2960,161 +3548,12 @@
                   }
                 }
               },
-              "nullable": true
-            },
-            "ipConfigurationsType": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. The name of the resource that is unique within a resource group."
-                    }
-                  },
-                  "properties": {
-                    "type": "object",
-                    "properties": {
-                      "groupId": {
-                        "type": "string",
-                        "metadata": {
-                          "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string."
-                        }
-                      },
-                      "memberName": {
-                        "type": "string",
-                        "metadata": {
-                          "description": "Required. The member name of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string."
-                        }
-                      },
-                      "privateIPAddress": {
-                        "type": "string",
-                        "metadata": {
-                          "description": "Required. A private IP address obtained from the private endpoint's subnet."
-                        }
-                      }
-                    },
-                    "metadata": {
-                      "description": "Required. Properties of private endpoint IP configurations."
-                    }
-                  }
+              "metadata": {
+                "description": "An AVM-aligned type for a lock.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
                 }
-              },
-              "nullable": true
-            },
-            "manualPrivateLinkServiceConnectionsType": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. The name of the private link service connection."
-                    }
-                  },
-                  "properties": {
-                    "type": "object",
-                    "properties": {
-                      "groupIds": {
-                        "type": "array",
-                        "items": {
-                          "type": "string"
-                        },
-                        "metadata": {
-                          "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`."
-                        }
-                      },
-                      "privateLinkServiceId": {
-                        "type": "string",
-                        "metadata": {
-                          "description": "Required. The resource id of private link service."
-                        }
-                      },
-                      "requestMessage": {
-                        "type": "string",
-                        "metadata": {
-                          "description": "Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars."
-                        }
-                      }
-                    },
-                    "metadata": {
-                      "description": "Required. Properties of private link service connection."
-                    }
-                  }
-                }
-              },
-              "nullable": true
-            },
-            "privateLinkServiceConnectionsType": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. The name of the private link service connection."
-                    }
-                  },
-                  "properties": {
-                    "type": "object",
-                    "properties": {
-                      "groupIds": {
-                        "type": "array",
-                        "items": {
-                          "type": "string"
-                        },
-                        "metadata": {
-                          "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`."
-                        }
-                      },
-                      "privateLinkServiceId": {
-                        "type": "string",
-                        "metadata": {
-                          "description": "Required. The resource id of private link service."
-                        }
-                      },
-                      "requestMessage": {
-                        "type": "string",
-                        "nullable": true,
-                        "metadata": {
-                          "description": "Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars."
-                        }
-                      }
-                    },
-                    "metadata": {
-                      "description": "Required. Properties of private link service connection."
-                    }
-                  }
-                }
-              },
-              "nullable": true
-            },
-            "customDnsConfigType": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "fqdn": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. Fqdn that resolves to private endpoint IP address."
-                    }
-                  },
-                  "ipAddresses": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    },
-                    "metadata": {
-                      "description": "Required. A list of private IP addresses of the private endpoint."
-                    }
-                  }
-                }
-              },
-              "nullable": true
+              }
             },
             "privateDnsZoneGroupConfigType": {
               "type": "object",
@@ -3138,6 +3577,81 @@
                   "sourceTemplate": "private-dns-zone-group/main.bicep"
                 }
               }
+            },
+            "roleAssignmentType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                  }
+                },
+                "roleDefinitionIdOrName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                  }
+                },
+                "principalId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                  }
+                },
+                "principalType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Device",
+                    "ForeignGroup",
+                    "Group",
+                    "ServicePrincipal",
+                    "User"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The principal type of the assigned principal ID."
+                  }
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The description of the role assignment."
+                  }
+                },
+                "condition": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                  }
+                },
+                "conditionVersion": {
+                  "type": "string",
+                  "allowedValues": [
+                    "2.0"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Version of the condition."
+                  }
+                },
+                "delegatedManagedIdentityResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The Resource Id of the delegated managed identity resource."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a role assignment.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                }
+              }
             }
           },
           "parameters": {
@@ -3155,6 +3669,9 @@
             },
             "applicationSecurityGroupResourceIds": {
               "type": "array",
+              "items": {
+                "type": "string"
+              },
               "nullable": true,
               "metadata": {
                 "description": "Optional. Application security groups in which the private endpoint IP configuration is included."
@@ -3168,7 +3685,11 @@
               }
             },
             "ipConfigurations": {
-              "$ref": "#/definitions/ipConfigurationsType",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ipConfigurationType"
+              },
+              "nullable": true,
               "metadata": {
                 "description": "Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints."
               }
@@ -3189,12 +3710,17 @@
             },
             "lock": {
               "$ref": "#/definitions/lockType",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The lock settings of the service."
               }
             },
             "roleAssignments": {
-              "$ref": "#/definitions/roleAssignmentType",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/roleAssignmentType"
+              },
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Array of role assignments to create."
               }
@@ -3207,21 +3733,33 @@
               }
             },
             "customDnsConfigs": {
-              "$ref": "#/definitions/customDnsConfigType",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/customDnsConfigType"
+              },
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Custom DNS configurations."
               }
             },
             "manualPrivateLinkServiceConnections": {
-              "$ref": "#/definitions/manualPrivateLinkServiceConnectionsType",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/privateLinkServiceConnectionType"
+              },
+              "nullable": true,
               "metadata": {
-                "description": "Optional. A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource."
+                "description": "Conditional. A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource. Required if `privateLinkServiceConnections` is empty."
               }
             },
             "privateLinkServiceConnections": {
-              "$ref": "#/definitions/privateLinkServiceConnectionsType",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/privateLinkServiceConnectionType"
+              },
+              "nullable": true,
               "metadata": {
-                "description": "Optional. A grouping of information about the connection to the remote resource."
+                "description": "Conditional. A grouping of information about the connection to the remote resource. Required if `manualPrivateLinkServiceConnections` is empty."
               }
             },
             "enableTelemetry": {
@@ -3250,7 +3788,7 @@
               "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
               "Private DNS Zone Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b12aa53e-6015-4669-85d0-8515ebb3ae7f')]",
               "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-              "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]"
+              "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]"
             }
           },
           "resources": {
@@ -3258,7 +3796,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.7.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.10.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -3364,12 +3902,11 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.29.47.4906",
-                      "templateHash": "5805178546717255803"
+                      "version": "0.33.13.18514",
+                      "templateHash": "5440815542537978381"
                     },
                     "name": "Private Endpoint Private DNS Zone Groups",
-                    "description": "This module deploys a Private Endpoint Private DNS Zone Group.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a Private Endpoint Private DNS Zone Group."
                   },
                   "definitions": {
                     "privateDnsZoneGroupConfigType": {
@@ -3447,10 +3984,7 @@
                       "name": "[format('{0}/{1}', parameters('privateEndpointName'), parameters('name'))]",
                       "properties": {
                         "privateDnsZoneConfigs": "[variables('privateDnsZoneConfigsVar')]"
-                      },
-                      "dependsOn": [
-                        "privateEndpoint"
-                      ]
+                      }
                     }
                   },
                   "outputs": {
@@ -3512,26 +4046,33 @@
               },
               "value": "[reference('privateEndpoint', '2023-11-01', 'full').location]"
             },
-            "customDnsConfig": {
-              "$ref": "#/definitions/customDnsConfigType",
+            "customDnsConfigs": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/customDnsConfigType"
+              },
               "metadata": {
                 "description": "The custom DNS configurations of the private endpoint."
               },
               "value": "[reference('privateEndpoint').customDnsConfigs]"
             },
-            "networkInterfaceIds": {
+            "networkInterfaceResourceIds": {
               "type": "array",
-              "metadata": {
-                "description": "The IDs of the network interfaces associated with the private endpoint."
+              "items": {
+                "type": "string"
               },
-              "value": "[reference('privateEndpoint').networkInterfaces]"
+              "metadata": {
+                "description": "The resource IDs of the network interfaces associated with the private endpoint."
+              },
+              "value": "[map(reference('privateEndpoint').networkInterfaces, lambda('nic', lambdaVariables('nic').id))]"
             },
             "groupId": {
               "type": "string",
+              "nullable": true,
               "metadata": {
                 "description": "The group Id for the private endpoint Group."
               },
-              "value": "[if(and(not(empty(reference('privateEndpoint').manualPrivateLinkServiceConnections)), greater(length(tryGet(reference('privateEndpoint').manualPrivateLinkServiceConnections[0].properties, 'groupIds')), 0)), coalesce(tryGet(reference('privateEndpoint').manualPrivateLinkServiceConnections[0].properties, 'groupIds', 0), ''), if(and(not(empty(reference('privateEndpoint').privateLinkServiceConnections)), greater(length(tryGet(reference('privateEndpoint').privateLinkServiceConnections[0].properties, 'groupIds')), 0)), coalesce(tryGet(reference('privateEndpoint').privateLinkServiceConnections[0].properties, 'groupIds', 0), ''), ''))]"
+              "value": "[coalesce(tryGet(tryGet(tryGet(tryGet(reference('privateEndpoint'), 'manualPrivateLinkServiceConnections'), 0, 'properties'), 'groupIds'), 0), tryGet(tryGet(tryGet(tryGet(reference('privateEndpoint'), 'privateLinkServiceConnections'), 0, 'properties'), 'groupIds'), 0))]"
             }
           }
         }
@@ -3580,17 +4121,20 @@
     },
     "privateEndpoints": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/privateEndpointOutputType"
+      },
       "metadata": {
         "description": "The private endpoints of the automation account."
       },
       "copy": {
-        "count": "[length(if(not(empty(parameters('privateEndpoints'))), array(parameters('privateEndpoints')), createArray()))]",
+        "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]",
         "input": {
           "name": "[reference(format('automationAccount_privateEndpoints[{0}]', copyIndex())).outputs.name.value]",
           "resourceId": "[reference(format('automationAccount_privateEndpoints[{0}]', copyIndex())).outputs.resourceId.value]",
-          "groupId": "[reference(format('automationAccount_privateEndpoints[{0}]', copyIndex())).outputs.groupId.value]",
-          "customDnsConfig": "[reference(format('automationAccount_privateEndpoints[{0}]', copyIndex())).outputs.customDnsConfig.value]",
-          "networkInterfaceIds": "[reference(format('automationAccount_privateEndpoints[{0}]', copyIndex())).outputs.networkInterfaceIds.value]"
+          "groupId": "[tryGet(tryGet(reference(format('automationAccount_privateEndpoints[{0}]', copyIndex())).outputs, 'groupId'), 'value')]",
+          "customDnsConfigs": "[reference(format('automationAccount_privateEndpoints[{0}]', copyIndex())).outputs.customDnsConfigs.value]",
+          "networkInterfaceResourceIds": "[reference(format('automationAccount_privateEndpoints[{0}]', copyIndex())).outputs.networkInterfaceResourceIds.value]"
         }
       }
     }

@@ -38,16 +38,16 @@ module nestedDependencies 'dependencies.bicep' = {
     location: resourceLocation
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    eventHubName: 'dt-${serviceShort}-evh-01'
-    eventHubNamespaceName: 'dt-${serviceShort}-evhns-01'
-    serviceBusName: 'dt-${serviceShort}-sb-01'
-    eventGridDomainName: 'dt-${serviceShort}-evg-01'
+    eventHubName: 'dep-${serviceShort}-evh-01'
+    eventHubNamespaceName: 'dep-${serviceShort}-evhns-01'
+    serviceBusNamespaceName: 'dep-${serviceShort}-sb-01'
+    eventGridTopicName: 'dep-${serviceShort}-evgt-01'
   }
 }
 
 // Diagnostics
 // ===========
-module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
   params: {
@@ -77,40 +77,74 @@ module testDeployment '../../../main.bicep' = [
           nestedDependencies.outputs.managedIdentityResourceId
         ]
       }
-      eventHubEndpoints: [
+      endpoints: [
         {
-          authenticationType: 'IdentityBased'
-          endpointUri: 'sb://${nestedDependencies.outputs.eventhubNamespaceName}.servicebus.windows.net/'
-          entityPath: nestedDependencies.outputs.eventhubName
-          managedIdentities: {
-            userAssignedResourceId: nestedDependencies.outputs.managedIdentityResourceId
-          }
-        }
-      ]
-      serviceBusEndpoints: [
-        {
-          name: 'ServiceBusPrimary'
-          authenticationType: 'IdentityBased'
-          endpointUri: 'sb://${nestedDependencies.outputs.serviceBusName}.servicebus.windows.net/'
-          entityPath: nestedDependencies.outputs.serviceBusTopicName
-          managedIdentities: {
-            userAssignedResourceId: nestedDependencies.outputs.managedIdentityResourceId
+          name: 'EventGridPrimary'
+          properties: {
+            endpointType: 'EventGrid'
+            eventGridTopicResourceId: nestedDependencies.outputs.eventGridTopicResourceId
           }
         }
         {
-          name: 'ServiceBusSeconday'
-          authenticationType: 'IdentityBased'
-          endpointUri: 'sb://${nestedDependencies.outputs.serviceBusName}.servicebus.windows.net/'
-          entityPath: nestedDependencies.outputs.serviceBusTopicName
-          managedIdentities: {
-            systemAssigned: true
+          name: 'IdentityBasedEndpoint'
+          properties: {
+            endpointType: 'EventHub'
+            authentication: {
+              eventHubResourceId: nestedDependencies.outputs.eventHubNamespaceEventHubResourceId
+              type: 'IdentityBased'
+              managedIdentities: {
+                userAssignedResourceId: nestedDependencies.outputs.managedIdentityResourceId
+              }
+            }
           }
         }
-      ]
-      eventGridEndpoints: [
         {
-          eventGridDomainId: nestedDependencies.outputs.eventGridDomainResourceId
-          topicEndpoint: nestedDependencies.outputs.eventGridEndpoint
+          name: 'KeyBasedEndpoint'
+          properties: {
+            endpointType: 'EventHub'
+            authentication: {
+              eventHubAuthorizationRuleName: nestedDependencies.outputs.eventHubNamespaceEventHubAuthorizationRuleName
+              eventHubResourceId: nestedDependencies.outputs.eventHubNamespaceEventHubResourceId
+              type: 'KeyBased'
+            }
+          }
+        }
+        {
+          name: 'IdentityBasedServiceBusPrimaryEndpoint'
+          properties: {
+            endpointType: 'ServiceBus'
+            authentication: {
+              type: 'IdentityBased'
+              serviceBusNamespaceTopicResourceId: nestedDependencies.outputs.serviceBusNamespaceTopicResourceId
+              managedIdentities: {
+                userAssignedResourceId: nestedDependencies.outputs.managedIdentityResourceId
+              }
+            }
+          }
+        }
+        {
+          name: 'IdentityBasedServiceBusSecondaryEndpoint'
+          properties: {
+            endpointType: 'ServiceBus'
+            authentication: {
+              type: 'IdentityBased'
+              serviceBusNamespaceTopicResourceId: nestedDependencies.outputs.serviceBusNamespaceTopicResourceId
+              managedIdentities: {
+                systemAssigned: true
+              }
+            }
+          }
+        }
+        {
+          name: 'KeyBasedServiceBusEndpoint'
+          properties: {
+            authentication: {
+              type: 'KeyBased'
+              serviceBusNamespaceTopicAuthorizationRuleName: nestedDependencies.outputs.serviceBusNamespaceTopicAuthorizationRuleName
+              serviceBusNamespaceTopicResourceId: nestedDependencies.outputs.serviceBusNamespaceTopicResourceId
+            }
+            endpointType: 'ServiceBus'
+          }
         }
       ]
       diagnosticSettings: [
@@ -133,9 +167,13 @@ module testDeployment '../../../main.bicep' = [
       }
       privateEndpoints: [
         {
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.privateDNSZoneResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+            ]
+          }
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
         }
       ]
@@ -165,9 +203,5 @@ module testDeployment '../../../main.bicep' = [
         Role: 'DeploymentValidation'
       }
     }
-    dependsOn: [
-      nestedDependencies
-      diagnosticDependencies
-    ]
   }
 ]

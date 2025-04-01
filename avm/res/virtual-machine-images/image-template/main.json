@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "9021236296601587261"
+      "version": "0.33.13.18514",
+      "templateHash": "17650936874255172135"
     },
     "name": "Virtual Machine Image Templates",
-    "description": "This module deploys a Virtual Machine Image Template that can be consumed by Azure Image Builder (AIB).",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Virtual Machine Image Template that can be consumed by Azure Image Builder (AIB)."
   },
   "definitions": {
     "distributionType": {
@@ -62,7 +61,7 @@
         "sharedImageGalleryImageDefinitionResourceId": {
           "type": "string",
           "metadata": {
-            "description": "Conditional. Resource ID of Compute Gallery Image Definition to distribute image to, e.g.: /subscriptions/<subscriptionID>/resourceGroups/<SIG resourcegroup>/providers/Microsoft.Compute/galleries/<SIG name>/images/<image definition>."
+            "description": "Required. Resource ID of Compute Gallery Image Definition to distribute image to, e.g.: /subscriptions/<subscriptionID>/resourceGroups/<SIG resourcegroup>/providers/Microsoft.Compute/galleries/<SIG name>/images/<image definition>."
           }
         },
         "sharedImageGalleryImageDefinitionTargetVersion": {
@@ -333,7 +332,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     },
@@ -354,7 +353,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a managed identity configuration. To be used if only user-assigned identities are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     },
@@ -429,7 +428,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     }
@@ -575,6 +574,46 @@
       "metadata": {
         "description": "Optional. The optimize property can be enabled while creating a VM image and allows VM optimization to improve image creation time."
       }
+    },
+    "autoRunState": {
+      "type": "string",
+      "defaultValue": "Disabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
+      "metadata": {
+        "description": "Optional. Indicates whether or not to automatically run the image template build on template creation or update."
+      }
+    },
+    "errorHandlingOnCustomizerError": {
+      "type": "string",
+      "defaultValue": "cleanup",
+      "allowedValues": [
+        "cleanup",
+        "abort"
+      ],
+      "metadata": {
+        "description": "Optional. If there is a customizer error and this field is set to 'cleanup', the build VM and associated network resources will be cleaned up. This is the default behavior. If there is a customizer error and this field is set to 'abort', the build VM will be preserved."
+      }
+    },
+    "errorHandlingOnValidationError": {
+      "type": "string",
+      "defaultValue": "cleanup",
+      "allowedValues": [
+        "cleanup",
+        "abort"
+      ],
+      "metadata": {
+        "description": "Optional. If there is a validation error and this field is set to 'cleanup', the build VM and associated network resources will be cleaned up. If there is a validation error and this field is set to 'abort', the build VM will be preserved. This is the default behavior."
+      }
+    },
+    "managedResourceTags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags that will be applied to the resource group and/or resources created by the service."
+      }
     }
   },
   "variables": {
@@ -620,32 +659,12 @@
     },
     "imageTemplate": {
       "type": "Microsoft.VirtualMachineImages/imageTemplates",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-02-01",
       "name": "[format('{0}-{1}', parameters('name'), parameters('baseTime'))]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "identity": "[variables('identity')]",
-      "properties": {
-        "copy": [
-          {
-            "name": "distribute",
-            "count": "[length(parameters('distributions'))]",
-            "input": "[union(createObject('type', parameters('distributions')[copyIndex('distribute')].type, 'artifactTags', coalesce(tryGet(parameters('distributions')[copyIndex('distribute')], 'artifactTags'), createObject('sourceType', parameters('imageSource').type, 'sourcePublisher', tryGet(parameters('imageSource'), 'publisher'), 'sourceOffer', tryGet(parameters('imageSource'), 'offer'), 'sourceSku', tryGet(parameters('imageSource'), 'sku'), 'sourceVersion', tryGet(parameters('imageSource'), 'version'), 'sourceImageId', tryGet(parameters('imageSource'), 'imageId'), 'sourceImageVersionID', tryGet(parameters('imageSource'), 'imageVersionID'), 'creationTime', parameters('baseTime')))), if(equals(parameters('distributions')[copyIndex('distribute')].type, 'ManagedImage'), createObject('runOutputName', coalesce(tryGet(parameters('distributions')[copyIndex('distribute')], 'runOutputName'), format('{0}-{1}-ManagedImage', parameters('distributions')[copyIndex('distribute')].imageName, parameters('baseTime'))), 'location', coalesce(tryGet(parameters('distributions')[copyIndex('distribute')], 'location'), parameters('location')), 'imageId', coalesce(tryGet(parameters('distributions')[copyIndex('distribute')], 'imageResourceId'), format('{0}/resourceGroups/{1}/providers/Microsoft.Compute/images/{2}-{3}', subscription().id, resourceGroup().name, parameters('distributions')[copyIndex('distribute')].imageName, parameters('baseTime')))), createObject()), if(equals(parameters('distributions')[copyIndex('distribute')].type, 'SharedImage'), createObject('runOutputName', coalesce(tryGet(parameters('distributions')[copyIndex('distribute')], 'runOutputName'), if(not(empty(tryGet(parameters('distributions')[copyIndex('distribute')], 'sharedImageGalleryImageDefinitionResourceId'))), format('{0}-SharedImage', last(split(coalesce(parameters('distributions')[copyIndex('distribute')].sharedImageGalleryImageDefinitionResourceId, '/'), '/'))), 'SharedImage')), 'galleryImageId', if(not(empty(tryGet(parameters('distributions')[copyIndex('distribute')], 'sharedImageGalleryImageDefinitionTargetVersion'))), format('{0}/versions/{1}', parameters('distributions')[copyIndex('distribute')].sharedImageGalleryImageDefinitionResourceId, parameters('distributions')[copyIndex('distribute')].sharedImageGalleryImageDefinitionTargetVersion), parameters('distributions')[copyIndex('distribute')].sharedImageGalleryImageDefinitionResourceId), 'excludeFromLatest', coalesce(tryGet(parameters('distributions')[copyIndex('distribute')], 'excludeFromLatest'), false()), 'replicationRegions', coalesce(tryGet(parameters('distributions')[copyIndex('distribute')], 'replicationRegions'), createArray(parameters('location'))), 'storageAccountType', coalesce(tryGet(parameters('distributions')[copyIndex('distribute')], 'storageAccountType'), 'Standard_LRS')), createObject()), if(equals(parameters('distributions')[copyIndex('distribute')].type, 'VHD'), createObject('runOutputName', coalesce(tryGet(parameters('distributions')[copyIndex('distribute')], 'runOutputName'), format('{0}-VHD', parameters('distributions')[copyIndex('distribute')].imageName))), createObject()))]"
-          }
-        ],
-        "buildTimeoutInMinutes": "[parameters('buildTimeoutInMinutes')]",
-        "vmProfile": {
-          "vmSize": "[parameters('vmSize')]",
-          "osDiskSizeGB": "[parameters('osDiskSizeGB')]",
-          "userAssignedIdentities": "[parameters('vmUserAssignedIdentities')]",
-          "vnetConfig": "[if(not(empty(parameters('subnetResourceId'))), createObject('subnetId', parameters('subnetResourceId')), null())]"
-        },
-        "source": "[parameters('imageSource')]",
-        "customize": "[parameters('customizationSteps')]",
-        "stagingResourceGroup": "[parameters('stagingResourceGroupResourceId')]",
-        "validate": "[parameters('validationProcess')]",
-        "optimize": "[if(not(equals(parameters('optimizeVmBoot'), null())), createObject('vmBoot', createObject('state', parameters('optimizeVmBoot'))), null())]"
-      }
+      "properties": "[shallowMerge(createArray(createObject('buildTimeoutInMinutes', parameters('buildTimeoutInMinutes'), 'vmProfile', createObject('vmSize', parameters('vmSize'), 'osDiskSizeGB', parameters('osDiskSizeGB'), 'userAssignedIdentities', parameters('vmUserAssignedIdentities'), 'vnetConfig', if(not(empty(parameters('subnetResourceId'))), createObject('subnetId', parameters('subnetResourceId')), null())), 'source', parameters('imageSource')), if(not(empty(parameters('customizationSteps'))), createObject('customize', parameters('customizationSteps')), createObject()), createObject('stagingResourceGroup', parameters('stagingResourceGroupResourceId'), 'distribute', map(parameters('distributions'), lambda('distribution', shallowMerge(createArray(createObject('type', lambdaVariables('distribution').type, 'artifactTags', coalesce(tryGet(lambdaVariables('distribution'), 'artifactTags'), createObject('sourceType', parameters('imageSource').type, 'sourcePublisher', tryGet(parameters('imageSource'), 'publisher'), 'sourceOffer', tryGet(parameters('imageSource'), 'offer'), 'sourceSku', tryGet(parameters('imageSource'), 'sku'), 'sourceVersion', tryGet(parameters('imageSource'), 'version'), 'sourceImageId', tryGet(parameters('imageSource'), 'imageId'), 'sourceImageVersionID', tryGet(parameters('imageSource'), 'imageVersionID'), 'creationTime', parameters('baseTime')))), if(equals(lambdaVariables('distribution').type, 'ManagedImage'), createObject('runOutputName', coalesce(tryGet(lambdaVariables('distribution'), 'runOutputName'), format('{0}-{1}-ManagedImage', lambdaVariables('distribution').imageName, parameters('baseTime'))), 'location', coalesce(tryGet(lambdaVariables('distribution'), 'location'), parameters('location')), 'imageId', coalesce(tryGet(lambdaVariables('distribution'), 'imageResourceId'), format('{0}/resourceGroups/{1}/providers/Microsoft.Compute/images/{2}-{3}', subscription().id, resourceGroup().name, lambdaVariables('distribution').imageName, parameters('baseTime')))), createObject()), if(equals(lambdaVariables('distribution').type, 'SharedImage'), createObject('runOutputName', coalesce(tryGet(lambdaVariables('distribution'), 'runOutputName'), format('{0}-SharedImage', last(split(tryGet(lambdaVariables('distribution'), 'sharedImageGalleryImageDefinitionResourceId'), '/')))), 'galleryImageId', if(not(empty(tryGet(lambdaVariables('distribution'), 'sharedImageGalleryImageDefinitionTargetVersion'))), format('{0}/versions/{1}', lambdaVariables('distribution').sharedImageGalleryImageDefinitionResourceId, lambdaVariables('distribution').sharedImageGalleryImageDefinitionTargetVersion), lambdaVariables('distribution').sharedImageGalleryImageDefinitionResourceId), 'excludeFromLatest', coalesce(tryGet(lambdaVariables('distribution'), 'excludeFromLatest'), false()), 'replicationRegions', coalesce(tryGet(lambdaVariables('distribution'), 'replicationRegions'), createArray(parameters('location'))), 'storageAccountType', coalesce(tryGet(lambdaVariables('distribution'), 'storageAccountType'), 'Standard_LRS')), createObject()), if(equals(lambdaVariables('distribution').type, 'VHD'), createObject('runOutputName', coalesce(tryGet(lambdaVariables('distribution'), 'runOutputName'), format('{0}-VHD', lambdaVariables('distribution').imageName))), createObject()))))), 'validate', parameters('validationProcess'), 'optimize', if(not(equals(parameters('optimizeVmBoot'), null())), createObject('vmBoot', createObject('state', parameters('optimizeVmBoot'))), null()), 'autoRun', createObject('state', parameters('autoRunState')), 'errorHandling', createObject('onCustomizerError', parameters('errorHandlingOnCustomizerError'), 'onValidationError', parameters('errorHandlingOnValidationError')), 'managedResourceTags', parameters('managedResourceTags'))))]"
     },
     "imageTemplate_lock": {
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
@@ -725,7 +744,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('imageTemplate', '2023-07-01', 'full').location]"
+      "value": "[reference('imageTemplate', '2024-02-01', 'full').location]"
     }
   }
 }

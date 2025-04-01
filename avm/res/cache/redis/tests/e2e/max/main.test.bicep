@@ -43,7 +43,7 @@ module nestedDependencies 'dependencies.bicep' = {
 
 // Diagnostics
 // ===========
-module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
   params: {
@@ -83,6 +83,23 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       enableNonSslPort: true
+      firewallRules: [
+        {
+          endIP: '0.0.0.0'
+          name: 'AllowAllWindowsAzureIps'
+          startIP: '0.0.0.0'
+        }
+        {
+          endIP: '10.10.10.10'
+          name: 'testrule1'
+          startIP: '10.10.10.1'
+        }
+        {
+          endIP: '100.100.100.10'
+          name: 'testrule2'
+          startIP: '100.100.100.1'
+        }
+      ]
       lock: {
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
@@ -174,9 +191,5 @@ module testDeployment '../../../main.bicep' = [
         resourceType: 'Redis Cache'
       }
     }
-    dependsOn: [
-      nestedDependencies
-      diagnosticDependencies
-    ]
   }
 ]

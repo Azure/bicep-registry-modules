@@ -1,6 +1,5 @@
 metadata name = 'SQL Managed Instances Administrator'
 metadata description = 'This module deploys a SQL Managed Instance Administrator.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent SQL managed instance. Required if the template is used in a standalone deployment.')
 param managedInstanceName string
@@ -12,13 +11,13 @@ param login string
 param sid string
 
 @description('Optional. Tenant ID of the managed instance administrator.')
-param tenantId string = ''
+param tenantId string?
 
-resource managedInstance 'Microsoft.Sql/managedInstances@2023-08-01-preview' existing = {
+resource managedInstance 'Microsoft.Sql/managedInstances@2024-05-01-preview' existing = {
   name: managedInstanceName
 }
 
-resource administrator 'Microsoft.Sql/managedInstances/administrators@2023-08-01-preview' = {
+resource administrator 'Microsoft.Sql/managedInstances/administrators@2024-05-01-preview' = {
   name: 'ActiveDirectory'
   parent: managedInstance
   properties: {

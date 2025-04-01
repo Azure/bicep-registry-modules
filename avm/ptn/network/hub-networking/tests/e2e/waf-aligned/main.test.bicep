@@ -33,7 +33,7 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2023-07-01' = {
 
 // Diagnostics
 // ===========
-module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
   params: {
@@ -64,7 +64,6 @@ module testDeployment '../../../main.bicep' = [
           addressPrefixes: array(addressPrefix)
           azureFirewallSettings: {
             azureSkuTier: 'Standard'
-            enableTelemetry: true
             location: resourceLocation
             publicIPAddressObject: {
               name: 'hub1PublicIp'
@@ -87,7 +86,6 @@ module testDeployment '../../../main.bicep' = [
           enableAzureFirewall: true
           enableBastion: true
           enablePeering: false
-          enableTelemetry: true
           flowTimeoutInMinutes: 30
           dnsServers: ['10.0.1.6', '10.0.1.7']
           diagnosticSettings: [

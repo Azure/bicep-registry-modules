@@ -51,7 +51,7 @@ module nestedDependencies 'dependencies.bicep' = {
 
 // Diagnostics
 // ===========
-module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation01)}-diagnosticDependencies'
   params: {
@@ -110,7 +110,7 @@ module testDeployment '../../../main.bicep' = [
             targetResourceId: nestedDependencies.outputs.webApp01ResourceId
             weight: 1
             priority: 1
-            endpointLocation: '${enforcedLocation01}'
+            endpointLocation: enforcedLocation01
             endpointStatus: 'Enabled'
           }
         }
@@ -121,7 +121,7 @@ module testDeployment '../../../main.bicep' = [
             targetResourceId: nestedDependencies.outputs.webApp02ResourceId
             weight: 1
             priority: 2
-            endpointLocation: '${enforcedLocation02}'
+            endpointLocation: enforcedLocation02
             endpointStatus: 'Enabled'
           }
         }

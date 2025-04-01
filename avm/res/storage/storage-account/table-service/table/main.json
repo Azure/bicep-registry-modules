@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "14487041808457984428"
+      "version": "0.34.44.8038",
+      "templateHash": "14789856604962915370"
     },
     "name": "Storage Account Table",
-    "description": "This module deploys a Storage Account Table.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Storage Account Table."
   },
   "definitions": {
     "roleAssignmentType": {
@@ -84,7 +83,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     }
@@ -141,10 +140,7 @@
       "existing": true,
       "type": "Microsoft.Storage/storageAccounts/tableServices",
       "apiVersion": "2023-04-01",
-      "name": "[format('{0}/{1}', parameters('storageAccountName'), 'default')]",
-      "dependsOn": [
-        "storageAccount"
-      ]
+      "name": "[format('{0}/{1}', parameters('storageAccountName'), 'default')]"
     },
     "storageAccount": {
       "existing": true,
@@ -155,10 +151,7 @@
     "table": {
       "type": "Microsoft.Storage/storageAccounts/tableServices/tables",
       "apiVersion": "2023-04-01",
-      "name": "[format('{0}/{1}/{2}', parameters('storageAccountName'), 'default', parameters('name'))]",
-      "dependsOn": [
-        "storageAccount::tableServices"
-      ]
+      "name": "[format('{0}/{1}/{2}', parameters('storageAccountName'), 'default', parameters('name'))]"
     },
     "table_roleAssignments": {
       "copy": {

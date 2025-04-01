@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "10379683657935183144"
+      "version": "0.33.13.18514",
+      "templateHash": "936883737895017732"
     },
     "name": "Automation Account Software Update Configurations",
-    "description": "This module deploys an Azure Automation Account Software Update Configuration.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Azure Automation Account Software Update Configuration."
   },
   "parameters": {
     "name": {
@@ -389,10 +388,7 @@
           "nextRunOffsetMinutes": "[parameters('nextRunOffsetMinutes')]",
           "description": "[parameters('scheduleDescription')]"
         }
-      },
-      "dependsOn": [
-        "automationAccount"
-      ]
+      }
     }
   },
   "outputs": {

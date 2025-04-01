@@ -7,6 +7,7 @@ This module deploys an Event Hub Namespace Event Hub.
 - [Resource Types](#Resource-Types)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 
 ## Resource Types
 
@@ -152,6 +153,8 @@ The time window allows you to set the frequency with which the capture to Azure 
 - Required: No
 - Type: int
 - Default: `300`
+- MinValue: 60
+- MaxValue: 900
 
 ### Parameter: `captureDescriptionSizeLimitInBytes`
 
@@ -160,6 +163,8 @@ The size window defines the amount of data built up in your Event Hub before an 
 - Required: No
 - Type: int
 - Default: `314572800`
+- MinValue: 10485760
+- MaxValue: 524288000
 
 ### Parameter: `captureDescriptionSkipEmptyArchives`
 
@@ -227,6 +232,8 @@ Number of days to retain the events for this Event Hub, value should be 1 to 7 d
 - Required: No
 - Type: int
 - Default: `1`
+- MinValue: 1
+- MaxValue: 7
 
 ### Parameter: `partitionCount`
 
@@ -235,6 +242,8 @@ Number of partitions created for the Event Hub, allowed values are from 1 to 32 
 - Required: No
 - Type: int
 - Default: `2`
+- MinValue: 1
+- MaxValue: 32
 
 ### Parameter: `retentionDescriptionCleanupPolicy`
 
@@ -258,6 +267,8 @@ Retention time in hours. Number of hours to retain the events for this Event Hub
 - Required: No
 - Type: int
 - Default: `1`
+- MinValue: 1
+- MaxValue: 168
 
 ### Parameter: `retentionDescriptionTombstoneRetentionTimeInHours`
 
@@ -266,6 +277,8 @@ Retention cleanup policy. Number of hours to retain the tombstone markers of a c
 - Required: No
 - Type: int
 - Default: `1`
+- MinValue: 1
+- MaxValue: 168
 
 ### Parameter: `roleAssignments`
 
@@ -402,3 +415,11 @@ Enumerates the possible values for the status of the Event Hub.
 | `name` | string | The name of the event hub. |
 | `resourceGroupName` | string | The resource group the event hub was deployed into. |
 | `resourceId` | string | The resource ID of the event hub. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |

@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "17412855215846424947"
+      "version": "0.33.13.18514",
+      "templateHash": "6336613758758535382"
     },
     "name": "CI CD Agents and Runners",
-    "description": "This module deploys self-hosted agents and runners for Azure DevOps and GitHub on Azure Container Instances and/or Azure Container Apps.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys self-hosted agents and runners for Azure DevOps and GitHub on Azure Container Instances and/or Azure Container Apps."
   },
   "definitions": {
     "newNetworkType": {
@@ -128,6 +127,9 @@
             "description": "Optional. The deployment script private DNS zone Id. If not provided, a new private DNS zone will be created. Only required if private networking is used."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true
       }
     },
     "existingNetworkType": {
@@ -179,6 +181,9 @@
             "description": "Required. The compute type networking type."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true
       }
     },
     "containerAppNetworkConfigType": {
@@ -219,6 +224,9 @@
             "description": "Required. The container instance subnet name in the created virtual network. If not provided, a default name will be used. This subnet is required for private networking Azure DevOps scenarios to deploy the deployment script which starts the placeholder agent privately."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true
       }
     },
     "containerInstanceNetworkConfigType": {
@@ -253,6 +261,9 @@
             "$ref": "#/definitions/existingNetworkType"
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true
       }
     },
     "computeNetworkingType": {
@@ -267,6 +278,9 @@
             "$ref": "#/definitions/containerInstanceNetworkConfigType"
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true
       }
     },
     "azureContainerInstanceTargetType": {
@@ -312,7 +326,9 @@
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "__bicep_export!": true
+      }
     },
     "azureContainerAppTargetType": {
       "type": "object",
@@ -324,6 +340,9 @@
             "description": "Optional. The Azure Container App Job CPU and memory resources."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true
       }
     },
     "gitHubRunnersType": {
@@ -341,7 +360,7 @@
         "personalAccessToken": {
           "type": "securestring",
           "metadata": {
-            "description": "Required. The GitHub personal access token with permissions to create and manage self-hosted runners.  See https://learn.microsoft.com/azure/container-apps/tutorial-ci-cd-runners-jobs?tabs=bash&pivots=container-apps-jobs-self-hosted-ci-cd-github-actions#get-a-github-personal-access-token for PAT permissions."
+            "description": "Required. The GitHub personal access token with permissions to create and manage self-hosted runners.  See https://learn.microsoft.com/azure/container-apps/tutorial-ci-cd-runners-jobs?tabs=bash&pivots=container-apps-jobs-self-hosted-ci-cd-github-actions#get-a-github-personal-access-token for PAT permissions. The permissions will change based on the scope of the runner."
           }
         },
         "githubOrganization": {
@@ -352,6 +371,7 @@
         },
         "githubRepository": {
           "type": "string",
+          "nullable": true,
           "metadata": {
             "description": "Required. The GitHub repository name."
           }
@@ -386,7 +406,7 @@
           ],
           "nullable": true,
           "metadata": {
-            "description": "Optional. The GitHub runner scope."
+            "description": "Optional. The GitHub runner scope. Depending on the scope, you would need to set the right permissions for your Personal Access Token."
           }
         },
         "ephemeral": {
@@ -420,6 +440,9 @@
             "description": "Optional. The GitHub runner Azure Container app configuration."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true
       }
     },
     "devOpsAgentsType": {
@@ -494,6 +517,9 @@
             "description": "Optional. The AzureDevOps agents Azure Container app configuration."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true
       }
     },
     "acaResourcesType": {
@@ -563,7 +589,10 @@
           "cpu": "4",
           "memory": "8Gi"
         }
-      ]
+      ],
+      "metadata": {
+        "__bicep_export!": true
+      }
     },
     "selfHostedRunnerType": {
       "type": "object",
@@ -577,15 +606,19 @@
             "$ref": "#/definitions/devOpsAgentsType"
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true
       }
     },
     "computeTypesType": {
-      "type": "array",
+      "type": "string",
       "allowedValues": [
         "azure-container-app",
         "azure-container-instance"
       ],
       "metadata": {
+        "__bicep_export!": true,
         "description": "Required. The target compute environments for the private runners."
       }
     }
@@ -605,7 +638,10 @@
       }
     },
     "computeTypes": {
-      "$ref": "#/definitions/computeTypesType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/computeTypesType"
+      },
       "metadata": {
         "description": "Required. The compute target for the private runners."
       }
@@ -657,10 +693,10 @@
         "imagePath": "github-runner-aci"
       }
     ],
-    "githubURL": "https://github.com/azure/bicep-registry-modules#main:avm/ptn/dev-ops/cicd-agents-and-runners/scripts",
-    "acaGitHubRules": "[if(equals(parameters('selfHostedConfig').selfHostedType, 'github'), createArray(createObject('name', 'github-runner-scaling-rule', 'type', 'github-runner', 'metadata', createObject('owner', parameters('selfHostedConfig').githubOrganization, 'repos', parameters('selfHostedConfig').githubRepository, 'targetWorkflowQueueLength', coalesce(tryGet(parameters('selfHostedConfig'), 'targetWorkflowQueueLength'), '1'), 'runnerScope', coalesce(tryGet(parameters('selfHostedConfig'), 'runnerScope'), 'repo')), 'auth', createArray(createObject('secretRef', 'personal-access-token', 'triggerParameter', 'personalAccessToken')))), createArray())]",
+    "githubURL": "https://github.com/azure/avm-container-images-cicd-agents-and-runners#main",
+    "acaGitHubRules": "[if(equals(parameters('selfHostedConfig').selfHostedType, 'github'), createArray(createObject('name', 'github-runner-scaling-rule', 'type', 'github-runner', 'metadata', createObject('owner', parameters('selfHostedConfig').githubOrganization, 'repos', if(not(equals(tryGet(parameters('selfHostedConfig'), 'runnerScope'), 'repo')), null(), tryGet(parameters('selfHostedConfig'), 'githubRepository')), 'targetWorkflowQueueLength', coalesce(tryGet(parameters('selfHostedConfig'), 'targetWorkflowQueueLength'), '1'), 'runnerScope', coalesce(tryGet(parameters('selfHostedConfig'), 'runnerScope'), 'repo')), 'auth', createArray(createObject('secretRef', 'personal-access-token', 'triggerParameter', 'personalAccessToken')))), createArray())]",
     "acaGitHubSecrets": "[if(equals(parameters('selfHostedConfig').selfHostedType, 'github'), createArray(createObject('name', 'personal-access-token', 'value', parameters('selfHostedConfig').personalAccessToken)), createArray())]",
-    "acaGitHubEnvVariables": "[if(equals(parameters('selfHostedConfig').selfHostedType, 'github'), createArray(createObject('name', 'RUNNER_NAME_PREFIX', 'value', coalesce(tryGet(parameters('selfHostedConfig'), 'runnerNamePrefix'), 'gh-runner')), createObject('name', 'REPO_URL', 'value', variables('gitHubRunnerURL')), createObject('name', 'RUNNER_SCOPE', 'value', coalesce(tryGet(parameters('selfHostedConfig'), 'runnerScope'), 'repo')), createObject('name', 'EPHEMERAL', 'value', coalesce(tryGet(parameters('selfHostedConfig'), 'ephemeral'), 'true')), createObject('name', 'ORG_NAME', 'value', tryGet(parameters('selfHostedConfig'), 'gitHubOrganization')), createObject('name', 'RUNNER_GROUP', 'value', coalesce(tryGet(parameters('selfHostedConfig'), 'runnerGroup'), '')), createObject('name', 'ACCESS_TOKEN', 'secretRef', 'personal-access-token')), createArray())]",
+    "acaGitHubEnvVariables": "[if(equals(parameters('selfHostedConfig').selfHostedType, 'github'), union(if(equals(tryGet(parameters('selfHostedConfig'), 'runnerScope'), 'repo'), createArray(createObject('name', 'REPO_URL', 'value', variables('gitHubRunnerURL'))), createArray()), createArray(createObject('name', 'RUNNER_NAME_PREFIX', 'value', coalesce(tryGet(parameters('selfHostedConfig'), 'runnerNamePrefix'), 'gh-runner')), createObject('name', 'RUNNER_SCOPE', 'value', coalesce(tryGet(parameters('selfHostedConfig'), 'runnerScope'), 'repo')), createObject('name', 'EPHEMERAL', 'value', coalesce(tryGet(parameters('selfHostedConfig'), 'ephemeral'), 'true')), createObject('name', 'ORG_NAME', 'value', tryGet(parameters('selfHostedConfig'), 'gitHubOrganization')), createObject('name', 'RUNNER_GROUP', 'value', coalesce(tryGet(parameters('selfHostedConfig'), 'runnerGroup'), '')), createObject('name', 'ACCESS_TOKEN', 'secretRef', 'personal-access-token'))), createArray())]",
     "acaAzureDevOpsEnvVariables": "[if(equals(parameters('selfHostedConfig').selfHostedType, 'azuredevops'), createArray(createObject('name', 'AZP_POOL', 'value', parameters('selfHostedConfig').agentsPoolName), createObject('name', 'AZP_AGENT_NAME_PREFIX', 'value', coalesce(tryGet(parameters('selfHostedConfig'), 'agentNamePrefix'), 'aca')), createObject('name', 'AZP_URL', 'secretRef', 'organization-url'), createObject('name', 'AZP_TOKEN', 'secretRef', 'personal-access-token')), createArray())]",
     "acaAzureDevOpsSecrets": "[if(equals(parameters('selfHostedConfig').selfHostedType, 'azuredevops'), createArray(createObject('name', 'personal-access-token', 'value', parameters('selfHostedConfig').personalAccessToken), createObject('name', 'organization-url', 'value', variables('devOpsOrgURL'))), createArray())]",
     "acaAzureDevOpsRules": "[if(equals(parameters('selfHostedConfig').selfHostedType, 'azuredevops'), createArray(createObject('name', 'azure-pipelines-scaling-rule', 'type', 'azure-pipelines', 'metadata', createObject('poolName', parameters('selfHostedConfig').agentsPoolName, 'targetPipelinesQueueLength', coalesce(tryGet(parameters('selfHostedConfig'), 'targetPipelinesQueueLength'), '1')), 'auth', createArray(createObject('secretRef', 'personal-access-token', 'triggerParameter', 'personalAccessToken'), createObject('secretRef', 'organization-url', 'triggerParameter', 'organizationURL')))), createArray())]",
@@ -707,7 +743,7 @@
         "step": {
           "dockerFilePath": "dockerfile",
           "type": "Docker",
-          "contextPath": "[if(contains(parameters('computeTypes'), 'azure-container-app'), format('{0}/{1}', variables('githubURL'), filter(variables('imagePaths'), lambda('imagePath', equals(lambdaVariables('imagePath').platform, format('{0}-container-app', parameters('selfHostedConfig').selfHostedType))))[0].imagePath), if(contains(parameters('computeTypes'), 'azure-container-instance'), format('{0}/{1}', variables('githubURL'), filter(variables('imagePaths'), lambda('imagePath', equals(lambdaVariables('imagePath').platform, format('{0}-container-instance', parameters('selfHostedConfig').selfHostedType))))[0].imagePath), null()))]",
+          "contextPath": "[if(contains(parameters('computeTypes'), 'azure-container-app'), format('{0}:{1}', variables('githubURL'), filter(variables('imagePaths'), lambda('imagePath', equals(lambdaVariables('imagePath').platform, format('{0}-container-app', parameters('selfHostedConfig').selfHostedType))))[0].imagePath), if(contains(parameters('computeTypes'), 'azure-container-instance'), format('{0}:{1}', variables('githubURL'), filter(variables('imagePaths'), lambda('imagePath', equals(lambdaVariables('imagePath').platform, format('{0}-container-instance', parameters('selfHostedConfig').selfHostedType))))[0].imagePath), null()))]",
           "imageNames": [
             "[format('{0}/{1}-{2}:latest', reference('acr').outputs.loginServer.value, parameters('selfHostedConfig').selfHostedType, parameters('computeTypes')[copyIndex()])]"
           ]
@@ -751,6 +787,9 @@
         "parameters": {
           "name": {
             "value": "[format('law-{0}-{1}-law', parameters('namingPrefix'), uniqueString(resourceGroup().id))]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           }
         },
         "template": {
@@ -2797,6 +2836,9 @@
           },
           "location": {
             "value": "[parameters('location')]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           }
         },
         "template": {
@@ -3264,6 +3306,9 @@
                 "virtualNetworkResourceId": "[if(equals(parameters('networkingConfiguration').networkType, 'createNew'), reference('newVnet').outputs.resourceId.value, parameters('networkingConfiguration').virtualNetworkResourceId)]"
               }
             ]
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           }
         },
         "template": {
@@ -6309,6 +6354,9 @@
           "acrAdminUserEnabled": {
             "value": false
           },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
+          },
           "roleAssignments": {
             "value": [
               {
@@ -8829,6 +8877,9 @@
           "location": {
             "value": "[parameters('location')]"
           },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
+          },
           "addressPrefixes": {
             "value": [
               "[parameters('networkingConfiguration').addressSpace]"
@@ -10050,6 +10101,9 @@
           "location": {
             "value": "[parameters('location')]"
           },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
+          },
           "infrastructureSubnetId": "[if(equals(parameters('networkingConfiguration').networkType, 'createNew'), createObject('value', filter(reference('newVnet').outputs.subnetResourceIds.value, lambda('subnetId', contains(lambdaVariables('subnetId'), coalesce(tryGet(parameters('networkingConfiguration'), 'containerAppSubnetName'), 'app-subnet'))))[0]), if(equals(parameters('networkingConfiguration').networkType, 'useExisting'), createObject('value', format('{0}/subnets/{1}', parameters('networkingConfiguration').virtualNetworkResourceId, parameters('networkingConfiguration').computeNetworking.containerAppSubnetName)), createObject('value', null())))]",
           "zoneRedundant": {
             "value": true
@@ -10629,6 +10683,9 @@
           },
           "skuName": {
             "value": "Standard"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           },
           "publicIPAddressVersion": {
             "value": "IPv4"
@@ -11276,6 +11333,9 @@
           },
           "location": {
             "value": "[parameters('location')]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           },
           "publicIpResourceIds": {
             "value": [
@@ -12795,6 +12855,9 @@
           },
           "principalType": {
             "value": "ServicePrincipal"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           }
         },
         "template": {
@@ -13046,6 +13109,9 @@
                 "[reference('userAssignedIdentity').outputs.resourceId.value]"
               ]
             }
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           },
           "imageRegistryCredentials": {
             "value": [
@@ -13823,6 +13889,9 @@
                 "[reference('userAssignedIdentity').outputs.resourceId.value]"
               ]
             }
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           },
           "roleAssignments": {
             "value": [
@@ -14993,6 +15062,9 @@
           },
           "location": {
             "value": "[parameters('location')]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           },
           "managedIdentities": {
             "value": {
@@ -16192,6 +16264,9 @@
                 "virtualNetworkResourceId": "[if(equals(parameters('networkingConfiguration').networkType, 'useExisting'), parameters('networkingConfiguration').virtualNetworkResourceId, reference('newVnet').outputs.resourceId.value)]"
               }
             ]
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           }
         },
         "template": {
@@ -19254,6 +19329,9 @@
                 "principalType": "ServicePrincipal"
               }
             ]
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           },
           "privateEndpoints": {
             "value": [
@@ -24284,6 +24362,9 @@
                 "[reference('userAssignedIdentity').outputs.resourceId.value]"
               ]
             }
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           },
           "storageAccountResourceId": "[if(parameters('privateNetworking'), createObject('value', reference('deploymentScriptStg').outputs.resourceId.value), createObject('value', null()))]",
           "subnetResourceIds": "[if(and(parameters('privateNetworking'), equals(parameters('networkingConfiguration').networkType, 'createNew')), createObject('value', createArray(filter(reference('newVnet').outputs.subnetResourceIds.value, lambda('subnetId', contains(lambdaVariables('subnetId'), coalesce(tryGet(parameters('networkingConfiguration'), 'containerInstanceSubnetName'), 'aci-subnet'))))[0])), if(and(parameters('privateNetworking'), equals(parameters('networkingConfiguration').networkType, 'useExisting')), createObject('value', createArray(format('{0}/subnets/{1}', parameters('networkingConfiguration').virtualNetworkResourceId, parameters('networkingConfiguration').computeNetworking.containerInstanceSubnetName))), createObject('value', null())))]",

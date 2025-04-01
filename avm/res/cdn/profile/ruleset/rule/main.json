@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "5961518761760139272"
+      "version": "0.34.1.11899",
+      "templateHash": "9504457217668690067"
     },
     "name": "CDN Profiles Rules",
-    "description": "This module deploys a CDN Profile rule.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a CDN Profile rule."
   },
   "definitions": {
     "ruleType": {
@@ -55,7 +54,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type of the rule."
       }
     }
   },
@@ -115,10 +115,7 @@
       "existing": true,
       "type": "Microsoft.Cdn/profiles/ruleSets",
       "apiVersion": "2023-05-01",
-      "name": "[format('{0}/{1}', parameters('profileName'), parameters('ruleSetName'))]",
-      "dependsOn": [
-        "profile"
-      ]
+      "name": "[format('{0}/{1}', parameters('profileName'), parameters('ruleSetName'))]"
     },
     "profile": {
       "existing": true,
@@ -135,10 +132,7 @@
         "actions": "[parameters('actions')]",
         "conditions": "[parameters('conditions')]",
         "matchProcessingBehavior": "[parameters('matchProcessingBehavior')]"
-      },
-      "dependsOn": [
-        "profile::ruleSet"
-      ]
+      }
     }
   },
   "outputs": {

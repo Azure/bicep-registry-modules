@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Function App, using only defaults'
-metadata description = 'This instance deploys the module as Function App with the minimum set of required parameters.'
+metadata name = 'Function App, with App Settings Pairs'
+metadata description = 'This instance deploys the module as Function App with sample app settings.'
 
 // ========== //
 // Parameters //
@@ -51,7 +51,6 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      location: resourceLocation
       kind: 'functionapp'
       serverFarmResourceId: nestedDependencies.outputs.serverFarmResourceId
       appSettingsKeyValuePairs: {
@@ -60,8 +59,5 @@ module testDeployment '../../../main.bicep' = [
         FUNCTIONS_WORKER_RUNTIME: 'dotnet'
       }
     }
-    dependsOn: [
-      nestedDependencies
-    ]
   }
 ]

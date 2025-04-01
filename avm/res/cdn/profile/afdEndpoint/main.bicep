@@ -1,6 +1,5 @@
 metadata name = 'CDN Profiles AFD Endpoints'
 metadata description = 'This module deploys a CDN Profile AFD Endpoint.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the AFD Endpoint.')
 param name string
@@ -85,6 +84,9 @@ output location string = afdEndpoint.location
 @description('The list of routes assigned to the AFD endpoint.')
 output routes array = routes ?? []
 
+@description('The host name of the AFD endpoint.')
+output frontDoorEndpointHostName string = afdEndpoint.properties.hostName
+
 // =============== //
 //   Definitions   //
 // =============== //
@@ -92,6 +94,7 @@ output routes array = routes ?? []
 import { routeType } from './route/main.bicep'
 
 @export()
+@description('The type of the AFD Endpoint.')
 type afdEndpointType = {
   @description('Required. The name of the AFD Endpoint.')
   name: string

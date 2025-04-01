@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "8195372149835761348"
+      "version": "0.33.93.31351",
+      "templateHash": "7049305712242986495"
     },
     "name": "Azure Kubernetes Service (AKS) Managed Cluster Agent Pools",
-    "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool."
   },
   "parameters": {
     "managedClusterName": {
@@ -185,7 +184,7 @@
         "description": "Optional. The default is \"Ephemeral\" if the VM supports it and has a cache disk larger than the requested OSDiskSizeGB. Otherwise, defaults to \"Managed\". May not be changed after creation. For more information see Ephemeral OS (https://learn.microsoft.com/en-us/azure/aks/cluster-configuration#ephemeral-os)."
       }
     },
-    "osSku": {
+    "osSKU": {
       "type": "string",
       "nullable": true,
       "allowedValues": [
@@ -257,6 +256,20 @@
         "description": "Optional. The Virtual Machine Scale Set priority."
       }
     },
+    "enableSecureBoot": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Secure Boot is a feature of Trusted Launch which ensures that only signed operating systems and drivers can boot. For more details, see aka.ms/aks/trustedlaunch."
+      }
+    },
+    "enableVTPM": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. vTPM is a Trusted Launch feature for configuring a dedicated secure vault for keys and measurements held locally on the node. For more details, see aka.ms/aks/trustedlaunch."
+      }
+    },
     "spotMaxPrice": {
       "type": "int",
       "nullable": true,
@@ -311,12 +324,12 @@
     "managedCluster": {
       "existing": true,
       "type": "Microsoft.ContainerService/managedClusters",
-      "apiVersion": "2024-03-02-preview",
+      "apiVersion": "2024-09-01",
       "name": "[parameters('managedClusterName')]"
     },
     "agentPool": {
       "type": "Microsoft.ContainerService/managedClusters/agentPools",
-      "apiVersion": "2023-07-02-preview",
+      "apiVersion": "2024-09-01",
       "name": "[format('{0}/{1}', parameters('managedClusterName'), parameters('name'))]",
       "properties": {
         "availabilityZones": "[map(coalesce(parameters('availabilityZones'), createArray()), lambda('zone', format('{0}', lambdaVariables('zone'))))]",
@@ -339,13 +352,17 @@
         "orchestratorVersion": "[parameters('orchestratorVersion')]",
         "osDiskSizeGB": "[parameters('osDiskSizeGB')]",
         "osDiskType": "[parameters('osDiskType')]",
-        "osSKU": "[parameters('osSku')]",
+        "osSKU": "[parameters('osSKU')]",
         "osType": "[parameters('osType')]",
         "podSubnetID": "[parameters('podSubnetResourceId')]",
         "proximityPlacementGroupID": "[parameters('proximityPlacementGroupResourceId')]",
         "scaleDownMode": "[parameters('scaleDownMode')]",
         "scaleSetEvictionPolicy": "[parameters('scaleSetEvictionPolicy')]",
         "scaleSetPriority": "[parameters('scaleSetPriority')]",
+        "securityProfile": {
+          "enableSecureBoot": "[parameters('enableSecureBoot')]",
+          "enableVTPM": "[parameters('enableVTPM')]"
+        },
         "spotMaxPrice": "[parameters('spotMaxPrice')]",
         "tags": "[parameters('tags')]",
         "type": "[parameters('type')]",

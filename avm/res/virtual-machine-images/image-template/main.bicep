@@ -1,6 +1,5 @@
 metadata name = 'Virtual Machine Image Templates'
 metadata description = 'This module deploys a Virtual Machine Image Template that can be consumed by Azure Image Builder (AIB).'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name prefix of the Image Template to be built by the Azure Image Builder service.')
 param name string
@@ -31,7 +30,7 @@ param customizationSteps array?
 @description('Optional. Resource ID of the staging resource group in the same subscription and location as the image template that will be used to build the image.</p>If this field is empty, a resource group with a random name will be created.</p>If the resource group specified in this field doesn\'t exist, it will be created with the same name.</p>If the resource group specified exists, it must be empty and in the same region as the image template.</p>The resource group created will be deleted during template deletion if this field is empty or the resource group specified doesn\'t exist,</p>but if the resource group specified exists the resources created in the resource group will be deleted during template deletion and the resource group itself will remain.')
 param stagingResourceGroupResourceId string?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -44,7 +43,7 @@ param baseTime string = utcNow('yyyy-MM-dd-HH-mm-ss')
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -54,7 +53,7 @@ param distributions distributionType[]
 @description('Optional. List of User-Assigned Identities associated to the Build VM for accessing Azure resources such as Key Vaults from your customizer scripts. Be aware, the user assigned identities specified in the \'managedIdentities\' parameter must have the \'Managed Identity Operator\' role assignment on all the user assigned identities specified in this parameter for Azure Image Builder to be able to associate them to the build VM.')
 param vmUserAssignedIdentities array = []
 
-import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Required. The managed identity definition for this resource.')
 param managedIdentities managedIdentityOnlyUserAssignedType
 
@@ -67,6 +66,30 @@ param validationProcess validationProcessType?
 ])
 @description('Optional. The optimize property can be enabled while creating a VM image and allows VM optimization to improve image creation time.')
 param optimizeVmBoot string?
+
+@allowed([
+  'Enabled'
+  'Disabled'
+])
+@description('Optional. Indicates whether or not to automatically run the image template build on template creation or update.')
+param autoRunState string = 'Disabled'
+
+@allowed([
+  'cleanup'
+  'abort'
+])
+@description('Optional. If there is a customizer error and this field is set to \'cleanup\', the build VM and associated network resources will be cleaned up. This is the default behavior. If there is a customizer error and this field is set to \'abort\', the build VM will be preserved.')
+param errorHandlingOnCustomizerError string = 'cleanup'
+
+@allowed([
+  'cleanup'
+  'abort'
+])
+@description('Optional. If there is a validation error and this field is set to \'cleanup\', the build VM and associated network resources will be cleaned up. If there is a validation error and this field is set to \'abort\', the build VM will be preserved. This is the default behavior.')
+param errorHandlingOnValidationError string = 'cleanup'
+
+@description('Optional. Tags that will be applied to the resource group and/or resources created by the service.')
+param managedResourceTags object?
 
 var identity = {
   type: 'UserAssigned'
@@ -121,7 +144,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource imageTemplate 'Microsoft.VirtualMachineImages/imageTemplates@2023-07-01' = {
+resource imageTemplate 'Microsoft.VirtualMachineImages/imageTemplates@2024-02-01' = {
   #disable-next-line use-stable-resource-identifiers // Disabling as ImageTemplates are not idempotent and hence always must have new name
   name: '${name}-${baseTime}'
   location: location
@@ -140,51 +163,49 @@ resource imageTemplate 'Microsoft.VirtualMachineImages/imageTemplates@2023-07-01
         : null
     }
     source: imageSource
-    customize: customizationSteps
+    ...(!empty(customizationSteps)
+      ? {
+          customize: customizationSteps
+        }
+      : {})
     stagingResourceGroup: stagingResourceGroupResourceId
-    distribute: [
-      for distribution in distributions: union(
-        {
-          type: distribution.type
-          artifactTags: distribution.?artifactTags ?? {
-            sourceType: imageSource.type
-            sourcePublisher: imageSource.?publisher
-            sourceOffer: imageSource.?offer
-            sourceSku: imageSource.?sku
-            sourceVersion: imageSource.?version
-            sourceImageId: imageSource.?imageId
-            sourceImageVersionID: imageSource.?imageVersionID
-            creationTime: baseTime
+    distribute: map(distributions, distribution => {
+      type: distribution.type
+      artifactTags: distribution.?artifactTags ?? {
+        sourceType: imageSource.type
+        sourcePublisher: imageSource.?publisher
+        sourceOffer: imageSource.?offer
+        sourceSku: imageSource.?sku
+        sourceVersion: imageSource.?version
+        sourceImageId: imageSource.?imageId
+        sourceImageVersionID: imageSource.?imageVersionID
+        creationTime: baseTime
+      }
+      ...(distribution.type == 'ManagedImage'
+        ? {
+            runOutputName: distribution.?runOutputName ?? '${distribution.imageName}-${baseTime}-ManagedImage'
+            location: distribution.?location ?? location
+            #disable-next-line use-resource-id-functions // Disabling rule as this is an input parameter that is used inside an array.
+            imageId: distribution.?imageResourceId ?? '${subscription().id}/resourceGroups/${resourceGroup().name}/providers/Microsoft.Compute/images/${distribution.imageName}-${baseTime}'
           }
-        },
-        (distribution.type == 'ManagedImage'
-          ? {
-              runOutputName: distribution.?runOutputName ?? '${distribution.imageName}-${baseTime}-ManagedImage'
-              location: distribution.?location ?? location
-              #disable-next-line use-resource-id-functions // Disabling rule as this is an input parameter that is used inside an array.
-              imageId: distribution.?imageResourceId ?? '${subscription().id}/resourceGroups/${resourceGroup().name}/providers/Microsoft.Compute/images/${distribution.imageName}-${baseTime}'
-            }
-          : {}),
-        (distribution.type == 'SharedImage'
-          ? {
-              runOutputName: distribution.?runOutputName ?? (!empty(distribution.?sharedImageGalleryImageDefinitionResourceId)
-                ? '${last(split((distribution.sharedImageGalleryImageDefinitionResourceId ?? '/'), '/'))}-SharedImage'
-                : 'SharedImage')
-              galleryImageId: !empty(distribution.?sharedImageGalleryImageDefinitionTargetVersion)
-                ? '${distribution.sharedImageGalleryImageDefinitionResourceId}/versions/${distribution.sharedImageGalleryImageDefinitionTargetVersion}'
-                : distribution.sharedImageGalleryImageDefinitionResourceId
-              excludeFromLatest: distribution.?excludeFromLatest ?? false
-              replicationRegions: distribution.?replicationRegions ?? [location]
-              storageAccountType: distribution.?storageAccountType ?? 'Standard_LRS'
-            }
-          : {}),
-        (distribution.type == 'VHD'
-          ? {
-              runOutputName: distribution.?runOutputName ?? '${distribution.imageName}-VHD'
-            }
-          : {})
-      )
-    ]
+        : {})
+      ...(distribution.type == 'SharedImage'
+        ? {
+            runOutputName: distribution.?runOutputName ?? '${last(split(distribution.?sharedImageGalleryImageDefinitionResourceId, '/'))}-SharedImage'
+            galleryImageId: !empty(distribution.?sharedImageGalleryImageDefinitionTargetVersion)
+              ? '${distribution.sharedImageGalleryImageDefinitionResourceId}/versions/${distribution.sharedImageGalleryImageDefinitionTargetVersion}'
+              : distribution.sharedImageGalleryImageDefinitionResourceId
+            excludeFromLatest: distribution.?excludeFromLatest ?? false
+            replicationRegions: distribution.?replicationRegions ?? [location]
+            storageAccountType: distribution.?storageAccountType ?? 'Standard_LRS'
+          }
+        : {})
+      ...(distribution.type == 'VHD'
+        ? {
+            runOutputName: distribution.?runOutputName ?? '${distribution.imageName}-VHD'
+          }
+        : {})
+    })
     #disable-next-line BCP225 //  The discriminator property "type" value cannot be determined at compilation time. - which is fine
     validate: validationProcess
     optimize: optimizeVmBoot != null
@@ -194,6 +215,14 @@ resource imageTemplate 'Microsoft.VirtualMachineImages/imageTemplates@2023-07-01
           }
         }
       : null
+    autoRun: {
+      state: autoRunState
+    }
+    errorHandling: {
+      onCustomizerError: errorHandlingOnCustomizerError
+      onValidationError: errorHandlingOnValidationError
+    }
+    managedResourceTags: managedResourceTags
   }
 }
 
@@ -261,7 +290,7 @@ type sharedImageDistributionType = {
   @description('Required. The type of distribution.')
   type: 'SharedImage'
 
-  @description('Conditional. Resource ID of Compute Gallery Image Definition to distribute image to, e.g.: /subscriptions/<subscriptionID>/resourceGroups/<SIG resourcegroup>/providers/Microsoft.Compute/galleries/<SIG name>/images/<image definition>.')
+  @description('Required. Resource ID of Compute Gallery Image Definition to distribute image to, e.g.: /subscriptions/<subscriptionID>/resourceGroups/<SIG resourcegroup>/providers/Microsoft.Compute/galleries/<SIG name>/images/<image definition>.')
   sharedImageGalleryImageDefinitionResourceId: string
 
   @description('Optional. Version of the Compute Gallery Image. Supports the following Version Syntax: Major.Minor.Build (i.e., \'1.1.1\' or \'10.1.2\'). If not provided, a version will be calculated.')

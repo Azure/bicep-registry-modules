@@ -18,7 +18,7 @@ This module deploys a Virtual Machine Image Template that can be consumed by Azu
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.VirtualMachineImages/imageTemplates` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.VirtualMachineImages/2023-07-01/imageTemplates) |
+| `Microsoft.VirtualMachineImages/imageTemplates` | [2024-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.VirtualMachineImages/2024-02-01/imageTemplates) |
 
 ## Usage examples
 
@@ -202,6 +202,7 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
     }
     name: 'vmiitmax001'
     // Non-required parameters
+    autoRunState: 'Enabled'
     buildTimeoutInMinutes: 60
     customizationSteps: [
       {
@@ -223,10 +224,16 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
         type: 'Shell'
       }
     ]
+    errorHandlingOnCustomizerError: 'cleanup'
+    errorHandlingOnValidationError: 'abort'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
+    }
+    managedResourceTags: {
+      testKey1: 'testValue1'
+      testKey2: 'testValue2'
     }
     optimizeVmBoot: 'Enabled'
     osDiskSizeGB: 127
@@ -330,6 +337,9 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
       "value": "vmiitmax001"
     },
     // Non-required parameters
+    "autoRunState": {
+      "value": "Enabled"
+    },
     "buildTimeoutInMinutes": {
       "value": 60
     },
@@ -355,6 +365,12 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
         }
       ]
     },
+    "errorHandlingOnCustomizerError": {
+      "value": "cleanup"
+    },
+    "errorHandlingOnValidationError": {
+      "value": "abort"
+    },
     "location": {
       "value": "<location>"
     },
@@ -362,6 +378,12 @@ module imageTemplate 'br/public:avm/res/virtual-machine-images/image-template:<v
       "value": {
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
+      }
+    },
+    "managedResourceTags": {
+      "value": {
+        "testKey1": "testValue1",
+        "testKey2": "testValue2"
       }
     },
     "optimizeVmBoot": {
@@ -474,6 +496,7 @@ param managedIdentities = {
 }
 param name = 'vmiitmax001'
 // Non-required parameters
+param autoRunState = 'Enabled'
 param buildTimeoutInMinutes = 60
 param customizationSteps = [
   {
@@ -495,10 +518,16 @@ param customizationSteps = [
     type: 'Shell'
   }
 ]
+param errorHandlingOnCustomizerError = 'cleanup'
+param errorHandlingOnValidationError = 'abort'
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
+}
+param managedResourceTags = {
+  testKey1: 'testValue1'
+  testKey2: 'testValue2'
 }
 param optimizeVmBoot = 'Enabled'
 param osDiskSizeGB = 127
@@ -731,11 +760,15 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`autoRunState`](#parameter-autorunstate) | string | Indicates whether or not to automatically run the image template build on template creation or update. |
 | [`buildTimeoutInMinutes`](#parameter-buildtimeoutinminutes) | int | The image build timeout in minutes. 0 means the default 240 minutes. |
 | [`customizationSteps`](#parameter-customizationsteps) | array | Customization steps to be run when building the VM image. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`errorHandlingOnCustomizerError`](#parameter-errorhandlingoncustomizererror) | string | If there is a customizer error and this field is set to 'cleanup', the build VM and associated network resources will be cleaned up. This is the default behavior. If there is a customizer error and this field is set to 'abort', the build VM will be preserved. |
+| [`errorHandlingOnValidationError`](#parameter-errorhandlingonvalidationerror) | string | If there is a validation error and this field is set to 'cleanup', the build VM and associated network resources will be cleaned up. If there is a validation error and this field is set to 'abort', the build VM will be preserved. This is the default behavior. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
+| [`managedResourceTags`](#parameter-managedresourcetags) | object | Tags that will be applied to the resource group and/or resources created by the service. |
 | [`optimizeVmBoot`](#parameter-optimizevmboot) | string | The optimize property can be enabled while creating a VM image and allows VM optimization to improve image creation time. |
 | [`osDiskSizeGB`](#parameter-osdisksizegb) | int | Specifies the size of OS disk. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
@@ -758,6 +791,239 @@ The distribution targets where the image output needs to go to.
 
 - Required: Yes
 - Type: array
+- Discriminator: `type`
+
+<h4>The available variants are:</h4>
+
+| Variant | Description |
+| :-- | :-- |
+| [`SharedImage`](#variant-distributionstype-sharedimage) |  |
+| [`ManagedImage`](#variant-distributionstype-managedimage) |  |
+| [`VHD`](#variant-distributionstype-vhd) |  |
+
+### Variant: `distributions.type-SharedImage`
+
+
+To use this variant, set the property `type` to `SharedImage`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`sharedImageGalleryImageDefinitionResourceId`](#parameter-distributionstype-sharedimagesharedimagegalleryimagedefinitionresourceid) | string | Resource ID of Compute Gallery Image Definition to distribute image to, e.g.: /subscriptions/<subscriptionID>/resourceGroups/<SIG resourcegroup>/providers/Microsoft.Compute/galleries/<SIG name>/images/<image definition>. |
+| [`type`](#parameter-distributionstype-sharedimagetype) | string | The type of distribution. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`artifactTags`](#parameter-distributionstype-sharedimageartifacttags) | object | Tags that will be applied to the artifact once it has been created/updated by the distributor. If not provided will set tags based on the provided image source. |
+| [`excludeFromLatest`](#parameter-distributionstype-sharedimageexcludefromlatest) | bool | The exclude from latest flag of the image. Defaults to [false]. |
+| [`replicationRegions`](#parameter-distributionstype-sharedimagereplicationregions) | array | The replication regions of the image. Defaults to the value of the 'location' parameter. |
+| [`runOutputName`](#parameter-distributionstype-sharedimagerunoutputname) | string | The name to be used for the associated RunOutput. If not provided, a name will be calculated. |
+| [`sharedImageGalleryImageDefinitionTargetVersion`](#parameter-distributionstype-sharedimagesharedimagegalleryimagedefinitiontargetversion) | string | Version of the Compute Gallery Image. Supports the following Version Syntax: Major.Minor.Build (i.e., '1.1.1' or '10.1.2'). If not provided, a version will be calculated. |
+| [`storageAccountType`](#parameter-distributionstype-sharedimagestorageaccounttype) | string | The storage account type of the image. Defaults to [Standard_LRS]. |
+
+### Parameter: `distributions.type-SharedImage.sharedImageGalleryImageDefinitionResourceId`
+
+Resource ID of Compute Gallery Image Definition to distribute image to, e.g.: /subscriptions/<subscriptionID>/resourceGroups/<SIG resourcegroup>/providers/Microsoft.Compute/galleries/<SIG name>/images/<image definition>.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `distributions.type-SharedImage.type`
+
+The type of distribution.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'SharedImage'
+  ]
+  ```
+
+### Parameter: `distributions.type-SharedImage.artifactTags`
+
+Tags that will be applied to the artifact once it has been created/updated by the distributor. If not provided will set tags based on the provided image source.
+
+- Required: No
+- Type: object
+
+### Parameter: `distributions.type-SharedImage.excludeFromLatest`
+
+The exclude from latest flag of the image. Defaults to [false].
+
+- Required: No
+- Type: bool
+
+### Parameter: `distributions.type-SharedImage.replicationRegions`
+
+The replication regions of the image. Defaults to the value of the 'location' parameter.
+
+- Required: No
+- Type: array
+
+### Parameter: `distributions.type-SharedImage.runOutputName`
+
+The name to be used for the associated RunOutput. If not provided, a name will be calculated.
+
+- Required: No
+- Type: string
+
+### Parameter: `distributions.type-SharedImage.sharedImageGalleryImageDefinitionTargetVersion`
+
+Version of the Compute Gallery Image. Supports the following Version Syntax: Major.Minor.Build (i.e., '1.1.1' or '10.1.2'). If not provided, a version will be calculated.
+
+- Required: No
+- Type: string
+
+### Parameter: `distributions.type-SharedImage.storageAccountType`
+
+The storage account type of the image. Defaults to [Standard_LRS].
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Standard_LRS'
+    'Standard_ZRS'
+  ]
+  ```
+
+### Variant: `distributions.type-ManagedImage`
+
+
+To use this variant, set the property `type` to `ManagedImage`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`imageResourceId`](#parameter-distributionstype-managedimageimageresourceid) | string | The resource ID of the managed image. Defaults to a compute image with name 'imageName-baseTime' in the current resource group. |
+| [`type`](#parameter-distributionstype-managedimagetype) | string | The type of distribution. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`imageName`](#parameter-distributionstype-managedimageimagename) | string | Name of the managed or unmanaged image that will be created. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`artifactTags`](#parameter-distributionstype-managedimageartifacttags) | object | Tags that will be applied to the artifact once it has been created/updated by the distributor. If not provided will set tags based on the provided image source. |
+| [`location`](#parameter-distributionstype-managedimagelocation) | string | Azure location for the image, should match if image already exists. Defaults to the value of the 'location' parameter. |
+| [`runOutputName`](#parameter-distributionstype-managedimagerunoutputname) | string | The name to be used for the associated RunOutput. If not provided, a name will be calculated. |
+
+### Parameter: `distributions.type-ManagedImage.imageResourceId`
+
+The resource ID of the managed image. Defaults to a compute image with name 'imageName-baseTime' in the current resource group.
+
+- Required: No
+- Type: string
+
+### Parameter: `distributions.type-ManagedImage.type`
+
+The type of distribution.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'ManagedImage'
+  ]
+  ```
+
+### Parameter: `distributions.type-ManagedImage.imageName`
+
+Name of the managed or unmanaged image that will be created.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `distributions.type-ManagedImage.artifactTags`
+
+Tags that will be applied to the artifact once it has been created/updated by the distributor. If not provided will set tags based on the provided image source.
+
+- Required: No
+- Type: object
+
+### Parameter: `distributions.type-ManagedImage.location`
+
+Azure location for the image, should match if image already exists. Defaults to the value of the 'location' parameter.
+
+- Required: No
+- Type: string
+
+### Parameter: `distributions.type-ManagedImage.runOutputName`
+
+The name to be used for the associated RunOutput. If not provided, a name will be calculated.
+
+- Required: No
+- Type: string
+
+### Variant: `distributions.type-VHD`
+
+
+To use this variant, set the property `type` to `VHD`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`type`](#parameter-distributionstype-vhdtype) | string | The type of distribution. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`imageName`](#parameter-distributionstype-vhdimagename) | string | Name of the managed or unmanaged image that will be created. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`artifactTags`](#parameter-distributionstype-vhdartifacttags) | object | Tags that will be applied to the artifact once it has been created/updated by the distributor. If not provided will set tags based on the provided image source. |
+| [`runOutputName`](#parameter-distributionstype-vhdrunoutputname) | string | The name to be used for the associated RunOutput. If not provided, a name will be calculated. |
+
+### Parameter: `distributions.type-VHD.type`
+
+The type of distribution.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'VHD'
+  ]
+  ```
+
+### Parameter: `distributions.type-VHD.imageName`
+
+Name of the managed or unmanaged image that will be created.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `distributions.type-VHD.artifactTags`
+
+Tags that will be applied to the artifact once it has been created/updated by the distributor. If not provided will set tags based on the provided image source.
+
+- Required: No
+- Type: object
+
+### Parameter: `distributions.type-VHD.runOutputName`
+
+The name to be used for the associated RunOutput. If not provided, a name will be calculated.
+
+- Required: No
+- Type: string
 
 ### Parameter: `imageSource`
 
@@ -793,6 +1059,21 @@ The name prefix of the Image Template to be built by the Azure Image Builder ser
 - Required: Yes
 - Type: string
 
+### Parameter: `autoRunState`
+
+Indicates whether or not to automatically run the image template build on template creation or update.
+
+- Required: No
+- Type: string
+- Default: `'Disabled'`
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
 ### Parameter: `buildTimeoutInMinutes`
 
 The image build timeout in minutes. 0 means the default 240 minutes.
@@ -800,6 +1081,8 @@ The image build timeout in minutes. 0 means the default 240 minutes.
 - Required: No
 - Type: int
 - Default: `0`
+- MinValue: 0
+- MaxValue: 960
 
 ### Parameter: `customizationSteps`
 
@@ -815,6 +1098,36 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `errorHandlingOnCustomizerError`
+
+If there is a customizer error and this field is set to 'cleanup', the build VM and associated network resources will be cleaned up. This is the default behavior. If there is a customizer error and this field is set to 'abort', the build VM will be preserved.
+
+- Required: No
+- Type: string
+- Default: `'cleanup'`
+- Allowed:
+  ```Bicep
+  [
+    'abort'
+    'cleanup'
+  ]
+  ```
+
+### Parameter: `errorHandlingOnValidationError`
+
+If there is a validation error and this field is set to 'cleanup', the build VM and associated network resources will be cleaned up. If there is a validation error and this field is set to 'abort', the build VM will be preserved. This is the default behavior.
+
+- Required: No
+- Type: string
+- Default: `'cleanup'`
+- Allowed:
+  ```Bicep
+  [
+    'abort'
+    'cleanup'
+  ]
+  ```
 
 ### Parameter: `location`
 
@@ -859,6 +1172,13 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+
+### Parameter: `managedResourceTags`
+
+Tags that will be applied to the resource group and/or resources created by the service.
+
+- Required: No
+- Type: object
 
 ### Parameter: `optimizeVmBoot`
 
@@ -1181,7 +1501,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Notes
 

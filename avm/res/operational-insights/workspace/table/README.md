@@ -14,7 +14,7 @@ This module deploys a Log Analytics Workspace Table.
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.OperationalInsights/workspaces/tables` | [2022-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2022-10-01/workspaces/tables) |
+| `Microsoft.OperationalInsights/workspaces/tables` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces/tables) |
 
 ## Parameters
 
@@ -114,6 +114,8 @@ The table retention in days, between 4 and 730. Setting this property to -1 will
 - Required: No
 - Type: int
 - Default: `-1`
+- MinValue: -1
+- MaxValue: 730
 
 ### Parameter: `roleAssignments`
 
@@ -407,6 +409,8 @@ The table total retention in days, between 4 and 2555. Setting this property to 
 - Required: No
 - Type: int
 - Default: `-1`
+- MinValue: -1
+- MaxValue: 2555
 
 ## Outputs
 

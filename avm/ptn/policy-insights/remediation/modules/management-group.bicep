@@ -1,6 +1,5 @@
 metadata name = 'Policy Insights Remediations (Management Group scope)'
 metadata description = 'This module starts a Policy Remediation task at a Management Group scope.'
-metadata owner = 'Azure/module-maintainers'
 
 targetScope = 'managementGroup'
 
@@ -15,7 +14,10 @@ param name string
 param failureThresholdPercentage string = '1'
 
 @sys.description('Optional. The filters that will be applied to determine which resources to remediate.')
-param filtersLocations array = []
+param filtersLocations string[] = []
+
+@sys.description('Optional. The IDs of the resources that will be remediated. Can specify at most 100 IDs.')
+param filtersResourceIds string[] = []
 
 @sys.description('Optional. Determines how many resources to remediate at any given time. Can be used to increase or reduce the pace of the remediation. Can be between 1-30. Higher values will cause the remediation to complete more quickly, but increase the risk of throttling. If not provided, the default parallel deployments value is used.')
 @minValue(1)
@@ -40,15 +42,22 @@ param location string = deployment().location
 // Resources        //
 // ================ //
 
-resource remediation 'Microsoft.PolicyInsights/remediations@2021-10-01' = {
+resource remediation 'Microsoft.PolicyInsights/remediations@2024-10-01' = {
   name: name
   properties: {
     failureThreshold: {
       percentage: json(failureThresholdPercentage) // The json() function is used to allow specifying a decimal value.
     }
-    filters: {
-      locations: filtersLocations
-    }
+    filters: union(
+      {
+        locations: filtersLocations
+      },
+      length(filtersResourceIds) > 0
+        ? {
+            resourceIds: filtersResourceIds
+          }
+        : {}
+    )
     parallelDeployments: parallelDeployments
     policyAssignmentId: policyAssignmentId
     policyDefinitionReferenceId: policyDefinitionReferenceId

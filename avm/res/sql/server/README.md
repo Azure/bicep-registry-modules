@@ -22,18 +22,19 @@ This module deploys an Azure SQL Server.
 | `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
-| `Microsoft.Sql/servers` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/servers) |
-| `Microsoft.Sql/servers/auditingSettings` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/servers/auditingSettings) |
-| `Microsoft.Sql/servers/databases` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/servers/databases) |
+| `Microsoft.Sql/servers` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01-preview/servers) |
+| `Microsoft.Sql/servers/auditingSettings` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01-preview/servers/auditingSettings) |
+| `Microsoft.Sql/servers/databases` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01-preview/servers/databases) |
 | `Microsoft.Sql/servers/databases/backupLongTermRetentionPolicies` | [2023-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-05-01-preview/servers/databases/backupLongTermRetentionPolicies) |
-| `Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies) |
-| `Microsoft.Sql/servers/elasticPools` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/servers/elasticPools) |
-| `Microsoft.Sql/servers/encryptionProtector` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/servers/encryptionProtector) |
-| `Microsoft.Sql/servers/firewallRules` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/servers/firewallRules) |
-| `Microsoft.Sql/servers/keys` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/servers/keys) |
-| `Microsoft.Sql/servers/securityAlertPolicies` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/servers/securityAlertPolicies) |
-| `Microsoft.Sql/servers/virtualNetworkRules` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/servers/virtualNetworkRules) |
-| `Microsoft.Sql/servers/vulnerabilityAssessments` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/servers/vulnerabilityAssessments) |
+| `Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01-preview/servers/databases/backupShortTermRetentionPolicies) |
+| `Microsoft.Sql/servers/elasticPools` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01-preview/servers/elasticPools) |
+| `Microsoft.Sql/servers/encryptionProtector` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01-preview/servers/encryptionProtector) |
+| `Microsoft.Sql/servers/failoverGroups` | [2024-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2024-05-01-preview/servers/failoverGroups) |
+| `Microsoft.Sql/servers/firewallRules` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01-preview/servers/firewallRules) |
+| `Microsoft.Sql/servers/keys` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01-preview/servers/keys) |
+| `Microsoft.Sql/servers/securityAlertPolicies` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01-preview/servers/securityAlertPolicies) |
+| `Microsoft.Sql/servers/virtualNetworkRules` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01-preview/servers/virtualNetworkRules) |
+| `Microsoft.Sql/servers/vulnerabilityAssessments` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01-preview/servers/vulnerabilityAssessments) |
 
 ## Usage examples
 
@@ -47,11 +48,12 @@ The following section provides usage examples for the module, which were used to
 - [With audit settings](#example-2-with-audit-settings)
 - [Using only defaults](#example-3-using-only-defaults)
 - [Using elastic pool](#example-4-using-elastic-pool)
-- [Deploying with a key vault reference to save secrets](#example-5-deploying-with-a-key-vault-reference-to-save-secrets)
-- [Using large parameter set](#example-6-using-large-parameter-set)
-- [With a secondary database](#example-7-with-a-secondary-database)
-- [With vulnerability assessment](#example-8-with-vulnerability-assessment)
-- [WAF-aligned](#example-9-waf-aligned)
+- [Using failover groups](#example-5-using-failover-groups)
+- [Deploying with a key vault reference to save secrets](#example-6-deploying-with-a-key-vault-reference-to-save-secrets)
+- [Using large parameter set](#example-7-using-large-parameter-set)
+- [With a secondary database](#example-8-with-a-secondary-database)
+- [With vulnerability assessment](#example-9-with-vulnerability-assessment)
+- [WAF-aligned](#example-10-waf-aligned)
 
 ### Example 1: _With an administrator_
 
@@ -446,7 +448,313 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 5: _Deploying with a key vault reference to save secrets_
+### Example 5: _Using failover groups_
+
+This instance deploys the module with failover groups.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module server 'br/public:avm/res/sql/server:<version>' = {
+  name: 'serverDeployment'
+  params: {
+    // Required parameters
+    name: 'ssfog001'
+    // Non-required parameters
+    administratorLogin: 'adminUserName'
+    administratorLoginPassword: '<administratorLoginPassword>'
+    databases: [
+      {
+        maxSizeBytes: 2147483648
+        name: 'ssfog-db1'
+        sku: {
+          name: 'S1'
+          tier: 'Standard'
+        }
+        zoneRedundant: false
+      }
+      {
+        maxSizeBytes: 2147483648
+        name: 'ssfog-db2'
+        sku: {
+          capacity: 2
+          name: 'GP_Gen5'
+          tier: 'GeneralPurpose'
+        }
+        zoneRedundant: false
+      }
+      {
+        maxSizeBytes: 2147483648
+        name: 'ssfog-db3'
+        sku: {
+          name: 'S1'
+          tier: 'Standard'
+        }
+        zoneRedundant: false
+      }
+    ]
+    failoverGroups: [
+      {
+        databases: [
+          'ssfog-db1'
+        ]
+        name: 'ssfog-fg-geo'
+        partnerServers: [
+          '<secondaryServerName>'
+        ]
+        readWriteEndpoint: {
+          failoverPolicy: 'Manual'
+        }
+        secondaryType: 'Geo'
+      }
+      {
+        databases: [
+          'ssfog-db2'
+        ]
+        name: 'ssfog-fg-standby'
+        partnerServers: [
+          '<secondaryServerName>'
+        ]
+        readWriteEndpoint: {
+          failoverPolicy: 'Automatic'
+          failoverWithDataLossGracePeriodMinutes: 60
+        }
+        secondaryType: 'Standby'
+      }
+      {
+        databases: [
+          'ssfog-db3'
+        ]
+        name: 'ssfog-fg-readonly'
+        partnerServers: [
+          '<secondaryServerName>'
+        ]
+        readOnlyEndpoint: {
+          failoverPolicy: 'Enabled'
+          targetServer: '<targetServer>'
+        }
+        readWriteEndpoint: {
+          failoverPolicy: 'Manual'
+        }
+        secondaryType: 'Geo'
+      }
+    ]
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "ssfog001"
+    },
+    // Non-required parameters
+    "administratorLogin": {
+      "value": "adminUserName"
+    },
+    "administratorLoginPassword": {
+      "value": "<administratorLoginPassword>"
+    },
+    "databases": {
+      "value": [
+        {
+          "maxSizeBytes": 2147483648,
+          "name": "ssfog-db1",
+          "sku": {
+            "name": "S1",
+            "tier": "Standard"
+          },
+          "zoneRedundant": false
+        },
+        {
+          "maxSizeBytes": 2147483648,
+          "name": "ssfog-db2",
+          "sku": {
+            "capacity": 2,
+            "name": "GP_Gen5",
+            "tier": "GeneralPurpose"
+          },
+          "zoneRedundant": false
+        },
+        {
+          "maxSizeBytes": 2147483648,
+          "name": "ssfog-db3",
+          "sku": {
+            "name": "S1",
+            "tier": "Standard"
+          },
+          "zoneRedundant": false
+        }
+      ]
+    },
+    "failoverGroups": {
+      "value": [
+        {
+          "databases": [
+            "ssfog-db1"
+          ],
+          "name": "ssfog-fg-geo",
+          "partnerServers": [
+            "<secondaryServerName>"
+          ],
+          "readWriteEndpoint": {
+            "failoverPolicy": "Manual"
+          },
+          "secondaryType": "Geo"
+        },
+        {
+          "databases": [
+            "ssfog-db2"
+          ],
+          "name": "ssfog-fg-standby",
+          "partnerServers": [
+            "<secondaryServerName>"
+          ],
+          "readWriteEndpoint": {
+            "failoverPolicy": "Automatic",
+            "failoverWithDataLossGracePeriodMinutes": 60
+          },
+          "secondaryType": "Standby"
+        },
+        {
+          "databases": [
+            "ssfog-db3"
+          ],
+          "name": "ssfog-fg-readonly",
+          "partnerServers": [
+            "<secondaryServerName>"
+          ],
+          "readOnlyEndpoint": {
+            "failoverPolicy": "Enabled",
+            "targetServer": "<targetServer>"
+          },
+          "readWriteEndpoint": {
+            "failoverPolicy": "Manual"
+          },
+          "secondaryType": "Geo"
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/sql/server:<version>'
+
+// Required parameters
+param name = 'ssfog001'
+// Non-required parameters
+param administratorLogin = 'adminUserName'
+param administratorLoginPassword = '<administratorLoginPassword>'
+param databases = [
+  {
+    maxSizeBytes: 2147483648
+    name: 'ssfog-db1'
+    sku: {
+      name: 'S1'
+      tier: 'Standard'
+    }
+    zoneRedundant: false
+  }
+  {
+    maxSizeBytes: 2147483648
+    name: 'ssfog-db2'
+    sku: {
+      capacity: 2
+      name: 'GP_Gen5'
+      tier: 'GeneralPurpose'
+    }
+    zoneRedundant: false
+  }
+  {
+    maxSizeBytes: 2147483648
+    name: 'ssfog-db3'
+    sku: {
+      name: 'S1'
+      tier: 'Standard'
+    }
+    zoneRedundant: false
+  }
+]
+param failoverGroups = [
+  {
+    databases: [
+      'ssfog-db1'
+    ]
+    name: 'ssfog-fg-geo'
+    partnerServers: [
+      '<secondaryServerName>'
+    ]
+    readWriteEndpoint: {
+      failoverPolicy: 'Manual'
+    }
+    secondaryType: 'Geo'
+  }
+  {
+    databases: [
+      'ssfog-db2'
+    ]
+    name: 'ssfog-fg-standby'
+    partnerServers: [
+      '<secondaryServerName>'
+    ]
+    readWriteEndpoint: {
+      failoverPolicy: 'Automatic'
+      failoverWithDataLossGracePeriodMinutes: 60
+    }
+    secondaryType: 'Standby'
+  }
+  {
+    databases: [
+      'ssfog-db3'
+    ]
+    name: 'ssfog-fg-readonly'
+    partnerServers: [
+      '<secondaryServerName>'
+    ]
+    readOnlyEndpoint: {
+      failoverPolicy: 'Enabled'
+      targetServer: '<targetServer>'
+    }
+    readWriteEndpoint: {
+      failoverPolicy: 'Manual'
+    }
+    secondaryType: 'Geo'
+  }
+]
+param location = '<location>'
+```
+
+</details>
+<p>
+
+### Example 6: _Deploying with a key vault reference to save secrets_
 
 This instance deploys the module saving all its secrets in a key vault.
 
@@ -557,7 +865,7 @@ param secretsExportConfiguration = {
 </details>
 <p>
 
-### Example 6: _Using large parameter set_
+### Example 7: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -1097,7 +1405,7 @@ param vulnerabilityAssessmentsObj = {
 </details>
 <p>
 
-### Example 7: _With a secondary database_
+### Example 8: _With a secondary database_
 
 This instance deploys the module with a secondary database.
 
@@ -1229,7 +1537,7 @@ param tags = {
 </details>
 <p>
 
-### Example 8: _With vulnerability assessment_
+### Example 9: _With vulnerability assessment_
 
 This instance deploys the module with a vulnerability assessment.
 
@@ -1412,7 +1720,7 @@ param vulnerabilityAssessmentsObj = {
 </details>
 <p>
 
-### Example 9: _WAF-aligned_
+### Example 10: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -1863,11 +2171,12 @@ param vulnerabilityAssessmentsObj = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`auditSettings`](#parameter-auditsettings) | object | The audit settings configuration. |
+| [`auditSettings`](#parameter-auditsettings) | object | The audit settings configuration. If you want to disable auditing, set the parmaeter to an empty object. |
 | [`databases`](#parameter-databases) | array | The databases to create in the server. |
 | [`elasticPools`](#parameter-elasticpools) | array | The Elastic Pools to create in the server. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`encryptionProtectorObj`](#parameter-encryptionprotectorobj) | object | The encryption protection configuration. |
+| [`failoverGroups`](#parameter-failovergroups) | array | The failover groups configuration. |
 | [`federatedClientId`](#parameter-federatedclientid) | string | The Client id used for cross tenant CMK scenario. |
 | [`firewallRules`](#parameter-firewallrules) | array | The firewall rules to create in the server. |
 | [`isIPv6Enabled`](#parameter-isipv6enabled) | string | Whether or not to enable IPv6 support for this server. |
@@ -1999,11 +2308,16 @@ The resource ID of a user assigned identity to be used by default. Required if "
 
 ### Parameter: `auditSettings`
 
-The audit settings configuration.
+The audit settings configuration. If you want to disable auditing, set the parmaeter to an empty object.
 
 - Required: No
 - Type: object
-- Default: `{}`
+- Default:
+  ```Bicep
+  {
+      state: 'Enabled'
+  }
+  ```
 
 **Optional parameters**
 
@@ -3068,6 +3382,148 @@ The encryption protector type.
   ]
   ```
 
+### Parameter: `failoverGroups`
+
+The failover groups configuration.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`databases`](#parameter-failovergroupsdatabases) | array | List of databases in the failover group. |
+| [`name`](#parameter-failovergroupsname) | string | The name of the failover group. |
+| [`partnerServers`](#parameter-failovergroupspartnerservers) | array | List of the partner servers for the failover group. |
+| [`readWriteEndpoint`](#parameter-failovergroupsreadwriteendpoint) | object | Read-write endpoint of the failover group instance. |
+| [`secondaryType`](#parameter-failovergroupssecondarytype) | string | Databases secondary type on partner server. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`readOnlyEndpoint`](#parameter-failovergroupsreadonlyendpoint) | object | Read-only endpoint of the failover group instance. |
+| [`tags`](#parameter-failovergroupstags) | object | Tags of the resource. |
+
+### Parameter: `failoverGroups.databases`
+
+List of databases in the failover group.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `failoverGroups.name`
+
+The name of the failover group.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `failoverGroups.partnerServers`
+
+List of the partner servers for the failover group.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `failoverGroups.readWriteEndpoint`
+
+Read-write endpoint of the failover group instance.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`failoverPolicy`](#parameter-failovergroupsreadwriteendpointfailoverpolicy) | string | Failover policy of the read-write endpoint for the failover group. If failoverPolicy is Automatic then failoverWithDataLossGracePeriodMinutes is required. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`failoverWithDataLossGracePeriodMinutes`](#parameter-failovergroupsreadwriteendpointfailoverwithdatalossgraceperiodminutes) | int | Grace period before failover with data loss is attempted for the read-write endpoint. |
+
+### Parameter: `failoverGroups.readWriteEndpoint.failoverPolicy`
+
+Failover policy of the read-write endpoint for the failover group. If failoverPolicy is Automatic then failoverWithDataLossGracePeriodMinutes is required.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Automatic'
+    'Manual'
+  ]
+  ```
+
+### Parameter: `failoverGroups.readWriteEndpoint.failoverWithDataLossGracePeriodMinutes`
+
+Grace period before failover with data loss is attempted for the read-write endpoint.
+
+- Required: No
+- Type: int
+
+### Parameter: `failoverGroups.secondaryType`
+
+Databases secondary type on partner server.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Geo'
+    'Standby'
+  ]
+  ```
+
+### Parameter: `failoverGroups.readOnlyEndpoint`
+
+Read-only endpoint of the failover group instance.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`failoverPolicy`](#parameter-failovergroupsreadonlyendpointfailoverpolicy) | string | Failover policy of the read-only endpoint for the failover group. |
+| [`targetServer`](#parameter-failovergroupsreadonlyendpointtargetserver) | string | The target partner server where the read-only endpoint points to. |
+
+### Parameter: `failoverGroups.readOnlyEndpoint.failoverPolicy`
+
+Failover policy of the read-only endpoint for the failover group.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
+### Parameter: `failoverGroups.readOnlyEndpoint.targetServer`
+
+The target partner server where the read-only endpoint points to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `failoverGroups.tags`
+
+Tags of the resource.
+
+- Required: No
+- Type: object
+
 ### Parameter: `federatedClientId`
 
 The Client id used for cross tenant CMK scenario.
@@ -3301,7 +3757,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 | [`name`](#parameter-privateendpointsname) | string | The name of the Private Endpoint. |
 | [`privateDnsZoneGroup`](#parameter-privateendpointsprivatednszonegroup) | object | The private DNS Zone Group to configure for the Private Endpoint. |
 | [`privateLinkServiceConnectionName`](#parameter-privateendpointsprivatelinkserviceconnectionname) | string | The name of the private link connection to create. |
-| [`resourceGroupName`](#parameter-privateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different Resource Group than the main resource. |
+| [`resourceGroupResourceId`](#parameter-privateendpointsresourcegroupresourceid) | string | The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
 | [`service`](#parameter-privateendpointsservice) | string | The subresource to deploy the Private Endpoint for. For example "vault" for a Key Vault Private Endpoint. |
 | [`tags`](#parameter-privateendpointstags) | object | Tags to be applied on all resources/Resource Groups in this deployment. |
@@ -3554,9 +4010,9 @@ The name of the private link connection to create.
 - Required: No
 - Type: string
 
-### Parameter: `privateEndpoints.resourceGroupName`
+### Parameter: `privateEndpoints.resourceGroupResourceId`
 
-Specify if you want to deploy the Private Endpoint into a different Resource Group than the main resource.
+The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used.
 
 - Required: No
 - Type: string
@@ -3577,7 +4033,7 @@ Array of role assignments to create.
   - `'Owner'`
   - `'Private DNS Zone Contributor'`
   - `'Reader'`
-  - `'Role Based Access Control Administrator (Preview)'`
+  - `'Role Based Access Control Administrator'`
 
 **Required parameters**
 
@@ -4126,8 +4582,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.7.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.10.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Notes
 

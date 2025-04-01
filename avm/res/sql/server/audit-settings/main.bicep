@@ -1,6 +1,5 @@
 metadata name = 'Azure SQL Server Audit Settings'
 metadata description = 'This module deploys an Azure SQL Server Audit Settings.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the audit settings.')
 param name string
@@ -48,6 +47,11 @@ resource server 'Microsoft.Sql/servers@2023-08-01-preview' existing = {
 }
 
 // Assign SQL Server MSI access to storage account
+var primaryUserAssignedIdentityPrincipalId = filter(
+  items(server.identity.userAssignedIdentities),
+  identity => identity.key == server.properties.primaryUserAssignedIdentityId
+)[0].value.principalId
+
 module storageAccount_sbdc_rbac 'modules/nested_storageRoleAssignment.bicep' = if (isManagedIdentityInUse && !empty(storageAccountResourceId)) {
   name: '${server.name}-stau-rbac'
   scope: (isManagedIdentityInUse && !empty(storageAccountResourceId))
@@ -55,7 +59,9 @@ module storageAccount_sbdc_rbac 'modules/nested_storageRoleAssignment.bicep' = i
     : resourceGroup()
   params: {
     storageAccountName: last(split(storageAccountResourceId!, '/'))
-    managedInstanceIdentityPrincipalId: server.identity.principalId
+    managedIdentityPrincipalId: server.identity.type == 'UserAssigned'
+      ? primaryUserAssignedIdentityPrincipalId
+      : server.identity.principalId
   }
 }
 

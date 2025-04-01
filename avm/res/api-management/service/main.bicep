@@ -1,6 +1,5 @@
 metadata name = 'API Management Services'
 metadata description = 'This module deploys an API Management Service. The default deployment is set to use a Premium SKU to align with Microsoft WAF-aligned best practices. In most cases, non-prod deployments should use a lower-tier SKU.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Optional. Additional datacenter locations of the API Management service. Not supported with V2 SKUs.')
 param additionalLocations array = []
@@ -36,14 +35,16 @@ param enableClientCertificate bool = false
 @description('Optional. Custom hostname configuration of the API Management service.')
 param hostnameConfigurations array = []
 
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
 @description('Optional. The managed identity definition for this resource.')
-param managedIdentities managedIdentitiesType
+param managedIdentities managedIdentityAllType?
 
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
 @description('Optional. The lock settings of the service.')
-param lock lockType
+param lock lockType?
 
 @description('Optional. Limit control plane API calls to API Management service with version equal to or newer than this value.')
 param minApiVersion string?
@@ -60,8 +61,9 @@ param publisherName string
 @description('Optional. Undelete API Management Service if it was previously soft-deleted. If this flag is specified and set to True all other properties will be ignored.')
 param restore bool = false
 
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
 @description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+param roleAssignments roleAssignmentType[]?
 
 @description('Optional. The pricing tier of this API Management service.')
 @allowed([
@@ -92,8 +94,9 @@ param tags object?
 ])
 param virtualNetworkType string = 'None'
 
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
 @description('Optional. The diagnostic settings of the service.')
-param diagnosticSettings diagnosticSettingType
+param diagnosticSettings diagnosticSettingFullType[]?
 
 @description('Optional. A list of availability zones denoting where the resource needs to come from. Only supported by Premium sku.')
 param zones array = [1, 2]
@@ -108,8 +111,7 @@ param apis array = []
 param apiVersionSets array = []
 
 @description('Optional. Authorization servers.')
-@secure()
-param authorizationServers object = {}
+param authorizationServers authorizationServerType[]?
 
 @description('Optional. Backends.')
 param backends array = []
@@ -144,7 +146,8 @@ param subscriptions array = []
 @description('Optional. Public Standard SKU IP V4 based IP address to be associated with Virtual Network deployed service in the region. Supported only for Developer and Premium SKU being deployed in Virtual Network.')
 param publicIpAddressResourceId string?
 
-var authorizationServerList = !empty(authorizationServers) ? authorizationServers.secureList : []
+@description('Optional. Enable the Developer Portal. The developer portal is not supported on the Consumption SKU.')
+param enableDeveloperPortal bool = false
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -221,7 +224,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource service 'Microsoft.ApiManagement/service@2023-05-01-preview' = {
+resource service 'Microsoft.ApiManagement/service@2024-05-01' = {
   name: name
   location: location
   tags: tags
@@ -256,6 +259,7 @@ resource service 'Microsoft.ApiManagement/service@2023-05-01-preview' = {
           minApiVersion: '2021-08-01'
         }
     restore: restore
+    developerPortalStatus: sku != 'Consumption' ? (enableDeveloperPortal ? 'Enabled' : 'Disabled') : null
   }
 }
 
@@ -275,7 +279,7 @@ module service_apis 'api/main.bicep' = [
       apiVersionDescription: api.?apiVersionDescription
       apiVersionSetId: api.?apiVersionSetId
       authenticationSettings: api.?authenticationSettings
-      format: api.?format ?? 'openapi'
+      format: api.?format
       isCurrent: api.?isCurrent
       protocols: api.?protocols
       policies: api.?policies
@@ -305,7 +309,7 @@ module service_apiVersionSets 'api-version-set/main.bicep' = [
 ]
 
 module service_authorizationServers 'authorization-server/main.bicep' = [
-  for (authorizationServer, index) in authorizationServerList: {
+  for (authorizationServer, index) in (authorizationServers ?? []): {
     name: '${uniqueString(deployment().name, location)}-Apim-AuthorizationServer-${index}'
     params: {
       apiManagementServiceName: service.name
@@ -344,7 +348,7 @@ module service_backends 'backend/main.bicep' = [
       resourceId: backend.?resourceId
       serviceFabricCluster: backend.?serviceFabricCluster
       title: backend.?title
-      tls: backend.?tls
+      tls: backend.?tls ?? { validateCertificateChain: true, validateCertificateName: true }
     }
   }
 ]
@@ -569,7 +573,7 @@ output resourceId string = service.id
 output resourceGroupName string = resourceGroup().name
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = service.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = service.?identity.?principalId
 
 @description('The location the resource was deployed into.')
 output location string = service.location
@@ -577,89 +581,63 @@ output location string = service.location
 // =============== //
 //   Definitions   //
 // =============== //
+import { tokenBodyParameterType } from 'authorization-server/main.bicep'
 
-type managedIdentitiesType = {
-  @description('Optional. Enables system assigned managed identity on the resource.')
-  systemAssigned: bool?
+@export()
+@description('The type for an authorization server.')
+type authorizationServerType = {
+  @description('Required. Identifier of the authorization server.')
+  name: string
 
-  @description('Optional. The resource ID(s) to assign to the resource.')
-  userAssignedResourceIds: string[]?
-}?
+  @description('Required. API Management Service Authorization Servers name. Must be 1 to 50 characters long.')
+  @maxLength(50)
+  displayName: string
 
-type lockType = {
-  @description('Optional. Specify the name of lock.')
-  name: string?
+  @description('Required. OAuth authorization endpoint. See <http://tools.ietf.org/html/rfc6749#section-3.2>.')
+  authorizationEndpoint: string
 
-  @description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?
+  @description('Optional. HTTP verbs supported by the authorization endpoint. GET must be always present. POST is optional. - HEAD, OPTIONS, TRACE, GET, POST, PUT, PATCH, DELETE.')
+  authorizationMethods: string[]?
 
-type roleAssignmentType = {
-  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
-  name: string?
+  @description('Optional. Specifies the mechanism by which access token is passed to the API. - authorizationHeader or query.')
+  bearerTokenSendingMethods: string[]?
 
-  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
+  @description('Optional. Method of authentication supported by the token endpoint of this authorization server. Possible values are Basic and/or Body. When Body is specified, client credentials and other parameters are passed within the request body in the application/x-www-form-urlencoded format. - Basic or Body.')
+  clientAuthenticationMethod: string[]?
 
-  @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
+  @description('Required. Client or app ID registered with this authorization server.')
+  @secure()
+  clientId: string
 
-  @description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
+  @description('Optional. Optional reference to a page where client or app registration for this authorization server is performed. Contains absolute URL to entity being referenced.')
+  clientRegistrationEndpoint: string?
 
-  @description('Optional. The description of the role assignment.')
-  description: string?
+  @description('Required. Client or app secret registered with this authorization server. This property will not be filled on \'GET\' operations! Use \'/listSecrets\' POST request to get the value.')
+  @secure()
+  clientSecret: string
 
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
+  @description('Optional. Access token scope that is going to be requested by default. Can be overridden at the API level. Should be provided in the form of a string containing space-delimited values.')
+  defaultScope: string?
 
-  @description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
+  @description('Optional. Description of the authorization server. Can contain HTML formatting tags.')
+  serverDescription: string?
 
-  @description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?
+  @description('Required. Form of an authorization grant, which the client uses to request the access token. - authorizationCode, implicit, resourceOwnerPassword, clientCredentials.')
+  grantTypes: ('authorizationCode' | 'clientCredentials' | 'implicit' | 'resourceOwnerPassword')[]
 
-type diagnosticSettingType = {
-  @description('Optional. The name of diagnostic setting.')
-  name: string?
+  @description('Optional. Can be optionally specified when resource owner password grant type is supported by this authorization server. Default resource owner password.')
+  @secure()
+  resourceOwnerPassword: string?
 
-  @description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.')
-  logCategoriesAndGroups: {
-    @description('Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.')
-    category: string?
+  @description('Optional. Can be optionally specified when resource owner password grant type is supported by this authorization server. Default resource owner username.')
+  resourceOwnerUsername: string?
 
-    @description('Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.')
-    categoryGroup: string?
+  @description('Optional. If true, authorization server will include state parameter from the authorization request to its response. Client may use state parameter to raise protocol security.')
+  supportState: bool?
 
-    @description('Optional. Enable or disable the category explicitly. Default is `true`.')
-    enabled: bool?
-  }[]?
+  @description('Optional. Additional parameters required by the token endpoint of this authorization server represented as an array of JSON objects with name and value string properties, i.e. {"name" : "name value", "value": "a value"}. - TokenBodyParameterContract object.')
+  tokenBodyParameters: tokenBodyParameterType[]?
 
-  @description('Optional. The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.')
-  metricCategories: {
-    @description('Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.')
-    category: string
-
-    @description('Optional. Enable or disable the category explicitly. Default is `true`.')
-    enabled: bool?
-  }[]?
-
-  @description('Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.')
-  logAnalyticsDestinationType: ('Dedicated' | 'AzureDiagnostics')?
-
-  @description('Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  workspaceResourceId: string?
-
-  @description('Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  storageAccountResourceId: string?
-
-  @description('Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.')
-  eventHubAuthorizationRuleResourceId: string?
-
-  @description('Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  eventHubName: string?
-
-  @description('Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.')
-  marketplacePartnerResourceId: string?
-}[]?
+  @description('Optional. OAuth token endpoint. Contains absolute URI to entity being referenced.')
+  tokenEndpoint: string?
+}

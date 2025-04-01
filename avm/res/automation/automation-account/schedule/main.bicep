@@ -1,6 +1,5 @@
 metadata name = 'Automation Account Schedules'
 metadata description = 'This module deploys an Azure Automation Account Schedule.'
-metadata owner = 'Azure/module-maintainers'
 
 @sys.description('Required. Name of the Automation Account schedule.')
 param name string

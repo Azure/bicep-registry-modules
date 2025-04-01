@@ -1,6 +1,5 @@
 metadata name = 'DocumentDB Database Accounts Gremlin Databases Graphs'
 metadata description = 'This module deploys a DocumentDB Database Accounts Gremlin Database Graph.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the graph.')
 param name string
@@ -20,15 +19,15 @@ param indexingPolicy object = {}
 @description('Optional. List of paths using which data within the container can be partitioned.')
 param partitionKeyPaths array = []
 
-resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' existing = {
+resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2024-11-15' existing = {
   name: databaseAccountName
 
-  resource gremlinDatabase 'gremlinDatabases@2023-04-15' existing = {
+  resource gremlinDatabase 'gremlinDatabases@2024-11-15' existing = {
     name: gremlinDatabaseName
   }
 }
 
-resource gremlinGraph 'Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs@2023-04-15' = {
+resource gremlinGraph 'Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs@2024-11-15' = {
   name: name
   tags: tags
   parent: databaseAccount::gremlinDatabase

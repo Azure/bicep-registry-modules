@@ -9,7 +9,6 @@ This module deploys a Storage Account.
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
-- [Notes](#Notes)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -384,10 +383,10 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     // Non-required parameters
     location: '<location>'
     secretsExportConfiguration: {
-      accessKey1: 'custom-key1-name'
-      accessKey2: 'custom-key2-name'
-      connectionString1: 'custom-connectionString1-name'
-      connectionString2: 'custom-connectionString2-name'
+      accessKey1Name: 'custom-key1-name'
+      accessKey2Name: 'custom-key2-name'
+      connectionString1Name: 'custom-connectionString1-name'
+      connectionString2Name: 'custom-connectionString2-name'
       keyVaultResourceId: '<keyVaultResourceId>'
     }
   }
@@ -416,10 +415,10 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     },
     "secretsExportConfiguration": {
       "value": {
-        "accessKey1": "custom-key1-name",
-        "accessKey2": "custom-key2-name",
-        "connectionString1": "custom-connectionString1-name",
-        "connectionString2": "custom-connectionString2-name",
+        "accessKey1Name": "custom-key1-name",
+        "accessKey2Name": "custom-key2-name",
+        "connectionString1Name": "custom-connectionString1-name",
+        "connectionString2Name": "custom-connectionString2-name",
         "keyVaultResourceId": "<keyVaultResourceId>"
       }
     }
@@ -442,10 +441,10 @@ param name = 'kvref'
 // Non-required parameters
 param location = '<location>'
 param secretsExportConfiguration = {
-  accessKey1: 'custom-key1-name'
-  accessKey2: 'custom-key2-name'
-  connectionString1: 'custom-connectionString1-name'
-  connectionString2: 'custom-connectionString2-name'
+  accessKey1Name: 'custom-key1-name'
+  accessKey2Name: 'custom-key2-name'
+  connectionString1Name: 'custom-connectionString1-name'
+  connectionString2Name: 'custom-connectionString2-name'
   keyVaultResourceId: '<keyVaultResourceId>'
 }
 ```
@@ -507,6 +506,29 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
           publicAccess: 'None'
         }
       ]
+      corsRules: [
+        {
+          allowedHeaders: [
+            'x-ms-meta-data'
+            'x-ms-meta-source-path'
+            'x-ms-meta-target-path'
+          ]
+          allowedMethods: [
+            'GET'
+            'PUT'
+          ]
+          allowedOrigins: [
+            'http://*.contoso.com'
+            'http://www.fabrikam.com'
+          ]
+          exposedHeaders: [
+            'x-ms-meta-data'
+            'x-ms-meta-source-path'
+            'x-ms-meta-target-path'
+          ]
+          maxAgeInSeconds: 200
+        }
+      ]
       deleteRetentionPolicyDays: 9
       deleteRetentionPolicyEnabled: true
       diagnosticSettings: [
@@ -543,6 +565,29 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     enableNfsV3: true
     enableSftp: true
     fileServices: {
+      corsRules: [
+        {
+          allowedHeaders: [
+            'x-ms-meta-data'
+            'x-ms-meta-source-path'
+            'x-ms-meta-target-path'
+          ]
+          allowedMethods: [
+            'GET'
+            'PUT'
+          ]
+          allowedOrigins: [
+            'http://*.contoso.com'
+            'http://www.fabrikam.com'
+          ]
+          exposedHeaders: [
+            'x-ms-meta-data'
+            'x-ms-meta-source-path'
+            'x-ms-meta-target-path'
+          ]
+          maxAgeInSeconds: 200
+        }
+      ]
       diagnosticSettings: [
         {
           eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -603,7 +648,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
             service: 'blob'
           }
         ]
-        storageAccountName: 'ssamax001'
       }
     ]
     location: '<location>'
@@ -758,6 +802,29 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
       }
     ]
     queueServices: {
+      corsRules: [
+        {
+          allowedHeaders: [
+            'x-ms-meta-data'
+            'x-ms-meta-source-path'
+            'x-ms-meta-target-path'
+          ]
+          allowedMethods: [
+            'GET'
+            'PUT'
+          ]
+          allowedOrigins: [
+            'http://*.contoso.com'
+            'http://www.fabrikam.com'
+          ]
+          exposedHeaders: [
+            'x-ms-meta-data'
+            'x-ms-meta-source-path'
+            'x-ms-meta-target-path'
+          ]
+          maxAgeInSeconds: 200
+        }
+      ]
       diagnosticSettings: [
         {
           eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -826,6 +893,29 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     sasExpirationPeriod: '180.00:00:00'
     skuName: 'Standard_LRS'
     tableServices: {
+      corsRules: [
+        {
+          allowedHeaders: [
+            'x-ms-meta-data'
+            'x-ms-meta-source-path'
+            'x-ms-meta-target-path'
+          ]
+          allowedMethods: [
+            'GET'
+            'PUT'
+          ]
+          allowedOrigins: [
+            'http://*.contoso.com'
+            'http://www.fabrikam.com'
+          ]
+          exposedHeaders: [
+            'x-ms-meta-data'
+            'x-ms-meta-source-path'
+            'x-ms-meta-target-path'
+          ]
+          maxAgeInSeconds: 200
+        }
+      ]
       diagnosticSettings: [
         {
           eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -950,6 +1040,29 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
             "publicAccess": "None"
           }
         ],
+        "corsRules": [
+          {
+            "allowedHeaders": [
+              "x-ms-meta-data",
+              "x-ms-meta-source-path",
+              "x-ms-meta-target-path"
+            ],
+            "allowedMethods": [
+              "GET",
+              "PUT"
+            ],
+            "allowedOrigins": [
+              "http://*.contoso.com",
+              "http://www.fabrikam.com"
+            ],
+            "exposedHeaders": [
+              "x-ms-meta-data",
+              "x-ms-meta-source-path",
+              "x-ms-meta-target-path"
+            ],
+            "maxAgeInSeconds": 200
+          }
+        ],
         "deleteRetentionPolicyDays": 9,
         "deleteRetentionPolicyEnabled": true,
         "diagnosticSettings": [
@@ -996,6 +1109,29 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     },
     "fileServices": {
       "value": {
+        "corsRules": [
+          {
+            "allowedHeaders": [
+              "x-ms-meta-data",
+              "x-ms-meta-source-path",
+              "x-ms-meta-target-path"
+            ],
+            "allowedMethods": [
+              "GET",
+              "PUT"
+            ],
+            "allowedOrigins": [
+              "http://*.contoso.com",
+              "http://www.fabrikam.com"
+            ],
+            "exposedHeaders": [
+              "x-ms-meta-data",
+              "x-ms-meta-source-path",
+              "x-ms-meta-target-path"
+            ],
+            "maxAgeInSeconds": 200
+          }
+        ],
         "diagnosticSettings": [
           {
             "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
@@ -1059,8 +1195,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
               "resourceName": "avdscripts",
               "service": "blob"
             }
-          ],
-          "storageAccountName": "ssamax001"
+          ]
         }
       ]
     },
@@ -1229,6 +1364,29 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     },
     "queueServices": {
       "value": {
+        "corsRules": [
+          {
+            "allowedHeaders": [
+              "x-ms-meta-data",
+              "x-ms-meta-source-path",
+              "x-ms-meta-target-path"
+            ],
+            "allowedMethods": [
+              "GET",
+              "PUT"
+            ],
+            "allowedOrigins": [
+              "http://*.contoso.com",
+              "http://www.fabrikam.com"
+            ],
+            "exposedHeaders": [
+              "x-ms-meta-data",
+              "x-ms-meta-source-path",
+              "x-ms-meta-target-path"
+            ],
+            "maxAgeInSeconds": 200
+          }
+        ],
         "diagnosticSettings": [
           {
             "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
@@ -1307,6 +1465,29 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
     },
     "tableServices": {
       "value": {
+        "corsRules": [
+          {
+            "allowedHeaders": [
+              "x-ms-meta-data",
+              "x-ms-meta-source-path",
+              "x-ms-meta-target-path"
+            ],
+            "allowedMethods": [
+              "GET",
+              "PUT"
+            ],
+            "allowedOrigins": [
+              "http://*.contoso.com",
+              "http://www.fabrikam.com"
+            ],
+            "exposedHeaders": [
+              "x-ms-meta-data",
+              "x-ms-meta-source-path",
+              "x-ms-meta-target-path"
+            ],
+            "maxAgeInSeconds": 200
+          }
+        ],
         "diagnosticSettings": [
           {
             "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
@@ -1427,6 +1608,29 @@ param blobServices = {
       publicAccess: 'None'
     }
   ]
+  corsRules: [
+    {
+      allowedHeaders: [
+        'x-ms-meta-data'
+        'x-ms-meta-source-path'
+        'x-ms-meta-target-path'
+      ]
+      allowedMethods: [
+        'GET'
+        'PUT'
+      ]
+      allowedOrigins: [
+        'http://*.contoso.com'
+        'http://www.fabrikam.com'
+      ]
+      exposedHeaders: [
+        'x-ms-meta-data'
+        'x-ms-meta-source-path'
+        'x-ms-meta-target-path'
+      ]
+      maxAgeInSeconds: 200
+    }
+  ]
   deleteRetentionPolicyDays: 9
   deleteRetentionPolicyEnabled: true
   diagnosticSettings: [
@@ -1463,6 +1667,29 @@ param enableHierarchicalNamespace = true
 enableNfsV3: true
 param enableSftp = true
 param fileServices = {
+  corsRules: [
+    {
+      allowedHeaders: [
+        'x-ms-meta-data'
+        'x-ms-meta-source-path'
+        'x-ms-meta-target-path'
+      ]
+      allowedMethods: [
+        'GET'
+        'PUT'
+      ]
+      allowedOrigins: [
+        'http://*.contoso.com'
+        'http://www.fabrikam.com'
+      ]
+      exposedHeaders: [
+        'x-ms-meta-data'
+        'x-ms-meta-source-path'
+        'x-ms-meta-target-path'
+      ]
+      maxAgeInSeconds: 200
+    }
+  ]
   diagnosticSettings: [
     {
       eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -1523,7 +1750,6 @@ param localUsers = [
         service: 'blob'
       }
     ]
-    storageAccountName: 'ssamax001'
   }
 ]
 param location = '<location>'
@@ -1678,6 +1904,29 @@ param privateEndpoints = [
   }
 ]
 param queueServices = {
+  corsRules: [
+    {
+      allowedHeaders: [
+        'x-ms-meta-data'
+        'x-ms-meta-source-path'
+        'x-ms-meta-target-path'
+      ]
+      allowedMethods: [
+        'GET'
+        'PUT'
+      ]
+      allowedOrigins: [
+        'http://*.contoso.com'
+        'http://www.fabrikam.com'
+      ]
+      exposedHeaders: [
+        'x-ms-meta-data'
+        'x-ms-meta-source-path'
+        'x-ms-meta-target-path'
+      ]
+      maxAgeInSeconds: 200
+    }
+  ]
   diagnosticSettings: [
     {
       eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -1746,6 +1995,29 @@ param roleAssignments = [
 param sasExpirationPeriod = '180.00:00:00'
 param skuName = 'Standard_LRS'
 param tableServices = {
+  corsRules: [
+    {
+      allowedHeaders: [
+        'x-ms-meta-data'
+        'x-ms-meta-source-path'
+        'x-ms-meta-target-path'
+      ]
+      allowedMethods: [
+        'GET'
+        'PUT'
+      ]
+      allowedOrigins: [
+        'http://*.contoso.com'
+        'http://www.fabrikam.com'
+      ]
+      exposedHeaders: [
+        'x-ms-meta-data'
+        'x-ms-meta-source-path'
+        'x-ms-meta-target-path'
+      ]
+      maxAgeInSeconds: 200
+    }
+  ]
   diagnosticSettings: [
     {
       eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -2431,7 +2703,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
             service: 'blob'
           }
         ]
-        storageAccountName: 'ssawaf001'
       }
     ]
     location: '<location>'
@@ -2705,8 +2976,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:<version>' = {
               "resourceName": "avdscripts",
               "service": "blob"
             }
-          ],
-          "storageAccountName": "ssawaf001"
+          ]
         }
       ]
     },
@@ -2983,7 +3253,6 @@ param localUsers = [
         service: 'blob'
       }
     ]
-    storageAccountName: 'ssawaf001'
   }
 ]
 param location = '<location>'
@@ -3178,6 +3447,7 @@ param tags = {
 | [`queueServices`](#parameter-queueservices) | object | Queue service and queues to create. |
 | [`requireInfrastructureEncryption`](#parameter-requireinfrastructureencryption) | bool | A Boolean indicating whether or not the service applies a secondary layer of encryption with platform managed keys for data at rest. For security reasons, it is recommended to set it to true. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`sasExpirationAction`](#parameter-sasexpirationaction) | string | The SAS expiration action. Allowed values are Block and Log. |
 | [`sasExpirationPeriod`](#parameter-sasexpirationperiod) | string | The SAS expiration period. DD.HH:MM:SS. |
 | [`secretsExportConfiguration`](#parameter-secretsexportconfiguration) | object | Key vault reference and secret settings for the module's secrets export. |
 | [`skuName`](#parameter-skuname) | string | Storage Account Sku Name. |
@@ -3202,6 +3472,7 @@ Required if the Storage Account kind is set to BlobStorage. The access tier is u
 - Allowed:
   ```Bicep
   [
+    'Cold'
     'Cool'
     'Hot'
     'Premium'
@@ -3306,7 +3577,8 @@ The customer managed key definition.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`keyVersion`](#parameter-customermanagedkeykeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, using 'latest'. |
+| [`autoRotationEnabled`](#parameter-customermanagedkeyautorotationenabled) | bool | Enable or disable auto-rotating to the latest key version. Default is `true`. If set to `false`, the latest key version at the time of the deployment is used. |
+| [`keyVersion`](#parameter-customermanagedkeykeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationEnabled' setting. |
 | [`userAssignedIdentityResourceId`](#parameter-customermanagedkeyuserassignedidentityresourceid) | string | User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use. |
 
 ### Parameter: `customerManagedKey.keyName`
@@ -3323,9 +3595,16 @@ The resource ID of a key vault to reference a customer managed key for encryptio
 - Required: Yes
 - Type: string
 
+### Parameter: `customerManagedKey.autoRotationEnabled`
+
+Enable or disable auto-rotating to the latest key version. Default is `true`. If set to `false`, the latest key version at the time of the deployment is used.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `customerManagedKey.keyVersion`
 
-The version of the customer managed key to reference for encryption. If not provided, using 'latest'.
+The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationEnabled' setting.
 
 - Required: No
 - Type: string
@@ -3600,7 +3879,127 @@ Local users to deploy for SFTP authentication.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`hasSshKey`](#parameter-localusershassshkey) | bool | Indicates whether SSH key exists. Set it to false to remove existing SSH key. |
+| [`hasSshPassword`](#parameter-localusershassshpassword) | bool | Indicates whether SSH password exists. Set it to false to remove existing SSH password. |
+| [`name`](#parameter-localusersname) | string | The name of the local user used for SFTP Authentication. |
+| [`permissionScopes`](#parameter-localuserspermissionscopes) | array | The permission scopes of the local user. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`hasSharedKey`](#parameter-localusershassharedkey) | bool | Indicates whether shared key exists. Set it to false to remove existing shared key. |
+| [`homeDirectory`](#parameter-localusershomedirectory) | string | The local user home directory. |
+| [`sshAuthorizedKeys`](#parameter-localuserssshauthorizedkeys) | array | The local user SSH authorized keys for SFTP. |
+
+### Parameter: `localUsers.hasSshKey`
+
+Indicates whether SSH key exists. Set it to false to remove existing SSH key.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `localUsers.hasSshPassword`
+
+Indicates whether SSH password exists. Set it to false to remove existing SSH password.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `localUsers.name`
+
+The name of the local user used for SFTP Authentication.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `localUsers.permissionScopes`
+
+The permission scopes of the local user.
+
+- Required: Yes
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`permissions`](#parameter-localuserspermissionscopespermissions) | string | The permissions for the local user. Possible values include: Read (r), Write (w), Delete (d), List (l), and Create (c). |
+| [`resourceName`](#parameter-localuserspermissionscopesresourcename) | string | The name of resource, normally the container name or the file share name, used by the local user. |
+| [`service`](#parameter-localuserspermissionscopesservice) | string | The service used by the local user, e.g. blob, file. |
+
+### Parameter: `localUsers.permissionScopes.permissions`
+
+The permissions for the local user. Possible values include: Read (r), Write (w), Delete (d), List (l), and Create (c).
+
+- Required: Yes
+- Type: string
+
+### Parameter: `localUsers.permissionScopes.resourceName`
+
+The name of resource, normally the container name or the file share name, used by the local user.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `localUsers.permissionScopes.service`
+
+The service used by the local user, e.g. blob, file.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `localUsers.hasSharedKey`
+
+Indicates whether shared key exists. Set it to false to remove existing shared key.
+
+- Required: No
+- Type: bool
+
+### Parameter: `localUsers.homeDirectory`
+
+The local user home directory.
+
+- Required: No
+- Type: string
+
+### Parameter: `localUsers.sshAuthorizedKeys`
+
+The local user SSH authorized keys for SFTP.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`key`](#parameter-localuserssshauthorizedkeyskey) | securestring | SSH public key base64 encoded. The format should be: '{keyType} {keyData}', e.g. ssh-rsa AAAABBBB. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-localuserssshauthorizedkeysdescription) | string | Description used to store the function/usage of the key. |
+
+### Parameter: `localUsers.sshAuthorizedKeys.key`
+
+SSH public key base64 encoded. The format should be: '{keyType} {keyData}', e.g. ssh-rsa AAAABBBB.
+
+- Required: Yes
+- Type: securestring
+
+### Parameter: `localUsers.sshAuthorizedKeys.description`
+
+Description used to store the function/usage of the key.
+
+- Required: No
+- Type: string
 
 ### Parameter: `location`
 
@@ -3692,7 +4091,6 @@ Set the minimum TLS version on request to storage. The TLS versions 1.0 and 1.1 
   ```Bicep
   [
     'TLS1_2'
-    'TLS1_3'
   ]
   ```
 
@@ -3819,7 +4217,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 | [`name`](#parameter-privateendpointsname) | string | The name of the private endpoint. |
 | [`privateDnsZoneGroup`](#parameter-privateendpointsprivatednszonegroup) | object | The private DNS zone group to configure for the private endpoint. |
 | [`privateLinkServiceConnectionName`](#parameter-privateendpointsprivatelinkserviceconnectionname) | string | The name of the private link connection to create. |
-| [`resourceGroupName`](#parameter-privateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different resource group than the main resource. |
+| [`resourceGroupResourceId`](#parameter-privateendpointsresourcegroupresourceid) | string | The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-privateendpointstags) | object | Tags to be applied on all resources/resource groups in this deployment. |
 
@@ -4078,9 +4476,9 @@ The name of the private link connection to create.
 - Required: No
 - Type: string
 
-### Parameter: `privateEndpoints.resourceGroupName`
+### Parameter: `privateEndpoints.resourceGroupResourceId`
 
-Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.
+The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used.
 
 - Required: No
 - Type: string
@@ -4101,7 +4499,7 @@ Array of role assignments to create.
   - `'Owner'`
   - `'Private DNS Zone Contributor'`
   - `'Reader'`
-  - `'Role Based Access Control Administrator (Preview)'`
+  - `'Role Based Access Control Administrator'`
 
 **Required parameters**
 
@@ -4354,6 +4752,21 @@ The principal type of the assigned principal ID.
   ]
   ```
 
+### Parameter: `sasExpirationAction`
+
+The SAS expiration action. Allowed values are Block and Log.
+
+- Required: No
+- Type: string
+- Default: `'Log'`
+- Allowed:
+  ```Bicep
+  [
+    'Block'
+    'Log'
+  ]
+  ```
+
 ### Parameter: `sasExpirationPeriod`
 
 The SAS expiration period. DD.HH:MM:SS.
@@ -4379,10 +4792,10 @@ Key vault reference and secret settings for the module's secrets export.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`accessKey1`](#parameter-secretsexportconfigurationaccesskey1) | string | The accessKey1 secret name to create. |
-| [`accessKey2`](#parameter-secretsexportconfigurationaccesskey2) | string | The accessKey2 secret name to create. |
-| [`connectionString1`](#parameter-secretsexportconfigurationconnectionstring1) | string | The connectionString1 secret name to create. |
-| [`connectionString2`](#parameter-secretsexportconfigurationconnectionstring2) | string | The connectionString2 secret name to create. |
+| [`accessKey1Name`](#parameter-secretsexportconfigurationaccesskey1name) | string | The accessKey1 secret name to create. |
+| [`accessKey2Name`](#parameter-secretsexportconfigurationaccesskey2name) | string | The accessKey2 secret name to create. |
+| [`connectionString1Name`](#parameter-secretsexportconfigurationconnectionstring1name) | string | The connectionString1 secret name to create. |
+| [`connectionString2Name`](#parameter-secretsexportconfigurationconnectionstring2name) | string | The connectionString2 secret name to create. |
 
 ### Parameter: `secretsExportConfiguration.keyVaultResourceId`
 
@@ -4391,28 +4804,28 @@ The key vault name where to store the keys and connection strings generated by t
 - Required: Yes
 - Type: string
 
-### Parameter: `secretsExportConfiguration.accessKey1`
+### Parameter: `secretsExportConfiguration.accessKey1Name`
 
 The accessKey1 secret name to create.
 
 - Required: No
 - Type: string
 
-### Parameter: `secretsExportConfiguration.accessKey2`
+### Parameter: `secretsExportConfiguration.accessKey2Name`
 
 The accessKey2 secret name to create.
 
 - Required: No
 - Type: string
 
-### Parameter: `secretsExportConfiguration.connectionString1`
+### Parameter: `secretsExportConfiguration.connectionString1Name`
 
 The connectionString1 secret name to create.
 
 - Required: No
 - Type: string
 
-### Parameter: `secretsExportConfiguration.connectionString2`
+### Parameter: `secretsExportConfiguration.connectionString2Name`
 
 The connectionString2 secret name to create.
 
@@ -4483,15 +4896,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.7.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |
-
-## Notes
-
-This is a generic module for deploying a Storage Account. Any customization for different storage needs (such as a diagnostic or other storage account) need to be done through the Archetype.
-The hierarchical namespace of the storage account (see parameter `enableHierarchicalNamespace`), can be only set at creation time.
-
-A list of supported resource types for the parameter ``networkAclsType.resourceAccessRules`` can be found [here](https://learn.microsoft.com/en-us/azure/storage/common/storage-network-security?tabs=azure-powershell#trusted-access-based-on-a-managed-identity). These can be used with or without wildcards (`*`) in the ``resourceId`` field.
+| `br/public:avm/res/network/private-endpoint:0.10.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

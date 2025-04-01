@@ -59,7 +59,56 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Azure Login
+    # [Azure login] task(s)
+    # ------------------------------
+    - name: "Set OIDC temporary exception"
+      id: set-oidc-exception
+      uses: azure/powershell@v2
+      with:
+        azPSVersion: "latest"
+        inlineScript: |
+          # Grouping task logs
+          Write-Output '::group::Set OIDC exception'
+
+          # List of modules requiring service principal + secret authentication
+          $modulePath = "${{ inputs.modulePath }}"
+          $exceptionModulePaths = @(
+            'avm/ptn/lz/sub-vending'                             # Failing on resource deletion when trying to delete RBAC at subscription level (hub-spoke test)
+            'avm/res/azure-stack-hci/cluster'                    # Failing on resource deletion when trying to delete RBAC at subscription level
+            'avm/res/azure-stack-hci/logical-network'            # Failing on resource deletion when trying to delete RBAC at subscription level
+            'avm/res/azure-stack-hci/network-interface'          # Failing on resource deletion when trying to delete RBAC at subscription level
+            'avm/res/azure-stack-hci/virtual-hard-disk'          # Failing on resource deletion when trying to delete RBAC at subscription level
+            'avm/res/compute/image'                              # Failing on resource deletion when trying to delete RBAC at subscription level
+            'avm/res/compute/disk'                               # Failing on resource deletion when trying to delete RBAC at subscription level
+            'avm/ptn/virtual-machine-images/azure-image-builder' # Failing on resource deletion when trying to delete RBAC at subscription level
+          )
+          if ($exceptionModulePaths.Contains($modulePath)) {
+            $oidcException = 'true'
+            Write-Verbose ('The module [{0}] is in the list of modules temporarily requiring an exception to OIDC.' -f $modulePath) -Verbose
+          } else {
+            $oidcException = 'false'
+            Write-Verbose ('The module [{0}] supports OIDC.' -f $modulePath) -Verbose
+          }
+
+          Write-Output ('{0}={1}' -f 'oidcException', $oidcException) >> $env:GITHUB_OUTPUT
+          Write-Output '::endgroup::'
+
+    # Default: support both OIDC and service principal with secret
+    # 'creds' will be ignored if 'client-id', 'subscription-id' or 'tenant-id' is set
+    - name: "Azure Login - Default"
+      if: ${{ steps.set-oidc-exception.outputs.oidcException == 'false' }}
+      uses: azure/login@v2
+      with:
+        creds: ${{ env.AZURE_CREDENTIALS }}
+        client-id: ${{ env.VALIDATE_CLIENT_ID }}
+        tenant-id: ${{ env.VALIDATE_TENANT_ID }}
+        subscription-id: ${{ env.VALIDATE_SUBSCRIPTION_ID }}
+        enable-AzPSSession: true
+
+    # Exception: module requires login by using service principal with secret
+    # Should only be leveraged by modules listed in $exceptionModulePaths above
+    - name: "Azure Login - Exception"
+      if: ${{ steps.set-oidc-exception.outputs.oidcException == 'true' }}
       uses: azure/login@v2
       with:
         creds: ${{ env.AZURE_CREDENTIALS }}
@@ -77,7 +126,7 @@ runs:
           Write-Output '::group::Get Recommended Regions'
 
           # Load used functions
-          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'e2eValidation' 'regionSelector' 'Get-AvailableResourceLocation.ps1')
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'e2eValidation' 'regionSelector' 'Get-AvailableResourceLocation.ps1')
 
           # Set function input parameters
           $functionInput = @{
@@ -111,8 +160,8 @@ runs:
           Write-Output '::group::Replace tokens in template file'
 
           # Load used functions
-          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'sharedScripts' 'tokenReplacement' 'Convert-TokensInFileList.ps1')
-          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'sharedScripts' 'Get-LocallyReferencedFileList.ps1')
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'tokenReplacement' 'Convert-TokensInFileList.ps1')
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'sharedScripts' 'Get-LocallyReferencedFileList.ps1')
 
           $templateFilePath = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.templateFilePath }}'
 
@@ -177,7 +226,7 @@ runs:
           Write-Output '::group::Validate template file'
 
           # Load used functions
-          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'e2eValidation' 'resourceDeployment' 'Test-TemplateDeployment.ps1')
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'e2eValidation' 'resourceDeployment' 'Test-TemplateDeployment.ps1')
 
           # Prepare general parameters
           # --------------------------
@@ -257,7 +306,7 @@ runs:
           Write-Output '::group::Deploy template file'
 
           # Load used functions
-          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'e2eValidation' 'resourceDeployment' 'New-TemplateDeployment.ps1')
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'e2eValidation' 'resourceDeployment' 'New-TemplateDeployment.ps1')
 
           # Prepare general parameters
           # --------------------------
@@ -349,7 +398,7 @@ runs:
         Write-Output '::group::Run Pester tests'
 
         # Load used functions
-        . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'staticValidation' 'compliance' 'Set-PesterGitHubOutput.ps1')
+        . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'staticValidation' 'compliance' 'Set-PesterGitHubOutput.ps1')
 
         # Set repo root path
         $repoRootPath = $env:GITHUB_WORKSPACE
@@ -410,6 +459,7 @@ runs:
           Write-Verbose 'Found no Pester test files (*.test.ps1) in test folder' -Verbose
           Write-Output ('{0}={1}' -f 'formattedPesterResultsPath', '') >> $env:GITHUB_OUTPUT
         }
+
     - name: "Output to GitHub job summaries"
       if: steps.pester_run_step.outputs.formattedPesterResultsPath != ''
       shell: pwsh
@@ -440,7 +490,7 @@ runs:
           Write-Output '::group::Remove deployed resources'
 
           # Load used function
-          . (Join-Path $env:GITHUB_WORKSPACE 'avm' 'utilities' 'pipelines' 'e2eValidation' 'resourceRemoval' 'Initialize-DeploymentRemoval.ps1')
+          . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'e2eValidation' 'resourceRemoval' 'Initialize-DeploymentRemoval.ps1')
 
           $functionInput = @{
             TemplateFilePath  = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.templateFilePath }}'

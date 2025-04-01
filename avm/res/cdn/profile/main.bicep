@@ -1,6 +1,5 @@
 metadata name = 'CDN Profiles'
 metadata description = 'This module deploys a CDN Profile.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the CDN profile.')
 param name string
@@ -9,9 +8,7 @@ param name string
 param location string = resourceGroup().location
 
 @allowed([
-  'Custom_Verizon'
   'Premium_AzureFrontDoor'
-  'Premium_Verizon'
   'StandardPlus_955BandWidth_ChinaCdn'
   'StandardPlus_AvgBandWidth_ChinaCdn'
   'StandardPlus_ChinaCdn'
@@ -20,7 +17,6 @@ param location string = resourceGroup().location
   'Standard_AzureFrontDoor'
   'Standard_ChinaCdn'
   'Standard_Microsoft'
-  'Standard_Verizon'
 ])
 @description('Required. The pricing tier (defines a CDN provider, feature list and rate) of the CDN profile.')
 param sku string
@@ -50,22 +46,29 @@ param ruleSets ruleSetType[] = []
 param afdEndpoints afdEndpointType[] = []
 
 @description('Optional. Array of Security Policy objects (see https://learn.microsoft.com/en-us/azure/templates/microsoft.cdn/profiles/securitypolicies for details).')
-param securityPolicies securityPolicyType = []
+param securityPolicies securityPolicyType[] = []
 
 @description('Optional. Endpoint tags.')
 param tags object?
 
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The managed identity definition for this resource.')
-param managedIdentities managedIdentitiesType
+param managedIdentities managedIdentityAllType?
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
-param lock lockType
+param lock lockType?
 
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
+
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+@description('Optional. The diagnostic settings of the service.')
+param diagnosticSettings diagnosticSettingFullType[]?
 
 var builtInRoleNames = {
   'CDN Endpoint Contributor': subscriptionResourceId(
@@ -182,6 +185,35 @@ resource profile_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-0
   }
 ]
 
+resource profile_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
+  for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
+    name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
+    properties: {
+      storageAccountId: diagnosticSetting.?storageAccountResourceId
+      workspaceId: diagnosticSetting.?workspaceResourceId
+      eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
+      eventHubName: diagnosticSetting.?eventHubName
+      metrics: [
+        for group in (diagnosticSetting.?metricCategories ?? [{ category: 'AllMetrics' }]): {
+          category: group.category
+          enabled: group.?enabled ?? true
+          timeGrain: null
+        }
+      ]
+      logs: [
+        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
+          categoryGroup: group.?categoryGroup
+          category: group.?category
+          enabled: group.?enabled ?? true
+        }
+      ]
+      marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
+      logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
+    }
+    scope: profile
+  }
+]
+
 module profile_endpoint 'endpoint/main.bicep' = if (!empty(endpointProperties)) {
   name: '${uniqueString(deployment().name, location)}-Profile-Endpoint'
   params: {
@@ -248,7 +280,7 @@ module profile_ruleSets 'ruleset/main.bicep' = [
     params: {
       name: ruleSet.name
       profileName: profile.name
-      rules: ruleSet.rules
+      rules: ruleSet.?rules
     }
   }
 ]
@@ -314,7 +346,17 @@ output endpointId string = !empty(endpointProperties) ? profile_endpoint.outputs
 output uri string = !empty(endpointProperties) ? profile_endpoint.outputs.uri : ''
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = profile.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = profile.?identity.?principalId
+
+@description('The list of records required for custom domains validation.')
+output dnsValidation dnsValidationOutputType[] = [
+  for (customDomain, index) in customDomains: profile_customDomains[index].outputs.dnsValidation
+]
+
+@description('The list of AFD endpoint host names.')
+output frontDoorEndpointHostNames array = [
+  for (afdEndpoint, index) in afdEndpoints: profile_afdEndpoints[index].outputs.frontDoorEndpointHostName
+]
 
 // =============== //
 //   Definitions   //
@@ -327,14 +369,7 @@ import { originType } from 'origingroup//origin/main.bicep'
 import { associationsType } from 'securityPolicies/main.bicep'
 import { ruleSetType } from 'ruleset/main.bicep'
 import { ruleType } from 'ruleset/rule/main.bicep'
-
-type managedIdentitiesType = {
-  @description('Optional. Enables system assigned managed identity on the resource.')
-  systemAssigned: bool?
-
-  @description('Optional. The resource ID(s) to assign to the resource.')
-  userAssignedResourceIds: string[]?
-}?
+import { dnsValidationOutputType } from 'customdomain/main.bicep'
 
 @export()
 type securityPolicyType = {
@@ -342,42 +377,8 @@ type securityPolicyType = {
   name: string
 
   @description('Required. Domain names and URL patterns to match with this association.')
-  associations: associationsType
+  associations: associationsType[]
 
   @description('Required. Resource ID of WAF policy.')
   wafPolicyResourceId: string
-}[]
-
-type lockType = {
-  @description('Optional. Specify the name of lock.')
-  name: string?
-
-  @description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?
-
-type roleAssignmentType = {
-  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
-  name: string?
-
-  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
-
-  @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
-
-  @description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
-
-  @description('Optional. The description of the role assignment.')
-  description: string?
-
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
-
-  @description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
-
-  @description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?
+}

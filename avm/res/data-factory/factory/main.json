@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "13185525933487476250"
+      "version": "0.33.13.18514",
+      "templateHash": "17410417030839070777"
     },
     "name": "Data Factories",
-    "description": "This module deploys a Data Factory.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Data Factory."
   },
   "definitions": {
     "managedPrivateEndpointType": {
@@ -50,46 +49,43 @@
       }
     },
     "integrationRuntimesType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. Specify the name of integration runtime."
-            }
-          },
-          "type": {
-            "type": "string",
-            "allowedValues": [
-              "Managed",
-              "SelfHosted"
-            ],
-            "metadata": {
-              "description": "Required. Specify the type of the integration runtime."
-            }
-          },
-          "integrationRuntimeCustomDescription": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Specify custom description for the integration runtime."
-            }
-          },
-          "managedVirtualNetworkName": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Specify managed vritual network name for the integration runtime to link to."
-            }
-          },
-          "typeProperties": {
-            "type": "object",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Integration Runtime type properties. Required if type is \"Managed\"."
-            }
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Specify the name of integration runtime."
+          }
+        },
+        "type": {
+          "type": "string",
+          "allowedValues": [
+            "Managed",
+            "SelfHosted"
+          ],
+          "metadata": {
+            "description": "Required. Specify the type of the integration runtime."
+          }
+        },
+        "integrationRuntimeCustomDescription": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify custom description for the integration runtime."
+          }
+        },
+        "managedVirtualNetworkName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify managed vritual network name for the integration runtime to link to."
+          }
+        },
+        "typeProperties": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Integration Runtime type properties. Required if type is \"Managed\"."
           }
         }
       },
@@ -98,49 +94,46 @@
       }
     },
     "linkedServicesType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The name of the Linked Service."
-            }
-          },
-          "type": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The type of Linked Service. See https://learn.microsoft.com/en-us/azure/templates/microsoft.datafactory/factories/linkedservices?pivots=deployment-language-bicep#linkedservice-objects for more information."
-            }
-          },
-          "typeProperties": {
-            "type": "object",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Used to add connection properties for your linked services."
-            }
-          },
-          "integrationRuntimeName": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of the Integration Runtime to use."
-            }
-          },
-          "parameters": {
-            "type": "object",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Use this to add parameters for a linked service connection string."
-            }
-          },
-          "description": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The description of the Integration Runtime."
-            }
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the Linked Service."
+          }
+        },
+        "type": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The type of Linked Service. See https://learn.microsoft.com/en-us/azure/templates/microsoft.datafactory/factories/linkedservices?pivots=deployment-language-bicep#linkedservice-objects for more information."
+          }
+        },
+        "typeProperties": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Used to add connection properties for your linked services."
+          }
+        },
+        "integrationRuntimeName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the Integration Runtime to use."
+          }
+        },
+        "parameters": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Use this to add parameters for a linked service connection string."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The description of the Integration Runtime."
           }
         }
       },
@@ -257,7 +250,7 @@
         }
       }
     },
-    "customerManagedKeyType": {
+    "customerManagedKeyWithAutoRotateType": {
       "type": "object",
       "properties": {
         "keyVaultResourceId": {
@@ -276,7 +269,14 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The version of the customer managed key to reference for encryption. If not provided, the deployment will use the latest version available at deployment time."
+            "description": "Optional. The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationEnabled' setting."
+          }
+        },
+        "autoRotationEnabled": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enable or disable auto-rotating to the latest key version. Default is `true`. If set to `false`, the latest key version at the time of the deployment is used."
           }
         },
         "userAssignedIdentityResourceId": {
@@ -288,7 +288,7 @@
         }
       },
       "metadata": {
-        "description": "An AVM-aligned type for a customer-managed key. To be used if the resource type does not support auto-rotation of the customer-managed key.",
+        "description": "An AVM-aligned type for a customer-managed key. To be used if the resource type supports auto-rotation of the customer-managed key.",
         "__bicep_imported_from!": {
           "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
         }
@@ -716,14 +716,20 @@
       }
     },
     "integrationRuntimes": {
-      "$ref": "#/definitions/integrationRuntimesType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/integrationRuntimesType"
+      },
       "defaultValue": [],
       "metadata": {
         "description": "Optional. An array of objects for the configuration of an Integration Runtime."
       }
     },
     "linkedServices": {
-      "$ref": "#/definitions/linkedServicesType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/linkedServicesType"
+      },
       "defaultValue": [],
       "metadata": {
         "description": "Optional. An array of objects for the configuration of Linked Services."
@@ -856,6 +862,13 @@
         "description": "Optional. The managed identity definition for this resource."
       }
     },
+    "customerManagedKey": {
+      "$ref": "#/definitions/customerManagedKeyWithAutoRotateType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The customer managed key definition."
+      }
+    },
     "privateEndpoints": {
       "type": "array",
       "items": {
@@ -864,13 +877,6 @@
       "nullable": true,
       "metadata": {
         "description": "Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible."
-      }
-    },
-    "customerManagedKey": {
-      "$ref": "#/definitions/customerManagedKeyType",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. The customer managed key definition."
       }
     },
     "roleAssignments": {
@@ -906,6 +912,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
+    "enableReferencedModulesTelemetry": false,
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "builtInRoleNames": {
@@ -923,30 +930,27 @@
       "existing": true,
       "type": "Microsoft.KeyVault/vaults/keys",
       "apiVersion": "2023-02-01",
-      "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '//'), '/')[2]]",
-      "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '////'), '/')[4]]",
-      "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]",
-      "dependsOn": [
-        "cMKKeyVault"
-      ]
+      "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
+      "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'))]"
     },
     "cMKKeyVault": {
       "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))]",
       "existing": true,
       "type": "Microsoft.KeyVault/vaults",
       "apiVersion": "2023-02-01",
-      "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '//'), '/')[2]]",
-      "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '////'), '/')[4]]",
-      "name": "[last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/'))]"
+      "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
+      "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
     },
     "cMKUserAssignedIdentity": {
       "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId')))]",
       "existing": true,
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
       "apiVersion": "2023-01-31",
-      "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '//'), '/')[2]]",
-      "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '////'), '/')[4]]",
-      "name": "[last(split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), 'dummyMsi'), '/'))]"
+      "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]]",
+      "name": "[last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/'))]"
     },
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
@@ -979,11 +983,11 @@
         "repoConfiguration": "[if(bool(parameters('gitConfigureLater')), null(), union(createObject('type', parameters('gitRepoType'), 'hostName', parameters('gitHostName'), 'accountName', parameters('gitAccountName'), 'repositoryName', parameters('gitRepositoryName'), 'collaborationBranch', parameters('gitCollaborationBranch'), 'rootFolder', parameters('gitRootFolder'), 'disablePublish', parameters('gitDisablePublish'), 'lastCommitId', parameters('gitLastCommitId'), 'tenantId', parameters('gitTenantId')), if(equals(parameters('gitRepoType'), 'FactoryVSTSConfiguration'), createObject('projectName', parameters('gitProjectName')), createObject()), createObject()))]",
         "globalParameters": "[if(not(empty(parameters('globalParameters'))), parameters('globalParameters'), null())]",
         "publicNetworkAccess": "[if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(not(empty(parameters('privateEndpoints'))), 'Disabled', null()))]",
-        "encryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('identity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), createObject('userAssignedIdentity', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '//'), '/')[2], split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '////'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), 'dummyMsi'), '/')))), null()), 'keyName', parameters('customerManagedKey').keyName, 'keyVersion', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'keyVersion'), ''))), parameters('customerManagedKey').keyVersion, last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/'))), 'vaultBaseUrl', reference('cMKKeyVault').vaultUri), null())]"
+        "encryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('identity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), createObject('userAssignedIdentity', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2], split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')))), null()), 'keyName', parameters('customerManagedKey').keyName, 'keyVersion', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'keyVersion'), ''))), parameters('customerManagedKey').keyVersion, if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), null(), last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/')))), 'vaultBaseUrl', reference('cMKKeyVault').vaultUri), null())]"
       },
       "dependsOn": [
-        "cMKKeyVault",
-        "cMKUserAssignedIdentity"
+        "cMKKeyVault::cMKKey",
+        "cMKKeyVault"
       ]
     },
     "dataFactory_lock": {
@@ -1090,12 +1094,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "1230471349753400483"
+              "version": "0.33.13.18514",
+              "templateHash": "17988798320328415885"
             },
             "name": "Data Factory Managed Virtual Networks",
-            "description": "This module deploys a Data Factory Managed Virtual Network.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Data Factory Managed Virtual Network."
           },
           "parameters": {
             "dataFactoryName": {
@@ -1164,12 +1167,11 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.31.92.45157",
-                      "templateHash": "13492101660934581183"
+                      "version": "0.33.13.18514",
+                      "templateHash": "12304621154639480158"
                     },
                     "name": "Data Factory Managed Virtual Network Managed PrivateEndpoints",
-                    "description": "This module deploys a Data Factory Managed Virtual Network Managed Private Endpoint.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a Data Factory Managed Virtual Network Managed Private Endpoint."
                   },
                   "parameters": {
                     "dataFactoryName": {
@@ -1316,12 +1318,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "17596772866018649539"
+              "version": "0.33.13.18514",
+              "templateHash": "12984160632921626743"
             },
             "name": "Data Factory Integration RunTimes",
-            "description": "This module deploys a Data Factory Managed or Self-Hosted Integration Runtime.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Data Factory Managed or Self-Hosted Integration Runtime."
           },
           "parameters": {
             "dataFactoryName": {
@@ -1454,12 +1455,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.31.92.45157",
-              "templateHash": "13457764496694131729"
+              "version": "0.33.13.18514",
+              "templateHash": "8426964975127254817"
             },
             "name": "Data Factory Linked Service",
-            "description": "This module deploys a Data Factory Linked Service.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Data Factory Linked Service."
           },
           "parameters": {
             "dataFactoryName": {
@@ -1578,7 +1578,7 @@
             "value": "[coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId]"
           },
           "enableTelemetry": {
-            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           },
           "location": {
             "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'location'), reference(split(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location)]"
@@ -2384,10 +2384,11 @@
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",
+      "nullable": true,
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[coalesce(tryGet(tryGet(reference('dataFactory', '2018-06-01', 'full'), 'identity'), 'principalId'), '')]"
+      "value": "[tryGet(tryGet(reference('dataFactory', '2018-06-01', 'full'), 'identity'), 'principalId')]"
     },
     "location": {
       "type": "string",

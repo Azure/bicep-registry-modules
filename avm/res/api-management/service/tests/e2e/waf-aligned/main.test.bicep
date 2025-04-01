@@ -46,7 +46,7 @@ module nestedDependencies 'dependencies.bicep' = {
 
 // Diagnostics
 // ===========
-module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
   params: {
@@ -69,7 +69,6 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      location: resourceLocation
       publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
       publisherName: '${namePrefix}-az-amorg-x-001'
       additionalLocations: [
@@ -115,30 +114,31 @@ module testDeployment '../../../main.bicep' = [
           name: 'echo-api'
           path: 'echo'
           serviceUrl: 'https://echoapi.cloudapp.net/api'
+          protocols: [
+            'https'
+          ]
         }
       ]
-      authorizationServers: {
-        secureList: [
-          {
-            authorizationEndpoint: '${environment().authentication.loginEndpoint}651b43ce-ccb8-4301-b551-b04dd872d401/oauth2/v2.0/authorize'
-            clientId: 'apimClientid'
-            clientSecret: customSecret
-            clientRegistrationEndpoint: 'https://localhost'
-            grantTypes: [
-              'authorizationCode'
-            ]
-            name: 'AuthServer1'
-            displayName: 'AuthServer1'
-            tokenEndpoint: '${environment().authentication.loginEndpoint}651b43ce-ccb8-4301-b551-b04dd872d401/oauth2/v2.0/token'
-          }
-        ]
-      }
+      authorizationServers: [
+        {
+          authorizationEndpoint: '${environment().authentication.loginEndpoint}651b43ce-ccb8-4301-b551-b04dd872d401/oauth2/v2.0/authorize'
+          clientId: 'apimClientid'
+          clientSecret: customSecret
+          clientRegistrationEndpoint: 'https://localhost'
+          grantTypes: [
+            'authorizationCode'
+          ]
+          name: 'AuthServer1'
+          displayName: 'AuthServer1'
+          tokenEndpoint: '${environment().authentication.loginEndpoint}651b43ce-ccb8-4301-b551-b04dd872d401/oauth2/v2.0/token'
+        }
+      ]
       backends: [
         {
           name: 'backend'
           tls: {
-            validateCertificateChain: false
-            validateCertificateName: false
+            validateCertificateChain: true
+            validateCertificateName: true
           }
           url: 'https://echoapi.cloudapp.net/api'
         }
@@ -253,8 +253,5 @@ module testDeployment '../../../main.bicep' = [
         Role: 'DeploymentValidation'
       }
     }
-    dependsOn: [
-      diagnosticDependencies
-    ]
   }
 ]

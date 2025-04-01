@@ -29,8 +29,8 @@ on:
       - ".github/workflows/avm.template.module.yml"
       - ".github/workflows/avm.ptn.network.hub-networking.yml"
       - "avm/ptn/network/hub-networking/**"
-      - "avm/utilities/pipelines/**"
-      - "!avm/utilities/pipelines/platform/**"
+      - "utilities/pipelines/**"
+      - "!utilities/pipelines/platform/**"
       - "!*/**/README.md"
 env:
   modulePath: "avm/ptn/network/hub-networking"

@@ -5,49 +5,46 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "3967677433883074947"
+      "version": "0.34.1.11899",
+      "templateHash": "62661794416974930"
     },
     "name": "CDN Profiles Security Policy",
-    "description": "This module deploys a CDN Profile Security Policy.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a CDN Profile Security Policy."
   },
   "definitions": {
     "associationsType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "domains": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. ResourceID to domain that will be associated."
-                  }
+      "type": "object",
+      "properties": {
+        "domains": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. ResourceID to domain that will be associated."
                 }
               }
-            },
-            "metadata": {
-              "description": "Required. List of domain resource id to associate with this resource."
             }
           },
-          "patternsToMatch": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "metadata": {
-              "description": "Required. List of patterns to match with this association."
-            }
+          "metadata": {
+            "description": "Required. List of domain resource id to associate with this resource."
+          }
+        },
+        "patternsToMatch": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "Required. List of patterns to match with this association."
           }
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type of the associations."
       }
     }
   },
@@ -71,7 +68,10 @@
       }
     },
     "associations": {
-      "$ref": "#/definitions/associationsType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/associationsType"
+      },
       "metadata": {
         "description": "Required. Waf associations (see https://learn.microsoft.com/en-us/azure/templates/microsoft.cdn/profiles/securitypolicies?pivots=deployment-language-bicep#securitypolicywebapplicationfirewallassociation for details)."
       }
@@ -96,24 +96,21 @@
           },
           "associations": "[parameters('associations')]"
         }
-      },
-      "dependsOn": [
-        "profile"
-      ]
+      }
     }
   },
   "outputs": {
     "name": {
       "type": "string",
       "metadata": {
-        "description": "The name of the secrect."
+        "description": "The name of the secret."
       },
       "value": "[parameters('name')]"
     },
     "resourceId": {
       "type": "string",
       "metadata": {
-        "description": "The resource ID of the secrect."
+        "description": "The resource ID of the secret."
       },
       "value": "[resourceId('Microsoft.Cdn/profiles/securityPolicies', parameters('profileName'), parameters('name'))]"
     },
