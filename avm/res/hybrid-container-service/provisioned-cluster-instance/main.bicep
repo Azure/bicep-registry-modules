@@ -23,7 +23,7 @@ param sshPublicKeySecretName string = 'AksArcAgentSshPublicKey'
 param keyVaultName string?
 
 @description('Required. The id of the Custom location that used to create hybrid aks.')
-param customLocationResourecId string
+param customLocationResourceId string
 
 @description('Optional. The Kubernetes version for the cluster.')
 param kubernetesVersion string?
@@ -197,7 +197,7 @@ resource provisionedCluster 'Microsoft.HybridContainerService/provisionedCluster
     sshPublicKeyPem
   ]
   extendedLocation: {
-    name: customLocationResourecId
+    name: customLocationResourceId
     type: 'CustomLocation'
   }
   properties: {
