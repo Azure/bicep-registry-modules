@@ -44,7 +44,7 @@ resource resourceGroup_dsk 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 }
 
 module nestedDependencies 'dependencies.bicep' = {
-  scope: resourceGroup
+  scope: resourceGroup_st
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     storageAccountName: 'dep${namePrefix}sa${serviceShort}01'

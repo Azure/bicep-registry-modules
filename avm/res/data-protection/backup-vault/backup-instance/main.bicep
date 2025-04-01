@@ -45,7 +45,6 @@ resource backupInstance 'Microsoft.DataProtection/backupVaults/backupInstances@2
     objectType: 'BackupInstance'
     dataSourceInfo: dataSourceInfo
     policyInfo: policyInfoVar
-    // tags: tags
     // datasourceAuthCredentials
     // identityDetails
     // resourceGuardOperationRequests
@@ -71,21 +70,30 @@ output resourceGroupName string = resourceGroup().name
 
 //TODO: add all descriptions
 @export()
-@description('The type for data source info properties.')
+@description('The type for backup instance data source info properties.')
 type dataSourceInfoType = {
-  datasourceType: string? //TODO check allowed values
+  @description('Required. The data source type of the resource.')
+  datasourceType: string?
+  @description('Required. The Type of Datasource object, used to initialize the right inherited type.')
   objectType: 'Datasource'
+  @description('Required. The resource ID of the resource.')
   resourceID: string
+  @description('Optional. The location of the data source.')
   resourceLocation: string?
+  @description('Optional. Unique identifier of the resource in the context of parent.')
   resourceName: string?
+  @description('Optional. The resource type of the data source.')
   resourceType: string?
+  @description('Optional. The Uri of the resource.')
   resourceUri: string?
 }
 
 @export()
-@description('The type for policy info properties.')
+@description('The type for backup instance policy info properties.')
 type policyInfoType = {
+  @description('Required. The name of the backup instance policy.')
   policyName: string
+  @description('Optional. Policy parameters for the backup instance.')
   policyParameters: object
   // policyParameters: {
   //   backupDatasourceParametersList: backupDatasourceParameterType[]?
