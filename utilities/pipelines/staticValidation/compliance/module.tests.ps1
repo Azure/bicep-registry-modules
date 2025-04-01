@@ -75,7 +75,6 @@ Describe 'File/folder tests' -Tag 'Modules' {
                     isTopLevelModule    = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
                     moduleType          = $moduleType
                     moduleVersionExists = Test-Path (Join-Path -Path $moduleFolderPath 'version.json')
-                    newModuleVersion    = Get-ModuleTargetVersion -ModuleFolderPath $moduleFolderPath -CompareJsonVersion $true
                 }
             }
         }
@@ -232,6 +231,9 @@ Describe 'File/folder tests' -Tag 'Modules' {
                 Set-ItResult -Skipped -Because 'CHANGELOG.md file not found.'
                 return
             }
+
+            # get the version from the version.json file. If the main.json version did not change, use the last published version to be able to add missing entries to the changelog
+            $newModuleVersion = Get-ModuleTargetVersion -ModuleFolderPath $moduleFolderPath -CompareJsonVersion $true
 
             $changelogContent = Get-Content $changelogFilePath
             $sections = $changelogContent | Where-Object { $_ -match '^##\s+' }
