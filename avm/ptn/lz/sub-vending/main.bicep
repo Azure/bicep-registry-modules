@@ -270,6 +270,18 @@ Each object must contain the following `keys`:
 param pimRoleAssignments pimRoleAssignmentTypeType[] = []
 
 @description('Optional. Supply an array of objects containing the details of the custom role assignments to create.')
+@metadata({
+  example: '''
+  [
+    {
+      // Owner role assignment at resource group scope
+      principalId: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+      definition: '/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
+      relativeScope: '/resourceGroups/{resourceGroupName}'
+    }
+  ]
+  '''
+})
 param customRoleAssignments roleAssignmentType[] = []
 
 @description('Optional. Enable/Disable usage telemetry for module.')

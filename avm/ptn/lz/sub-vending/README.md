@@ -78,7 +78,6 @@ The following section provides usage examples for the module, which were used to
 - [Using PIM Eligible Role assignments.](#example-6-using-pim-eligible-role-assignments)
 - [Using RBAC conditions.](#example-7-using-rbac-conditions)
 - [Vwan topology.](#example-8-vwan-topology)
-- [Waf-Aligned](#example-9-waf-aligned)
 
 ### Example 1: _Deploy subscription with Bastion._
 
@@ -1616,61 +1615,6 @@ param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 </details>
 <p>
 
-### Example 9: _Waf-Aligned_
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
-  name: 'subVendingDeployment'
-  params: {
-    location: '<location>'
-    name: 'lsvwaf001'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    "location": {
-      "value": "<location>"
-    },
-    "name": {
-      "value": "lsvwaf001"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/ptn/lz/sub-vending:<version>'
-
-param location = '<location>'
-param name = 'lsvwaf001'
-```
-
-</details>
-<p>
-
 ## Parameters
 
 **Optional parameters**
@@ -1734,6 +1678,17 @@ Supply an array of objects containing the details of the custom role assignments
 - Required: No
 - Type: array
 - Default: `[]`
+- Example:
+  ```Bicep
+  [
+    {
+      // Owner role assignment at resource group scope
+      principalId: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+      definition: '/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
+      relativeScope: '/resourceGroups/{resourceGroupName}'
+    }
+  ]
+  ```
 
 **Required parameters**
 

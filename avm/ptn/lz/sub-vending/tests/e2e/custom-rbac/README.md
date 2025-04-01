@@ -67,7 +67,6 @@ This instance deploys the module with RBAC conditions for the role assignments.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`subscriptionBillingScope`](#parameter-subscriptionbillingscope) | securestring | The scope of the subscription billing. This value is tenant-specific and must be stored in the CI Key Vault in a secret named 'CI-SubscriptionBillingScope'. |
-| [`testUserObjectId`](#parameter-testuserobjectid) | securestring | Principle ID of the user. This value is tenant-specific and must be stored in the CI Key Vault in a secret named 'CI-testUserObjectId'. |
 
 **Optional parameters**
 
@@ -77,18 +76,11 @@ This instance deploys the module with RBAC conditions for the role assignments.
 | [`resourceLocation`](#parameter-resourcelocation) | string | The location to deploy resources to. |
 | [`serviceShort`](#parameter-serviceshort) | string | A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints. |
 | [`subscriptionGuid`](#parameter-subscriptionguid) | string | A short guid for the subscription name. |
+| [`testUserObjectId`](#parameter-testuserobjectid) | securestring | Principle ID of the user. This value is tenant-specific and must be stored in the CI Key Vault in a secret named 'CI-testUserObjectId'. |
 
 ### Parameter: `subscriptionBillingScope`
 
 The scope of the subscription billing. This value is tenant-specific and must be stored in the CI Key Vault in a secret named 'CI-SubscriptionBillingScope'.
-
-- Required: No
-- Type: securestring
-- Default: `''`
-
-### Parameter: `testUserObjectId`
-
-Principle ID of the user. This value is tenant-specific and must be stored in the CI Key Vault in a secret named 'CI-testUserObjectId'.
 
 - Required: No
 - Type: securestring
@@ -125,6 +117,14 @@ A short guid for the subscription name.
 - Required: No
 - Type: string
 - Default: `[toLower(substring(newGuid(), 0, 4))]`
+
+### Parameter: `testUserObjectId`
+
+Principle ID of the user. This value is tenant-specific and must be stored in the CI Key Vault in a secret named 'CI-testUserObjectId'.
+
+- Required: No
+- Type: securestring
+- Default: `''`
 
 ## Outputs
 

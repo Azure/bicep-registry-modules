@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "15618418667026300323"
+      "templateHash": "716258243613903668"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -1032,6 +1032,7 @@
       },
       "defaultValue": [],
       "metadata": {
+        "example": "  [\n    {\n      // Owner role assignment at resource group scope\n      principalId: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'\n      definition: '/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635'\n      relativeScope: '/resourceGroups/{resourceGroupName}'\n    }\n  ]\n  ",
         "description": "Optional. Supply an array of objects containing the details of the custom role assignments to create."
       }
     },
