@@ -30,7 +30,7 @@ var policyInfoVar = {
 }
 
 module backupInstance_dataSourceResource_rbac 'modules/nested_dataSourceResourceRoleAssignment.bicep' = {
-  name: '${backupVault.name}-dataSourceResource-rbac'
+  name: '${deployment().name}-RBAC'
   scope: resourceGroup(split(dataSourceInfo.resourceID, '/')[4])
   params: {
     resourceId: dataSourceInfo.resourceID
