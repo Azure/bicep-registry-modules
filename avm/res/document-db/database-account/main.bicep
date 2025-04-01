@@ -156,8 +156,9 @@ param backupRetentionIntervalInHours int = 8
 @description('Optional. Default to Local. Enum to indicate type of backup residency. Only applies to periodic backup type.')
 param backupStorageRedundancy string = 'Local'
 
+import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
-param privateEndpoints privateEndpointType
+param privateEndpoints privateEndpointMultiServiceType[]?
 
 @description('Optional. Key vault reference and secret settings for the module\'s secrets export.')
 param secretsExportConfiguration secretsExportConfigurationType?
@@ -508,10 +509,13 @@ module databaseAccount_tables 'table/main.bicep' = [
   }
 ]
 
-module databaseAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
+module databaseAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-databaseAccount-PrivateEndpoint-${index}'
-    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
+    scope: resourceGroup(
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
+    )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(databaseAccount.id, '/'))}-${privateEndpoint.service}-${index}'
       privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
@@ -662,13 +666,13 @@ output location string = databaseAccount.location
 output endpoint string = databaseAccount.properties.documentEndpoint
 
 @description('The private endpoints of the database account.')
-output privateEndpoints array = [
-  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
-    name: databaseAccount_privateEndpoints[i].outputs.name
-    resourceId: databaseAccount_privateEndpoints[i].outputs.resourceId
-    groupId: databaseAccount_privateEndpoints[i].outputs.groupId
-    customDnsConfig: databaseAccount_privateEndpoints[i].outputs.customDnsConfig
-    networkInterfaceIds: databaseAccount_privateEndpoints[i].outputs.networkInterfaceIds
+output privateEndpoints privateEndpointOutputType[] = [
+  for (pe, index) in (privateEndpoints ?? []): {
+    name: databaseAccount_privateEndpoints[index].outputs.name
+    resourceId: databaseAccount_privateEndpoints[index].outputs.resourceId
+    groupId: databaseAccount_privateEndpoints[index].outputs.?groupId!
+    customDnsConfigs: databaseAccount_privateEndpoints[index].outputs.customDnsConfigs
+    networkInterfaceResourceIds: databaseAccount_privateEndpoints[index].outputs.networkInterfaceResourceIds
   }
 ]
 
@@ -676,92 +680,29 @@ output privateEndpoints array = [
 //   Definitions   //
 // =============== //
 
-type privateEndpointType = {
-  @description('Optional. The name of the private endpoint.')
-  name: string?
+@export()
+type privateEndpointOutputType = {
+  @description('The name of the private endpoint.')
+  name: string
 
-  @description('Optional. The location to deploy the private endpoint to.')
-  location: string?
+  @description('The resource ID of the private endpoint.')
+  resourceId: string
 
-  @description('Optional. The name of the private link connection to create.')
-  privateLinkServiceConnectionName: string?
+  @description('The group Id for the private endpoint Group.')
+  groupId: string?
 
-  @description('Required. The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file".')
-  service: string
-
-  @description('Required. Resource ID of the subnet where the endpoint needs to be created.')
-  subnetResourceId: string
-
-  @description('Optional. The private DNS zone group to configure for the private endpoint.')
-  privateDnsZoneGroup: {
-    @description('Optional. The name of the Private DNS Zone Group.')
-    name: string?
-
-    @description('Required. The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.')
-    privateDnsZoneGroupConfigs: {
-      @description('Optional. The name of the private DNS zone group config.')
-      name: string?
-
-      @description('Required. The resource id of the private DNS zone.')
-      privateDnsZoneResourceId: string
-    }[]
-  }?
-
-  @description('Optional. If Manual Private Link Connection is required.')
-  isManualConnection: bool?
-
-  @description('Optional. A message passed to the owner of the remote resource with the manual connection request.')
-  @maxLength(140)
-  manualConnectionRequestMessage: string?
-
-  @description('Optional. Custom DNS configurations.')
+  @description('The custom DNS configurations of the private endpoint.')
   customDnsConfigs: {
-    @description('Optional. FQDN that resolves to private endpoint IP address.')
+    @description('FQDN that resolves to private endpoint IP address.')
     fqdn: string?
 
-    @description('Required. A list of private ip addresses of the private endpoint.')
+    @description('A list of private IP addresses of the private endpoint.')
     ipAddresses: string[]
-  }[]?
+  }[]
 
-  @description('Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints.')
-  ipConfigurations: {
-    @description('Required. The name of the resource that is unique within a resource group.')
-    name: string
-
-    @description('Required. Properties of private endpoint IP configurations.')
-    properties: {
-      @description('Required. The ID of a group obtained from the remote resource that this private endpoint should connect to.')
-      groupId: string
-
-      @description('Required. The member name of a group obtained from the remote resource that this private endpoint should connect to.')
-      memberName: string
-
-      @description('Required. A private ip address obtained from the private endpoint\'s subnet.')
-      privateIPAddress: string
-    }
-  }[]?
-
-  @description('Optional. Application security groups in which the private endpoint IP configuration is included.')
-  applicationSecurityGroupResourceIds: string[]?
-
-  @description('Optional. The custom name of the network interface attached to the private endpoint.')
-  customNetworkInterfaceName: string?
-
-  @description('Optional. Specify the type of lock.')
-  lock: lockType
-
-  @description('Optional. Array of role assignments to create.')
-  roleAssignments: roleAssignmentType
-
-  @description('Optional. Tags to be applied on all resources/resource groups in this deployment.')
-  tags: object?
-
-  @description('Optional. Enable/Disable usage telemetry for module.')
-  enableTelemetry: bool?
-
-  @description('Optional. Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.')
-  resourceGroupName: string?
-}[]?
+  @description('The IDs of the network interfaces associated with the private endpoint.')
+  networkInterfaceResourceIds: string[]
+}
 
 type failoverLocationsType = {
   @description('Required. The failover priority of the region. A failover priority of 0 indicates a write region. The maximum value for a failover priority = (total number of regions - 1). Failover priority values must be unique for each of the regions in which the database account exists.')
