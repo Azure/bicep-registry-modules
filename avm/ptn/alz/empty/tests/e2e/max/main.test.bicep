@@ -81,10 +81,12 @@ var unionedCustomRbacRoleDefs = union(alzCustomRbacRoleDefsJsonParsed, additiona
 var alzCustomPolicyDefsJson = [
   loadJsonContent('lib/policy_definitions/Audit-Disks-UnusedResourcesCostOptimization.alz_policy_definition.json')
   loadJsonContent('lib/policy_definitions/Deploy-Budget.alz_policy_definition.json')
+  loadJsonContent('lib/policy_definitions/Deploy-ASC-SecurityContacts.alz_policy_definition.json')
 ]
 
 var alzCustomPolicySetDefsJson = [
   loadJsonContent('lib/policy_set_definitions/Audit-TrustedLaunch.alz_policy_set_definition.json')
+  loadJsonContent('lib/policy_set_definitions/Deploy-MDFC-Config_20240319.alz_policy_set_definition.json')
 ]
 
 @batchSize(1)
@@ -160,20 +162,20 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
-      // managementGroupCustomPolicySetDefinitions: [
-      //   for policy in alzCustomPolicySetDefsJson: {
-      //     name: policy.name
-      //     properties: {
-      //       description: policy.properties.description
-      //       displayName: policy.properties.displayName
-      //       metadata: policy.properties.metadata
-      //       parameters: policy.properties.parameters
-      //       policyType: policy.properties.policyType
-      //       version: policy.properties.version
-      //       policyDefinitions: policy.properties.policyDefinitions
-      //     }
-      //   }
-      // ]
+      managementGroupCustomPolicySetDefinitions: [
+        for policy in alzCustomPolicySetDefsJson: {
+          name: policy.name
+          properties: {
+            description: policy.properties.description
+            displayName: policy.properties.displayName
+            metadata: policy.properties.metadata
+            parameters: policy.properties.parameters
+            policyType: policy.properties.policyType
+            version: policy.properties.version
+            policyDefinitions: policy.properties.policyDefinitions
+          }
+        }
+      ]
     }
   }
 ]

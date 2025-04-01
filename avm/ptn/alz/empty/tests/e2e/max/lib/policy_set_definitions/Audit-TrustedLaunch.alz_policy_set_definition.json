@@ -33,7 +33,7 @@
         "groupNames": [],
         "parameters": {
           "effect": {
-            "value": "[parameters('effect')]"
+            "value": "[[[parameters('effect')]"
           }
         },
         "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/b03bb370-5249-4ea4-9fce-2552e87e45fa",
@@ -44,7 +44,7 @@
         "groupNames": [],
         "parameters": {
           "effect": {
-            "value": "[parameters('effect')]"
+            "value": "[[[parameters('effect')]"
           }
         },
         "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/c95b54ad-0614-4633-ab29-104b01235cbf",

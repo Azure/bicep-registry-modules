@@ -6,246 +6,12 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "14755651359792896972"
+      "templateHash": "11168723316449566348"
     },
     "name": "avm/ptn/alz/empty",
     "description": "Azure Landing Zones - Bicep - Empty"
   },
   "definitions": {
-    "policyDefinitionType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "maxLength": 128,
-          "metadata": {
-            "description": "Required. Specifies the name of the policy definition. Maximum length is 128 characters for management group scope."
-          }
-        },
-        "displayName": {
-          "type": "string",
-          "nullable": true,
-          "maxLength": 128,
-          "metadata": {
-            "description": "Optional. The display name of the policy definition. Maximum length is 128 characters."
-          }
-        },
-        "description": {
-          "type": "string",
-          "nullable": true,
-          "maxLength": 512,
-          "metadata": {
-            "description": "Optional. The description of the policy definition. Maximum length is 512 characters."
-          }
-        },
-        "metadata": {
-          "type": "object",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The metadata of the policy definition. Metadata is an open ended object and is typically a collection of key-value pairs."
-          }
-        },
-        "mode": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The policy definition mode. Recommended value is `All`. For more information, see https://aka.ms/azure-policy-mode."
-          }
-        },
-        "parameters": {
-          "type": "object",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Parameters for the policy definition if needed."
-          }
-        },
-        "policyType": {
-          "type": "string",
-          "allowedValues": [
-            "Builtin",
-            "Custom",
-            "NotSpecified",
-            "Static"
-          ],
-          "metadata": {
-            "description": "Required. The type of policy definition. For more information, see https://aka.ms/azure-policy-type."
-          }
-        },
-        "policyRule": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The policy rule. The policy rule is a JSON string that represents the policy rule. For more information, see https://aka.ms/azure-policy-definition-structure."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "A type for policy definitions."
-      }
-    },
-    "policySetDefinitionsType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "maxLength": 128,
-          "metadata": {
-            "description": "Required. Specifies the name of the policy set definition. Maximum length is 128 characters for management group scope."
-          }
-        },
-        "displayName": {
-          "type": "string",
-          "nullable": true,
-          "maxLength": 128,
-          "metadata": {
-            "description": "Optional. The display name of the policy set definition. Maximum length is 128 characters."
-          }
-        },
-        "description": {
-          "type": "string",
-          "nullable": true,
-          "maxLength": 512,
-          "metadata": {
-            "description": "Optional. The description of the policy set definition. Maximum length is 512 characters."
-          }
-        },
-        "metadata": {
-          "type": "object",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The metadata of the policy set definition. Metadata is an open ended object and is typically a collection of key-value pairs."
-          }
-        },
-        "parameters": {
-          "type": "object",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Parameters for the policy set definition if needed."
-          }
-        },
-        "policyType": {
-          "type": "string",
-          "allowedValues": [
-            "Builtin",
-            "Custom",
-            "NotSpecified",
-            "Static"
-          ],
-          "metadata": {
-            "description": "Required. The type of policy set definition. For more information, see https://aka.ms/azure-policy-type."
-          }
-        },
-        "policyDefinitions": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/policyDefinitionReferenceType"
-          },
-          "metadata": {
-            "description": "Required. The policy definitions in the policy set definition."
-          }
-        },
-        "policyDefinitionGroups": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/policyDefinitionGroupType"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The policy definition groups in the policy set definition."
-          }
-        },
-        "version": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The policy set definition version in #.#.# format. For example, 1.0.0."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "A type for policy set definitions."
-      }
-    },
-    "policyDefinitionReferenceType": {
-      "type": "object",
-      "properties": {
-        "policyDefinitionReferenceId": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. A unique ID (within the policy set definition) for this policy definition reference."
-          }
-        },
-        "policyDefinitionId": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The ID of the policy definition or policy set definition."
-          }
-        },
-        "parameters": {
-          "type": "object",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The policy definition parameters."
-          }
-        },
-        "groupNames": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "metadata": {
-            "description": "Optional. The name of the groups that this policy definition reference belongs to."
-          }
-        },
-        "definitionVersion": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The version of the policy definition to use."
-          }
-        }
-      }
-    },
-    "policyDefinitionGroupType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The name of the group."
-          }
-        },
-        "displayName": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The display name of the group."
-          }
-        },
-        "description": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The description of the group."
-          }
-        },
-        "category": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The category of the group."
-          }
-        },
-        "additionalMetadataId": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. A resource ID of a resource that contains additional metadata about the group."
-          }
-        }
-      }
-    },
     "policyAssignmentType": {
       "type": "object",
       "properties": {
@@ -568,6 +334,60 @@
         "description": "A type for custom role definition."
       }
     },
+    "policyDefinitionType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "maxLength": 128,
+          "metadata": {
+            "description": "Required. Specifies the name of the policy definition. Maximum length is 128 characters for management group scope."
+          }
+        },
+        "properties": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Authorization/policyDefinitions@2025-01-01#properties/properties"
+            },
+            "description": "Required. The properties of the policy definition."
+          }
+        }
+      },
+      "metadata": {
+        "description": "A type for policy definitions.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "modules/policy-definitions/main.bicep"
+        }
+      }
+    },
+    "policySetDefinitionsType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "maxLength": 128,
+          "metadata": {
+            "description": "Required. Specifies the name of the policy set definition. Maximum length is 128 characters for management group scope."
+          }
+        },
+        "properties": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Authorization/policySetDefinitions@2025-01-01#properties/properties"
+            },
+            "description": "Required. The properties of the policy set definition."
+          }
+        }
+      },
+      "metadata": {
+        "description": "A type for policy set definitions.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "modules/policy-set-definitions/main.bicep"
+        }
+      }
+    },
     "roleAssignmentType": {
       "type": "object",
       "properties": {
@@ -762,6 +582,7 @@
       "mgRoleDefinitions": "[format('{0}-alz-mg-rbac-def-{1}', uniqueString(deployment().name, parameters('location')), parameters('managementGroupName'))]",
       "mgRoleDefinitionsWait": "[format('{0}-alz-mg-wait-{1}', uniqueString(deployment().name, parameters('location')), parameters('managementGroupName'))]",
       "mgPolicyDefinitions": "[format('{0}-alz-mg-pol-def-{1}', uniqueString(deployment().name, parameters('location')), parameters('managementGroupName'))]",
+      "mgPolicySetDefinitions": "[format('{0}-alz-mg-pol-init-{1}', uniqueString(deployment().name, parameters('location')), parameters('managementGroupName'))]",
       "mgPolicyAssignments": "[format('{0}-alz-mg-pol-asi-{1}', uniqueString(deployment().name, parameters('location')), parameters('managementGroupName'))]"
     }
   },
@@ -785,58 +606,6 @@
       "name": "[if(parameters('createOrUpdateManagementGroup'), format('{0}/{1}', parameters('managementGroupName'), parameters('subscriptionsToPlaceInManagementGroup')[copyIndex()]), format('{0}/{1}', parameters('managementGroupName'), parameters('subscriptionsToPlaceInManagementGroup')[copyIndex()]))]",
       "dependsOn": [
         "mg"
-      ]
-    },
-    "mgCustomPolicyDefinitions": {
-      "copy": {
-        "name": "mgCustomPolicyDefinitions",
-        "count": "[length(coalesce(parameters('managementGroupCustomPolicyDefinitions'), createArray()))]"
-      },
-      "type": "Microsoft.Authorization/policyDefinitions",
-      "apiVersion": "2025-01-01",
-      "name": "[coalesce(parameters('managementGroupCustomPolicyDefinitions'), createArray())[copyIndex()].libDefinition.name]",
-      "properties": {
-        "description": "[coalesce(parameters('managementGroupCustomPolicyDefinitions'), createArray())[copyIndex()].libDefinition.properties.description]",
-        "displayName": "[coalesce(parameters('managementGroupCustomPolicyDefinitions'), createArray())[copyIndex()].libDefinition.properties.displayName]",
-        "metadata": "[coalesce(parameters('managementGroupCustomPolicyDefinitions'), createArray())[copyIndex()].libDefinition.properties.metadata]",
-        "mode": "[coalesce(parameters('managementGroupCustomPolicyDefinitions'), createArray())[copyIndex()].libDefinition.properties.mode]",
-        "parameters": "[coalesce(parameters('managementGroupCustomPolicyDefinitions'), createArray())[copyIndex()].libDefinition.properties.parameters]",
-        "policyType": "[coalesce(parameters('managementGroupCustomPolicyDefinitions'), createArray())[copyIndex()].libDefinition.properties.policyType]",
-        "policyRule": "[coalesce(parameters('managementGroupCustomPolicyDefinitions'), createArray())[copyIndex()].libDefinition.properties.policyRule]"
-      }
-    },
-    "mgCustomPolicySetDefinitions": {
-      "copy": {
-        "name": "mgCustomPolicySetDefinitions",
-        "count": "[length(coalesce(parameters('managementGroupCustomPolicySetDefinitions'), createArray()))]"
-      },
-      "type": "Microsoft.Authorization/policySetDefinitions",
-      "apiVersion": "2025-01-01",
-      "name": "[coalesce(parameters('managementGroupCustomPolicySetDefinitions'), createArray())[copyIndex()].libSetDefinition.name]",
-      "properties": {
-        "copy": [
-          {
-            "name": "policyDefinitions",
-            "count": "[length(coalesce(parameters('managementGroupCustomPolicySetDefinitions'), createArray())[copyIndex()].libSetChildDefinitions)]",
-            "input": {
-              "policyDefinitionReferenceId": "[coalesce(parameters('managementGroupCustomPolicySetDefinitions'), createArray())[copyIndex()].libSetChildDefinitions[copyIndex('policyDefinitions')].definitionReferenceId]",
-              "policyDefinitionId": "[coalesce(parameters('managementGroupCustomPolicySetDefinitions'), createArray())[copyIndex()].libSetChildDefinitions[copyIndex('policyDefinitions')].definitionId]",
-              "parameters": "[coalesce(parameters('managementGroupCustomPolicySetDefinitions'), createArray())[copyIndex()].libSetChildDefinitions[copyIndex('policyDefinitions')].definitionParameters]",
-              "groupNames": "[coalesce(parameters('managementGroupCustomPolicySetDefinitions'), createArray())[copyIndex()].libSetChildDefinitions[copyIndex('policyDefinitions')].definitionGroups]",
-              "definitionVersion": "[coalesce(parameters('managementGroupCustomPolicySetDefinitions'), createArray())[copyIndex()].libSetChildDefinitions[copyIndex('policyDefinitions')].definitionVersion]"
-            }
-          }
-        ],
-        "description": "[coalesce(parameters('managementGroupCustomPolicySetDefinitions'), createArray())[copyIndex()].libSetDefinition.properties.description]",
-        "displayName": "[coalesce(parameters('managementGroupCustomPolicySetDefinitions'), createArray())[copyIndex()].libSetDefinition.properties.displayName]",
-        "metadata": "[coalesce(parameters('managementGroupCustomPolicySetDefinitions'), createArray())[copyIndex()].libSetDefinition.properties.metadata]",
-        "parameters": "[coalesce(parameters('managementGroupCustomPolicySetDefinitions'), createArray())[copyIndex()].libSetDefinition.properties.parameters]",
-        "policyType": "[coalesce(parameters('managementGroupCustomPolicySetDefinitions'), createArray())[copyIndex()].libSetDefinition.properties.policyType]",
-        "version": "[coalesce(parameters('managementGroupCustomPolicySetDefinitions'), createArray())[copyIndex()].libSetDefinition.properties.version]",
-        "policyDefinitionGroups": "[coalesce(parameters('managementGroupCustomPolicySetDefinitions'), createArray())[copyIndex()].libSetDefinition.properties.policyDefinitionGroups]"
-      },
-      "dependsOn": [
-        "mgCustomPolicyDefinitions"
       ]
     },
     "mg": {
@@ -964,6 +733,203 @@
           }
         }
       }
+    },
+    "mgCustomPolicyDefinitions": {
+      "condition": "[not(empty(parameters('managementGroupCustomPolicyDefinitions')))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[variables('deploymentNames').mgPolicyDefinitions]",
+      "scope": "[format('Microsoft.Management/managementGroups/{0}', parameters('managementGroupName'))]",
+      "location": "[deployment().location]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "managementGroupCustomPolicyDefinitions": {
+            "value": "[parameters('managementGroupCustomPolicyDefinitions')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.34.44.8038",
+              "templateHash": "15031478253779418587"
+            }
+          },
+          "definitions": {
+            "policyDefinitionType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "maxLength": 128,
+                  "metadata": {
+                    "description": "Required. Specifies the name of the policy definition. Maximum length is 128 characters for management group scope."
+                  }
+                },
+                "properties": {
+                  "type": "object",
+                  "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.Authorization/policyDefinitions@2025-01-01#properties/properties"
+                    },
+                    "description": "Required. The properties of the policy definition."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "A type for policy definitions."
+              }
+            }
+          },
+          "parameters": {
+            "managementGroupCustomPolicyDefinitions": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/policyDefinitionType"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Policy definitions to create on the management group."
+              }
+            }
+          },
+          "resources": {
+            "mgCustomPolicyDefinitions": {
+              "copy": {
+                "name": "mgCustomPolicyDefinitions",
+                "count": "[length(coalesce(parameters('managementGroupCustomPolicyDefinitions'), createArray()))]"
+              },
+              "type": "Microsoft.Authorization/policyDefinitions",
+              "apiVersion": "2025-01-01",
+              "name": "[coalesce(parameters('managementGroupCustomPolicyDefinitions'), createArray())[copyIndex()].name]",
+              "properties": {
+                "description": "[tryGet(coalesce(parameters('managementGroupCustomPolicyDefinitions'), createArray())[copyIndex()].properties, 'description')]",
+                "displayName": "[tryGet(coalesce(parameters('managementGroupCustomPolicyDefinitions'), createArray())[copyIndex()].properties, 'displayName')]",
+                "metadata": "[tryGet(coalesce(parameters('managementGroupCustomPolicyDefinitions'), createArray())[copyIndex()].properties, 'metadata')]",
+                "mode": "[tryGet(coalesce(parameters('managementGroupCustomPolicyDefinitions'), createArray())[copyIndex()].properties, 'mode')]",
+                "parameters": "[tryGet(coalesce(parameters('managementGroupCustomPolicyDefinitions'), createArray())[copyIndex()].properties, 'parameters')]",
+                "policyType": "[tryGet(coalesce(parameters('managementGroupCustomPolicyDefinitions'), createArray())[copyIndex()].properties, 'policyType')]",
+                "policyRule": "[coalesce(parameters('managementGroupCustomPolicyDefinitions'), createArray())[copyIndex()].properties.policyRule]",
+                "version": "[tryGet(coalesce(parameters('managementGroupCustomPolicyDefinitions'), createArray())[copyIndex()].properties, 'version')]"
+              }
+            }
+          }
+        }
+      }
+    },
+    "mgCustomPolicySetDefinitions": {
+      "condition": "[not(empty(parameters('managementGroupCustomPolicySetDefinitions')))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[variables('deploymentNames').mgPolicySetDefinitions]",
+      "scope": "[format('Microsoft.Management/managementGroups/{0}', parameters('managementGroupName'))]",
+      "location": "[deployment().location]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "managementGroupCustomPolicySetDefinitions": {
+            "value": "[parameters('managementGroupCustomPolicySetDefinitions')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.34.44.8038",
+              "templateHash": "9094225830321875611"
+            }
+          },
+          "definitions": {
+            "policySetDefinitionsType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "maxLength": 128,
+                  "metadata": {
+                    "description": "Required. Specifies the name of the policy set definition. Maximum length is 128 characters for management group scope."
+                  }
+                },
+                "properties": {
+                  "type": "object",
+                  "metadata": {
+                    "__bicep_resource_derived_type!": {
+                      "source": "Microsoft.Authorization/policySetDefinitions@2025-01-01#properties/properties"
+                    },
+                    "description": "Required. The properties of the policy set definition."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "A type for policy set definitions."
+              }
+            }
+          },
+          "parameters": {
+            "managementGroupCustomPolicySetDefinitions": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/policySetDefinitionsType"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Policy set definitions to create on the management group."
+              }
+            }
+          },
+          "resources": {
+            "mgCustomPolicySetDefinitions": {
+              "copy": {
+                "name": "mgCustomPolicySetDefinitions",
+                "count": "[length(coalesce(parameters('managementGroupCustomPolicySetDefinitions'), createArray()))]"
+              },
+              "type": "Microsoft.Authorization/policySetDefinitions",
+              "apiVersion": "2025-01-01",
+              "name": "[coalesce(parameters('managementGroupCustomPolicySetDefinitions'), createArray())[copyIndex()].name]",
+              "properties": {
+                "copy": [
+                  {
+                    "name": "policyDefinitions",
+                    "count": "[length(coalesce(parameters('managementGroupCustomPolicySetDefinitions'), createArray())[copyIndex()].properties.policyDefinitions)]",
+                    "input": {
+                      "policyDefinitionReferenceId": "[tryGet(coalesce(parameters('managementGroupCustomPolicySetDefinitions'), createArray())[copyIndex()].properties.policyDefinitions[copyIndex('policyDefinitions')], 'policyDefinitionReferenceId')]",
+                      "policyDefinitionId": "[replace(tryGet(coalesce(parameters('managementGroupCustomPolicySetDefinitions'), createArray())[copyIndex()].properties.policyDefinitions[copyIndex('policyDefinitions')], 'policyDefinitionId'), '{customPolicyDefinitionScopeId}', managementGroup().id)]",
+                      "parameters": "[tryGet(coalesce(parameters('managementGroupCustomPolicySetDefinitions'), createArray())[copyIndex()].properties.policyDefinitions[copyIndex('policyDefinitions')], 'parameters')]",
+                      "groupNames": "[tryGet(coalesce(parameters('managementGroupCustomPolicySetDefinitions'), createArray())[copyIndex()].properties.policyDefinitions[copyIndex('policyDefinitions')], 'groupNames')]",
+                      "definitionVersion": "[tryGet(coalesce(parameters('managementGroupCustomPolicySetDefinitions'), createArray())[copyIndex()].properties.policyDefinitions[copyIndex('policyDefinitions')], 'definitionVersion')]"
+                    }
+                  }
+                ],
+                "description": "[tryGet(coalesce(parameters('managementGroupCustomPolicySetDefinitions'), createArray())[copyIndex()].properties, 'description')]",
+                "displayName": "[tryGet(coalesce(parameters('managementGroupCustomPolicySetDefinitions'), createArray())[copyIndex()].properties, 'displayName')]",
+                "metadata": "[tryGet(coalesce(parameters('managementGroupCustomPolicySetDefinitions'), createArray())[copyIndex()].properties, 'metadata')]",
+                "parameters": "[tryGet(coalesce(parameters('managementGroupCustomPolicySetDefinitions'), createArray())[copyIndex()].properties, 'parameters')]",
+                "policyType": "[tryGet(coalesce(parameters('managementGroupCustomPolicySetDefinitions'), createArray())[copyIndex()].properties, 'policyType')]",
+                "version": "[tryGet(coalesce(parameters('managementGroupCustomPolicySetDefinitions'), createArray())[copyIndex()].properties, 'version')]",
+                "policyDefinitionGroups": "[tryGet(coalesce(parameters('managementGroupCustomPolicySetDefinitions'), createArray())[copyIndex()].properties, 'policyDefinitionGroups')]"
+              }
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "mgCustomPolicyDefinitions"
+      ]
     },
     "mgPolicyAssignments": {
       "copy": {
@@ -2538,7 +2504,9 @@
         }
       },
       "dependsOn": [
-        "mg"
+        "mg",
+        "mgCustomPolicyDefinitions",
+        "mgCustomPolicySetDefinitions"
       ]
     },
     "mgRoleDefinitionsWait": {

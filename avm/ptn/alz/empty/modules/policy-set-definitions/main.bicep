@@ -16,7 +16,11 @@ resource mgCustomPolicySetDefinitions 'Microsoft.Authorization/policySetDefiniti
       policyDefinitions: [
         for polDef in polSetDef.properties.policyDefinitions: {
           policyDefinitionReferenceId: polDef.?policyDefinitionReferenceId
-          policyDefinitionId: polDef.policyDefinitionId
+          policyDefinitionId: replace(
+            polDef.?policyDefinitionId,
+            '{customPolicyDefinitionScopeId}',
+            managementGroup().id
+          )
           parameters: polDef.?parameters
           groupNames: polDef.?groupNames
           definitionVersion: polDef.?definitionVersion
