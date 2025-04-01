@@ -1,58 +1,14 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "1274862068735507323"
+      "templateHash": "8442077100910657703"
     },
     "name": "Kusto Cluster Principal Assignments",
     "description": "This module deploys a Kusto Cluster Principal Assignment."
-  },
-  "definitions": {
-    "clusterPrincipalAssignmentType": {
-      "type": "object",
-      "properties": {
-        "principalId": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The principal id assigned to the Kusto Cluster principal. It can be a user email, application id, or security group name."
-          }
-        },
-        "principalType": {
-          "type": "string",
-          "allowedValues": [
-            "App",
-            "Group",
-            "User"
-          ],
-          "metadata": {
-            "description": "Required. The principal type of the principal id."
-          }
-        },
-        "role": {
-          "type": "string",
-          "allowedValues": [
-            "AllDatabasesAdmin",
-            "AllDatabasesViewer"
-          ],
-          "metadata": {
-            "description": "Required. The Kusto Cluster role to be assigned to the principal id."
-          }
-        },
-        "tenantId": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The tenant id of the principal."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true
-      }
-    }
   },
   "parameters": {
     "kustoClusterName": {
@@ -63,46 +19,68 @@
         "description": "Conditional. The name of the parent Kusto Cluster. Required if the template is used in a standalone deployment."
       }
     },
-    "clusterPrincipalAssignment": {
-      "$ref": "#/definitions/clusterPrincipalAssignmentType",
+    "principalId": {
+      "type": "string",
       "metadata": {
-        "description": "Required. The principal assignement for the Kusto Cluster."
+        "description": "Required. The principal id assigned to the Kusto Cluster principal. It can be a user email, application id, or security group name."
+      }
+    },
+    "principalType": {
+      "type": "string",
+      "allowedValues": [
+        "App",
+        "Group",
+        "User"
+      ],
+      "metadata": {
+        "description": "Required. The principal type of the principal id."
+      }
+    },
+    "role": {
+      "type": "string",
+      "allowedValues": [
+        "AllDatabasesAdmin",
+        "AllDatabasesViewer"
+      ],
+      "metadata": {
+        "description": "Required. The Kusto Cluster role to be assigned to the principal id."
+      }
+    },
+    "tenantId": {
+      "type": "string",
+      "defaultValue": "[tenant().tenantId]",
+      "metadata": {
+        "description": "Optional. The tenant id of the principal id."
       }
     }
   },
-  "resources": {
-    "kustoCluster": {
-      "existing": true,
-      "type": "Microsoft.Kusto/clusters",
-      "apiVersion": "2024-04-13",
-      "name": "[parameters('kustoClusterName')]"
-    },
-    "kustoClusterPrincipalAssignment": {
+  "resources": [
+    {
       "type": "Microsoft.Kusto/clusters/principalAssignments",
       "apiVersion": "2023-08-15",
-      "name": "[format('{0}/{1}', parameters('kustoClusterName'), parameters('clusterPrincipalAssignment').principalId)]",
+      "name": "[format('{0}/{1}', parameters('kustoClusterName'), parameters('principalId'))]",
       "properties": {
-        "principalId": "[parameters('clusterPrincipalAssignment').principalId]",
-        "principalType": "[parameters('clusterPrincipalAssignment').principalType]",
-        "role": "[parameters('clusterPrincipalAssignment').role]",
-        "tenantId": "[parameters('clusterPrincipalAssignment').tenantId]"
+        "principalId": "[parameters('principalId')]",
+        "principalType": "[parameters('principalType')]",
+        "role": "[parameters('role')]",
+        "tenantId": "[parameters('tenantId')]"
       }
     }
-  },
+  ],
   "outputs": {
     "name": {
       "type": "string",
       "metadata": {
         "description": "The name of the deployed Kusto Cluster Principal Assignment."
       },
-      "value": "[parameters('clusterPrincipalAssignment').principalId]"
+      "value": "[parameters('principalId')]"
     },
     "resourceId": {
       "type": "string",
       "metadata": {
         "description": "The resource id of the deployed Kusto Cluster Principal Assignment."
       },
-      "value": "[resourceId('Microsoft.Kusto/clusters/principalAssignments', parameters('kustoClusterName'), parameters('clusterPrincipalAssignment').principalId)]"
+      "value": "[resourceId('Microsoft.Kusto/clusters/principalAssignments', parameters('kustoClusterName'), parameters('principalId'))]"
     },
     "resourceGroupName": {
       "type": "string",

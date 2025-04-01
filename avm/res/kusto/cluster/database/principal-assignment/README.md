@@ -20,34 +20,40 @@ This module deploys a Kusto Cluster Database Principal Assignment.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`databasePrincipalAssignment`](#parameter-databaseprincipalassignment) | object | The principal assignement for the Kusto Cluster Database. |
 | [`kustoClusterName`](#parameter-kustoclustername) | string | The name of the Kusto cluster. |
 | [`kustoDatabaseName`](#parameter-kustodatabasename) | string | The name of the parent Kusto Cluster Database. Required if the template is used in a standalone deployment. |
+| [`principalId`](#parameter-principalid) | string | The principal id assigned to the Kusto Cluster database principal. It can be a user email, application id, or security group name. |
+| [`principalType`](#parameter-principaltype) | string | The principal type of the principal id. |
+| [`role`](#parameter-role) | string | The Kusto Cluster database role to be assigned to the principal id. |
 
-### Parameter: `databasePrincipalAssignment`
-
-The principal assignement for the Kusto Cluster Database.
-
-- Required: Yes
-- Type: object
-
-**Required parameters**
+**Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`principalId`](#parameter-databaseprincipalassignmentprincipalid) | string | The principal id assigned to the Kusto Cluster database principal. It can be a user email, application id, or security group name. |
-| [`principalType`](#parameter-databaseprincipalassignmentprincipaltype) | string | The principal type of the principal id. |
-| [`role`](#parameter-databaseprincipalassignmentrole) | string | The Kusto Cluster database role to be assigned to the principal id. |
-| [`tenantId`](#parameter-databaseprincipalassignmenttenantid) | string | The tenant id of the principal. |
+| [`tenantId`](#parameter-tenantid) | string | The tenant id of the principal. |
 
-### Parameter: `databasePrincipalAssignment.principalId`
+### Parameter: `kustoClusterName`
+
+The name of the Kusto cluster.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `kustoDatabaseName`
+
+The name of the parent Kusto Cluster Database. Required if the template is used in a standalone deployment.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `principalId`
 
 The principal id assigned to the Kusto Cluster database principal. It can be a user email, application id, or security group name.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `databasePrincipalAssignment.principalType`
+### Parameter: `principalType`
 
 The principal type of the principal id.
 
@@ -62,7 +68,7 @@ The principal type of the principal id.
   ]
   ```
 
-### Parameter: `databasePrincipalAssignment.role`
+### Parameter: `role`
 
 The Kusto Cluster database role to be assigned to the principal id.
 
@@ -80,26 +86,13 @@ The Kusto Cluster database role to be assigned to the principal id.
   ]
   ```
 
-### Parameter: `databasePrincipalAssignment.tenantId`
+### Parameter: `tenantId`
 
 The tenant id of the principal.
 
-- Required: Yes
+- Required: No
 - Type: string
-
-### Parameter: `kustoClusterName`
-
-The name of the Kusto cluster.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `kustoDatabaseName`
-
-The name of the parent Kusto Cluster Database. Required if the template is used in a standalone deployment.
-
-- Required: Yes
-- Type: string
+- Default: `[tenant().tenantId]`
 
 ## Outputs
 

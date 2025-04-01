@@ -20,7 +20,9 @@ This module deploys a Kusto Cluster Principal Assignment.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`clusterPrincipalAssignment`](#parameter-clusterprincipalassignment) | object | The principal assignement for the Kusto Cluster. |
+| [`principalId`](#parameter-principalid) | string | The principal id assigned to the Kusto Cluster principal. It can be a user email, application id, or security group name. |
+| [`principalType`](#parameter-principaltype) | string | The principal type of the principal id. |
+| [`role`](#parameter-role) | string | The Kusto Cluster role to be assigned to the principal id. |
 
 **Conditional parameters**
 
@@ -28,30 +30,20 @@ This module deploys a Kusto Cluster Principal Assignment.
 | :-- | :-- | :-- |
 | [`kustoClusterName`](#parameter-kustoclustername) | string | The name of the parent Kusto Cluster. Required if the template is used in a standalone deployment. |
 
-### Parameter: `clusterPrincipalAssignment`
-
-The principal assignement for the Kusto Cluster.
-
-- Required: Yes
-- Type: object
-
-**Required parameters**
+**Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`principalId`](#parameter-clusterprincipalassignmentprincipalid) | string | The principal id assigned to the Kusto Cluster principal. It can be a user email, application id, or security group name. |
-| [`principalType`](#parameter-clusterprincipalassignmentprincipaltype) | string | The principal type of the principal id. |
-| [`role`](#parameter-clusterprincipalassignmentrole) | string | The Kusto Cluster role to be assigned to the principal id. |
-| [`tenantId`](#parameter-clusterprincipalassignmenttenantid) | string | The tenant id of the principal. |
+| [`tenantId`](#parameter-tenantid) | string | The tenant id of the principal id. |
 
-### Parameter: `clusterPrincipalAssignment.principalId`
+### Parameter: `principalId`
 
 The principal id assigned to the Kusto Cluster principal. It can be a user email, application id, or security group name.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `clusterPrincipalAssignment.principalType`
+### Parameter: `principalType`
 
 The principal type of the principal id.
 
@@ -66,7 +58,7 @@ The principal type of the principal id.
   ]
   ```
 
-### Parameter: `clusterPrincipalAssignment.role`
+### Parameter: `role`
 
 The Kusto Cluster role to be assigned to the principal id.
 
@@ -80,19 +72,20 @@ The Kusto Cluster role to be assigned to the principal id.
   ]
   ```
 
-### Parameter: `clusterPrincipalAssignment.tenantId`
-
-The tenant id of the principal.
-
-- Required: Yes
-- Type: string
-
 ### Parameter: `kustoClusterName`
 
 The name of the parent Kusto Cluster. Required if the template is used in a standalone deployment.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `tenantId`
+
+The tenant id of the principal id.
+
+- Required: No
+- Type: string
+- Default: `[tenant().tenantId]`
 
 ## Outputs
 

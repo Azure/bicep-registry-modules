@@ -67,7 +67,6 @@ module testDeployment '../../../main.bicep' = [
           principalId: nestedDependencies.outputs.managedIdentityClientId
           principalType: 'App'
           role: 'AllDatabasesViewer'
-          tenantId: tenant().tenantId
         }
       ]
       allowedFqdnList: [
@@ -131,7 +130,6 @@ module testDeployment '../../../main.bicep' = [
               principalId: nestedDependencies.outputs.managedIdentityClientId
               principalType: 'App'
               role: 'Viewer'
-              tenantId: tenant().tenantId
             }
           ]
         }

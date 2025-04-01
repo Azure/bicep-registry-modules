@@ -14,19 +14,30 @@ param kustoDatabaseName string
 param principalId string
 
 @description('Required. The principal type of the principal id.')
+@allowed([
+  'App'
+  'Group'
+  'User'
+])
 param principalType string
 
 @description('Required. The Kusto Cluster database role to be assigned to the principal id.')
+@allowed([
+  'Admin'
+  'Ingestor'
+  'Monitor'
+  'UnrestrictedViewer'
+  'User'
+  'Viewer'
+])
 param role string
 
 @description('Optional. The tenant id of the principal.')
 param tenantId string = tenant().tenantId
 
-
 // ============== //
 // Resources      //
 // ============== //
-
 
 resource cluster 'Microsoft.Kusto/clusters@2024-04-13' existing  = {
   name: kustoClusterName

@@ -48,14 +48,14 @@ resource database_readOnly 'Microsoft.Kusto/clusters/databases@2024-04-13' = if 
 
 module database_readWrite_PrincipalAssignment './principal-assignment/main.bicep' = [
   for (principalAssignment, index) in (databasePrincipalAssignments ?? []): {
-    name: '${uniqueString(deployment().name, location)}-KustoDb-PrincipalAssignment-${index}'
+    name: '${uniqueString(deployment().name, location)}-KDB-PrincipalAssignment-${index}'
     params: {
       kustoClusterName: kustoClusterName
       kustoDatabaseName: databaseKind == 'ReadOnlyFollowing' ? database_readOnly.name : database_readWrite.name
       principalId: principalAssignment.principalId
       principalType: principalAssignment.principalType
       role: principalAssignment.role
-      tenantId: principalAssignment.tenantId
+      tenantId: principalAssignment.?tenantId
     }
   }
 ]
@@ -109,7 +109,7 @@ type databasePrincipalAssignmentType = {
   @description('Required. The Kusto Cluster database role to be assigned to the principal id.')
   role: 'Admin' | 'Ingestor' | 'Monitor' | 'UnrestrictedViewer' | 'User' | 'Viewer'
 
-  @description('Required. The tenant id of the principal.')
-  tenantId: string
+  @description('Optional. The tenant id of the principal.')
+  tenantId: string?
 }
 

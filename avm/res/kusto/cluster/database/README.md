@@ -81,6 +81,11 @@ The principal assignments for the Kusto database.
 | [`principalId`](#parameter-databaseprincipalassignmentsprincipalid) | string | The principal id assigned to the Kusto Cluster database principal. It can be a user email, application id, or security group name. |
 | [`principalType`](#parameter-databaseprincipalassignmentsprincipaltype) | string | The principal type of the principal id. |
 | [`role`](#parameter-databaseprincipalassignmentsrole) | string | The Kusto Cluster database role to be assigned to the principal id. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
 | [`tenantId`](#parameter-databaseprincipalassignmentstenantid) | string | The tenant id of the principal. |
 
 ### Parameter: `databasePrincipalAssignments.principalId`
@@ -127,7 +132,7 @@ The Kusto Cluster database role to be assigned to the principal id.
 
 The tenant id of the principal.
 
-- Required: Yes
+- Required: No
 - Type: string
 
 ### Parameter: `databaseReadWriteProperties`

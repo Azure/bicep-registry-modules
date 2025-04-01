@@ -167,7 +167,6 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
         principalId: '<principalId>'
         principalType: 'App'
         role: 'AllDatabasesViewer'
-        tenantId: '<tenantId>'
       }
     ]
     databases: [
@@ -177,7 +176,6 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
             principalId: '<principalId>'
             principalType: 'App'
             role: 'Viewer'
-            tenantId: '<tenantId>'
           }
         ]
         kind: 'ReadWrite'
@@ -283,8 +281,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
         {
           "principalId": "<principalId>",
           "principalType": "App",
-          "role": "AllDatabasesViewer",
-          "tenantId": "<tenantId>"
+          "role": "AllDatabasesViewer"
         }
       ]
     },
@@ -295,8 +292,7 @@ module cluster 'br/public:avm/res/kusto/cluster:<version>' = {
             {
               "principalId": "<principalId>",
               "principalType": "App",
-              "role": "Viewer",
-              "tenantId": "<tenantId>"
+              "role": "Viewer"
             }
           ],
           "kind": "ReadWrite",
@@ -415,7 +411,6 @@ param clusterPrincipalAssignments = [
     principalId: '<principalId>'
     principalType: 'App'
     role: 'AllDatabasesViewer'
-    tenantId: '<tenantId>'
   }
 ]
 param databases = [
@@ -425,7 +420,6 @@ param databases = [
         principalId: '<principalId>'
         principalType: 'App'
         role: 'Viewer'
-        tenantId: '<tenantId>'
       }
     ]
     kind: 'ReadWrite'
@@ -1128,6 +1122,11 @@ The Principal Assignments for the Kusto Cluster.
 | [`principalId`](#parameter-clusterprincipalassignmentsprincipalid) | string | The principal id assigned to the Kusto Cluster principal. It can be a user email, application id, or security group name. |
 | [`principalType`](#parameter-clusterprincipalassignmentsprincipaltype) | string | The principal type of the principal id. |
 | [`role`](#parameter-clusterprincipalassignmentsrole) | string | The Kusto Cluster role to be assigned to the principal id. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
 | [`tenantId`](#parameter-clusterprincipalassignmentstenantid) | string | The tenant id of the principal. |
 
 ### Parameter: `clusterPrincipalAssignments.principalId`
@@ -1170,7 +1169,7 @@ The Kusto Cluster role to be assigned to the principal id.
 
 The tenant id of the principal.
 
-- Required: Yes
+- Required: No
 - Type: string
 
 ### Parameter: `customerManagedKey`
@@ -1356,6 +1355,11 @@ The principal assignments for the Kusto Cluster database.
 | [`principalId`](#parameter-databasesdatabaseprincipalassignmentsprincipalid) | string | The principal id assigned to the Kusto Cluster database principal. It can be a user email, application id, or security group name. |
 | [`principalType`](#parameter-databasesdatabaseprincipalassignmentsprincipaltype) | string | The principal type of the principal id. |
 | [`role`](#parameter-databasesdatabaseprincipalassignmentsrole) | string | The Kusto Cluster database role to be assigned to the principal id. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
 | [`tenantId`](#parameter-databasesdatabaseprincipalassignmentstenantid) | string | The tenant id of the principal. |
 
 ### Parameter: `databases.databasePrincipalAssignments.principalId`
@@ -1402,7 +1406,7 @@ The Kusto Cluster database role to be assigned to the principal id.
 
 The tenant id of the principal.
 
-- Required: Yes
+- Required: No
 - Type: string
 
 ### Parameter: `diagnosticSettings`

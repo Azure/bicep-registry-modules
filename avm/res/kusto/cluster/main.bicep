@@ -326,10 +326,13 @@ resource kustoCluster_roleAssignments 'Microsoft.Authorization/roleAssignments@2
 
 module kustoCluster_principalAssignments 'principal-assignment/main.bicep' = [
   for (principalAssignment, index) in (clusterPrincipalAssignments ?? []): {
-    name: '${uniqueString(deployment().name, location)}-KustoCluster-PrincipalAssignment-${index}'
+    name: '${uniqueString(deployment().name, location)}-KC-PrincipalAssignment-${index}'
     params: {
       kustoClusterName: kustoCluster.name
-      clusterPrincipalAssignment: principalAssignment
+      principalId: principalAssignment.principalId
+      principalType: principalAssignment.principalType
+      role: principalAssignment.role
+      tenantId: principalAssignment.?tenantId
     }
   }
 ]
@@ -442,9 +445,7 @@ output databases array = [
 //   Definitions   //
 // =============== //
 
-import { clusterPrincipalAssignmentType } from './principal-assignment/main.bicep'
-
-import { databasePrincipalAssignmentType } from './database/principal-assignment/main.bicep'
+import { databasePrincipalAssignmentType } from './database/main.bicep'
 
 import { databaseReadWriteType } from './database/main.bicep'
 
@@ -482,6 +483,21 @@ type virtualNetworkConfigurationType = {
 
   @description('Required. The resource ID of the subnet to which to deploy the Kusto Cluster.')
   subnetResourceId: string
+}
+
+@export()
+type clusterPrincipalAssignmentType = {
+  @description('Required. The principal id assigned to the Kusto Cluster principal. It can be a user email, application id, or security group name.')
+  principalId: string
+
+  @description('Required. The principal type of the principal id.')
+  principalType: 'App' | 'Group' | 'User'
+
+  @description('Required. The Kusto Cluster role to be assigned to the principal id.')
+  role: 'AllDatabasesAdmin' | 'AllDatabasesViewer'
+
+  @description('Optional. The tenant id of the principal.')
+  tenantId: string?
 }
 
 @export()

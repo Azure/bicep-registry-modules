@@ -9,9 +9,18 @@ param kustoClusterName string
 @description('Required. The principal id assigned to the Kusto Cluster principal. It can be a user email, application id, or security group name.')
 param principalId string
 
+@allowed([
+  'App'
+  'Group'
+  'User'
+])
 @description('Required. The principal type of the principal id.')
 param principalType string
 
+@allowed([
+  'AllDatabasesAdmin'
+  'AllDatabasesViewer'
+])
 @description('Required. The Kusto Cluster role to be assigned to the principal id.')
 param role string
 
