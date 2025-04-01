@@ -62,240 +62,237 @@ module nestedDependencies 'dependencies.bicep' = {
 var diskBackupPolicyName = '${namePrefix}${serviceShort}diskpolicy001'
 var blobBackupPolicyName = '${namePrefix}${serviceShort}blobpolicy001'
 
-// @batchSize(1)
-module testDeployment '../../../main.bicep' = [
-  // for iteration in ['init', 'idem']: {
-  for iteration in ['init']: {
-    scope: resourceGroup
-    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-    params: {
-      name: '${namePrefix}${serviceShort}001'
-      location: resourceLocation
-      azureMonitorAlertSettingsAlertsForAllJobFailures: 'Disabled'
-      immutabilitySettingState: 'Unlocked'
-      managedIdentities: {
-        systemAssigned: true
-      }
-      backupPolicies: [
-        {
-          name: diskBackupPolicyName
-          properties: {
-            datasourceTypes: [
-              'Microsoft.Compute/disks'
-            ]
-            objectType: 'BackupPolicy'
-            policyRules: [
-              {
-                backupParameters: {
-                  backupType: 'Incremental'
-                  objectType: 'AzureBackupParams'
-                }
-                dataStore: {
-                  dataStoreType: 'OperationalStore'
-                  objectType: 'DataStoreInfoBase'
-                }
-                name: 'BackupDaily'
-                objectType: 'AzureBackupRule'
-                trigger: {
-                  objectType: 'ScheduleBasedTriggerContext'
-                  schedule: {
-                    repeatingTimeIntervals: [
-                      'R/2025-03-31T00:00:00+04:00/P1D'
-                    ]
-                    timeZone: 'Arabian Standard Time'
-                  }
-                  taggingCriteria: [
-                    {
-                      isDefault: true
-                      taggingPriority: 99
-                      tagInfo: {
-                        id: 'Default_'
-                        tagName: 'Default'
-                      }
-                    }
+// No idempotency test as the backup instance child resource requires some time for the protection to complete.
+module testDeployment '../../../main.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
+  params: {
+    name: '${namePrefix}${serviceShort}001'
+    location: resourceLocation
+    azureMonitorAlertSettingsAlertsForAllJobFailures: 'Disabled'
+    immutabilitySettingState: 'Unlocked'
+    managedIdentities: {
+      systemAssigned: true
+    }
+    backupPolicies: [
+      {
+        name: diskBackupPolicyName
+        properties: {
+          datasourceTypes: [
+            'Microsoft.Compute/disks'
+          ]
+          objectType: 'BackupPolicy'
+          policyRules: [
+            {
+              backupParameters: {
+                backupType: 'Incremental'
+                objectType: 'AzureBackupParams'
+              }
+              dataStore: {
+                dataStoreType: 'OperationalStore'
+                objectType: 'DataStoreInfoBase'
+              }
+              name: 'BackupDaily'
+              objectType: 'AzureBackupRule'
+              trigger: {
+                objectType: 'ScheduleBasedTriggerContext'
+                schedule: {
+                  repeatingTimeIntervals: [
+                    'R/2025-03-31T00:00:00+04:00/P1D'
                   ]
+                  timeZone: 'Arabian Standard Time'
                 }
-              }
-              {
-                name: 'Default'
-                objectType: 'AzureRetentionRule'
-                isDefault: true
-                lifecycles: [
+                taggingCriteria: [
                   {
-                    deleteAfter: {
-                      duration: 'P7D'
-                      objectType: 'AbsoluteDeleteOption'
+                    isDefault: true
+                    taggingPriority: 99
+                    tagInfo: {
+                      id: 'Default_'
+                      tagName: 'Default'
                     }
-                    sourceDataStore: {
-                      dataStoreType: 'OperationalStore'
-                      objectType: 'DataStoreInfoBase'
-                    }
-                    targetDataStoreCopySettings: []
                   }
                 ]
               }
-            ]
-          }
-        }
-        {
-          name: blobBackupPolicyName
-          properties: {
-            datasourceTypes: [
-              'Microsoft.Storage/storageAccounts/blobServices'
-            ]
-            objectType: 'BackupPolicy'
-            policyRules: [
-              {
-                name: 'Default'
-                objectType: 'AzureRetentionRule'
-                isDefault: true
-                lifecycles: [
-                  {
-                    deleteAfter: {
-                      duration: 'P30D'
-                      objectType: 'AbsoluteDeleteOption'
-                    }
-                    sourceDataStore: {
-                      dataStoreType: 'OperationalStore'
-                      objectType: 'DataStoreInfoBase'
-                    }
-                    targetDataStoreCopySettings: []
-                  }
-                ]
-              }
-              {
-                name: 'Default'
-                objectType: 'AzureRetentionRule'
-                isDefault: true
-                lifecycles: [
-                  {
-                    deleteAfter: {
-                      duration: 'P90D'
-                      objectType: 'AbsoluteDeleteOption'
-                    }
-                    sourceDataStore: {
-                      dataStoreType: 'VaultStore'
-                      objectType: 'DataStoreInfoBase'
-                    }
-                    targetDataStoreCopySettings: []
-                  }
-                ]
-              }
-              {
-                name: 'BackupDaily'
-                objectType: 'AzureBackupRule'
-                backupParameters: {
-                  backupType: 'Discrete'
-                  objectType: 'AzureBackupParams'
-                }
-                dataStore: {
-                  dataStoreType: 'VaultStore'
-                  objectType: 'DataStoreInfoBase'
-                }
-                trigger: {
-                  schedule: {
-                    timeZone: 'Arabian Standard Time'
-                    repeatingTimeIntervals: [
-                      'R/2025-03-31T00:00:00+04:00/P1D'
-                    ]
-                  }
-                  taggingCriteria: [
-                    {
-                      isDefault: true
-                      taggingPriority: 99
-                      tagInfo: {
-                        id: 'Default_'
-                        tagName: 'Default'
-                      }
-                    }
-                  ]
-                  objectType: 'ScheduleBasedTriggerContext'
-                }
-              }
-            ]
-          }
-        }
-      ]
-      backupInstances: [
-        {
-          name: last(split(nestedDependencies.outputs.storageAccountResourceId, '/'))
-          dataSourceInfo: {
-            objectType: 'Datasource'
-            resourceID: nestedDependencies.outputs.storageAccountResourceId
-            resourceName: last(split(nestedDependencies.outputs.storageAccountResourceId, '/'))
-            resourceType: 'Microsoft.Storage/storageAccounts'
-            resourceUri: nestedDependencies.outputs.storageAccountResourceId
-            resourceLocation: resourceLocation
-            datasourceType: 'Microsoft.Storage/storageAccounts/blobServices'
-          }
-          policyInfo: {
-            policyName: blobBackupPolicyName
-            policyParameters: {
-              backupDatasourceParametersList: [
+            }
+            {
+              name: 'Default'
+              objectType: 'AzureRetentionRule'
+              isDefault: true
+              lifecycles: [
                 {
-                  objectType: 'BlobBackupDatasourceParameters'
-                  containersList: ['container1', 'container2']
+                  deleteAfter: {
+                    duration: 'P7D'
+                    objectType: 'AbsoluteDeleteOption'
+                  }
+                  sourceDataStore: {
+                    dataStoreType: 'OperationalStore'
+                    objectType: 'DataStoreInfoBase'
+                  }
+                  targetDataStoreCopySettings: []
                 }
               ]
             }
-          }
+          ]
         }
-        {
-          name: last(split(nestedDependencies.outputs.diskResourceId, '/'))
-          dataSourceInfo: {
-            objectType: 'Datasource'
-            resourceID: nestedDependencies.outputs.diskResourceId
-            resourceName: last(split(nestedDependencies.outputs.diskResourceId, '/'))
-            resourceType: 'Microsoft.Compute/disks'
-            resourceUri: nestedDependencies.outputs.diskResourceId
-            resourceLocation: resourceLocation
-            datasourceType: 'Microsoft.Compute/disks'
-          }
-          policyInfo: {
-            policyName: diskBackupPolicyName
-            policyParameters: {
-              dataStoreParametersList: [
+      }
+      {
+        name: blobBackupPolicyName
+        properties: {
+          datasourceTypes: [
+            'Microsoft.Storage/storageAccounts/blobServices'
+          ]
+          objectType: 'BackupPolicy'
+          policyRules: [
+            {
+              name: 'Default'
+              objectType: 'AzureRetentionRule'
+              isDefault: true
+              lifecycles: [
                 {
-                  objectType: 'AzureOperationalStoreParameters'
-                  dataStoreType: 'OperationalStore'
-                  resourceGroupId: resourceGroup.id
+                  deleteAfter: {
+                    duration: 'P30D'
+                    objectType: 'AbsoluteDeleteOption'
+                  }
+                  sourceDataStore: {
+                    dataStoreType: 'OperationalStore'
+                    objectType: 'DataStoreInfoBase'
+                  }
+                  targetDataStoreCopySettings: []
                 }
               ]
             }
+            {
+              name: 'Default'
+              objectType: 'AzureRetentionRule'
+              isDefault: true
+              lifecycles: [
+                {
+                  deleteAfter: {
+                    duration: 'P90D'
+                    objectType: 'AbsoluteDeleteOption'
+                  }
+                  sourceDataStore: {
+                    dataStoreType: 'VaultStore'
+                    objectType: 'DataStoreInfoBase'
+                  }
+                  targetDataStoreCopySettings: []
+                }
+              ]
+            }
+            {
+              name: 'BackupDaily'
+              objectType: 'AzureBackupRule'
+              backupParameters: {
+                backupType: 'Discrete'
+                objectType: 'AzureBackupParams'
+              }
+              dataStore: {
+                dataStoreType: 'VaultStore'
+                objectType: 'DataStoreInfoBase'
+              }
+              trigger: {
+                schedule: {
+                  timeZone: 'Arabian Standard Time'
+                  repeatingTimeIntervals: [
+                    'R/2025-03-31T00:00:00+04:00/P1D'
+                  ]
+                }
+                taggingCriteria: [
+                  {
+                    isDefault: true
+                    taggingPriority: 99
+                    tagInfo: {
+                      id: 'Default_'
+                      tagName: 'Default'
+                    }
+                  }
+                ]
+                objectType: 'ScheduleBasedTriggerContext'
+              }
+            }
+          ]
+        }
+      }
+    ]
+    backupInstances: [
+      {
+        name: last(split(nestedDependencies.outputs.storageAccountResourceId, '/'))
+        dataSourceInfo: {
+          objectType: 'Datasource'
+          resourceID: nestedDependencies.outputs.storageAccountResourceId
+          resourceName: last(split(nestedDependencies.outputs.storageAccountResourceId, '/'))
+          resourceType: 'Microsoft.Storage/storageAccounts'
+          resourceUri: nestedDependencies.outputs.storageAccountResourceId
+          resourceLocation: resourceLocation
+          datasourceType: 'Microsoft.Storage/storageAccounts/blobServices'
+        }
+        policyInfo: {
+          policyName: blobBackupPolicyName
+          policyParameters: {
+            backupDatasourceParametersList: [
+              {
+                objectType: 'BlobBackupDatasourceParameters'
+                containersList: ['container1', 'container2']
+              }
+            ]
           }
         }
-      ]
-      roleAssignments: [
-        {
-          name: 'cbc3932a-1bee-4318-ae76-d70e1ba399c8'
-          roleDefinitionIdOrName: 'Owner'
-          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-          principalType: 'ServicePrincipal'
-        }
-        {
-          name: guid('Custom seed ${namePrefix}${serviceShort}')
-          roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-          principalType: 'ServicePrincipal'
-        }
-        {
-          roleDefinitionIdOrName: subscriptionResourceId(
-            'Microsoft.Authorization/roleDefinitions',
-            'acdd72a7-3385-48ef-bd42-f606fba81ae7'
-          )
-          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-          principalType: 'ServicePrincipal'
-        }
-      ]
-      // lock: {
-      //   kind: 'CanNotDelete'
-      //   name: 'myCustomLockName'
-      // }
-      tags: {
-        'hidden-title': 'This is visible in the resource name'
-        Environment: 'Non-Prod'
-        Role: 'DeploymentValidation'
       }
+      {
+        name: last(split(nestedDependencies.outputs.diskResourceId, '/'))
+        dataSourceInfo: {
+          objectType: 'Datasource'
+          resourceID: nestedDependencies.outputs.diskResourceId
+          resourceName: last(split(nestedDependencies.outputs.diskResourceId, '/'))
+          resourceType: 'Microsoft.Compute/disks'
+          resourceUri: nestedDependencies.outputs.diskResourceId
+          resourceLocation: resourceLocation
+          datasourceType: 'Microsoft.Compute/disks'
+        }
+        policyInfo: {
+          policyName: diskBackupPolicyName
+          policyParameters: {
+            dataStoreParametersList: [
+              {
+                objectType: 'AzureOperationalStoreParameters'
+                dataStoreType: 'OperationalStore'
+                resourceGroupId: resourceGroup_st.id
+              }
+            ]
+          }
+        }
+      }
+    ]
+    roleAssignments: [
+      {
+        name: 'cbc3932a-1bee-4318-ae76-d70e1ba399c8'
+        roleDefinitionIdOrName: 'Owner'
+        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+        principalType: 'ServicePrincipal'
+      }
+      {
+        name: guid('Custom seed ${namePrefix}${serviceShort}')
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+        principalType: 'ServicePrincipal'
+      }
+      {
+        roleDefinitionIdOrName: subscriptionResourceId(
+          'Microsoft.Authorization/roleDefinitions',
+          'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+        )
+        principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+        principalType: 'ServicePrincipal'
+      }
+    ]
+    // lock: {
+    //   kind: 'CanNotDelete'
+    //   name: 'myCustomLockName'
+    // }
+    tags: {
+      'hidden-title': 'This is visible in the resource name'
+      Environment: 'Non-Prod'
+      Role: 'DeploymentValidation'
     }
   }
-]
+}
