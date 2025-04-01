@@ -126,6 +126,7 @@ module resourceGroup 'br/public:avm/res/resources/resource-group:0.4.1' = {
     name: resourceGroupName
     location: location
     tags: tags
+    enableTelemetry: enableTelemetry
   }
 }
 
