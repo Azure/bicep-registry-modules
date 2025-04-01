@@ -21,7 +21,7 @@ param managedIdentities managedIdentityAllType?
 param databaseAccountOfferType string = 'Standard'
 
 @description('Optional. Default to the location where the account is deployed. Locations enabled for the Cosmos DB account.')
-param locations failoverLocationsType[] = []
+param locations failoverLocationType[] = []
 
 @allowed([
   'Eventual'
@@ -80,7 +80,7 @@ param sqlDatabases sqlDatabaseType[] = []
 param sqlRoleAssignmentsPrincipalIds array = []
 
 @description('Optional. SQL Role Definitions configurations.')
-param sqlRoleDefinitions sqlRoleDefinitionsType
+param sqlRoleDefinitions sqlRoleDefinitionType[]?
 
 @description('Optional. MongoDB Databases configurations.')
 param mongodbDatabases array = []
@@ -164,7 +164,7 @@ param privateEndpoints privateEndpointMultiServiceType[]?
 param secretsExportConfiguration secretsExportConfigurationType?
 
 @description('Optional. The network configuration of this module. Defaults to `{ ipRules: [], virtualNetworkRules: [], publicNetworkAccess: \'Disabled\' }`.')
-param networkRestrictions networkRestrictionsType = {
+param networkRestrictions networkRestrictionType = {
   ipRules: []
   virtualNetworkRules: []
   publicNetworkAccess: 'Disabled'
@@ -681,6 +681,7 @@ output privateEndpoints privateEndpointOutputType[] = [
 // =============== //
 
 @export()
+@description('The type for the private endpoint output.')
 type privateEndpointOutputType = {
   @description('The name of the private endpoint.')
   name: string
@@ -704,7 +705,9 @@ type privateEndpointOutputType = {
   networkInterfaceResourceIds: string[]
 }
 
-type failoverLocationsType = {
+@export()
+@description('The type for the failover location.')
+type failoverLocationType = {
   @description('Required. The failover priority of the region. A failover priority of 0 indicates a write region. The maximum value for a failover priority = (total number of regions - 1). Failover priority values must be unique for each of the regions in which the database account exists.')
   failoverPriority: int
 
@@ -715,7 +718,9 @@ type failoverLocationsType = {
   locationName: string
 }
 
-type sqlRoleDefinitionsType = {
+@export()
+@description('The type for the SQL Role Definitions.')
+type sqlRoleDefinitionType = {
   @description('Required. Name of the SQL Role Definition.')
   name: string
 
@@ -727,8 +732,10 @@ type sqlRoleDefinitionsType = {
 
   @description('Optional. Indicates whether the Role Definition was built-in or user created.')
   roleType: ('CustomRole' | 'BuiltInRole')?
-}[]?
+}
 
+@export()
+@description('The type for the SQL database.')
 type sqlDatabaseType = {
   @description('Required. Name of the SQL database .')
   name: string
@@ -793,6 +800,8 @@ type sqlDatabaseType = {
   }[]?
 }
 
+@export()
+@description('The type for the secrets export configuration.')
 type secretsExportConfigurationType = {
   @description('Required. The resource ID of the key vault where to store the secrets of this module.')
   keyVaultResourceId: string
@@ -823,12 +832,16 @@ type secretsExportConfigurationType = {
 }
 
 import { secretSetType } from 'modules/keyVaultExport.bicep'
+@export()
+@description('The type for the secrets output.')
 type secretsOutputType = {
   @description('An exported secret\'s references.')
   *: secretSetType
 }
 
-type networkRestrictionsType = {
+@export()
+@description('The type for the network restriction.')
+type networkRestrictionType = {
   @description('Optional. A single IPv4 address or a single IPv4 address range in CIDR format. Provided IPs must be well-formatted and cannot be contained in one of the following ranges: 10.0.0.0/8, 100.64.0.0/10, 172.16.0.0/12, 192.168.0.0/16, since these are not enforceable by the IP address filter. Example of valid inputs: "23.40.210.245" or "23.40.210.0/8".')
   ipRules: string[]?
 
