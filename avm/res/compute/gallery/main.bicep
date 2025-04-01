@@ -19,16 +19,16 @@ param enableTelemetry bool = true
 param description string?
 
 @sys.description('Optional. Applications to create.')
-param applications applicationsType[]?
+param applications applicationType[]?
 
 @sys.description('Optional. Images to create.')
 param images imageType[]? // use a UDT here to not overload the main module, as it has images and applications parameters
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @sys.description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @sys.description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -101,7 +101,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource gallery 'Microsoft.Compute/galleries@2023-07-03' = {
+resource gallery 'Microsoft.Compute/galleries@2024-03-03' = {
   name: name
   location: location
   tags: tags
@@ -168,6 +168,7 @@ module galleries_images 'image/main.bicep' = [
       location: image.?location ?? location
       galleryName: gallery.name
       description: image.?description
+      allowUpdateImage: image.?allowUpdateImage
       osType: image.osType
       osState: image.osState
       identifier: image.identifier
@@ -177,6 +178,7 @@ module galleries_images 'image/main.bicep' = [
       securityType: image.?securityType
       isAcceleratedNetworkSupported: image.?isAcceleratedNetworkSupported
       isHibernateSupported: image.?isHibernateSupported
+      diskControllerType: image.?diskControllerType
       architecture: image.?architecture
       eula: image.?eula
       privacyStatementUri: image.?privacyStatementUri
@@ -217,6 +219,7 @@ output imageResourceIds array = [
 
 import { identifierType, purchasePlanType, resourceRangeType } from './image/main.bicep'
 @export()
+@sys.description('The type of an image.')
 type imageType = {
   @sys.description('Required. Name of the image definition.')
   @minLength(1)
@@ -225,6 +228,9 @@ type imageType = {
 
   @sys.description('Optional. The description of this gallery image definition resource. This property is updatable.')
   description: string?
+
+  @sys.description('Optional. Must be set to true if the gallery image features are being updated.')
+  allowUpdateImage: bool?
 
   @sys.description('Required. This property allows you to specify the type of the OS that is included in the disk when creating a VM from a managed image.')
   osType: ('Linux' | 'Windows')
@@ -259,6 +265,9 @@ type imageType = {
   @sys.description('Optional. Specify if the image supports hibernation.')
   isHibernateSupported: bool?
 
+  @sys.description('Optional. The disk controllers that an OS disk supports.')
+  diskControllerType: ('SCSI' | 'SCSI, NVMe' | 'NVMe, SCSI')?
+
   @sys.description('Optional. The architecture of the image. Applicable to OS disks only.')
   architecture: ('x64' | 'Arm64')?
 
@@ -282,7 +291,10 @@ type imageType = {
 }
 
 import { customActionType } from './application/main.bicep'
-type applicationsType = {
+
+@export()
+@sys.description('The type of an application.')
+type applicationType = {
   @sys.description('Required. Name of the application definition.')
   @minLength(1)
   @maxLength(80)

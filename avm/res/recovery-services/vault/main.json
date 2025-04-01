@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "6598977512480723703"
+      "templateHash": "9020986930467028821"
     },
     "name": "Recovery Services Vaults",
     "description": "This module deploys a Recovery Services Vault."
@@ -73,6 +73,503 @@
       },
       "metadata": {
         "__bicep_export!": true
+      }
+    },
+    "redundancySettingsType": {
+      "type": "object",
+      "properties": {
+        "crossRegionRestore": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Flag to show if Cross Region Restore is enabled on the Vault or not."
+          }
+        },
+        "standardTierStorageRedundancy": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The storage redundancy setting of a vault."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for redundancy settings."
+      }
+    },
+    "restoreSettingsType": {
+      "type": "object",
+      "properties": {
+        "crossSubscriptionRestoreSettings": {
+          "type": "object",
+          "properties": {
+            "crossSubscriptionRestoreState": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The restore settings of the vault."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. The restore settings of the vault."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for restore settings."
+      }
+    },
+    "replicationFabricType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the fabric."
+          }
+        },
+        "location": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The recovery location the fabric represents."
+          }
+        },
+        "replicationContainers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/containerType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Replication containers to create."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for replication fabrics."
+      }
+    },
+    "replicationPolicyType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the replication policy."
+          }
+        },
+        "appConsistentFrequencyInMinutes": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The app consistent snapshot frequency (in minutes)."
+          }
+        },
+        "crashConsistentFrequencyInMinutes": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The crash consistent snapshot frequency (in minutes)."
+          }
+        },
+        "multiVmSyncStatus": {
+          "type": "string",
+          "allowedValues": [
+            "Disable",
+            "Enable"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A value indicating whether multi-VM sync has to be enabled."
+          }
+        },
+        "recoveryPointHistory": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The duration in minutes until which the recovery points need to be stored."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for replication policies."
+      }
+    },
+    "backupStorageConfigType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the backup storage config."
+          }
+        },
+        "storageModelType": {
+          "type": "string",
+          "allowedValues": [
+            "GeoRedundant",
+            "LocallyRedundant",
+            "ReadAccessGeoZoneRedundant",
+            "ZoneRedundant"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Change Vault Storage Type (Works if vault has not registered any backup instance)."
+          }
+        },
+        "crossRegionRestoreFlag": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Opt in details of Cross Region Restore feature."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a backup storage config."
+      }
+    },
+    "backupConfigType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Name of the Azure Recovery Service Vault Backup Policy."
+          }
+        },
+        "enhancedSecurityState": {
+          "type": "string",
+          "allowedValues": [
+            "Disabled",
+            "Enabled"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enable this setting to protect hybrid backups against accidental deletes and add additional layer of authentication for critical operations."
+          }
+        },
+        "resourceGuardOperationRequests": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. ResourceGuard Operation Requests."
+          }
+        },
+        "softDeleteFeatureState": {
+          "type": "string",
+          "allowedValues": [
+            "Disabled",
+            "Enabled"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enable this setting to protect backup data for Azure VM, SQL Server in Azure VM and SAP HANA in Azure VM from accidental deletes."
+          }
+        },
+        "storageModelType": {
+          "type": "string",
+          "allowedValues": [
+            "GeoRedundant",
+            "LocallyRedundant",
+            "ReadAccessGeoZoneRedundant",
+            "ZoneRedundant"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Storage type."
+          }
+        },
+        "storageType": {
+          "type": "string",
+          "allowedValues": [
+            "GeoRedundant",
+            "LocallyRedundant",
+            "ReadAccessGeoZoneRedundant",
+            "ZoneRedundant"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Storage type."
+          }
+        },
+        "storageTypeState": {
+          "type": "string",
+          "allowedValues": [
+            "Locked",
+            "Unlocked"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Once a machine is registered against a resource, the storageTypeState is always Locked."
+          }
+        },
+        "isSoftDeleteFeatureStateEditable": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Is soft delete feature state editable."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a backup configuration."
+      }
+    },
+    "replicationAlertSettingsType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the replication Alert Setting."
+          }
+        },
+        "customEmailAddresses": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The custom email address for sending emails."
+          }
+        },
+        "locale": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The locale for the email notification."
+          }
+        },
+        "sendToOwners": {
+          "type": "string",
+          "allowedValues": [
+            "DoNotSend",
+            "Send"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The value indicating whether to send email to subscription administrator."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for replication alert settings"
+      }
+    },
+    "protectedItemType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Name of the resource."
+          }
+        },
+        "location": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Location for all resources."
+          }
+        },
+        "protectionContainerName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Name of the Azure Recovery Service Vault Protection Container."
+          }
+        },
+        "protectedItemType": {
+          "type": "string",
+          "allowedValues": [
+            "AzureFileShareProtectedItem",
+            "AzureVmWorkloadSAPAseDatabase",
+            "AzureVmWorkloadSAPHanaDatabase",
+            "AzureVmWorkloadSQLDatabase",
+            "DPMProtectedItem",
+            "GenericProtectedItem",
+            "MabFileFolderProtectedItem",
+            "Microsoft.ClassicCompute/virtualMachines",
+            "Microsoft.Compute/virtualMachines",
+            "Microsoft.Sql/servers/databases"
+          ],
+          "metadata": {
+            "description": "Required. The backup item type."
+          }
+        },
+        "policyName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The backup policy with which this item is backed up."
+          }
+        },
+        "sourceResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Resource ID of the resource to back up."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a protected item"
+      }
+    },
+    "backupPolicyType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Name of the Azure Recovery Service Vault Backup Policy."
+          }
+        },
+        "properties": {
+          "type": "object",
+          "metadata": {
+            "description": "Required. Configuration of the Azure Recovery Service Vault Backup Policy."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of a backup policy."
+      }
+    },
+    "monitoringSettingsType": {
+      "type": "object",
+      "properties": {
+        "azureMonitorAlertSettings": {
+          "type": "object",
+          "properties": {
+            "alertsForAllFailoverIssues": {
+              "type": "string",
+              "allowedValues": [
+                "Disabled",
+                "Enabled"
+              ],
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Enable / disable alerts for all failover issues."
+              }
+            },
+            "alertsForAllJobFailures": {
+              "type": "string",
+              "allowedValues": [
+                "Disabled",
+                "Enabled"
+              ],
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Enable / disable alerts for all job failures."
+              }
+            },
+            "alertsForAllReplicationIssues": {
+              "type": "string",
+              "allowedValues": [
+                "Disabled",
+                "Enabled"
+              ],
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Enable / disable alerts for all replication issues."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The alert settings."
+          }
+        },
+        "classicAlertSettings": {
+          "type": "object",
+          "properties": {
+            "alertsForCriticalOperations": {
+              "type": "string",
+              "allowedValues": [
+                "Disabled",
+                "Enabled"
+              ],
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Enable / disable alerts for critical operations."
+              }
+            },
+            "emailNotificationsForSiteRecovery": {
+              "type": "string",
+              "allowedValues": [
+                "Disabled",
+                "Enabled"
+              ],
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Enable / disable email notifications for site recovery."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The classic alert settings."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "softDeleteSettingType": {
+      "type": "object",
+      "properties": {
+        "enhancedSecurityState": {
+          "type": "string",
+          "allowedValues": [
+            "AlwaysON",
+            "Disabled",
+            "Enabled",
+            "Invalid"
+          ],
+          "metadata": {
+            "description": "Required. The enhanced security state."
+          }
+        },
+        "softDeleteRetentionPeriodInDays": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. The soft delete retention period in days."
+          }
+        },
+        "softDeleteState": {
+          "type": "string",
+          "allowedValues": [
+            "AlwaysON",
+            "Disabled",
+            "Enabled",
+            "Invalid"
+          ],
+          "metadata": {
+            "description": "Required. The soft delete state."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for soft delete settings."
       }
     },
     "_1.privateEndpointCustomDnsConfigType": {
@@ -181,6 +678,130 @@
       "metadata": {
         "__bicep_imported_from!": {
           "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    },
+    "_2.mappingType": {
+      "type": "object",
+      "properties": {
+        "targetProtectionContainerResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the target Replication container. Must be specified if targetContainerName is not. If specified, targetContainerFabricName and targetContainerName will be ignored."
+          }
+        },
+        "targetContainerFabricName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Name of the fabric containing the target container. If targetProtectionContainerResourceId is specified, this parameter will be ignored."
+          }
+        },
+        "targetContainerName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Name of the target container. Must be specified if targetProtectionContainerResourceId is not. If targetProtectionContainerResourceId is specified, this parameter will be ignored."
+          }
+        },
+        "policyResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the replication policy. If defined, policyName will be ignored."
+          }
+        },
+        "policyName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Name of the replication policy. Will be ignored if policyResourceId is also specified."
+          }
+        },
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the replication container mapping. If not provided, it will be automatically generated as `<source_container_name>-<target_container_name>`."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for protection container mappings.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "replication-fabric/replication-protection-container/main.bicep"
+        }
+      }
+    },
+    "containerType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the replication container."
+          }
+        },
+        "mappings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/_2.mappingType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Replication containers mappings to create."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for a replication protection container.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "replication-fabric/main.bicep"
+        }
+      }
+    },
+    "customerManagedKeyWithAutoRotateType": {
+      "type": "object",
+      "properties": {
+        "keyVaultResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of a key vault to reference a customer managed key for encryption from."
+          }
+        },
+        "keyName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the customer managed key to use for encryption."
+          }
+        },
+        "keyVersion": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationEnabled' setting."
+          }
+        },
+        "autoRotationEnabled": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enable or disable auto-rotating to the latest key version. Default is `true`. If set to `false`, the latest key version at the time of the deployment is used."
+          }
+        },
+        "userAssignedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a customer-managed key. To be used if the resource type supports auto-rotation of the customer-managed key.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
         }
       }
     },
@@ -590,8 +1211,8 @@
       }
     },
     "backupStorageConfig": {
-      "type": "object",
-      "defaultValue": {},
+      "$ref": "#/definitions/backupStorageConfigType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The storage configuration for the Azure Recovery Service Vault."
       }
@@ -612,42 +1233,54 @@
     },
     "backupPolicies": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "$ref": "#/definitions/backupPolicyType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. List of all backup policies."
       }
     },
     "backupConfig": {
-      "type": "object",
-      "defaultValue": {},
+      "$ref": "#/definitions/backupConfigType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The backup configuration."
       }
     },
-    "protectionContainers": {
+    "protectedItems": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "$ref": "#/definitions/protectedItemType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. List of all protection containers."
       }
     },
     "replicationFabrics": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "$ref": "#/definitions/replicationFabricType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. List of all replication fabrics."
       }
     },
     "replicationPolicies": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "$ref": "#/definitions/replicationPolicyType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. List of all replication policies."
       }
     },
     "replicationAlertSettings": {
-      "type": "object",
-      "defaultValue": {},
+      "$ref": "#/definitions/replicationAlertSettingsType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Replication alert settings."
       }
@@ -704,17 +1337,29 @@
       }
     },
     "monitoringSettings": {
-      "type": "object",
-      "defaultValue": {},
+      "$ref": "#/definitions/monitoringSettingsType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Monitoring Settings of the vault."
       }
     },
-    "securitySettings": {
-      "type": "object",
-      "defaultValue": {},
+    "softDeleteSettings": {
+      "$ref": "#/definitions/softDeleteSettingType",
+      "nullable": true,
       "metadata": {
-        "description": "Optional. Security Settings of the vault."
+        "description": "Optional. The soft delete related settings."
+      }
+    },
+    "immutabilitySettingState": {
+      "type": "string",
+      "nullable": true,
+      "allowedValues": [
+        "Disabled",
+        "Locked",
+        "Unlocked"
+      ],
+      "metadata": {
+        "description": "Optional. The immmutability setting state of the recovery services vault resource."
       }
     },
     "publicNetworkAccess": {
@@ -727,6 +1372,27 @@
       "metadata": {
         "description": "Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled."
       }
+    },
+    "redundancySettings": {
+      "$ref": "#/definitions/redundancySettingsType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The redundancy settings of the vault."
+      }
+    },
+    "restoreSettings": {
+      "$ref": "#/definitions/restoreSettingsType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The restore settings of the vault."
+      }
+    },
+    "customerManagedKey": {
+      "$ref": "#/definitions/customerManagedKeyWithAutoRotateType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The customer managed key definition."
+      }
     }
   },
   "variables": {
@@ -737,6 +1403,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
+    "enableReferencedModulesTelemetry": false,
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "builtInRoleNames": {
@@ -754,6 +1421,15 @@
     }
   },
   "resources": {
+    "cMKKeyVault::cMKKey": {
+      "condition": "[and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKey'), 'keyName')))))]",
+      "existing": true,
+      "type": "Microsoft.KeyVault/vaults/keys",
+      "apiVersion": "2023-02-01",
+      "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
+      "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'))]"
+    },
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
@@ -774,9 +1450,27 @@
         }
       }
     },
+    "cMKKeyVault": {
+      "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))]",
+      "existing": true,
+      "type": "Microsoft.KeyVault/vaults",
+      "apiVersion": "2023-02-01",
+      "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
+      "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
+    },
+    "cMKUserAssignedIdentity": {
+      "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId')))]",
+      "existing": true,
+      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+      "apiVersion": "2023-01-31",
+      "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]]",
+      "name": "[last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/'))]"
+    },
     "rsv": {
       "type": "Microsoft.RecoveryServices/vaults",
-      "apiVersion": "2023-01-01",
+      "apiVersion": "2024-04-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -786,10 +1480,19 @@
         "tier": "Standard"
       },
       "properties": {
-        "monitoringSettings": "[if(not(empty(parameters('monitoringSettings'))), parameters('monitoringSettings'), null())]",
-        "securitySettings": "[if(not(empty(parameters('securitySettings'))), parameters('securitySettings'), null())]",
-        "publicNetworkAccess": "[parameters('publicNetworkAccess')]"
-      }
+        "monitoringSettings": "[if(not(empty(parameters('monitoringSettings'))), createObject('azureMonitorAlertSettings', if(not(empty(tryGet(parameters('monitoringSettings'), 'azureMonitorAlertSettings'))), createObject('alertsForAllFailoverIssues', coalesce(tryGet(tryGet(parameters('monitoringSettings'), 'azureMonitorAlertSettings'), 'alertsForAllFailoverIssues'), 'Enabled'), 'alertsForAllJobFailures', coalesce(tryGet(tryGet(parameters('monitoringSettings'), 'azureMonitorAlertSettings'), 'alertsForAllJobFailures'), 'Enabled'), 'alertsForAllReplicationIssues', coalesce(tryGet(tryGet(parameters('monitoringSettings'), 'azureMonitorAlertSettings'), 'alertsForAllReplicationIssues'), 'Enabled')), null()), 'classicAlertSettings', if(not(empty(tryGet(parameters('monitoringSettings'), 'classicAlertSettings'))), createObject('alertsForCriticalOperations', coalesce(tryGet(tryGet(parameters('monitoringSettings'), 'classicAlertSettings'), 'alertsForCriticalOperations'), 'Enabled'), 'emailNotificationsForSiteRecovery', coalesce(tryGet(tryGet(parameters('monitoringSettings'), 'classicAlertSettings'), 'emailNotificationsForSiteRecovery'), 'Enabled')), null())), null())]",
+        "securitySettings": {
+          "immutabilitySettings": "[if(not(empty(parameters('immutabilitySettingState'))), createObject('state', parameters('immutabilitySettingState')), null())]",
+          "softDeleteSettings": "[parameters('softDeleteSettings')]"
+        },
+        "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
+        "redundancySettings": "[parameters('redundancySettings')]",
+        "restoreSettings": "[parameters('restoreSettings')]",
+        "encryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('infrastructureEncryption', 'Enabled', 'kekIdentity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), createObject('userAssignedIdentity', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2], split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')))), createObject('useSystemAssignedIdentity', empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId')))), 'keyVaultProperties', createObject('keyUri', if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, tryGet(parameters('customerManagedKey'), 'keyVersion')), if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), reference('cMKKeyVault::cMKKey').keyUri, reference('cMKKeyVault::cMKKey').keyUriWithVersion)))), null())]"
+      },
+      "dependsOn": [
+        "cMKKeyVault::cMKKey"
+      ]
     },
     "rsv_lock": {
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
@@ -871,7 +1574,7 @@
     "rsv_replicationFabrics": {
       "copy": {
         "name": "rsv_replicationFabrics",
-        "count": "[length(parameters('replicationFabrics'))]"
+        "count": "[length(coalesce(parameters('replicationFabrics'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -885,23 +1588,108 @@
           "recoveryVaultName": {
             "value": "[parameters('name')]"
           },
-          "name": "[if(contains(parameters('replicationFabrics')[copyIndex()], 'name'), createObject('value', parameters('replicationFabrics')[copyIndex()].name), createObject('value', parameters('replicationFabrics')[copyIndex()].location))]",
-          "location": {
-            "value": "[parameters('replicationFabrics')[copyIndex()].location]"
+          "name": {
+            "value": "[tryGet(coalesce(parameters('replicationFabrics'), createArray())[copyIndex()], 'name')]"
           },
-          "replicationContainers": "[if(contains(parameters('replicationFabrics')[copyIndex()], 'replicationContainers'), createObject('value', parameters('replicationFabrics')[copyIndex()].replicationContainers), createObject('value', createArray()))]"
+          "location": {
+            "value": "[coalesce(parameters('replicationFabrics'), createArray())[copyIndex()].location]"
+          },
+          "replicationContainers": {
+            "value": "[tryGet(coalesce(parameters('replicationFabrics'), createArray())[copyIndex()], 'replicationContainers')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.33.13.18514",
-              "templateHash": "16265039904717699288"
+              "templateHash": "8049192542960910465"
             },
             "name": "Recovery Services Vault Replication Fabrics",
             "description": "This module deploys a Replication Fabric for Azure to Azure disaster recovery scenario of Azure Site Recovery.\n\n> Note: this module currently support only the `instanceType: 'Azure'` scenario."
+          },
+          "definitions": {
+            "containerType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the replication container."
+                  }
+                },
+                "mappings": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/mappingType"
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Replication containers mappings to create."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for a replication protection container."
+              }
+            },
+            "mappingType": {
+              "type": "object",
+              "properties": {
+                "targetProtectionContainerResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Resource ID of the target Replication container. Must be specified if targetContainerName is not. If specified, targetContainerFabricName and targetContainerName will be ignored."
+                  }
+                },
+                "targetContainerFabricName": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Name of the fabric containing the target container. If targetProtectionContainerResourceId is specified, this parameter will be ignored."
+                  }
+                },
+                "targetContainerName": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Name of the target container. Must be specified if targetProtectionContainerResourceId is not. If targetProtectionContainerResourceId is specified, this parameter will be ignored."
+                  }
+                },
+                "policyResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Resource ID of the replication policy. If defined, policyName will be ignored."
+                  }
+                },
+                "policyName": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Name of the replication policy. Will be ignored if policyResourceId is also specified."
+                  }
+                },
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name of the replication container mapping. If not provided, it will be automatically generated as `<source_container_name>-<target_container_name>`."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "The type for protection container mappings.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "replication-protection-container/main.bicep"
+                }
+              }
+            }
           },
           "parameters": {
             "recoveryVaultName": {
@@ -926,14 +1714,23 @@
             },
             "replicationContainers": {
               "type": "array",
-              "defaultValue": [],
+              "items": {
+                "$ref": "#/definitions/containerType"
+              },
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Replication containers to create."
               }
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "recoveryServicesVault": {
+              "existing": true,
+              "type": "Microsoft.RecoveryServices/vaults",
+              "apiVersion": "2024-10-01",
+              "name": "[parameters('recoveryVaultName')]"
+            },
+            "replicationFabric": {
               "type": "Microsoft.RecoveryServices/vaults/replicationFabrics",
               "apiVersion": "2022-10-01",
               "name": "[format('{0}/{1}', parameters('recoveryVaultName'), parameters('name'))]",
@@ -944,10 +1741,10 @@
                 }
               }
             },
-            {
+            "fabric_replicationContainers": {
               "copy": {
                 "name": "fabric_replicationContainers",
-                "count": "[length(parameters('replicationContainers'))]"
+                "count": "[length(coalesce(parameters('replicationContainers'), createArray()))]"
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
@@ -959,7 +1756,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "name": {
-                    "value": "[parameters('replicationContainers')[copyIndex()].name]"
+                    "value": "[coalesce(parameters('replicationContainers'), createArray())[copyIndex()].name]"
                   },
                   "recoveryVaultName": {
                     "value": "[parameters('recoveryVaultName')]"
@@ -967,21 +1764,75 @@
                   "replicationFabricName": {
                     "value": "[parameters('name')]"
                   },
-                  "replicationContainerMappings": {
-                    "value": "[tryGet(parameters('replicationContainers')[copyIndex()], 'replicationContainerMappings')]"
+                  "mappings": {
+                    "value": "[tryGet(coalesce(parameters('replicationContainers'), createArray())[copyIndex()], 'mappings')]"
                   }
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "languageVersion": "2.0",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
                       "version": "0.33.13.18514",
-                      "templateHash": "3485070905266123603"
+                      "templateHash": "852813454503469785"
                     },
                     "name": "Recovery Services Vault Replication Fabric Replication Protection Containers",
                     "description": "This module deploys a Recovery Services Vault Replication Protection Container.\n\n> **Note**: this version of the module only supports the `instanceType: 'A2A'` scenario."
+                  },
+                  "definitions": {
+                    "mappingType": {
+                      "type": "object",
+                      "properties": {
+                        "targetProtectionContainerResourceId": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Resource ID of the target Replication container. Must be specified if targetContainerName is not. If specified, targetContainerFabricName and targetContainerName will be ignored."
+                          }
+                        },
+                        "targetContainerFabricName": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Name of the fabric containing the target container. If targetProtectionContainerResourceId is specified, this parameter will be ignored."
+                          }
+                        },
+                        "targetContainerName": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Name of the target container. Must be specified if targetProtectionContainerResourceId is not. If targetProtectionContainerResourceId is specified, this parameter will be ignored."
+                          }
+                        },
+                        "policyResourceId": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Resource ID of the replication policy. If defined, policyName will be ignored."
+                          }
+                        },
+                        "policyName": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Name of the replication policy. Will be ignored if policyResourceId is also specified."
+                          }
+                        },
+                        "name": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The name of the replication container mapping. If not provided, it will be automatically generated as `<source_container_name>-<target_container_name>`."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "__bicep_export!": true,
+                        "description": "The type for protection container mappings."
+                      }
+                    }
                   },
                   "parameters": {
                     "recoveryVaultName": {
@@ -1002,16 +1853,31 @@
                         "description": "Required. The name of the replication container."
                       }
                     },
-                    "replicationContainerMappings": {
+                    "mappings": {
                       "type": "array",
-                      "defaultValue": [],
+                      "items": {
+                        "$ref": "#/definitions/mappingType"
+                      },
+                      "nullable": true,
                       "metadata": {
                         "description": "Optional. Replication containers mappings to create."
                       }
                     }
                   },
-                  "resources": [
-                    {
+                  "resources": {
+                    "recoveryServicesVault::replicationFabric": {
+                      "existing": true,
+                      "type": "Microsoft.RecoveryServices/vaults/replicationFabrics",
+                      "apiVersion": "2022-10-01",
+                      "name": "[format('{0}/{1}', parameters('recoveryVaultName'), parameters('replicationFabricName'))]"
+                    },
+                    "recoveryServicesVault": {
+                      "existing": true,
+                      "type": "Microsoft.RecoveryServices/vaults",
+                      "apiVersion": "2024-10-01",
+                      "name": "[parameters('recoveryVaultName')]"
+                    },
+                    "replicationContainer": {
                       "type": "Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers",
                       "apiVersion": "2022-10-01",
                       "name": "[format('{0}/{1}/{2}', parameters('recoveryVaultName'), parameters('replicationFabricName'), parameters('name'))]",
@@ -1023,10 +1889,10 @@
                         ]
                       }
                     },
-                    {
+                    "fabric_container_containerMappings": {
                       "copy": {
                         "name": "fabric_container_containerMappings",
-                        "count": "[length(parameters('replicationContainerMappings'))]"
+                        "count": "[length(coalesce(parameters('mappings'), createArray()))]"
                       },
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
@@ -1038,13 +1904,13 @@
                         "mode": "Incremental",
                         "parameters": {
                           "name": {
-                            "value": "[tryGet(parameters('replicationContainerMappings')[copyIndex()], 'name')]"
+                            "value": "[tryGet(coalesce(parameters('mappings'), createArray())[copyIndex()], 'name')]"
                           },
-                          "policyId": {
-                            "value": "[tryGet(parameters('replicationContainerMappings')[copyIndex()], 'policyId')]"
+                          "policyResourceId": {
+                            "value": "[tryGet(coalesce(parameters('mappings'), createArray())[copyIndex()], 'policyResourceId')]"
                           },
                           "policyName": {
-                            "value": "[tryGet(parameters('replicationContainerMappings')[copyIndex()], 'policyName')]"
+                            "value": "[tryGet(coalesce(parameters('mappings'), createArray())[copyIndex()], 'policyName')]"
                           },
                           "recoveryVaultName": {
                             "value": "[parameters('recoveryVaultName')]"
@@ -1055,24 +1921,25 @@
                           "sourceProtectionContainerName": {
                             "value": "[parameters('name')]"
                           },
-                          "targetProtectionContainerId": {
-                            "value": "[tryGet(parameters('replicationContainerMappings')[copyIndex()], 'targetProtectionContainerId')]"
+                          "targetProtectionContainerResourceId": {
+                            "value": "[tryGet(coalesce(parameters('mappings'), createArray())[copyIndex()], 'targetProtectionContainerResourceId')]"
                           },
                           "targetContainerFabricName": {
-                            "value": "[tryGet(parameters('replicationContainerMappings')[copyIndex()], 'targetContainerFabricName')]"
+                            "value": "[tryGet(coalesce(parameters('mappings'), createArray())[copyIndex()], 'targetContainerFabricName')]"
                           },
                           "targetContainerName": {
-                            "value": "[tryGet(parameters('replicationContainerMappings')[copyIndex()], 'targetContainerName')]"
+                            "value": "[tryGet(coalesce(parameters('mappings'), createArray())[copyIndex()], 'targetContainerName')]"
                           }
                         },
                         "template": {
                           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "languageVersion": "2.0",
                           "contentVersion": "1.0.0.0",
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
                               "version": "0.33.13.18514",
-                              "templateHash": "6423347652173335680"
+                              "templateHash": "17160081039503517469"
                             },
                             "name": "Recovery Services Vault Replication Fabric Replication Protection Container Replication Protection Container Mappings",
                             "description": "This module deploys a Recovery Services Vault (RSV) Replication Protection Container Mapping.\n\n> **Note**: this version of the module only supports the `instanceType: 'A2A'` scenario."
@@ -1096,9 +1963,9 @@
                                 "description": "Conditional. The name of the parent source Replication container. Required if the template is used in a standalone deployment."
                               }
                             },
-                            "targetProtectionContainerId": {
+                            "targetProtectionContainerResourceId": {
                               "type": "string",
-                              "defaultValue": "",
+                              "nullable": true,
                               "metadata": {
                                 "description": "Optional. Resource ID of the target Replication container. Must be specified if targetContainerName is not. If specified, targetContainerFabricName and targetContainerName will be ignored."
                               }
@@ -1107,17 +1974,17 @@
                               "type": "string",
                               "defaultValue": "[parameters('replicationFabricName')]",
                               "metadata": {
-                                "description": "Optional. Name of the fabric containing the target container. If targetProtectionContainerId is specified, this parameter will be ignored."
+                                "description": "Optional. Name of the fabric containing the target container. If targetProtectionContainerResourceId is specified, this parameter will be ignored."
                               }
                             },
                             "targetContainerName": {
                               "type": "string",
                               "defaultValue": "",
                               "metadata": {
-                                "description": "Optional. Name of the target container. Must be specified if targetProtectionContainerId is not. If targetProtectionContainerId is specified, this parameter will be ignored."
+                                "description": "Optional. Name of the target container. Must be specified if targetProtectionContainerResourceId is not. If targetProtectionContainerResourceId is specified, this parameter will be ignored."
                               }
                             },
-                            "policyId": {
+                            "policyResourceId": {
                               "type": "string",
                               "defaultValue": "",
                               "metadata": {
@@ -1128,7 +1995,7 @@
                               "type": "string",
                               "defaultValue": "",
                               "metadata": {
-                                "description": "Optional. Name of the replication policy. Will be ignored if policyId is also specified."
+                                "description": "Optional. Name of the replication policy. Will be ignored if policyResourceId is also specified."
                               }
                             },
                             "name": {
@@ -1140,38 +2007,56 @@
                             }
                           },
                           "variables": {
-                            "policyResourceId": "[if(not(equals(parameters('policyId'), '')), parameters('policyId'), subscriptionResourceId('Microsoft.RecoveryServices/vaults/replicationPolicies', parameters('recoveryVaultName'), parameters('policyName')))]",
-                            "targetProtectionContainerResourceId": "[if(not(equals(parameters('targetProtectionContainerId'), '')), parameters('targetProtectionContainerId'), subscriptionResourceId('Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers', parameters('recoveryVaultName'), parameters('targetContainerFabricName'), parameters('targetContainerName')))]",
-                            "mappingName": "[if(not(empty(parameters('name'))), parameters('name'), format('{0}-{1}', parameters('sourceProtectionContainerName'), split(variables('targetProtectionContainerResourceId'), '/')[10]))]"
+                            "calcPolicyResourceId": "[if(not(empty(parameters('policyResourceId'))), parameters('policyResourceId'), subscriptionResourceId('Microsoft.RecoveryServices/vaults/replicationPolicies', parameters('recoveryVaultName'), parameters('policyName')))]",
+                            "calcTargetProtectionContainerResourceId": "[if(not(empty(parameters('targetProtectionContainerResourceId'))), parameters('targetProtectionContainerResourceId'), subscriptionResourceId('Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers', parameters('recoveryVaultName'), parameters('targetContainerFabricName'), parameters('targetContainerName')))]",
+                            "mappingName": "[if(not(empty(parameters('name'))), parameters('name'), format('{0}-{1}', parameters('sourceProtectionContainerName'), split(variables('calcTargetProtectionContainerResourceId'), '/')[10]))]"
                           },
-                          "resources": [
-                            {
+                          "resources": {
+                            "recoveryServicesVault::replicationFabric::replicationContainer": {
+                              "existing": true,
+                              "type": "Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers",
+                              "apiVersion": "2022-10-01",
+                              "name": "[format('{0}/{1}/{2}', parameters('recoveryVaultName'), parameters('replicationFabricName'), parameters('sourceProtectionContainerName'))]"
+                            },
+                            "recoveryServicesVault::replicationFabric": {
+                              "existing": true,
+                              "type": "Microsoft.RecoveryServices/vaults/replicationFabrics",
+                              "apiVersion": "2022-10-01",
+                              "name": "[format('{0}/{1}', parameters('recoveryVaultName'), parameters('replicationFabricName'))]"
+                            },
+                            "recoveryServicesVault": {
+                              "existing": true,
+                              "type": "Microsoft.RecoveryServices/vaults",
+                              "apiVersion": "2024-10-01",
+                              "name": "[parameters('recoveryVaultName')]"
+                            },
+                            "replicationContainer": {
                               "type": "Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers/replicationProtectionContainerMappings",
                               "apiVersion": "2022-10-01",
                               "name": "[format('{0}/{1}/{2}/{3}', parameters('recoveryVaultName'), parameters('replicationFabricName'), parameters('sourceProtectionContainerName'), variables('mappingName'))]",
                               "properties": {
-                                "targetProtectionContainerId": "[variables('targetProtectionContainerResourceId')]",
-                                "policyId": "[variables('policyResourceId')]",
+                                "targetProtectionContainerId": "[variables('calcTargetProtectionContainerResourceId')]",
+                                "policyId": "[variables('calcPolicyResourceId')]",
                                 "providerSpecificInput": {
                                   "instanceType": "A2A"
                                 }
                               }
                             }
-                          ],
+                          },
                           "outputs": {
                             "name": {
                               "type": "string",
                               "metadata": {
                                 "description": "The name of the replication container."
                               },
-                              "value": "[format('{0}/{1}/{2}/{3}', parameters('recoveryVaultName'), parameters('replicationFabricName'), parameters('sourceProtectionContainerName'), variables('mappingName'))]"
+                              "value": "[variables('mappingName')]"
                             },
                             "resourceId": {
                               "type": "string",
                               "metadata": {
                                 "description": "The resource ID of the replication container."
                               },
-                              "value": "[resourceId('Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers/replicationProtectionContainerMappings', split(format('{0}/{1}/{2}/{3}', parameters('recoveryVaultName'), parameters('replicationFabricName'), parameters('sourceProtectionContainerName'), variables('mappingName')), '/')[0], split(format('{0}/{1}/{2}/{3}', parameters('recoveryVaultName'), parameters('replicationFabricName'), parameters('sourceProtectionContainerName'), variables('mappingName')), '/')[1], split(format('{0}/{1}/{2}/{3}', parameters('recoveryVaultName'), parameters('replicationFabricName'), parameters('sourceProtectionContainerName'), variables('mappingName')), '/')[2], split(format('{0}/{1}/{2}/{3}', parameters('recoveryVaultName'), parameters('replicationFabricName'), parameters('sourceProtectionContainerName'), variables('mappingName')), '/')[3])]"
+                              "value": "[resourceId('Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers/replicationProtectionContainerMappings', parameters('recoveryVaultName'), parameters('replicationFabricName'), parameters('sourceProtectionContainerName'), variables('mappingName'))]"
                             },
                             "resourceGroupName": {
                               "type": "string",
@@ -1184,24 +2069,24 @@
                         }
                       },
                       "dependsOn": [
-                        "[resourceId('Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers', split(format('{0}/{1}/{2}', parameters('recoveryVaultName'), parameters('replicationFabricName'), parameters('name')), '/')[0], split(format('{0}/{1}/{2}', parameters('recoveryVaultName'), parameters('replicationFabricName'), parameters('name')), '/')[1], split(format('{0}/{1}/{2}', parameters('recoveryVaultName'), parameters('replicationFabricName'), parameters('name')), '/')[2])]"
+                        "replicationContainer"
                       ]
                     }
-                  ],
+                  },
                   "outputs": {
                     "name": {
                       "type": "string",
                       "metadata": {
                         "description": "The name of the replication container."
                       },
-                      "value": "[format('{0}/{1}/{2}', parameters('recoveryVaultName'), parameters('replicationFabricName'), parameters('name'))]"
+                      "value": "[parameters('name')]"
                     },
                     "resourceId": {
                       "type": "string",
                       "metadata": {
                         "description": "The resource ID of the replication container."
                       },
-                      "value": "[resourceId('Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers', split(format('{0}/{1}/{2}', parameters('recoveryVaultName'), parameters('replicationFabricName'), parameters('name')), '/')[0], split(format('{0}/{1}/{2}', parameters('recoveryVaultName'), parameters('replicationFabricName'), parameters('name')), '/')[1], split(format('{0}/{1}/{2}', parameters('recoveryVaultName'), parameters('replicationFabricName'), parameters('name')), '/')[2])]"
+                      "value": "[resourceId('Microsoft.RecoveryServices/vaults/replicationFabrics/replicationProtectionContainers', parameters('recoveryVaultName'), parameters('replicationFabricName'), parameters('name'))]"
                     },
                     "resourceGroupName": {
                       "type": "string",
@@ -1214,24 +2099,24 @@
                 }
               },
               "dependsOn": [
-                "[resourceId('Microsoft.RecoveryServices/vaults/replicationFabrics', split(format('{0}/{1}', parameters('recoveryVaultName'), parameters('name')), '/')[0], split(format('{0}/{1}', parameters('recoveryVaultName'), parameters('name')), '/')[1])]"
+                "replicationFabric"
               ]
             }
-          ],
+          },
           "outputs": {
             "name": {
               "type": "string",
               "metadata": {
                 "description": "The name of the replication fabric."
               },
-              "value": "[format('{0}/{1}', parameters('recoveryVaultName'), parameters('name'))]"
+              "value": "[parameters('name')]"
             },
             "resourceId": {
               "type": "string",
               "metadata": {
                 "description": "The resource ID of the replication fabric."
               },
-              "value": "[resourceId('Microsoft.RecoveryServices/vaults/replicationFabrics', split(format('{0}/{1}', parameters('recoveryVaultName'), parameters('name')), '/')[0], split(format('{0}/{1}', parameters('recoveryVaultName'), parameters('name')), '/')[1])]"
+              "value": "[resourceId('Microsoft.RecoveryServices/vaults/replicationFabrics', parameters('recoveryVaultName'), parameters('name'))]"
             },
             "resourceGroupName": {
               "type": "string",
@@ -1251,7 +2136,7 @@
     "rsv_replicationPolicies": {
       "copy": {
         "name": "rsv_replicationPolicies",
-        "count": "[length(parameters('replicationPolicies'))]"
+        "count": "[length(coalesce(parameters('replicationPolicies'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -1263,15 +2148,23 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[parameters('replicationPolicies')[copyIndex()].name]"
+            "value": "[coalesce(parameters('replicationPolicies'), createArray())[copyIndex()].name]"
           },
           "recoveryVaultName": {
             "value": "[parameters('name')]"
           },
-          "appConsistentFrequencyInMinutes": "[if(contains(parameters('replicationPolicies')[copyIndex()], 'appConsistentFrequencyInMinutes'), createObject('value', parameters('replicationPolicies')[copyIndex()].appConsistentFrequencyInMinutes), createObject('value', 60))]",
-          "crashConsistentFrequencyInMinutes": "[if(contains(parameters('replicationPolicies')[copyIndex()], 'crashConsistentFrequencyInMinutes'), createObject('value', parameters('replicationPolicies')[copyIndex()].crashConsistentFrequencyInMinutes), createObject('value', 5))]",
-          "multiVmSyncStatus": "[if(contains(parameters('replicationPolicies')[copyIndex()], 'multiVmSyncStatus'), createObject('value', parameters('replicationPolicies')[copyIndex()].multiVmSyncStatus), createObject('value', 'Enable'))]",
-          "recoveryPointHistory": "[if(contains(parameters('replicationPolicies')[copyIndex()], 'recoveryPointHistory'), createObject('value', parameters('replicationPolicies')[copyIndex()].recoveryPointHistory), createObject('value', 1440))]"
+          "appConsistentFrequencyInMinutes": {
+            "value": "[tryGet(coalesce(parameters('replicationPolicies'), createArray())[copyIndex()], 'appConsistentFrequencyInMinutes')]"
+          },
+          "crashConsistentFrequencyInMinutes": {
+            "value": "[tryGet(coalesce(parameters('replicationPolicies'), createArray())[copyIndex()], 'crashConsistentFrequencyInMinutes')]"
+          },
+          "multiVmSyncStatus": {
+            "value": "[tryGet(coalesce(parameters('replicationPolicies'), createArray())[copyIndex()], 'multiVmSyncStatus')]"
+          },
+          "recoveryPointHistory": {
+            "value": "[tryGet(coalesce(parameters('replicationPolicies'), createArray())[copyIndex()], 'recoveryPointHistory')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -1391,10 +2284,10 @@
             "value": "[parameters('name')]"
           },
           "storageModelType": {
-            "value": "[parameters('backupStorageConfig').storageModelType]"
+            "value": "[tryGet(parameters('backupStorageConfig'), 'storageModelType')]"
           },
           "crossRegionRestoreFlag": {
-            "value": "[parameters('backupStorageConfig').crossRegionRestoreFlag]"
+            "value": "[tryGet(parameters('backupStorageConfig'), 'crossRegionRestoreFlag')]"
           }
         },
         "template": {
@@ -1484,14 +2377,14 @@
         "rsv"
       ]
     },
-    "rsv_backupFabric_protectionContainers": {
+    "rsv_backupFabric_protectionContainer_protectedItems": {
       "copy": {
-        "name": "rsv_backupFabric_protectionContainers",
-        "count": "[length(parameters('protectionContainers'))]"
+        "name": "rsv_backupFabric_protectionContainer_protectedItems",
+        "count": "[length(coalesce(parameters('protectedItems'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-RSV-ProtectionContainers-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "name": "[format('{0}-ProtectedItem-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -1502,49 +2395,53 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[parameters('protectionContainers')[copyIndex()].name]"
+            "value": "[coalesce(parameters('protectedItems'), createArray())[copyIndex()].name]"
           },
-          "sourceResourceId": {
-            "value": "[tryGet(parameters('protectionContainers')[copyIndex()], 'sourceResourceId')]"
-          },
-          "friendlyName": {
-            "value": "[tryGet(parameters('protectionContainers')[copyIndex()], 'friendlyName')]"
-          },
-          "backupManagementType": {
-            "value": "[tryGet(parameters('protectionContainers')[copyIndex()], 'backupManagementType')]"
-          },
-          "containerType": {
-            "value": "[tryGet(parameters('protectionContainers')[copyIndex()], 'containerType')]"
-          },
-          "protectedItems": "[if(contains(parameters('protectionContainers')[copyIndex()], 'protectedItems'), createObject('value', parameters('protectionContainers')[copyIndex()].protectedItems), createObject('value', createArray()))]",
           "location": {
             "value": "[parameters('location')]"
+          },
+          "policyName": {
+            "value": "[coalesce(parameters('protectedItems'), createArray())[copyIndex()].policyName]"
+          },
+          "protectedItemType": {
+            "value": "[coalesce(parameters('protectedItems'), createArray())[copyIndex()].protectedItemType]"
+          },
+          "protectionContainerName": {
+            "value": "[coalesce(parameters('protectedItems'), createArray())[copyIndex()].protectionContainerName]"
+          },
+          "sourceResourceId": {
+            "value": "[coalesce(parameters('protectedItems'), createArray())[copyIndex()].sourceResourceId]"
           }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.33.13.18514",
-              "templateHash": "11151484631677356109"
+              "templateHash": "14694277488209426813"
             },
-            "name": "Recovery Services Vault Protection Container",
-            "description": "This module deploys a Recovery Services Vault Protection Container."
+            "name": "Recovery Service Vaults Protection Container Protected Item",
+            "description": "This module deploys a Recovery Services Vault Protection Container Protected Item."
           },
           "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Name of the resource."
+              }
+            },
+            "protectionContainerName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. Name of the Azure Recovery Service Vault Protection Container. Required if the template is used in a standalone deployment."
+              }
+            },
             "recoveryVaultName": {
               "type": "string",
               "metadata": {
                 "description": "Conditional. The name of the parent Azure Recovery Service Vault. Required if the template is used in a standalone deployment."
-              }
-            },
-            "name": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. Name of the Azure Recovery Service Vault Protection Container."
               }
             },
             "location": {
@@ -1554,257 +2451,84 @@
                 "description": "Optional. Location for all resources."
               }
             },
-            "backupManagementType": {
+            "protectedItemType": {
               "type": "string",
-              "nullable": true,
               "allowedValues": [
-                "AzureBackupServer",
-                "AzureIaasVM",
-                "AzureSql",
-                "AzureStorage",
-                "AzureWorkload",
-                "DPM",
-                "DefaultBackup",
-                "Invalid",
-                "MAB"
+                "AzureFileShareProtectedItem",
+                "AzureVmWorkloadSAPAseDatabase",
+                "AzureVmWorkloadSAPHanaDatabase",
+                "AzureVmWorkloadSQLDatabase",
+                "DPMProtectedItem",
+                "GenericProtectedItem",
+                "MabFileFolderProtectedItem",
+                "Microsoft.ClassicCompute/virtualMachines",
+                "Microsoft.Compute/virtualMachines",
+                "Microsoft.Sql/servers/databases"
               ],
               "metadata": {
-                "description": "Optional. Backup management type to execute the current Protection Container job."
+                "description": "Required. The backup item type."
+              }
+            },
+            "policyName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The backup policy with which this item is backed up."
               }
             },
             "sourceResourceId": {
               "type": "string",
-              "nullable": true,
               "metadata": {
-                "description": "Optional. Resource ID of the target resource for the Protection Container."
-              }
-            },
-            "friendlyName": {
-              "type": "string",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. Friendly name of the Protection Container."
-              }
-            },
-            "protectedItems": {
-              "type": "array",
-              "defaultValue": [],
-              "metadata": {
-                "description": "Optional. Protected items to register in the container."
-              }
-            },
-            "containerType": {
-              "type": "string",
-              "nullable": true,
-              "allowedValues": [
-                "AzureBackupServerContainer",
-                "AzureSqlContainer",
-                "GenericContainer",
-                "Microsoft.ClassicCompute/virtualMachines",
-                "Microsoft.Compute/virtualMachines",
-                "SQLAGWorkLoadContainer",
-                "StorageContainer",
-                "VMAppContainer",
-                "Windows"
-              ],
-              "metadata": {
-                "description": "Optional. Type of the container."
+                "description": "Required. Resource ID of the resource to back up."
               }
             }
           },
-          "resources": {
-            "protectionContainer": {
-              "type": "Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers",
-              "apiVersion": "2023-01-01",
-              "name": "[format('{0}/Azure/{1}', parameters('recoveryVaultName'), parameters('name'))]",
+          "resources": [
+            {
+              "type": "Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems",
+              "apiVersion": "2024-10-01",
+              "name": "[format('{0}/Azure/{1}/{2}', parameters('recoveryVaultName'), parameters('protectionContainerName'), parameters('name'))]",
+              "location": "[parameters('location')]",
               "properties": {
-                "sourceResourceId": "[parameters('sourceResourceId')]",
-                "friendlyName": "[parameters('friendlyName')]",
-                "backupManagementType": "[parameters('backupManagementType')]",
-                "containerType": "[if(not(empty(parameters('containerType'))), parameters('containerType'), null())]"
+                "protectedItemType": "[parameters('protectedItemType')]",
+                "policyId": "[resourceId('Microsoft.RecoveryServices/vaults/backupPolicies', parameters('recoveryVaultName'), parameters('policyName'))]",
+                "sourceResourceId": "[parameters('sourceResourceId')]"
               }
-            },
-            "protectionContainer_protectedItems": {
-              "copy": {
-                "name": "protectionContainer_protectedItems",
-                "count": "[length(parameters('protectedItems'))]"
-              },
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
-              "name": "[format('{0}-ProtectedItem-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
-              "properties": {
-                "expressionEvaluationOptions": {
-                  "scope": "inner"
-                },
-                "mode": "Incremental",
-                "parameters": {
-                  "policyId": {
-                    "value": "[parameters('protectedItems')[copyIndex()].policyId]"
-                  },
-                  "name": {
-                    "value": "[parameters('protectedItems')[copyIndex()].name]"
-                  },
-                  "protectedItemType": {
-                    "value": "[parameters('protectedItems')[copyIndex()].protectedItemType]"
-                  },
-                  "protectionContainerName": {
-                    "value": "[format('{0}/Azure/{1}', parameters('recoveryVaultName'), parameters('name'))]"
-                  },
-                  "recoveryVaultName": {
-                    "value": "[parameters('recoveryVaultName')]"
-                  },
-                  "sourceResourceId": {
-                    "value": "[parameters('protectedItems')[copyIndex()].sourceResourceId]"
-                  },
-                  "location": {
-                    "value": "[parameters('location')]"
-                  }
-                },
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "metadata": {
-                    "_generator": {
-                      "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "16309659094506585930"
-                    },
-                    "name": "Recovery Service Vaults Protection Container Protected Item",
-                    "description": "This module deploys a Recovery Services Vault Protection Container Protected Item."
-                  },
-                  "parameters": {
-                    "name": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. Name of the resource."
-                      }
-                    },
-                    "protectionContainerName": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Conditional. Name of the Azure Recovery Service Vault Protection Container. Required if the template is used in a standalone deployment."
-                      }
-                    },
-                    "recoveryVaultName": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Conditional. The name of the parent Azure Recovery Service Vault. Required if the template is used in a standalone deployment."
-                      }
-                    },
-                    "location": {
-                      "type": "string",
-                      "defaultValue": "[resourceGroup().location]",
-                      "metadata": {
-                        "description": "Optional. Location for all resources."
-                      }
-                    },
-                    "protectedItemType": {
-                      "type": "string",
-                      "allowedValues": [
-                        "AzureFileShareProtectedItem",
-                        "AzureVmWorkloadSAPAseDatabase",
-                        "AzureVmWorkloadSAPHanaDatabase",
-                        "AzureVmWorkloadSQLDatabase",
-                        "DPMProtectedItem",
-                        "GenericProtectedItem",
-                        "MabFileFolderProtectedItem",
-                        "Microsoft.ClassicCompute/virtualMachines",
-                        "Microsoft.Compute/virtualMachines",
-                        "Microsoft.Sql/servers/databases"
-                      ],
-                      "metadata": {
-                        "description": "Required. The backup item type."
-                      }
-                    },
-                    "policyId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. ID of the backup policy with which this item is backed up."
-                      }
-                    },
-                    "sourceResourceId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. Resource ID of the resource to back up."
-                      }
-                    }
-                  },
-                  "resources": [
-                    {
-                      "type": "Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems",
-                      "apiVersion": "2023-01-01",
-                      "name": "[format('{0}/Azure/{1}/{2}', parameters('recoveryVaultName'), parameters('protectionContainerName'), parameters('name'))]",
-                      "location": "[parameters('location')]",
-                      "properties": {
-                        "protectedItemType": "[parameters('protectedItemType')]",
-                        "policyId": "[parameters('policyId')]",
-                        "sourceResourceId": "[parameters('sourceResourceId')]"
-                      }
-                    }
-                  ],
-                  "outputs": {
-                    "resourceGroupName": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "The name of the Resource Group the protected item was created in."
-                      },
-                      "value": "[resourceGroup().name]"
-                    },
-                    "resourceId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "The resource ID of the protected item."
-                      },
-                      "value": "[resourceId('Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems', split(format('{0}/Azure/{1}/{2}', parameters('recoveryVaultName'), parameters('protectionContainerName'), parameters('name')), '/')[0], split(format('{0}/Azure/{1}/{2}', parameters('recoveryVaultName'), parameters('protectionContainerName'), parameters('name')), '/')[1], split(format('{0}/Azure/{1}/{2}', parameters('recoveryVaultName'), parameters('protectionContainerName'), parameters('name')), '/')[2], split(format('{0}/Azure/{1}/{2}', parameters('recoveryVaultName'), parameters('protectionContainerName'), parameters('name')), '/')[3])]"
-                    },
-                    "name": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "The Name of the protected item."
-                      },
-                      "value": "[format('{0}/Azure/{1}/{2}', parameters('recoveryVaultName'), parameters('protectionContainerName'), parameters('name'))]"
-                    }
-                  }
-                }
-              },
-              "dependsOn": [
-                "protectionContainer"
-              ]
             }
-          },
+          ],
           "outputs": {
             "resourceGroupName": {
               "type": "string",
               "metadata": {
-                "description": "The name of the Resource Group the Protection Container was created in."
+                "description": "The name of the Resource Group the protected item was created in."
               },
               "value": "[resourceGroup().name]"
             },
             "resourceId": {
               "type": "string",
               "metadata": {
-                "description": "The resource ID of the Protection Container."
+                "description": "The resource ID of the protected item."
               },
-              "value": "[resourceId('Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers', split(format('{0}/Azure/{1}', parameters('recoveryVaultName'), parameters('name')), '/')[0], split(format('{0}/Azure/{1}', parameters('recoveryVaultName'), parameters('name')), '/')[1], split(format('{0}/Azure/{1}', parameters('recoveryVaultName'), parameters('name')), '/')[2])]"
+              "value": "[resourceId('Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems', split(format('{0}/Azure/{1}/{2}', parameters('recoveryVaultName'), parameters('protectionContainerName'), parameters('name')), '/')[0], split(format('{0}/Azure/{1}/{2}', parameters('recoveryVaultName'), parameters('protectionContainerName'), parameters('name')), '/')[1], split(format('{0}/Azure/{1}/{2}', parameters('recoveryVaultName'), parameters('protectionContainerName'), parameters('name')), '/')[2], split(format('{0}/Azure/{1}/{2}', parameters('recoveryVaultName'), parameters('protectionContainerName'), parameters('name')), '/')[3])]"
             },
             "name": {
               "type": "string",
               "metadata": {
-                "description": "The Name of the Protection Container."
+                "description": "The Name of the protected item."
               },
-              "value": "[format('{0}/Azure/{1}', parameters('recoveryVaultName'), parameters('name'))]"
+              "value": "[format('{0}/Azure/{1}/{2}', parameters('recoveryVaultName'), parameters('protectionContainerName'), parameters('name'))]"
             }
           }
         }
       },
       "dependsOn": [
-        "rsv"
+        "rsv",
+        "rsv_backupPolicies"
       ]
     },
     "rsv_backupPolicies": {
       "copy": {
         "name": "rsv_backupPolicies",
-        "count": "[length(parameters('backupPolicies'))]"
+        "count": "[length(coalesce(parameters('backupPolicies'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -1819,10 +2543,10 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[parameters('backupPolicies')[copyIndex()].name]"
+            "value": "[coalesce(parameters('backupPolicies'), createArray())[copyIndex()].name]"
           },
           "properties": {
-            "value": "[parameters('backupPolicies')[copyIndex()].properties]"
+            "value": "[coalesce(parameters('backupPolicies'), createArray())[copyIndex()].properties]"
           }
         },
         "template": {
@@ -1832,7 +2556,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.13.18514",
-              "templateHash": "992831565851796181"
+              "templateHash": "18409788320626401161"
             },
             "name": "Recovery Services Vault Backup Policies",
             "description": "This module deploys a Recovery Services Vault Backup Policy."
@@ -1860,7 +2584,7 @@
           "resources": [
             {
               "type": "Microsoft.RecoveryServices/vaults/backupPolicies",
-              "apiVersion": "2023-01-01",
+              "apiVersion": "2024-10-01",
               "name": "[format('{0}/{1}', parameters('recoveryVaultName'), parameters('name'))]",
               "properties": "[parameters('properties')]"
             }
@@ -1908,14 +2632,30 @@
           "recoveryVaultName": {
             "value": "[parameters('name')]"
           },
-          "name": "[if(contains(parameters('backupConfig'), 'name'), createObject('value', parameters('backupConfig').name), createObject('value', 'vaultconfig'))]",
-          "enhancedSecurityState": "[if(contains(parameters('backupConfig'), 'enhancedSecurityState'), createObject('value', parameters('backupConfig').enhancedSecurityState), createObject('value', 'Enabled'))]",
-          "resourceGuardOperationRequests": "[if(contains(parameters('backupConfig'), 'resourceGuardOperationRequests'), createObject('value', parameters('backupConfig').resourceGuardOperationRequests), createObject('value', createArray()))]",
-          "softDeleteFeatureState": "[if(contains(parameters('backupConfig'), 'softDeleteFeatureState'), createObject('value', parameters('backupConfig').softDeleteFeatureState), createObject('value', 'Enabled'))]",
-          "storageModelType": "[if(contains(parameters('backupConfig'), 'storageModelType'), createObject('value', parameters('backupConfig').storageModelType), createObject('value', 'GeoRedundant'))]",
-          "storageType": "[if(contains(parameters('backupConfig'), 'storageType'), createObject('value', parameters('backupConfig').storageType), createObject('value', 'GeoRedundant'))]",
-          "storageTypeState": "[if(contains(parameters('backupConfig'), 'storageTypeState'), createObject('value', parameters('backupConfig').storageTypeState), createObject('value', 'Locked'))]",
-          "isSoftDeleteFeatureStateEditable": "[if(contains(parameters('backupConfig'), 'isSoftDeleteFeatureStateEditable'), createObject('value', parameters('backupConfig').isSoftDeleteFeatureStateEditable), createObject('value', true()))]"
+          "name": {
+            "value": "[tryGet(parameters('backupConfig'), 'name')]"
+          },
+          "enhancedSecurityState": {
+            "value": "[tryGet(parameters('backupConfig'), 'enhancedSecurityState')]"
+          },
+          "resourceGuardOperationRequests": {
+            "value": "[tryGet(parameters('backupConfig'), 'resourceGuardOperationRequests')]"
+          },
+          "softDeleteFeatureState": {
+            "value": "[tryGet(parameters('backupConfig'), 'softDeleteFeatureState')]"
+          },
+          "storageModelType": {
+            "value": "[tryGet(parameters('backupConfig'), 'storageModelType')]"
+          },
+          "storageType": {
+            "value": "[tryGet(parameters('backupConfig'), 'storageType')]"
+          },
+          "storageTypeState": {
+            "value": "[tryGet(parameters('backupConfig'), 'storageTypeState')]"
+          },
+          "isSoftDeleteFeatureStateEditable": {
+            "value": "[tryGet(parameters('backupConfig'), 'isSoftDeleteFeatureStateEditable')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -2079,18 +2819,25 @@
           "recoveryVaultName": {
             "value": "[parameters('name')]"
           },
-          "customEmailAddresses": "[if(contains(parameters('replicationAlertSettings'), 'customEmailAddresses'), createObject('value', parameters('replicationAlertSettings').customEmailAddresses), createObject('value', createArray()))]",
-          "locale": "[if(contains(parameters('replicationAlertSettings'), 'locale'), createObject('value', parameters('replicationAlertSettings').locale), createObject('value', ''))]",
-          "sendToOwners": "[if(contains(parameters('replicationAlertSettings'), 'sendToOwners'), createObject('value', parameters('replicationAlertSettings').sendToOwners), createObject('value', 'Send'))]"
+          "customEmailAddresses": {
+            "value": "[tryGet(parameters('replicationAlertSettings'), 'customEmailAddresses')]"
+          },
+          "locale": {
+            "value": "[tryGet(parameters('replicationAlertSettings'), 'locale')]"
+          },
+          "sendToOwners": {
+            "value": "[tryGet(parameters('replicationAlertSettings'), 'sendToOwners')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.33.13.18514",
-              "templateHash": "3897872700976586621"
+              "templateHash": "13714844551703046217"
             },
             "name": "Recovery Services Vault Replication Alert Settings",
             "description": "This module deploys a Recovery Services Vault Replication Alert Settings."
@@ -2111,9 +2858,12 @@
             },
             "customEmailAddresses": {
               "type": "array",
-              "defaultValue": [],
+              "items": {
+                "type": "string"
+              },
+              "nullable": true,
               "metadata": {
-                "description": "Optional. Comma separated list of custom email address for sending alert emails."
+                "description": "Optional. The custom email address for sending emails."
               }
             },
             "locale": {
@@ -2135,18 +2885,24 @@
               }
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "recoveryVault": {
+              "existing": true,
+              "type": "Microsoft.RecoveryServices/vaults",
+              "apiVersion": "2023-01-01",
+              "name": "[parameters('recoveryVaultName')]"
+            },
+            "replicationAlertSettings": {
               "type": "Microsoft.RecoveryServices/vaults/replicationAlertSettings",
               "apiVersion": "2022-10-01",
               "name": "[format('{0}/{1}', parameters('recoveryVaultName'), parameters('name'))]",
               "properties": {
-                "customEmailAddresses": "[if(not(empty(parameters('customEmailAddresses'))), parameters('customEmailAddresses'), null())]",
+                "customEmailAddresses": "[parameters('customEmailAddresses')]",
                 "locale": "[parameters('locale')]",
                 "sendToOwners": "[parameters('sendToOwners')]"
               }
             }
-          ],
+          },
           "outputs": {
             "name": {
               "type": "string",
@@ -2184,6 +2940,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-rsv-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "subscriptionId": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[2]]",
+      "resourceGroup": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[4]]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -2199,7 +2957,7 @@
             "value": "[coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId]"
           },
           "enableTelemetry": {
-            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           },
           "location": {
             "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'location'), reference(split(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location)]"
@@ -2960,14 +3718,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('rsv', '2023-01-01', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('rsv', '2024-04-01', 'full'), 'identity'), 'principalId')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('rsv', '2023-01-01', 'full').location]"
+      "value": "[reference('rsv', '2024-04-01', 'full').location]"
     },
     "privateEndpoints": {
       "type": "array",
@@ -2978,7 +3736,7 @@
         "description": "The private endpoints of the recovery services vault."
       },
       "copy": {
-        "count": "[length(if(not(empty(parameters('privateEndpoints'))), array(parameters('privateEndpoints')), createArray()))]",
+        "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]",
         "input": {
           "name": "[reference(format('rsv_privateEndpoints[{0}]', copyIndex())).outputs.name.value]",
           "resourceId": "[reference(format('rsv_privateEndpoints[{0}]', copyIndex())).outputs.resourceId.value]",

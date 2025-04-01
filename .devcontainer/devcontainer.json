@@ -11,7 +11,7 @@
         "microsoft-dciborow.align-bicep",
         "ms-azuretools.vscode-bicep",
         "ms-vsliveshare.vsliveshare",
-        "ms-vscode.azure-account",
+        "ms-azuretools.vscode-azureresourcegroups",
         "ms-vscode-remote.remote-containers",
         "zokugun.explicit-folding",
         "GitHub.copilot-labs"

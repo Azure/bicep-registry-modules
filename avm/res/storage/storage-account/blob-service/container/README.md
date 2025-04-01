@@ -83,7 +83,6 @@ Block override of encryption scope from the container default.
 
 - Required: No
 - Type: bool
-- Default: `False`
 
 ### Parameter: `enableNfsV3AllSquash`
 

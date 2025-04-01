@@ -24,11 +24,11 @@ param weeklyBackupsToKeep int = 0
 @description('Optional. Indicates whether the backup policy is enabled.')
 param enabled bool = true
 
-resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2024-03-01' existing = {
+resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2024-09-01' existing = {
   name: netAppAccountName
 }
 
-resource backupPolicies 'Microsoft.NetApp/netAppAccounts/backupPolicies@2024-03-01' = {
+resource backupPolicies 'Microsoft.NetApp/netAppAccounts/backupPolicies@2024-09-01' = {
   name: name
   parent: netAppAccount
   location: location

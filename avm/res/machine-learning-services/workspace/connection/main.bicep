@@ -47,7 +47,7 @@ resource machineLearningWorkspace 'Microsoft.MachineLearningServices/workspaces@
 // Resources      //
 // ============== //
 
-resource connection 'Microsoft.MachineLearningServices/workspaces/connections@2024-04-01' = {
+resource connection 'Microsoft.MachineLearningServices/workspaces/connections@2024-10-01' = {
   name: name
   parent: machineLearningWorkspace
   properties: union(
@@ -123,6 +123,7 @@ type categoryType =
   | 'Dynamics'
   | 'DynamicsAx'
   | 'DynamicsCrm'
+  | 'Elasticsearch'
   | 'Eloqua'
   | 'FileServer'
   | 'FtpServer'
@@ -142,6 +143,7 @@ type categoryType =
   | 'Informix'
   | 'Jira'
   | 'Magento'
+  | 'ManagedOnlineEndpoint'
   | 'MariaDb'
   | 'Marketo'
   | 'MicrosoftAccess'
@@ -158,6 +160,7 @@ type categoryType =
   | 'OracleServiceCloud'
   | 'PayPal'
   | 'Phoenix'
+  | 'Pinecone'
   | 'PostgreSql'
   | 'Presto'
   | 'PythonFeed'
@@ -209,7 +212,7 @@ type accountKeyAuthTypeWorkspaceConnectionPropertyType = {
   authType: 'AccountKey'
 
   @description('Required. The credentials for the connection.')
-  credentials: workspaceConnectionAccountKey
+  credentials: workspaceConnectionAccountKeyType
 }
 
 type apiKeyAuthWorkspaceConnectionPropertyType = {
@@ -297,7 +300,7 @@ type workspaceConnectionAccessKeyType = {
   secretAccessKey: string
 }
 
-type workspaceConnectionAccountKey = {
+type workspaceConnectionAccountKeyType = {
   @description('Required. The connection key.')
   key: string
 }
@@ -316,7 +319,7 @@ type workspaceConnectionManagedIdentityType = {
 }
 
 type workspaceConnectionOAuth2Type = {
-  @description('Conditional. The connection auth URL. Required by Concur connection category.')
+  @description('Conditional. The connection auth URL. Required if connection category is Concur.')
   authUrl: string?
 
   @minLength(36)
@@ -327,19 +330,19 @@ type workspaceConnectionOAuth2Type = {
   @description('Required. The connection client secret.')
   clientSecret: string
 
-  @description('Conditional. The connection developer token. Required by GoogleAdWords connection category.')
+  @description('Conditional. The connection developer token. Required if connection category is GoogleAdWords.')
   developerToken: string?
 
-  @description('Conditional. The connection password. Required by Concur and ServiceNow connection categories where AccessToken grant type is \'Password\'.')
+  @description('Conditional. The connection password. Required if connection category is Concur or ServiceNow where AccessToken grant type is \'Password\'.')
   password: string?
 
-  @description('Conditional. The connection refresh token. Required by GoogleBigQuery, GoogleAdWords, Hubspot, QuickBooks, Square, Xero and Zoho connection categories.')
+  @description('Conditional. The connection refresh token. Required if connection category is GoogleBigQuery, GoogleAdWords, Hubspot, QuickBooks, Square, Xero or Zoho.')
   refreshToken: string?
 
-  @description('Required. The connection tenant ID. Required by QuickBooks and Xero connection categories.')
+  @description('Conditional. The connection tenant ID. Required if connection category is QuickBooks or Xero.')
   tenantId: string?
 
-  @description('Conditional. The connection username. Required by Concur and ServiceNow connection categories where AccessToken grant type is \'Password\'.')
+  @description('Conditional. The connection username. Required if connection category is Concur or ServiceNow where AccessToken grant type is \'Password\'.')
   username: string?
 }
 
@@ -368,7 +371,7 @@ type workspaceConnectionUsernamePasswordType = {
   @description('Required. The connection password.')
   password: string
 
-  @description('Conditional. The connection security token. Required by connections like SalesForce for extra security in addition to \'UsernamePassword\'.')
+  @description('Conditional. The connection security token. Required if connection is like SalesForce for extra security in addition to \'UsernamePassword\'.')
   securityToken: string?
 
   @description('Required. The connection username.')
@@ -381,6 +384,7 @@ type workspaceConnectionUsernamePasswordType = {
 type connectionPropertyType =
   | aadAuthTypeWorkspaceConnectionPropertyType
   | accessKeyAuthTypeWorkspaceConnectionPropertyType
+  | accountKeyAuthTypeWorkspaceConnectionPropertyType
   | apiKeyAuthWorkspaceConnectionPropertyType
   | customKeysWorkspaceConnectionPropertyType
   | managedIdentityAuthTypeWorkspaceConnectionPropertyType

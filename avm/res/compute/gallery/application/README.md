@@ -15,7 +15,7 @@ This module deploys an Azure Compute Gallery Application.
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Compute/galleries/applications` | [2022-03-03](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2022-03-03/galleries/applications) |
+| `Microsoft.Compute/galleries/applications` | [2024-03-03](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-03-03/galleries/applications) |
 
 ## Parameters
 
@@ -350,7 +350,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.3.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Notes
 

@@ -63,7 +63,7 @@ import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 param lock lockType?
 
 import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
-@description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Note, requires the \'sku\' to be \'Standard\'.')
+@description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Note, requires the \'sku\' to be \'Standard\'. Supplying the `privateDnsZoneGroup` configuration will allow the private endpoint to point to an already existing zone group. If not provided and `createPrivateDnsZone` being enabled, it will create and use the newly created zone group.')
 param privateEndpoints privateEndpointSingleServiceType[]?
 
 @description('Optional. Tags of the resource.')
@@ -88,6 +88,26 @@ param functionAppSettings object = {}
 @description('Optional. The custom domains associated with this static site. The deployment will fail as long as the validation records are not present.')
 param customDomains array = []
 
+@description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set.')
+@allowed([
+  ''
+  'Enabled'
+  'Disabled'
+])
+param publicNetworkAccess string = ''
+
+@description('Optional. Due the nature of Azure Static Apps, a partition ID is added to the app URL upon creation. Enabling the creation of the private DNS Zone will provision a DNS Zone with the correct partition ID, this is required for private endpoint connectivity to be enabled. You can choose to disable this option and create your own private DNS Zone by leveraging the output of the partitionId within this module. Default is `Enabled`, However the Private DNS Zone will only be created following if a `privateEndpoint` configuration is supplied.')
+@allowed([
+  'Enabled'
+  'Disabled'
+])
+param createPrivateDnsZone string = 'Enabled'
+
+@description('Conditional. The Virtual Network Resource Id to use for the private DNS Zone Vnet Link. Required if `createPrivateDnsZone` is set to `Enabled` and a Private Endpoint Configuration is supplied.')
+param virtualNetworkResourceId string = ''
+
+var enableReferencedModulesTelemetry = false
+
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
@@ -98,7 +118,7 @@ var identity = !empty(managedIdentities)
   ? {
       type: (managedIdentities.?systemAssigned ?? false)
         ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned, UserAssigned' : 'SystemAssigned')
-        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : null)
+        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
   : null
@@ -155,7 +175,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource staticSite 'Microsoft.Web/staticSites@2021-03-01' = {
+resource staticSite 'Microsoft.Web/staticSites@2024-04-01' = {
   name: name
   location: location
   tags: tags
@@ -174,6 +194,9 @@ resource staticSite 'Microsoft.Web/staticSites@2021-03-01' = {
     repositoryToken: repositoryToken
     repositoryUrl: repositoryUrl
     templateProperties: templateProperties
+    publicNetworkAccess: !empty(publicNetworkAccess)
+      ? any(publicNetworkAccess)
+      : (!empty(privateEndpoints) ? 'Disabled' : null)
   }
 }
 
@@ -244,18 +267,26 @@ resource staticSite_roleAssignments 'Microsoft.Authorization/roleAssignments@202
   }
 ]
 
-module staticSite_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
+module staticSite_privateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.0' = if (!empty(privateEndpoints) && createPrivateDnsZone == 'Enabled') {
+  name: '${uniqueString(deployment().name, location)}-staticSite-PrivateDnsZone'
+  params: {
+    name: 'privatelink.${staticSite.properties.defaultHostname}.azurestaticapps.net'
+    enableTelemetry: enableReferencedModulesTelemetry
+    virtualNetworkLinks: [
+      {
+        virtualNetworkResourceId: virtualNetworkResourceId
+      }
+    ]
+  }
+}
+
+module staticSite_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-staticSite-PrivateEndpoint-${index}'
-    scope: !empty(privateEndpoint.?resourceGroupResourceId)
-      ? resourceGroup(
-          split((privateEndpoint.?resourceGroupResourceId ?? '//'), '/')[2],
-          split((privateEndpoint.?resourceGroupResourceId ?? '////'), '/')[4]
-        )
-      : resourceGroup(
-          split((privateEndpoint.?subnetResourceId ?? '//'), '/')[2],
-          split((privateEndpoint.?subnetResourceId ?? '////'), '/')[4]
-        )
+    scope: resourceGroup(
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
+    )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(staticSite.id, '/'))}-${privateEndpoint.?service ?? 'staticSites'}-${index}'
       privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
@@ -286,14 +317,20 @@ module staticSite_privateEndpoints 'br/public:avm/res/network/private-endpoint:0
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
-      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',
         'Full'
       ).location
       lock: privateEndpoint.?lock ?? lock
-      privateDnsZoneGroup: privateEndpoint.?privateDnsZoneGroup
+      privateDnsZoneGroup: privateEndpoint.?privateDnsZoneGroup ?? {
+        privateDnsZoneGroupConfigs: [
+          {
+            privateDnsZoneResourceId: staticSite_privateDnsZone.outputs.resourceId
+          }
+        ]
+      }
       roleAssignments: privateEndpoint.?roleAssignments
       tags: privateEndpoint.?tags ?? tags
       customDnsConfigs: privateEndpoint.?customDnsConfigs
@@ -323,12 +360,39 @@ output location string = staticSite.location
 output defaultHostname string = staticSite.properties.defaultHostname
 
 @description('The private endpoints of the static site.')
-output privateEndpoints array = [
-  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
-    name: staticSite_privateEndpoints[i].outputs.name
-    resourceId: staticSite_privateEndpoints[i].outputs.resourceId
-    groupId: staticSite_privateEndpoints[i].outputs.groupId
-    customDnsConfig: staticSite_privateEndpoints[i].outputs.customDnsConfig
-    networkInterfaceIds: staticSite_privateEndpoints[i].outputs.networkInterfaceIds
+output privateEndpoints privateEndpointOutputType[] = [
+  for (item, index) in (privateEndpoints ?? []): {
+    name: staticSite_privateEndpoints[index].outputs.name
+    resourceId: staticSite_privateEndpoints[index].outputs.resourceId
+    groupId: staticSite_privateEndpoints[index].outputs.?groupId!
+    customDnsConfigs: staticSite_privateEndpoints[index].outputs.customDnsConfigs
+    networkInterfaceResourceIds: staticSite_privateEndpoints[index].outputs.networkInterfaceResourceIds
   }
 ]
+
+// ================ //
+// Definitions      //
+// ================ //
+@export()
+type privateEndpointOutputType = {
+  @description('The name of the private endpoint.')
+  name: string
+
+  @description('The resource ID of the private endpoint.')
+  resourceId: string
+
+  @description('The group Id for the private endpoint Group.')
+  groupId: string?
+
+  @description('The custom DNS configurations of the private endpoint.')
+  customDnsConfigs: {
+    @description('FQDN that resolves to private endpoint IP address.')
+    fqdn: string?
+
+    @description('A list of private IP addresses of the private endpoint.')
+    ipAddresses: string[]
+  }[]
+
+  @description('The IDs of the network interfaces associated with the private endpoint.')
+  networkInterfaceResourceIds: string[]
+}

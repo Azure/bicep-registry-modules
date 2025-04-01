@@ -52,7 +52,6 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       environmentResourceId: nestedDependencies.outputs.managedEnvironmentResourceId
-      location: resourceLocation
       disableIngress: true
       containers: [
         {

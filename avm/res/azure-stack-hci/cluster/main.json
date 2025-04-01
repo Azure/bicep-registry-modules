@@ -1,0 +1,1731 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.32.4.45862",
+      "templateHash": "11879016027829789532"
+    },
+    "name": "Azure Stack HCI Cluster",
+    "description": "This module deploys an Azure Stack HCI Cluster on the provided Arc Machines."
+  },
+  "definitions": {
+    "networkIntentType": {
+      "type": "object",
+      "properties": {
+        "adapter": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "Required. The names of the network adapters to include in the intent."
+          }
+        },
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the network intent."
+          }
+        },
+        "overrideAdapterProperty": {
+          "type": "bool",
+          "metadata": {
+            "description": "Required. Specify whether to override the adapter property. Use false by default."
+          }
+        },
+        "adapterPropertyOverrides": {
+          "type": "object",
+          "properties": {
+            "jumboPacket": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The jumboPacket configuration for the network adapters."
+              }
+            },
+            "networkDirect": {
+              "type": "string",
+              "allowedValues": [
+                "Disabled",
+                "Enabled"
+              ],
+              "metadata": {
+                "description": "Required. The networkDirect configuration for the network adapters."
+              }
+            },
+            "networkDirectTechnology": {
+              "type": "string",
+              "allowedValues": [
+                "RoCEv2",
+                "iWARP"
+              ],
+              "metadata": {
+                "description": "Required. The networkDirectTechnology configuration for the network adapters."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. The adapter property overrides for the network intent."
+          }
+        },
+        "overrideQosPolicy": {
+          "type": "bool",
+          "metadata": {
+            "description": "Required. Specify whether to override the qosPolicy property. Use false by default."
+          }
+        },
+        "qosPolicyOverrides": {
+          "type": "object",
+          "properties": {
+            "bandwidthPercentageSMB": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The bandwidthPercentage for the network intent. Recommend 50."
+              }
+            },
+            "priorityValue8021ActionCluster": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Recommend 7."
+              }
+            },
+            "priorityValue8021ActionSMB": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Recommend 3."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. The qosPolicy overrides for the network intent."
+          }
+        },
+        "overrideVirtualSwitchConfiguration": {
+          "type": "bool",
+          "metadata": {
+            "description": "Required. Specify whether to override the virtualSwitchConfiguration property. Use false by default."
+          }
+        },
+        "virtualSwitchConfigurationOverrides": {
+          "type": "object",
+          "properties": {
+            "enableIov": {
+              "type": "string",
+              "allowedValues": [
+                "false",
+                "true"
+              ],
+              "metadata": {
+                "description": "Required. The enableIov configuration for the network intent."
+              }
+            },
+            "loadBalancingAlgorithm": {
+              "type": "string",
+              "allowedValues": [
+                "Dynamic",
+                "HyperVPort",
+                "IPHash"
+              ],
+              "metadata": {
+                "description": "Required. The loadBalancingAlgorithm configuration for the network intent."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. The virtualSwitchConfiguration overrides for the network intent."
+          }
+        },
+        "trafficType": {
+          "type": "array",
+          "allowedValues": [
+            "Compute",
+            "Management",
+            "Storage"
+          ],
+          "metadata": {
+            "description": "Required. The traffic types for the network intent."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "storageAdapterIPInfoType": {
+      "type": "object",
+      "properties": {
+        "physicalNode": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The HCI node name."
+          }
+        },
+        "ipv4Address": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The IPv4 address for the storage adapter."
+          }
+        },
+        "subnetMask": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The subnet mask for the storage adapter."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "storageNetworksType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the storage network."
+          }
+        },
+        "adapterName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the storage adapter."
+          }
+        },
+        "vlan": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The VLAN for the storage adapter."
+          }
+        },
+        "storageAdapterIPInfo": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/storageAdapterIPInfoType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The storage adapter IP information for 3-node switchless or manual config deployments."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "securityConfigurationType": {
+      "type": "object",
+      "properties": {
+        "hvciProtection": {
+          "type": "bool",
+          "metadata": {
+            "description": "Required. Enable/Disable HVCI protection."
+          }
+        },
+        "drtmProtection": {
+          "type": "bool",
+          "metadata": {
+            "description": "Required. Enable/Disable DRTM protection."
+          }
+        },
+        "driftControlEnforced": {
+          "type": "bool",
+          "metadata": {
+            "description": "Required. Enable/Disable Drift Control enforcement."
+          }
+        },
+        "credentialGuardEnforced": {
+          "type": "bool",
+          "metadata": {
+            "description": "Required. Enable/Disable Credential Guard enforcement."
+          }
+        },
+        "smbSigningEnforced": {
+          "type": "bool",
+          "metadata": {
+            "description": "Required. Enable/Disable SMB signing enforcement."
+          }
+        },
+        "smbClusterEncryption": {
+          "type": "bool",
+          "metadata": {
+            "description": "Required. Enable/Disable SMB cluster encryption."
+          }
+        },
+        "sideChannelMitigationEnforced": {
+          "type": "bool",
+          "metadata": {
+            "description": "Required. Enable/Disable Side Channel Mitigation enforcement."
+          }
+        },
+        "bitlockerBootVolume": {
+          "type": "bool",
+          "metadata": {
+            "description": "Required. Enable/Disable BitLocker protection for boot volume."
+          }
+        },
+        "bitlockerDataVolumes": {
+          "type": "bool",
+          "metadata": {
+            "description": "Required. Enable/Disable BitLocker protection for data volumes."
+          }
+        },
+        "wdacEnforced": {
+          "type": "bool",
+          "metadata": {
+            "description": "Required. Enable/Disable WDAC enforcement."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "deploymentSettingsType": {
+      "type": "object",
+      "properties": {
+        "deploymentPrefix": {
+          "type": "string",
+          "minLength": 4,
+          "maxLength": 8,
+          "metadata": {
+            "description": "Required. The prefix for the resource for the deployment. This value is used in key vault and storage account names in this template, as well as for the deploymentSettings.properties.deploymentConfiguration.scaleUnits.deploymentData.namingPrefix property which requires regex pattern: ^[a-zA-Z0-9-]{1,8}$."
+          }
+        },
+        "clusterNodeNames": {
+          "type": "array",
+          "metadata": {
+            "description": "Required. Names of the cluster node Arc Machine resources. These are the name of the Arc Machine resources created when the new HCI nodes were Arc initialized. Example: [hci-node-1, hci-node-2]."
+          }
+        },
+        "domainFqdn": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The domain name of the Active Directory Domain Services. Example: \"contoso.com\"."
+          }
+        },
+        "domainOUPath": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The ADDS OU path - ex \"OU=HCI,DC=contoso,DC=com\"."
+          }
+        },
+        "hvciProtection": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Hypervisor-protected Code Integrity setting."
+          }
+        },
+        "drtmProtection": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The hardware-dependent Secure Boot setting."
+          }
+        },
+        "driftControlEnforced": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. When set to true, the security baseline is re-applied regularly."
+          }
+        },
+        "credentialGuardEnforced": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enables the Credential Guard."
+          }
+        },
+        "smbSigningEnforced": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. When set to true, the SMB default instance requires sign in for the client and server services."
+          }
+        },
+        "smbClusterEncryption": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. When set to true, cluster east-west traffic is encrypted."
+          }
+        },
+        "sideChannelMitigationEnforced": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. When set to true, all the side channel mitigations are enabled."
+          }
+        },
+        "bitlockerBootVolume": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. When set to true, BitLocker XTS_AES 256-bit encryption is enabled for all data-at-rest on the OS volume of your Azure Stack HCI cluster. This setting is TPM-hardware dependent."
+          }
+        },
+        "bitlockerDataVolumes": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. When set to true, BitLocker XTS-AES 256-bit encryption is enabled for all data-at-rest on your Azure Stack HCI cluster shared volumes."
+          }
+        },
+        "wdacEnforced": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Limits the applications and the code that you can run on your Azure Stack HCI cluster."
+          }
+        },
+        "streamingDataClient": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The metrics data for deploying a HCI cluster."
+          }
+        },
+        "isEuropeanUnionLocation": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The location data for deploying a HCI cluster."
+          }
+        },
+        "episodicDataUpload": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The diagnostic data for deploying a HCI cluster."
+          }
+        },
+        "storageConfigurationMode": {
+          "type": "string",
+          "allowedValues": [
+            "Express",
+            "InfraOnly",
+            "KeepStorage"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The storage volume configuration mode. See documentation for details."
+          }
+        },
+        "subnetMask": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The subnet mask pf the Management Network for the HCI cluster - ex: 255.255.252.0."
+          }
+        },
+        "defaultGateway": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The default gateway of the Management Network. Example: 192.168.0.1."
+          }
+        },
+        "startingIPAddress": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The starting IP address for the Infrastructure Network IP pool. There must be at least 6 IPs between startingIPAddress and endingIPAddress and this pool should be not include the node IPs."
+          }
+        },
+        "endingIPAddress": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The ending IP address for the Infrastructure Network IP pool. There must be at least 6 IPs between startingIPAddress and endingIPAddress and this pool should be not include the node IPs."
+          }
+        },
+        "dnsServers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "Required. The DNS servers accessible from the Management Network for the HCI cluster."
+          }
+        },
+        "networkIntents": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/networkIntentType"
+          },
+          "metadata": {
+            "description": "Required. An array of Network ATC Network Intent objects that define the Compute, Management, and Storage network configuration for the cluster."
+          }
+        },
+        "storageConnectivitySwitchless": {
+          "type": "bool",
+          "metadata": {
+            "description": "Required. Specify whether the Storage Network connectivity is switched or switchless."
+          }
+        },
+        "enableStorageAutoIp": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enable storage auto IP assignment. This should be true for most deployments except when deploying a three-node switchless cluster, in which case storage IPs should be configured before deployment and this value set to false."
+          }
+        },
+        "storageNetworks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/storageNetworksType"
+          },
+          "metadata": {
+            "description": "Required. An array of JSON objects that define the storage network configuration for the cluster. Each object should contain the adapterName, VLAN properties, and (optionally) IP configurations."
+          }
+        },
+        "customLocationName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the Custom Location associated with the Arc Resource Bridge for this cluster. This value should reflect the physical location and identifier of the HCI cluster. Example: cl-hci-den-clu01."
+          }
+        },
+        "clusterWitnessStorageAccountName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the storage account to be used as the witness for the HCI Windows Failover Cluster."
+          }
+        },
+        "keyVaultName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the key vault to be used for storing secrets for the HCI cluster. This currently needs to be unique per HCI cluster."
+          }
+        }
+      }
+    },
+    "KeyVaultSecretNames": {
+      "type": "object",
+      "properties": {
+        "azureStackLCMUserCredential": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the Azure Stack HCI LCM user credential secret."
+          }
+        },
+        "localAdminCredential": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the Azure Stack HCI local admin credential secret."
+          }
+        },
+        "defaultARBApplication": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the Azure Stack HCI default ARB application secret."
+          }
+        },
+        "witnessStorageKey": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the Azure Stack HCI witness storage key secret."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Key vault secret names interface"
+      }
+    },
+    "roleAssignmentType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+          }
+        },
+        "roleDefinitionIdOrName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+          }
+        },
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+          }
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "Device",
+            "ForeignGroup",
+            "Group",
+            "ServicePrincipal",
+            "User"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The principal type of the assigned principal ID."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The description of the role assignment."
+          }
+        },
+        "condition": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+          }
+        },
+        "conditionVersion": {
+          "type": "string",
+          "allowedValues": [
+            "2.0"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Version of the condition."
+          }
+        },
+        "delegatedManagedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Resource Id of the delegated managed identity resource."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a role assignment.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    }
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "minLength": 4,
+      "maxLength": 15,
+      "metadata": {
+        "description": "Required. The name of the Azure Stack HCI cluster - this must be a valid Active Directory computer name and will be the name of your cluster in Azure."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. Location for all resources."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags of the resource."
+      }
+    },
+    "deploymentOperations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "defaultValue": [
+        "Validate",
+        "Deploy"
+      ],
+      "allowedValues": [
+        "Deploy",
+        "Validate"
+      ],
+      "metadata": {
+        "description": "Optional. The cluster deployment operations to execute. Defaults to \"[Validate, Deploy]\"."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    },
+    "deploymentSettings": {
+      "$ref": "#/definitions/deploymentSettingsType",
+      "metadata": {
+        "description": "Required. The deployment settings of the cluster."
+      }
+    },
+    "roleAssignments": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/roleAssignmentType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Array of role assignments to create."
+      }
+    },
+    "useSharedKeyVault": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Specify whether to use the shared key vault for the HCI cluster."
+      }
+    },
+    "deploymentUser": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Conditional. The name of the deployment user. Required if useSharedKeyVault is true."
+      }
+    },
+    "deploymentUserPassword": {
+      "type": "securestring",
+      "nullable": true,
+      "metadata": {
+        "description": "Conditional. The password of the deployment user. Required if useSharedKeyVault is true."
+      }
+    },
+    "localAdminUser": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Conditional. The name of the local admin user. Required if useSharedKeyVault is true."
+      }
+    },
+    "localAdminPassword": {
+      "type": "securestring",
+      "nullable": true,
+      "metadata": {
+        "description": "Conditional. The password of the local admin user. Required if useSharedKeyVault is true."
+      }
+    },
+    "servicePrincipalId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Conditional. The service principal ID for ARB. Required if useSharedKeyVault is true."
+      }
+    },
+    "servicePrincipalSecret": {
+      "type": "securestring",
+      "nullable": true,
+      "metadata": {
+        "description": "Conditional. The service principal secret for ARB. Required if useSharedKeyVault is true."
+      }
+    },
+    "azureStackLCMUserCredentialContentType": {
+      "type": "string",
+      "defaultValue": "Secret",
+      "metadata": {
+        "description": "Optional. Content type of the azure stack lcm user credential."
+      }
+    },
+    "localAdminCredentialContentType": {
+      "type": "string",
+      "defaultValue": "Secret",
+      "metadata": {
+        "description": "Optional. Content type of the local admin credential."
+      }
+    },
+    "witnessStoragekeyContentType": {
+      "type": "string",
+      "defaultValue": "Secret",
+      "metadata": {
+        "description": "Optional. Content type of the witness storage key."
+      }
+    },
+    "defaultARBApplicationContentType": {
+      "type": "string",
+      "defaultValue": "Secret",
+      "metadata": {
+        "description": "Optional. Content type of the default ARB application."
+      }
+    },
+    "azureStackLCMUserCredentialTags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags of azure stack LCM user credential."
+      }
+    },
+    "localAdminCredentialTags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags of the local admin credential."
+      }
+    },
+    "witnessStoragekeyTags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags of the witness storage key."
+      }
+    },
+    "defaultARBApplicationTags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags of the default ARB application."
+      }
+    },
+    "keyvaultSubscriptionId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Key vault subscription ID, which is used for for storing secrets for the HCI cluster."
+      }
+    },
+    "keyvaultResourceGroup": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Key vault resource group, which is used for for storing secrets for the HCI cluster."
+      }
+    },
+    "witnessStorageAccountSubscriptionId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Storage account subscription ID, which is used as the witness for the HCI Windows Failover Cluster."
+      }
+    },
+    "witnessStorageAccountResourceGroup": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Storage account resource group, which is used as the witness for the HCI Windows Failover Cluster."
+      }
+    }
+  },
+  "variables": {
+    "copy": [
+      {
+        "name": "formattedRoleAssignments",
+        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+        "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+      }
+    ],
+    "builtInRoleNames": {
+      "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+      "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+      "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+      "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+      "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]",
+      "Azure Stack HCI Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'bda0d508-adf1-4af0-9c28-88919fc3ae06')]",
+      "Windows Admin Center Administrator Login": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a6333a3e-0164-44c3-b281-7a577aff287f')]"
+    },
+    "sortedDeploymentOperations": "[if(not(empty(parameters('deploymentOperations'))), sort(parameters('deploymentOperations'), lambda('a', 'b', greater(lambdaVariables('a'), lambdaVariables('b')))), createArray())]"
+  },
+  "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2023-07-01",
+      "name": "[take(format('46d3xbcp.res.azurestackhci-cluster.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
+    "cluster": {
+      "type": "Microsoft.AzureStackHCI/clusters",
+      "apiVersion": "2024-04-01",
+      "name": "[parameters('name')]",
+      "identity": {
+        "type": "SystemAssigned"
+      },
+      "location": "[parameters('location')]",
+      "properties": {},
+      "tags": "[parameters('tags')]"
+    },
+    "cluster_roleAssignments": {
+      "copy": {
+        "name": "cluster_roleAssignments",
+        "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
+      },
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "scope": "[format('Microsoft.AzureStackHCI/clusters/{0}', parameters('name'))]",
+      "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.AzureStackHCI/clusters', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
+      "properties": {
+        "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+        "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+        "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+        "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+        "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+        "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+      },
+      "dependsOn": [
+        "cluster"
+      ]
+    },
+    "secrets": {
+      "condition": "[parameters('useSharedKeyVault')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-secrets', uniqueString(deployment().name, parameters('location')))]",
+      "subscriptionId": "[coalesce(parameters('keyvaultSubscriptionId'), subscription().subscriptionId)]",
+      "resourceGroup": "[coalesce(parameters('keyvaultResourceGroup'), resourceGroup().name)]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "clusterName": {
+            "value": "[parameters('name')]"
+          },
+          "cloudId": {
+            "value": "[reference('cluster').cloudId]"
+          },
+          "keyVaultName": {
+            "value": "[parameters('deploymentSettings').keyVaultName]"
+          },
+          "storageAccountName": {
+            "value": "[parameters('deploymentSettings').clusterWitnessStorageAccountName]"
+          },
+          "deploymentUser": {
+            "value": "[parameters('deploymentUser')]"
+          },
+          "deploymentUserPassword": {
+            "value": "[parameters('deploymentUserPassword')]"
+          },
+          "localAdminUser": {
+            "value": "[parameters('localAdminUser')]"
+          },
+          "localAdminPassword": {
+            "value": "[parameters('localAdminPassword')]"
+          },
+          "servicePrincipalId": {
+            "value": "[parameters('servicePrincipalId')]"
+          },
+          "servicePrincipalSecret": {
+            "value": "[parameters('servicePrincipalSecret')]"
+          },
+          "azureStackLCMUserCredentialContentType": {
+            "value": "[parameters('azureStackLCMUserCredentialContentType')]"
+          },
+          "localAdminCredentialContentType": {
+            "value": "[parameters('localAdminCredentialContentType')]"
+          },
+          "witnessStoragekeyContentType": {
+            "value": "[parameters('witnessStoragekeyContentType')]"
+          },
+          "defaultARBApplicationContentType": {
+            "value": "[parameters('defaultARBApplicationContentType')]"
+          },
+          "azureStackLCMUserCredentialTags": {
+            "value": "[parameters('azureStackLCMUserCredentialTags')]"
+          },
+          "localAdminCredentialTags": {
+            "value": "[parameters('localAdminCredentialTags')]"
+          },
+          "witnessStoragekeyTags": {
+            "value": "[parameters('witnessStoragekeyTags')]"
+          },
+          "defaultARBApplicationTags": {
+            "value": "[parameters('defaultARBApplicationTags')]"
+          },
+          "witnessStorageAccountResourceGroup": {
+            "value": "[coalesce(parameters('witnessStorageAccountResourceGroup'), resourceGroup().name)]"
+          },
+          "witnessStorageAccountSubscriptionId": {
+            "value": "[coalesce(parameters('witnessStorageAccountSubscriptionId'), subscription().subscriptionId)]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.32.4.45862",
+              "templateHash": "18231557278397526039"
+            }
+          },
+          "parameters": {
+            "keyVaultName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the key vault."
+              }
+            },
+            "storageAccountName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the strorage account."
+              }
+            },
+            "clusterName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the cluster."
+              }
+            },
+            "cloudId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The cloud ID."
+              }
+            },
+            "deploymentUser": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the deployment user."
+              }
+            },
+            "deploymentUserPassword": {
+              "type": "securestring",
+              "metadata": {
+                "description": "Required. The password of the deployment user."
+              }
+            },
+            "localAdminUser": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the local admin user."
+              }
+            },
+            "localAdminPassword": {
+              "type": "securestring",
+              "metadata": {
+                "description": "Required. The password of the local admin user."
+              }
+            },
+            "servicePrincipalId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The service principal ID for ARB."
+              }
+            },
+            "servicePrincipalSecret": {
+              "type": "securestring",
+              "metadata": {
+                "description": "Required. The service principal secret for ARB."
+              }
+            },
+            "azureStackLCMUserCredentialContentType": {
+              "type": "string",
+              "defaultValue": "Secret",
+              "metadata": {
+                "description": "Optional. Content type of the azure stack lcm user credential."
+              }
+            },
+            "localAdminCredentialContentType": {
+              "type": "string",
+              "defaultValue": "Secret",
+              "metadata": {
+                "description": "Optional. Content type of the local admin credential."
+              }
+            },
+            "witnessStoragekeyContentType": {
+              "type": "string",
+              "defaultValue": "Secret",
+              "metadata": {
+                "description": "Optional. Content type of the witness storage key."
+              }
+            },
+            "defaultARBApplicationContentType": {
+              "type": "string",
+              "defaultValue": "Secret",
+              "metadata": {
+                "description": "Optional. Content type of the default ARB application."
+              }
+            },
+            "azureStackLCMUserCredentialTags": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Tags of azure stack LCM user credential."
+              }
+            },
+            "localAdminCredentialTags": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Tags of the local admin credential."
+              }
+            },
+            "witnessStoragekeyTags": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Tags of the witness storage key."
+              }
+            },
+            "defaultARBApplicationTags": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Tags of the default ARB application."
+              }
+            },
+            "witnessStorageAccountSubscriptionId": {
+              "type": "string",
+              "metadata": {
+                "description": "Optional. Storage account subscription ID, which is used as the witness for the HCI Windows Failover Cluster."
+              }
+            },
+            "witnessStorageAccountResourceGroup": {
+              "type": "string",
+              "metadata": {
+                "description": "Optional. Storage account resource group, which is used as the witness for the HCI Windows Failover Cluster.."
+              }
+            }
+          },
+          "resources": {
+            "witnessStorageAccount": {
+              "existing": true,
+              "type": "Microsoft.Storage/storageAccounts",
+              "apiVersion": "2023-01-01",
+              "subscriptionId": "[parameters('witnessStorageAccountSubscriptionId')]",
+              "resourceGroup": "[parameters('witnessStorageAccountResourceGroup')]",
+              "name": "[parameters('storageAccountName')]"
+            },
+            "keyVault": {
+              "existing": true,
+              "type": "Microsoft.KeyVault/vaults",
+              "apiVersion": "2022-07-01",
+              "name": "[parameters('keyVaultName')]"
+            },
+            "azureStackLCMUserCredential": {
+              "type": "Microsoft.KeyVault/vaults/secrets",
+              "apiVersion": "2023-07-01",
+              "name": "[format('{0}/{1}', parameters('keyVaultName'), format('{0}-AzureStackLCMUserCredential-{1}', parameters('clusterName'), parameters('cloudId')))]",
+              "properties": {
+                "contentType": "[parameters('azureStackLCMUserCredentialContentType')]",
+                "value": "[base64(format('{0}:{1}', parameters('deploymentUser'), parameters('deploymentUserPassword')))]",
+                "attributes": {
+                  "enabled": true
+                }
+              },
+              "tags": "[parameters('azureStackLCMUserCredentialTags')]"
+            },
+            "localAdminCredential": {
+              "type": "Microsoft.KeyVault/vaults/secrets",
+              "apiVersion": "2023-07-01",
+              "name": "[format('{0}/{1}', parameters('keyVaultName'), format('{0}-LocalAdminCredential-{1}', parameters('clusterName'), parameters('cloudId')))]",
+              "properties": {
+                "contentType": "[parameters('localAdminCredentialContentType')]",
+                "value": "[base64(format('{0}:{1}', parameters('localAdminUser'), parameters('localAdminPassword')))]",
+                "attributes": {
+                  "enabled": true
+                }
+              },
+              "tags": "[parameters('localAdminCredentialTags')]"
+            },
+            "witnessStorageKey": {
+              "type": "Microsoft.KeyVault/vaults/secrets",
+              "apiVersion": "2023-07-01",
+              "name": "[format('{0}/{1}', parameters('keyVaultName'), format('{0}-WitnessStorageKey-{1}', parameters('clusterName'), parameters('cloudId')))]",
+              "properties": {
+                "contentType": "[parameters('witnessStoragekeyContentType')]",
+                "value": "[base64(listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('witnessStorageAccountSubscriptionId'), parameters('witnessStorageAccountResourceGroup')), 'Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2023-01-01').keys[0].value)]",
+                "attributes": {
+                  "enabled": true
+                }
+              },
+              "tags": "[parameters('witnessStoragekeyTags')]"
+            },
+            "defaultARBApplication": {
+              "type": "Microsoft.KeyVault/vaults/secrets",
+              "apiVersion": "2023-07-01",
+              "name": "[format('{0}/{1}', parameters('keyVaultName'), format('{0}-DefaultARBApplication-{1}', parameters('clusterName'), parameters('cloudId')))]",
+              "properties": {
+                "contentType": "[parameters('defaultARBApplicationContentType')]",
+                "value": "[base64(format('{0}:{1}', parameters('servicePrincipalId'), parameters('servicePrincipalSecret')))]",
+                "attributes": {
+                  "enabled": true
+                }
+              },
+              "tags": "[parameters('defaultARBApplicationTags')]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "cluster"
+      ]
+    },
+    "deploymentSetting": {
+      "copy": {
+        "name": "deploymentSetting",
+        "count": "[length(variables('sortedDeploymentOperations'))]",
+        "mode": "serial",
+        "batchSize": 1
+      },
+      "condition": "[and(not(empty(variables('sortedDeploymentOperations')[copyIndex()])), not(empty(parameters('deploymentSettings'))))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('deploymentSettings-{0}', variables('sortedDeploymentOperations')[copyIndex()])]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "cloudId": "[if(parameters('useSharedKeyVault'), createObject('value', reference('cluster').cloudId), createObject('value', null()))]",
+          "clusterName": {
+            "value": "[parameters('name')]"
+          },
+          "deploymentMode": {
+            "value": "[variables('sortedDeploymentOperations')[copyIndex()]]"
+          },
+          "clusterNodeNames": {
+            "value": "[parameters('deploymentSettings').clusterNodeNames]"
+          },
+          "clusterWitnessStorageAccountName": {
+            "value": "[parameters('deploymentSettings').clusterWitnessStorageAccountName]"
+          },
+          "customLocationName": {
+            "value": "[parameters('deploymentSettings').customLocationName]"
+          },
+          "defaultGateway": {
+            "value": "[parameters('deploymentSettings').defaultGateway]"
+          },
+          "deploymentPrefix": {
+            "value": "[parameters('deploymentSettings').deploymentPrefix]"
+          },
+          "dnsServers": {
+            "value": "[parameters('deploymentSettings').dnsServers]"
+          },
+          "domainFqdn": {
+            "value": "[parameters('deploymentSettings').domainFqdn]"
+          },
+          "domainOUPath": {
+            "value": "[parameters('deploymentSettings').domainOUPath]"
+          },
+          "endingIPAddress": {
+            "value": "[parameters('deploymentSettings').endingIPAddress]"
+          },
+          "keyVaultName": {
+            "value": "[parameters('deploymentSettings').keyVaultName]"
+          },
+          "networkIntents": {
+            "copy": [
+              {
+                "name": "value",
+                "count": "[length(parameters('deploymentSettings').networkIntents)]",
+                "input": "[shallowMerge(createArray(parameters('deploymentSettings').networkIntents[copyIndex('value')], createObject('qosPolicyOverrides', createObject('bandwidthPercentage_SMB', parameters('deploymentSettings').networkIntents[copyIndex('value')].qosPolicyOverrides.bandwidthPercentageSMB, 'priorityValue8021Action_Cluster', parameters('deploymentSettings').networkIntents[copyIndex('value')].qosPolicyOverrides.priorityValue8021ActionCluster, 'priorityValue8021Action_SMB', parameters('deploymentSettings').networkIntents[copyIndex('value')].qosPolicyOverrides.priorityValue8021ActionSMB))))]"
+              }
+            ]
+          },
+          "startingIPAddress": {
+            "value": "[parameters('deploymentSettings').startingIPAddress]"
+          },
+          "storageConnectivitySwitchless": {
+            "value": "[parameters('deploymentSettings').storageConnectivitySwitchless]"
+          },
+          "storageNetworks": {
+            "value": "[parameters('deploymentSettings').storageNetworks]"
+          },
+          "subnetMask": {
+            "value": "[parameters('deploymentSettings').subnetMask]"
+          },
+          "bitlockerBootVolume": {
+            "value": "[tryGet(parameters('deploymentSettings'), 'bitlockerBootVolume')]"
+          },
+          "bitlockerDataVolumes": {
+            "value": "[tryGet(parameters('deploymentSettings'), 'bitlockerDataVolumes')]"
+          },
+          "credentialGuardEnforced": {
+            "value": "[tryGet(parameters('deploymentSettings'), 'credentialGuardEnforced')]"
+          },
+          "driftControlEnforced": {
+            "value": "[tryGet(parameters('deploymentSettings'), 'driftControlEnforced')]"
+          },
+          "drtmProtection": {
+            "value": "[tryGet(parameters('deploymentSettings'), 'drtmProtection')]"
+          },
+          "enableStorageAutoIp": {
+            "value": "[tryGet(parameters('deploymentSettings'), 'enableStorageAutoIp')]"
+          },
+          "episodicDataUpload": {
+            "value": "[tryGet(parameters('deploymentSettings'), 'episodicDataUpload')]"
+          },
+          "hvciProtection": {
+            "value": "[tryGet(parameters('deploymentSettings'), 'hvciProtection')]"
+          },
+          "isEuropeanUnionLocation": {
+            "value": "[tryGet(parameters('deploymentSettings'), 'isRFEuropeanUnionLocation')]"
+          },
+          "sideChannelMitigationEnforced": {
+            "value": "[tryGet(parameters('deploymentSettings'), 'sideChannelMitigationEnforced')]"
+          },
+          "smbClusterEncryption": {
+            "value": "[tryGet(parameters('deploymentSettings'), 'smbClusterEncryption')]"
+          },
+          "smbSigningEnforced": {
+            "value": "[tryGet(parameters('deploymentSettings'), 'smbSigningEnforced')]"
+          },
+          "storageConfigurationMode": {
+            "value": "[tryGet(parameters('deploymentSettings'), 'storageConfigurationMode')]"
+          },
+          "streamingDataClient": {
+            "value": "[tryGet(parameters('deploymentSettings'), 'streamingDataClient')]"
+          },
+          "wdacEnforced": {
+            "value": "[tryGet(parameters('deploymentSettings'), 'wdacEnforced')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.32.4.45862",
+              "templateHash": "3701439978420477660"
+            },
+            "name": "Azure Stack HCI Cluster Deployment Settings",
+            "description": "This module deploys an Azure Stack HCI Cluster Deployment Settings resource."
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "defaultValue": "default",
+              "allowedValues": [
+                "default"
+              ],
+              "metadata": {
+                "description": "Optional. The name of the deployment settings."
+              }
+            },
+            "clusterName": {
+              "type": "string",
+              "minLength": 4,
+              "maxLength": 15,
+              "metadata": {
+                "description": "Conditional. The name of the Azure Stack HCI cluster - this must be a valid Active Directory computer name and will be the name of your cluster in Azure. Required if the template is used in a standalone deployment."
+              }
+            },
+            "deploymentMode": {
+              "type": "string",
+              "allowedValues": [
+                "Validate",
+                "Deploy"
+              ],
+              "metadata": {
+                "description": "Required. First must pass with this parameter set to Validate prior running with it set to Deploy. If either Validation or Deployment phases fail, fix the issue, then resubmit the template with the same deploymentMode to retry."
+              }
+            },
+            "deploymentPrefix": {
+              "type": "string",
+              "minLength": 4,
+              "maxLength": 8,
+              "metadata": {
+                "description": "Required. The prefix for the resource for the deployment. This value is used in key vault and storage account names in this template, as well as for the deploymentSettings.properties.deploymentConfiguration.scaleUnits.deploymentData.namingPrefix property which requires regex pattern: ^[a-zA-Z0-9-]{1,8}$."
+              }
+            },
+            "clusterNodeNames": {
+              "type": "array",
+              "metadata": {
+                "description": "Required. Names of the cluster node Arc Machine resources. These are the name of the Arc Machine resources created when the new HCI nodes were Arc initialized. Example: [hci-node-1, hci-node-2]."
+              }
+            },
+            "domainFqdn": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The domain name of the Active Directory Domain Services. Example: \"contoso.com\"."
+              }
+            },
+            "domainOUPath": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The ADDS OU path - ex \"OU=HCI,DC=contoso,DC=com\"."
+              }
+            },
+            "hvciProtection": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. The Hypervisor-protected Code Integrity setting."
+              }
+            },
+            "drtmProtection": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. The hardware-dependent Secure Boot setting."
+              }
+            },
+            "driftControlEnforced": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. When set to true, the security baseline is re-applied regularly."
+              }
+            },
+            "credentialGuardEnforced": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Enables the Credential Guard."
+              }
+            },
+            "smbSigningEnforced": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. When set to true, the SMB default instance requires sign in for the client and server services."
+              }
+            },
+            "smbClusterEncryption": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. When set to true, cluster east-west traffic is encrypted."
+              }
+            },
+            "sideChannelMitigationEnforced": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. When set to true, all the side channel mitigations are enabled."
+              }
+            },
+            "bitlockerBootVolume": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. When set to true, BitLocker XTS_AES 256-bit encryption is enabled for all data-at-rest on the OS volume of your Azure Stack HCI cluster. This setting is TPM-hardware dependent."
+              }
+            },
+            "bitlockerDataVolumes": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. When set to true, BitLocker XTS-AES 256-bit encryption is enabled for all data-at-rest on your Azure Stack HCI cluster shared volumes."
+              }
+            },
+            "wdacEnforced": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Limits the applications and the code that you can run on your Azure Stack HCI cluster."
+              }
+            },
+            "streamingDataClient": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. The metrics data for deploying a HCI cluster."
+              }
+            },
+            "isEuropeanUnionLocation": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. The location data for deploying a HCI cluster."
+              }
+            },
+            "episodicDataUpload": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. The diagnostic data for deploying a HCI cluster."
+              }
+            },
+            "storageConfigurationMode": {
+              "type": "string",
+              "defaultValue": "Express",
+              "allowedValues": [
+                "Express",
+                "InfraOnly",
+                "KeepStorage"
+              ],
+              "metadata": {
+                "description": "Optional. The storage volume configuration mode. See documentation for details."
+              }
+            },
+            "subnetMask": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The subnet mask pf the Management Network for the HCI cluster - ex: 255.255.252.0."
+              }
+            },
+            "defaultGateway": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The default gateway of the Management Network. Example: 192.168.0.1."
+              }
+            },
+            "startingIPAddress": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The starting IP address for the Infrastructure Network IP pool. There must be at least 6 IPs between startingIPAddress and endingIPAddress and this pool should be not include the node IPs."
+              }
+            },
+            "endingIPAddress": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The ending IP address for the Infrastructure Network IP pool. There must be at least 6 IPs between startingIPAddress and endingIPAddress and this pool should be not include the node IPs."
+              }
+            },
+            "dnsServers": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "metadata": {
+                "description": "Required. The DNS servers accessible from the Management Network for the HCI cluster."
+              }
+            },
+            "networkIntents": {
+              "type": "array",
+              "metadata": {
+                "description": "Required. An array of Network ATC Network Intent objects that define the Compute, Management, and Storage network configuration for the cluster."
+              }
+            },
+            "storageConnectivitySwitchless": {
+              "type": "bool",
+              "metadata": {
+                "description": "Required. Specify whether the Storage Network connectivity is switched or switchless."
+              }
+            },
+            "enableStorageAutoIp": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable storage auto IP assignment. This should be true for most deployments except when deploying a three-node switchless cluster, in which case storage IPs should be configured before deployment and this value set to false."
+              }
+            },
+            "storageNetworks": {
+              "type": "array",
+              "metadata": {
+                "description": "Required. An array of JSON objects that define the storage network configuration for the cluster. Each object should contain the adapterName, VLAN properties, and (optionally) IP configurations."
+              }
+            },
+            "customLocationName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the Custom Location associated with the Arc Resource Bridge for this cluster. This value should reflect the physical location and identifier of the HCI cluster. Example: cl-hci-den-clu01."
+              }
+            },
+            "clusterWitnessStorageAccountName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the storage account to be used as the witness for the HCI Windows Failover Cluster."
+              }
+            },
+            "keyVaultName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the key vault to be used for storing secrets for the HCI cluster."
+              }
+            },
+            "cloudId": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. If using a shared key vault or non-legacy secret naming, pass the properties.cloudId guid from the pre-created HCI cluster resource."
+              }
+            }
+          },
+          "variables": {
+            "copy": [
+              {
+                "name": "arcNodeResourceIds",
+                "count": "[length(parameters('clusterNodeNames'))]",
+                "input": "[resourceId('Microsoft.HybridCompute/machines', parameters('clusterNodeNames')[copyIndex('arcNodeResourceIds')])]"
+              }
+            ]
+          },
+          "resources": {
+            "cluster": {
+              "existing": true,
+              "type": "Microsoft.AzureStackHCI/clusters",
+              "apiVersion": "2024-04-01",
+              "name": "[parameters('clusterName')]"
+            },
+            "deploymentSettings": {
+              "type": "Microsoft.AzureStackHCI/clusters/deploymentSettings",
+              "apiVersion": "2024-04-01",
+              "name": "[format('{0}/{1}', parameters('clusterName'), parameters('name'))]",
+              "properties": {
+                "arcNodeResourceIds": "[variables('arcNodeResourceIds')]",
+                "deploymentMode": "[parameters('deploymentMode')]",
+                "deploymentConfiguration": {
+                  "version": "10.0.0.0",
+                  "scaleUnits": [
+                    {
+                      "deploymentData": {
+                        "copy": [
+                          {
+                            "name": "physicalNodes",
+                            "count": "[length(variables('arcNodeResourceIds'))]",
+                            "input": {
+                              "name": "[reference(variables('arcNodeResourceIds')[copyIndex('physicalNodes')], '2022-12-27', 'Full').properties.displayName]",
+                              "ipv4Address": "[filter(reference(format('{0}/providers/microsoft.azurestackhci/edgeDevices/default', variables('arcNodeResourceIds')[copyIndex('physicalNodes')]), '2024-01-01', 'Full').properties.deviceConfiguration.nicDetails, lambda('nic', not(equals(tryGet(lambdaVariables('nic'), 'defaultGateway'), null()))))[0].ip4Address]"
+                            }
+                          },
+                          {
+                            "name": "secrets",
+                            "count": "[length(createArray('LocalAdminCredential', 'AzureStackLCMUserCredential', 'DefaultARBApplication', 'WitnessStorageKey'))]",
+                            "input": {
+                              "secretName": "[if(empty(parameters('cloudId')), createArray('LocalAdminCredential', 'AzureStackLCMUserCredential', 'DefaultARBApplication', 'WitnessStorageKey')[copyIndex('secrets')], format('{0}-{1}-{2}', parameters('clusterName'), createArray('LocalAdminCredential', 'AzureStackLCMUserCredential', 'DefaultARBApplication', 'WitnessStorageKey')[copyIndex('secrets')], parameters('cloudId')))]",
+                              "eceSecretName": "[createArray('LocalAdminCredential', 'AzureStackLCMUserCredential', 'DefaultARBApplication', 'WitnessStorageKey')[copyIndex('secrets')]]",
+                              "secretLocation": "[if(empty(parameters('cloudId')), format('https://{0}{1}/secrets/{2}', parameters('keyVaultName'), environment().suffixes.keyvaultDns, createArray('LocalAdminCredential', 'AzureStackLCMUserCredential', 'DefaultARBApplication', 'WitnessStorageKey')[copyIndex('secrets')]), format('https://{0}{1}/secrets/{2}-{3}-{4}', parameters('keyVaultName'), environment().suffixes.keyvaultDns, parameters('clusterName'), createArray('LocalAdminCredential', 'AzureStackLCMUserCredential', 'DefaultARBApplication', 'WitnessStorageKey')[copyIndex('secrets')], parameters('cloudId')))]"
+                            }
+                          }
+                        ],
+                        "securitySettings": {
+                          "hvciProtection": "[parameters('hvciProtection')]",
+                          "drtmProtection": "[parameters('drtmProtection')]",
+                          "driftControlEnforced": "[parameters('driftControlEnforced')]",
+                          "credentialGuardEnforced": "[parameters('credentialGuardEnforced')]",
+                          "smbSigningEnforced": "[parameters('smbSigningEnforced')]",
+                          "smbClusterEncryption": "[parameters('smbClusterEncryption')]",
+                          "sideChannelMitigationEnforced": "[parameters('sideChannelMitigationEnforced')]",
+                          "bitlockerBootVolume": "[parameters('bitlockerBootVolume')]",
+                          "bitlockerDataVolumes": "[parameters('bitlockerDataVolumes')]",
+                          "wdacEnforced": "[parameters('wdacEnforced')]"
+                        },
+                        "observability": {
+                          "streamingDataClient": "[parameters('streamingDataClient')]",
+                          "euLocation": "[parameters('isEuropeanUnionLocation')]",
+                          "episodicDataUpload": "[parameters('episodicDataUpload')]"
+                        },
+                        "cluster": {
+                          "name": "[parameters('clusterName')]",
+                          "witnessType": "Cloud",
+                          "witnessPath": "",
+                          "cloudAccountName": "[parameters('clusterWitnessStorageAccountName')]",
+                          "azureServiceEndpoint": "[environment().suffixes.storage]"
+                        },
+                        "storage": {
+                          "configurationMode": "[parameters('storageConfigurationMode')]"
+                        },
+                        "namingPrefix": "[parameters('deploymentPrefix')]",
+                        "domainFqdn": "[parameters('domainFqdn')]",
+                        "infrastructureNetwork": [
+                          {
+                            "subnetMask": "[parameters('subnetMask')]",
+                            "gateway": "[parameters('defaultGateway')]",
+                            "ipPools": [
+                              {
+                                "startingAddress": "[parameters('startingIPAddress')]",
+                                "endingAddress": "[parameters('endingIPAddress')]"
+                              }
+                            ],
+                            "dnsServers": "[parameters('dnsServers')]"
+                          }
+                        ],
+                        "hostNetwork": {
+                          "copy": [
+                            {
+                              "name": "storageNetworks",
+                              "count": "[length(parameters('storageNetworks'))]",
+                              "input": {
+                                "name": "[parameters('storageNetworks')[copyIndex('storageNetworks')].name]",
+                                "networkAdapterName": "[parameters('storageNetworks')[copyIndex('storageNetworks')].adapterName]",
+                                "vlanId": "[parameters('storageNetworks')[copyIndex('storageNetworks')].vlan]",
+                                "storageAdapterIPInfo": "[tryGet(parameters('storageNetworks')[copyIndex('storageNetworks')], 'storageAdapterIPInfo')]"
+                              }
+                            }
+                          ],
+                          "intents": "[parameters('networkIntents')]",
+                          "storageConnectivitySwitchless": "[parameters('storageConnectivitySwitchless')]",
+                          "enableStorageAutoIp": "[parameters('enableStorageAutoIp')]"
+                        },
+                        "adouPath": "[parameters('domainOUPath')]",
+                        "secretsLocation": "[format('https://{0}{1}', parameters('keyVaultName'), environment().suffixes.keyvaultDns)]",
+                        "optionalServices": {
+                          "customLocation": "[parameters('customLocationName')]"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the cluster deployment settings."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The ID of the cluster deployment settings."
+              },
+              "value": "[resourceId('Microsoft.AzureStackHCI/clusters/deploymentSettings', parameters('clusterName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group of the cluster deployment settings."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "cluster"
+      ]
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the cluster."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The ID of the cluster."
+      },
+      "value": "[resourceId('Microsoft.AzureStackHCI/clusters', parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group of the cluster."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "systemAssignedMIPrincipalId": {
+      "type": "string",
+      "metadata": {
+        "description": "The managed identity of the cluster."
+      },
+      "value": "[reference('cluster', '2024-04-01', 'full').identity.principalId]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location of the cluster."
+      },
+      "value": "[reference('cluster', '2024-04-01', 'full').location]"
+    }
+  }
+}

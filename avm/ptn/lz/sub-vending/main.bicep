@@ -10,6 +10,10 @@ targetScope = 'managementGroup'
 
 //Imports
 import { roleAssignmentType } from 'modules/subResourceWrapper.bicep'
+import { subnetType } from 'modules/subResourceWrapper.bicep'
+import { natGatewayType } from 'modules/subResourceWrapper.bicep'
+import { bastionType } from 'modules/subResourceWrapper.bicep'
+import { pimRoleAssignmentTypeType } from 'modules/subResourceWrapper.bicep'
 
 // PARAMETERS
 
@@ -134,7 +138,10 @@ param virtualNetworkName string?
 param virtualNetworkTags object = {}
 
 @description('''Optional. The address space of the Virtual Network that will be created by this module, supplied as multiple CIDR blocks in an array, e.g. `["10.0.0.0/16","172.16.0.0/12"]`.''')
-param virtualNetworkAddressSpace array = []
+param virtualNetworkAddressSpace string[] = []
+
+@description('''Optional. The subnets of the Virtual Network that will be created by this module.''')
+param virtualNetworkSubnets subnetType[]?
 
 @description('''Optional. The custom DNS servers to use on the Virtual Network, e.g. `["10.4.1.4", "10.2.1.5"]`. If left empty (default) then Azure DNS will be used for the Virtual Network.
 ''')
@@ -147,6 +154,18 @@ param virtualNetworkDdosPlanResourceId string = ''
 @description('''Optional. Whether to enable peering/connection with the supplied hub Virtual Network or Virtual WAN Virtual Hub.
 ''')
 param virtualNetworkPeeringEnabled bool = false
+
+@description('''Optional. Whether to deploy a NAT gateway to the created virtual network.''')
+param virtualNetworkDeployNatGateway bool = false
+
+@description('Optional. The NAT Gateway configuration object. Do not provide this object or keep it empty if you do not want to deploy a NAT Gateway.')
+param virtualNetworkNatGatewayConfiguration natGatewayType?
+
+@description('Optional. The configuration object for the Bastion host. Do not provide this object or keep it empty if you do not want to deploy a Bastion host.')
+param virtualNetworkBastionConfiguration bastionType?
+
+@sys.description('Optional. Whether to deploy a Bastion host to the created virtual network.')
+param virtualNetworkDeployBastion bool = false
 
 @description('''Optional. The resource ID of the Virtual Network or Virtual WAN Hub in the hub to which the created Virtual Network, by this module, will be peered/connected to via Virtual Network Peering or a Virtual WAN Virtual Hub Connection.
 ''')
@@ -217,7 +236,38 @@ Each object must contain the following `keys`:
   ]
   '''
 })
-param roleAssignments roleAssignmentType = []
+param roleAssignments roleAssignmentType[] = []
+
+@description('''Optional. Supply an array of objects containing the details of the PIM role assignments to create.
+
+Each object must contain the following `keys`:
+- `principalId` = The Object ID of the User, Group, SPN, Managed Identity to assign the RBAC role too.
+- `definition` = The Resource ID of a Built-in or custom RBAC Role Definition as follows:
+  - You can provide the Resource ID of a Built-in or custom RBAC Role Definition
+    - e.g. `/providers/Microsoft.Authorization/roleDefinitions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`
+- `relativeScope` = 2 options can be provided for input value:
+    1. `''` *(empty string)* = Make RBAC Role Assignment to Subscription scope
+    2. `'/resourceGroups/<RESOURCE GROUP NAME>'` = Make RBAC Role Assignment to specified Resource Group.
+''')
+@metadata({
+  example: '''
+  [
+    {
+      // Contributor role assignment at subscription scope
+      principalId: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+      definition: '/Contributor'
+      relativeScope: ''
+    }
+    {
+      // Owner role assignment at resource group scope
+      principalId: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+      definition: '/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
+      relativeScope: '/resourceGroups/{resourceGroupName}'
+    }
+  ]
+  '''
+})
+param pimRoleAssignments pimRoleAssignmentTypeType[] = []
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -233,16 +283,16 @@ param deploymentScriptManagedIdentityName string = 'id-${deployment().location}'
 
 @maxLength(64)
 @description('Optional. The name of the private virtual network for the deployment script. The string must consist of a-z, A-Z, 0-9, -, _, and . (period) and be between 2 and 64 characters in length.')
-param deploymentScriptVirtualNetworkName string = 'vnet-${deployment().location}'
+param deploymentScriptVirtualNetworkName string = 'vnet-ds-${deployment().location}'
 
 @description('Optional. The name of the network security group for the deployment script private subnet.')
-param deploymentScriptNetworkSecurityGroupName string = 'nsg-${deployment().location}'
+param deploymentScriptNetworkSecurityGroupName string = 'nsg-ds-${deployment().location}'
 
 @description('Optional. The address prefix of the private virtual network for the deployment script.')
 param virtualNetworkDeploymentScriptAddressPrefix string = '192.168.0.0/24'
 
 @description('Optional. The name of the storage account for the deployment script.')
-param deploymentScriptStorageAccountName string = 'stgds${substring(uniqueString(deployment().name, virtualNetworkLocation), 0, 10)}'
+param deploymentScriptStorageAccountName string = 'stgds${substring(uniqueString(deployment().name,existingSubscriptionId,subscriptionAliasName,subscriptionDisplayName, virtualNetworkLocation), 0, 10)}'
 
 @description('Optional. The location of the deployment script. Use region shortnames e.g. uksouth, eastus, etc.')
 param deploymentScriptLocation string = deployment().location
@@ -390,6 +440,7 @@ module createSubscriptionResources './modules/subResourceWrapper.bicep' = if (su
     virtualNetworkName: virtualNetworkName
     virtualNetworkTags: virtualNetworkTags
     virtualNetworkAddressSpace: virtualNetworkAddressSpace
+    virtualNetworkSubnets: virtualNetworkSubnets
     virtualNetworkDnsServers: virtualNetworkDnsServers
     virtualNetworkDdosPlanResourceId: virtualNetworkDdosPlanResourceId
     virtualNetworkPeeringEnabled: virtualNetworkPeeringEnabled
@@ -402,6 +453,7 @@ module createSubscriptionResources './modules/subResourceWrapper.bicep' = if (su
     vHubRoutingIntentEnabled: vHubRoutingIntentEnabled
     roleAssignmentEnabled: roleAssignmentEnabled
     roleAssignments: roleAssignments
+    pimRoleAssignments: pimRoleAssignments
     deploymentScriptResourceGroupName: deploymentScriptResourceGroupName
     deploymentScriptName: deploymentScriptName
     deploymentScriptManagedIdentityName: deploymentScriptManagedIdentityName
@@ -411,6 +463,10 @@ module createSubscriptionResources './modules/subResourceWrapper.bicep' = if (su
     deploymentScriptNetworkSecurityGroupName: deploymentScriptNetworkSecurityGroupName
     virtualNetworkDeploymentScriptAddressPrefix: virtualNetworkDeploymentScriptAddressPrefix
     deploymentScriptStorageAccountName: deploymentScriptStorageAccountName
+    virtualNetworkDeployNatGateway: virtualNetworkDeployNatGateway
+    virtualNetworkNatGatewayConfiguration: virtualNetworkNatGatewayConfiguration
+    virtualNetworkBastionConfiguration: virtualNetworkBastionConfiguration
+    virtualNetworkDeployBastion: virtualNetworkDeployBastion
     enableTelemetry: enableTelemetry
   }
 }

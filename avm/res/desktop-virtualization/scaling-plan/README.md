@@ -8,6 +8,7 @@ This module deploys an Azure Virtual Desktop Scaling Plan.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -779,7 +780,7 @@ param tags = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`description`](#parameter-description) | string | Description of the Scaling Plan. |
-| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The database-level diagnostic settings of the service. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`exclusionTag`](#parameter-exclusiontag) | string | Exclusion tag to be used for exclusion of VMs from Scaling Plan. |
 | [`friendlyName`](#parameter-friendlyname) | string | Friendly name of the Scaling Plan. |
@@ -809,7 +810,7 @@ Description of the Scaling Plan.
 
 ### Parameter: `diagnosticSettings`
 
-The diagnostic settings of the service.
+The database-level diagnostic settings of the service.
 
 - Required: No
 - Type: array
@@ -867,7 +868,7 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`category`](#parameter-diagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
-| [`categoryGroup`](#parameter-diagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `AllLogs` to collect all logs. |
+| [`categoryGroup`](#parameter-diagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs. |
 | [`enabled`](#parameter-diagnosticsettingslogcategoriesandgroupsenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.category`
@@ -879,7 +880,7 @@ Name of a Diagnostic Log category for a resource type this setting is applied to
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.categoryGroup`
 
-Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `AllLogs` to collect all logs.
+Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.
 
 - Required: No
 - Type: string
@@ -933,7 +934,6 @@ Exclusion tag to be used for exclusion of VMs from Scaling Plan.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `friendlyName`
 
@@ -949,7 +949,6 @@ Host pool references of the Scaling Plan.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `hostPoolType`
 
@@ -1133,7 +1132,6 @@ Schedules of the Scaling Plan.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `tags`
 
@@ -1158,6 +1156,14 @@ Time zone of the Scaling Plan. Defaults to UTC.
 | `name` | string | The name of the Scaling Plan. |
 | `resourceGroupName` | string | The name of the resource group the Scaling Plan was created in. |
 | `resourceId` | string | The resource ID of the Scaling Plan. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 
