@@ -33,10 +33,11 @@ module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      workloadName: '${namePrefix}${serviceShort}'
+      workloadName: take('${namePrefix}${serviceShort}', 10)
       vmSize: 'Standard_D2s_v4'
       adminUsername: 'azureuser'
       adminPassword: password
+      location: enforcedLocation
     }
   }
 ]

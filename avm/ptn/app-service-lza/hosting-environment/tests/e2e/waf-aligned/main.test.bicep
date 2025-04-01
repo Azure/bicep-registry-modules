@@ -56,7 +56,7 @@ module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      workloadName: '${namePrefix}${serviceShort}'
+      workloadName: take('${namePrefix}${serviceShort}', 10)
       tags: {
         environment: 'test'
       }
@@ -124,6 +124,7 @@ module testDeployment '../../../main.bicep' = [
       adminUsername: 'azureuser'
       adminPassword: password
       enableEgressLockdown: true
+      location: enforcedLocation
     }
   }
 ]
