@@ -71,8 +71,6 @@ output resourceGroupName string = resourceGroup().name
 type dataSourceInfoType = {
   @description('Required. The data source type of the resource.')
   datasourceType: string?
-  // @description('Required. The Type of Datasource object, used to initialize the right inherited type.')
-  // objectType: 'Datasource'
   @description('Required. The resource ID of the resource.')
   resourceID: string
   @description('Optional. The location of the data source.')
