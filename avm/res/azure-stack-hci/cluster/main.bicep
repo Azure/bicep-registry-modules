@@ -218,7 +218,16 @@ module deploymentSetting 'deployment-setting/main.bicep' = [
       domainOUPath: deploymentSettings!.domainOUPath
       endingIPAddress: deploymentSettings!.endingIPAddress
       keyVaultName: deploymentSettings!.keyVaultName
-      networkIntents: deploymentSettings!.networkIntents
+      networkIntents: [
+        for intent in deploymentSettings.networkIntents: {
+          ...intent
+          qosPolicyOverrides: {
+            bandwidthPercentage_SMB: intent.qosPolicyOverrides.bandwidthPercentageSMB
+            priorityValue8021Action_Cluster: intent.qosPolicyOverrides.priorityValue8021ActionCluster
+            priorityValue8021Action_SMB: intent.qosPolicyOverrides.priorityValue8021ActionSMB
+          }
+        }
+      ]
       startingIPAddress: deploymentSettings!.startingIPAddress
       storageConnectivitySwitchless: deploymentSettings!.storageConnectivitySwitchless
       storageNetworks: deploymentSettings!.storageNetworks
