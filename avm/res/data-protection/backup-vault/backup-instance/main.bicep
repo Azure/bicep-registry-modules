@@ -65,22 +65,21 @@ output resourceGroupName string = resourceGroup().name
 //   Definitions   //
 // =============== //
 
-//TODO: add all descriptions
 @export()
 @description('The type for backup instance data source info properties.')
 type dataSourceInfoType = {
   @description('Required. The data source type of the resource.')
-  datasourceType: string?
+  datasourceType: string
   @description('Required. The resource ID of the resource.')
   resourceID: string
-  @description('Optional. The location of the data source.')
-  resourceLocation: string?
-  @description('Optional. Unique identifier of the resource in the context of parent.')
-  resourceName: string?
-  @description('Optional. The resource type of the data source.')
-  resourceType: string?
-  @description('Optional. The Uri of the resource.')
-  resourceUri: string?
+  @description('Required. The location of the data source.')
+  resourceLocation: string
+  @description('Required. Unique identifier of the resource in the context of parent.')
+  resourceName: string
+  @description('Required. The resource type of the data source.')
+  resourceType: string
+  @description('Required. The Uri of the resource.')
+  resourceUri: string
 }
 
 @export()

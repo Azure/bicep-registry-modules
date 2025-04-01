@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "904025157902416839"
+      "templateHash": "3223634327374924766"
     },
     "name": "Data Protection Backup Vaults",
     "description": "This module deploys a Data Protection Backup Vault."
@@ -121,7 +121,6 @@
       "properties": {
         "datasourceType": {
           "type": "string",
-          "nullable": true,
           "metadata": {
             "description": "Required. The data source type of the resource."
           }
@@ -134,30 +133,26 @@
         },
         "resourceLocation": {
           "type": "string",
-          "nullable": true,
           "metadata": {
-            "description": "Optional. The location of the data source."
+            "description": "Required. The location of the data source."
           }
         },
         "resourceName": {
           "type": "string",
-          "nullable": true,
           "metadata": {
-            "description": "Optional. Unique identifier of the resource in the context of parent."
+            "description": "Required. Unique identifier of the resource in the context of parent."
           }
         },
         "resourceType": {
           "type": "string",
-          "nullable": true,
           "metadata": {
-            "description": "Optional. The resource type of the data source."
+            "description": "Required. The resource type of the data source."
           }
         },
         "resourceUri": {
           "type": "string",
-          "nullable": true,
           "metadata": {
-            "description": "Optional. The Uri of the resource."
+            "description": "Required. The Uri of the resource."
           }
         }
       },
@@ -742,7 +737,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "15647267821090298910"
+              "templateHash": "8713855947902606596"
             },
             "name": "Data Protection Backup Vault Backup Instances",
             "description": "This module deploys a Data Protection Backup Vault Backup Instance."
@@ -753,7 +748,6 @@
               "properties": {
                 "datasourceType": {
                   "type": "string",
-                  "nullable": true,
                   "metadata": {
                     "description": "Required. The data source type of the resource."
                   }
@@ -766,30 +760,26 @@
                 },
                 "resourceLocation": {
                   "type": "string",
-                  "nullable": true,
                   "metadata": {
-                    "description": "Optional. The location of the data source."
+                    "description": "Required. The location of the data source."
                   }
                 },
                 "resourceName": {
                   "type": "string",
-                  "nullable": true,
                   "metadata": {
-                    "description": "Optional. Unique identifier of the resource in the context of parent."
+                    "description": "Required. Unique identifier of the resource in the context of parent."
                   }
                 },
                 "resourceType": {
                   "type": "string",
-                  "nullable": true,
                   "metadata": {
-                    "description": "Optional. The resource type of the data source."
+                    "description": "Required. The resource type of the data source."
                   }
                 },
                 "resourceUri": {
                   "type": "string",
-                  "nullable": true,
                   "metadata": {
-                    "description": "Optional. The Uri of the resource."
+                    "description": "Required. The Uri of the resource."
                   }
                 }
               },

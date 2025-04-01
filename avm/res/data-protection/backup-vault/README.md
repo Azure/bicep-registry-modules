@@ -733,7 +733,12 @@ module backupVault 'br/public:avm/res/data-protection/backup-vault:<version>' = 
     backupInstances: [
       {
         dataSourceInfo: {
+          datasourceType: 'Microsoft.Storage/storageAccounts/blobServices'
           resourceID: '<resourceID>'
+          resourceLocation: '<resourceLocation>'
+          resourceName: '<resourceName>'
+          resourceType: 'Microsoft.Storage/storageAccounts'
+          resourceUri: '<resourceUri>'
         }
         name: '<name>'
         policyInfo: {
@@ -753,7 +758,12 @@ module backupVault 'br/public:avm/res/data-protection/backup-vault:<version>' = 
       }
       {
         dataSourceInfo: {
+          datasourceType: 'Microsoft.Compute/disks'
           resourceID: '<resourceID>'
+          resourceLocation: '<resourceLocation>'
+          resourceName: '<resourceName>'
+          resourceType: 'Microsoft.Compute/disks'
+          resourceUri: '<resourceUri>'
         }
         name: '<name>'
         policyInfo: {
@@ -967,7 +977,12 @@ module backupVault 'br/public:avm/res/data-protection/backup-vault:<version>' = 
       "value": [
         {
           "dataSourceInfo": {
-            "resourceID": "<resourceID>"
+            "datasourceType": "Microsoft.Storage/storageAccounts/blobServices",
+            "resourceID": "<resourceID>",
+            "resourceLocation": "<resourceLocation>",
+            "resourceName": "<resourceName>",
+            "resourceType": "Microsoft.Storage/storageAccounts",
+            "resourceUri": "<resourceUri>"
           },
           "name": "<name>",
           "policyInfo": {
@@ -987,7 +1002,12 @@ module backupVault 'br/public:avm/res/data-protection/backup-vault:<version>' = 
         },
         {
           "dataSourceInfo": {
-            "resourceID": "<resourceID>"
+            "datasourceType": "Microsoft.Compute/disks",
+            "resourceID": "<resourceID>",
+            "resourceLocation": "<resourceLocation>",
+            "resourceName": "<resourceName>",
+            "resourceType": "Microsoft.Compute/disks",
+            "resourceUri": "<resourceUri>"
           },
           "name": "<name>",
           "policyInfo": {
@@ -1207,7 +1227,12 @@ param azureMonitorAlertSettingsAlertsForAllJobFailures = 'Disabled'
 param backupInstances = [
   {
     dataSourceInfo: {
+      datasourceType: 'Microsoft.Storage/storageAccounts/blobServices'
       resourceID: '<resourceID>'
+      resourceLocation: '<resourceLocation>'
+      resourceName: '<resourceName>'
+      resourceType: 'Microsoft.Storage/storageAccounts'
+      resourceUri: '<resourceUri>'
     }
     name: '<name>'
     policyInfo: {
@@ -1227,7 +1252,12 @@ param backupInstances = [
   }
   {
     dataSourceInfo: {
+      datasourceType: 'Microsoft.Compute/disks'
       resourceID: '<resourceID>'
+      resourceLocation: '<resourceLocation>'
+      resourceName: '<resourceName>'
+      resourceType: 'Microsoft.Compute/disks'
+      resourceUri: '<resourceUri>'
     }
     name: '<name>'
     policyInfo: {
@@ -1503,11 +1533,6 @@ The data source info for the backup instance.
 | :-- | :-- | :-- |
 | [`datasourceType`](#parameter-backupinstancesdatasourceinfodatasourcetype) | string | The data source type of the resource. |
 | [`resourceID`](#parameter-backupinstancesdatasourceinforesourceid) | string | The resource ID of the resource. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
 | [`resourceLocation`](#parameter-backupinstancesdatasourceinforesourcelocation) | string | The location of the data source. |
 | [`resourceName`](#parameter-backupinstancesdatasourceinforesourcename) | string | Unique identifier of the resource in the context of parent. |
 | [`resourceType`](#parameter-backupinstancesdatasourceinforesourcetype) | string | The resource type of the data source. |
@@ -1517,7 +1542,7 @@ The data source info for the backup instance.
 
 The data source type of the resource.
 
-- Required: No
+- Required: Yes
 - Type: string
 
 ### Parameter: `backupInstances.dataSourceInfo.resourceID`
@@ -1531,28 +1556,28 @@ The resource ID of the resource.
 
 The location of the data source.
 
-- Required: No
+- Required: Yes
 - Type: string
 
 ### Parameter: `backupInstances.dataSourceInfo.resourceName`
 
 Unique identifier of the resource in the context of parent.
 
-- Required: No
+- Required: Yes
 - Type: string
 
 ### Parameter: `backupInstances.dataSourceInfo.resourceType`
 
 The resource type of the data source.
 
-- Required: No
+- Required: Yes
 - Type: string
 
 ### Parameter: `backupInstances.dataSourceInfo.resourceUri`
 
 The Uri of the resource.
 
-- Required: No
+- Required: Yes
 - Type: string
 
 ### Parameter: `backupInstances.name`

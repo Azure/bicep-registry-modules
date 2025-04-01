@@ -50,11 +50,6 @@ Gets or sets the data source information.
 | :-- | :-- | :-- |
 | [`datasourceType`](#parameter-datasourceinfodatasourcetype) | string | The data source type of the resource. |
 | [`resourceID`](#parameter-datasourceinforesourceid) | string | The resource ID of the resource. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
 | [`resourceLocation`](#parameter-datasourceinforesourcelocation) | string | The location of the data source. |
 | [`resourceName`](#parameter-datasourceinforesourcename) | string | Unique identifier of the resource in the context of parent. |
 | [`resourceType`](#parameter-datasourceinforesourcetype) | string | The resource type of the data source. |
@@ -64,7 +59,7 @@ Gets or sets the data source information.
 
 The data source type of the resource.
 
-- Required: No
+- Required: Yes
 - Type: string
 
 ### Parameter: `dataSourceInfo.resourceID`
@@ -78,28 +73,28 @@ The resource ID of the resource.
 
 The location of the data source.
 
-- Required: No
+- Required: Yes
 - Type: string
 
 ### Parameter: `dataSourceInfo.resourceName`
 
 Unique identifier of the resource in the context of parent.
 
-- Required: No
+- Required: Yes
 - Type: string
 
 ### Parameter: `dataSourceInfo.resourceType`
 
 The resource type of the data source.
 
-- Required: No
+- Required: Yes
 - Type: string
 
 ### Parameter: `dataSourceInfo.resourceUri`
 
 The Uri of the resource.
 
-- Required: No
+- Required: Yes
 - Type: string
 
 ### Parameter: `name`
