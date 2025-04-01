@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "12502542864893705083"
+      "templateHash": "13512342340467043757"
     },
     "name": "subscription-placement",
     "description": "This module allows for placement of subscriptions to management groups."
@@ -28,6 +28,13 @@
           },
           "metadata": {
             "description": "Required. The list of subscription IDs to be placed underneath the management group."
+          }
+        },
+        "disableSubscriptionPlacement": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Provides ability to disable the subscription placement for a specific management group."
           }
         }
       },
@@ -89,6 +96,7 @@
         "name": "customSubscriptionPlacement",
         "count": "[length(parameters('parSubscriptionPlacement'))]"
       },
+      "condition": "[or(not(empty(parameters('parSubscriptionPlacement')[copyIndex()])), equals(tryGet(parameters('parSubscriptionPlacement')[copyIndex()], 'disableSubscriptionPlacement'), true()))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('subPlacment-{0}{1}', uniqueString(parameters('parSubscriptionPlacement')[copyIndex()].managementGroupId), copyIndex())]",

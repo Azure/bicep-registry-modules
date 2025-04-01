@@ -43,6 +43,7 @@ module testDeployment '../../../main.bicep' = {
         subscriptionIds: [
           dependencies.outputs.subVendingSubscriptionId
         ]
+        disableSubscriptionPlacement: false
       }
     ]
   }

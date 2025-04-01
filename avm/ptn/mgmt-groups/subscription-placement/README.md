@@ -41,6 +41,7 @@ module subscriptionPlacement 'br/public:avm/ptn/mgmt-groups/subscription-placeme
   params: {
     parSubscriptionPlacement: [
       {
+        disableSubscriptionPlacement: false
         managementGroupId: '<managementGroupId>'
         subscriptionIds: [
           '<subVendingSubscriptionId>'
@@ -66,6 +67,7 @@ module subscriptionPlacement 'br/public:avm/ptn/mgmt-groups/subscription-placeme
     "parSubscriptionPlacement": {
       "value": [
         {
+          "disableSubscriptionPlacement": false,
           "managementGroupId": "<managementGroupId>",
           "subscriptionIds": [
             "<subVendingSubscriptionId>"
@@ -89,6 +91,7 @@ using 'br/public:avm/ptn/mgmt-groups/subscription-placement:<version>'
 
 param parSubscriptionPlacement = [
   {
+    disableSubscriptionPlacement: false
     managementGroupId: '<managementGroupId>'
     subscriptionIds: [
       '<subVendingSubscriptionId>'
@@ -129,6 +132,12 @@ The management group IDs along with the subscriptions to be placed underneath th
 | [`managementGroupId`](#parameter-parsubscriptionplacementmanagementgroupid) | string | The ID of the management group. |
 | [`subscriptionIds`](#parameter-parsubscriptionplacementsubscriptionids) | array | The list of subscription IDs to be placed underneath the management group. |
 
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`disableSubscriptionPlacement`](#parameter-parsubscriptionplacementdisablesubscriptionplacement) | bool | Provides ability to disable the subscription placement for a specific management group. |
+
 ### Parameter: `parSubscriptionPlacement.managementGroupId`
 
 The ID of the management group.
@@ -142,6 +151,13 @@ The list of subscription IDs to be placed underneath the management group.
 
 - Required: Yes
 - Type: array
+
+### Parameter: `parSubscriptionPlacement.disableSubscriptionPlacement`
+
+Provides ability to disable the subscription placement for a specific management group.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `enableTelemetry`
 
