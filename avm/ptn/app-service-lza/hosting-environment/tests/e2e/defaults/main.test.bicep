@@ -7,9 +7,6 @@ targetScope = 'subscription'
 // Parameters //
 // ========== //
 
-@description('Optional. The location to deploy resources to.')
-param resourceLocation string = deployment().location
-
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'applzamin'
 
@@ -31,7 +28,7 @@ var enforcedLocation = 'australiaeast'
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
-    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       workloadName: take('${namePrefix}${serviceShort}', 10)
       vmSize: 'Standard_D2s_v4'
