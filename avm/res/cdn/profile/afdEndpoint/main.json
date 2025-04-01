@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "8177824551774407436"
+      "version": "0.34.1.11899",
+      "templateHash": "11569548485086414235"
     },
     "name": "CDN Profiles AFD Endpoints",
     "description": "This module deploys a CDN Profile AFD Endpoint."
@@ -64,7 +64,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type of the AFD Endpoint."
       }
     },
     "_1.afdRoutecacheConfigurationType": {
@@ -114,6 +115,7 @@
         }
       },
       "metadata": {
+        "description": "The type of the route cache configuration.",
         "__bicep_imported_from!": {
           "sourceTemplate": "route/main.bicep"
         }
@@ -229,6 +231,7 @@
         }
       },
       "metadata": {
+        "description": "The type of the route.",
         "__bicep_imported_from!": {
           "sourceTemplate": "route/main.bicep"
         }
@@ -379,8 +382,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "5263422487313973220"
+              "version": "0.34.1.11899",
+              "templateHash": "1335284301571538933"
             },
             "name": "CDN Profiles AFD Endpoint Route",
             "description": "This module deploys a CDN Profile AFD Endpoint route."
@@ -496,7 +499,8 @@
                 }
               },
               "metadata": {
-                "__bicep_export!": true
+                "__bicep_export!": true,
+                "description": "The type of the route."
               }
             },
             "afdRoutecacheConfigurationType": {
@@ -544,6 +548,10 @@
                     "description": "Required. Defines how Frontdoor caches requests that include query strings."
                   }
                 }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type of the route cache configuration."
               }
             }
           },

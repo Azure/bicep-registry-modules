@@ -8,6 +8,7 @@ This module deploys a Local Network Gateway.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -49,8 +50,6 @@ module localNetworkGateway 'br/public:avm/res/network/local-network-gateway:<ver
     ]
     localGatewayPublicIpAddress: '8.8.8.8'
     name: 'nlngmin001'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -78,10 +77,6 @@ module localNetworkGateway 'br/public:avm/res/network/local-network-gateway:<ver
     },
     "name": {
       "value": "nlngmin001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -103,8 +98,6 @@ param localAddressPrefixes = [
 ]
 param localGatewayPublicIpAddress = '8.8.8.8'
 param name = 'nlngmin001'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -130,8 +123,10 @@ module localNetworkGateway 'br/public:avm/res/network/local-network-gateway:<ver
     localGatewayPublicIpAddress: '8.8.8.8'
     name: 'nlngmax001'
     // Non-required parameters
-    localAsn: '65123'
-    localBgpPeeringAddress: '192.168.1.5'
+    bgpSettings: {
+      localAsn: 65123
+      localBgpPeeringAddress: '192.168.1.5'
+    }
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -190,11 +185,11 @@ module localNetworkGateway 'br/public:avm/res/network/local-network-gateway:<ver
       "value": "nlngmax001"
     },
     // Non-required parameters
-    "localAsn": {
-      "value": "65123"
-    },
-    "localBgpPeeringAddress": {
-      "value": "192.168.1.5"
+    "bgpSettings": {
+      "value": {
+        "localAsn": 65123,
+        "localBgpPeeringAddress": "192.168.1.5"
+      }
     },
     "location": {
       "value": "<location>"
@@ -254,8 +249,10 @@ param localAddressPrefixes = [
 param localGatewayPublicIpAddress = '8.8.8.8'
 param name = 'nlngmax001'
 // Non-required parameters
-param localAsn = '65123'
-param localBgpPeeringAddress = '192.168.1.5'
+param bgpSettings = {
+  localAsn: 65123
+  localBgpPeeringAddress: '192.168.1.5'
+}
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
@@ -310,12 +307,9 @@ module localNetworkGateway 'br/public:avm/res/network/local-network-gateway:<ver
     localGatewayPublicIpAddress: '8.8.8.8'
     name: 'nlngwaf001'
     // Non-required parameters
-    localAsn: '65123'
-    localBgpPeeringAddress: '192.168.1.5'
-    location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
+    bgpSettings: {
+      localAsn: 65123
+      localBgpPeeringAddress: '192.168.1.5'
     }
     tags: {
       Environment: 'Non-Prod'
@@ -351,19 +345,10 @@ module localNetworkGateway 'br/public:avm/res/network/local-network-gateway:<ver
       "value": "nlngwaf001"
     },
     // Non-required parameters
-    "localAsn": {
-      "value": "65123"
-    },
-    "localBgpPeeringAddress": {
-      "value": "192.168.1.5"
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "lock": {
+    "bgpSettings": {
       "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
+        "localAsn": 65123,
+        "localBgpPeeringAddress": "192.168.1.5"
       }
     },
     "tags": {
@@ -394,12 +379,9 @@ param localAddressPrefixes = [
 param localGatewayPublicIpAddress = '8.8.8.8'
 param name = 'nlngwaf001'
 // Non-required parameters
-param localAsn = '65123'
-param localBgpPeeringAddress = '192.168.1.5'
-param location = '<location>'
-param lock = {
-  kind: 'CanNotDelete'
-  name: 'myCustomLockName'
+param bgpSettings = {
+  localAsn: 65123
+  localBgpPeeringAddress: '192.168.1.5'
 }
 param tags = {
   Environment: 'Non-Prod'
@@ -425,11 +407,9 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`bgpSettings`](#parameter-bgpsettings) | object | Local network gateway's BGP speaker settings. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`fqdn`](#parameter-fqdn) | string | FQDN of local network gateway. |
-| [`localAsn`](#parameter-localasn) | string | The BGP speaker's ASN. Not providing this value will automatically disable BGP on this Local Network Gateway resource. |
-| [`localBgpPeeringAddress`](#parameter-localbgppeeringaddress) | string | The BGP peering address and BGP identifier of this BGP speaker. Not providing this value will automatically disable BGP on this Local Network Gateway resource. |
-| [`localPeerWeight`](#parameter-localpeerweight) | string | The weight added to routes learned from this BGP speaker. This will only take effect if both the localAsn and the localBgpPeeringAddress values are provided. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
@@ -456,6 +436,53 @@ Name of the Local Network Gateway.
 - Required: Yes
 - Type: string
 
+### Parameter: `bgpSettings`
+
+Local network gateway's BGP speaker settings.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`localAsn`](#parameter-bgpsettingslocalasn) | int | The BGP speaker's ASN. |
+| [`localBgpPeeringAddress`](#parameter-bgpsettingslocalbgppeeringaddress) | string | The BGP peering address and BGP identifier of this BGP speaker. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`peerWeight`](#parameter-bgpsettingspeerweight) | int | The weight added to routes learned from this BGP speaker. |
+
+### Parameter: `bgpSettings.localAsn`
+
+The BGP speaker's ASN.
+
+- Required: Yes
+- Type: int
+- MinValue: 0
+- MaxValue: 4294967295
+
+### Parameter: `bgpSettings.localBgpPeeringAddress`
+
+The BGP peering address and BGP identifier of this BGP speaker.
+
+- Required: Yes
+- Type: string
+- MinValue: 0
+- MaxValue: 4294967295
+
+### Parameter: `bgpSettings.peerWeight`
+
+The weight added to routes learned from this BGP speaker.
+
+- Required: No
+- Type: int
+- MinValue: 0
+- MaxValue: 4294967295
+
 ### Parameter: `enableTelemetry`
 
 Enable/Disable usage telemetry for module.
@@ -467,30 +494,6 @@ Enable/Disable usage telemetry for module.
 ### Parameter: `fqdn`
 
 FQDN of local network gateway.
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `localAsn`
-
-The BGP speaker's ASN. Not providing this value will automatically disable BGP on this Local Network Gateway resource.
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `localBgpPeeringAddress`
-
-The BGP peering address and BGP identifier of this BGP speaker. Not providing this value will automatically disable BGP on this Local Network Gateway resource.
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `localPeerWeight`
-
-The weight added to routes learned from this BGP speaker. This will only take effect if both the localAsn and the localBgpPeeringAddress values are provided.
 
 - Required: No
 - Type: string
@@ -659,6 +662,14 @@ Tags of the resource.
 | `name` | string | The name of the local network gateway. |
 | `resourceGroupName` | string | The resource group the local network gateway was deployed into. |
 | `resourceId` | string | The resource ID of the local network gateway. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

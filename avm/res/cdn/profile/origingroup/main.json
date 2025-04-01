@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "2309166106272805364"
+      "version": "0.34.1.11899",
+      "templateHash": "14114649402369146252"
     },
     "name": "CDN Profiles Origin Group",
     "description": "This module deploys a CDN Profile Origin Group."
@@ -63,7 +63,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type of the origin group."
       }
     },
     "loadBalancingSettingsType": {
@@ -89,7 +90,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type of the load balancing settings."
       }
     },
     "healthProbeSettingsType": {
@@ -135,7 +137,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type of the health probe settings."
       }
     },
     "originType": {
@@ -215,6 +218,7 @@
         }
       },
       "metadata": {
+        "description": "The name of the origin type.",
         "__bicep_imported_from!": {
           "sourceTemplate": "origin/main.bicep"
         }
@@ -348,8 +352,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "4615820934914726240"
+              "version": "0.34.1.11899",
+              "templateHash": "3299448810125740577"
             },
             "name": "CDN Profiles Origin",
             "description": "This module deploys a CDN Profile Origin."
@@ -432,7 +436,8 @@
                 }
               },
               "metadata": {
-                "__bicep_export!": true
+                "__bicep_export!": true,
+                "description": "The name of the origin type."
               }
             }
           },
