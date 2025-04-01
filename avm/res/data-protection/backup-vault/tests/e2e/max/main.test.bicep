@@ -33,6 +33,11 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   location: resourceLocation
 }
 
+resource resourceGroupDep 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+  name: '${resourceGroupName}-dep'
+  location: resourceLocation
+}
+
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
