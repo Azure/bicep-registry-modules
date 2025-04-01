@@ -44,12 +44,8 @@ resource backupInstance 'Microsoft.DataProtection/backupVaults/backupInstances@2
   properties: {
     friendlyName: friendlyName
     objectType: 'BackupInstance'
-    dataSourceInfo: dataSourceInfo
+    dataSourceInfo: union(dataSourceInfo, { objectType: 'Datasource' })
     policyInfo: policyInfoVar
-    // datasourceAuthCredentials
-    // identityDetails
-    // resourceGuardOperationRequests
-    // validationType
   }
   dependsOn: [
     backupInstance_dataSourceResource_rbac
@@ -75,8 +71,8 @@ output resourceGroupName string = resourceGroup().name
 type dataSourceInfoType = {
   @description('Required. The data source type of the resource.')
   datasourceType: string?
-  @description('Required. The Type of Datasource object, used to initialize the right inherited type.')
-  objectType: 'Datasource'
+  // @description('Required. The Type of Datasource object, used to initialize the right inherited type.')
+  // objectType: 'Datasource'
   @description('Required. The resource ID of the resource.')
   resourceID: string
   @description('Optional. The location of the data source.')
@@ -94,25 +90,6 @@ type dataSourceInfoType = {
 type policyInfoType = {
   @description('Required. The name of the backup instance policy.')
   policyName: string
-  @description('Optional. Policy parameters for the backup instance.')
+  @description('Required. Policy parameters for the backup instance.')
   policyParameters: object
-  // policyParameters: {
-  //   backupDatasourceParametersList: backupDatasourceParameterType[]?
-  //   dataStoreParametersList: dataStoreParameterType[]?
-  // }?
 }
-
-// @export() //TODO: implement discriminator
-// @description('The type for backupDatasourceParameter properties.')
-// type backupDatasourceParameterType = {
-//   objectType: 'BlobBackupDatasourceParameters' | 'KubernetesClusterBackupDatasourceParameters'
-//   // containersList: string[]
-// }
-
-// @export()
-// @description('The type for dataStoreParameter properties.')
-// type dataStoreParameterType = {
-//   objectType: 'AzureOperationalStoreParameters'
-//   dataStoreType: 'ArchiveStore' | 'OperationalStore' | 'VaultStore'
-//   resourceGroupId: string?
-// }

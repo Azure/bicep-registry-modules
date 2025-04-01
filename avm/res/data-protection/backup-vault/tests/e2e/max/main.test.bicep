@@ -218,7 +218,7 @@ module testDeployment '../../../main.bicep' = {
       {
         name: last(split(nestedDependencies.outputs.storageAccountResourceId, '/'))
         dataSourceInfo: {
-          objectType: 'Datasource'
+          // objectType: 'Datasource'
           resourceID: nestedDependencies.outputs.storageAccountResourceId
           resourceName: last(split(nestedDependencies.outputs.storageAccountResourceId, '/'))
           resourceType: 'Microsoft.Storage/storageAccounts'
@@ -241,7 +241,7 @@ module testDeployment '../../../main.bicep' = {
       {
         name: last(split(nestedDependencies.outputs.diskResourceId, '/'))
         dataSourceInfo: {
-          objectType: 'Datasource'
+          // objectType: 'Datasource'
           resourceID: nestedDependencies.outputs.diskResourceId
           resourceName: last(split(nestedDependencies.outputs.diskResourceId, '/'))
           resourceType: 'Microsoft.Compute/disks'
