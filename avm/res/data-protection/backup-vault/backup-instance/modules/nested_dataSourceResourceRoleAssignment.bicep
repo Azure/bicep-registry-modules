@@ -52,4 +52,7 @@ resource roleAssignment_snapshotRG 'Microsoft.Authorization/roleAssignments@2022
     principalId: principalId
     principalType: 'ServicePrincipal'
   }
+  dependsOn: [
+    roleAssignment_disk
+  ]
 }
