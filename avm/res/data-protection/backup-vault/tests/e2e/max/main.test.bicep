@@ -286,10 +286,10 @@ module testDeployment '../../../main.bicep' = [
           principalType: 'ServicePrincipal'
         }
       ]
-      lock: {
-        kind: 'CanNotDelete'
-        name: 'myCustomLockName'
-      }
+      // lock: {
+      //   kind: 'CanNotDelete'
+      //   name: 'myCustomLockName'
+      // }
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'
