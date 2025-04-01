@@ -47,8 +47,10 @@ function Get-ModuleTargetVersion {
         # Fetch the content of the file in GitHub
         $repoOwner = 'Azure'
         $repoName = 'bicep-registry-modules'
+        $module = ($ModuleFolderPath -split '[\/|\\]avm[\/|\\]')[-1]
         $filePathInRepo = 'avm/{0}/main.json' -f ($module -replace '\\', '/')
         $apiUrl = 'https://api.github.com/repos/{0}/{1}/contents/{2}' -f $repoOwner, $repoName, $filePathInRepo
+        Write-Verbose "Fetching the content of the file '[$filePathInRepo]' from GitHub." -Verbose
 
         try {
             $response = Invoke-RestMethod -Uri $apiUrl -Headers @{ 'User-Agent' = 'PowerShell' }
