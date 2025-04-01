@@ -10,8 +10,18 @@ param kustoClusterName string
 @description('Required. The name of the parent Kusto Cluster Database. Required if the template is used in a standalone deployment.')
 param kustoDatabaseName string
 
-@description('Required. The principal assignement for the Kusto Cluster Database.')
-param databasePrincipalAssignment databasePrincipalAssignmentType
+@description('Required. The principal id assigned to the Kusto Cluster database principal. It can be a user email, application id, or security group name.')
+param principalId string
+
+@description('Required. The principal type of the principal id.')
+param principalType string
+
+@description('Required. The Kusto Cluster database role to be assigned to the principal id.')
+param role string
+
+@description('Optional. The tenant id of the principal.')
+param tenantId string = tenant().tenantId
+
 
 // ============== //
 // Resources      //
@@ -27,13 +37,13 @@ resource cluster 'Microsoft.Kusto/clusters@2024-04-13' existing  = {
 }
 
 resource kustoClusterDatabasePrincipalAssignment 'Microsoft.Kusto/clusters/databases/principalAssignments@2024-04-13' = {
-  name: databasePrincipalAssignment.principalId
+  name: principalId
   parent: cluster::database
   properties: {
-    principalId: databasePrincipalAssignment.principalId
-    principalType: databasePrincipalAssignment.principalType
-    role: databasePrincipalAssignment.role
-    tenantId: databasePrincipalAssignment.tenantId
+    principalId: principalId
+    principalType: principalType
+    role: role
+    tenantId: tenantId
   }
 }
 
@@ -49,23 +59,3 @@ output resourceId string = kustoClusterDatabasePrincipalAssignment.id
 
 @description('The resource group name of the deployed Kusto Cluster Database Principal Assignment.')
 output resourceGroupName string = resourceGroup().name
-
-// =============== //
-//   Definitions   //
-// =============== //
-
-@export()
-@description('The type of a database principal assignment.')
-type databasePrincipalAssignmentType = {
-  @description('Required. The principal id assigned to the Kusto Cluster database principal. It can be a user email, application id, or security group name.')
-  principalId: string
-
-  @description('Required. The principal type of the principal id.')
-  principalType: 'App' | 'Group' | 'User'
-
-  @description('Required. The Kusto Cluster database role to be assigned to the principal id.')
-  role: 'Admin' | 'Ingestor' | 'Monitor' | 'UnrestrictedViewer' | 'User' | 'Viewer'
-
-  @description('Required. The tenant id of the principal.')
-  tenantId: string
-}

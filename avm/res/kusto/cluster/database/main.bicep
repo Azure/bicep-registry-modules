@@ -48,11 +48,14 @@ resource database_readOnly 'Microsoft.Kusto/clusters/databases@2024-04-13' = if 
 
 module database_readWrite_PrincipalAssignment './principal-assignment/main.bicep' = [
   for (principalAssignment, index) in (databasePrincipalAssignments ?? []): {
-    name: '${uniqueString(deployment().name, location)}-KustoDatabase-PrincipalAssignment-${index}'
+    name: '${uniqueString(deployment().name, location)}-KustoDb-PrincipalAssignment-${index}'
     params: {
       kustoClusterName: kustoClusterName
       kustoDatabaseName: databaseKind == 'ReadOnlyFollowing' ? database_readOnly.name : database_readWrite.name
-      databasePrincipalAssignment: principalAssignment
+      principalId: principalAssignment.principalId
+      principalType: principalAssignment.principalType
+      role: principalAssignment.role
+      tenantId: principalAssignment.tenantId
     }
   }
 ]
@@ -74,8 +77,6 @@ output resourceGroupName string = resourceGroup().name
 //   Definitions   //
 // =============== //
 
-import { databasePrincipalAssignmentType } from './principal-assignment/main.bicep'
-
 @export()
 @description('Conditional. The properties of the database if using read-write.')
 type databaseReadWriteType = {
@@ -95,3 +96,20 @@ type databaseReadWriteType = {
   @description('Optional. The time the data should be kept before it stops being accessible to queries in TimeSpan.')
   softDeletePeriod: string?
 }?
+
+@export()
+@description('The type of a database principal assignment.')
+type databasePrincipalAssignmentType = {
+  @description('Required. The principal id assigned to the Kusto Cluster database principal. It can be a user email, application id, or security group name.')
+  principalId: string
+
+  @description('Required. The principal type of the principal id.')
+  principalType: 'App' | 'Group' | 'User'
+
+  @description('Required. The Kusto Cluster database role to be assigned to the principal id.')
+  role: 'Admin' | 'Ingestor' | 'Monitor' | 'UnrestrictedViewer' | 'User' | 'Viewer'
+
+  @description('Required. The tenant id of the principal.')
+  tenantId: string
+}
+
