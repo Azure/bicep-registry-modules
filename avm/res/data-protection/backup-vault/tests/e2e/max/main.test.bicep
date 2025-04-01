@@ -222,7 +222,7 @@ module testDeployment '../../../main.bicep' = {
           resourceName: last(split(nestedDependencies.outputs.storageAccountResourceId, '/'))
           resourceType: 'Microsoft.Storage/storageAccounts'
           resourceUri: nestedDependencies.outputs.storageAccountResourceId
-          // resourceLocation: resourceLocation
+          resourceLocation: resourceLocation
           datasourceType: 'Microsoft.Storage/storageAccounts/blobServices'
         }
         policyInfo: {
@@ -244,7 +244,7 @@ module testDeployment '../../../main.bicep' = {
           resourceName: last(split(nestedDependencies.outputs.diskResourceId, '/'))
           resourceType: 'Microsoft.Compute/disks'
           resourceUri: nestedDependencies.outputs.diskResourceId
-          // resourceLocation: resourceLocation
+          resourceLocation: resourceLocation
           datasourceType: 'Microsoft.Compute/disks'
         }
         policyInfo: {
