@@ -220,6 +220,7 @@ resource backupVault 'Microsoft.DataProtection/backupVaults@2024-04-01' = {
   }
 }
 
+@batchSize(1)
 module backupVault_backupPolicies 'backup-policy/main.bicep' = [
   for (backupPolicy, index) in (backupPolicies ?? []): {
     name: '${uniqueString(deployment().name, location)}-BV-BackupPolicy-${index}'
@@ -231,6 +232,7 @@ module backupVault_backupPolicies 'backup-policy/main.bicep' = [
   }
 ]
 
+@batchSize(1)
 module backupVault_backupInstances 'backup-instance/main.bicep' = [
   for (backupInstance, index) in (backupInstances ?? []): {
     name: '${uniqueString(deployment().name, location)}-BV-BackupInstance-${index}'

@@ -33,8 +33,13 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   location: resourceLocation
 }
 
-resource resourceGroupDep 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-  name: '${resourceGroupName}-dep'
+resource resourceGroup_st 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+  name: '${take(resourceGroupName, 87)}-st' // Ensure the resource group name is within the 90 character limit
+  location: resourceLocation
+}
+
+resource resourceGroup_dsk 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+  name: '${take(resourceGroupName, 86)}-dsk' // Ensure the resource group name is within the 90 character limit
   location: resourceLocation
 }
 
