@@ -281,6 +281,12 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     environmentResourceId: '<environmentResourceId>'
     name: 'acamax001'
     // Non-required parameters
+    identitySettings: [
+      {
+        identity: '<identity>'
+        lifecycle: 'None'
+      }
+    ]
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -406,6 +412,14 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
       "value": "acamax001"
     },
     // Non-required parameters
+    "identitySettings": {
+      "value": [
+        {
+          "identity": "<identity>",
+          "lifecycle": "None"
+        }
+      ]
+    },
     "location": {
       "value": "<location>"
     },
@@ -539,6 +553,12 @@ param containers = [
 param environmentResourceId = '<environmentResourceId>'
 param name = 'acamax001'
 // Non-required parameters
+param identitySettings = [
+  {
+    identity: '<identity>'
+    lifecycle: 'None'
+  }
+]
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
@@ -956,6 +976,7 @@ param tags = {
 | [`disableIngress`](#parameter-disableingress) | bool | Bool to disable all ingress traffic for the container app. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`exposedPort`](#parameter-exposedport) | int | Exposed Port in containers for TCP traffic from ingress. |
+| [`identitySettings`](#parameter-identitysettings) | array | Settings for Managed Identities that are assigned to the Container App. If a Managed Identity is not specified here, default settings will be used. |
 | [`includeAddOns`](#parameter-includeaddons) | bool | Toggle to include the service configuration. |
 | [`ingressAllowInsecure`](#parameter-ingressallowinsecure) | bool | Bool indicating if HTTP connections to is allowed. If set to false HTTP connections are automatically redirected to HTTPS connections. |
 | [`ingressExternal`](#parameter-ingressexternal) | bool | Bool indicating if the App exposes an external HTTP endpoint. |
@@ -1520,6 +1541,13 @@ Exposed Port in containers for TCP traffic from ingress.
 - Type: int
 - Default: `0`
 
+### Parameter: `identitySettings`
+
+Settings for Managed Identities that are assigned to the Container App. If a Managed Identity is not specified here, default settings will be used.
+
+- Required: No
+- Type: array
+
 ### Parameter: `includeAddOns`
 
 Toggle to include the service configuration.
@@ -2017,26 +2045,26 @@ The secrets of the Container App.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`keyVaultUrl`](#parameter-secretskeyvaulturl) | string | Azure Key Vault URL pointing to the secret referenced by the Container App Job. Required if `value` is null. |
-| [`value`](#parameter-secretsvalue) | securestring | The secret value, if not fetched from Key Vault. Required if `keyVaultUrl` is not null. |
+| [`keyVaultUrl`](#parameter-secretskeyvaulturl) | string | The URL of the Azure Key Vault secret referenced by the Container App. Required if `value` is null. |
+| [`value`](#parameter-secretsvalue) | securestring | The container app secret value, if not fetched from the Key Vault. Required if `keyVaultUrl` is not null. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`identity`](#parameter-secretsidentity) | string | Resource ID of a managed identity to authenticate with Azure Key Vault, or System to use a system-assigned identity. |
-| [`name`](#parameter-secretsname) | string | The name of the secret. |
+| [`name`](#parameter-secretsname) | string | The name of the container app secret. |
 
 ### Parameter: `secrets.keyVaultUrl`
 
-Azure Key Vault URL pointing to the secret referenced by the Container App Job. Required if `value` is null.
+The URL of the Azure Key Vault secret referenced by the Container App. Required if `value` is null.
 
 - Required: No
 - Type: string
 
 ### Parameter: `secrets.value`
 
-The secret value, if not fetched from Key Vault. Required if `keyVaultUrl` is not null.
+The container app secret value, if not fetched from the Key Vault. Required if `keyVaultUrl` is not null.
 
 - Required: No
 - Type: securestring
@@ -2050,7 +2078,7 @@ Resource ID of a managed identity to authenticate with Azure Key Vault, or Syste
 
 ### Parameter: `secrets.name`
 
-The name of the secret.
+The name of the container app secret.
 
 - Required: No
 - Type: string
