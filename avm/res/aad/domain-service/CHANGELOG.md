@@ -1,12 +1,4 @@
-## 0.3.1
-
-### Changes
-
-- Removed unused owner metadata
-
-### Breaking Changes
-
-- none
+# Changelog
 
 ## 0.3.0
 
