@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "5247559033520394865"
+      "templateHash": "28036694998785260"
     },
     "name": "Hybrid Container Service Provisioned Cluster Instance",
     "description": "Deploy a provisioned cluster instance."
@@ -481,6 +481,20 @@
         "description": "Optional. The name of the secret in the key vault that contains the SSH public key."
       }
     },
+    "keyvaultSubscriptionId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Conditional. Key vault subscription ID, which is used for for storing secrets for the HCI cluster. Required if no existing SSH keys and key vault is in different subscription."
+      }
+    },
+    "keyvaultResourceGroup": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Conditional. Key vault resource group, which is used for for storing secrets for the HCI cluster. Required if no existing SSH keys and key vault is in different resource group."
+      }
+    },
     "keyVaultName": {
       "type": "string",
       "nullable": true,
@@ -630,7 +644,6 @@
     }
   },
   "variables": {
-    "$fxv#0": "# Create temp directory in a known location\n$tempDir = '/tmp/sshkeys'\nNew-Item -ItemType Directory -Path $tempDir -Force\nSet-Location $tempDir\n# Generate SSH key pair using ssh-keygen\nssh-keygen -t rsa -b 4096 -f ./key -N '\"\"' -q\n# Read the generated keys\n$publicKey = Get-Content -Path './key.pub' -Raw\n$privateKey = Get-Content -Path './key' -Raw\n# Clean up temp files\nRemove-Item -Path './key*' -Force\nRemove-Item -Path $tempDir -Force -Recurse\n# Set output\n$DeploymentScriptOutputs = @{}\n$DeploymentScriptOutputs['publicKey'] = $publicKey\n$DeploymentScriptOutputs['privateKey'] = $privateKey\n",
     "enableReferencedModulesTelemetry": false
   },
   "resources": {
@@ -654,67 +667,6 @@
         }
       }
     },
-    "kv": {
-      "condition": "[and(empty(parameters('linuxProfile')), not(empty(parameters('keyVaultName'))))]",
-      "existing": true,
-      "type": "Microsoft.KeyVault/vaults",
-      "apiVersion": "2023-07-01",
-      "name": "[parameters('keyVaultName')]"
-    },
-    "managedIdentity": {
-      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
-      "apiVersion": "2023-01-31",
-      "name": "[format('temp-{0}', parameters('name'))]",
-      "location": "[parameters('location')]",
-      "tags": "[parameters('tags')]"
-    },
-    "generateSSHKey": {
-      "condition": "[empty(parameters('linuxProfile'))]",
-      "type": "Microsoft.Resources/deploymentScripts",
-      "apiVersion": "2020-10-01",
-      "name": "[format('generateSSHKey-{0}', parameters('name'))]",
-      "location": "[parameters('location')]",
-      "tags": "[parameters('tags')]",
-      "kind": "AzurePowerShell",
-      "identity": {
-        "type": "UserAssigned",
-        "userAssignedIdentities": {
-          "[format('{0}', resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('temp-{0}', parameters('name'))))]": {}
-        }
-      },
-      "properties": {
-        "azPowerShellVersion": "8.0",
-        "retentionInterval": "P1D",
-        "scriptContent": "[variables('$fxv#0')]"
-      },
-      "dependsOn": [
-        "managedIdentity"
-      ]
-    },
-    "sshPublicKeyPem": {
-      "condition": "[empty(parameters('linuxProfile'))]",
-      "type": "Microsoft.KeyVault/vaults/secrets",
-      "apiVersion": "2023-07-01",
-      "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('sshPublicKeySecretName'))]",
-      "properties": {
-        "value": "[reference('generateSSHKey').outputs.publicKey]"
-      },
-      "dependsOn": [
-        "generateSSHKey"
-      ]
-    },
-    "sshPrivateKeyPem": {
-      "condition": "[empty(parameters('linuxProfile'))]",
-      "type": "Microsoft.KeyVault/vaults/secrets",
-      "apiVersion": "2023-07-01",
-      "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('sshPrivateKeyPemSecretName'))]",
-      "properties": {
-        "value": "[reference('generateSSHKey').outputs.privateKey]"
-      },
-      "dependsOn": [
-        "generateSSHKey"
-      ]
-    },
     "existingCluster": {
       "existing": true,
       "type": "Microsoft.Kubernetes/connectedClusters",
@@ -737,15 +689,170 @@
         "controlPlane": "[parameters('controlPlane')]",
         "kubernetesVersion": "[coalesce(parameters('kubernetesVersion'), '')]",
         "licenseProfile": "[parameters('licenseProfile')]",
-        "linuxProfile": "[coalesce(parameters('linuxProfile'), createObject('ssh', createObject('publicKeys', createArray(createObject('keyData', reference('generateSSHKey').outputs.publicKey)))))]",
+        "linuxProfile": "[coalesce(parameters('linuxProfile'), createObject('ssh', createObject('publicKeys', createArray(createObject('keyData', reference('secrets').outputs.sshPublicKeyPemValue.value)))))]",
         "networkProfile": "[parameters('networkProfile')]",
         "storageProfile": "[parameters('storageProfile')]"
       },
       "dependsOn": [
         "connectedCluster",
-        "generateSSHKey",
-        "sshPublicKeyPem"
+        "secrets"
       ]
+    },
+    "secrets": {
+      "condition": "[and(empty(parameters('linuxProfile')), not(empty(parameters('keyVaultName'))))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-secrets', uniqueString(deployment().name, parameters('location')))]",
+      "subscriptionId": "[coalesce(parameters('keyvaultSubscriptionId'), subscription().subscriptionId)]",
+      "resourceGroup": "[coalesce(parameters('keyvaultResourceGroup'), resourceGroup().name)]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "keyVaultName": {
+            "value": "[parameters('keyVaultName')]"
+          },
+          "name": {
+            "value": "[parameters('name')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "sshPrivateKeyPemSecretName": {
+            "value": "[parameters('sshPrivateKeyPemSecretName')]"
+          },
+          "sshPublicKeySecretName": {
+            "value": "[parameters('sshPublicKeySecretName')]"
+          },
+          "tags": {
+            "value": "[parameters('tags')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.33.93.31351",
+              "templateHash": "8068610558158410834"
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the provisioned cluster instance."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Optional. Location for all Resources."
+              }
+            },
+            "keyVaultName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the key vault."
+              }
+            },
+            "sshPrivateKeyPemSecretName": {
+              "type": "string",
+              "defaultValue": "AksArcAgentSshPrivateKeyPem",
+              "metadata": {
+                "description": "Optional. The name of the secret in the key vault that contains the SSH private key PEM."
+              }
+            },
+            "sshPublicKeySecretName": {
+              "type": "string",
+              "defaultValue": "AksArcAgentSshPublicKey",
+              "metadata": {
+                "description": "Optional. The name of the secret in the key vault that contains the SSH public key."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Tags of the resource."
+              }
+            }
+          },
+          "variables": {
+            "$fxv#0": "# Create temp directory in a known location\n$tempDir = '/tmp/sshkeys'\nNew-Item -ItemType Directory -Path $tempDir -Force\nSet-Location $tempDir\n# Generate SSH key pair using ssh-keygen\nssh-keygen -t rsa -b 4096 -f ./key -N '\"\"' -q\n# Read the generated keys\n$publicKey = Get-Content -Path './key.pub' -Raw\n$privateKey = Get-Content -Path './key' -Raw\n# Clean up temp files\nRemove-Item -Path './key*' -Force\nRemove-Item -Path $tempDir -Force -Recurse\n# Set output\n$DeploymentScriptOutputs = @{}\n$DeploymentScriptOutputs['publicKey'] = $publicKey\n$DeploymentScriptOutputs['privateKey'] = $privateKey\n"
+          },
+          "resources": {
+            "kv": {
+              "existing": true,
+              "type": "Microsoft.KeyVault/vaults",
+              "apiVersion": "2023-07-01",
+              "name": "[parameters('keyVaultName')]"
+            },
+            "managedIdentity": {
+              "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+              "apiVersion": "2023-01-31",
+              "name": "[format('temp-{0}', parameters('name'))]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]"
+            },
+            "generateSSHKey": {
+              "type": "Microsoft.Resources/deploymentScripts",
+              "apiVersion": "2020-10-01",
+              "name": "[format('generateSSHKey-{0}', parameters('name'))]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "kind": "AzurePowerShell",
+              "identity": {
+                "type": "UserAssigned",
+                "userAssignedIdentities": {
+                  "[format('{0}', resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('temp-{0}', parameters('name'))))]": {}
+                }
+              },
+              "properties": {
+                "azPowerShellVersion": "8.0",
+                "retentionInterval": "P1D",
+                "scriptContent": "[variables('$fxv#0')]"
+              },
+              "dependsOn": [
+                "managedIdentity"
+              ]
+            },
+            "sshPublicKeyPem": {
+              "type": "Microsoft.KeyVault/vaults/secrets",
+              "apiVersion": "2023-07-01",
+              "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('sshPublicKeySecretName'))]",
+              "properties": {
+                "value": "[reference('generateSSHKey').outputs.publicKey]"
+              },
+              "dependsOn": [
+                "generateSSHKey"
+              ]
+            },
+            "sshPrivateKeyPem": {
+              "type": "Microsoft.KeyVault/vaults/secrets",
+              "apiVersion": "2023-07-01",
+              "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('sshPrivateKeyPemSecretName'))]",
+              "properties": {
+                "value": "[reference('generateSSHKey').outputs.privateKey]"
+              },
+              "dependsOn": [
+                "generateSSHKey"
+              ]
+            }
+          },
+          "outputs": {
+            "sshPublicKeyPemValue": {
+              "type": "string",
+              "value": "[reference('generateSSHKey').outputs.publicKey]"
+            }
+          }
+        }
+      }
     },
     "connectedCluster": {
       "type": "Microsoft.Resources/deployments",
