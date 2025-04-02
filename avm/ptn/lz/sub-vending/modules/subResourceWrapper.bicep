@@ -324,8 +324,7 @@ var deploymentNames = {
 // Role Assignments filtering and splitting
 var roleAssignmentsSubscription = filter(
   roleAssignments,
-  assignment =>
-    !contains(assignment.relativeScope, '/resourceGroups/') && (assignment.?isCustomRole == null || assignment.?isCustomRole == false)
+  assignment => !contains(assignment.relativeScope, '/resourceGroups/') && (assignment.?isCustomRole ?? false == false)
 )
 var roleAssignmentsResourceGroups = filter(
   roleAssignments,
@@ -343,7 +342,7 @@ var roleAssignmentsResourceGroupNotSelf = filter(
 // Custom Role Assignments filtering and splitting
 var customRoleAssignmentsSubscription = filter(
   roleAssignments,
-  assignment => !contains(assignment.relativeScope, '/resourceGroups/') && assignment.?isCustomRole == true
+  assignment => !contains(assignment.relativeScope, '/resourceGroups/') && (assignment.?isCustomRole ?? false == true)
 )
 
 // PIM Role Assignments filtering and splitting
@@ -1608,8 +1607,14 @@ type pimRoleAssignmentTypeType = {
   @description('Required. The role definition ID or name.')
   definition: string
 
+  @description('Optional. The condition for the role assignment.')
+  roleAssignmentCondition: roleAssignmentConditionType?
+
   @description('Optional. The justification for the role assignment.')
   justification: string?
+
+  @description('Optional. The request type of the role assignment.')
+  requestType: requestTypeType?
 }
 
 @discriminator('durationType')
