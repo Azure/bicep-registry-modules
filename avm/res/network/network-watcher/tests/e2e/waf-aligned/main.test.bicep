@@ -75,7 +75,6 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: 'NetworkWatcher_${enforcedLocation}'
-      location: enforcedLocation
       connectionMonitors: [
         {
           name: '${namePrefix}-${serviceShort}-cm-001'

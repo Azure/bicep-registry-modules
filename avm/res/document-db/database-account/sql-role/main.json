@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "18231824675403192209"
+      "version": "0.34.44.8038",
+      "templateHash": "2490416937519336508"
     },
     "name": "DocumentDB Database Account SQL Role.",
     "description": "This module deploys SQL Role Definision and Assignment in a CosmosDB Account."
@@ -90,8 +90,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "5893639019626800687"
+              "version": "0.34.44.8038",
+              "templateHash": "16003674161646405716"
             },
             "name": "DocumentDB Database Account SQL Role Definitions.",
             "description": "This module deploys a SQL Role Definision in a CosmosDB Account."
@@ -210,8 +210,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "18194141979511162014"
+              "version": "0.34.44.8038",
+              "templateHash": "16164048892239373889"
             },
             "name": "DocumentDB Database Account SQL Role Assignments.",
             "description": "This module deploys a SQL Role Assignment in a CosmosDB Account."
