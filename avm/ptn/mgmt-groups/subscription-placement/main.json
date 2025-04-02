@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "8143221199458659468"
+      "templateHash": "17803027931414595389"
     },
     "name": "subscription-placement",
     "description": "This module allows for placement of subscriptions to management groups."
@@ -122,7 +122,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.34.44.8038",
-              "templateHash": "1425956500445063128"
+              "templateHash": "822995430469320013"
             }
           },
           "parameters": {
@@ -148,6 +148,7 @@
                 "name": "customSubscriptionPlacement",
                 "count": "[length(parameters('subscriptionIds'))]"
               },
+              "condition": "[not(empty(parameters('subscriptionIds')[copyIndex()]))]",
               "type": "Microsoft.Management/managementGroups/subscriptions",
               "apiVersion": "2023-04-01",
               "name": "[format('{0}/{1}', parameters('managementGroupId'), parameters('subscriptionIds')[copyIndex()])]"
@@ -161,9 +162,7 @@
               },
               "copy": {
                 "count": "[length(parameters('subscriptionIds'))]",
-                "input": {
-                  "name": "[format('{0}/{1}', parameters('managementGroupId'), parameters('subscriptionIds')[copyIndex()])]"
-                }
+                "input": "[if(not(empty(parameters('subscriptionIds')[copyIndex()])), createObject('name', format('{0}/{1}', parameters('managementGroupId'), parameters('subscriptionIds')[copyIndex()])), null())]"
               }
             }
           }
