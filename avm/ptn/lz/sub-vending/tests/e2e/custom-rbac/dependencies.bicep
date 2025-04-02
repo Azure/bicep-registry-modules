@@ -11,9 +11,6 @@ param customRoleDefinitionActions array = [
   '*/read'
 ]
 
-@description('Required. The assignable scopes of the custom role definition.')
-param managementGroupId string = 'bicep-lz-vending-automation-child'
-
 resource customRoleDefinition 'Microsoft.Authorization/roleDefinitions@2022-04-01' = {
   name: guid(deployment().name, customRoleDefinitionName)
   properties: {
@@ -21,7 +18,7 @@ resource customRoleDefinition 'Microsoft.Authorization/roleDefinitions@2022-04-0
     description: customRoleDefinitionDescription
     type: 'CustomRole'
     assignableScopes: [
-      'providers/Microsoft.Management/managementGroups/${managementGroupId}'
+      '/providers/Microsoft.Management/managementGroups/${managementGroup().name}'
     ]
     permissions: [
       {
