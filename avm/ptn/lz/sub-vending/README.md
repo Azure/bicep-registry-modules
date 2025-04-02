@@ -71,13 +71,14 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/lz/sub-vending:<version>`.
 
 - [Deploy subscription with Bastion.](#example-1-deploy-subscription-with-bastion)
-- [Using only defaults.](#example-2-using-only-defaults)
-- [Hub and spoke topology.](#example-3-hub-and-spoke-topology)
-- [Hub and spoke topology with NAT gateway.](#example-4-hub-and-spoke-topology-with-nat-gateway)
-- [Using PIM Active Role assignments.](#example-5-using-pim-active-role-assignments)
-- [Using PIM Eligible Role assignments.](#example-6-using-pim-eligible-role-assignments)
-- [Using RBAC conditions.](#example-7-using-rbac-conditions)
-- [Vwan topology.](#example-8-vwan-topology)
+- [Using custom RBAC.](#example-2-using-custom-rbac)
+- [Using only defaults.](#example-3-using-only-defaults)
+- [Hub and spoke topology.](#example-4-hub-and-spoke-topology)
+- [Hub and spoke topology with NAT gateway.](#example-5-hub-and-spoke-topology-with-nat-gateway)
+- [Using PIM Active Role assignments.](#example-6-using-pim-active-role-assignments)
+- [Using PIM Eligible Role assignments.](#example-7-using-pim-eligible-role-assignments)
+- [Using RBAC conditions.](#example-8-using-rbac-conditions)
+- [Vwan topology.](#example-9-vwan-topology)
 
 ### Example 1: _Deploy subscription with Bastion._
 
@@ -268,7 +269,140 @@ param virtualNetworkSubnets = [
 </details>
 <p>
 
-### Example 2: _Using only defaults._
+### Example 2: _Using custom RBAC._
+
+This instance deploys the module with custom RBAC for the role assignments.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
+  name: 'subVendingDeployment'
+  params: {
+    customRoleAssignments: [
+      {
+        definition: '<definition>'
+        principalId: '<principalId>'
+        principalType: 'User'
+        relativeScope: ''
+      }
+    ]
+    resourceProviders: {}
+    roleAssignmentEnabled: true
+    subscriptionAliasEnabled: true
+    subscriptionAliasName: '<subscriptionAliasName>'
+    subscriptionBillingScope: '<subscriptionBillingScope>'
+    subscriptionDisplayName: '<subscriptionDisplayName>'
+    subscriptionManagementGroupAssociationEnabled: true
+    subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
+    subscriptionTags: {
+      namePrefix: '<namePrefix>'
+      serviceShort: '<serviceShort>'
+    }
+    subscriptionWorkload: 'Production'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "customRoleAssignments": {
+      "value": [
+        {
+          "definition": "<definition>",
+          "principalId": "<principalId>",
+          "principalType": "User",
+          "relativeScope": ""
+        }
+      ]
+    },
+    "resourceProviders": {
+      "value": {}
+    },
+    "roleAssignmentEnabled": {
+      "value": true
+    },
+    "subscriptionAliasEnabled": {
+      "value": true
+    },
+    "subscriptionAliasName": {
+      "value": "<subscriptionAliasName>"
+    },
+    "subscriptionBillingScope": {
+      "value": "<subscriptionBillingScope>"
+    },
+    "subscriptionDisplayName": {
+      "value": "<subscriptionDisplayName>"
+    },
+    "subscriptionManagementGroupAssociationEnabled": {
+      "value": true
+    },
+    "subscriptionManagementGroupId": {
+      "value": "bicep-lz-vending-automation-child"
+    },
+    "subscriptionTags": {
+      "value": {
+        "namePrefix": "<namePrefix>",
+        "serviceShort": "<serviceShort>"
+      }
+    },
+    "subscriptionWorkload": {
+      "value": "Production"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/lz/sub-vending:<version>'
+
+param customRoleAssignments = [
+  {
+    definition: '<definition>'
+    principalId: '<principalId>'
+    principalType: 'User'
+    relativeScope: ''
+  }
+]
+param resourceProviders = {}
+param roleAssignmentEnabled = true
+param subscriptionAliasEnabled = true
+param subscriptionAliasName = '<subscriptionAliasName>'
+param subscriptionBillingScope = '<subscriptionBillingScope>'
+param subscriptionDisplayName = '<subscriptionDisplayName>'
+param subscriptionManagementGroupAssociationEnabled = true
+param subscriptionManagementGroupId = 'bicep-lz-vending-automation-child'
+param subscriptionTags = {
+  namePrefix: '<namePrefix>'
+  serviceShort: '<serviceShort>'
+}
+param subscriptionWorkload = 'Production'
+```
+
+</details>
+<p>
+
+### Example 3: _Using only defaults._
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -370,7 +504,7 @@ param subscriptionWorkload = 'Production'
 </details>
 <p>
 
-### Example 3: _Hub and spoke topology._
+### Example 4: _Hub and spoke topology._
 
 This instance deploys a subscription with a hub-spoke network topology.
 
@@ -633,7 +767,7 @@ param virtualNetworkUseRemoteGateways = false
 </details>
 <p>
 
-### Example 4: _Hub and spoke topology with NAT gateway._
+### Example 5: _Hub and spoke topology with NAT gateway._
 
 This instance deploys a subscription with a hub-spoke network topology with NAT gateway.
 
@@ -877,7 +1011,7 @@ param virtualNetworkSubnets = [
 </details>
 <p>
 
-### Example 5: _Using PIM Active Role assignments._
+### Example 6: _Using PIM Active Role assignments._
 
 This instance deploys the module with PIM Active Role assignments.
 
@@ -1064,7 +1198,7 @@ param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 </details>
 <p>
 
-### Example 6: _Using PIM Eligible Role assignments._
+### Example 7: _Using PIM Eligible Role assignments._
 
 This instance deploys the module with PIM Eligible Role assignments.
 
@@ -1235,7 +1369,7 @@ param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 </details>
 <p>
 
-### Example 7: _Using RBAC conditions._
+### Example 8: _Using RBAC conditions._
 
 This instance deploys the module with RBAC conditions for the role assignments.
 
@@ -1404,7 +1538,7 @@ param subscriptionWorkload = 'Production'
 </details>
 <p>
 
-### Example 8: _Vwan topology._
+### Example 9: _Vwan topology._
 
 This instance deploys a subscription with a vwan network topology.
 

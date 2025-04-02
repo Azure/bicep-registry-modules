@@ -1,5 +1,5 @@
-metadata name = 'Using RBAC conditions.'
-metadata description = 'This instance deploys the module with RBAC conditions for the role assignments.'
+metadata name = 'Using custom RBAC.'
+metadata description = 'This instance deploys the module with custom RBAC for the role assignments.'
 
 targetScope = 'managementGroup'
 
