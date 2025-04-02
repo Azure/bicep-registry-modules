@@ -68,6 +68,8 @@ Describe 'File/folder tests' -Tag 'Modules' {
 
             if (Test-Path $childModulesAllowedListPath) {
                 $childModulesAllowedList = (Get-Content -Path $childModulesAllowedListPath | ConvertFrom-Json).'allowed-child-modules'
+                Write-Verbose "The child modules allowed list file [$childModulesAllowedListPath] exists." -Verbose
+                Write-Verbose "List $childModulesAllowedList exists." -Verbose
             } else {
                 Write-Warning "The child modules allowed list file [$childModulesAllowedListPath] does not exist."
             }
