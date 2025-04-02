@@ -585,13 +585,13 @@ type secretType = {
   @description('Optional. Resource ID of a managed identity to authenticate with Azure Key Vault, or System to use a system-assigned identity.')
   identity: string?
 
-  @description('Conditional. Azure Key Vault URL pointing to the secret referenced by the Container App Job. Required if `value` is null.')
+  @description('Conditional. The URL of the Azure Key Vault secret referenced by the Container App. Required if `value` is null.')
   keyVaultUrl: string?
 
-  @description('Optional. The name of the secret.')
+  @description('Optional. The name of the container app secret.')
   name: string?
 
-  @description('Conditional. The secret value, if not fetched from Key Vault. Required if `keyVaultUrl` is not null.')
+  @description('Conditional. The container app secret value, if not fetched from the Key Vault. Required if `keyVaultUrl` is not null.')
   @secure()
   value: string?
 }
