@@ -2088,7 +2088,7 @@ Array of role assignments to create.
   - `'Owner'`
   - `'Private DNS Zone Contributor'`
   - `'Reader'`
-  - `'Role Based Access Control Administrator (Preview)'`
+  - `'Role Based Access Control Administrator'`
 
 **Required parameters**
 
@@ -2397,7 +2397,7 @@ The resource ID of the subnet to which to deploy the Kusto Cluster.
 | `databases` | array | The databases of the kusto cluster. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the kusto cluster. |
-| `privateEndpoints` | array | The private endpoints of the kusto cluster. |
+| `privateEndpoints` | array | The private endpoints of the key vault. |
 | `resourceGroupName` | string | The resource group the kusto cluster was deployed into. |
 | `resourceId` | string | The resource id of the kusto cluster. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
@@ -2408,7 +2408,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.7.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.10.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |
 
 ## Data Collection

@@ -338,10 +338,13 @@ module kustoCluster_principalAssignments 'principal-assignment/main.bicep' = [
 ]
 
 @batchSize(1)
-module kustoCluster_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
+module kustoCluster_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
-    name: '${uniqueString(deployment().name, location)}-kustoCluster-PrivateEndpoint-${index}'
-    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
+    name: '${uniqueString(deployment().name, location)}-keyVault-PrivateEndpoint-${index}'
+    scope: resourceGroup(
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
+    )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(kustoCluster.id, '/'))}-${privateEndpoint.service}-${index}'
       privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
@@ -421,17 +424,16 @@ output name string = kustoCluster.name
 
 @description('The location the resource was deployed into.')
 output location string = kustoCluster.location
-
-@description('The private endpoints of the kusto cluster.')
-output privateEndpoints array = [
-  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
-    name: kustoCluster_privateEndpoints[i].outputs.name
-    resourceId: kustoCluster_privateEndpoints[i].outputs.resourceId
-    groupId: kustoCluster_privateEndpoints[i].outputs.groupId
-    customDnsConfig: kustoCluster_privateEndpoints[i].outputs.?customDnsConfig
-    networkInterfaceIds: kustoCluster_privateEndpoints[i].outputs.networkInterfaceIds
-  }
-]
+@description('The private endpoints of the key vault.')
+ output privateEndpoints privateEndpointOutputType[] = [
+   for (item, index) in (privateEndpoints ?? []): {
+     name: kustoCluster_privateEndpoints[index].outputs.name
+     resourceId: kustoCluster_privateEndpoints[index].outputs.resourceId
+     groupId: kustoCluster_privateEndpoints[index].outputs.?groupId!
+     customDnsConfigs: kustoCluster_privateEndpoints[index].outputs.customDnsConfigs
+     networkInterfaceResourceIds: kustoCluster_privateEndpoints[index].outputs.networkInterfaceResourceIds
+   }
+ ]
 
 @description('The databases of the kusto cluster.')
 output databases array = [
@@ -511,4 +513,28 @@ type databaseType = {
 
   @description('Optional. The principal assignments for the Kusto Cluster database.')
   databasePrincipalAssignments: databasePrincipalAssignmentType[]?
+}
+
+@export()
+type privateEndpointOutputType = {
+  @description('The name of the private endpoint.')
+  name: string
+
+  @description('The resource ID of the private endpoint.')
+  resourceId: string
+
+  @description('The group Id for the private endpoint Group.')
+  groupId: string?
+
+  @description('The custom DNS configurations of the private endpoint.')
+  customDnsConfigs: {
+    @description('FQDN that resolves to private endpoint IP address.')
+    fqdn: string?
+
+    @description('A list of private IP addresses of the private endpoint.')
+    ipAddresses: string[]
+  }[]
+
+  @description('The IDs of the network interfaces associated with the private endpoint.')
+  networkInterfaceResourceIds: string[]
 }
