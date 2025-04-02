@@ -349,7 +349,7 @@ output uri string = !empty(endpointProperties) ? profile_endpoint.outputs.uri : 
 output systemAssignedMIPrincipalId string? = profile.?identity.?principalId
 
 @description('The list of records required for custom domains validation.')
-output dnsValidation dnsValidationType[] = [
+output dnsValidation dnsValidationOutputType[] = [
   for (customDomain, index) in customDomains: profile_customDomains[index].outputs.dnsValidation
 ]
 
@@ -369,7 +369,7 @@ import { originType } from 'origingroup//origin/main.bicep'
 import { associationsType } from 'securityPolicies/main.bicep'
 import { ruleSetType } from 'ruleset/main.bicep'
 import { ruleType } from 'ruleset/rule/main.bicep'
-import { dnsValidationType } from 'customdomain/main.bicep'
+import { dnsValidationOutputType } from 'customdomain/main.bicep'
 
 @export()
 type securityPolicyType = {

@@ -9,7 +9,6 @@ This module deploys a Storage Account.
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
-- [Notes](#Notes)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -4092,7 +4091,6 @@ Set the minimum TLS version on request to storage. The TLS versions 1.0 and 1.1 
   ```Bicep
   [
     'TLS1_2'
-    'TLS1_3'
   ]
   ```
 
@@ -4900,13 +4898,6 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | :-- | :-- |
 | `br/public:avm/res/network/private-endpoint:0.10.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
-
-## Notes
-
-This is a generic module for deploying a Storage Account. Any customization for different storage needs (such as a diagnostic or other storage account) need to be done through the Archetype.
-The hierarchical namespace of the storage account (see parameter `enableHierarchicalNamespace`), can be only set at creation time.
-
-A list of supported resource types for the parameter ``networkAclsType.resourceAccessRules`` can be found [here](https://learn.microsoft.com/en-us/azure/storage/common/storage-network-security?tabs=azure-powershell#trusted-access-based-on-a-managed-identity). These can be used with or without wildcards (`*`) in the ``resourceId`` field.
 
 ## Data Collection
 

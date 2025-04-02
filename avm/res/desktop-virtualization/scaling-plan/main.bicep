@@ -21,13 +21,13 @@ param timeZone string = 'UTC'
 param hostPoolType string = 'Pooled'
 
 @sys.description('Optional. Exclusion tag to be used for exclusion of VMs from Scaling Plan.')
-param exclusionTag string = ''
+param exclusionTag string?
 
 @sys.description('Optional. Schedules of the Scaling Plan.')
-param schedules array = []
+param schedules array?
 
 @sys.description('Optional. Host pool references of the Scaling Plan.')
-param hostPoolReferences array = []
+param hostPoolReferences array?
 
 @sys.description('Optional. Description of the Scaling Plan.')
 param description string = name
@@ -35,17 +35,20 @@ param description string = name
 @sys.description('Optional. Tags of the resource.')
 param tags object?
 
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @sys.description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+param roleAssignments roleAssignmentType[]?
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @sys.description('Optional. The lock settings of the service.')
-param lock lockType
+param lock lockType?
 
 @sys.description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-@sys.description('Optional. The diagnostic settings of the service.')
-param diagnosticSettings diagnosticSettingType
+import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+@sys.description('Optional. The database-level diagnostic settings of the service.')
+param diagnosticSettings diagnosticSettingLogsOnlyType[]?
 
 var builtInRoleNames = {
   Owner: '/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
@@ -174,76 +177,3 @@ output name string = scalingPlan.name
 
 @sys.description('The location of the Scaling Plan.')
 output location string = scalingPlan.location
-
-// ================ //
-// Definitions      //
-// ================ //
-
-type lockType = {
-  @sys.description('Optional. Specify the name of lock.')
-  name: string?
-
-  @sys.description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?
-
-type roleAssignmentType = {
-  @sys.description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
-  name: string?
-
-  @sys.description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
-
-  @sys.description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
-
-  @sys.description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
-
-  @sys.description('Optional. The description of the role assignment.')
-  description: string?
-
-  @sys.description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
-
-  @sys.description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
-
-  @sys.description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?
-
-type diagnosticSettingType = {
-  @sys.description('Optional. The name of diagnostic setting.')
-  name: string?
-
-  @sys.description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.')
-  logCategoriesAndGroups: {
-    @sys.description('Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.')
-    category: string?
-
-    @sys.description('Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `AllLogs` to collect all logs.')
-    categoryGroup: string?
-
-    @sys.description('Optional. Enable or disable the category explicitly. Default is `true`.')
-    enabled: bool?
-  }[]?
-
-  @sys.description('Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.')
-  logAnalyticsDestinationType: ('Dedicated' | 'AzureDiagnostics')?
-
-  @sys.description('Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  workspaceResourceId: string?
-
-  @sys.description('Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  storageAccountResourceId: string?
-
-  @sys.description('Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.')
-  eventHubAuthorizationRuleResourceId: string?
-
-  @sys.description('Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  eventHubName: string?
-
-  @sys.description('Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.')
-  marketplacePartnerResourceId: string?
-}[]?

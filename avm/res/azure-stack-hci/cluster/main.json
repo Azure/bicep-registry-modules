@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "16645481919886666314"
+      "templateHash": "11879016027829789532"
     },
     "name": "Azure Stack HCI Cluster",
     "description": "This module deploys an Azure Stack HCI Cluster on the provided Arc Machines."
@@ -1222,7 +1222,13 @@
             "value": "[parameters('deploymentSettings').keyVaultName]"
           },
           "networkIntents": {
-            "value": "[parameters('deploymentSettings').networkIntents]"
+            "copy": [
+              {
+                "name": "value",
+                "count": "[length(parameters('deploymentSettings').networkIntents)]",
+                "input": "[shallowMerge(createArray(parameters('deploymentSettings').networkIntents[copyIndex('value')], createObject('qosPolicyOverrides', createObject('bandwidthPercentage_SMB', parameters('deploymentSettings').networkIntents[copyIndex('value')].qosPolicyOverrides.bandwidthPercentageSMB, 'priorityValue8021Action_Cluster', parameters('deploymentSettings').networkIntents[copyIndex('value')].qosPolicyOverrides.priorityValue8021ActionCluster, 'priorityValue8021Action_SMB', parameters('deploymentSettings').networkIntents[copyIndex('value')].qosPolicyOverrides.priorityValue8021ActionSMB))))]"
+              }
+            ]
           },
           "startingIPAddress": {
             "value": "[parameters('deploymentSettings').startingIPAddress]"

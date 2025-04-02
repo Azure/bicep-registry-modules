@@ -155,9 +155,11 @@ module testDeployment '../../../main.bicep' = {
         }
       }
     ]
-    encryptionProtectorObj: {
-      serverKeyType: 'AzureKeyVault'
-      serverKeyName: '${nestedDependencies.outputs.keyVaultName}_${nestedDependencies.outputs.keyVaultKeyName}_${last(split(nestedDependencies.outputs.keyVaultEncryptionKeyUrl, '/'))}'
+    customerManagedKey: {
+      keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
+      keyName: nestedDependencies.outputs.keyVaultKeyName
+      keyVersion: last(split(nestedDependencies.outputs.keyVaultEncryptionKeyUrl, '/'))
+      autoRotationEnabled: true
     }
     firewallRules: [
       {
@@ -171,13 +173,6 @@ module testDeployment '../../../main.bicep' = {
         name: 'Default'
         state: 'Enabled'
         emailAccountAdmins: true
-      }
-    ]
-    keys: [
-      {
-        name: '${nestedDependencies.outputs.keyVaultName}_${nestedDependencies.outputs.keyVaultKeyName}_${last(split(nestedDependencies.outputs.keyVaultEncryptionKeyUrl, '/'))}'
-        serverKeyType: 'AzureKeyVault'
-        uri: nestedDependencies.outputs.keyVaultEncryptionKeyUrl
       }
     ]
     managedIdentities: {
