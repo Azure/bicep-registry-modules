@@ -112,11 +112,6 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       managementGroupCustomRoleDefinitions: unionedCustomRbacRoleDefs
-      managementGroupCustomRoleDefinitions: [
-        {
-          name: 'custom-role-1'
-        }
-      ]
       managementGroupPolicyAssignments: [
         {
           name: 'allowed-vm-skus-root'
