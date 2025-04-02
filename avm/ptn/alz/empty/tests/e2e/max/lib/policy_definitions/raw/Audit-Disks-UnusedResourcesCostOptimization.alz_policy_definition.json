@@ -1,0 +1,67 @@
+{
+  "name": "Audit-Disks-UnusedResourcesCostOptimization",
+  "properties": {
+    "description": "Optimize cost by detecting unused but chargeable resources. Leverage this Policy definition as a cost control to reveal orphaned Disks that are driving cost.",
+    "displayName": "Unused Disks driving cost should be avoided",
+    "metadata": {
+      "alzCloudEnvironments": [
+        "AzureCloud",
+        "AzureChinaCloud",
+        "AzureUSGovernment"
+      ],
+      "category": "Cost Optimization",
+      "source": "https://github.com/Azure/Enterprise-Scale/",
+      "version": "1.0.0"
+    },
+    "mode": "All",
+    "parameters": {
+      "effect": {
+        "allowedValues": [
+          "Audit",
+          "Disabled"
+        ],
+        "defaultValue": "Audit",
+        "metadata": {
+          "description": "Enable or disable the execution of the policy",
+          "displayName": "Effect"
+        },
+        "type": "String"
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "equals": "Microsoft.Compute/disks",
+            "field": "type"
+          },
+          {
+            "equals": "Unattached",
+            "field": "Microsoft.Compute/disks/diskState"
+          },
+          {
+            "allof": [
+              {
+                "field": "name",
+                "notlike": "*-ASRReplica"
+              },
+              {
+                "field": "name",
+                "notlike": "ms-asr-*"
+              },
+              {
+                "field": "name",
+                "notlike": "asrseeddisk-*"
+              }
+            ]
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]"
+      }
+    },
+    "policyType": "Custom"
+  },
+  "type": "Microsoft.Authorization/policyDefinitions"
+}
