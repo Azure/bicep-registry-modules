@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "948945015513101396"
+      "templateHash": "7416103266129955393"
     },
     "name": "App ManagedEnvironments",
     "description": "This module deploys an App Managed Environment (also known as a Container App Environment)."
@@ -255,12 +255,7 @@
     },
     "logsDestination": {
       "type": "string",
-      "defaultValue": "log-analytics",
-      "allowedValues": [
-        "log-analytics",
-        "azure-monitor",
-        "none"
-      ],
+      "defaultValue": "",
       "metadata": {
         "description": "Optional. Logs destination."
       }
@@ -496,7 +491,7 @@
           "connectionString": "[parameters('appInsightsConnectionString')]"
         },
         "appLogsConfiguration": {
-          "destination": "[parameters('logsDestination')]",
+          "destination": "[if(not(empty(parameters('logsDestination'))), parameters('logsDestination'), null())]",
           "logAnalyticsConfiguration": "[if(not(empty(parameters('logAnalyticsWorkspaceResourceId'))), createObject('customerId', reference('logAnalyticsWorkspace').customerId, 'sharedKey', listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('logAnalyticsWorkspaceResourceId'), '/')[2], split(parameters('logAnalyticsWorkspaceResourceId'), '/')[4]), 'Microsoft.OperationalInsights/workspaces', last(split(parameters('logAnalyticsWorkspaceResourceId'), '/'))), '2023-09-01').primarySharedKey), null())]"
         },
         "daprAIConnectionString": "[parameters('daprAIConnectionString')]",

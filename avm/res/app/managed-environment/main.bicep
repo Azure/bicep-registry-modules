@@ -21,13 +21,8 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-@allowed([
-  'log-analytics'
-  'azure-monitor'
-  'none'
-])
 @description('Optional. Logs destination.')
-param logsDestination string = 'log-analytics'
+param logsDestination string = ''
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -176,7 +171,7 @@ resource managedEnvironment 'Microsoft.App/managedEnvironments@2024-10-02-previe
       connectionString: appInsightsConnectionString
     }
     appLogsConfiguration: {
-      destination: logsDestination
+      destination: !empty(logsDestination) ? logsDestination : null
       logAnalyticsConfiguration: !empty(logAnalyticsWorkspaceResourceId)
         ? {
             customerId: logAnalyticsWorkspace.properties.customerId
