@@ -75,8 +75,8 @@ Describe 'File/folder tests' -Tag 'Modules' {
             $moduleFolderTestCases = [System.Collections.ArrayList] @()
             # get allowed list of child modules
 
-            Write-Verbose "The child modules allowed list file [$childModulesAllowedListPath] exists." -Verbose
-            Write-Verbose "List $childModulesAllowedList exists." -Verbose
+            # Write-Verbose "The child modules allowed list file [$childModulesAllowedListPath] exists." -Verbose
+            # Write-Verbose "List $childModulesAllowedList exists." -Verbose
 
             foreach ($moduleFolderPath in $moduleFolderPaths) {
                 $null, $moduleType, $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]') # 'avm/res|ptn|utl/<provider>/<resourceType>' would return 'avm', 'res|ptn|utl', '<provider>/<resourceType>'
@@ -147,13 +147,13 @@ Describe 'File/folder tests' -Tag 'Modules' {
                 [string] $childModulesAllowedListPath,
                 [string[]] $childModulesAllowedList
             )
-            Write-Verbose "Module [$moduleFolderPath] isPublishingAllowed: $($childModulesAllowedList -contains $moduleFullName)" -Verbose
-            Write-Verbose "Module [$moduleFolderPath] childModulesAllowedListPath: $childModulesAllowedListPath" -Verbose
-            Write-Verbose "Module [$moduleFolderPath] childModulesAllowedList: $childModulesAllowedList" -Verbose
-            Write-Verbose "Module [$moduleFolderPath] moduleFullName: $moduleFullName" -Verbose
+            # Write-Verbose "Module [$moduleFolderPath] isPublishingAllowed: $($childModulesAllowedList -contains $moduleFullName)" -Verbose
+            # Write-Verbose "Module [$moduleFolderPath] childModulesAllowedListPath: $childModulesAllowedListPath" -Verbose
+            # Write-Verbose "Module [$moduleFolderPath] childModulesAllowedList: $childModulesAllowedList" -Verbose
+            # Write-Verbose "Module [$moduleFolderPath] moduleFullName: $moduleFullName" -Verbose
 
             if ($childModulesAllowedList -contains $moduleFullName) {
-                Set-ItResult -Skipped -Because "$moduleFolderPath is in the child module publishing allowed list."
+                Set-ItResult -Skipped -Because "$moduleFullName is in the child module publishing allowed list."
                 return
             }
 
