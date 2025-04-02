@@ -55,6 +55,16 @@ BeforeDiscovery {
         $templateHashTable = ConvertFrom-Json $builtTemplate -AsHashtable
         $null = $dict.TryAdd($_, $templateHashTable)
     }
+
+    # get allowed list of child modules
+    $childModulesAllowedList = @()
+    $childModulesAllowedListPath = Join-Path $repoRootPath 'utilities' 'pipelines' 'staticValidation' 'compliance' 'helper' 'child-modules-allowed-list.json'
+
+    if (Test-Path $childModulesAllowedListPath) {
+        $childModulesAllowedList = (Get-Content -Path $childModulesAllowedListPath | ConvertFrom-Json).'allowed-child-modules'
+    } else {
+        Write-Warning "The child modules allowed list file [$childModulesAllowedListPath] does not exist."
+    }
 }
 Describe 'File/folder tests' -Tag 'Modules' {
 
@@ -114,15 +124,20 @@ Describe 'File/folder tests' -Tag 'Modules' {
             $versionFileContent.version | Should -Match '^[0-9]+\.[0-9]+$' -Because 'only the major.minor version may be specified in the version.json file.'
         }
 
-        # only avm/res/network/virtual-network/subnet is allowed to have a version.json file (PoC for child module publishing)
-        It '[<moduleFolderName>] Child module should not contain a [` version.json `] file.' -TestCases ($moduleFolderTestCases | Where-Object { (-Not $_.isTopLevelModule) -And ($_.moduleFolderName -ne 'network/virtual-network/subnet') }) {
+        # only child modules listed in '.\helper\child-modules-allowed-list.json' are allowed to have a version.json file (Pilot for child module publishing)
+        It '[<moduleFolderName>] child module should not contain a [` version.json `] file.' -TestCases ($moduleFolderTestCases | Where-Object { -Not $_.isTopLevelModule }) {
 
             param (
                 [string] $moduleFolderPath
             )
 
+            if ($childModulesAllowedList.contains($moduleFolderPath)) {
+                Set-ItResult -Skipped -Because "$moduleFolderPath is in the child module publishing allowed list."
+                return
+            }
+
             $pathExisting = Test-Path (Join-Path -Path $moduleFolderPath 'version.json')
-            $pathExisting | Should -Be $false
+            $pathExisting | Should -Be $false -Because 'only the child modules listed in the .\helper\child-modules-allowed-list.json list may have a version.json file.'
         }
 
         # if the child modules version has been increased, the main modules version should be increased as well
