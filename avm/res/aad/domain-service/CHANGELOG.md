@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.3.1
+
+### Changes
+
+- Removed unused owner metadata
+
+### Breaking Changes
+
+- none
+
+## 0.3.1
+
+### Changes
+
+- Removed unused owner metadata
+
+### Breaking Changes
+
+- none
+
 ## 0.3.0
 
 ### Changes
