@@ -56,15 +56,13 @@ BeforeDiscovery {
         $null = $dict.TryAdd($_, $templateHashTable)
     }
 
-    $childModulesAllowedList = @()
-    $childModulesAllowedListPath = Join-Path $repoRootPath 'utilities' 'pipelines' 'staticValidation' 'compliance' 'helper' 'child-modules-allowed-list.json'
-
-    if (Test-Path $childModulesAllowedListPath) {
-        $childModulesAllowedList = (Get-Content -Path $childModulesAllowedListPath | ConvertFrom-Json).'allowed-child-modules'
-        # Write-Verbose "The child modules allowed list file [$childModulesAllowedListPath] exists." -Verbose
-        # Write-Verbose "List $childModulesAllowedList exists." -Verbose
+    # get list of child modules allowed for publishing
+    $childModuleAllowedList = @()
+    $childModuleAllowedListPath = Join-Path $repoRootPath 'utilities' 'pipelines' 'staticValidation' 'compliance' 'helper' 'child-modules-allowed-list.json'
+    if (Test-Path $childModuleAllowedListPath) {
+        $childModuleAllowedList = (Get-Content -Path $childModuleAllowedListPath | ConvertFrom-Json).'allowed-child-modules'
     } else {
-        Write-Warning "The child modules allowed list file [$childModulesAllowedListPath] does not exist."
+        Write-Warning "The child modules allowed list file [$childModuleAllowedListPath] does not exist."
     }
 }
 Describe 'File/folder tests' -Tag 'Modules' {
@@ -73,26 +71,19 @@ Describe 'File/folder tests' -Tag 'Modules' {
 
         BeforeDiscovery {
             $moduleFolderTestCases = [System.Collections.ArrayList] @()
-            # get allowed list of child modules
-
-            # Write-Verbose "The child modules allowed list file [$childModulesAllowedListPath] exists." -Verbose
-            # Write-Verbose "List $childModulesAllowedList exists." -Verbose
 
             foreach ($moduleFolderPath in $moduleFolderPaths) {
                 $null, $moduleType, $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]') # 'avm/res|ptn|utl/<provider>/<resourceType>' would return 'avm', 'res|ptn|utl', '<provider>/<resourceType>'
-                # $moduleFullName = "avm/$moduleType/$resourceTypeIdentifier"
-                # Write-Verbose "$moduleFullName isPublishingAllowed: $moduleFolderPath -- $((($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2) || ( $childModulesAllowedList -contains $moduleFullName ))" -Verbose
 
                 $resourceTypeIdentifier = $resourceTypeIdentifier -replace '\\', '/'
                 $moduleFolderTestCases += @{
-                    moduleFullName              = "avm/$moduleType/$resourceTypeIdentifier"
-                    moduleType                  = $moduleType
-                    moduleFolderName            = $resourceTypeIdentifier
-                    moduleFolderPath            = $moduleFolderPath
-                    isTopLevelModule            = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
-                    childModulesAllowedList     = $childModulesAllowedList
-                    childModulesAllowedListPath = $childModulesAllowedListPath
-                    # isPublishingAllowed = (($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2) || ( $childModulesAllowedList -contains $moduleFullName )
+                    moduleFullName             = "avm/$moduleType/$resourceTypeIdentifier"
+                    moduleType                 = $moduleType
+                    moduleFolderName           = $resourceTypeIdentifier
+                    moduleFolderPath           = $moduleFolderPath
+                    isTopLevelModule           = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
+                    childModuleAllowedList     = $childModuleAllowedList
+                    childModuleAllowedListPath = $childModuleAllowedListPath
                 }
             }
         }
@@ -143,22 +134,17 @@ Describe 'File/folder tests' -Tag 'Modules' {
             param (
                 [string] $moduleFolderPath,
                 [string] $moduleFullName,
-                # [bool] $isPublishingAllowed,
-                [string] $childModulesAllowedListPath,
-                [string[]] $childModulesAllowedList
+                [string] $childModuleAllowedListPath,
+                [string[]] $childModuleAllowedList
             )
-            # Write-Verbose "Module [$moduleFolderPath] isPublishingAllowed: $($childModulesAllowedList -contains $moduleFullName)" -Verbose
-            # Write-Verbose "Module [$moduleFolderPath] childModulesAllowedListPath: $childModulesAllowedListPath" -Verbose
-            # Write-Verbose "Module [$moduleFolderPath] childModulesAllowedList: $childModulesAllowedList" -Verbose
-            # Write-Verbose "Module [$moduleFolderPath] moduleFullName: $moduleFullName" -Verbose
 
-            if ($childModulesAllowedList -contains $moduleFullName) {
+            if ($childModuleAllowedList -contains $moduleFullName) {
                 Set-ItResult -Skipped -Because "$moduleFullName is in the child module publishing allowed list."
                 return
             }
 
             $pathExisting = Test-Path (Join-Path -Path $moduleFolderPath 'version.json')
-            $pathExisting | Should -Be $false -Because "only the child modules listed in the $childModulesAllowedListPath list may have a version.json file."
+            $pathExisting | Should -Be $false -Because "only the child modules listed in the $childModuleAllowedListPath list may have a version.json file."
         }
 
         # if the child modules version has been increased, the main modules version should be increased as well
