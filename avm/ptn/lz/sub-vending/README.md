@@ -1755,7 +1755,7 @@ param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`customRoleAssignments`](#parameter-customroleassignments) | array | Supply an array of objects containing the details of the custom role assignments to create. |
+| [`customRoleAssignments`](#parameter-customroleassignments) | array | Supply an array of objects containing the details of the custom role assignments to create.<p><p>Each object must contain the following `keys`:<li>`principalId` = The Object ID of the User, Group, SPN, Managed Identity to assign the RBAC role too.<li>`definition` = The Name of one of the pre-defined built-In RBAC Roles or a Resource ID of a Built-in or custom RBAC Role Definition as follows:<p>  - You can only provide the RBAC role name of the pre-defined roles (Contributor, Owner, Reader, Role Based Access Control Administrator (Preview), and User Access Administrator). We only provide those roles as they are the most common ones to assign to a new subscription, also to reduce the template size and complexity in case we define each and every Built-in RBAC role.<p>  - You can provide the Resource ID of a Built-in or custom RBAC Role Definition<p>    - e.g. `/providers/Microsoft.Authorization/roleDefinitions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`<li>`relativeScope` = 2 options can be provided for input value:<p>    1. `''` *(empty string)* = Make RBAC Role Assignment to Subscription scope<p>    2. `'/resourceGroups/<RESOURCE GROUP NAME>'` = Make RBAC Role Assignment to specified Resource Group.<p> |
 | [`deploymentScriptLocation`](#parameter-deploymentscriptlocation) | string | The location of the deployment script. Use region shortnames e.g. uksouth, eastus, etc. |
 | [`deploymentScriptManagedIdentityName`](#parameter-deploymentscriptmanagedidentityname) | string | The name of the user managed identity for the resource providers registration deployment script. |
 | [`deploymentScriptName`](#parameter-deploymentscriptname) | string | The name of the deployment script to register resource providers. |
@@ -1807,7 +1807,7 @@ param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 
 ### Parameter: `customRoleAssignments`
 
-Supply an array of objects containing the details of the custom role assignments to create.
+Supply an array of objects containing the details of the custom role assignments to create.<p><p>Each object must contain the following `keys`:<li>`principalId` = The Object ID of the User, Group, SPN, Managed Identity to assign the RBAC role too.<li>`definition` = The Name of one of the pre-defined built-In RBAC Roles or a Resource ID of a Built-in or custom RBAC Role Definition as follows:<p>  - You can only provide the RBAC role name of the pre-defined roles (Contributor, Owner, Reader, Role Based Access Control Administrator (Preview), and User Access Administrator). We only provide those roles as they are the most common ones to assign to a new subscription, also to reduce the template size and complexity in case we define each and every Built-in RBAC role.<p>  - You can provide the Resource ID of a Built-in or custom RBAC Role Definition<p>    - e.g. `/providers/Microsoft.Authorization/roleDefinitions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`<li>`relativeScope` = 2 options can be provided for input value:<p>    1. `''` *(empty string)* = Make RBAC Role Assignment to Subscription scope<p>    2. `'/resourceGroups/<RESOURCE GROUP NAME>'` = Make RBAC Role Assignment to specified Resource Group.<p>
 
 - Required: No
 - Type: array
@@ -1936,10 +1936,10 @@ To use this variant, set the property `templateName` to `excludeRoles`.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`ExludededRoles`](#parameter-customroleassignmentsroleassignmentconditionroleconditiontypetemplatename-excluderolesexludededroles) | array | The list of roles that are not allowed to be assigned by the delegate. |
+| [`excludedRoles`](#parameter-customroleassignmentsroleassignmentconditionroleconditiontypetemplatename-excluderolesexcludedroles) | array | The list of roles that are not allowed to be assigned by the delegate. |
 | [`templateName`](#parameter-customroleassignmentsroleassignmentconditionroleconditiontypetemplatename-excluderolestemplatename) | string | Name of the RBAC condition template. |
 
-### Parameter: `customRoleAssignments.roleAssignmentCondition.roleConditionType.templateName-excludeRoles.ExludededRoles`
+### Parameter: `customRoleAssignments.roleAssignmentCondition.roleConditionType.templateName-excludeRoles.excludedRoles`
 
 The list of roles that are not allowed to be assigned by the delegate.
 
@@ -2620,10 +2620,10 @@ To use this variant, set the property `templateName` to `excludeRoles`.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`ExludededRoles`](#parameter-roleassignmentsroleassignmentconditionroleconditiontypetemplatename-excluderolesexludededroles) | array | The list of roles that are not allowed to be assigned by the delegate. |
+| [`excludedRoles`](#parameter-roleassignmentsroleassignmentconditionroleconditiontypetemplatename-excluderolesexcludedroles) | array | The list of roles that are not allowed to be assigned by the delegate. |
 | [`templateName`](#parameter-roleassignmentsroleassignmentconditionroleconditiontypetemplatename-excluderolestemplatename) | string | Name of the RBAC condition template. |
 
-### Parameter: `roleAssignments.roleAssignmentCondition.roleConditionType.templateName-excludeRoles.ExludededRoles`
+### Parameter: `roleAssignments.roleAssignmentCondition.roleConditionType.templateName-excludeRoles.excludedRoles`
 
 The list of roles that are not allowed to be assigned by the delegate.
 

@@ -106,7 +106,7 @@ param roleAssignments roleAssignmentType[] = []
 @description('Supply an array of objects containing the details of the PIM role assignments to create.')
 param pimRoleAssignments pimRoleAssignmentTypeType[] = []
 
-@sys.description('Supply an array of objects containing the details of the role assignments to create.')
+@sys.description('Supply an array of objects containing the details of the custom role assignments to create.')
 param customRoleAssignments roleAssignmentType[] = []
 
 @sys.description('Disable telemetry collection by this module. For more information on the telemetry collected by this module, that is controlled by this parameter, see this page in the wiki: [Telemetry Tracking Using Customer Usage Attribution (PID)](https://github.com/Azure/bicep-lz-vending/wiki/Telemetry)')
@@ -1512,7 +1512,7 @@ type excludeRolesType = {
   templateName: 'excludeRoles'
 
   @description('Required. The list of roles that are not allowed to be assigned by the delegate.')
-  ExludededRoles: array
+  excludedRoles: array
 }
 
 // Discriminator for the constrainedDelegationTemplatesType
@@ -1557,7 +1557,7 @@ func generateCodeRolesAndPrincipals(constrainRolesAndPrincipals constrainRolesAn
 @description('Generates the code for the "Exclude Roles" condition template.')
 @export()
 func generateCodeExcludeRoles(excludeRoles excludeRolesType) string =>
-  '((!(ActionMatches{\'Microsoft.Authorization/roleAssignments/write\'}) OR ( @Request[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAllValues:GuidNotEquals {${joinArray(excludeRoles.ExludededRoles)}})) AND ((!(ActionMatches{\'Microsoft.Authorization/roleAssignments/delete\'}) OR (@Request[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAllValues:GuidNotEquals {${joinArray(excludeRoles.ExludededRoles)}}))))'
+  '((!(ActionMatches{\'Microsoft.Authorization/roleAssignments/write\'}) OR ( @Request[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAllValues:GuidNotEquals {${joinArray(excludeRoles.excludedRoles)}})) AND ((!(ActionMatches{\'Microsoft.Authorization/roleAssignments/delete\'}) OR (@Request[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAllValues:GuidNotEquals {${joinArray(excludeRoles.excludedRoles)}}))))'
 
 // Helper functions
 @export()

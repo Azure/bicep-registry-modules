@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "716258243613903668"
+      "templateHash": "14853456319854729508"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -142,7 +142,7 @@
             "description": "Required. Name of the RBAC condition template."
           }
         },
-        "ExludededRoles": {
+        "excludedRoles": {
           "type": "array",
           "metadata": {
             "description": "Required. The list of roles that are not allowed to be assigned by the delegate."
@@ -1033,7 +1033,7 @@
       "defaultValue": [],
       "metadata": {
         "example": "  [\n    {\n      // Owner role assignment at resource group scope\n      principalId: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'\n      definition: '/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635'\n      relativeScope: '/resourceGroups/{resourceGroupName}'\n    }\n  ]\n  ",
-        "description": "Optional. Supply an array of objects containing the details of the custom role assignments to create."
+        "description": "Optional. Supply an array of objects containing the details of the custom role assignments to create.\n\nEach object must contain the following `keys`:\n- `principalId` = The Object ID of the User, Group, SPN, Managed Identity to assign the RBAC role too.\n- `definition` = The Name of one of the pre-defined built-In RBAC Roles or a Resource ID of a Built-in or custom RBAC Role Definition as follows:\n  - You can only provide the RBAC role name of the pre-defined roles (Contributor, Owner, Reader, Role Based Access Control Administrator (Preview), and User Access Administrator). We only provide those roles as they are the most common ones to assign to a new subscription, also to reduce the template size and complexity in case we define each and every Built-in RBAC role.\n  - You can provide the Resource ID of a Built-in or custom RBAC Role Definition\n    - e.g. `/providers/Microsoft.Authorization/roleDefinitions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`\n- `relativeScope` = 2 options can be provided for input value:\n    1. `''` *(empty string)* = Make RBAC Role Assignment to Subscription scope\n    2. `'/resourceGroups/<RESOURCE GROUP NAME>'` = Make RBAC Role Assignment to specified Resource Group.\n"
       }
     },
     "enableTelemetry": {
@@ -1479,7 +1479,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.34.44.8038",
-              "templateHash": "7570308183093957102"
+              "templateHash": "2941922643524278143"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -1721,7 +1721,7 @@
                     "description": "Required. Name of the RBAC condition template."
                   }
                 },
-                "ExludededRoles": {
+                "excludedRoles": {
                   "type": "array",
                   "metadata": {
                     "description": "Required. The list of roles that are not allowed to be assigned by the delegate."
@@ -2239,7 +2239,7 @@
                   ],
                   "output": {
                     "type": "string",
-                    "value": "[format('((!(ActionMatches{{''Microsoft.Authorization/roleAssignments/write''}}) OR ( @Request[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAllValues:GuidNotEquals {{{0}}})) AND ((!(ActionMatches{{''Microsoft.Authorization/roleAssignments/delete''}}) OR (@Request[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAllValues:GuidNotEquals {{{1}}}))))', __bicep.joinArray(parameters('excludeRoles').ExludededRoles), __bicep.joinArray(parameters('excludeRoles').ExludededRoles))]"
+                    "value": "[format('((!(ActionMatches{{''Microsoft.Authorization/roleAssignments/write''}}) OR ( @Request[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAllValues:GuidNotEquals {{{0}}})) AND ((!(ActionMatches{{''Microsoft.Authorization/roleAssignments/delete''}}) OR (@Request[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAllValues:GuidNotEquals {{{1}}}))))', __bicep.joinArray(parameters('excludeRoles').excludedRoles), __bicep.joinArray(parameters('excludeRoles').excludedRoles))]"
                   },
                   "metadata": {
                     "description": "Generates the code for the \"Exclude Roles\" condition template.",
@@ -2508,7 +2508,7 @@
               },
               "defaultValue": [],
               "metadata": {
-                "description": "Supply an array of objects containing the details of the role assignments to create."
+                "description": "Supply an array of objects containing the details of the custom role assignments to create."
               }
             },
             "enableTelemetry": {

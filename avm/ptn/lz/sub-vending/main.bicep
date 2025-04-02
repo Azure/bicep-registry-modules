@@ -269,7 +269,18 @@ Each object must contain the following `keys`:
 })
 param pimRoleAssignments pimRoleAssignmentTypeType[] = []
 
-@description('Optional. Supply an array of objects containing the details of the custom role assignments to create.')
+@description('''Optional. Supply an array of objects containing the details of the custom role assignments to create.
+
+Each object must contain the following `keys`:
+- `principalId` = The Object ID of the User, Group, SPN, Managed Identity to assign the RBAC role too.
+- `definition` = The Name of one of the pre-defined built-In RBAC Roles or a Resource ID of a Built-in or custom RBAC Role Definition as follows:
+  - You can only provide the RBAC role name of the pre-defined roles (Contributor, Owner, Reader, Role Based Access Control Administrator (Preview), and User Access Administrator). We only provide those roles as they are the most common ones to assign to a new subscription, also to reduce the template size and complexity in case we define each and every Built-in RBAC role.
+  - You can provide the Resource ID of a Built-in or custom RBAC Role Definition
+    - e.g. `/providers/Microsoft.Authorization/roleDefinitions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`
+- `relativeScope` = 2 options can be provided for input value:
+    1. `''` *(empty string)* = Make RBAC Role Assignment to Subscription scope
+    2. `'/resourceGroups/<RESOURCE GROUP NAME>'` = Make RBAC Role Assignment to specified Resource Group.
+''')
 @metadata({
   example: '''
   [
