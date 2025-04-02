@@ -1382,7 +1382,7 @@ type roleAssignmentType = {
   @description('Required. The relative scope of the role assignment.')
   relativeScope: string
 
-  @description('Required. Determine if the role assignment is a custom role or not.')
+  @description('Optional. Determine if the role assignment is a custom role or not.')
   isCustomRole: bool?
 
   @description('Optional. The condition for the role assignment.')

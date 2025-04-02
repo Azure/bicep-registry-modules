@@ -2260,7 +2260,6 @@ Supply an array of objects containing the details of the role assignments to cre
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`definition`](#parameter-roleassignmentsdefinition) | string | The role definition ID or name. |
-| [`isCustomRole`](#parameter-roleassignmentsiscustomrole) | bool | Determine if the role assignment is a custom role or not. |
 | [`principalId`](#parameter-roleassignmentsprincipalid) | string | The principal ID of the user, group, or service principal. |
 | [`relativeScope`](#parameter-roleassignmentsrelativescope) | string | The relative scope of the role assignment. |
 
@@ -2268,6 +2267,7 @@ Supply an array of objects containing the details of the role assignments to cre
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`isCustomRole`](#parameter-roleassignmentsiscustomrole) | bool | Determine if the role assignment is a custom role or not. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the user, group, or service principal. |
 | [`roleAssignmentCondition`](#parameter-roleassignmentsroleassignmentcondition) | object | The condition for the role assignment. |
 
@@ -2277,13 +2277,6 @@ The role definition ID or name.
 
 - Required: Yes
 - Type: string
-
-### Parameter: `roleAssignments.isCustomRole`
-
-Determine if the role assignment is a custom role or not.
-
-- Required: No
-- Type: bool
 
 ### Parameter: `roleAssignments.principalId`
 
@@ -2298,6 +2291,13 @@ The relative scope of the role assignment.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `roleAssignments.isCustomRole`
+
+Determine if the role assignment is a custom role or not.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `roleAssignments.principalType`
 
