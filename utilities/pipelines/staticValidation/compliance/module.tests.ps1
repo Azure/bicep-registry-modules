@@ -76,16 +76,17 @@ Describe 'File/folder tests' -Tag 'Modules' {
 
             foreach ($moduleFolderPath in $moduleFolderPaths) {
                 $null, $moduleType, $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]') # 'avm/res|ptn|utl/<provider>/<resourceType>' would return 'avm', 'res|ptn|utl', '<provider>/<resourceType>'
-
-                Write-Verbose "$moduleFolderPath isPublishingAllowed: $moduleFolderPath -- $((($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2) || ( $childModulesAllowedList -contains $moduleFolderPath ))" -Verbose
+                $moduleFullName = "avm/$moduleType/$resourceTypeIdentifier"
+                Write-Verbose "$moduleFullName isPublishingAllowed: $moduleFolderPath -- $((($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2) || ( $childModulesAllowedList -contains $moduleFullName ))" -Verbose
 
                 $resourceTypeIdentifier = $resourceTypeIdentifier -replace '\\', '/'
                 $moduleFolderTestCases += @{
+                    moduleFullName      = $moduleFullName
+                    moduleType          = $moduleType
                     moduleFolderName    = $resourceTypeIdentifier
                     moduleFolderPath    = $moduleFolderPath
                     isTopLevelModule    = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
-                    moduleType          = $moduleType
-                    isPublishingAllowed = (($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2) || ( $childModulesAllowedList -contains $moduleFolderPath )
+                    isPublishingAllowed = (($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2) || ( $childModulesAllowedList -contains $moduleFullName )
                 }
             }
         }
