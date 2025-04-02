@@ -1136,7 +1136,7 @@ Logs destination.
 
 - Required: No
 - Type: string
-- Default: `''`
+- Default: `'log-analytics'`
 
 ### Parameter: `managedIdentities`
 

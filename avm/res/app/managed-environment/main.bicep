@@ -22,7 +22,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Logs destination.')
-param logsDestination string = ''
+param logsDestination string = 'log-analytics'
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -171,7 +171,7 @@ resource managedEnvironment 'Microsoft.App/managedEnvironments@2024-10-02-previe
       connectionString: appInsightsConnectionString
     }
     appLogsConfiguration: {
-      destination: !empty(logsDestination) ? logsDestination : null
+      destination: logsDestination
       logAnalyticsConfiguration: !empty(logAnalyticsWorkspaceResourceId)
         ? {
             customerId: logAnalyticsWorkspace.properties.customerId
