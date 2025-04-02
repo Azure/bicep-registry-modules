@@ -41,7 +41,6 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     storageAccountName: 'dep${namePrefix}sa${serviceShort}01'
-    storageAccountContainerList: ['container1', 'container2']
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     diskName: 'dep-${namePrefix}-dsk-${serviceShort}-01'
     location: resourceLocation
@@ -224,7 +223,7 @@ module testDeployment '../../../main.bicep' = {
             backupDatasourceParametersList: [
               {
                 objectType: 'BlobBackupDatasourceParameters'
-                containersList: ['container1', 'container2']
+                containersList: nestedDependencies.outputs.storageAccountContainerList
               }
             ]
           }

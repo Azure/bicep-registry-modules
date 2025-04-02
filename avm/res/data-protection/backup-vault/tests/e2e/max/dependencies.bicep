@@ -10,8 +10,8 @@ param diskName string
 @description('Required. The name of the storage account to create.')
 param storageAccountName string
 
-@description('Required. List of the containers to be protected')
-param storageAccountContainerList string[]
+@description('Optional. List of the containers to be protected')
+param storageAccountContainerList string[] = ['container1', 'container2']
 
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
   name: managedIdentityName
@@ -57,3 +57,6 @@ output diskResourceId string = computeDisk.id
 
 @description('The resource ID of the created Storage Account.')
 output storageAccountResourceId string = storageAccount.id
+
+@description('The Storage Account Container list.')
+output storageAccountContainerList string[] = storageAccountContainerList

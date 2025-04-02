@@ -24,11 +24,6 @@ resource backupVault 'Microsoft.DataProtection/backupVaults@2023-05-01' existing
   }
 }
 
-var policyInfoVar = {
-  policyId: backupVault::backupPolicy.id
-  policyParameters: policyInfo.policyParameters
-}
-
 module backupInstance_dataSourceResource_rbac 'modules/nested_dataSourceResourceRoleAssignment.bicep' = {
   name: '${deployment().name}-RBAC'
   scope: resourceGroup(split(dataSourceInfo.resourceID, '/')[4])
@@ -45,7 +40,10 @@ resource backupInstance 'Microsoft.DataProtection/backupVaults/backupInstances@2
     friendlyName: friendlyName
     objectType: 'BackupInstance'
     dataSourceInfo: union(dataSourceInfo, { objectType: 'Datasource' })
-    policyInfo: policyInfoVar
+    policyInfo: {
+      policyId: backupVault::backupPolicy.id
+      policyParameters: policyInfo.policyParameters
+    }
   }
   dependsOn: [
     backupInstance_dataSourceResource_rbac
