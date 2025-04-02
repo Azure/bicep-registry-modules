@@ -1,5 +1,6 @@
-#  `[Alz/EmptyModulesPolicySetDefinitions]`
+# avm/ptn/alz/empty/policy-set-definitions `[Alz/EmptyModulesPolicySetDefinitions]`
 
+Azure Landing Zones - Bicep - Empty - Policy Set Definitions Module
 
 ## Navigation
 

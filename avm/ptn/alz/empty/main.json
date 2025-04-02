@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "1787793037475482131"
+      "templateHash": "5451067608887989148"
     },
     "name": "avm/ptn/alz/empty",
     "description": "Azure Landing Zones - Bicep - Empty"
@@ -60,7 +60,7 @@
             "UserAssigned"
           ],
           "metadata": {
-            "description": "Optional. The managed identity associated with the policy assignment. Policy assignments must include a resource identity when assigning `Modify` or `DeployIfNotExists` policy definitions."
+            "description": "Required. The managed identity associated with the policy assignment. Policy assignments must include a resource identity when assigning `Modify` or `DeployIfNotExists` policy definitions."
           }
         },
         "userAssignedIdentityId": {
@@ -95,7 +95,7 @@
                 "type": "string",
                 "nullable": true,
                 "metadata": {
-                  "description": "The policy definition reference ID within a policy set definition the message is intended for. This is only applicable if the policy assignment assigns a policy set definition. If this is not provided the message applies to all policies assigned by this policy assignment."
+                  "description": "Optional. The policy definition reference ID within a policy set definition the message is intended for. This is only applicable if the policy assignment assigns a policy set definition. If this is not provided the message applies to all policies assigned by this policy assignment."
                 }
               }
             }
@@ -533,7 +533,7 @@
     "managementGroupName": {
       "type": "string",
       "metadata": {
-        "description": "Optional. The name of the management group to create or update."
+        "description": "Required. The name of the management group to create or update."
       }
     },
     "managementGroupDisplayName": {
@@ -828,8 +828,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.34.44.8038",
-              "templateHash": "16099150260910142730"
-            }
+              "templateHash": "10903625116367993727"
+            },
+            "name": "avm/ptn/alz/empty/wait",
+            "description": "Azure Landing Zones - Bicep - Empty - Wait Module"
           },
           "resources": []
         }
@@ -859,8 +861,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.34.44.8038",
-              "templateHash": "16099150260910142730"
-            }
+              "templateHash": "10903625116367993727"
+            },
+            "name": "avm/ptn/alz/empty/wait",
+            "description": "Azure Landing Zones - Bicep - Empty - Wait Module"
           },
           "resources": []
         }
@@ -891,8 +895,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.34.44.8038",
-              "templateHash": "15031478253779418587"
-            }
+              "templateHash": "2664824932346119822"
+            },
+            "name": "avm/ptn/alz/empty/policy-definitions",
+            "description": "Azure Landing Zones - Bicep - Empty - Policy Definitions Module"
           },
           "definitions": {
             "policyDefinitionType": {
@@ -984,8 +990,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.34.44.8038",
-              "templateHash": "16099150260910142730"
-            }
+              "templateHash": "10903625116367993727"
+            },
+            "name": "avm/ptn/alz/empty/wait",
+            "description": "Azure Landing Zones - Bicep - Empty - Wait Module"
           },
           "resources": []
         }
@@ -1016,8 +1024,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.34.44.8038",
-              "templateHash": "9094225830321875611"
-            }
+              "templateHash": "13047015858683353284"
+            },
+            "name": "avm/ptn/alz/empty/policy-set-definitions",
+            "description": "Azure Landing Zones - Bicep - Empty - Policy Set Definitions Module"
           },
           "definitions": {
             "policySetDefinitionsType": {
@@ -1122,8 +1132,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.34.44.8038",
-              "templateHash": "16099150260910142730"
-            }
+              "templateHash": "10903625116367993727"
+            },
+            "name": "avm/ptn/alz/empty/wait",
+            "description": "Azure Landing Zones - Bicep - Empty - Wait Module"
           },
           "resources": []
         }
@@ -2728,8 +2740,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.34.44.8038",
-              "templateHash": "16099150260910142730"
-            }
+              "templateHash": "10903625116367993727"
+            },
+            "name": "avm/ptn/alz/empty/wait",
+            "description": "Azure Landing Zones - Bicep - Empty - Wait Module"
           },
           "resources": []
         }
@@ -2962,8 +2976,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.34.44.8038",
-              "templateHash": "16099150260910142730"
-            }
+              "templateHash": "10903625116367993727"
+            },
+            "name": "avm/ptn/alz/empty/wait",
+            "description": "Azure Landing Zones - Bicep - Empty - Wait Module"
           },
           "resources": []
         }
@@ -3685,18 +3701,30 @@
   "outputs": {
     "managementGroupResourceId": {
       "type": "string",
+      "metadata": {
+        "description": "The resource ID of the management group."
+      },
       "value": "[if(parameters('createOrUpdateManagementGroup'), reference('mg').outputs.resourceId.value, tenantResourceId('Microsoft.Management/managementGroups', parameters('managementGroupName')))]"
     },
     "managementGroupId": {
       "type": "string",
+      "metadata": {
+        "description": "The ID of the management group."
+      },
       "value": "[if(parameters('createOrUpdateManagementGroup'), reference('mg').outputs.name.value, parameters('managementGroupName'))]"
     },
     "managementGroupParentId": {
       "type": "string",
+      "metadata": {
+        "description": "The parent management group ID of the management group."
+      },
       "value": "[if(parameters('createOrUpdateManagementGroup'), coalesce(parameters('managementGroupParentId'), tenant().tenantId), reference('mgExisting').details.parent.id)]"
     },
     "managementGroupCustomRoleDefinitionIds": {
       "type": "array",
+      "metadata": {
+        "description": "The custom role definitions created on the management group."
+      },
       "copy": {
         "count": "[length(coalesce(parameters('managementGroupCustomRoleDefinitions'), createArray()))]",
         "input": {

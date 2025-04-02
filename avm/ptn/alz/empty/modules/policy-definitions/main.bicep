@@ -1,3 +1,6 @@
+metadata name = 'avm/ptn/alz/empty/policy-definitions'
+metadata description = 'Azure Landing Zones - Bicep - Empty - Policy Definitions Module'
+
 targetScope = 'managementGroup'
 
 @description('Optional. Policy definitions to create on the management group.')

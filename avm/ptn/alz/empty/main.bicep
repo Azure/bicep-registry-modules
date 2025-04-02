@@ -27,7 +27,7 @@ param waitForConsistencyCounterBeforeSubPlacement int = 0
 @description('Optional. Boolean to create or update the management group. If set to false, the module will only check if the management group exists and do a GET on it before it continues to deploy resources to it.')
 param createOrUpdateManagementGroup bool = true
 
-@description('Optional. The name of the management group to create or update.')
+@description('Required. The name of the management group to create or update.')
 param managementGroupName string
 
 @description('Optional. The display name of the management group to create or update. If not specified, the management group name will be used.')
@@ -326,12 +326,18 @@ module mgRoleAssignments 'br/public:avm/ptn/authorization/role-assignment:0.2.0'
 ]
 
 // Outputs
+@description('The resource ID of the management group.')
 output managementGroupResourceId string = createOrUpdateManagementGroup ? mg.outputs.resourceId : mgExisting.id
+
+@description('The ID of the management group.')
 output managementGroupId string = createOrUpdateManagementGroup ? mg.outputs.name : mgExisting.name
+
+@description('The parent management group ID of the management group.')
 output managementGroupParentId string = createOrUpdateManagementGroup
   ? (managementGroupParentId ?? tenant().tenantId)
   : mgExisting.properties.details.parent.id // Only doing this as think i've found a bug in Bicep/ARM, see: https://github.com/Azure/bicep/issues/15642
 
+@description('The custom role definitions created on the management group.')
 output managementGroupCustomRoleDefinitionIds array = [
   for (roleDef, index) in (managementGroupCustomRoleDefinitions ?? []): {
     resourceId: mgRoleDefinitions[index].outputs.managementGroupCustomRoleDefinitionIds.resourceId
@@ -361,7 +367,7 @@ type policyAssignmentType = {
   @description('Optional. Parameters for the policy assignment if needed.')
   parameters: resourceInput<'Microsoft.Authorization/policyAssignments@2022-06-01'>.properties.parameters?
 
-  @description('Optional. The managed identity associated with the policy assignment. Policy assignments must include a resource identity when assigning `Modify` or `DeployIfNotExists` policy definitions.')
+  @description('Required. The managed identity associated with the policy assignment. Policy assignments must include a resource identity when assigning `Modify` or `DeployIfNotExists` policy definitions.')
   identity: 'SystemAssigned' | 'UserAssigned' | 'None'
 
   @description('Optional. The Resource ID for the user assigned identity to assign to the policy assignment.')
@@ -375,7 +381,7 @@ type policyAssignmentType = {
     @description('Optional. A message that describes why a resource is non-compliant with the policy. This is shown in "deny" error messages and on resources non-compliant compliance results.')
     message: string
 
-    @description('The policy definition reference ID within a policy set definition the message is intended for. This is only applicable if the policy assignment assigns a policy set definition. If this is not provided the message applies to all policies assigned by this policy assignment.')
+    @description('Optional. The policy definition reference ID within a policy set definition the message is intended for. This is only applicable if the policy assignment assigns a policy set definition. If this is not provided the message applies to all policies assigned by this policy assignment.')
     policyDefinitionReferenceId: string?
   }[]?
 

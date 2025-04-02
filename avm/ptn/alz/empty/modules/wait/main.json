@@ -5,8 +5,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "16099150260910142730"
-    }
+      "templateHash": "10903625116367993727"
+    },
+    "name": "avm/ptn/alz/empty/wait",
+    "description": "Azure Landing Zones - Bicep - Empty - Wait Module"
   },
   "resources": []
 }

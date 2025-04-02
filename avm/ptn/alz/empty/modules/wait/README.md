@@ -1,5 +1,6 @@
-#  `[Alz/EmptyModulesWait]`
+# avm/ptn/alz/empty/wait `[Alz/EmptyModulesWait]`
 
+Azure Landing Zones - Bicep - Empty - Wait Module
 
 ## Navigation
 

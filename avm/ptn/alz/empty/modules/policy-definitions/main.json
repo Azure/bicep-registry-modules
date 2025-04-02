@@ -6,8 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "15031478253779418587"
-    }
+      "templateHash": "2664824932346119822"
+    },
+    "name": "avm/ptn/alz/empty/policy-definitions",
+    "description": "Azure Landing Zones - Bicep - Empty - Policy Definitions Module"
   },
   "definitions": {
     "policyDefinitionType": {
