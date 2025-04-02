@@ -55,16 +55,6 @@ BeforeDiscovery {
         $templateHashTable = ConvertFrom-Json $builtTemplate -AsHashtable
         $null = $dict.TryAdd($_, $templateHashTable)
     }
-
-    # get allowed list of child modules
-    $childModulesAllowedList = @()
-    $childModulesAllowedListPath = Join-Path $repoRootPath 'utilities' 'pipelines' 'staticValidation' 'compliance' 'helper' 'child-modules-allowed-list.json'
-
-    if (Test-Path $childModulesAllowedListPath) {
-        $childModulesAllowedList = (Get-Content -Path $childModulesAllowedListPath | ConvertFrom-Json).'allowed-child-modules'
-    } else {
-        Write-Warning "The child modules allowed list file [$childModulesAllowedListPath] does not exist."
-    }
 }
 Describe 'File/folder tests' -Tag 'Modules' {
 
@@ -72,14 +62,25 @@ Describe 'File/folder tests' -Tag 'Modules' {
 
         BeforeDiscovery {
             $moduleFolderTestCases = [System.Collections.ArrayList] @()
+            # get allowed list of child modules
+            $childModulesAllowedList = @()
+            $childModulesAllowedListPath = Join-Path $repoRootPath 'utilities' 'pipelines' 'staticValidation' 'compliance' 'helper' 'child-modules-allowed-list.json'
+
+            if (Test-Path $childModulesAllowedListPath) {
+                $childModulesAllowedList = (Get-Content -Path $childModulesAllowedListPath | ConvertFrom-Json).'allowed-child-modules'
+            } else {
+                Write-Warning "The child modules allowed list file [$childModulesAllowedListPath] does not exist."
+            }
+
             foreach ($moduleFolderPath in $moduleFolderPaths) {
                 $null, $moduleType, $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]') # 'avm/res|ptn|utl/<provider>/<resourceType>' would return 'avm', 'res|ptn|utl', '<provider>/<resourceType>'
                 $resourceTypeIdentifier = $resourceTypeIdentifier -replace '\\', '/'
                 $moduleFolderTestCases += @{
-                    moduleFolderName = $resourceTypeIdentifier
-                    moduleFolderPath = $moduleFolderPath
-                    isTopLevelModule = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
-                    moduleType       = $moduleType
+                    moduleFolderName    = $resourceTypeIdentifier
+                    moduleFolderPath    = $moduleFolderPath
+                    isTopLevelModule    = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
+                    moduleType          = $moduleType
+                    isPublishingAllowed = (($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2) || ( $childModulesAllowedList -contains $moduleFolderPath )
                 }
             }
         }
@@ -128,20 +129,18 @@ Describe 'File/folder tests' -Tag 'Modules' {
         It '[<moduleFolderName>] child module should not contain a [` version.json `] file.' -TestCases ($moduleFolderTestCases | Where-Object { -Not $_.isTopLevelModule }) {
 
             param (
-                [string] $moduleFolderPath
+                [string] $moduleFolderPath,
+                [bool] $isPublishingAllowed,
+                [string] $childModulesAllowedListPath
             )
 
-            Write-Verbose ("childModulesAllowedList: $childModulesAllowedList") -Verbose
-            Write-Verbose ("moduleFolderPath: $moduleFolderPath") -Verbose
-            Write-Verbose ("moduleFolderName: $moduleFolderName") -Verbose
-
-            if ($childModulesAllowedList.contains($moduleFolderPath)) {
+            if ($isPublishingAllowed) {
                 Set-ItResult -Skipped -Because "$moduleFolderPath is in the child module publishing allowed list."
                 return
             }
 
             $pathExisting = Test-Path (Join-Path -Path $moduleFolderPath 'version.json')
-            $pathExisting | Should -Be $false -Because 'only the child modules listed in the .\helper\child-modules-allowed-list.json list may have a version.json file.'
+            $pathExisting | Should -Be $false -Because "only the child modules listed in $childModulesAllowedListPath list may have a version.json file."
         }
 
         # if the child modules version has been increased, the main modules version should be increased as well
