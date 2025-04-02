@@ -282,16 +282,23 @@ This instance deploys the module with custom RBAC for the role assignments.
 module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
   name: 'subVendingDeployment'
   params: {
-    customRoleAssignments: [
+    resourceProviders: {}
+    roleAssignmentEnabled: true
+    roleAssignments: [
       {
         definition: '<definition>'
+        isCustomRole: true
+        principalId: '<principalId>'
+        principalType: 'User'
+        relativeScope: ''
+      }
+      {
+        definition: 'contributor'
         principalId: '<principalId>'
         principalType: 'User'
         relativeScope: ''
       }
     ]
-    resourceProviders: {}
-    roleAssignmentEnabled: true
     subscriptionAliasEnabled: true
     subscriptionAliasName: '<subscriptionAliasName>'
     subscriptionBillingScope: '<subscriptionBillingScope>'
@@ -319,21 +326,28 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "customRoleAssignments": {
-      "value": [
-        {
-          "definition": "<definition>",
-          "principalId": "<principalId>",
-          "principalType": "User",
-          "relativeScope": ""
-        }
-      ]
-    },
     "resourceProviders": {
       "value": {}
     },
     "roleAssignmentEnabled": {
       "value": true
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "definition": "<definition>",
+          "isCustomRole": true,
+          "principalId": "<principalId>",
+          "principalType": "User",
+          "relativeScope": ""
+        },
+        {
+          "definition": "contributor",
+          "principalId": "<principalId>",
+          "principalType": "User",
+          "relativeScope": ""
+        }
+      ]
     },
     "subscriptionAliasEnabled": {
       "value": true
@@ -376,16 +390,23 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
 ```bicep-params
 using 'br/public:avm/ptn/lz/sub-vending:<version>'
 
-param customRoleAssignments = [
+param resourceProviders = {}
+param roleAssignmentEnabled = true
+param roleAssignments = [
   {
     definition: '<definition>'
+    isCustomRole: true
+    principalId: '<principalId>'
+    principalType: 'User'
+    relativeScope: ''
+  }
+  {
+    definition: 'contributor'
     principalId: '<principalId>'
     principalType: 'User'
     relativeScope: ''
   }
 ]
-param resourceProviders = {}
-param roleAssignmentEnabled = true
 param subscriptionAliasEnabled = true
 param subscriptionAliasName = '<subscriptionAliasName>'
 param subscriptionBillingScope = '<subscriptionBillingScope>'
@@ -1755,7 +1776,6 @@ param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`customRoleAssignments`](#parameter-customroleassignments) | array | Supply an array of objects containing the details of the custom role assignments to create.<p><p>Each object must contain the following `keys`:<li>`principalId` = The Object ID of the User, Group, SPN, Managed Identity to assign the RBAC role too.<li>`definition` = The Name of one of the pre-defined built-In RBAC Roles or a Resource ID of a Built-in or custom RBAC Role Definition as follows:<p>  - You can only provide the RBAC role name of the pre-defined roles (Contributor, Owner, Reader, Role Based Access Control Administrator (Preview), and User Access Administrator). We only provide those roles as they are the most common ones to assign to a new subscription, also to reduce the template size and complexity in case we define each and every Built-in RBAC role.<p>  - You can provide the Resource ID of a Built-in or custom RBAC Role Definition<p>    - e.g. `/providers/Microsoft.Authorization/roleDefinitions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`<li>`relativeScope` = 2 options can be provided for input value:<p>    1. `''` *(empty string)* = Make RBAC Role Assignment to Subscription scope<p>    2. `'/resourceGroups/<RESOURCE GROUP NAME>'` = Make RBAC Role Assignment to specified Resource Group.<p> |
 | [`deploymentScriptLocation`](#parameter-deploymentscriptlocation) | string | The location of the deployment script. Use region shortnames e.g. uksouth, eastus, etc. |
 | [`deploymentScriptManagedIdentityName`](#parameter-deploymentscriptmanagedidentityname) | string | The name of the user managed identity for the resource providers registration deployment script. |
 | [`deploymentScriptName`](#parameter-deploymentscriptname) | string | The name of the deployment script to register resource providers. |
@@ -1804,280 +1824,6 @@ param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 | [`virtualNetworkVwanEnableInternetSecurity`](#parameter-virtualnetworkvwanenableinternetsecurity) | bool | Enables the ability for the Virtual WAN Hub Connection to learn the default route 0.0.0.0/0 from the Hub.<p> |
 | [`virtualNetworkVwanPropagatedLabels`](#parameter-virtualnetworkvwanpropagatedlabels) | array | An array of virtual hub route table labels to propagate routes to. If left blank/empty the default label will be propagated to only.<p> |
 | [`virtualNetworkVwanPropagatedRouteTablesResourceIds`](#parameter-virtualnetworkvwanpropagatedroutetablesresourceids) | array | An array of of objects of virtual hub route table resource IDs to propagate routes to. If left blank/empty the `defaultRouteTable` will be propagated to only.<p><p>Each object must contain the following `key`:<li>`id` = The Resource ID of the Virtual WAN Virtual Hub Route Table IDs you wish to propagate too<p><p>> **IMPORTANT:** If you provide any Route Tables in this array of objects you must ensure you include also the `defaultRouteTable` Resource ID as an object in the array as it is not added by default when a value is provided for this parameter.<p> |
-
-### Parameter: `customRoleAssignments`
-
-Supply an array of objects containing the details of the custom role assignments to create.<p><p>Each object must contain the following `keys`:<li>`principalId` = The Object ID of the User, Group, SPN, Managed Identity to assign the RBAC role too.<li>`definition` = The Name of one of the pre-defined built-In RBAC Roles or a Resource ID of a Built-in or custom RBAC Role Definition as follows:<p>  - You can only provide the RBAC role name of the pre-defined roles (Contributor, Owner, Reader, Role Based Access Control Administrator (Preview), and User Access Administrator). We only provide those roles as they are the most common ones to assign to a new subscription, also to reduce the template size and complexity in case we define each and every Built-in RBAC role.<p>  - You can provide the Resource ID of a Built-in or custom RBAC Role Definition<p>    - e.g. `/providers/Microsoft.Authorization/roleDefinitions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`<li>`relativeScope` = 2 options can be provided for input value:<p>    1. `''` *(empty string)* = Make RBAC Role Assignment to Subscription scope<p>    2. `'/resourceGroups/<RESOURCE GROUP NAME>'` = Make RBAC Role Assignment to specified Resource Group.<p>
-
-- Required: No
-- Type: array
-- Default: `[]`
-- Example:
-  ```Bicep
-  [
-    {
-      // Owner role assignment at resource group scope
-      principalId: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
-      definition: '/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
-      relativeScope: '/resourceGroups/{resourceGroupName}'
-    }
-  ]
-  ```
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`definition`](#parameter-customroleassignmentsdefinition) | string | The role definition ID or name. |
-| [`principalId`](#parameter-customroleassignmentsprincipalid) | string | The principal ID of the user, group, or service principal. |
-| [`relativeScope`](#parameter-customroleassignmentsrelativescope) | string | The relative scope of the role assignment. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`principalType`](#parameter-customroleassignmentsprincipaltype) | string | The principal type of the user, group, or service principal. |
-| [`roleAssignmentCondition`](#parameter-customroleassignmentsroleassignmentcondition) | object | The condition for the role assignment. |
-
-### Parameter: `customRoleAssignments.definition`
-
-The role definition ID or name.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `customRoleAssignments.principalId`
-
-The principal ID of the user, group, or service principal.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `customRoleAssignments.relativeScope`
-
-The relative scope of the role assignment.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `customRoleAssignments.principalType`
-
-The principal type of the user, group, or service principal.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Group'
-    'ServicePrincipal'
-    'User'
-  ]
-  ```
-
-### Parameter: `customRoleAssignments.roleAssignmentCondition`
-
-The condition for the role assignment.
-
-- Required: No
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`conditionVersion`](#parameter-customroleassignmentsroleassignmentconditionconditionversion) | string | The version of the condition template. |
-| [`delegationCode`](#parameter-customroleassignmentsroleassignmentconditiondelegationcode) | string | The code for a custom condition if no template is used. The user should supply their own custom code if the available templates are not matching their requirements. If a value is provided, this will overwrite any added template. All single quotes needs to be skipped using '. |
-| [`roleConditionType`](#parameter-customroleassignmentsroleassignmentconditionroleconditiontype) | object | The type of template for the role assignment condition. |
-
-### Parameter: `customRoleAssignments.roleAssignmentCondition.conditionVersion`
-
-The version of the condition template.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    '2.0'
-  ]
-  ```
-
-### Parameter: `customRoleAssignments.roleAssignmentCondition.delegationCode`
-
-The code for a custom condition if no template is used. The user should supply their own custom code if the available templates are not matching their requirements. If a value is provided, this will overwrite any added template. All single quotes needs to be skipped using '.
-
-- Required: No
-- Type: string
-
-### Parameter: `customRoleAssignments.roleAssignmentCondition.roleConditionType`
-
-The type of template for the role assignment condition.
-
-- Required: No
-- Type: object
-- Discriminator: `templateName`
-
-<h4>The available variants are:</h4>
-
-| Variant | Description |
-| :-- | :-- |
-| [`excludeRoles`](#variant-customroleassignmentsroleassignmentconditionroleconditiontypetemplatename-excluderoles) |  |
-| [`constrainRoles`](#variant-customroleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainroles) |  |
-| [`constrainRolesAndPrincipalTypes`](#variant-customroleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolesandprincipaltypes) |  |
-| [`constrainRolesAndPrincipals`](#variant-customroleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolesandprincipals) |  |
-
-### Variant: `customRoleAssignments.roleAssignmentCondition.roleConditionType.templateName-excludeRoles`
-
-
-To use this variant, set the property `templateName` to `excludeRoles`.
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`excludedRoles`](#parameter-customroleassignmentsroleassignmentconditionroleconditiontypetemplatename-excluderolesexcludedroles) | array | The list of roles that are not allowed to be assigned by the delegate. |
-| [`templateName`](#parameter-customroleassignmentsroleassignmentconditionroleconditiontypetemplatename-excluderolestemplatename) | string | Name of the RBAC condition template. |
-
-### Parameter: `customRoleAssignments.roleAssignmentCondition.roleConditionType.templateName-excludeRoles.excludedRoles`
-
-The list of roles that are not allowed to be assigned by the delegate.
-
-- Required: Yes
-- Type: array
-
-### Parameter: `customRoleAssignments.roleAssignmentCondition.roleConditionType.templateName-excludeRoles.templateName`
-
-Name of the RBAC condition template.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'excludeRoles'
-  ]
-  ```
-
-### Variant: `customRoleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRoles`
-
-
-To use this variant, set the property `templateName` to `constrainRoles`.
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`rolesToAssign`](#parameter-customroleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolesrolestoassign) | array | The list of roles that are allowed to be assigned by the delegate. |
-| [`templateName`](#parameter-customroleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolestemplatename) | string | Name of the RBAC condition template. |
-
-### Parameter: `customRoleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRoles.rolesToAssign`
-
-The list of roles that are allowed to be assigned by the delegate.
-
-- Required: Yes
-- Type: array
-
-### Parameter: `customRoleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRoles.templateName`
-
-Name of the RBAC condition template.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'constrainRoles'
-  ]
-  ```
-
-### Variant: `customRoleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRolesAndPrincipalTypes`
-
-
-To use this variant, set the property `templateName` to `constrainRolesAndPrincipalTypes`.
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`principleTypesToAssign`](#parameter-customroleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolesandprincipaltypesprincipletypestoassign) | array | The list of principle types that are allowed to be assigned roles by the delegate. |
-| [`rolesToAssign`](#parameter-customroleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolesandprincipaltypesrolestoassign) | array | The list of roles that are allowed to be assigned by the delegate. |
-| [`templateName`](#parameter-customroleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolesandprincipaltypestemplatename) | string | Name of the RBAC condition template. |
-
-### Parameter: `customRoleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRolesAndPrincipalTypes.principleTypesToAssign`
-
-The list of principle types that are allowed to be assigned roles by the delegate.
-
-- Required: Yes
-- Type: array
-- Allowed:
-  ```Bicep
-  [
-    'Group'
-    'ServicePrincipal'
-    'User'
-  ]
-  ```
-
-### Parameter: `customRoleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRolesAndPrincipalTypes.rolesToAssign`
-
-The list of roles that are allowed to be assigned by the delegate.
-
-- Required: Yes
-- Type: array
-
-### Parameter: `customRoleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRolesAndPrincipalTypes.templateName`
-
-Name of the RBAC condition template.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'constrainRolesAndPrincipalTypes'
-  ]
-  ```
-
-### Variant: `customRoleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRolesAndPrincipals`
-
-
-To use this variant, set the property `templateName` to `constrainRolesAndPrincipals`.
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`principalsToAssignTo`](#parameter-customroleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolesandprincipalsprincipalstoassignto) | array | The list of principals that are allowed to be assigned roles by the delegate. |
-| [`rolesToAssign`](#parameter-customroleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolesandprincipalsrolestoassign) | array | The list of roles that are allowed to be assigned by the delegate. |
-| [`templateName`](#parameter-customroleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolesandprincipalstemplatename) | string | Name of the RBAC condition template. |
-
-### Parameter: `customRoleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRolesAndPrincipals.principalsToAssignTo`
-
-The list of principals that are allowed to be assigned roles by the delegate.
-
-- Required: Yes
-- Type: array
-
-### Parameter: `customRoleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRolesAndPrincipals.rolesToAssign`
-
-The list of roles that are allowed to be assigned by the delegate.
-
-- Required: Yes
-- Type: array
-
-### Parameter: `customRoleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRolesAndPrincipals.templateName`
-
-Name of the RBAC condition template.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'constrainRolesAndPrincipals'
-  ]
-  ```
 
 ### Parameter: `deploymentScriptLocation`
 
@@ -2503,6 +2249,7 @@ Supply an array of objects containing the details of the role assignments to cre
       // Owner role assignment at resource group scope
       principalId: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
       definition: '/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
+      isCustomRole: true
       relativeScope: '/resourceGroups/{resourceGroupName}'
     }
   ]
@@ -2513,6 +2260,7 @@ Supply an array of objects containing the details of the role assignments to cre
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`definition`](#parameter-roleassignmentsdefinition) | string | The role definition ID or name. |
+| [`isCustomRole`](#parameter-roleassignmentsiscustomrole) | bool | Determine if the role assignment is a custom role or not. |
 | [`principalId`](#parameter-roleassignmentsprincipalid) | string | The principal ID of the user, group, or service principal. |
 | [`relativeScope`](#parameter-roleassignmentsrelativescope) | string | The relative scope of the role assignment. |
 
@@ -2529,6 +2277,13 @@ The role definition ID or name.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `roleAssignments.isCustomRole`
+
+Determine if the role assignment is a custom role or not.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `roleAssignments.principalId`
 

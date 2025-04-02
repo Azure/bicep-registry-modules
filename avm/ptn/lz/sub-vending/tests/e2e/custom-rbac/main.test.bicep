@@ -45,10 +45,17 @@ module testDeployment '../../../main.bicep' = {
     subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
     resourceProviders: {}
     roleAssignmentEnabled: true
-    customRoleAssignments: [
+    roleAssignments: [
       {
         principalId: testUserObjectId
         definition: dependencies.outputs.customRoleDefinitionId
+        relativeScope: ''
+        isCustomRole: true
+        principalType: 'User'
+      }
+      {
+        principalId: testUserObjectId
+        definition: 'contributor'
         relativeScope: ''
         principalType: 'User'
       }
