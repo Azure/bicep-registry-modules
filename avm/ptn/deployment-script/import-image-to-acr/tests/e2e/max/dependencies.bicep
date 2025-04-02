@@ -49,7 +49,7 @@ resource vnet 'Microsoft.Network/virtualNetworks@2023-11-01' = {
   }
   resource subnet_deploymentscript 'subnets@2023-11-01' = {
     name: 'deploymentscript-subnet'
-    dependsOn: [subnet_privateendpoints]
+    dependsOn: [subnet_privateendpoints] // for the order of creation
     properties: {
       addressPrefix: cidrSubnet(ipRange, 24, 1)
       serviceEndpoints: [
@@ -91,7 +91,6 @@ module storage 'br/public:avm/res/storage/storage-account:0.19.0' = {
     location: location
     tags: tags
     kind: 'StorageV2'
-    minimumTlsVersion: 'TLS1_2'
     skuName: 'Standard_LRS'
     accessTier: 'Hot'
     allowSharedKeyAccess: true
@@ -152,10 +151,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
           tenantId: tenant().tenantId
           objectId: identity.outputs.principalId
           permissions: {
-            keys: []
             secrets: ['get', 'list', 'set']
-            certificates: []
-            storage: []
           }
         }
       ]
@@ -169,6 +165,7 @@ module acr 'br/public:avm/res/container-registry/registry:0.9.1' = {
   params: {
     name: acrName
     location: location
+    tags: tags
     acrSku: 'Premium'
     acrAdminUserEnabled: false
     // roleAssisgnments are done in the main module
