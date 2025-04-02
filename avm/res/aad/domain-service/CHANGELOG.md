@@ -2,14 +2,19 @@
 
 ## 0.3.1
 
+### Breaking Changes
+
+- none
+
 ### Changes
 
-### Breaking Changes
+- Removed unused owner metadata
 
 ## 0.3.0
 
 ### Changes
 
+- Roleassignment update to align to the latest specs. Added the optional name parameter.
 
 ### Breaking Changes
 
@@ -22,6 +27,8 @@
 - Resource Provider version update for AVM Telemetry
 
 ### Breaking Changes
+
+- none
 
 ## 0.2.0
 
