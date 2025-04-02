@@ -177,7 +177,7 @@ resource managedEnvironment 'Microsoft.App/managedEnvironments@2024-10-02-previe
     }
     appLogsConfiguration: {
       destination: logsDestination
-      logAnalyticsConfiguration: !empty(logAnalyticsWorkspace)
+      logAnalyticsConfiguration: !empty(logAnalyticsWorkspaceResourceId)
         ? {
             customerId: logAnalyticsWorkspace.properties.customerId
             sharedKey: logAnalyticsWorkspace.listKeys().primarySharedKey
