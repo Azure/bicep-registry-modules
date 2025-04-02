@@ -111,7 +111,7 @@ module testDeployment '../../../main.bicep' = [
           roleDefinitionIdOrName: alzCustomRbacRoleDefsJson[4].name
         }
       ]
-      // managementGroupCustomRoleDefinitions: unionedCustomRbacRoleDefs
+      managementGroupCustomRoleDefinitions: unionedCustomRbacRoleDefs
       managementGroupCustomRoleDefinitions: [
         {
           name: 'custom-role-1'
