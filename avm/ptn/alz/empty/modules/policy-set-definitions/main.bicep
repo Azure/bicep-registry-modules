@@ -16,6 +16,7 @@ resource mgCustomPolicySetDefinitions 'Microsoft.Authorization/policySetDefiniti
       policyDefinitions: [
         for polDef in polSetDef.properties.policyDefinitions: {
           policyDefinitionReferenceId: polDef.?policyDefinitionReferenceId
+          #disable-next-line use-resource-id-functions
           policyDefinitionId: replace(
             polDef.?policyDefinitionId,
             '{customPolicyDefinitionScopeId}',

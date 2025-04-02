@@ -278,9 +278,9 @@ module mgRoleDefinitions 'br/public:avm/ptn/authorization/role-definition:0.1.0'
     name: take('${deploymentNames.mgRoleDefinitions}-${uniqueString(managementGroupName, roleDef.name)}', 64)
     params: {
       name: roleDef.name
-      roleName: roleDef.properties.?roleName
-      description: roleDef.properties.?description ?? ''
-      assignableScopes: roleDef.properties.?assignableScopes
+      roleName: roleDef.?roleName
+      description: roleDef.?description ?? ''
+      assignableScopes: roleDef.?assignableScopes
       actions: roleDef.?actions
       notActions: roleDef.?notActions
       dataActions: roleDef.?dataActions

@@ -82,11 +82,107 @@ var alzCustomPolicyDefsJson = [
   loadJsonContent('lib/policy_definitions/Audit-Disks-UnusedResourcesCostOptimization.alz_policy_definition.json')
   loadJsonContent('lib/policy_definitions/Deploy-Budget.alz_policy_definition.json')
   loadJsonContent('lib/policy_definitions/Deploy-ASC-SecurityContacts.alz_policy_definition.json')
+  {
+    name: 'custom-tags-policy-1'
+    properties: {
+      description: 'Audit resource groups that do not have particular tag'
+      displayName: 'Custom audit resource groups missing tags'
+      policyType: 'Custom'
+      metadata: {
+        category: 'Tags'
+        version: '1.0.0'
+      }
+      mode: 'All'
+      parameters: {
+        tagName: {
+          type: 'String'
+          metadata: {
+            description: 'Name of the tag, such as costCenter'
+          }
+        }
+        effect: {
+          type: 'String'
+          metadata: {
+            displayName: 'Effect'
+            description: 'Audit or Disabled the execution of the Policy'
+          }
+          allowedValues: [
+            'Audit'
+            'Disabled'
+          ]
+          defaultValue: 'Audit'
+        }
+      }
+      policyRule: {
+        if: {
+          allOf: [
+            {
+              field: 'type'
+              equals: 'Microsoft.Resources/subscriptions/resourceGroups'
+            }
+            {
+              field: '[[concat(\'tags[\', parameters(\'tagName\'), \']\')]'
+              exists: false
+            }
+          ]
+        }
+        then: {
+          effect: '[[parameters(\'effect\')]'
+        }
+      }
+    }
+  }
 ]
 
 var alzCustomPolicySetDefsJson = [
   loadJsonContent('lib/policy_set_definitions/Audit-TrustedLaunch.alz_policy_set_definition.json')
   loadJsonContent('lib/policy_set_definitions/Deploy-MDFC-Config_20240319.alz_policy_set_definition.json')
+  {
+    name: 'custom-tags-policy-set-definition-1'
+    properties: {
+      description: 'Custom tags policy set definition'
+      displayName: 'Custom tags policy set definition'
+      policyType: 'Custom'
+      metadata: {
+        category: 'Tags'
+        version: '1.0.0'
+      }
+      parameters: {
+        tagName: {
+          type: 'String'
+          metadata: {
+            description: 'Name of the tag, such as costCenter'
+          }
+        }
+        effect: {
+          type: 'String'
+          metadata: {
+            displayName: 'Effect'
+            description: 'Audit or Disabled the execution of the Policy'
+          }
+          allowedValues: [
+            'Audit'
+            'Disabled'
+          ]
+          defaultValue: 'Audit'
+        }
+      }
+      policyDefinitions: [
+        {
+          policyDefinitionId: '{customPolicyDefinitionScopeId}/providers/Microsoft.Authorization/policyDefinitions/custom-tags-policy-1'
+          policyDefinitionReferenceId: 'custom-tags-policy-1'
+          parameters: {
+            tagName: {
+              value: '[[[parameters(\'tagName\')]'
+            }
+            effect: {
+              value: '[[[parameters(\'effect\')]'
+            }
+          }
+        }
+      ]
+    }
+  }
 ]
 
 @batchSize(1)
@@ -112,6 +208,7 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       managementGroupCustomRoleDefinitions: unionedCustomRbacRoleDefs
+      waitForConsistencyCounterBeforeCustomPolicyDefinitions: 5
       managementGroupPolicyAssignments: [
         {
           name: 'allowed-vm-skus-root'
@@ -146,6 +243,21 @@ module testDeployment '../../../main.bicep' = [
           additionalManagementGroupsIDsToAssignRbacTo: [
             additionalTestManagementGroup.name
           ]
+        }
+        {
+          name: 'tags-policy'
+          displayName: 'Tag checking'
+          identity: 'None'
+          enforcementMode: 'Default'
+          policyDefinitionId: '/providers/Microsoft.Management/managementGroups/mg-${namePrefix}-test-${serviceShort}-max/providers/Microsoft.Authorization/policySetDefinitions/custom-tags-policy-set-definition-1'
+          parameters: {
+            tagName: {
+              value: 'costCenter'
+            }
+            effect: {
+              value: 'Audit'
+            }
+          }
         }
       ]
       managementGroupCustomPolicyDefinitions: [
