@@ -145,6 +145,26 @@ var deploymentNames = {
 }
 
 // Modules
+// Telemetry
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+  name: '46d3xbcp.ptn.alz-empty.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
+
 // Single Management Group Creation (Optional)
 module mg 'br/public:avm/res/management/management-group:0.1.2' = if (createOrUpdateManagementGroup) {
   name: deploymentNames.mg
@@ -378,7 +398,7 @@ type policyAssignmentType = {
 
   @description('Optional. The messages that describe why a resource is non-compliant with the policy.')
   nonComplianceMessages: {
-    @description('Optional. A message that describes why a resource is non-compliant with the policy. This is shown in "deny" error messages and on resources non-compliant compliance results.')
+    @description('Required. A message that describes why a resource is non-compliant with the policy. This is shown in "deny" error messages and on resources non-compliant compliance results.')
     message: string
 
     @description('Optional. The policy definition reference ID within a policy set definition the message is intended for. This is only applicable if the policy assignment assigns a policy set definition. If this is not provided the message applies to all policies assigned by this policy assignment.')
@@ -388,7 +408,7 @@ type policyAssignmentType = {
   @description('Optional. The policy assignment metadata. Metadata is an open ended object and is typically a collection of key-value pairs.')
   metadata: object?
 
-  @description('Optional. The policy assignment enforcement mode. Possible values are `Default` and `DoNotEnforce`. Recommended value is `Default`.')
+  @description('Required. The policy assignment enforcement mode. Possible values are `Default` and `DoNotEnforce`. Recommended value is `Default`.')
   enforcementMode: 'Default' | 'DoNotEnforce'
 
   @description('Optional. The policy excluded scopes.')
@@ -402,6 +422,7 @@ type policyAssignmentType = {
     @description('Required. The override kind.')
     kind: 'definitionVersion' | 'policyEffect'
 
+    @description('Optional. The selector type.')
     selectors: policyAssignmentSelectorType[]?
 
     @description('Optional. The value to override the policy property.')

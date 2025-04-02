@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "5451067608887989148"
+      "templateHash": "3392865989006100276"
     },
     "name": "avm/ptn/alz/empty",
     "description": "Azure Landing Zones - Bicep - Empty"
@@ -88,7 +88,7 @@
               "message": {
                 "type": "string",
                 "metadata": {
-                  "description": "Optional. A message that describes why a resource is non-compliant with the policy. This is shown in \"deny\" error messages and on resources non-compliant compliance results."
+                  "description": "Required. A message that describes why a resource is non-compliant with the policy. This is shown in \"deny\" error messages and on resources non-compliant compliance results."
                 }
               },
               "policyDefinitionReferenceId": {
@@ -119,7 +119,7 @@
             "DoNotEnforce"
           ],
           "metadata": {
-            "description": "Optional. The policy assignment enforcement mode. Possible values are `Default` and `DoNotEnforce`. Recommended value is `Default`."
+            "description": "Required. The policy assignment enforcement mode. Possible values are `Default` and `DoNotEnforce`. Recommended value is `Default`."
           }
         },
         "notScopes": {
@@ -159,7 +159,10 @@
                 "items": {
                   "$ref": "#/definitions/policyAssignmentSelectorType"
                 },
-                "nullable": true
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The selector type."
+                }
               },
               "value": {
                 "type": "string",
@@ -657,6 +660,26 @@
     }
   },
   "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2023-07-01",
+      "name": "[format('46d3xbcp.ptn.alz-empty.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
     "mgExisting": {
       "condition": "[not(parameters('createOrUpdateManagementGroup'))]",
       "existing": true,
