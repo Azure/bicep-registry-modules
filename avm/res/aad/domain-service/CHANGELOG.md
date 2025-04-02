@@ -4,17 +4,12 @@
 
 ### Changes
 
-- Removed unused owner metadata
-
 ### Breaking Changes
-
-- none
 
 ## 0.3.0
 
 ### Changes
 
-- Roleassignment update to align to the latest specs. Added the optional name parameter.
 
 ### Breaking Changes
 
@@ -28,14 +23,16 @@
 
 ### Breaking Changes
 
-- none
-
 ## 0.2.0
 
 ### Changes
 
 - TLSV1 is disabled by default
 - Kerberos RC4 is disabled by default
+
+### Breaking Changes
+
+- none
 
 ## 0.1.0
 
@@ -46,8 +43,3 @@
 ### Breaking Changes
 
 - none
-
-### Breaking Changes
-
-- none
-
