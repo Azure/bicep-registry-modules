@@ -450,10 +450,7 @@ module backupVault 'br/public:avm/res/data-protection/backup-vault:<version>' = 
           policyParameters: {
             backupDatasourceParametersList: [
               {
-                containersList: [
-                  'container1'
-                  'container2'
-                ]
+                containersList: '<containersList>'
                 objectType: 'BlobBackupDatasourceParameters'
               }
             ]
@@ -698,10 +695,7 @@ module backupVault 'br/public:avm/res/data-protection/backup-vault:<version>' = 
             "policyParameters": {
               "backupDatasourceParametersList": [
                 {
-                  "containersList": [
-                    "container1",
-                    "container2"
-                  ],
+                  "containersList": "<containersList>",
                   "objectType": "BlobBackupDatasourceParameters"
                 }
               ]
@@ -954,10 +948,7 @@ param backupInstances = [
       policyParameters: {
         backupDatasourceParametersList: [
           {
-            containersList: [
-              'container1'
-              'container2'
-            ]
+            containersList: '<containersList>'
             objectType: 'BlobBackupDatasourceParameters'
           }
         ]

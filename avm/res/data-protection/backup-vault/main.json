@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "3223634327374924766"
+      "templateHash": "6467590151892825143"
     },
     "name": "Data Protection Backup Vaults",
     "description": "This module deploys a Data Protection Backup Vault."
@@ -737,7 +737,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "8713855947902606596"
+              "templateHash": "193224384736045923"
             },
             "name": "Data Protection Backup Vault Backup Instances",
             "description": "This module deploys a Data Protection Backup Vault Backup Instance."
@@ -843,12 +843,6 @@
               }
             }
           },
-          "variables": {
-            "policyInfoVar": {
-              "policyId": "[resourceId('Microsoft.DataProtection/backupVaults/backupPolicies', parameters('backupVaultName'), parameters('policyInfo').policyName)]",
-              "policyParameters": "[parameters('policyInfo').policyParameters]"
-            }
-          },
           "resources": {
             "backupVault::backupPolicy": {
               "existing": true,
@@ -870,7 +864,10 @@
                 "friendlyName": "[parameters('friendlyName')]",
                 "objectType": "BackupInstance",
                 "dataSourceInfo": "[union(parameters('dataSourceInfo'), createObject('objectType', 'Datasource'))]",
-                "policyInfo": "[variables('policyInfoVar')]"
+                "policyInfo": {
+                  "policyId": "[resourceId('Microsoft.DataProtection/backupVaults/backupPolicies', parameters('backupVaultName'), parameters('policyInfo').policyName)]",
+                  "policyParameters": "[parameters('policyInfo').policyParameters]"
+                }
               },
               "dependsOn": [
                 "backupInstance_dataSourceResource_rbac"
