@@ -284,7 +284,7 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     identitySettings: [
       {
         identity: '<identity>'
-        lifecycle: 'Init'
+        lifecycle: 'None'
       }
     ]
     location: '<location>'
@@ -416,7 +416,7 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
       "value": [
         {
           "identity": "<identity>",
-          "lifecycle": "Init"
+          "lifecycle": "None"
         }
       ]
     },
@@ -556,7 +556,7 @@ param name = 'acamax001'
 param identitySettings = [
   {
     identity: '<identity>'
-    lifecycle: 'Init'
+    lifecycle: 'None'
   }
 ]
 param location = '<location>'

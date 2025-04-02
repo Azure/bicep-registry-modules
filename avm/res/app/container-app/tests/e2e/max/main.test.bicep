@@ -65,7 +65,7 @@ module testDeployment '../../../main.bicep' = [
       identitySettings: [
         {
           identity: nestedDependencies.outputs.managedIdentityResourceId
-          lifecycle: 'Init'
+          lifecycle: 'None'
         }
       ]
       roleAssignments: [
