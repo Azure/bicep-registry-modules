@@ -6,7 +6,23 @@ targetScope = 'managementGroup'
 @description('Optional. The location to deploy resources to.')
 param location string = deployment().location
 
-param managementGroupWaitForConsistencyCounter int = 15
+@description('Optional. An integer that specifies the number of blank ARM deployments prior to the custom role definitions are deployed. This electively introduces a wait timer to allow ARM eventual consistency to become consistent and helps avoids "Not Found" error messages.')
+param waitForConsistencyCounterBeforeCustomRoleDefinitions int = 15
+
+@description('Optional. An integer that specifies the number of blank ARM deployments prior to the role assignments are deployed. This electively introduces a wait timer to allow ARM eventual consistency to become consistent and helps avoids "Not Found" error messages.')
+param waitForConsistencyCounterBeforeRoleAssignments int = 15
+
+@description('Optional. An integer that specifies the number of blank ARM deployments prior to the custom policy definitions are deployed. This electively introduces a wait timer to allow ARM eventual consistency to become consistent and helps avoids "Not Found" error messages.')
+param waitForConsistencyCounterBeforeCustomPolicyDefinitions int = 15
+
+@description('Optional. An integer that specifies the number of blank ARM deployments prior to the custom policy set definitions (initiatives) are deployed. This electively introduces a wait timer to allow ARM eventual consistency to become consistent and helps avoids "Not Found" error messages.')
+param waitForConsistencyCounterBeforeCustomPolicySetDefinitions int = 15
+
+@description('Optional. An integer that specifies the number of blank ARM deployments prior to the policy assignments are deployed. This electively introduces a wait timer to allow ARM eventual consistency to become consistent and helps avoids "Not Found" error messages.')
+param waitForConsistencyCounterBeforePolicyAssignments int = 15
+
+@description('Optional. An integer that specifies the number of blank ARM deployments prior to the subscription management group associations are deployed. This electively introduces a wait timer to allow ARM eventual consistency to become consistent and helps avoids "Not Found" error messages.')
+param waitForConsistencyCounterBeforeSubPlacement int = 15
 
 @description('Optional. Boolean to create or update the management group. If set to false, the module will only check if the management group exists and do a GET on it before it continues to deploy resources to it.')
 param createOrUpdateManagementGroup bool = true
@@ -125,6 +141,7 @@ var deploymentNames = {
   mgPolicyDefinitions: '${uniqueString(deployment().name, location)}-alz-mg-pol-def-${managementGroupName}'
   mgPolicySetDefinitions: '${uniqueString(deployment().name, location)}-alz-mg-pol-init-${managementGroupName}'
   mgPolicyAssignments: '${uniqueString(deployment().name, location)}-alz-mg-pol-asi-${managementGroupName}'
+  mgPolicyAssignmentsWait: '${uniqueString(deployment().name, location)}-alz-pol-asi-wait${managementGroupName}'
 }
 
 // Modules
@@ -146,6 +163,13 @@ resource mgExisting 'Microsoft.Management/managementGroups@2023-04-01' existing 
 }
 
 // N x Subscription Placement in Management Group Created or Existing (Optional)
+@batchSize(1)
+module mgSubPlacementWait 'modules/wait/main.bicep' = [
+  for (item, index) in range(0, waitForConsistencyCounterBeforeSubPlacement): if (waitForConsistencyCounterBeforeSubPlacement > 0) {
+    name: '${deploymentNames.mgSubPlacementWait}-${index}'
+  }
+]
+
 resource mgSubPlacement 'Microsoft.Management/managementGroups/subscriptions@2023-04-01' = [
   for (sub, i) in subscriptionsToPlaceInManagementGroup: {
     scope: tenant()
@@ -159,7 +183,7 @@ resource mgSubPlacement 'Microsoft.Management/managementGroups/subscriptions@202
 // Custom Policy Definitions Created on Management Group (Optional)
 @batchSize(1)
 module mgCustomPolicyDefinitionsWait 'modules/wait/main.bicep' = [
-  for (item, index) in range(0, managementGroupWaitForConsistencyCounter): if (createOrUpdateManagementGroup) {
+  for (item, index) in range(0, waitForConsistencyCounterBeforeCustomPolicyDefinitions): if (waitForConsistencyCounterBeforeCustomPolicyDefinitions > 0) {
     name: '${deploymentNames.mgCustomPolicyDefinitionsWait}-${index}'
   }
 ]
@@ -178,7 +202,7 @@ module mgCustomPolicyDefinitions 'modules/policy-definitions/main.bicep' = if (!
 // Custom Policy Set Definitions/Initiatives Created on Management Group (Optional)
 @batchSize(1)
 module mgCustomPolicySetDefinitionsWait 'modules/wait/main.bicep' = [
-  for (item, index) in range(0, managementGroupWaitForConsistencyCounter): if (createOrUpdateManagementGroup) {
+  for (item, index) in range(0, waitForConsistencyCounterBeforeCustomPolicySetDefinitions): if (waitForConsistencyCounterBeforeCustomPolicySetDefinitions > 0) {
     name: '${deploymentNames.mgCustomPolicySetDefinitionsWait}-${index}'
   }
 ]
@@ -197,12 +221,22 @@ module mgCustomPolicySetDefinitions 'modules/policy-set-definitions/main.bicep' 
 
 // Policy Assignments Created on Management Group (Optional)
 // ***** Add support for versioning and assignment type *****
-module mgPolicyAssignments 'br/public:avm/ptn/authorization/policy-assignment:0.3.0' = [
+
+@batchSize(1)
+module mgPolicyAssignmentsWait 'modules/wait/main.bicep' = [
+  for (item, index) in range(0, waitForConsistencyCounterBeforePolicyAssignments): if (waitForConsistencyCounterBeforePolicyAssignments > 0) {
+    name: '${deploymentNames.mgPolicyAssignmentsWait}-${index}'
+  }
+]
+
+// ***** Add support for versioning and assignment type *****
+module mgPolicyAssignments 'br/public:avm/ptn/authorization/policy-assignment:0.3.1' = [
   for (polAsi, index) in (managementGroupPolicyAssignments ?? []): {
     scope: managementGroup(managementGroupName)
     dependsOn: [
       mgCustomPolicyDefinitions
       mgCustomPolicySetDefinitions
+      mgPolicyAssignmentsWait
     ]
     name: take('${deploymentNames.mgPolicyAssignments}-${uniqueString(managementGroupName, polAsi.name)}', 64)
     params: {
@@ -233,7 +267,7 @@ module mgPolicyAssignments 'br/public:avm/ptn/authorization/policy-assignment:0.
 // Custom Role Definitions Created on Management Group (Optional)
 @batchSize(1)
 module mgRoleDefinitionsWait 'modules/wait/main.bicep' = [
-  for (item, index) in range(0, managementGroupWaitForConsistencyCounter): if (createOrUpdateManagementGroup) {
+  for (item, index) in range(0, waitForConsistencyCounterBeforeCustomRoleDefinitions): if (waitForConsistencyCounterBeforeCustomRoleDefinitions > 0) {
     name: '${deploymentNames.mgRoleDefinitionsWait}-${index}'
   }
 ]
@@ -263,7 +297,7 @@ module mgRoleDefinitions 'br/public:avm/ptn/authorization/role-definition:0.1.0'
 // Role Assignments Created on Management Group (Optional)
 @batchSize(1)
 module mgRoleAssignmentsWait 'modules/wait/main.bicep' = [
-  for (item, index) in range(0, managementGroupWaitForConsistencyCounter): if (createOrUpdateManagementGroup) {
+  for (item, index) in range(0, waitForConsistencyCounterBeforeRoleAssignments): if (waitForConsistencyCounterBeforeRoleAssignments > 0) {
     name: '${deploymentNames.mgRoleAssignmentsWait}-${index}'
   }
 ]
@@ -324,9 +358,8 @@ type policyAssignmentType = {
   @description('Required. Specifies the Resource ID of the policy definition or policy set definition being assigned. Example `/providers/Microsoft.Authorization/policyDefinitions/cccc23c7-8427-4f53-ad12-b6a63eb452b3` or `/providers/Microsoft.Management/managementGroups/<management-group-name>/providers/Microsoft.Authorization/policyDefinitions/<policy-definition/set-name`.')
   policyDefinitionId: string
 
-  // Cannot define this type further as parameter values can be of any type: https://github.com/Azure/bicep/issues/13399
   @description('Optional. Parameters for the policy assignment if needed.')
-  parameters: object?
+  parameters: resourceInput<'Microsoft.Authorization/policyAssignments@2022-06-01'>.properties.parameters?
 
   @description('Optional. The managed identity associated with the policy assignment. Policy assignments must include a resource identity when assigning `Modify` or `DeployIfNotExists` policy definitions.')
   identity: 'SystemAssigned' | 'UserAssigned' | 'None'
