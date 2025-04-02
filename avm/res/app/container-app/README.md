@@ -281,6 +281,12 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     environmentResourceId: '<environmentResourceId>'
     name: 'acamax001'
     // Non-required parameters
+    identitySettings: [
+      {
+        identity: '<identity>'
+        lifecycle: 'None'
+      }
+    ]
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -406,6 +412,14 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
       "value": "acamax001"
     },
     // Non-required parameters
+    "identitySettings": {
+      "value": [
+        {
+          "identity": "<identity>",
+          "lifecycle": "None"
+        }
+      ]
+    },
     "location": {
       "value": "<location>"
     },
@@ -539,6 +553,12 @@ param containers = [
 param environmentResourceId = '<environmentResourceId>'
 param name = 'acamax001'
 // Non-required parameters
+param identitySettings = [
+  {
+    identity: '<identity>'
+    lifecycle: 'None'
+  }
+]
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
@@ -956,6 +976,7 @@ param tags = {
 | [`disableIngress`](#parameter-disableingress) | bool | Bool to disable all ingress traffic for the container app. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`exposedPort`](#parameter-exposedport) | int | Exposed Port in containers for TCP traffic from ingress. |
+| [`identitySettings`](#parameter-identitysettings) | array | Settings for Managed Identities that are assigned to the Container App. If a Managed Identity is not specified here, default settings will be used. |
 | [`includeAddOns`](#parameter-includeaddons) | bool | Toggle to include the service configuration. |
 | [`ingressAllowInsecure`](#parameter-ingressallowinsecure) | bool | Bool indicating if HTTP connections to is allowed. If set to false HTTP connections are automatically redirected to HTTPS connections. |
 | [`ingressExternal`](#parameter-ingressexternal) | bool | Bool indicating if the App exposes an external HTTP endpoint. |
@@ -1519,6 +1540,13 @@ Exposed Port in containers for TCP traffic from ingress.
 - Required: No
 - Type: int
 - Default: `0`
+
+### Parameter: `identitySettings`
+
+Settings for Managed Identities that are assigned to the Container App. If a Managed Identity is not specified here, default settings will be used.
+
+- Required: No
+- Type: array
 
 ### Parameter: `includeAddOns`
 
