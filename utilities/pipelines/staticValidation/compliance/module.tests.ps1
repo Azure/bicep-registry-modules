@@ -139,10 +139,12 @@ Describe 'File/folder tests' -Tag 'Modules' {
                 [string] $moduleFullName,
                 # [bool] $isPublishingAllowed,
                 [string] $childModulesAllowedListPath,
-                [array] $childModulesAllowedList
+                [string[]] $childModulesAllowedList
             )
-            # Write-Verbose "Module [$moduleFolderPath] isPublishingAllowed: $isPublishingAllowed" -Verbose
-            # Write-Verbose "Module [$moduleFolderPath] childModulesAllowedListPath: $childModulesAllowedListPath" -Verbose
+            Write-Verbose "Module [$moduleFolderPath] isPublishingAllowed: $($childModulesAllowedList -contains $moduleFullName)" -Verbose
+            Write-Verbose "Module [$moduleFolderPath] childModulesAllowedListPath: $childModulesAllowedListPath" -Verbose
+            Write-Verbose "Module [$moduleFolderPath] childModulesAllowedList: $childModulesAllowedList" -Verbose
+            Write-Verbose "Module [$moduleFolderPath] moduleFullName: $moduleFullName" -Verbose
 
             if ($childModulesAllowedList -contains $moduleFullName) {
                 Set-ItResult -Skipped -Because "$moduleFolderPath is in the child module publishing allowed list."
