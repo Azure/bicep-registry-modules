@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "11168723316449566348"
+      "templateHash": "1787793037475482131"
     },
     "name": "avm/ptn/alz/empty",
     "description": "Azure Landing Zones - Bicep - Empty"
@@ -44,10 +44,13 @@
         },
         "parameters": {
           "type": "object",
-          "nullable": true,
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Authorization/policyAssignments@2022-06-01#properties/properties/properties/parameters"
+            },
             "description": "Optional. Parameters for the policy assignment if needed."
-          }
+          },
+          "nullable": true
         },
         "identity": {
           "type": "string",
@@ -266,67 +269,73 @@
         },
         "description": {
           "type": "string",
-          "nullable": true,
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Authorization/roleDefinitions@2022-05-01-preview#properties/properties/properties/description"
+            },
             "description": "Optional. The description of the custom role definition."
-          }
+          },
+          "nullable": true
         },
         "assignableScopes": {
           "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "nullable": true,
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Authorization/roleDefinitions@2022-05-01-preview#properties/properties/properties/assignableScopes"
+            },
             "description": "Optional. The assignable scopes of the custom role definition. If not specified, the management group being targeted in the parameter managementGroupName will be used."
-          }
-        },
-        "actions": {
-          "type": "array",
-          "items": {
-            "type": "string"
           },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The permission actions of the custom role definition."
-          }
-        },
-        "notActions": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The permission not actions of the custom role definition."
-          }
-        },
-        "dataActions": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The permission data actions of the custom role definition."
-          }
-        },
-        "notDataActions": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The permission not data actions of the custom role definition."
-          }
+          "nullable": true
         },
         "roleName": {
           "type": "string",
-          "nullable": true,
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Authorization/roleDefinitions@2022-05-01-preview#properties/properties/properties/roleName"
+            },
             "description": "Optional. The display name of the custom role definition. If not specified, the name will be used."
-          }
+          },
+          "nullable": true
+        },
+        "actions": {
+          "type": "array",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Authorization/roleDefinitions@2022-05-01-preview#properties/properties/properties/permissions/items/properties/actions"
+            },
+            "description": "Optional. The permission actions of the custom role definition."
+          },
+          "nullable": true
+        },
+        "notActions": {
+          "type": "array",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Authorization/roleDefinitions@2022-05-01-preview#properties/properties/properties/permissions/items/properties/notActions"
+            },
+            "description": "Optional. The permission not actions of the custom role definition."
+          },
+          "nullable": true
+        },
+        "dataActions": {
+          "type": "array",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Authorization/roleDefinitions@2022-05-01-preview#properties/properties/properties/permissions/items/properties/dataActions"
+            },
+            "description": "Optional. The permission data actions of the custom role definition."
+          },
+          "nullable": true
+        },
+        "notDataActions": {
+          "type": "array",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Authorization/roleDefinitions@2022-05-01-preview#properties/properties/properties/permissions/items/properties/notDataActions"
+            },
+            "description": "Optional. The permission not data actions of the custom role definition."
+          },
+          "nullable": true
         }
       },
       "metadata": {
@@ -467,30 +476,86 @@
   "parameters": {
     "location": {
       "type": "string",
-      "defaultValue": "[deployment().location]"
+      "defaultValue": "[deployment().location]",
+      "metadata": {
+        "description": "Optional. The location to deploy resources to."
+      }
     },
-    "managementGroupWaitForConsistencyCounter": {
+    "waitForConsistencyCounterBeforeCustomRoleDefinitions": {
       "type": "int",
-      "defaultValue": 15
+      "defaultValue": 5,
+      "metadata": {
+        "description": "Optional. An integer that specifies the number of blank ARM deployments prior to the custom role definitions are deployed. This electively introduces a wait timer to allow ARM eventual consistency to become consistent and helps avoids \"Not Found\" error messages."
+      }
+    },
+    "waitForConsistencyCounterBeforeRoleAssignments": {
+      "type": "int",
+      "defaultValue": 0,
+      "metadata": {
+        "description": "Optional. An integer that specifies the number of blank ARM deployments prior to the role assignments are deployed. This electively introduces a wait timer to allow ARM eventual consistency to become consistent and helps avoids \"Not Found\" error messages."
+      }
+    },
+    "waitForConsistencyCounterBeforeCustomPolicyDefinitions": {
+      "type": "int",
+      "defaultValue": 5,
+      "metadata": {
+        "description": "Optional. An integer that specifies the number of blank ARM deployments prior to the custom policy definitions are deployed. This electively introduces a wait timer to allow ARM eventual consistency to become consistent and helps avoids \"Not Found\" error messages."
+      }
+    },
+    "waitForConsistencyCounterBeforeCustomPolicySetDefinitions": {
+      "type": "int",
+      "defaultValue": 5,
+      "metadata": {
+        "description": "Optional. An integer that specifies the number of blank ARM deployments prior to the custom policy set definitions (initiatives) are deployed. This electively introduces a wait timer to allow ARM eventual consistency to become consistent and helps avoids \"Not Found\" error messages."
+      }
+    },
+    "waitForConsistencyCounterBeforePolicyAssignments": {
+      "type": "int",
+      "defaultValue": 0,
+      "metadata": {
+        "description": "Optional. An integer that specifies the number of blank ARM deployments prior to the policy assignments are deployed. This electively introduces a wait timer to allow ARM eventual consistency to become consistent and helps avoids \"Not Found\" error messages."
+      }
+    },
+    "waitForConsistencyCounterBeforeSubPlacement": {
+      "type": "int",
+      "defaultValue": 0,
+      "metadata": {
+        "description": "Optional. An integer that specifies the number of blank ARM deployments prior to the subscription management group associations are deployed. This electively introduces a wait timer to allow ARM eventual consistency to become consistent and helps avoids \"Not Found\" error messages."
+      }
     },
     "createOrUpdateManagementGroup": {
       "type": "bool",
-      "defaultValue": true
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Boolean to create or update the management group. If set to false, the module will only check if the management group exists and do a GET on it before it continues to deploy resources to it."
+      }
     },
     "managementGroupName": {
-      "type": "string"
+      "type": "string",
+      "metadata": {
+        "description": "Optional. The name of the management group to create or update."
+      }
     },
     "managementGroupDisplayName": {
       "type": "string",
-      "nullable": true
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The display name of the management group to create or update. If not specified, the management group name will be used."
+      }
     },
     "managementGroupParentId": {
       "type": "string",
-      "nullable": true
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The parent ID of the management group to create or update. If not specified, the management group will be created at the root level of the tenant. Just provide the management group ID, not the full resource ID."
+      }
     },
     "subscriptionsToPlaceInManagementGroup": {
       "type": "array",
-      "defaultValue": []
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. An array of subscriptions to place in the management group. If not specified, no subscriptions will be placed in the management group."
+      }
     },
     "managementGroupRoleAssignments": {
       "type": "array",
@@ -499,7 +564,7 @@
       },
       "nullable": true,
       "metadata": {
-        "description": "Optional. Array of role assignments to create on the management group."
+        "description": "Optional. Array of custom role assignments to create on the management group."
       }
     },
     "managementGroupCustomRoleDefinitions": {
@@ -519,7 +584,7 @@
       },
       "nullable": true,
       "metadata": {
-        "description": "Optional. Policy definitions to create on the management group."
+        "description": "Optional. Array of custom policy definitions to create on the management group."
       }
     },
     "managementGroupCustomPolicySetDefinitions": {
@@ -529,7 +594,7 @@
       },
       "nullable": true,
       "metadata": {
-        "description": "Optional. Policy set definitions to create on the management group."
+        "description": "Optional. Array of custom policy set definitions (initiatives) to create on the management group."
       }
     },
     "managementGroupPolicyAssignments": {
@@ -578,12 +643,17 @@
     "deploymentNames": {
       "mg": "[format('{0}-alz-mg-{1}', uniqueString(deployment().name, parameters('location')), parameters('managementGroupName'))]",
       "mgSubPlacement": "[format('{0}-alz-sub-place-{1}', uniqueString(deployment().name, parameters('location')), parameters('managementGroupName'))]",
+      "mgSubPlacementWait": "[format('{0}-alz-sub-place-wait-{1}', uniqueString(deployment().name, parameters('location')), parameters('managementGroupName'))]",
       "mgRoleAssignments": "[format('{0}-alz-mg-rbac-asi-{1}', uniqueString(deployment().name, parameters('location')), parameters('managementGroupName'))]",
       "mgRoleDefinitions": "[format('{0}-alz-mg-rbac-def-{1}', uniqueString(deployment().name, parameters('location')), parameters('managementGroupName'))]",
-      "mgRoleDefinitionsWait": "[format('{0}-alz-mg-wait-{1}', uniqueString(deployment().name, parameters('location')), parameters('managementGroupName'))]",
+      "mgRoleDefinitionsWait": "[format('{0}-alz-rbac-def-wait-{1}', uniqueString(deployment().name, parameters('location')), parameters('managementGroupName'))]",
+      "mgRoleAssignmentsWait": "[format('{0}-alz-rbac-asi-wait-{1}', uniqueString(deployment().name, parameters('location')), parameters('managementGroupName'))]",
+      "mgCustomPolicyDefinitionsWait": "[format('{0}-alz-pol-def-wait-{1}', uniqueString(deployment().name, parameters('location')), parameters('managementGroupName'))]",
+      "mgCustomPolicySetDefinitionsWait": "[format('{0}-alz-pol-init-wait-{1}', uniqueString(deployment().name, parameters('location')), parameters('managementGroupName'))]",
       "mgPolicyDefinitions": "[format('{0}-alz-mg-pol-def-{1}', uniqueString(deployment().name, parameters('location')), parameters('managementGroupName'))]",
       "mgPolicySetDefinitions": "[format('{0}-alz-mg-pol-init-{1}', uniqueString(deployment().name, parameters('location')), parameters('managementGroupName'))]",
-      "mgPolicyAssignments": "[format('{0}-alz-mg-pol-asi-{1}', uniqueString(deployment().name, parameters('location')), parameters('managementGroupName'))]"
+      "mgPolicyAssignments": "[format('{0}-alz-mg-pol-asi-{1}', uniqueString(deployment().name, parameters('location')), parameters('managementGroupName'))]",
+      "mgPolicyAssignmentsWait": "[format('{0}-alz-pol-asi-wait{1}', uniqueString(deployment().name, parameters('location')), parameters('managementGroupName'))]"
     }
   },
   "resources": {
@@ -734,6 +804,68 @@
         }
       }
     },
+    "mgSubPlacementWait": {
+      "copy": {
+        "name": "mgSubPlacementWait",
+        "count": "[length(range(0, parameters('waitForConsistencyCounterBeforeSubPlacement')))]",
+        "mode": "serial",
+        "batchSize": 1
+      },
+      "condition": "[greater(parameters('waitForConsistencyCounterBeforeSubPlacement'), 0)]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-{1}', variables('deploymentNames').mgSubPlacementWait, copyIndex())]",
+      "location": "[deployment().location]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.34.44.8038",
+              "templateHash": "16099150260910142730"
+            }
+          },
+          "resources": []
+        }
+      }
+    },
+    "mgCustomPolicyDefinitionsWait": {
+      "copy": {
+        "name": "mgCustomPolicyDefinitionsWait",
+        "count": "[length(range(0, parameters('waitForConsistencyCounterBeforeCustomPolicyDefinitions')))]",
+        "mode": "serial",
+        "batchSize": 1
+      },
+      "condition": "[greater(parameters('waitForConsistencyCounterBeforeCustomPolicyDefinitions'), 0)]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-{1}', variables('deploymentNames').mgCustomPolicyDefinitionsWait, copyIndex())]",
+      "location": "[deployment().location]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.34.44.8038",
+              "templateHash": "16099150260910142730"
+            }
+          },
+          "resources": []
+        }
+      }
+    },
     "mgCustomPolicyDefinitions": {
       "condition": "[not(empty(parameters('managementGroupCustomPolicyDefinitions')))]",
       "type": "Microsoft.Resources/deployments",
@@ -822,6 +954,40 @@
               }
             }
           }
+        }
+      },
+      "dependsOn": [
+        "mgCustomPolicyDefinitionsWait"
+      ]
+    },
+    "mgCustomPolicySetDefinitionsWait": {
+      "copy": {
+        "name": "mgCustomPolicySetDefinitionsWait",
+        "count": "[length(range(0, parameters('waitForConsistencyCounterBeforeCustomPolicySetDefinitions')))]",
+        "mode": "serial",
+        "batchSize": 1
+      },
+      "condition": "[greater(parameters('waitForConsistencyCounterBeforeCustomPolicySetDefinitions'), 0)]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-{1}', variables('deploymentNames').mgCustomPolicySetDefinitionsWait, copyIndex())]",
+      "location": "[deployment().location]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.34.44.8038",
+              "templateHash": "16099150260910142730"
+            }
+          },
+          "resources": []
         }
       }
     },
@@ -928,8 +1094,40 @@
         }
       },
       "dependsOn": [
-        "mgCustomPolicyDefinitions"
+        "mgCustomPolicyDefinitions",
+        "mgCustomPolicySetDefinitionsWait"
       ]
+    },
+    "mgPolicyAssignmentsWait": {
+      "copy": {
+        "name": "mgPolicyAssignmentsWait",
+        "count": "[length(range(0, parameters('waitForConsistencyCounterBeforePolicyAssignments')))]",
+        "mode": "serial",
+        "batchSize": 1
+      },
+      "condition": "[greater(parameters('waitForConsistencyCounterBeforePolicyAssignments'), 0)]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-{1}', variables('deploymentNames').mgPolicyAssignmentsWait, copyIndex())]",
+      "location": "[deployment().location]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.34.44.8038",
+              "templateHash": "16099150260910142730"
+            }
+          },
+          "resources": []
+        }
+      }
     },
     "mgPolicyAssignments": {
       "copy": {
@@ -1013,11 +1211,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "1872085440686725217"
+              "templateHash": "14093961291693843693"
             },
             "name": "Policy Assignments (All scopes)",
-            "description": "This module deploys a Policy Assignment at a Management Group, Subscription or Resource Group scope.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Policy Assignment at a Management Group, Subscription or Resource Group scope."
           },
           "parameters": {
             "name": {
@@ -1188,7 +1385,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[take(format('46d3xbcp.ptn.authorization-policyassignment.{0}.{1}', replace('0.3.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
+              "name": "[take(format('46d3xbcp.ptn.authorization-policyassignment.{0}.{1}', replace('0.3.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
               "location": "[parameters('location')]",
               "properties": {
                 "mode": "Incremental",
@@ -1262,11 +1459,10 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "7784495768661856271"
+                      "templateHash": "10678509985815740940"
                     },
                     "name": "Policy Assignments (Management Group scope)",
-                    "description": "This module deploys a Policy Assignment at a Management Group scope.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a Policy Assignment at a Management Group scope."
                   },
                   "parameters": {
                     "name": {
@@ -1997,11 +2193,10 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "5956652963277088316"
+                      "templateHash": "2523227409976507857"
                     },
                     "name": "Policy Assignments (Subscription scope)",
-                    "description": "This module deploys a Policy Assignment at a Subscription scope.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a Policy Assignment at a Subscription scope."
                   },
                   "parameters": {
                     "name": {
@@ -2252,11 +2447,10 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.32.4.45862",
-                      "templateHash": "15421130529251696480"
+                      "templateHash": "3323049503112762784"
                     },
                     "name": "Policy Assignments (Resource Group scope)",
-                    "description": "This module deploys a Policy Assignment at a Resource Group scope.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a Policy Assignment at a Resource Group scope."
                   },
                   "parameters": {
                     "name": {
@@ -2506,17 +2700,18 @@
       "dependsOn": [
         "mg",
         "mgCustomPolicyDefinitions",
-        "mgCustomPolicySetDefinitions"
+        "mgCustomPolicySetDefinitions",
+        "mgPolicyAssignmentsWait"
       ]
     },
     "mgRoleDefinitionsWait": {
       "copy": {
         "name": "mgRoleDefinitionsWait",
-        "count": "[length(range(0, parameters('managementGroupWaitForConsistencyCounter')))]",
+        "count": "[length(range(0, parameters('waitForConsistencyCounterBeforeCustomRoleDefinitions')))]",
         "mode": "serial",
         "batchSize": 1
       },
-      "condition": "[parameters('createOrUpdateManagementGroup')]",
+      "condition": "[greater(parameters('waitForConsistencyCounterBeforeCustomRoleDefinitions'), 0)]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-{1}', variables('deploymentNames').mgRoleDefinitionsWait, copyIndex())]",
@@ -2742,6 +2937,37 @@
       "dependsOn": [
         "mgRoleDefinitionsWait"
       ]
+    },
+    "mgRoleAssignmentsWait": {
+      "copy": {
+        "name": "mgRoleAssignmentsWait",
+        "count": "[length(range(0, parameters('waitForConsistencyCounterBeforeRoleAssignments')))]",
+        "mode": "serial",
+        "batchSize": 1
+      },
+      "condition": "[greater(parameters('waitForConsistencyCounterBeforeRoleAssignments'), 0)]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-{1}', variables('deploymentNames').mgRoleAssignmentsWait, copyIndex())]",
+      "location": "[deployment().location]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.34.44.8038",
+              "templateHash": "16099150260910142730"
+            }
+          },
+          "resources": []
+        }
+      }
     },
     "mgRoleAssignments": {
       "copy": {
@@ -3451,6 +3677,7 @@
       },
       "dependsOn": [
         "mg",
+        "mgRoleAssignmentsWait",
         "mgRoleDefinitions"
       ]
     }

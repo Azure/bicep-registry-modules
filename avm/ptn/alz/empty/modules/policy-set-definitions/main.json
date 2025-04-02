@@ -1,0 +1,84 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.34.44.8038",
+      "templateHash": "9094225830321875611"
+    }
+  },
+  "definitions": {
+    "policySetDefinitionsType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "maxLength": 128,
+          "metadata": {
+            "description": "Required. Specifies the name of the policy set definition. Maximum length is 128 characters for management group scope."
+          }
+        },
+        "properties": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Authorization/policySetDefinitions@2025-01-01#properties/properties"
+            },
+            "description": "Required. The properties of the policy set definition."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "A type for policy set definitions."
+      }
+    }
+  },
+  "parameters": {
+    "managementGroupCustomPolicySetDefinitions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/policySetDefinitionsType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Policy set definitions to create on the management group."
+      }
+    }
+  },
+  "resources": {
+    "mgCustomPolicySetDefinitions": {
+      "copy": {
+        "name": "mgCustomPolicySetDefinitions",
+        "count": "[length(coalesce(parameters('managementGroupCustomPolicySetDefinitions'), createArray()))]"
+      },
+      "type": "Microsoft.Authorization/policySetDefinitions",
+      "apiVersion": "2025-01-01",
+      "name": "[coalesce(parameters('managementGroupCustomPolicySetDefinitions'), createArray())[copyIndex()].name]",
+      "properties": {
+        "copy": [
+          {
+            "name": "policyDefinitions",
+            "count": "[length(coalesce(parameters('managementGroupCustomPolicySetDefinitions'), createArray())[copyIndex()].properties.policyDefinitions)]",
+            "input": {
+              "policyDefinitionReferenceId": "[tryGet(coalesce(parameters('managementGroupCustomPolicySetDefinitions'), createArray())[copyIndex()].properties.policyDefinitions[copyIndex('policyDefinitions')], 'policyDefinitionReferenceId')]",
+              "policyDefinitionId": "[replace(tryGet(coalesce(parameters('managementGroupCustomPolicySetDefinitions'), createArray())[copyIndex()].properties.policyDefinitions[copyIndex('policyDefinitions')], 'policyDefinitionId'), '{customPolicyDefinitionScopeId}', managementGroup().id)]",
+              "parameters": "[tryGet(coalesce(parameters('managementGroupCustomPolicySetDefinitions'), createArray())[copyIndex()].properties.policyDefinitions[copyIndex('policyDefinitions')], 'parameters')]",
+              "groupNames": "[tryGet(coalesce(parameters('managementGroupCustomPolicySetDefinitions'), createArray())[copyIndex()].properties.policyDefinitions[copyIndex('policyDefinitions')], 'groupNames')]",
+              "definitionVersion": "[tryGet(coalesce(parameters('managementGroupCustomPolicySetDefinitions'), createArray())[copyIndex()].properties.policyDefinitions[copyIndex('policyDefinitions')], 'definitionVersion')]"
+            }
+          }
+        ],
+        "description": "[tryGet(coalesce(parameters('managementGroupCustomPolicySetDefinitions'), createArray())[copyIndex()].properties, 'description')]",
+        "displayName": "[tryGet(coalesce(parameters('managementGroupCustomPolicySetDefinitions'), createArray())[copyIndex()].properties, 'displayName')]",
+        "metadata": "[tryGet(coalesce(parameters('managementGroupCustomPolicySetDefinitions'), createArray())[copyIndex()].properties, 'metadata')]",
+        "parameters": "[tryGet(coalesce(parameters('managementGroupCustomPolicySetDefinitions'), createArray())[copyIndex()].properties, 'parameters')]",
+        "policyType": "[tryGet(coalesce(parameters('managementGroupCustomPolicySetDefinitions'), createArray())[copyIndex()].properties, 'policyType')]",
+        "version": "[tryGet(coalesce(parameters('managementGroupCustomPolicySetDefinitions'), createArray())[copyIndex()].properties, 'version')]",
+        "policyDefinitionGroups": "[tryGet(coalesce(parameters('managementGroupCustomPolicySetDefinitions'), createArray())[copyIndex()].properties, 'policyDefinitionGroups')]"
+      }
+    }
+  }
+}
