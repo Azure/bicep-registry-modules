@@ -1953,6 +1953,7 @@ Supply an array of objects containing the details of the PIM role assignments to
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`justification`](#parameter-pimroleassignmentsjustification) | string | The justification for the role assignment. |
+| [`requestType`](#parameter-pimroleassignmentsrequesttype) | string | The request type of the role assignment. |
 | [`roleAssignmentCondition`](#parameter-pimroleassignmentsroleassignmentcondition) | object | The condition for the role assignment. |
 | [`ticketInfo`](#parameter-pimroleassignmentsticketinfo) | object | The ticket information for the role assignment. |
 
@@ -2117,6 +2118,27 @@ The justification for the role assignment.
 
 - Required: No
 - Type: string
+
+### Parameter: `pimRoleAssignments.requestType`
+
+The request type of the role assignment.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AdminAssign'
+    'AdminExtend'
+    'AdminRemove'
+    'AdminRenew'
+    'AdminUpdate'
+    'SelfActivate'
+    'SelfDeactivate'
+    'SelfExtend'
+    'SelfRenew'
+  ]
+  ```
 
 ### Parameter: `pimRoleAssignments.roleAssignmentCondition`
 
