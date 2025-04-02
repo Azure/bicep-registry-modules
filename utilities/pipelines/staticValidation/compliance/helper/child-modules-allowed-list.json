@@ -1,6 +1,0 @@
-{
-  "allowed-child-modules": [
-    "avm/res/network/virtual-network/subnet",
-    "avm/res/storage/storage-account/blob-service/container"
-  ]
-}

@@ -58,7 +58,7 @@ BeforeDiscovery {
 
     # get list of child modules allowed for publishing
     $childModuleAllowedList = @()
-    $childModuleAllowedListPath = Join-Path $repoRootPath 'utilities' 'pipelines' 'staticValidation' 'compliance' 'helper' 'child-modules-allowed-list.json'
+    $childModuleAllowedListPath = Join-Path $repoRootPath 'utilities' 'pipelines' 'staticValidation' 'compliance' 'helper' 'child-module-publish-allowed-list.json'
     if (Test-Path $childModuleAllowedListPath) {
         $childModuleAllowedList = (Get-Content -Path $childModuleAllowedListPath | ConvertFrom-Json).'allowed-child-modules'
     } else {
