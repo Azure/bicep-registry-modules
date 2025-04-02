@@ -85,11 +85,13 @@ Describe 'File/folder tests' -Tag 'Modules' {
 
                 $resourceTypeIdentifier = $resourceTypeIdentifier -replace '\\', '/'
                 $moduleFolderTestCases += @{
-                    moduleFullName   = "avm/$moduleType/$resourceTypeIdentifier"
-                    moduleType       = $moduleType
-                    moduleFolderName = $resourceTypeIdentifier
-                    moduleFolderPath = $moduleFolderPath
-                    isTopLevelModule = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
+                    moduleFullName              = "avm/$moduleType/$resourceTypeIdentifier"
+                    moduleType                  = $moduleType
+                    moduleFolderName            = $resourceTypeIdentifier
+                    moduleFolderPath            = $moduleFolderPath
+                    isTopLevelModule            = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
+                    childModulesAllowedList     = $childModulesAllowedList
+                    childModulesAllowedListPath = $childModulesAllowedListPath
                     # isPublishingAllowed = (($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2) || ( $childModulesAllowedList -contains $moduleFullName )
                 }
             }
