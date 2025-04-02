@@ -208,7 +208,6 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       managementGroupCustomRoleDefinitions: unionedCustomRbacRoleDefs
-      waitForConsistencyCounterBeforeCustomPolicyDefinitions: 5
       managementGroupPolicyAssignments: [
         {
           name: 'allowed-vm-skus-root'

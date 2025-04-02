@@ -7,16 +7,16 @@ targetScope = 'managementGroup'
 param location string = deployment().location
 
 @description('Optional. An integer that specifies the number of blank ARM deployments prior to the custom role definitions are deployed. This electively introduces a wait timer to allow ARM eventual consistency to become consistent and helps avoids "Not Found" error messages.')
-param waitForConsistencyCounterBeforeCustomRoleDefinitions int = 0
+param waitForConsistencyCounterBeforeCustomRoleDefinitions int = 5
 
 @description('Optional. An integer that specifies the number of blank ARM deployments prior to the role assignments are deployed. This electively introduces a wait timer to allow ARM eventual consistency to become consistent and helps avoids "Not Found" error messages.')
 param waitForConsistencyCounterBeforeRoleAssignments int = 0
 
 @description('Optional. An integer that specifies the number of blank ARM deployments prior to the custom policy definitions are deployed. This electively introduces a wait timer to allow ARM eventual consistency to become consistent and helps avoids "Not Found" error messages.')
-param waitForConsistencyCounterBeforeCustomPolicyDefinitions int = 0
+param waitForConsistencyCounterBeforeCustomPolicyDefinitions int = 5
 
 @description('Optional. An integer that specifies the number of blank ARM deployments prior to the custom policy set definitions (initiatives) are deployed. This electively introduces a wait timer to allow ARM eventual consistency to become consistent and helps avoids "Not Found" error messages.')
-param waitForConsistencyCounterBeforeCustomPolicySetDefinitions int = 0
+param waitForConsistencyCounterBeforeCustomPolicySetDefinitions int = 5
 
 @description('Optional. An integer that specifies the number of blank ARM deployments prior to the policy assignments are deployed. This electively introduces a wait timer to allow ARM eventual consistency to become consistent and helps avoids "Not Found" error messages.')
 param waitForConsistencyCounterBeforePolicyAssignments int = 0
