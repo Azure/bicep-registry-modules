@@ -68,6 +68,7 @@ function Get-ModuleTargetVersion {
             # the last version in the array is the latest published version
             return $publishedVersions[-1]
         }
+        Write-Verbose "Version in main.json file changed. Current version: $currentJsonVersion, GitHub version: $githubJsonVersion. Fallback to regular logic to calculate the Version." -Verbose
     }
 
     # 1. Get [version.json] file path
@@ -82,7 +83,7 @@ function Get-ModuleTargetVersion {
 
     # 3. Get PATCH
     # Check if [version.json] file version property was updated (compare with previous head)
-    $versionChange = Get-ModuleVersionChange -VersionFilePath $versionFilePath #-VersionFileTargetVersion $versionFileTargetVersion
+    $versionChange = Get-ModuleVersionChange -VersionFilePath $versionFilePath
 
     if ($versionChange) {
         # If [version.json] file version property was updated, reset the patch/bug version back to 0

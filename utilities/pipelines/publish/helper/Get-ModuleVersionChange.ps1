@@ -33,6 +33,7 @@ function Get-ModuleVersionChange {
         [string] $VersionFilePath
     )
 
+    Write-Verbose "Getting version change from file '$VersionFilePath'..." -Verbose
     # the diff will be empty, if the version.json file was not updated
     # if the version did not change, the function will return null
     $diff = git diff --diff-filter=AM HEAD^ HEAD $VersionFilePath | Out-String
@@ -46,11 +47,11 @@ function Get-ModuleVersionChange {
     }
 
     if ($newVersion -lt $oldVersion) {
-        Write-Verbose 'The new version is smaller than the old version'
+        Write-Warning -Message '  The new version is smaller than the old version'
     } elseif ($newVersion -eq $oldVersion) {
-        Write-Verbose 'The new version equals the old version'
+        Write-Verbose '  The new version equals the old version' -Verbose
     } else {
-        Write-Verbose 'The new version is greater than the old version'
+        Write-Verbose '  The new version is greater than the old version' -Verbose
     }
 
     if (-not [String]::IsNullOrEmpty($newVersion) -and -not [String]::IsNullOrEmpty($oldVersion)) {

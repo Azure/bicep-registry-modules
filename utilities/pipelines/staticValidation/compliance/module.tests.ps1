@@ -239,8 +239,10 @@ Describe 'File/folder tests' -Tag 'Modules' {
             $sections = $changelogContent | Where-Object { $_ -match '^##\s+' }
             $changelogSection = $sections | Where-Object { $_ -match "^##\s+$newModuleVersion" }
 
-            # the changelog should start with '# Changelog'
+            # the changelog should not be empty
             $changelogContent.Length | Should -BeGreaterThan 0 -Because 'the changelog should not be empty'
+
+            # the changelog should start with '# Changelog'
             $changelogContent[0] + $changelogContent[1] | Should -Be '# Changelog' -Because 'the changelog should start with `# Changelog`, followed by an empty line'
 
             # check for the presence of the `## $newModuleVersion` section
@@ -282,7 +284,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
                 }
                 if ((Select-String -InputObject $versionContent -Pattern '\n### Breaking Changes\n' -AllMatches).Matches.Count -ne 1) {
                     if (($versionContent -split "`n")[-1] -eq '### Breaking Changes') {
-                        # the last line of the changelog section
+                        # the last line of the changelog section needs special treatment, as it is not followed by a new section or line
                         $emptySections += $key
                     } else {
                         $invalidBreakingChanges += $key
