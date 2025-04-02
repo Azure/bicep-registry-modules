@@ -62,6 +62,7 @@ module testDeployment '../../../main.bicep' = [
         name: 'myCustomLockName'
       }
       publicNetworkAccess: 'Enabled'
+      virtualNetworkResourceId: nestedDependencies.outputs.virtualNetworkResourceId
       privateEndpoints: [
         {
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
