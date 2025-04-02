@@ -3,39 +3,43 @@ metadata description = 'Azure Landing Zones - Bicep - Empty'
 
 targetScope = 'managementGroup'
 
+@description('Optional. The location to deploy resources to.')
 param location string = deployment().location
 
 param managementGroupWaitForConsistencyCounter int = 15
 
+@description('Optional. Boolean to create or update the management group. If set to false, the module will only check if the management group exists and do a GET on it before it continues to deploy resources to it.')
 param createOrUpdateManagementGroup bool = true
 
+@description('Optional. The name of the management group to create or update.')
 param managementGroupName string
 
+@description('Optional. The display name of the management group to create or update. If not specified, the management group name will be used.')
 param managementGroupDisplayName string?
 
+@description('Optional. The parent ID of the management group to create or update. If not specified, the management group will be created at the root level of the tenant. Just provide the management group ID, not the full resource ID.')
 param managementGroupParentId string?
 
+@description('Optional. An array of subscriptions to place in the management group. If not specified, no subscriptions will be placed in the management group.')
 param subscriptionsToPlaceInManagementGroup array = []
 
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
-@description('Optional. Array of role assignments to create on the management group.')
+@description('Optional. Array of custom role assignments to create on the management group.')
 param managementGroupRoleAssignments roleAssignmentType[]?
 
 @description('Optional. Array of custom role definitions to create on the management group.')
 param managementGroupCustomRoleDefinitions roleDefinitionType[]?
 
 import { policyDefinitionType } from 'modules/policy-definitions/main.bicep'
-@description('Optional. Policy definitions to create on the management group.')
+@description('Optional. Array of custom policy definitions to create on the management group.')
 param managementGroupCustomPolicyDefinitions policyDefinitionType[]?
 
 import { policySetDefinitionsType } from 'modules/policy-set-definitions/main.bicep'
-@description('Optional. Policy set definitions to create on the management group.')
+@description('Optional. Array of custom policy set definitions (initiatives) to create on the management group.')
 param managementGroupCustomPolicySetDefinitions policySetDefinitionsType[]?
 
 @description('Optional. Array of policy assignments to create on the management group.')
 param managementGroupPolicyAssignments policyAssignmentType[]?
-
-// param policyDefinitions array?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -110,10 +114,14 @@ var formattedRoleAssignments = [
 
 var deploymentNames = {
   mg: '${uniqueString(deployment().name, location)}-alz-mg-${managementGroupName}'
-  mgSubPlacement: '${uniqueString(deployment().name, location)}-alz-sub-place-${managementGroupName}' //add -${substring(sub, 0, 8)} to end when a module call
+  mgSubPlacement: '${uniqueString(deployment().name, location)}-alz-sub-place-${managementGroupName}'
+  mgSubPlacementWait: '${uniqueString(deployment().name, location)}-alz-sub-place-wait-${managementGroupName}'
   mgRoleAssignments: '${uniqueString(deployment().name, location)}-alz-mg-rbac-asi-${managementGroupName}'
   mgRoleDefinitions: '${uniqueString(deployment().name, location)}-alz-mg-rbac-def-${managementGroupName}'
-  mgRoleDefinitionsWait: '${uniqueString(deployment().name, location)}-alz-mg-wait-${managementGroupName}'
+  mgRoleDefinitionsWait: '${uniqueString(deployment().name, location)}-alz-rbac-def-wait-${managementGroupName}'
+  mgRoleAssignmentsWait: '${uniqueString(deployment().name, location)}-alz-rbac-asi-wait-${managementGroupName}'
+  mgCustomPolicyDefinitionsWait: '${uniqueString(deployment().name, location)}-alz-pol-def-wait-${managementGroupName}'
+  mgCustomPolicySetDefinitionsWait: '${uniqueString(deployment().name, location)}-alz-pol-init-wait-${managementGroupName}'
   mgPolicyDefinitions: '${uniqueString(deployment().name, location)}-alz-mg-pol-def-${managementGroupName}'
   mgPolicySetDefinitions: '${uniqueString(deployment().name, location)}-alz-mg-pol-init-${managementGroupName}'
   mgPolicyAssignments: '${uniqueString(deployment().name, location)}-alz-mg-pol-asi-${managementGroupName}'
@@ -149,19 +157,37 @@ resource mgSubPlacement 'Microsoft.Management/managementGroups/subscriptions@202
 ]
 
 // Custom Policy Definitions Created on Management Group (Optional)
+@batchSize(1)
+module mgCustomPolicyDefinitionsWait 'modules/wait/main.bicep' = [
+  for (item, index) in range(0, managementGroupWaitForConsistencyCounter): if (createOrUpdateManagementGroup) {
+    name: '${deploymentNames.mgCustomPolicyDefinitionsWait}-${index}'
+  }
+]
+
 module mgCustomPolicyDefinitions 'modules/policy-definitions/main.bicep' = if (!empty(managementGroupCustomPolicyDefinitions)) {
   scope: managementGroup(managementGroupName)
   name: deploymentNames.mgPolicyDefinitions
   params: {
     managementGroupCustomPolicyDefinitions: managementGroupCustomPolicyDefinitions
   }
+  dependsOn: [
+    mgCustomPolicyDefinitionsWait
+  ]
 }
 
 // Custom Policy Set Definitions/Initiatives Created on Management Group (Optional)
+@batchSize(1)
+module mgCustomPolicySetDefinitionsWait 'modules/wait/main.bicep' = [
+  for (item, index) in range(0, managementGroupWaitForConsistencyCounter): if (createOrUpdateManagementGroup) {
+    name: '${deploymentNames.mgCustomPolicySetDefinitionsWait}-${index}'
+  }
+]
+
 module mgCustomPolicySetDefinitions 'modules/policy-set-definitions/main.bicep' = if (!empty(managementGroupCustomPolicySetDefinitions)) {
   scope: managementGroup(managementGroupName)
   dependsOn: [
     mgCustomPolicyDefinitions
+    mgCustomPolicySetDefinitionsWait
   ]
   name: deploymentNames.mgPolicySetDefinitions
   params: {
@@ -217,11 +243,10 @@ module mgRoleDefinitions 'br/public:avm/ptn/authorization/role-definition:0.1.0'
     scope: managementGroup(managementGroupName)
     name: take('${deploymentNames.mgRoleDefinitions}-${uniqueString(managementGroupName, roleDef.name)}', 64)
     params: {
-      // roleDefinition: roleDef
       name: roleDef.name
-      roleName: roleDef.?roleName
-      description: roleDef.?description ?? ''
-      assignableScopes: roleDef.?assignableScopes
+      roleName: roleDef.properties.?roleName
+      description: roleDef.properties.?description ?? ''
+      assignableScopes: roleDef.properties.?assignableScopes
       actions: roleDef.?actions
       notActions: roleDef.?notActions
       dataActions: roleDef.?dataActions
@@ -236,6 +261,12 @@ module mgRoleDefinitions 'br/public:avm/ptn/authorization/role-definition:0.1.0'
 ]
 
 // Role Assignments Created on Management Group (Optional)
+@batchSize(1)
+module mgRoleAssignmentsWait 'modules/wait/main.bicep' = [
+  for (item, index) in range(0, managementGroupWaitForConsistencyCounter): if (createOrUpdateManagementGroup) {
+    name: '${deploymentNames.mgRoleAssignmentsWait}-${index}'
+  }
+]
 module mgRoleAssignments 'br/public:avm/ptn/authorization/role-assignment:0.2.0' = [
   for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
     name: take(
@@ -255,6 +286,7 @@ module mgRoleAssignments 'br/public:avm/ptn/authorization/role-assignment:0.2.0'
     }
     dependsOn: [
       mgRoleDefinitions
+      mgRoleAssignmentsWait
     ]
   }
 ]
@@ -368,23 +400,23 @@ type roleDefinitionType = {
   name: string
 
   @description('Optional. The description of the custom role definition.')
-  description: string?
+  description: resourceInput<'Microsoft.Authorization/roleDefinitions@2022-05-01-preview'>.properties.description?
 
   @description('Optional. The assignable scopes of the custom role definition. If not specified, the management group being targeted in the parameter managementGroupName will be used.')
-  assignableScopes: string[]?
-
-  @description('Optional. The permission actions of the custom role definition.')
-  actions: string[]?
-
-  @description('Optional. The permission not actions of the custom role definition.')
-  notActions: string[]?
-
-  @description('Optional. The permission data actions of the custom role definition.')
-  dataActions: string[]?
-
-  @description('Optional. The permission not data actions of the custom role definition.')
-  notDataActions: string[]?
+  assignableScopes: resourceInput<'Microsoft.Authorization/roleDefinitions@2022-05-01-preview'>.properties.assignableScopes?
 
   @description('Optional. The display name of the custom role definition. If not specified, the name will be used.')
-  roleName: string?
+  roleName: resourceInput<'Microsoft.Authorization/roleDefinitions@2022-05-01-preview'>.properties.roleName?
+
+  @description('Optional. The permission actions of the custom role definition.')
+  actions: resourceInput<'Microsoft.Authorization/roleDefinitions@2022-05-01-preview'>.properties.permissions[*].actions?
+
+  @description('Optional. The permission not actions of the custom role definition.')
+  notActions: resourceInput<'Microsoft.Authorization/roleDefinitions@2022-05-01-preview'>.properties.permissions[*].notActions?
+
+  @description('Optional. The permission data actions of the custom role definition.')
+  dataActions: resourceInput<'Microsoft.Authorization/roleDefinitions@2022-05-01-preview'>.properties.permissions[*].dataActions?
+
+  @description('Optional. The permission not data actions of the custom role definition.')
+  notDataActions: resourceInput<'Microsoft.Authorization/roleDefinitions@2022-05-01-preview'>.properties.permissions[*].notDataActions?
 }

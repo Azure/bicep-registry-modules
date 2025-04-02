@@ -79,19 +79,14 @@ var additionalTestCustomRbacRoleDefs = [
 var unionedCustomRbacRoleDefs = union(alzCustomRbacRoleDefsJsonParsed, additionalTestCustomRbacRoleDefs)
 
 var alzCustomPolicyDefsJson = [
-  // loadJsonContent('lib/policy_definitions/Audit-Disks-UnusedResourcesCostOptimization.alz_policy_definition.json')
-  // loadJsonContent('lib/policy_definitions/Deploy-Budget.alz_policy_definition.json')
-  // loadJsonContent('lib/policy_definitions/Deploy-ASC-SecurityContacts.alz_policy_definition.json')
-  json(loadTextContent('lib/policy_definitions/raw/Audit-Disks-UnusedResourcesCostOptimization.alz_policy_definition.json'))
-  json(loadTextContent('lib/policy_definitions/raw/Deploy-Budget.alz_policy_definition.json'))
-  json(loadTextContent('lib/policy_definitions/raw/Deploy-ASC-SecurityContacts.alz_policy_definition.json'))
+  loadJsonContent('lib/policy_definitions/Audit-Disks-UnusedResourcesCostOptimization.alz_policy_definition.json')
+  loadJsonContent('lib/policy_definitions/Deploy-Budget.alz_policy_definition.json')
+  loadJsonContent('lib/policy_definitions/Deploy-ASC-SecurityContacts.alz_policy_definition.json')
 ]
 
 var alzCustomPolicySetDefsJson = [
-  // loadJsonContent('lib/policy_set_definitions/Audit-TrustedLaunch.alz_policy_set_definition.json')
-  // loadJsonContent('lib/policy_set_definitions/Deploy-MDFC-Config_20240319.alz_policy_set_definition.json')
-  json(loadTextContent('lib/policy_set_definitions/raw/Audit-TrustedLaunch.alz_policy_set_definition.json'))
-  json(loadTextContent('lib/policy_set_definitions/raw/Deploy-MDFC-Config_20240319.alz_policy_set_definition.json'))
+  loadJsonContent('lib/policy_set_definitions/Audit-TrustedLaunch.alz_policy_set_definition.json')
+  loadJsonContent('lib/policy_set_definitions/Deploy-MDFC-Config_20240319.alz_policy_set_definition.json')
 ]
 
 @batchSize(1)
@@ -116,7 +111,12 @@ module testDeployment '../../../main.bicep' = [
           roleDefinitionIdOrName: alzCustomRbacRoleDefsJson[4].name
         }
       ]
-      managementGroupCustomRoleDefinitions: unionedCustomRbacRoleDefs
+      // managementGroupCustomRoleDefinitions: unionedCustomRbacRoleDefs
+      managementGroupCustomRoleDefinitions: [
+        {
+          name: 'custom-role-1'
+        }
+      ]
       managementGroupPolicyAssignments: [
         {
           name: 'allowed-vm-skus-root'
