@@ -55,6 +55,17 @@ BeforeDiscovery {
         $templateHashTable = ConvertFrom-Json $builtTemplate -AsHashtable
         $null = $dict.TryAdd($_, $templateHashTable)
     }
+
+    $childModulesAllowedList = @()
+    $childModulesAllowedListPath = Join-Path $repoRootPath 'utilities' 'pipelines' 'staticValidation' 'compliance' 'helper' 'child-modules-allowed-list.json'
+
+    if (Test-Path $childModulesAllowedListPath) {
+        $childModulesAllowedList = (Get-Content -Path $childModulesAllowedListPath | ConvertFrom-Json).'allowed-child-modules'
+        # Write-Verbose "The child modules allowed list file [$childModulesAllowedListPath] exists." -Verbose
+        # Write-Verbose "List $childModulesAllowedList exists." -Verbose
+    } else {
+        Write-Warning "The child modules allowed list file [$childModulesAllowedListPath] does not exist."
+    }
 }
 Describe 'File/folder tests' -Tag 'Modules' {
 
@@ -63,16 +74,9 @@ Describe 'File/folder tests' -Tag 'Modules' {
         BeforeDiscovery {
             $moduleFolderTestCases = [System.Collections.ArrayList] @()
             # get allowed list of child modules
-            $childModulesAllowedList = @()
-            $childModulesAllowedListPath = Join-Path $repoRootPath 'utilities' 'pipelines' 'staticValidation' 'compliance' 'helper' 'child-modules-allowed-list.json'
 
-            if (Test-Path $childModulesAllowedListPath) {
-                $childModulesAllowedList = (Get-Content -Path $childModulesAllowedListPath | ConvertFrom-Json).'allowed-child-modules'
-                Write-Verbose "The child modules allowed list file [$childModulesAllowedListPath] exists." -Verbose
-                Write-Verbose "List $childModulesAllowedList exists." -Verbose
-            } else {
-                Write-Warning "The child modules allowed list file [$childModulesAllowedListPath] does not exist."
-            }
+            Write-Verbose "The child modules allowed list file [$childModulesAllowedListPath] exists." -Verbose
+            Write-Verbose "List $childModulesAllowedList exists." -Verbose
 
             foreach ($moduleFolderPath in $moduleFolderPaths) {
                 $null, $moduleType, $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]') # 'avm/res|ptn|utl/<provider>/<resourceType>' would return 'avm', 'res|ptn|utl', '<provider>/<resourceType>'
