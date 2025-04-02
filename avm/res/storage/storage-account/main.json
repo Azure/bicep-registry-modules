@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "1204752769590748830"
+      "version": "0.34.44.8038",
+      "templateHash": "10718558176484073151"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account."
@@ -1107,8 +1107,7 @@
       "type": "string",
       "defaultValue": "TLS1_2",
       "allowedValues": [
-        "TLS1_2",
-        "TLS1_3"
+        "TLS1_2"
       ],
       "metadata": {
         "description": "Optional. Set the minimum TLS version on request to storage. The TLS versions 1.0 and 1.1 are deprecated and not supported anymore."
@@ -1228,6 +1227,17 @@
         "description": "Optional. The SAS expiration period. DD.HH:MM:SS."
       }
     },
+    "sasExpirationAction": {
+      "type": "string",
+      "defaultValue": "Log",
+      "allowedValues": [
+        "Block",
+        "Log"
+      ],
+      "metadata": {
+        "description": "Optional. The SAS expiration action. Allowed values are Block and Log."
+      }
+    },
     "keyType": {
       "type": "string",
       "nullable": true,
@@ -1293,9 +1303,9 @@
       "existing": true,
       "type": "Microsoft.KeyVault/vaults/keys",
       "apiVersion": "2023-02-01",
-      "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '//'), '/')[2]]",
-      "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '////'), '/')[4]]",
-      "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]"
+      "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
+      "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'))]"
     },
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
@@ -1322,18 +1332,18 @@
       "existing": true,
       "type": "Microsoft.KeyVault/vaults",
       "apiVersion": "2023-02-01",
-      "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '//'), '/')[2]]",
-      "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '////'), '/')[4]]",
-      "name": "[last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/'))]"
+      "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
+      "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
     },
     "cMKUserAssignedIdentity": {
       "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId')))]",
       "existing": true,
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
       "apiVersion": "2023-01-31",
-      "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '//'), '/')[2]]",
-      "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '////'), '/')[4]]",
-      "name": "[last(split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), 'dummyMsi'), '/'))]"
+      "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]]",
+      "name": "[last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/'))]"
     },
     "storageAccount": {
       "type": "Microsoft.Storage/storageAccounts",
@@ -1357,9 +1367,9 @@
         },
         "dnsEndpointType": "[if(not(empty(parameters('dnsEndpointType'))), parameters('dnsEndpointType'), null())]",
         "isLocalUserEnabled": "[parameters('isLocalUserEnabled')]",
-        "encryption": "[union(createObject('keySource', if(not(empty(parameters('customerManagedKey'))), 'Microsoft.Keyvault', 'Microsoft.Storage'), 'services', createObject('blob', if(variables('supportsBlobService'), createObject('enabled', true()), null()), 'file', if(variables('supportsFileService'), createObject('enabled', true()), null()), 'table', createObject('enabled', true(), 'keyType', parameters('keyType')), 'queue', createObject('enabled', true(), 'keyType', parameters('keyType'))), 'keyvaultproperties', if(not(empty(parameters('customerManagedKey'))), createObject('keyname', parameters('customerManagedKey').keyName, 'keyvaulturi', reference('cMKKeyVault').vaultUri, 'keyversion', if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), parameters('customerManagedKey').keyVersion, if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), null(), last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/'))))), null()), 'identity', createObject('userAssignedIdentity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '//'), '/')[2], split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '////'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), 'dummyMsi'), '/'))), null()))), if(parameters('requireInfrastructureEncryption'), createObject('requireInfrastructureEncryption', if(not(equals(parameters('kind'), 'Storage')), parameters('requireInfrastructureEncryption'), null())), createObject()))]",
+        "encryption": "[union(createObject('keySource', if(not(empty(parameters('customerManagedKey'))), 'Microsoft.Keyvault', 'Microsoft.Storage'), 'services', createObject('blob', if(variables('supportsBlobService'), createObject('enabled', true()), null()), 'file', if(variables('supportsFileService'), createObject('enabled', true()), null()), 'table', createObject('enabled', true(), 'keyType', parameters('keyType')), 'queue', createObject('enabled', true(), 'keyType', parameters('keyType'))), 'keyvaultproperties', if(not(empty(parameters('customerManagedKey'))), createObject('keyname', parameters('customerManagedKey').keyName, 'keyvaulturi', reference('cMKKeyVault').vaultUri, 'keyversion', if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), parameters('customerManagedKey').keyVersion, if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), null(), last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/'))))), null()), 'identity', createObject('userAssignedIdentity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2], split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/'))), null()))), if(parameters('requireInfrastructureEncryption'), createObject('requireInfrastructureEncryption', if(not(equals(parameters('kind'), 'Storage')), parameters('requireInfrastructureEncryption'), null())), createObject()))]",
         "accessTier": "[if(and(not(equals(parameters('kind'), 'Storage')), not(equals(parameters('kind'), 'BlockBlobStorage'))), parameters('accessTier'), null())]",
-        "sasPolicy": "[if(not(empty(parameters('sasExpirationPeriod'))), createObject('expirationAction', 'Log', 'sasExpirationPeriod', parameters('sasExpirationPeriod')), null())]",
+        "sasPolicy": "[if(not(empty(parameters('sasExpirationPeriod'))), createObject('expirationAction', parameters('sasExpirationAction'), 'sasExpirationPeriod', parameters('sasExpirationPeriod')), null())]",
         "supportsHttpsTrafficOnly": "[parameters('supportsHttpsTrafficOnly')]",
         "isHnsEnabled": "[parameters('enableHierarchicalNamespace')]",
         "isSftpEnabled": "[parameters('enableSftp')]",
@@ -1372,8 +1382,8 @@
         "azureFilesIdentityBasedAuthentication": "[if(not(empty(parameters('azureFilesIdentityBasedAuthentication'))), parameters('azureFilesIdentityBasedAuthentication'), null())]"
       },
       "dependsOn": [
-        "cMKKeyVault::cMKKey",
-        "cMKKeyVault"
+        "cMKKeyVault",
+        "cMKKeyVault::cMKKey"
       ]
     },
     "storageAccount_diagnosticSettings": {
@@ -2225,8 +2235,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "10504956743360699891"
+              "version": "0.34.44.8038",
+              "templateHash": "209875127846907847"
             },
             "name": "Storage Account Management Policies",
             "description": "This module deploys a Storage Account Management Policy."
@@ -2334,8 +2344,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "5655292159520921149"
+              "version": "0.34.44.8038",
+              "templateHash": "4274441335791477584"
             },
             "name": "Storage Account Local Users",
             "description": "This module deploys a Storage Account Local User, which is used for SFTP authentication."
@@ -2572,8 +2582,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "11461945096578509088"
+              "version": "0.34.44.8038",
+              "templateHash": "14829931310039861391"
             },
             "name": "Storage Account blob Services",
             "description": "This module deploys a Storage Account Blob Service."
@@ -3039,8 +3049,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "11560675453246401508"
+                      "version": "0.34.44.8038",
+                      "templateHash": "18323658180545633760"
                     },
                     "name": "Storage Account Blob Containers",
                     "description": "This module deploys a Storage Account Blob Container."
@@ -3328,8 +3338,9 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.93.31351",
-                              "templateHash": "8061556339565534458"
+                              "version": "0.34.44.8038",
+                              "templateHash": "17697427281813403944"
+
                             },
                             "name": "Storage Account Blob Container Immutability Policies",
                             "description": "This module deploys a Storage Account Blob Container Immutability Policy."
@@ -3508,8 +3519,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "3168394810831105529"
+              "version": "0.34.44.8038",
+              "templateHash": "17454582317268032940"
             },
             "name": "Storage Account File Share Services",
             "description": "This module deploys a Storage Account File Share Service."
@@ -3862,8 +3873,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "12044655551245282190"
+                      "version": "0.34.44.8038",
+                      "templateHash": "9627524768776207497"
                     },
                     "name": "Storage Account File Shares",
                     "description": "This module deploys a Storage Account File Share."
@@ -4297,8 +4308,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "1736438454543575457"
+              "version": "0.34.44.8038",
+              "templateHash": "17040766414655480744"
             },
             "name": "Storage Account Queue Services",
             "description": "This module deploys a Storage Account Queue Service."
@@ -4616,8 +4627,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "6383154227554431205"
+                      "version": "0.34.44.8038",
+                      "templateHash": "14265574875321523426"
                     },
                     "name": "Storage Account Queues",
                     "description": "This module deploys a Storage Account Queue."
@@ -4886,8 +4897,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "12583903411447171294"
+              "version": "0.34.44.8038",
+              "templateHash": "16855948007303284260"
             },
             "name": "Storage Account Table Services",
             "description": "This module deploys a Storage Account Table Service."
@@ -5202,8 +5213,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "1369356397929898951"
+                      "version": "0.34.44.8038",
+                      "templateHash": "14789856604962915370"
                     },
                     "name": "Storage Account Table",
                     "description": "This module deploys a Storage Account Table."
@@ -5434,8 +5445,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-secrets-kv', uniqueString(deployment().name, parameters('location')))]",
-      "subscriptionId": "[split(coalesce(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '//'), '/')[2]]",
-      "resourceGroup": "[split(coalesce(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '////'), '/')[4]]",
+      "subscriptionId": "[split(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '/')[4]]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -5443,7 +5454,7 @@
         "mode": "Incremental",
         "parameters": {
           "keyVaultName": {
-            "value": "[last(split(coalesce(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '//'), '/'))]"
+            "value": "[last(split(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '/'))]"
           },
           "secretsToSet": {
             "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'accessKey1Name'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'accessKey1Name'), 'value', listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('name')), '2023-05-01').keys[0].value)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'connectionString1Name'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'connectionString1Name'), 'value', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', parameters('name'), listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('name')), '2023-05-01').keys[0].value, environment().suffixes.storage))), createArray()), if(contains(parameters('secretsExportConfiguration'), 'accessKey2Name'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'accessKey2Name'), 'value', listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('name')), '2023-05-01').keys[1].value)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'connectionString2Name'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'connectionString2Name'), 'value', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', parameters('name'), listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('name')), '2023-05-01').keys[1].value, environment().suffixes.storage))), createArray()))]"
@@ -5456,8 +5467,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "2275047425860597278"
+              "version": "0.34.44.8038",
+              "templateHash": "5349247638761088512"
             }
           },
           "definitions": {

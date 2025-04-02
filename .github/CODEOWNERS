@@ -36,6 +36,7 @@
 /avm/ptn/network/hub-networking/ @Azure/avm-ptn-network-hubnetworking-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/network/private-link-private-dns-zones/ @Azure/avm-ptn-network-privatelinkprivatednszones-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/policy-insights/remediation/ @Azure/avm-ptn-policyinsights-remediation-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/ptn/sa/conversation-knowledge-mining/ @Azure/avm-ptn-sa-conversationknowledgemining-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/security/security-center/ @Azure/avm-ptn-security-securitycenter-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/virtual-machine-images/azure-image-builder/ @Azure/avm-ptn-virtualmachineimages-azureimagebuilder-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/aad/domain-service/ @Azure/avm-res-aad-domainservice-module-owners-bicep @Azure/avm-module-reviewers-bicep
@@ -50,6 +51,8 @@
 /avm/res/automation/automation-account/ @Azure/avm-res-automation-automationaccount-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/azure-stack-hci/cluster/ @Azure/avm-res-azurestackhci-cluster-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/azure-stack-hci/logical-network/ @Azure/avm-res-azurestackhci-logicalnetwork-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/res/azure-stack-hci/network-interface/ @Azure/avm-res-azurestackhci-networkinterface-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/res/azure-stack-hci/virtual-hard-disk/ @Azure/avm-res-azurestackhci-virtualharddisk-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/batch/batch-account/ @Azure/avm-res-batch-batchaccount-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/cache/redis/ @Azure/avm-res-cache-redis-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/cache/redis-enterprise/ @Azure/avm-res-cache-redisenterprise-module-owners-bicep @Azure/avm-module-reviewers-bicep
@@ -97,6 +100,7 @@
 /avm/res/hybrid-compute/gateway/ @Azure/avm-res-hybridcompute-gateway-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/hybrid-compute/license/ @Azure/avm-res-hybridcompute-license-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/hybrid-compute/machine/ @Azure/avm-res-hybridcompute-machine-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/res/hybrid-container-service/provisioned-cluster-instance/ @Azure/avm-res-hybridcontainerservice-provisionedclusterinstance-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/insights/action-group/ @Azure/avm-res-insights-actiongroup-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/insights/activity-log-alert/ @Azure/avm-res-insights-activitylogalert-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/insights/component/ @Azure/avm-res-insights-component-module-owners-bicep @Azure/avm-module-reviewers-bicep
@@ -110,14 +114,17 @@
 /avm/res/key-vault/vault/ @Azure/avm-res-keyvault-vault-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/kubernetes-configuration/extension/ @Azure/avm-res-kubernetesconfiguration-extension-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/kubernetes-configuration/flux-configuration/ @Azure/avm-res-kubernetesconfiguration-fluxconfiguration-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/res/kubernetes/connected-cluster/ @Azure/avm-res-kubernetes-connectedcluster-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/kusto/cluster/ @Azure/avm-res-kusto-cluster-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/load-test-service/load-test/ @Azure/avm-res-loadtestservice-loadtest-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/logic/workflow/ @Azure/avm-res-logic-workflow-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/machine-learning-services/workspace/ @Azure/avm-res-machinelearningservices-workspace-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/res/maintenance/configuration-assignment/ @Azure/avm-res-maintenance-configurationassignment-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/maintenance/maintenance-configuration/ @Azure/avm-res-maintenance-maintenanceconfiguration-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/managed-identity/user-assigned-identity/ @Azure/avm-res-managedidentity-userassignedidentity-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/managed-services/registration-definition/ @Azure/avm-res-managedservices-registrationdefinition-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/management/management-group/ @Azure/avm-res-management-managementgroup-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/res/maps/account/ @Azure/avm-res-maps-account-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/net-app/net-app-account/ @Azure/avm-res-netapp-netappaccount-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/network/application-gateway/ @Azure/avm-res-network-applicationgateway-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/network/application-gateway-web-application-firewall-policy/ @Azure/avm-res-network-applicationgatewaywebapplicationfirewallpolicy-module-owners-bicep @Azure/avm-module-reviewers-bicep

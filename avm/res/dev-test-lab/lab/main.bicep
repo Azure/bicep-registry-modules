@@ -7,11 +7,11 @@ param name string
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -58,7 +58,7 @@ param premiumDataDisks string = 'Disabled'
 @description('Optional. The properties of any lab support message associated with this lab.')
 param support object = {}
 
-import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The managed identity definition for this resource. For new labs created after 8/10/2020, the lab\'s system assigned identity is set to On by default and lab owner will not be able to turn this off for the lifecycle of the lab.')
 param managedIdentities managedIdentityOnlyUserAssignedType?
 
@@ -96,22 +96,22 @@ param encryptionType string = 'EncryptionAtRestWithPlatformKey'
 param encryptionDiskEncryptionSetId string = ''
 
 @description('Optional. Virtual networks to create for the lab.')
-param virtualnetworks virtualNetworkType
+param virtualnetworks virtualNetworkType[]?
 
 @description('Optional. Policies to create for the lab.')
-param policies policiesType
+param policies policyType[]?
 
 @description('Optional. Schedules to create for the lab.')
-param schedules scheduleType
+param schedules scheduleType[]?
 
 @description('Conditional. Notification Channels to create for the lab. Required if the schedules property "notificationSettingsStatus" is set to "Enabled.')
-param notificationchannels notificationChannelType
+param notificationchannels notificationChannelType[]?
 
 @description('Optional. Artifact sources to create for the lab.')
-param artifactsources artifactsourcesType
+param artifactsources artifactsourceType[]?
 
 @description('Optional. Costs to create for the lab.')
-param costs costsType
+param costs costType?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -376,12 +376,8 @@ output location string = lab.location
 //   Definitions   //
 // =============== //
 
-type managedIdentitiesType = {
-  @description('Optional. The resource ID(s) to assign to the resource. Currently, a single user-assigned identity is supported per lab.')
-  userAssignedResourceIds: string[]
-}?
-
-type artifactsourcesType = {
+@description('The type for the artifact source.')
+type artifactsourceType = {
   @description('Required. The name of the artifact source.')
   name: string
 
@@ -412,9 +408,11 @@ type artifactsourcesType = {
   @description('Optional. The security token to authenticate to the artifact source. Private artifacts use the system-identity of the lab to store the security token for the artifact source in the lab\'s managed Azure Key Vault. Access to the Azure Key Vault is granted automatically only when the lab is created with a system-assigned identity.')
   @secure()
   securityToken: string?
-}[]?
+}
 
 import { allowedSubnetType, subnetOverrideType } from 'virtualnetwork/main.bicep'
+@export()
+@description('The type for the virtual network.')
 type virtualNetworkType = {
   @description('Required. The name of the virtual network.')
   name: string
@@ -429,13 +427,15 @@ type virtualNetworkType = {
   description: string?
 
   @description('Optional. The allowed subnets of the virtual network.')
-  allowedSubnets: allowedSubnetType?
+  allowedSubnets: allowedSubnetType[]?
 
   @description('Optional. The subnet overrides of the virtual network.')
-  subnetOverrides: subnetOverrideType?
-}[]?
+  subnetOverrides: subnetOverrideType[]?
+}
 
-type costsType = {
+@export()
+@description('The type for the cost.')
+type costType = {
   @description('Optional. The tags of the resource.')
   tags: object?
 
@@ -486,8 +486,10 @@ type costsType = {
 
   @description('Optional. Target cost threshold at 125% send notification when exceeded. Indicates whether notifications will be sent when this threshold is exceeded.')
   thresholdValue125SendNotificationWhenExceeded: 'Enabled' | 'Disabled'?
-}?
+}
 
+@export()
+@description('The type for the notification channel.')
 type notificationChannelType = {
   @description('Required. The name of the notification channel.')
   name: 'autoShutdown' | 'costThreshold'
@@ -509,9 +511,11 @@ type notificationChannelType = {
 
   @description('Optional. The locale to use when sending a notification (fallback for unsupported languages is EN).')
   notificationLocale: string?
-}[]?
+}
 
-type policiesType = {
+@export()
+@description('The type for the policy.')
+type policyType = {
   @description('Required. The name of the policy.')
   name: string
 
@@ -542,9 +546,11 @@ type policiesType = {
 
   @description('Required. The threshold of the policy (i.e. a number for MaxValuePolicy, and a JSON array of values for AllowedValuesPolicy).')
   threshold: string
-}[]?
+}
 
-import { dailyRecurrenceType, hourlyRecurrenceType, notificationSettingsType, weeklyRecurrenceType } from 'schedule/main.bicep'
+import { dailyRecurrenceType, hourlyRecurrenceType, notificationSettingType, weeklyRecurrenceType } from 'schedule/main.bicep'
+@export()
+@description('The type for the schedule.')
 type scheduleType = {
   @description('Required. The name of the schedule.')
   name: 'LabVmsShutdown' | 'LabVmAutoStart'
@@ -574,5 +580,5 @@ type scheduleType = {
   timeZoneId: string?
 
   @description('Optional. The notification settings for the schedule.')
-  notificationSettings: notificationSettingsType?
-}[]?
+  notificationSettings: notificationSettingType?
+}

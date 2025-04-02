@@ -14,7 +14,7 @@ param enableTelemetry bool = true
 param tags object?
 
 @description('Required. Sku configuration of the resource.')
-param sku skuTpe
+param sku skuType
 
 @description('Required. Members of the resource.')
 param members array
@@ -146,7 +146,9 @@ output location string = capacity.location
 //   Definitions   //
 // =============== //
 
-type skuTpe = {
+@export()
+@description('The type of the capacity SKU.')
+type skuType = {
   @description('Optional. The name of the SKU.')
   name: ('A1' | 'A2' | 'A3' | 'A4' | 'A5' | 'A6')?
 

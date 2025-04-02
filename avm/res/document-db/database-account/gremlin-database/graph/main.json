@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "3717641655060686556"
+      "version": "0.34.44.8038",
+      "templateHash": "14448207336426896249"
     },
     "name": "DocumentDB Database Accounts Gremlin Databases Graphs",
     "description": "This module deploys a DocumentDB Database Accounts Gremlin Database Graph."
@@ -56,18 +56,18 @@
     "databaseAccount::gremlinDatabase": {
       "existing": true,
       "type": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases",
-      "apiVersion": "2023-04-15",
+      "apiVersion": "2024-11-15",
       "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('gremlinDatabaseName'))]"
     },
     "databaseAccount": {
       "existing": true,
       "type": "Microsoft.DocumentDB/databaseAccounts",
-      "apiVersion": "2023-04-15",
+      "apiVersion": "2024-11-15",
       "name": "[parameters('databaseAccountName')]"
     },
     "gremlinGraph": {
       "type": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs",
-      "apiVersion": "2023-04-15",
+      "apiVersion": "2024-11-15",
       "name": "[format('{0}/{1}/{2}', parameters('databaseAccountName'), parameters('gremlinDatabaseName'), parameters('name'))]",
       "tags": "[parameters('tags')]",
       "properties": {

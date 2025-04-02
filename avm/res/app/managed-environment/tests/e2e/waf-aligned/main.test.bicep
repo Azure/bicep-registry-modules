@@ -52,8 +52,8 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
+      logsDestination: 'log-analytics'
       logAnalyticsWorkspaceResourceId: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
-      location: resourceLocation
       workloadProfiles: [
         {
           workloadProfileType: 'D4'
@@ -68,37 +68,10 @@ module testDeployment '../../../main.bicep' = [
       platformReservedDnsIP: '172.17.17.17'
       infrastructureSubnetId: nestedDependencies.outputs.subnetResourceId
       infrastructureResourceGroupName: 'me-${resourceGroupName}'
-      roleAssignments: [
-        {
-          roleDefinitionIdOrName: 'Owner'
-          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-          principalType: 'ServicePrincipal'
-        }
-        {
-          roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-          principalType: 'ServicePrincipal'
-        }
-        {
-          roleDefinitionIdOrName: subscriptionResourceId(
-            'Microsoft.Authorization/roleDefinitions',
-            'acdd72a7-3385-48ef-bd42-f606fba81ae7'
-          )
-          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-          principalType: 'ServicePrincipal'
-        }
-      ]
-      lock: {
-        kind: 'CanNotDelete'
-        name: 'myCustomLockName'
-      }
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Env: 'test'
       }
     }
-    dependsOn: [
-      nestedDependencies
-    ]
   }
 ]

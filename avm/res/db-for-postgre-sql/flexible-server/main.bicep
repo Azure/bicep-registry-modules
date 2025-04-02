@@ -142,7 +142,7 @@ param privateDnsZoneArmResourceId string = ''
 @description('Optional. The firewall rules to create in the PostgreSQL flexible server.')
 param firewallRules array = []
 
-@description('Optional. Determines whether or not public network access is enabled or not.')
+@description('Optional. Determines whether or not public network access is enabled or disabled.')
 @allowed([
   'Disabled'
   'Enabled'
@@ -243,22 +243,22 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 }
 
 resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
-  name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
+  name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
   scope: resourceGroup(
-    split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
-    split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
+    split(customerManagedKey.?keyVaultResourceId!, '/')[2],
+    split(customerManagedKey.?keyVaultResourceId!, '/')[4]
   )
 
   resource cMKKey 'keys@2023-07-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
-    name: customerManagedKey.?keyName ?? 'dummyKey'
+    name: customerManagedKey.?keyName!
   }
 }
 
 resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
-  name: last(split(customerManagedKey.?userAssignedIdentityResourceId ?? 'dummyMsi', '/'))
+  name: last(split(customerManagedKey.?userAssignedIdentityResourceId!, '/'))
   scope: resourceGroup(
-    split((customerManagedKey.?userAssignedIdentityResourceId ?? '//'), '/')[2],
-    split((customerManagedKey.?userAssignedIdentityResourceId ?? '////'), '/')[4]
+    split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[2],
+    split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[4]
   )
 }
 
@@ -312,7 +312,7 @@ resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2024-08-01' =
           privateDnsZoneArmResourceId: privateDnsZoneArmResourceId
           publicNetworkAccess: publicNetworkAccess
         }
-      : null
+      : { publicNetworkAccess: publicNetworkAccess }
     pointInTimeUTC: createMode == 'PointInTimeRestore' ? pointInTimeUTC : null
     replica: !empty(replica) ? replica : null
     sourceServerResourceId: (createMode == 'PointInTimeRestore' || createMode == 'Replica')

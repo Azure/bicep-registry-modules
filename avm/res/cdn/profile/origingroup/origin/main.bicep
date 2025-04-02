@@ -79,6 +79,7 @@ output resourceGroupName string = resourceGroup().name
 // =============== //
 
 @export()
+@description('The name of the origin type.')
 type originType = {
   @description('Required. The name of the origion.')
   name: string

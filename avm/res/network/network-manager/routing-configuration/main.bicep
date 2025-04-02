@@ -14,7 +14,7 @@ param name string
 param description string = ''
 
 @sys.description('Optional. A routing configuration contains a set of rule collections that are applied to network groups. Each rule collection contains one or more routing rules.')
-param ruleCollections routingConfigurationRuleCollectionType
+param ruleCollections routingConfigurationRuleCollectionType[]?
 
 resource networkManager 'Microsoft.Network/networkManagers@2024-05-01' existing = {
   name: networkManagerName
@@ -58,6 +58,7 @@ output resourceGroupName string = resourceGroup().name
 
 import { appliesToType, rulesType } from 'rule-collection/main.bicep'
 @export()
+@sys.description('The type of a routing configuration rule collection.')
 type routingConfigurationRuleCollectionType = {
   @sys.description('Required. The name of the rule collection.')
   name: string
@@ -73,4 +74,4 @@ type routingConfigurationRuleCollectionType = {
 
   @sys.description('Optional. List of rules for the routing rules collection. Warning: A rule collection without a rule will cause a deployment of routing configuration to fail in network manager.')
   rules: rulesType?
-}[]?
+}

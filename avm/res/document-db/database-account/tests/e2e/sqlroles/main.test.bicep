@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Deploying with a sql role definision and assignment'
-metadata description = 'This instance deploys the module with sql role definision and assignment'
+metadata name = 'Deploying with a sql role definition and assignment'
+metadata description = 'This instance deploys the module with sql role definition and assignment'
 
 // ========== //
 // Parameters //

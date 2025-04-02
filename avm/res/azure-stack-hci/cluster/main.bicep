@@ -26,8 +26,8 @@ param deploymentOperations string[] = ['Validate', 'Deploy']
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-@description('Optional. The deployment settings of the cluster.')
-param deploymentSettings deploymentSettingsType?
+@description('Required. The deployment settings of the cluster.')
+param deploymentSettings deploymentSettingsType
 
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
@@ -35,6 +35,63 @@ param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Specify whether to use the shared key vault for the HCI cluster.')
 param useSharedKeyVault bool = true
+
+@description('Conditional. The name of the deployment user. Required if useSharedKeyVault is true.')
+param deploymentUser string?
+
+@secure()
+@description('Conditional. The password of the deployment user. Required if useSharedKeyVault is true.')
+param deploymentUserPassword string?
+
+@description('Conditional. The name of the local admin user. Required if useSharedKeyVault is true.')
+param localAdminUser string?
+
+@secure()
+@description('Conditional. The password of the local admin user. Required if useSharedKeyVault is true.')
+param localAdminPassword string?
+
+@description('Conditional. The service principal ID for ARB. Required if useSharedKeyVault is true.')
+param servicePrincipalId string?
+
+@secure()
+@description('Conditional. The service principal secret for ARB. Required if useSharedKeyVault is true.')
+param servicePrincipalSecret string?
+
+@description('Optional. Content type of the azure stack lcm user credential.')
+param azureStackLCMUserCredentialContentType string = 'Secret'
+
+@description('Optional. Content type of the local admin credential.')
+param localAdminCredentialContentType string = 'Secret'
+
+@description('Optional. Content type of the witness storage key.')
+param witnessStoragekeyContentType string = 'Secret'
+
+@description('Optional. Content type of the default ARB application.')
+param defaultARBApplicationContentType string = 'Secret'
+
+@description('Optional. Tags of azure stack LCM user credential.')
+param azureStackLCMUserCredentialTags object?
+
+@description('Optional. Tags of the local admin credential.')
+param localAdminCredentialTags object?
+
+@description('Optional. Tags of the witness storage key.')
+param witnessStoragekeyTags object?
+
+@description('Optional. Tags of the default ARB application.')
+param defaultARBApplicationTags object?
+
+@description('Optional. Key vault subscription ID, which is used for for storing secrets for the HCI cluster.')
+param keyvaultSubscriptionId string?
+
+@description('Optional. Key vault resource group, which is used for for storing secrets for the HCI cluster.')
+param keyvaultResourceGroup string?
+
+@description('Optional. Storage account subscription ID, which is used as the witness for the HCI Windows Failover Cluster.')
+param witnessStorageAccountSubscriptionId string?
+
+@description('Optional. Storage account resource group, which is used as the witness for the HCI Windows Failover Cluster.')
+param witnessStorageAccountResourceGroup string?
 
 // ============= //
 //   Variables   //
@@ -113,6 +170,36 @@ resource cluster 'Microsoft.AzureStackHCI/clusters@2024-04-01' = {
   tags: tags
 }
 
+module secrets './secrets.bicep' = if (useSharedKeyVault) {
+  name: '${uniqueString(deployment().name, location)}-secrets'
+  scope: resourceGroup(
+    keyvaultSubscriptionId ?? subscription().subscriptionId,
+    keyvaultResourceGroup ?? resourceGroup().name
+  )
+  params: {
+    clusterName: name
+    cloudId: cluster.properties.cloudId
+    keyVaultName: deploymentSettings!.keyVaultName
+    storageAccountName: deploymentSettings!.clusterWitnessStorageAccountName
+    deploymentUser: deploymentUser!
+    deploymentUserPassword: deploymentUserPassword!
+    localAdminUser: localAdminUser!
+    localAdminPassword: localAdminPassword!
+    servicePrincipalId: servicePrincipalId!
+    servicePrincipalSecret: servicePrincipalSecret!
+    azureStackLCMUserCredentialContentType: azureStackLCMUserCredentialContentType
+    localAdminCredentialContentType: localAdminCredentialContentType
+    witnessStoragekeyContentType: witnessStoragekeyContentType
+    defaultARBApplicationContentType: defaultARBApplicationContentType
+    azureStackLCMUserCredentialTags: azureStackLCMUserCredentialTags
+    localAdminCredentialTags: localAdminCredentialTags
+    witnessStoragekeyTags: witnessStoragekeyTags
+    defaultARBApplicationTags: defaultARBApplicationTags
+    witnessStorageAccountResourceGroup: witnessStorageAccountResourceGroup ?? resourceGroup().name
+    witnessStorageAccountSubscriptionId: witnessStorageAccountSubscriptionId ?? subscription().subscriptionId
+  }
+}
+
 @batchSize(1)
 module deploymentSetting 'deployment-setting/main.bicep' = [
   for deploymentOperation in sortedDeploymentOperations: if (!empty(deploymentOperation) && !empty(deploymentSettings)) {
@@ -131,7 +218,16 @@ module deploymentSetting 'deployment-setting/main.bicep' = [
       domainOUPath: deploymentSettings!.domainOUPath
       endingIPAddress: deploymentSettings!.endingIPAddress
       keyVaultName: deploymentSettings!.keyVaultName
-      networkIntents: deploymentSettings!.networkIntents
+      networkIntents: [
+        for intent in deploymentSettings.networkIntents: {
+          ...intent
+          qosPolicyOverrides: {
+            bandwidthPercentage_SMB: intent.qosPolicyOverrides.bandwidthPercentageSMB
+            priorityValue8021Action_Cluster: intent.qosPolicyOverrides.priorityValue8021ActionCluster
+            priorityValue8021Action_SMB: intent.qosPolicyOverrides.priorityValue8021ActionSMB
+          }
+        }
+      ]
       startingIPAddress: deploymentSettings!.startingIPAddress
       storageConnectivitySwitchless: deploymentSettings!.storageConnectivitySwitchless
       storageNetworks: deploymentSettings!.storageNetworks
@@ -219,13 +315,13 @@ type networkIntentType = {
   @description('Required. The qosPolicy overrides for the network intent.')
   qosPolicyOverrides: {
     @description('Required. The bandwidthPercentage for the network intent. Recommend 50.')
-    bandwidthPercentage_SMB: string
+    bandwidthPercentageSMB: string
 
     @description('Required. Recommend 7.')
-    priorityValue8021Action_Cluster: string
+    priorityValue8021ActionCluster: string
 
     @description('Required. Recommend 3.')
-    priorityValue8021Action_SMB: string
+    priorityValue8021ActionSMB: string
   }
 
   @description('Required. Specify whether to override the virtualSwitchConfiguration property. Use false by default.')
@@ -260,6 +356,9 @@ type storageAdapterIPInfoType = {
 // define custom type for storage network objects
 @export()
 type storageNetworksType = {
+  @description('Required. The name of the storage network.')
+  name: string
+
   @description('Required. The name of the storage adapter.')
   adapterName: string
 
@@ -380,7 +479,7 @@ type deploymentSettingsType = {
   dnsServers: string[]
 
   @description('Required. An array of Network ATC Network Intent objects that define the Compute, Management, and Storage network configuration for the cluster.')
-  networkIntents: array
+  networkIntents: networkIntentType[]
 
   @description('Required. Specify whether the Storage Network connectivity is switched or switchless.')
   storageConnectivitySwitchless: bool
@@ -389,7 +488,7 @@ type deploymentSettingsType = {
   enableStorageAutoIp: bool?
 
   @description('Required. An array of JSON objects that define the storage network configuration for the cluster. Each object should contain the adapterName, VLAN properties, and (optionally) IP configurations.')
-  storageNetworks: array
+  storageNetworks: storageNetworksType[]
 
   // other cluster configuration parameters
   @description('Required. The name of the Custom Location associated with the Arc Resource Bridge for this cluster. This value should reflect the physical location and identifier of the HCI cluster. Example: cl-hci-den-clu01.')
@@ -400,7 +499,17 @@ type deploymentSettingsType = {
 
   @description('Required. The name of the key vault to be used for storing secrets for the HCI cluster. This currently needs to be unique per HCI cluster.')
   keyVaultName: string
+}
 
-  @description('Optional. If using a shared key vault or non-legacy secret naming, pass the properties.cloudId guid from the pre-created HCI cluster resource.')
-  cloudId: string?
+@export()
+@description('Key vault secret names interface')
+type KeyVaultSecretNames = {
+  @description('Required. The name of the Azure Stack HCI LCM user credential secret.')
+  azureStackLCMUserCredential: string
+  @description('Required. The name of the Azure Stack HCI local admin credential secret.')
+  localAdminCredential: string
+  @description('Required. The name of the Azure Stack HCI default ARB application secret.')
+  defaultARBApplication: string
+  @description('Required. The name of the Azure Stack HCI witness storage key secret.')
+  witnessStorageKey: string
 }

@@ -19,15 +19,15 @@ param indexes array
 @description('Required. ShardKey for the collection.')
 param shardKey object
 
-resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' existing = {
+resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2024-11-15' existing = {
   name: databaseAccountName
 
-  resource mongodbDatabase 'mongodbDatabases@2023-04-15' existing = {
+  resource mongodbDatabase 'mongodbDatabases@2024-11-15' existing = {
     name: mongodbDatabaseName
   }
 }
 
-resource collection 'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections@2023-04-15' = {
+resource collection 'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections@2024-11-15' = {
   name: name
   parent: databaseAccount::mongodbDatabase
   properties: {

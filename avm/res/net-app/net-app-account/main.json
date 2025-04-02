@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "7313510258873685995"
+      "version": "0.33.13.18514",
+      "templateHash": "9880258354599224503"
     },
     "name": "Azure NetApp Files",
     "description": "This module deploys an Azure NetApp File."
@@ -595,7 +595,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a customer-managed key. To be used if the resource type does not support auto-rotation of the customer-managed key.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     },
@@ -701,7 +701,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     },
@@ -722,7 +722,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a managed identity configuration. To be used if only user-assigned identities are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     },
@@ -845,7 +845,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     },
@@ -1162,6 +1162,13 @@
         "description": "Optional. Specifies whether encryption should be used for communication between SMB server and domain controller (DC). SMB3 only."
       }
     },
+    "allowLocalNfsUsersWithLdap": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. If enabled, NFS client local users can also (in addition to LDAP users) access the NFS volumes."
+      }
+    },
     "smbServerNamePrefix": {
       "type": "string",
       "defaultValue": "",
@@ -1302,7 +1309,8 @@
         "ldapSigning": "[if(not(empty(parameters('domainName'))), parameters('ldapSigning'), false())]",
         "serverRootCACertificate": "[if(not(empty(parameters('domainName'))), parameters('serverRootCACertificate'), null())]",
         "smbServerName": "[if(not(empty(parameters('domainName'))), parameters('smbServerNamePrefix'), null())]",
-        "organizationalUnit": "[if(not(empty(parameters('domainJoinOU'))), parameters('domainJoinOU'), null())]"
+        "organizationalUnit": "[if(not(empty(parameters('domainJoinOU'))), parameters('domainJoinOU'), null())]",
+        "allowLocalNfsUsersWithLdap": "[if(not(empty(parameters('domainName'))), parameters('allowLocalNfsUsersWithLdap'), false())]"
       }
     ],
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
@@ -1321,9 +1329,9 @@
       "existing": true,
       "type": "Microsoft.KeyVault/vaults/keys",
       "apiVersion": "2023-02-01",
-      "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '//'), '/')[2]]",
-      "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '////'), '/')[4]]",
-      "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]"
+      "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
+      "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'))]"
     },
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
@@ -1350,29 +1358,29 @@
       "existing": true,
       "type": "Microsoft.KeyVault/vaults",
       "apiVersion": "2023-02-01",
-      "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '//'), '/')[2]]",
-      "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '////'), '/')[4]]",
-      "name": "[last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/'))]"
+      "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
+      "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
     },
     "cMKUserAssignedIdentity": {
       "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId')))]",
       "existing": true,
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
       "apiVersion": "2023-01-31",
-      "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '//'), '/')[2]]",
-      "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '////'), '/')[4]]",
-      "name": "[last(split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), 'dummyMsi'), '/'))]"
+      "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]]",
+      "name": "[last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/'))]"
     },
     "netAppAccount": {
       "type": "Microsoft.NetApp/netAppAccounts",
-      "apiVersion": "2024-07-01",
+      "apiVersion": "2024-09-01",
       "name": "[parameters('name')]",
       "tags": "[parameters('tags')]",
       "identity": "[variables('identity')]",
       "location": "[parameters('location')]",
       "properties": {
         "activeDirectories": "[if(not(empty(parameters('domainName'))), variables('activeDirectoryConnectionProperties'), null())]",
-        "encryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('identity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), createObject('userAssignedIdentity', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '//'), '/')[2], split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '////'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), 'dummyMsi'), '/')))), null()), 'keySource', 'Microsoft.KeyVault', 'keyVaultProperties', createObject('keyName', parameters('customerManagedKey').keyName, 'keyVaultResourceId', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '//'), '/')[2], split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '////'), '/')[4]), 'Microsoft.KeyVault/vaults', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/'))), 'keyVaultUri', reference('cMKKeyVault').vaultUri)), null())]"
+        "encryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('identity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), createObject('userAssignedIdentity', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2], split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')))), null()), 'keySource', 'Microsoft.KeyVault', 'keyVaultProperties', createObject('keyName', parameters('customerManagedKey').keyName, 'keyVaultResourceId', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2], split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]), 'Microsoft.KeyVault/vaults', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))), 'keyVaultUri', reference('cMKKeyVault').vaultUri)), null())]"
       },
       "dependsOn": [
         "cMKKeyVault"
@@ -1456,8 +1464,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "2748634922557584170"
+              "version": "0.33.13.18514",
+              "templateHash": "7879757037815205826"
             },
             "name": "Azure NetApp Files Backup Policy",
             "description": "This module deploys a Backup Policy for Azure NetApp File."
@@ -1517,7 +1525,7 @@
           "resources": [
             {
               "type": "Microsoft.NetApp/netAppAccounts/backupPolicies",
-              "apiVersion": "2024-07-01",
+              "apiVersion": "2024-09-01",
               "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "properties": {
@@ -1603,8 +1611,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "7661114070380487495"
+              "version": "0.33.13.18514",
+              "templateHash": "5076757961005626576"
             },
             "name": "Azure NetApp Files Snapshot Policy",
             "description": "This module deploys a Snapshot Policy for an Azure NetApp File."
@@ -1845,12 +1853,12 @@
             "netAppAccount": {
               "existing": true,
               "type": "Microsoft.NetApp/netAppAccounts",
-              "apiVersion": "2024-07-01",
+              "apiVersion": "2024-09-01",
               "name": "[parameters('netAppAccountName')]"
             },
             "snapshotPolicies": {
               "type": "Microsoft.NetApp/netAppAccounts/snapshotPolicies",
-              "apiVersion": "2024-07-01",
+              "apiVersion": "2024-09-01",
               "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "properties": {
@@ -1919,8 +1927,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "6704781490326075849"
+              "version": "0.33.13.18514",
+              "templateHash": "6318287714892140543"
             },
             "name": "Azure NetApp Files Volume Backup Vault",
             "description": "This module deploys a NetApp Files Backup Vault."
@@ -2005,12 +2013,12 @@
             "netAppAccount": {
               "existing": true,
               "type": "Microsoft.NetApp/netAppAccounts",
-              "apiVersion": "2024-07-01",
+              "apiVersion": "2024-09-01",
               "name": "[parameters('netAppAccountName')]"
             },
             "backupVault": {
               "type": "Microsoft.NetApp/netAppAccounts/backupVaults",
-              "apiVersion": "2024-07-01",
+              "apiVersion": "2024-09-01",
               "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "properties": {}
@@ -2058,8 +2066,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "17452697444375969559"
+                      "version": "0.33.13.18514",
+                      "templateHash": "11103687332577035719"
                     },
                     "name": "Azure NetApp Files Volume Backup",
                     "description": "This module deploys a backup of a NetApp Files Volume."
@@ -2121,24 +2129,24 @@
                     "netAppAccount::backupVault": {
                       "existing": true,
                       "type": "Microsoft.NetApp/netAppAccounts/backupVaults",
-                      "apiVersion": "2024-07-01",
+                      "apiVersion": "2024-09-01",
                       "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('backupVaultName'))]"
                     },
                     "netAppAccount::remoteCapacityPool": {
                       "existing": true,
                       "type": "Microsoft.NetApp/netAppAccounts/capacityPools",
-                      "apiVersion": "2024-07-01",
+                      "apiVersion": "2024-09-01",
                       "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('capacityPoolName'))]"
                     },
                     "netAppAccount": {
                       "existing": true,
                       "type": "Microsoft.NetApp/netAppAccounts",
-                      "apiVersion": "2024-07-01",
+                      "apiVersion": "2024-09-01",
                       "name": "[parameters('netAppAccountName')]"
                     },
                     "backup": {
                       "type": "Microsoft.NetApp/netAppAccounts/backupVaults/backups",
-                      "apiVersion": "2024-07-01",
+                      "apiVersion": "2024-09-01",
                       "name": "[format('{0}/{1}/{2}', parameters('netAppAccountName'), parameters('backupVaultName'), parameters('name'))]",
                       "properties": {
                         "label": "[parameters('label')]",
@@ -2204,7 +2212,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('backupVault', '2024-07-01', 'full').location]"
+              "value": "[reference('backupVault', '2024-09-01', 'full').location]"
             }
           }
         }
@@ -2268,8 +2276,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "18256505389133665653"
+              "version": "0.33.13.18514",
+              "templateHash": "16713702795865434771"
             },
             "name": "Azure NetApp Files Capacity Pools",
             "description": "This module deploys an Azure NetApp Files Capacity Pool."
@@ -2800,7 +2808,7 @@
               "metadata": {
                 "description": "An AVM-aligned type for a role assignment.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
                 }
               }
             }
@@ -2945,12 +2953,12 @@
             "netAppAccount": {
               "existing": true,
               "type": "Microsoft.NetApp/netAppAccounts",
-              "apiVersion": "2024-07-01",
+              "apiVersion": "2024-09-01",
               "name": "[parameters('netAppAccountName')]"
             },
             "capacityPool": {
               "type": "Microsoft.NetApp/netAppAccounts/capacityPools",
-              "apiVersion": "2024-07-01",
+              "apiVersion": "2024-09-01",
               "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -3071,6 +3079,12 @@
                   },
                   "volumeType": {
                     "value": "[tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'volumeType')]"
+                  },
+                  "securityStyle": {
+                    "value": "[tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'securityStyle')]"
+                  },
+                  "unixPermissions": {
+                    "value": "[tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'unixPermissions')]"
                   }
                 },
                 "template": {
@@ -3080,8 +3094,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "9908729682088720878"
+                      "version": "0.33.13.18514",
+                      "templateHash": "13608152069295767375"
                     },
                     "name": "Azure NetApp Files Capacity Pool Volumes",
                     "description": "This module deploys an Azure NetApp Files Capacity Pool Volume."
@@ -3416,7 +3430,7 @@
                       "metadata": {
                         "description": "An AVM-aligned type for a role assignment.",
                         "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
                         }
                       }
                     }
@@ -3616,6 +3630,24 @@
                       "metadata": {
                         "description": "Optional. Define if a volume is KerberosEnabled."
                       }
+                    },
+                    "securityStyle": {
+                      "type": "string",
+                      "nullable": true,
+                      "allowedValues": [
+                        "ntfs",
+                        "unix"
+                      ],
+                      "metadata": {
+                        "description": "Optional. Defines the security style of the Volume."
+                      }
+                    },
+                    "unixPermissions": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Unix Permissions for NFS volume."
+                      }
                     }
                   },
                   "variables": {
@@ -3626,8 +3658,8 @@
                         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
                       }
                     ],
-                    "remoteCapacityPoolName": "[if(not(empty(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'))), split(coalesce(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '//'), '/')[10], '')]",
-                    "remoteNetAppName": "[if(not(empty(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'))), split(coalesce(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '//'), '/')[8], '')]",
+                    "remoteCapacityPoolName": "[if(not(empty(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'))), split(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '/')[10], '')]",
+                    "remoteNetAppName": "[if(not(empty(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'))), split(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '/')[8], '')]",
                     "builtInRoleNames": {
                       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
                       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
@@ -3640,47 +3672,47 @@
                     "netAppAccount::capacityPool": {
                       "existing": true,
                       "type": "Microsoft.NetApp/netAppAccounts/capacityPools",
-                      "apiVersion": "2024-07-01",
+                      "apiVersion": "2024-09-01",
                       "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('capacityPoolName'))]"
                     },
                     "netAppAccount::backupVault": {
                       "condition": "[not(empty(tryGet(parameters('dataProtection'), 'backup')))]",
                       "existing": true,
                       "type": "Microsoft.NetApp/netAppAccounts/backupVaults",
-                      "apiVersion": "2024-07-01",
+                      "apiVersion": "2024-09-01",
                       "name": "[format('{0}/{1}', parameters('netAppAccountName'), tryGet(parameters('dataProtection'), 'backup', 'backupVaultName'))]"
                     },
                     "netAppAccount::backupPolicy": {
                       "condition": "[not(empty(tryGet(parameters('dataProtection'), 'backup')))]",
                       "existing": true,
                       "type": "Microsoft.NetApp/netAppAccounts/backupPolicies",
-                      "apiVersion": "2024-07-01",
+                      "apiVersion": "2024-09-01",
                       "name": "[format('{0}/{1}', parameters('netAppAccountName'), tryGet(parameters('dataProtection'), 'backup', 'backupPolicyName'))]"
                     },
                     "netAppAccount::snapshotPolicy": {
                       "condition": "[not(empty(tryGet(parameters('dataProtection'), 'snapshot')))]",
                       "existing": true,
                       "type": "Microsoft.NetApp/netAppAccounts/snapshotPolicies",
-                      "apiVersion": "2024-07-01",
+                      "apiVersion": "2024-09-01",
                       "name": "[format('{0}/{1}', parameters('netAppAccountName'), tryGet(parameters('dataProtection'), 'snapshot', 'snapshotPolicyName'))]"
                     },
                     "remoteNetAppAccount::remoteCapacityPool::remoteVolume": {
                       "condition": "[and(and(and(not(empty(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'))), not(equals(variables('remoteNetAppName'), parameters('netAppAccountName')))), and(not(empty(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'))), not(equals(variables('remoteCapacityPoolName'), parameters('capacityPoolName'))))), not(empty(tryGet(parameters('dataProtection'), 'replication'))))]",
                       "existing": true,
                       "type": "Microsoft.NetApp/netAppAccounts/capacityPools/volumes",
-                      "apiVersion": "2024-07-01",
-                      "subscriptionId": "[split(coalesce(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '//'), '/')[2]]",
-                      "resourceGroup": "[split(coalesce(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '////'), '/')[4]]",
-                      "name": "[format('{0}/{1}/{2}', split(coalesce(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '//'), '/')[8], split(coalesce(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '//'), '/')[10], last(split(coalesce(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), 'dummyvolume'), '/')))]"
+                      "apiVersion": "2024-09-01",
+                      "subscriptionId": "[split(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '/')[2]]",
+                      "resourceGroup": "[split(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '/')[4]]",
+                      "name": "[format('{0}/{1}/{2}', split(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '/')[8], split(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '/')[10], last(split(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '/')))]"
                     },
                     "remoteNetAppAccount::remoteCapacityPool": {
                       "condition": "[and(and(not(empty(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'))), not(equals(variables('remoteNetAppName'), parameters('netAppAccountName')))), and(not(empty(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'))), not(equals(variables('remoteCapacityPoolName'), parameters('capacityPoolName')))))]",
                       "existing": true,
                       "type": "Microsoft.NetApp/netAppAccounts/capacityPools",
-                      "apiVersion": "2024-07-01",
-                      "subscriptionId": "[split(coalesce(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '//'), '/')[2]]",
-                      "resourceGroup": "[split(coalesce(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '////'), '/')[4]]",
-                      "name": "[format('{0}/{1}', split(coalesce(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '//'), '/')[8], split(coalesce(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '//'), '/')[10])]"
+                      "apiVersion": "2024-09-01",
+                      "subscriptionId": "[split(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '/')[2]]",
+                      "resourceGroup": "[split(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '/')[4]]",
+                      "name": "[format('{0}/{1}', split(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '/')[8], split(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '/')[10])]"
                     },
                     "vnet::subnet": {
                       "existing": true,
@@ -3693,7 +3725,7 @@
                     "netAppAccount": {
                       "existing": true,
                       "type": "Microsoft.NetApp/netAppAccounts",
-                      "apiVersion": "2024-07-01",
+                      "apiVersion": "2024-09-01",
                       "name": "[parameters('netAppAccountName')]"
                     },
                     "keyVaultPrivateEndpoint": {
@@ -3701,18 +3733,18 @@
                       "existing": true,
                       "type": "Microsoft.Network/privateEndpoints",
                       "apiVersion": "2024-03-01",
-                      "subscriptionId": "[split(coalesce(parameters('keyVaultPrivateEndpointResourceId'), '//'), '/')[2]]",
-                      "resourceGroup": "[split(coalesce(parameters('keyVaultPrivateEndpointResourceId'), '////'), '/')[4]]",
-                      "name": "[last(split(coalesce(parameters('keyVaultPrivateEndpointResourceId'), 'dummyVault'), '/'))]"
+                      "subscriptionId": "[split(parameters('keyVaultPrivateEndpointResourceId'), '/')[2]]",
+                      "resourceGroup": "[split(parameters('keyVaultPrivateEndpointResourceId'), '/')[4]]",
+                      "name": "[last(split(parameters('keyVaultPrivateEndpointResourceId'), '/'))]"
                     },
                     "remoteNetAppAccount": {
                       "condition": "[and(not(empty(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'))), not(equals(variables('remoteNetAppName'), parameters('netAppAccountName'))))]",
                       "existing": true,
                       "type": "Microsoft.NetApp/netAppAccounts",
-                      "apiVersion": "2024-07-01",
-                      "subscriptionId": "[split(coalesce(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '//'), '/')[2]]",
-                      "resourceGroup": "[split(coalesce(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '////'), '/')[4]]",
-                      "name": "[split(coalesce(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '//'), '/')[8]]"
+                      "apiVersion": "2024-09-01",
+                      "subscriptionId": "[split(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '/')[2]]",
+                      "resourceGroup": "[split(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '/')[4]]",
+                      "name": "[split(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '/')[8]]"
                     },
                     "vnet": {
                       "existing": true,
@@ -3724,10 +3756,10 @@
                     },
                     "volume": {
                       "type": "Microsoft.NetApp/netAppAccounts/capacityPools/volumes",
-                      "apiVersion": "2024-07-01",
+                      "apiVersion": "2024-09-01",
                       "name": "[format('{0}/{1}/{2}', parameters('netAppAccountName'), parameters('capacityPoolName'), parameters('name'))]",
                       "location": "[parameters('location')]",
-                      "properties": "[shallowMerge(createArray(createObject('coolAccess', parameters('coolAccess'), 'coolAccessRetrievalPolicy', parameters('coolAccessRetrievalPolicy'), 'coolnessPeriod', parameters('coolnessPeriod'), 'encryptionKeySource', parameters('encryptionKeySource')), if(not(equals(parameters('encryptionKeySource'), 'Microsoft.NetApp')), createObject('keyVaultPrivateEndpointResourceId', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(parameters('keyVaultPrivateEndpointResourceId'), '//'), '/')[2], split(coalesce(parameters('keyVaultPrivateEndpointResourceId'), '////'), '/')[4]), 'Microsoft.Network/privateEndpoints', last(split(coalesce(parameters('keyVaultPrivateEndpointResourceId'), 'dummyVault'), '/')))), createObject()), if(not(empty(parameters('volumeType'))), createObject('volumeType', parameters('volumeType')), createObject()), createObject('dataProtection', if(not(empty(parameters('dataProtection'))), createObject('replication', if(not(empty(tryGet(parameters('dataProtection'), 'replication'))), createObject('endpointType', tryGet(parameters('dataProtection'), 'replication', 'endpointType'), 'remoteVolumeRegion', if(not(empty(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'))), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '//'), '/')[2], split(coalesce(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '////'), '/')[4]), 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes', split(coalesce(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '//'), '/')[8], split(coalesce(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '//'), '/')[10], last(split(coalesce(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), 'dummyvolume'), '/'))), null()), 'remoteVolumeResourceId', tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), 'replicationSchedule', tryGet(parameters('dataProtection'), 'replication', 'replicationSchedule'), 'remotePath', tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remotePath')), createObject()), 'backup', if(not(empty(tryGet(parameters('dataProtection'), 'backup'))), createObject('backupPolicyId', resourceId('Microsoft.NetApp/netAppAccounts/backupPolicies', parameters('netAppAccountName'), tryGet(parameters('dataProtection'), 'backup', 'backupPolicyName')), 'policyEnforced', coalesce(tryGet(parameters('dataProtection'), 'backup', 'policyEnforced'), false()), 'backupVaultId', resourceId('Microsoft.NetApp/netAppAccounts/backupVaults', parameters('netAppAccountName'), tryGet(parameters('dataProtection'), 'backup', 'backupVaultName'))), createObject()), 'snapshot', if(not(empty(tryGet(parameters('dataProtection'), 'snapshot'))), createObject('snapshotPolicyId', resourceId('Microsoft.NetApp/netAppAccounts/snapshotPolicies', parameters('netAppAccountName'), tryGet(parameters('dataProtection'), 'snapshot', 'snapshotPolicyName'))), createObject())), null()), 'networkFeatures', parameters('networkFeatures'), 'serviceLevel', parameters('serviceLevel'), 'creationToken', parameters('creationToken'), 'usageThreshold', parameters('usageThreshold'), 'protocolTypes', parameters('protocolTypes'), 'subnetId', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('subnetResourceId'), '/')[2], split(parameters('subnetResourceId'), '/')[4]), 'Microsoft.Network/virtualNetworks/subnets', split(parameters('subnetResourceId'), '/')[8], last(split(parameters('subnetResourceId'), '/'))), 'exportPolicy', parameters('exportPolicy'), 'smbContinuouslyAvailable', parameters('smbContinuouslyAvailable'), 'smbEncryption', parameters('smbEncryption'), 'smbNonBrowsable', parameters('smbNonBrowsable'), 'kerberosEnabled', parameters('kerberosEnabled'))))]",
+                      "properties": "[shallowMerge(createArray(createObject('coolAccess', parameters('coolAccess'), 'coolAccessRetrievalPolicy', parameters('coolAccessRetrievalPolicy'), 'coolnessPeriod', parameters('coolnessPeriod'), 'securityStyle', parameters('securityStyle'), 'unixPermissions', parameters('unixPermissions'), 'encryptionKeySource', parameters('encryptionKeySource')), if(not(equals(parameters('encryptionKeySource'), 'Microsoft.NetApp')), createObject('keyVaultPrivateEndpointResourceId', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('keyVaultPrivateEndpointResourceId'), '/')[2], split(parameters('keyVaultPrivateEndpointResourceId'), '/')[4]), 'Microsoft.Network/privateEndpoints', last(split(parameters('keyVaultPrivateEndpointResourceId'), '/')))), createObject()), if(not(empty(parameters('volumeType'))), createObject('volumeType', parameters('volumeType')), createObject()), createObject('dataProtection', if(not(empty(parameters('dataProtection'))), createObject('replication', if(not(empty(tryGet(parameters('dataProtection'), 'replication'))), createObject('endpointType', tryGet(parameters('dataProtection'), 'replication', 'endpointType'), 'remoteVolumeRegion', if(not(empty(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeRegion'))), tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeRegion'), null()), 'remoteVolumeResourceId', tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), 'replicationSchedule', tryGet(parameters('dataProtection'), 'replication', 'replicationSchedule'), 'remotePath', tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remotePath')), null()), 'backup', if(not(empty(tryGet(parameters('dataProtection'), 'backup'))), createObject('backupPolicyId', resourceId('Microsoft.NetApp/netAppAccounts/backupPolicies', parameters('netAppAccountName'), tryGet(parameters('dataProtection'), 'backup', 'backupPolicyName')), 'policyEnforced', coalesce(tryGet(parameters('dataProtection'), 'backup', 'policyEnforced'), false()), 'backupVaultId', resourceId('Microsoft.NetApp/netAppAccounts/backupVaults', parameters('netAppAccountName'), tryGet(parameters('dataProtection'), 'backup', 'backupVaultName'))), null()), 'snapshot', if(not(empty(tryGet(parameters('dataProtection'), 'snapshot'))), createObject('snapshotPolicyId', resourceId('Microsoft.NetApp/netAppAccounts/snapshotPolicies', parameters('netAppAccountName'), tryGet(parameters('dataProtection'), 'snapshot', 'snapshotPolicyName'))), null())), null()), 'networkFeatures', parameters('networkFeatures'), 'serviceLevel', parameters('serviceLevel'), 'creationToken', parameters('creationToken'), 'usageThreshold', parameters('usageThreshold'), 'protocolTypes', parameters('protocolTypes'), 'subnetId', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('subnetResourceId'), '/')[2], split(parameters('subnetResourceId'), '/')[4]), 'Microsoft.Network/virtualNetworks/subnets', split(parameters('subnetResourceId'), '/')[8], last(split(parameters('subnetResourceId'), '/'))), 'exportPolicy', parameters('exportPolicy'), 'smbContinuouslyAvailable', parameters('smbContinuouslyAvailable'), 'smbEncryption', parameters('smbEncryption'), 'smbNonBrowsable', parameters('smbNonBrowsable'), 'kerberosEnabled', parameters('kerberosEnabled'))))]",
                       "zones": "[if(not(equals(parameters('zone'), 0)), createArray(string(parameters('zone'))), null())]"
                     },
                     "volume_roleAssignments": {
@@ -3780,7 +3812,7 @@
                       "metadata": {
                         "description": "The location the resource was deployed into."
                       },
-                      "value": "[reference('volume', '2024-07-01', 'full').location]"
+                      "value": "[reference('volume', '2024-09-01', 'full').location]"
                     }
                   }
                 }
@@ -3817,7 +3849,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('capacityPool', '2024-07-01', 'full').location]"
+              "value": "[reference('capacityPool', '2024-09-01', 'full').location]"
             },
             "volumeResourceIds": {
               "type": "array",
@@ -3873,8 +3905,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "6704781490326075849"
+              "version": "0.33.13.18514",
+              "templateHash": "6318287714892140543"
             },
             "name": "Azure NetApp Files Volume Backup Vault",
             "description": "This module deploys a NetApp Files Backup Vault."
@@ -3959,12 +3991,12 @@
             "netAppAccount": {
               "existing": true,
               "type": "Microsoft.NetApp/netAppAccounts",
-              "apiVersion": "2024-07-01",
+              "apiVersion": "2024-09-01",
               "name": "[parameters('netAppAccountName')]"
             },
             "backupVault": {
               "type": "Microsoft.NetApp/netAppAccounts/backupVaults",
-              "apiVersion": "2024-07-01",
+              "apiVersion": "2024-09-01",
               "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "properties": {}
@@ -4012,8 +4044,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "17452697444375969559"
+                      "version": "0.33.13.18514",
+                      "templateHash": "11103687332577035719"
                     },
                     "name": "Azure NetApp Files Volume Backup",
                     "description": "This module deploys a backup of a NetApp Files Volume."
@@ -4075,24 +4107,24 @@
                     "netAppAccount::backupVault": {
                       "existing": true,
                       "type": "Microsoft.NetApp/netAppAccounts/backupVaults",
-                      "apiVersion": "2024-07-01",
+                      "apiVersion": "2024-09-01",
                       "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('backupVaultName'))]"
                     },
                     "netAppAccount::remoteCapacityPool": {
                       "existing": true,
                       "type": "Microsoft.NetApp/netAppAccounts/capacityPools",
-                      "apiVersion": "2024-07-01",
+                      "apiVersion": "2024-09-01",
                       "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('capacityPoolName'))]"
                     },
                     "netAppAccount": {
                       "existing": true,
                       "type": "Microsoft.NetApp/netAppAccounts",
-                      "apiVersion": "2024-07-01",
+                      "apiVersion": "2024-09-01",
                       "name": "[parameters('netAppAccountName')]"
                     },
                     "backup": {
                       "type": "Microsoft.NetApp/netAppAccounts/backupVaults/backups",
-                      "apiVersion": "2024-07-01",
+                      "apiVersion": "2024-09-01",
                       "name": "[format('{0}/{1}/{2}', parameters('netAppAccountName'), parameters('backupVaultName'), parameters('name'))]",
                       "properties": {
                         "label": "[parameters('label')]",
@@ -4158,7 +4190,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('backupVault', '2024-07-01', 'full').location]"
+              "value": "[reference('backupVault', '2024-09-01', 'full').location]"
             }
           }
         }
@@ -4196,7 +4228,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('netAppAccount', '2024-07-01', 'full').location]"
+      "value": "[reference('netAppAccount', '2024-09-01', 'full').location]"
     },
     "capacityPoolResourceIds": {
       "type": "array",

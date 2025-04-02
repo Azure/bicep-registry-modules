@@ -121,6 +121,9 @@ param accessPolicies accessPolicyType[] = []
 @description('Optional. Array of access policy assignments.')
 param accessPolicyAssignments accessPolicyAssignmentType[] = []
 
+@description('Optional. The firewall rules to create in the PostgreSQL flexible server.')
+param firewallRules array = []
+
 @description('Optional. Key vault reference and secret settings for the module\'s secrets export.')
 param secretsExportConfiguration secretsExportConfigurationType?
 
@@ -358,6 +361,18 @@ module redis_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1
   }
 ]
 
+module redis_firewallRules 'firewall-rule/main.bicep' = [
+  for (firewallRule, index) in firewallRules: {
+    name: '${uniqueString(deployment().name, location)}-redis-FirewallRules-${index}'
+    params: {
+      name: firewallRule.name
+      redisCacheName: redis.name
+      startIP: firewallRule.startIP
+      endIP: firewallRule.endIP
+    }
+  }
+]
+
 module redis_geoReplication 'linked-servers/main.bicep' = if (!empty(geoReplicationObject)) {
   name: '${uniqueString(deployment().name, location)}-redis-LinkedServer'
   params: {
@@ -372,11 +387,11 @@ module redis_geoReplication 'linked-servers/main.bicep' = if (!empty(geoReplicat
 module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfiguration != null) {
   name: '${uniqueString(deployment().name, location)}-secrets-kv'
   scope: resourceGroup(
-    split((secretsExportConfiguration.?keyVaultResourceId ?? '//'), '/')[2],
-    split((secretsExportConfiguration.?keyVaultResourceId ?? '////'), '/')[4]
+    split(secretsExportConfiguration.?keyVaultResourceId!, '/')[2],
+    split(secretsExportConfiguration.?keyVaultResourceId!, '/')[4]
   )
   params: {
-    keyVaultName: last(split(secretsExportConfiguration.?keyVaultResourceId ?? '//', '/'))
+    keyVaultName: last(split(secretsExportConfiguration.?keyVaultResourceId!, '/'))
     secretsToSet: union(
       [],
       contains(secretsExportConfiguration!, 'primaryAccessKeyName')

@@ -60,6 +60,8 @@ param enableTelemetry bool = true
 @description('Optional. Indicates if VM protection is enabled for all the subnets in the virtual network.')
 param enableVmProtection bool?
 
+var enableReferencedModulesTelemetry = false
+
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   'Network Contributor': subscriptionResourceId(
@@ -168,6 +170,7 @@ module virtualNetwork_subnets 'subnet/main.bicep' = [
       serviceEndpoints: subnet.?serviceEndpoints
       defaultOutboundAccess: subnet.?defaultOutboundAccess
       sharingScope: subnet.?sharingScope
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]

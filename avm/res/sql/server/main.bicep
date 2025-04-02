@@ -53,6 +53,10 @@ param securityAlertPolicies securityAlerPolicyType[] = []
 @description('Optional. The keys to configure.')
 param keys keyType[] = []
 
+import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+@description('Optional. The customer managed key definition for server TDE.')
+param customerManagedKey customerManagedKeyWithAutoRotateType?
+
 @description('Conditional. The Azure Active Directory (AAD) administrator authentication. Required if no `administratorLogin` & `administratorLoginPassword` is provided.')
 param administrators serverExternalAdministratorType?
 
@@ -60,9 +64,6 @@ param administrators serverExternalAdministratorType?
 @minLength(36)
 @maxLength(36)
 param federatedClientId string?
-
-@description('Optional. A CMK URI of the key to use for encryption.')
-param keyId string?
 
 @allowed([
   '1.0'
@@ -115,9 +116,6 @@ var identity = !empty(managedIdentities)
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
   : null
-
-@description('Optional. The encryption protection configuration.')
-param encryptionProtectorObj encryptionProtectorType?
 
 @description('Optional. The vulnerability assessment configuration.')
 param vulnerabilityAssessmentsObj vulnerabilityAssessmentType?
@@ -188,6 +186,18 @@ var formattedRoleAssignments = [
   })
 ]
 
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+  name: last(split(customerManagedKey.?keyVaultResourceId!, '/'))
+  scope: resourceGroup(
+    split(customerManagedKey.?keyVaultResourceId!, '/')[2],
+    split(customerManagedKey.?keyVaultResourceId!, '/')[4]
+  )
+
+  resource cMKKey 'keys@2023-07-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+    name: customerManagedKey.?keyName!
+  }
+}
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.sql-server.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
@@ -218,7 +228,13 @@ resource server 'Microsoft.Sql/servers@2023-08-01-preview' = {
     administrators: union({ administratorType: 'ActiveDirectory' }, administrators ?? {})
     federatedClientId: federatedClientId
     isIPv6Enabled: isIPv6Enabled
-    keyId: keyId
+    keyId: customerManagedKey != null
+      ? !empty(customerManagedKey.?keyVersion)
+          ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.?keyVersion}'
+          : (customerManagedKey.?autoRotationEnabled ?? true)
+              ? cMKKeyVault::cMKKey.properties.keyUri
+              : cMKKeyVault::cMKKey.properties.keyUriWithVersion
+      : null
     version: '12.0'
     minimalTlsVersion: minimalTlsVersion
     primaryUserAssignedIdentityId: !empty(primaryUserAssignedIdentityId) ? primaryUserAssignedIdentityId : null
@@ -465,17 +481,28 @@ module server_keys 'key/main.bicep' = [
   }
 ]
 
-module server_encryptionProtector 'encryption-protector/main.bicep' = if (encryptionProtectorObj != null) {
+module cmk_key 'key/main.bicep' = if (customerManagedKey != null) {
+  name: '${uniqueString(deployment().name, location)}-Sql-Key'
+  params: {
+    serverName: server.name
+    name: '${cMKKeyVault.name}_${customerManagedKey.?keyName}_${customerManagedKey.?keyVersion}'
+    serverKeyType: 'AzureKeyVault'
+    uri: !empty(customerManagedKey.?keyVersion)
+      ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.?keyVersion}'
+      : (customerManagedKey.?autoRotationEnabled ?? true)
+          ? cMKKeyVault::cMKKey.properties.keyUri
+          : cMKKeyVault::cMKKey.properties.keyUriWithVersion
+  }
+}
+
+module server_encryptionProtector 'encryption-protector/main.bicep' = if (customerManagedKey != null) {
   name: '${uniqueString(deployment().name, location)}-Sql-EncryProtector'
   params: {
     sqlServerName: server.name
-    serverKeyName: encryptionProtectorObj!.serverKeyName
-    serverKeyType: encryptionProtectorObj.?serverKeyType
-    autoRotationEnabled: encryptionProtectorObj.?autoRotationEnabled
+    serverKeyName: cmk_key.outputs.name
+    serverKeyType: 'AzureKeyVault'
+    autoRotationEnabled: customerManagedKey.?autoRotationEnabled
   }
-  dependsOn: [
-    server_keys
-  ]
 }
 
 module server_audit_settings 'audit-settings/main.bicep' = if (!empty(auditSettings)) {
@@ -498,11 +525,11 @@ module server_audit_settings 'audit-settings/main.bicep' = if (!empty(auditSetti
 module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfiguration != null) {
   name: '${uniqueString(deployment().name, location)}-secrets-kv'
   scope: resourceGroup(
-    split((secretsExportConfiguration.?keyVaultResourceId ?? '//'), '/')[2],
-    split((secretsExportConfiguration.?keyVaultResourceId ?? '////'), '/')[4]
+    split(secretsExportConfiguration.?keyVaultResourceId!, '/')[2],
+    split(secretsExportConfiguration.?keyVaultResourceId!, '/')[4]
   )
   params: {
-    keyVaultName: last(split(secretsExportConfiguration.?keyVaultResourceId ?? '//', '/'))
+    keyVaultName: last(split(secretsExportConfiguration.?keyVaultResourceId!, '/'))
     secretsToSet: union(
       [],
       contains(secretsExportConfiguration!, 'sqlAdminPasswordSecretName')
@@ -530,6 +557,7 @@ module failover_groups 'failover-group/main.bicep' = [
     name: '${uniqueString(deployment().name, location)}-Sql-FailoverGroup-${index}'
     params: {
       name: failoverGroup.name
+      tags: failoverGroup.?tags ?? tags
       serverName: server.name
       databases: failoverGroup.databases
       partnerServers: failoverGroup.partnerServers
@@ -958,6 +986,9 @@ type securityAlerPolicyType = {
 type failoverGroupType = {
   @description('Required. The name of the failover group.')
   name: string
+
+  @description('Optional. Tags of the resource.')
+  tags: object?
 
   @description('Required. List of databases in the failover group.')
   databases: string[]
