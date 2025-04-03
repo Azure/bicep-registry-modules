@@ -59,7 +59,7 @@ param disableLocalAuth bool = true
 var enableReferencedModulesTelemetry = false
 
 var formattedUserAssignedIdentities = reduce(
-  map((managedIdentities.?userAssignedResourcesIds ?? []), (id) => { '${id}': {} }),
+  map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
   (cur, next) => union(cur, next)
 ) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
@@ -67,8 +67,8 @@ var formattedUserAssignedIdentities = reduce(
 var identity = !empty(managedIdentities)
   ? {
       type: (managedIdentities.?systemAssigned ?? false)
-        ? (!empty(managedIdentities.?userAssignedResourcesIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
-        : (!empty(managedIdentities.?userAssignedResourcesIds ?? {}) ? 'UserAssigned' : null)
+        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
+        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : null)
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
   : null
