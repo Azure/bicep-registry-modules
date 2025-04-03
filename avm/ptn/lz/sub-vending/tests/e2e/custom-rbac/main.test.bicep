@@ -49,7 +49,7 @@ module testDeployment '../../../main.bicep' = {
       {
         principalId: testUserObjectId
         definition: dependencies.outputs.customRoleDefinitionId
-        relativeScope: ''
+        relativeScope: 'bicep-lz-vending-automation-child'
         isCustomRole: true
         principalType: 'User'
       }
