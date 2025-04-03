@@ -17,17 +17,12 @@ param storageAccountName string
 param keyVaultName string
 
 var ipRange = '10.0.0.0'
-var tags = {
-  module: 'ptn/deployment-script/import-image-to-acr'
-  test: 'waf-aligned'
-}
 
 module identity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0' = {
   name: managedIdentityName
   params: {
     name: managedIdentityName
     location: location
-    tags: tags
   }
 }
 
@@ -35,7 +30,6 @@ module identity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0
 resource vnet 'Microsoft.Network/virtualNetworks@2023-11-01' = {
   name: virtualNetworkName
   location: location
-  tags: tags
   properties: {
     addressSpace: {
       addressPrefixes: [cidrSubnet(ipRange, 16, 0)]
@@ -73,7 +67,6 @@ module dnsZoneContainerRegistry 'br/public:avm/res/network/private-dns-zone:0.7.
   name: '${uniqueString(deployment().name, location)}-dnsZone-ACR'
   params: {
     name: 'privatelink.azurecr.io'
-    tags: tags
     virtualNetworkLinks: [
       {
         name: '${vnet.name}-ContainerRegistry-link'
@@ -89,7 +82,6 @@ module storage 'br/public:avm/res/storage/storage-account:0.19.0' = {
   params: {
     name: storageAccountName
     location: location
-    tags: tags
     kind: 'StorageV2'
     skuName: 'Standard_LRS'
     accessTier: 'Hot'
@@ -119,7 +111,6 @@ module storage 'br/public:avm/res/storage/storage-account:0.19.0' = {
 resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
   name: keyVaultName
   location: location
-  tags: tags
   properties: {
     sku: {
       family: 'A'
@@ -165,7 +156,6 @@ module acr 'br/public:avm/res/container-registry/registry:0.9.1' = {
   params: {
     name: acrName
     location: location
-    tags: tags
     acrSku: 'Premium'
     acrAdminUserEnabled: false
     // roleAssisgnments are done in the main module

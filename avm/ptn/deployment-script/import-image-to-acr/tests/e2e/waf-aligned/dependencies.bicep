@@ -7,17 +7,11 @@ param managedIdentityName string
 @description('Required. The name of the Azure Container Registry.')
 param acrName string
 
-var tags = {
-  module: 'ptn/deployment-script/import-image-to-acr'
-  test: 'waf-aligned'
-}
-
 module identity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0' = {
   name: managedIdentityName
   params: {
     name: managedIdentityName
     location: location
-    tags: tags
   }
 }
 
@@ -27,7 +21,6 @@ module acr 'br/public:avm/res/container-registry/registry:0.9.1' = {
   params: {
     name: acrName
     location: location
-    tags: tags
     acrSku: 'Premium'
     acrAdminUserEnabled: false
     roleAssignments: [
