@@ -11,7 +11,7 @@ metadata description = 'This instance deploys the module with the maximum set of
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'alzemptymax'
+param serviceShort string = 'alzempmax'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
@@ -236,7 +236,7 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       createOrUpdateManagementGroup: true
-      managementGroupName: 'mg-${namePrefix}-test-${serviceShort}-max'
+      managementGroupName: 'mg-${namePrefix}-test-${serviceShort}'
       managementGroupDisplayName: 'AVM ALZ PTN Empty Max Test'
       managementGroupRoleAssignments: managementGroupRoleAssignments
       managementGroupCustomRoleDefinitions: unionedCustomRbacRoleDefs
