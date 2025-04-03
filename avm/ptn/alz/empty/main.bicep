@@ -15,7 +15,7 @@ param location string = deployment().location
 param waitForConsistencyCounterBeforeCustomRoleDefinitions int = 5
 
 @description('Optional. An integer that specifies the number of blank ARM deployments prior to the role assignments are deployed. This electively introduces a wait timer to allow ARM eventual consistency to become consistent and helps avoids "Not Found" error messages.')
-param waitForConsistencyCounterBeforeRoleAssignments int = 0
+param waitForConsistencyCounterBeforeRoleAssignments int = 5
 
 @description('Optional. An integer that specifies the number of blank ARM deployments prior to the custom policy definitions are deployed. This electively introduces a wait timer to allow ARM eventual consistency to become consistent and helps avoids "Not Found" error messages.')
 param waitForConsistencyCounterBeforeCustomPolicyDefinitions int = 5
@@ -24,10 +24,10 @@ param waitForConsistencyCounterBeforeCustomPolicyDefinitions int = 5
 param waitForConsistencyCounterBeforeCustomPolicySetDefinitions int = 5
 
 @description('Optional. An integer that specifies the number of blank ARM deployments prior to the policy assignments are deployed. This electively introduces a wait timer to allow ARM eventual consistency to become consistent and helps avoids "Not Found" error messages.')
-param waitForConsistencyCounterBeforePolicyAssignments int = 0
+param waitForConsistencyCounterBeforePolicyAssignments int = 15
 
 @description('Optional. An integer that specifies the number of blank ARM deployments prior to the subscription management group associations are deployed. This electively introduces a wait timer to allow ARM eventual consistency to become consistent and helps avoids "Not Found" error messages.')
-param waitForConsistencyCounterBeforeSubPlacement int = 0
+param waitForConsistencyCounterBeforeSubPlacement int = 5
 
 @description('Optional. Boolean to create or update the management group. If set to false, the module will only check if the management group exists and do a GET on it before it continues to deploy resources to it.')
 param createOrUpdateManagementGroup bool = true

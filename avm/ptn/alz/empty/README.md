@@ -1012,7 +1012,7 @@ An integer that specifies the number of blank ARM deployments prior to the polic
 
 - Required: No
 - Type: int
-- Default: `0`
+- Default: `15`
 
 ### Parameter: `waitForConsistencyCounterBeforeRoleAssignments`
 
@@ -1020,7 +1020,7 @@ An integer that specifies the number of blank ARM deployments prior to the role 
 
 - Required: No
 - Type: int
-- Default: `0`
+- Default: `5`
 
 ### Parameter: `waitForConsistencyCounterBeforeSubPlacement`
 
@@ -1028,7 +1028,7 @@ An integer that specifies the number of blank ARM deployments prior to the subsc
 
 - Required: No
 - Type: int
-- Default: `0`
+- Default: `5`
 
 ## Outputs
 
