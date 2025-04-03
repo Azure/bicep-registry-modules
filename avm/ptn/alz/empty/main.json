@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "3392865989006100276"
+      "templateHash": "9377935714402678341"
     },
     "name": "avm/ptn/alz/empty",
     "description": "Azure Landing Zones - Bicep - Empty"
@@ -234,7 +234,7 @@
           },
           "nullable": true,
           "metadata": {
-            "description": "Optional. The list of values to filter in"
+            "description": "Optional. The list of values to filter in."
           }
         },
         "notIn": {
@@ -244,7 +244,7 @@
           },
           "nullable": true,
           "metadata": {
-            "description": "Optional. The list of values to filter out"
+            "description": "Optional. The list of values to filter out."
           }
         },
         "kind": {
@@ -665,6 +665,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2023-07-01",
       "name": "[format('46d3xbcp.ptn.alz-empty.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "location": "[parameters('location')]",
       "properties": {
         "mode": "Incremental",
         "template": {

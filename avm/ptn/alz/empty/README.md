@@ -47,7 +47,7 @@ This instance deploys the module with the minimum set of required parameters.
 module empty 'br/public:avm/ptn/alz/empty:<version>' = {
   name: 'emptyDeployment'
   params: {
-    managementGroupName: 'mg-test-alzemptymin-default'
+    managementGroupName: 'mg-test-alzempmin'
   }
 }
 ```
@@ -65,7 +65,7 @@ module empty 'br/public:avm/ptn/alz/empty:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     "managementGroupName": {
-      "value": "mg-test-alzemptymin-default"
+      "value": "mg-test-alzempmin"
     }
   }
 }
@@ -81,7 +81,7 @@ module empty 'br/public:avm/ptn/alz/empty:<version>' = {
 ```bicep-params
 using 'br/public:avm/ptn/alz/empty:<version>'
 
-param managementGroupName = 'mg-test-alzemptymin-default'
+param managementGroupName = 'mg-test-alzempmin'
 ```
 
 </details>
@@ -101,7 +101,7 @@ module empty 'br/public:avm/ptn/alz/empty:<version>' = {
   name: 'emptyDeployment'
   params: {
     // Required parameters
-    managementGroupName: 'mg-test-alzemptymax-max'
+    managementGroupName: 'mg-test-alzempmax'
     // Non-required parameters
     createOrUpdateManagementGroup: true
     managementGroupCustomPolicyDefinitions: '<managementGroupCustomPolicyDefinitions>'
@@ -156,7 +156,7 @@ module empty 'br/public:avm/ptn/alz/empty:<version>' = {
             value: 'costCenter'
           }
         }
-        policyDefinitionId: '/providers/Microsoft.Management/managementGroups/mg-test-alzemptymax-max/providers/Microsoft.Authorization/policySetDefinitions/custom-tags-policy-set-definition-1'
+        policyDefinitionId: '/providers/Microsoft.Management/managementGroups/mg-test-alzempmax-max/providers/Microsoft.Authorization/policySetDefinitions/custom-tags-policy-set-definition-1'
       }
     ]
     managementGroupRoleAssignments: '<managementGroupRoleAssignments>'
@@ -178,7 +178,7 @@ module empty 'br/public:avm/ptn/alz/empty:<version>' = {
   "parameters": {
     // Required parameters
     "managementGroupName": {
-      "value": "mg-test-alzemptymax-max"
+      "value": "mg-test-alzempmax"
     },
     // Non-required parameters
     "createOrUpdateManagementGroup": {
@@ -245,7 +245,7 @@ module empty 'br/public:avm/ptn/alz/empty:<version>' = {
               "value": "costCenter"
             }
           },
-          "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/mg-test-alzemptymax-max/providers/Microsoft.Authorization/policySetDefinitions/custom-tags-policy-set-definition-1"
+          "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/mg-test-alzempmax-max/providers/Microsoft.Authorization/policySetDefinitions/custom-tags-policy-set-definition-1"
         }
       ]
     },
@@ -267,7 +267,7 @@ module empty 'br/public:avm/ptn/alz/empty:<version>' = {
 using 'br/public:avm/ptn/alz/empty:<version>'
 
 // Required parameters
-param managementGroupName = 'mg-test-alzemptymax-max'
+param managementGroupName = 'mg-test-alzempmax'
 // Non-required parameters
 param createOrUpdateManagementGroup = true
 param managementGroupCustomPolicyDefinitions = '<managementGroupCustomPolicyDefinitions>'
@@ -322,7 +322,7 @@ param managementGroupPolicyAssignments = [
         value: 'costCenter'
       }
     }
-    policyDefinitionId: '/providers/Microsoft.Management/managementGroups/mg-test-alzemptymax-max/providers/Microsoft.Authorization/policySetDefinitions/custom-tags-policy-set-definition-1'
+    policyDefinitionId: '/providers/Microsoft.Management/managementGroups/mg-test-alzempmax-max/providers/Microsoft.Authorization/policySetDefinitions/custom-tags-policy-set-definition-1'
   }
 ]
 param managementGroupRoleAssignments = '<managementGroupRoleAssignments>'
@@ -761,8 +761,8 @@ The selector type.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`in`](#parameter-managementgrouppolicyassignmentsoverridesselectorsin) | array | The list of values to filter in |
-| [`notIn`](#parameter-managementgrouppolicyassignmentsoverridesselectorsnotin) | array | The list of values to filter out |
+| [`in`](#parameter-managementgrouppolicyassignmentsoverridesselectorsin) | array | The list of values to filter in. |
+| [`notIn`](#parameter-managementgrouppolicyassignmentsoverridesselectorsnotin) | array | The list of values to filter out. |
 
 ### Parameter: `managementGroupPolicyAssignments.overrides.selectors.kind`
 
@@ -782,14 +782,14 @@ The selector kind.
 
 ### Parameter: `managementGroupPolicyAssignments.overrides.selectors.in`
 
-The list of values to filter in
+The list of values to filter in.
 
 - Required: No
 - Type: array
 
 ### Parameter: `managementGroupPolicyAssignments.overrides.selectors.notIn`
 
-The list of values to filter out
+The list of values to filter out.
 
 - Required: No
 - Type: array
@@ -825,8 +825,8 @@ The resource selector list to filter policies by resource properties. Facilitate
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`in`](#parameter-managementgrouppolicyassignmentsresourceselectorsin) | array | The list of values to filter in |
-| [`notIn`](#parameter-managementgrouppolicyassignmentsresourceselectorsnotin) | array | The list of values to filter out |
+| [`in`](#parameter-managementgrouppolicyassignmentsresourceselectorsin) | array | The list of values to filter in. |
+| [`notIn`](#parameter-managementgrouppolicyassignmentsresourceselectorsnotin) | array | The list of values to filter out. |
 
 ### Parameter: `managementGroupPolicyAssignments.resourceSelectors.kind`
 
@@ -846,14 +846,14 @@ The selector kind.
 
 ### Parameter: `managementGroupPolicyAssignments.resourceSelectors.in`
 
-The list of values to filter in
+The list of values to filter in.
 
 - Required: No
 - Type: array
 
 ### Parameter: `managementGroupPolicyAssignments.resourceSelectors.notIn`
 
-The list of values to filter out
+The list of values to filter out.
 
 - Required: No
 - Type: array

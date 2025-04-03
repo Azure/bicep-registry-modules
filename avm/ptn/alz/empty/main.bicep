@@ -442,10 +442,10 @@ type policyAssignmentType = {
 }
 
 type policyAssignmentSelectorType = {
-  @description('Optional. The list of values to filter in')
+  @description('Optional. The list of values to filter in.')
   in: string[]?
 
-  @description('Optional. The list of values to filter out')
+  @description('Optional. The list of values to filter out.')
   notIn: string[]?
 
   @description('Required. The selector kind.')
