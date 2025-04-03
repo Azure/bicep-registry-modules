@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "17693528873371180336"
+      "version": "0.34.44.8038",
+      "templateHash": "9077539838544402103"
     },
     "name": "import-image-to-acr",
     "description": "This modules deployes an image to an Azure Container Registry."
@@ -237,7 +237,7 @@
       "condition": "[parameters('assignRbacRole')]",
       "existing": true,
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
-      "apiVersion": "2023-01-31",
+      "apiVersion": "2024-11-30",
       "subscriptionId": "[split(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray())[copyIndex()], '/')[2]]",
       "resourceGroup": "[split(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray())[copyIndex()], '/')[4]]",
       "name": "[last(split(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray())[copyIndex()], '/'))]"
@@ -245,7 +245,7 @@
     "newManagedIdentity": {
       "condition": "[and(not(variables('useExistingManagedIdentity')), parameters('assignRbacRole'))]",
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
-      "apiVersion": "2023-01-31",
+      "apiVersion": "2024-11-30",
       "name": "[coalesce(parameters('managedIdentityName'), 'id-ContainerRegistryImport')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]"
@@ -314,7 +314,7 @@
             "value": "[parameters('runOnce')]"
           },
           "azCliVersion": {
-            "value": "2.63.0"
+            "value": "2.69.0"
           },
           "timeout": {
             "value": "PT30M"
@@ -385,8 +385,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "16722602669876377866"
+              "version": "0.32.4.45862",
+              "templateHash": "8965217851411422458"
             },
             "name": "Deployment Scripts",
             "description": "This module deploys Deployment Scripts.",
@@ -768,7 +768,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.resources-deploymentscript.{0}.{1}', replace('0.5.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.resources-deploymentscript.{0}.{1}', replace('0.5.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -806,10 +806,7 @@
                 "forceUpdateTag": "[if(parameters('runOnce'), resourceGroup().name, parameters('baseTime'))]",
                 "retentionInterval": "[parameters('retentionInterval')]",
                 "timeout": "[parameters('timeout')]"
-              },
-              "dependsOn": [
-                "storageAccount"
-              ]
+              }
             },
             "deploymentScript_lock": {
               "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
