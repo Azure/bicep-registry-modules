@@ -176,6 +176,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     infrastructureSubnetId: '<infrastructureSubnetId>'
     internal: true
     logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
+    logsDestination: 'log-analytics'
     platformReservedCidr: '172.17.17.0/24'
     platformReservedDnsIP: '172.17.17.17'
     workloadProfiles: [
@@ -222,6 +223,9 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     "logAnalyticsWorkspaceResourceId": {
       "value": "<logAnalyticsWorkspaceResourceId>"
     },
+    "logsDestination": {
+      "value": "log-analytics"
+    },
     "platformReservedCidr": {
       "value": "172.17.17.0/24"
     },
@@ -260,6 +264,7 @@ param infrastructureResourceGroupName = '<infrastructureResourceGroupName>'
 param infrastructureSubnetId = '<infrastructureSubnetId>'
 param internal = true
 param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
+param logsDestination = 'log-analytics'
 param platformReservedCidr = '172.17.17.0/24'
 param platformReservedDnsIP = '172.17.17.17'
 param workloadProfiles = [
@@ -759,6 +764,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     infrastructureSubnetId: '<infrastructureSubnetId>'
     location: '<location>'
     logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
+    logsDestination: 'log-analytics'
     platformReservedCidr: '172.17.17.0/24'
     platformReservedDnsIP: '172.17.17.17'
     publicNetworkAccess: 'Enabled'
@@ -806,6 +812,9 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     "logAnalyticsWorkspaceResourceId": {
       "value": "<logAnalyticsWorkspaceResourceId>"
     },
+    "logsDestination": {
+      "value": "log-analytics"
+    },
     "platformReservedCidr": {
       "value": "172.17.17.0/24"
     },
@@ -847,6 +856,7 @@ param infrastructureResourceGroupName = '<infrastructureResourceGroupName>'
 param infrastructureSubnetId = '<infrastructureSubnetId>'
 param location = '<location>'
 param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
+param logsDestination = 'log-analytics'
 param platformReservedCidr = '172.17.17.0/24'
 param platformReservedDnsIP = '172.17.17.17'
 param publicNetworkAccess = 'Enabled'
