@@ -149,6 +149,7 @@ var deploymentNames = {
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
   name: '46d3xbcp.ptn.alz-empty.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  location: location
   properties: {
     mode: 'Incremental'
     template: {
@@ -240,8 +241,6 @@ module mgCustomPolicySetDefinitions 'modules/policy-set-definitions/main.bicep' 
 }
 
 // Policy Assignments Created on Management Group (Optional)
-// ***** Add support for versioning and assignment type *****
-
 @batchSize(1)
 module mgPolicyAssignmentsWait 'modules/wait/main.bicep' = [
   for (item, index) in range(0, waitForConsistencyCounterBeforePolicyAssignments): if (waitForConsistencyCounterBeforePolicyAssignments > 0) {
