@@ -24,9 +24,10 @@ param roleAssignments roleAssignmentType[]?
 @allowed([
   'log-analytics'
   'azure-monitor'
+  ''
 ])
 @description('Optional. Logs destination.')
-param logsDestination string = 'log-analytics'
+param logsDestination string = ''
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -101,7 +102,7 @@ param infrastructureResourceGroupName string = take('ME_${name}', 63)
 @description('Optional. The list of storages to mount on the environment.')
 param storages storageType[]?
 
-var appLogsConfiguration = !empty(logAnalyticsWorkspaceResourceId)
+var appLogsConfiguration = !empty(logsDestination)
   ? {
       destination: logsDestination
       logAnalyticsConfiguration: !empty(logAnalyticsWorkspaceResourceId)
