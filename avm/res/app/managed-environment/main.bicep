@@ -21,6 +21,10 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
+@allowed([
+  'log-analytics'
+  'azure-monitor'
+])
 @description('Optional. Logs destination.')
 param logsDestination string = 'log-analytics'
 
@@ -97,6 +101,18 @@ param infrastructureResourceGroupName string = take('ME_${name}', 63)
 @description('Optional. The list of storages to mount on the environment.')
 param storages storageType[]?
 
+var appLogsConfiguration = !empty(logAnalyticsWorkspaceResourceId)
+  ? {
+      destination: logsDestination
+      logAnalyticsConfiguration: !empty(logAnalyticsWorkspaceResourceId)
+        ? {
+            customerId: logAnalyticsWorkspace.properties.customerId
+            sharedKey: logAnalyticsWorkspace.listKeys().primarySharedKey
+          }
+        : null
+    }
+  : null
+
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
@@ -170,15 +186,7 @@ resource managedEnvironment 'Microsoft.App/managedEnvironments@2024-10-02-previe
     appInsightsConfiguration: {
       connectionString: appInsightsConnectionString
     }
-    appLogsConfiguration: {
-      destination: logsDestination
-      logAnalyticsConfiguration: !empty(logAnalyticsWorkspaceResourceId)
-        ? {
-            customerId: logAnalyticsWorkspace.properties.customerId
-            sharedKey: logAnalyticsWorkspace.listKeys().primarySharedKey
-          }
-        : null
-    }
+    appLogsConfiguration: appLogsConfiguration
     daprAIConnectionString: daprAIConnectionString
     daprAIInstrumentationKey: daprAIInstrumentationKey
     customDomainConfiguration: {

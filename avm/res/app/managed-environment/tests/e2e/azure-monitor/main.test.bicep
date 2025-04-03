@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
 metadata name = 'No App Logging'
-metadata description = 'This instance deploys the module with app logging disabled.'
+metadata description = 'This instance deploys the module to use Azure Monitor for logging.'
 
 // ========== //
 // Parameters //
@@ -14,7 +14,7 @@ param resourceGroupName string = 'dep-${namePrefix}-app.managedenvironments-${se
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'amenlog'
+param serviceShort string = 'ameamon'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -50,6 +50,7 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
+      logsDestination: 'azure-monitor'
       workloadProfiles: [
         {
           workloadProfileType: 'D4'
