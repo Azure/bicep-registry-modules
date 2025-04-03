@@ -24,7 +24,7 @@ param waitForConsistencyCounterBeforeCustomPolicyDefinitions int = 5
 param waitForConsistencyCounterBeforeCustomPolicySetDefinitions int = 5
 
 @description('Optional. An integer that specifies the number of blank ARM deployments prior to the policy assignments are deployed. This electively introduces a wait timer to allow ARM eventual consistency to become consistent and helps avoids "Not Found" error messages.')
-param waitForConsistencyCounterBeforePolicyAssignments int = 15
+param waitForConsistencyCounterBeforePolicyAssignments int = 30
 
 @description('Optional. An integer that specifies the number of blank ARM deployments prior to the subscription management group associations are deployed. This electively introduces a wait timer to allow ARM eventual consistency to become consistent and helps avoids "Not Found" error messages.')
 param waitForConsistencyCounterBeforeSubPlacement int = 5

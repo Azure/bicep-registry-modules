@@ -1012,7 +1012,7 @@ An integer that specifies the number of blank ARM deployments prior to the polic
 
 - Required: No
 - Type: int
-- Default: `15`
+- Default: `30`
 
 ### Parameter: `waitForConsistencyCounterBeforeRoleAssignments`
 
