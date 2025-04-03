@@ -1027,7 +1027,6 @@ The Kusto Cluster's accepted audiences.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 **Required parameters**
 
@@ -1048,7 +1047,6 @@ List of allowed fully-qulified domain names (FQDNs) for egress from the Kusto Cl
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `allowedIpRangeList`
 
@@ -1056,7 +1054,6 @@ List of IP addresses in CIDR format allowed to connect to the Kusto Cluster.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `autoScaleMax`
 
@@ -1496,7 +1493,6 @@ List of the language extensions of the Kusto Cluster.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 **Required parameters**
 
@@ -1710,7 +1706,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 | [`name`](#parameter-privateendpointsname) | string | The name of the private endpoint. |
 | [`privateDnsZoneGroup`](#parameter-privateendpointsprivatednszonegroup) | object | The private DNS zone group to configure for the private endpoint. |
 | [`privateLinkServiceConnectionName`](#parameter-privateendpointsprivatelinkserviceconnectionname) | string | The name of the private link connection to create. |
-| [`resourceGroupName`](#parameter-privateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different resource group than the main resource. |
+| [`resourceGroupResourceId`](#parameter-privateendpointsresourcegroupresourceid) | string | The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-privateendpointstags) | object | Tags to be applied on all resources/resource groups in this deployment. |
 
@@ -1969,9 +1965,9 @@ The name of the private link connection to create.
 - Required: No
 - Type: string
 
-### Parameter: `privateEndpoints.resourceGroupName`
+### Parameter: `privateEndpoints.resourceGroupResourceId`
 
-Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.
+The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used.
 
 - Required: No
 - Type: string
@@ -1992,7 +1988,7 @@ Array of role assignments to create.
   - `'Owner'`
   - `'Private DNS Zone Contributor'`
   - `'Reader'`
-  - `'Role Based Access Control Administrator (Preview)'`
+  - `'Role Based Access Control Administrator'`
 
 **Required parameters**
 
@@ -2236,7 +2232,6 @@ The external tenants trusted by the Kusto Cluster.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 **Required parameters**
 
@@ -2301,7 +2296,7 @@ The resource ID of the subnet to which to deploy the Kusto Cluster.
 | `databases` | array | The databases of the kusto cluster. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the kusto cluster. |
-| `privateEndpoints` | array | The private endpoints of the kusto cluster. |
+| `privateEndpoints` | array | The private endpoints of the resource. |
 | `resourceGroupName` | string | The resource group the kusto cluster was deployed into. |
 | `resourceId` | string | The resource id of the kusto cluster. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
@@ -2312,8 +2307,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.7.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.10.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 
