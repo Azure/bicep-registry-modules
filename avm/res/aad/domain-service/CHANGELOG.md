@@ -20,16 +20,6 @@
 
 - none
 
-## 0.2.2
-
-### Changes
-
-- version does not exist
-
-### Breaking Changes
-
-- none
-
 ## 0.2.1
 
 ### Changes
