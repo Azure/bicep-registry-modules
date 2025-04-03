@@ -14,7 +14,7 @@ param source string
 param topicType string
 
 @description('Optional. Event subscriptions to deploy.')
-param eventSubscriptions array = []
+param eventSubscriptions array?
 
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The diagnostic settings of the service.')
@@ -129,28 +129,20 @@ resource systemTopic 'Microsoft.EventGrid/systemTopics@2023-12-15-preview' = {
 
 // Event subscriptions
 module systemTopics_eventSubscriptions 'event-subscription/main.bicep' = [
-  for (eventSubscription, index) in eventSubscriptions: {
-    name: '${uniqueString(deployment().name, location)}-EventGrid-SystemTopics-EventSubscriptions-${index}'
+  for (eventSubscription, index) in eventSubscriptions ?? []: {
+    name: '${uniqueString(deployment().name, location)}-EventGrid-SysTopics-EventSubs-${index}'
     params: {
       destination: eventSubscription.destination
       systemTopicName: systemTopic.name
       name: eventSubscription.name
-      deadLetterDestination: contains(eventSubscription, 'deadLetterDestination')
-        ? eventSubscription.deadLetterDestination
-        : {}
-      deadLetterWithResourceIdentity: contains(eventSubscription, 'deadLetterWithResourceIdentity')
-        ? eventSubscription.deadLetterWithResourceIdentity
-        : {}
-      deliveryWithResourceIdentity: contains(eventSubscription, 'deliveryWithResourceIdentity')
-        ? eventSubscription.deliveryWithResourceIdentity
-        : {}
-      eventDeliverySchema: contains(eventSubscription, 'eventDeliverySchema')
-        ? eventSubscription.eventDeliverySchema
-        : 'EventGridSchema'
-      expirationTimeUtc: contains(eventSubscription, 'expirationTimeUtc') ? eventSubscription.expirationTimeUtc : ''
-      filter: contains(eventSubscription, 'filter') ? eventSubscription.filter : {}
-      labels: contains(eventSubscription, 'labels') ? eventSubscription.labels : []
-      retryPolicy: contains(eventSubscription, 'retryPolicy') ? eventSubscription.retryPolicy : {}
+      deadLetterDestination: eventSubscription.?deadLetterDestination
+      deadLetterWithResourceIdentity: eventSubscription.?deadLetterWithResourceIdentity
+      deliveryWithResourceIdentity: eventSubscription.?deliveryWithResourceIdentity
+      eventDeliverySchema: eventSubscription.?eventDeliverySchema
+      expirationTimeUtc: eventSubscription.?expirationTimeUtc
+      filter: eventSubscription.?filter
+      labels: eventSubscription.?labels
+      retryPolicy: eventSubscription.?retryPolicy
     }
   }
 ]
