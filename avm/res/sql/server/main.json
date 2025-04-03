@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "15781736031753199939"
+      "templateHash": "8719459318215661010"
     },
     "name": "Azure SQL Servers",
     "description": "This module deploys an Azure SQL Server."
@@ -1124,6 +1124,50 @@
         }
       }
     },
+    "customerManagedKeyWithAutoRotateType": {
+      "type": "object",
+      "properties": {
+        "keyVaultResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of a key vault to reference a customer managed key for encryption from."
+          }
+        },
+        "keyName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the customer managed key to use for encryption."
+          }
+        },
+        "keyVersion": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationEnabled' setting."
+          }
+        },
+        "autoRotationEnabled": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enable or disable auto-rotating to the latest key version. Default is `true`. If set to `false`, the latest key version at the time of the deployment is used."
+          }
+        },
+        "userAssignedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a customer-managed key. To be used if the resource type supports auto-rotation of the customer-managed key.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    },
     "databaseSkuType": {
       "type": "object",
       "properties": {
@@ -1973,6 +2017,13 @@
         "description": "Optional. The keys to configure."
       }
     },
+    "customerManagedKey": {
+      "$ref": "#/definitions/customerManagedKeyWithAutoRotateType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The customer managed key definition for server TDE."
+      }
+    },
     "administrators": {
       "$ref": "#/definitions/serverExternalAdministratorType",
       "nullable": true,
@@ -1987,13 +2038,6 @@
       "maxLength": 36,
       "metadata": {
         "description": "Optional. The Client id used for cross tenant CMK scenario."
-      }
-    },
-    "keyId": {
-      "type": "string",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. A CMK URI of the key to use for encryption."
       }
     },
     "minimalTlsVersion": {
@@ -2053,13 +2097,6 @@
       ],
       "metadata": {
         "description": "Optional. Whether or not to restrict outbound network access for this server."
-      }
-    },
-    "encryptionProtectorObj": {
-      "$ref": "#/definitions/encryptionProtectorType",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. The encryption protection configuration."
       }
     },
     "vulnerabilityAssessmentsObj": {
@@ -2123,6 +2160,24 @@
     }
   },
   "resources": {
+    "cMKKeyVault::cMKKey": {
+      "condition": "[and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKey'), 'keyName')))))]",
+      "existing": true,
+      "type": "Microsoft.KeyVault/vaults/keys",
+      "apiVersion": "2023-07-01",
+      "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
+      "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'))]"
+    },
+    "cMKKeyVault": {
+      "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))]",
+      "existing": true,
+      "type": "Microsoft.KeyVault/vaults",
+      "apiVersion": "2023-07-01",
+      "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
+      "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
+    },
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
@@ -2156,13 +2211,16 @@
         "administrators": "[union(createObject('administratorType', 'ActiveDirectory'), coalesce(parameters('administrators'), createObject()))]",
         "federatedClientId": "[parameters('federatedClientId')]",
         "isIPv6Enabled": "[parameters('isIPv6Enabled')]",
-        "keyId": "[parameters('keyId')]",
+        "keyId": "[if(not(equals(parameters('customerManagedKey'), null())), if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, tryGet(parameters('customerManagedKey'), 'keyVersion')), if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), reference('cMKKeyVault::cMKKey').keyUri, reference('cMKKeyVault::cMKKey').keyUriWithVersion)), null())]",
         "version": "12.0",
         "minimalTlsVersion": "[parameters('minimalTlsVersion')]",
         "primaryUserAssignedIdentityId": "[if(not(empty(parameters('primaryUserAssignedIdentityId'))), parameters('primaryUserAssignedIdentityId'), null())]",
         "publicNetworkAccess": "[if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(and(and(not(empty(parameters('privateEndpoints'))), empty(parameters('firewallRules'))), empty(parameters('virtualNetworkRules'))), 'Disabled', null()))]",
         "restrictOutboundNetworkAccess": "[if(not(empty(parameters('restrictOutboundNetworkAccess'))), parameters('restrictOutboundNetworkAccess'), null())]"
-      }
+      },
+      "dependsOn": [
+        "cMKKeyVault::cMKKey"
+      ]
     },
     "server_lock": {
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
@@ -2345,8 +2403,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "15990296903519132880"
+              "version": "0.33.93.31351",
+              "templateHash": "16881410177731489630"
             },
             "name": "SQL Server Database",
             "description": "This module deploys an Azure SQL Server Database."
@@ -3057,8 +3115,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "9756378998309991315"
+                      "version": "0.33.93.31351",
+                      "templateHash": "8340051145755870485"
                     },
                     "name": "Azure SQL Server Database Short Term Backup Retention Policies",
                     "description": "This module deploys an Azure SQL Server Database Short-Term Backup Retention Policy."
@@ -3174,8 +3232,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "7793476949981656377"
+                      "version": "0.33.93.31351",
+                      "templateHash": "3863560552324183850"
                     },
                     "name": "SQL Server Database Long Term Backup Retention Policies",
                     "description": "This module deploys an Azure SQL Server Database Long-Term Backup Retention Policy."
@@ -3401,8 +3459,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "13169370796754277035"
+              "version": "0.33.93.31351",
+              "templateHash": "17349112224241666638"
             },
             "name": "SQL Server Elastic Pool",
             "description": "This module deploys an Azure SQL Server Elastic Pool."
@@ -4475,8 +4533,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "5038261177858434729"
+              "version": "0.33.93.31351",
+              "templateHash": "1944178906791741244"
             },
             "name": "Azure SQL Server Firewall Rule",
             "description": "This module deploys an Azure SQL Server Firewall Rule."
@@ -4582,8 +4640,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "5181261702127555829"
+              "version": "0.33.93.31351",
+              "templateHash": "17146907795911099724"
             },
             "name": "Azure SQL Server Virtual Network Rules",
             "description": "This module deploys an Azure SQL Server Virtual Network Rule."
@@ -4704,8 +4762,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "14971385092253198970"
+              "version": "0.33.93.31351",
+              "templateHash": "8937041272173907173"
             },
             "name": "Azure SQL Server Security Alert Policies",
             "description": "This module deploys an Azure SQL Server Security Alert Policy."
@@ -4879,8 +4937,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "13028930090028114053"
+              "version": "0.33.93.31351",
+              "templateHash": "7783878739561489902"
             },
             "name": "Azure SQL Server Vulnerability Assessments",
             "description": "This module deploys an Azure SQL Server Vulnerability Assessment."
@@ -5006,8 +5064,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "8374589607291714415"
+                      "version": "0.33.93.31351",
+                      "templateHash": "8921652227508160151"
                     }
                   },
                   "parameters": {
@@ -5102,8 +5160,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "10362246469517057380"
+              "version": "0.33.93.31351",
+              "templateHash": "16484015504682658620"
             },
             "name": "Azure SQL Server Keys",
             "description": "This module deploys an Azure SQL Server Key."
@@ -5191,8 +5249,127 @@
         "server"
       ]
     },
+    "cmk_key": {
+      "condition": "[not(equals(parameters('customerManagedKey'), null()))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-Sql-Key', uniqueString(deployment().name, parameters('location')))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "serverName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[format('{0}_{1}_{2}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'), tryGet(parameters('customerManagedKey'), 'keyVersion'))]"
+          },
+          "serverKeyType": {
+            "value": "AzureKeyVault"
+          },
+          "uri": "[if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), createObject('value', format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, tryGet(parameters('customerManagedKey'), 'keyVersion'))), if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), createObject('value', reference('cMKKeyVault::cMKKey').keyUri), createObject('value', reference('cMKKeyVault::cMKKey').keyUriWithVersion)))]"
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.33.93.31351",
+              "templateHash": "16484015504682658620"
+            },
+            "name": "Azure SQL Server Keys",
+            "description": "This module deploys an Azure SQL Server Key."
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The name of the key. Must follow the [<keyVaultName>_<keyName>_<keyVersion>] pattern."
+              }
+            },
+            "serverName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent SQL server. Required if the template is used in a standalone deployment."
+              }
+            },
+            "serverKeyType": {
+              "type": "string",
+              "defaultValue": "ServiceManaged",
+              "allowedValues": [
+                "AzureKeyVault",
+                "ServiceManaged"
+              ],
+              "metadata": {
+                "description": "Optional. The server key type."
+              }
+            },
+            "uri": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. The URI of the server key. If the ServerKeyType is AzureKeyVault, then the URI is required. The AKV URI is required to be in this format: 'https://YourVaultName.azure.net/keys/YourKeyName/YourKeyVersion'."
+              }
+            }
+          },
+          "variables": {
+            "splittedKeyUri": "[split(parameters('uri'), '/')]",
+            "serverKeyName": "[if(empty(parameters('uri')), 'ServiceManaged', format('{0}_{1}_{2}', split(variables('splittedKeyUri')[2], '.')[0], variables('splittedKeyUri')[4], variables('splittedKeyUri')[5]))]"
+          },
+          "resources": {
+            "server": {
+              "existing": true,
+              "type": "Microsoft.Sql/servers",
+              "apiVersion": "2023-08-01-preview",
+              "name": "[parameters('serverName')]"
+            },
+            "key": {
+              "type": "Microsoft.Sql/servers/keys",
+              "apiVersion": "2023-08-01-preview",
+              "name": "[format('{0}/{1}', parameters('serverName'), coalesce(parameters('name'), variables('serverKeyName')))]",
+              "properties": {
+                "serverKeyType": "[parameters('serverKeyType')]",
+                "uri": "[parameters('uri')]"
+              }
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the deployed server key."
+              },
+              "value": "[coalesce(parameters('name'), variables('serverKeyName'))]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the deployed server key."
+              },
+              "value": "[resourceId('Microsoft.Sql/servers/keys', parameters('serverName'), coalesce(parameters('name'), variables('serverKeyName')))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group of the deployed server key."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "cMKKeyVault::cMKKey",
+        "server"
+      ]
+    },
     "server_encryptionProtector": {
-      "condition": "[not(equals(parameters('encryptionProtectorObj'), null()))]",
+      "condition": "[not(equals(parameters('customerManagedKey'), null()))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-Sql-EncryProtector', uniqueString(deployment().name, parameters('location')))]",
@@ -5206,13 +5383,13 @@
             "value": "[parameters('name')]"
           },
           "serverKeyName": {
-            "value": "[parameters('encryptionProtectorObj').serverKeyName]"
+            "value": "[reference('cmk_key').outputs.name.value]"
           },
           "serverKeyType": {
-            "value": "[tryGet(parameters('encryptionProtectorObj'), 'serverKeyType')]"
+            "value": "AzureKeyVault"
           },
           "autoRotationEnabled": {
-            "value": "[tryGet(parameters('encryptionProtectorObj'), 'autoRotationEnabled')]"
+            "value": "[tryGet(parameters('customerManagedKey'), 'autoRotationEnabled')]"
           }
         },
         "template": {
@@ -5221,8 +5398,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "13396787316963181635"
+              "version": "0.33.93.31351",
+              "templateHash": "3546869587910650701"
             },
             "name": "Azure SQL Server Encryption Protector",
             "description": "This module deploys an Azure SQL Server Encryption Protector."
@@ -5297,8 +5474,8 @@
         }
       },
       "dependsOn": [
-        "server",
-        "server_keys"
+        "cmk_key",
+        "server"
       ]
     },
     "server_audit_settings": {
@@ -5353,8 +5530,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "13147629904798099652"
+              "version": "0.33.93.31351",
+              "templateHash": "18193643807269591015"
             },
             "name": "Azure SQL Server Audit Settings",
             "description": "This module deploys an Azure SQL Server Audit Settings."
@@ -5494,8 +5671,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "11188920490207833313"
+                      "version": "0.33.93.31351",
+                      "templateHash": "3456585740193014655"
                     }
                   },
                   "parameters": {
@@ -5582,8 +5759,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "14045530027687796477"
+              "version": "0.33.93.31351",
+              "templateHash": "8063348652715653257"
             }
           },
           "definitions": {

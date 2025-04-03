@@ -46,14 +46,15 @@ The following section provides usage examples for the module, which were used to
 
 - [With an administrator](#example-1-with-an-administrator)
 - [With audit settings](#example-2-with-audit-settings)
-- [Using only defaults](#example-3-using-only-defaults)
-- [Using elastic pool](#example-4-using-elastic-pool)
-- [Using failover groups](#example-5-using-failover-groups)
-- [Deploying with a key vault reference to save secrets](#example-6-deploying-with-a-key-vault-reference-to-save-secrets)
-- [Using large parameter set](#example-7-using-large-parameter-set)
-- [With a secondary database](#example-8-with-a-secondary-database)
-- [With vulnerability assessment](#example-9-with-vulnerability-assessment)
-- [WAF-aligned](#example-10-waf-aligned)
+- [Using Customer-Managed-Keys with User-Assigned identity](#example-3-using-customer-managed-keys-with-user-assigned-identity)
+- [Using only defaults](#example-4-using-only-defaults)
+- [Using elastic pool](#example-5-using-elastic-pool)
+- [Using failover groups](#example-6-using-failover-groups)
+- [Deploying with a key vault reference to save secrets](#example-7-deploying-with-a-key-vault-reference-to-save-secrets)
+- [Using large parameter set](#example-8-using-large-parameter-set)
+- [With a secondary database](#example-9-with-a-secondary-database)
+- [With vulnerability assessment](#example-10-with-vulnerability-assessment)
+- [WAF-aligned](#example-11-waf-aligned)
 
 ### Example 1: _With an administrator_
 
@@ -241,7 +242,134 @@ param managedIdentities = {
 </details>
 <p>
 
-### Example 3: _Using only defaults_
+### Example 3: _Using Customer-Managed-Keys with User-Assigned identity_
+
+This instance deploys the module with Customer-Managed-Keys using a User-Assigned Identity to access the key.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module server 'br/public:avm/res/sql/server:<version>' = {
+  name: 'serverDeployment'
+  params: {
+    // Required parameters
+    name: 'sscmk001'
+    // Non-required parameters
+    administrators: {
+      azureADOnlyAuthentication: true
+      login: 'myspn'
+      principalType: 'Application'
+      sid: '<sid>'
+      tenantId: '<tenantId>'
+    }
+    customerManagedKey: {
+      autoRotationEnabled: true
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      keyVersion: '<keyVersion>'
+    }
+    managedIdentities: {
+      systemAssigned: false
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    primaryUserAssignedIdentityId: '<primaryUserAssignedIdentityId>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "sscmk001"
+    },
+    // Non-required parameters
+    "administrators": {
+      "value": {
+        "azureADOnlyAuthentication": true,
+        "login": "myspn",
+        "principalType": "Application",
+        "sid": "<sid>",
+        "tenantId": "<tenantId>"
+      }
+    },
+    "customerManagedKey": {
+      "value": {
+        "autoRotationEnabled": true,
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "keyVersion": "<keyVersion>"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": false,
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "primaryUserAssignedIdentityId": {
+      "value": "<primaryUserAssignedIdentityId>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/sql/server:<version>'
+
+// Required parameters
+param name = 'sscmk001'
+// Non-required parameters
+param administrators = {
+  azureADOnlyAuthentication: true
+  login: 'myspn'
+  principalType: 'Application'
+  sid: '<sid>'
+  tenantId: '<tenantId>'
+}
+param customerManagedKey = {
+  autoRotationEnabled: true
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  keyVersion: '<keyVersion>'
+}
+param managedIdentities = {
+  systemAssigned: false
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param primaryUserAssignedIdentityId = '<primaryUserAssignedIdentityId>'
+```
+
+</details>
+<p>
+
+### Example 4: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -315,7 +443,7 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 4: _Using elastic pool_
+### Example 5: _Using elastic pool_
 
 This instance deploys the module with an elastic pool.
 
@@ -448,7 +576,7 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 5: _Using failover groups_
+### Example 6: _Using failover groups_
 
 This instance deploys the module with failover groups.
 
@@ -754,7 +882,7 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 6: _Deploying with a key vault reference to save secrets_
+### Example 7: _Deploying with a key vault reference to save secrets_
 
 This instance deploys the module saving all its secrets in a key vault.
 
@@ -865,7 +993,7 @@ param secretsExportConfiguration = {
 </details>
 <p>
 
-### Example 7: _Using large parameter set_
+### Example 8: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -883,6 +1011,12 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     // Non-required parameters
     administratorLogin: 'adminUserName'
     administratorLoginPassword: '<administratorLoginPassword>'
+    customerManagedKey: {
+      autoRotationEnabled: true
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      keyVersion: '<keyVersion>'
+    }
     databases: [
       {
         backupLongTermRetentionPolicy: {
@@ -922,22 +1056,11 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         }
       }
     ]
-    encryptionProtectorObj: {
-      serverKeyName: '<serverKeyName>'
-      serverKeyType: 'AzureKeyVault'
-    }
     firewallRules: [
       {
         endIpAddress: '0.0.0.0'
         name: 'AllowAllWindowsAzureIps'
         startIpAddress: '0.0.0.0'
-      }
-    ]
-    keys: [
-      {
-        name: '<name>'
-        serverKeyType: 'AzureKeyVault'
-        uri: '<uri>'
       }
     ]
     location: '<location>'
@@ -1046,14 +1169,24 @@ module server 'br/public:avm/res/sql/server:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    // Required parameters
     "name": {
       "value": "sqlsmax"
     },
+    // Non-required parameters
     "administratorLogin": {
       "value": "adminUserName"
     },
     "administratorLoginPassword": {
       "value": "<administratorLoginPassword>"
+    },
+    "customerManagedKey": {
+      "value": {
+        "autoRotationEnabled": true,
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "keyVersion": "<keyVersion>"
+      }
     },
     "databases": {
       "value": [
@@ -1098,27 +1231,12 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         }
       ]
     },
-    "encryptionProtectorObj": {
-      "value": {
-        "serverKeyName": "<serverKeyName>",
-        "serverKeyType": "AzureKeyVault"
-      }
-    },
     "firewallRules": {
       "value": [
         {
           "endIpAddress": "0.0.0.0",
           "name": "AllowAllWindowsAzureIps",
           "startIpAddress": "0.0.0.0"
-        }
-      ]
-    },
-    "keys": {
-      "value": [
-        {
-          "name": "<name>",
-          "serverKeyType": "AzureKeyVault",
-          "uri": "<uri>"
         }
       ]
     },
@@ -1253,6 +1371,12 @@ param name = 'sqlsmax'
 // Non-required parameters
 param administratorLogin = 'adminUserName'
 param administratorLoginPassword = '<administratorLoginPassword>'
+param customerManagedKey = {
+  autoRotationEnabled: true
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  keyVersion: '<keyVersion>'
+}
 param databases = [
   {
     backupLongTermRetentionPolicy: {
@@ -1292,22 +1416,11 @@ param elasticPools = [
     }
   }
 ]
-param encryptionProtectorObj = {
-  serverKeyName: '<serverKeyName>'
-  serverKeyType: 'AzureKeyVault'
-}
 param firewallRules = [
   {
     endIpAddress: '0.0.0.0'
     name: 'AllowAllWindowsAzureIps'
     startIpAddress: '0.0.0.0'
-  }
-]
-param keys = [
-  {
-    name: '<name>'
-    serverKeyType: 'AzureKeyVault'
-    uri: '<uri>'
   }
 ]
 param location = '<location>'
@@ -1405,7 +1518,7 @@ param vulnerabilityAssessmentsObj = {
 </details>
 <p>
 
-### Example 8: _With a secondary database_
+### Example 9: _With a secondary database_
 
 This instance deploys the module with a secondary database.
 
@@ -1537,7 +1650,7 @@ param tags = {
 </details>
 <p>
 
-### Example 9: _With vulnerability assessment_
+### Example 10: _With vulnerability assessment_
 
 This instance deploys the module with a vulnerability assessment.
 
@@ -1720,7 +1833,7 @@ param vulnerabilityAssessmentsObj = {
 </details>
 <p>
 
-### Example 10: _WAF-aligned_
+### Example 11: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -1742,6 +1855,12 @@ module server 'br/public:avm/res/sql/server:<version>' = {
       principalType: 'Application'
       sid: '<sid>'
       tenantId: '<tenantId>'
+    }
+    customerManagedKey: {
+      autoRotationEnabled: true
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      keyVersion: '<keyVersion>'
     }
     databases: [
       {
@@ -1781,16 +1900,6 @@ module server 'br/public:avm/res/sql/server:<version>' = {
           name: 'GP_Gen5'
           tier: 'GeneralPurpose'
         }
-      }
-    ]
-    encryptionProtectorObj: {
-      serverKeyName: '<serverKeyName>'
-      serverKeyType: 'AzureKeyVault'
-    }
-    keys: [
-      {
-        serverKeyType: 'AzureKeyVault'
-        uri: '<uri>'
       }
     ]
     location: '<location>'
@@ -1867,9 +1976,11 @@ module server 'br/public:avm/res/sql/server:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    // Required parameters
     "name": {
       "value": "sqlswaf"
     },
+    // Non-required parameters
     "administrators": {
       "value": {
         "azureADOnlyAuthentication": true,
@@ -1877,6 +1988,14 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         "principalType": "Application",
         "sid": "<sid>",
         "tenantId": "<tenantId>"
+      }
+    },
+    "customerManagedKey": {
+      "value": {
+        "autoRotationEnabled": true,
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "keyVersion": "<keyVersion>"
       }
     },
     "databases": {
@@ -1920,20 +2039,6 @@ module server 'br/public:avm/res/sql/server:<version>' = {
             "name": "GP_Gen5",
             "tier": "GeneralPurpose"
           }
-        }
-      ]
-    },
-    "encryptionProtectorObj": {
-      "value": {
-        "serverKeyName": "<serverKeyName>",
-        "serverKeyType": "AzureKeyVault"
-      }
-    },
-    "keys": {
-      "value": [
-        {
-          "serverKeyType": "AzureKeyVault",
-          "uri": "<uri>"
         }
       ]
     },
@@ -2037,6 +2142,12 @@ param administrators = {
   sid: '<sid>'
   tenantId: '<tenantId>'
 }
+param customerManagedKey = {
+  autoRotationEnabled: true
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  keyVersion: '<keyVersion>'
+}
 param databases = [
   {
     backupLongTermRetentionPolicy: {
@@ -2075,16 +2186,6 @@ param elasticPools = [
       name: 'GP_Gen5'
       tier: 'GeneralPurpose'
     }
-  }
-]
-param encryptionProtectorObj = {
-  serverKeyName: '<serverKeyName>'
-  serverKeyType: 'AzureKeyVault'
-}
-param keys = [
-  {
-    serverKeyType: 'AzureKeyVault'
-    uri: '<uri>'
   }
 ]
 param location = '<location>'
@@ -2172,15 +2273,14 @@ param vulnerabilityAssessmentsObj = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`auditSettings`](#parameter-auditsettings) | object | The audit settings configuration. If you want to disable auditing, set the parmaeter to an empty object. |
+| [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition for server TDE. |
 | [`databases`](#parameter-databases) | array | The databases to create in the server. |
 | [`elasticPools`](#parameter-elasticpools) | array | The Elastic Pools to create in the server. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`encryptionProtectorObj`](#parameter-encryptionprotectorobj) | object | The encryption protection configuration. |
 | [`failoverGroups`](#parameter-failovergroups) | array | The failover groups configuration. |
 | [`federatedClientId`](#parameter-federatedclientid) | string | The Client id used for cross tenant CMK scenario. |
 | [`firewallRules`](#parameter-firewallrules) | array | The firewall rules to create in the server. |
 | [`isIPv6Enabled`](#parameter-isipv6enabled) | string | Whether or not to enable IPv6 support for this server. |
-| [`keyId`](#parameter-keyid) | string | A CMK URI of the key to use for encryption. |
 | [`keys`](#parameter-keys) | array | The keys to configure. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -2407,6 +2507,63 @@ Specifies the state of the audit. If state is Enabled, storageEndpoint or isAzur
 ### Parameter: `auditSettings.storageAccountResourceId`
 
 Specifies the identifier key of the auditing storage account.
+
+- Required: No
+- Type: string
+
+### Parameter: `customerManagedKey`
+
+The customer managed key definition for server TDE.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`keyName`](#parameter-customermanagedkeykeyname) | string | The name of the customer managed key to use for encryption. |
+| [`keyVaultResourceId`](#parameter-customermanagedkeykeyvaultresourceid) | string | The resource ID of a key vault to reference a customer managed key for encryption from. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`autoRotationEnabled`](#parameter-customermanagedkeyautorotationenabled) | bool | Enable or disable auto-rotating to the latest key version. Default is `true`. If set to `false`, the latest key version at the time of the deployment is used. |
+| [`keyVersion`](#parameter-customermanagedkeykeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationEnabled' setting. |
+| [`userAssignedIdentityResourceId`](#parameter-customermanagedkeyuserassignedidentityresourceid) | string | User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use. |
+
+### Parameter: `customerManagedKey.keyName`
+
+The name of the customer managed key to use for encryption.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `customerManagedKey.keyVaultResourceId`
+
+The resource ID of a key vault to reference a customer managed key for encryption from.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `customerManagedKey.autoRotationEnabled`
+
+Enable or disable auto-rotating to the latest key version. Default is `true`. If set to `false`, the latest key version at the time of the deployment is used.
+
+- Required: No
+- Type: bool
+
+### Parameter: `customerManagedKey.keyVersion`
+
+The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationEnabled' setting.
+
+- Required: No
+- Type: string
+
+### Parameter: `customerManagedKey.userAssignedIdentityResourceId`
+
+User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.
 
 - Required: No
 - Type: string
@@ -3334,54 +3491,6 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
-### Parameter: `encryptionProtectorObj`
-
-The encryption protection configuration.
-
-- Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`serverKeyName`](#parameter-encryptionprotectorobjserverkeyname) | string | The name of the server key. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`autoRotationEnabled`](#parameter-encryptionprotectorobjautorotationenabled) | bool | Key auto rotation opt-in flag. |
-| [`serverKeyType`](#parameter-encryptionprotectorobjserverkeytype) | string | The encryption protector type. |
-
-### Parameter: `encryptionProtectorObj.serverKeyName`
-
-The name of the server key.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `encryptionProtectorObj.autoRotationEnabled`
-
-Key auto rotation opt-in flag.
-
-- Required: No
-- Type: bool
-
-### Parameter: `encryptionProtectorObj.serverKeyType`
-
-The encryption protector type.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'AzureKeyVault'
-    'ServiceManaged'
-  ]
-  ```
-
 ### Parameter: `failoverGroups`
 
 The failover groups configuration.
@@ -3587,13 +3696,6 @@ Whether or not to enable IPv6 support for this server.
     'Enabled'
   ]
   ```
-
-### Parameter: `keyId`
-
-A CMK URI of the key to use for encryption.
-
-- Required: No
-- Type: string
 
 ### Parameter: `keys`
 

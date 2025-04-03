@@ -32,6 +32,7 @@ output secretsSet secretSetType[] = [
 // =============== //
 
 @export()
+@description('The type for the secret set.')
 type secretSetType = {
   @description('The resourceId of the exported secret.')
   secretResourceId: string
@@ -40,6 +41,8 @@ type secretSetType = {
   secretUri: string
 }
 
+@export()
+@description('The type for the secrets to set.')
 type secretToSetType = {
   @description('Required. The name of the secret to set.')
   name: string
