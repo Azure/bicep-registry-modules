@@ -185,6 +185,51 @@ var alzCustomPolicySetDefsJson = [
   }
 ]
 
+var managementGroupCustomRoleDefinitions = [
+  for policy in alzCustomPolicyDefsJson: {
+    name: policy.name
+    properties: {
+      description: policy.properties.description
+      displayName: policy.properties.displayName
+      metadata: policy.properties.metadata
+      mode: policy.properties.mode
+      parameters: policy.properties.parameters
+      policyType: policy.properties.policyType
+      policyRule: policy.properties.policyRule
+    }
+  }
+]
+
+var managementGroupCustomPolicySetDefinitions = [
+  for policy in alzCustomPolicySetDefsJson: {
+    name: policy.name
+    properties: {
+      description: policy.properties.description
+      displayName: policy.properties.displayName
+      metadata: policy.properties.metadata
+      parameters: policy.properties.parameters
+      policyType: policy.properties.policyType
+      version: policy.properties.?version
+      policyDefinitions: policy.properties.policyDefinitions
+    }
+  }
+]
+
+var managementGroupRoleAssignments = [
+  {
+    principalId: 'd543c6f0-89ce-4d51-a9fd-5b61986278a9'
+    roleDefinitionIdOrName: 'Security Reader'
+  }
+  {
+    principalId: deployer().objectId
+    roleDefinitionIdOrName: 'Reader'
+  }
+  {
+    principalId: 'd543c6f0-89ce-4d51-a9fd-5b61986278a9'
+    roleDefinitionIdOrName: alzCustomRbacRoleDefsJson[4].name
+  }
+]
+
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
@@ -193,20 +238,7 @@ module testDeployment '../../../main.bicep' = [
       createOrUpdateManagementGroup: true
       managementGroupName: 'mg-${namePrefix}-test-${serviceShort}-max'
       managementGroupDisplayName: 'AVM ALZ PTN Empty Max Test'
-      managementGroupRoleAssignments: [
-        {
-          principalId: 'd543c6f0-89ce-4d51-a9fd-5b61986278a9'
-          roleDefinitionIdOrName: 'Security Reader'
-        }
-        {
-          principalId: deployer().objectId
-          roleDefinitionIdOrName: 'Reader'
-        }
-        {
-          principalId: 'd543c6f0-89ce-4d51-a9fd-5b61986278a9'
-          roleDefinitionIdOrName: alzCustomRbacRoleDefsJson[4].name
-        }
-      ]
+      managementGroupRoleAssignments: managementGroupRoleAssignments
       managementGroupCustomRoleDefinitions: unionedCustomRbacRoleDefs
       managementGroupPolicyAssignments: [
         {
@@ -259,34 +291,8 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
-      managementGroupCustomPolicyDefinitions: [
-        for policy in alzCustomPolicyDefsJson: {
-          name: policy.name
-          properties: {
-            description: policy.properties.description
-            displayName: policy.properties.displayName
-            metadata: policy.properties.metadata
-            mode: policy.properties.mode
-            parameters: policy.properties.parameters
-            policyType: policy.properties.policyType
-            policyRule: policy.properties.policyRule
-          }
-        }
-      ]
-      managementGroupCustomPolicySetDefinitions: [
-        for policy in alzCustomPolicySetDefsJson: {
-          name: policy.name
-          properties: {
-            description: policy.properties.description
-            displayName: policy.properties.displayName
-            metadata: policy.properties.metadata
-            parameters: policy.properties.parameters
-            policyType: policy.properties.policyType
-            version: policy.properties.?version
-            policyDefinitions: policy.properties.policyDefinitions
-          }
-        }
-      ]
+      managementGroupCustomPolicyDefinitions: managementGroupCustomRoleDefinitions
+      managementGroupCustomPolicySetDefinitions: managementGroupCustomPolicySetDefinitions
     }
   }
 ]
