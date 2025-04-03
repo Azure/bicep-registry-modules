@@ -161,7 +161,7 @@ module empty 'br/public:avm/ptn/alz/empty:<version>' = {
             value: 'costCenter'
           }
         }
-        policyDefinitionId: '/providers/Microsoft.Management/managementGroups/mg-test-alzempmax-max/providers/Microsoft.Authorization/policySetDefinitions/custom-tags-policy-set-definition-1'
+        policyDefinitionId: '/providers/Microsoft.Management/managementGroups/mg-test-alzempmax/providers/Microsoft.Authorization/policySetDefinitions/custom-tags-policy-set-definition-1'
       }
     ]
     managementGroupRoleAssignments: '<managementGroupRoleAssignments>'
@@ -250,7 +250,7 @@ module empty 'br/public:avm/ptn/alz/empty:<version>' = {
               "value": "costCenter"
             }
           },
-          "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/mg-test-alzempmax-max/providers/Microsoft.Authorization/policySetDefinitions/custom-tags-policy-set-definition-1"
+          "policyDefinitionId": "/providers/Microsoft.Management/managementGroups/mg-test-alzempmax/providers/Microsoft.Authorization/policySetDefinitions/custom-tags-policy-set-definition-1"
         }
       ]
     },
@@ -327,7 +327,7 @@ param managementGroupPolicyAssignments = [
         value: 'costCenter'
       }
     }
-    policyDefinitionId: '/providers/Microsoft.Management/managementGroups/mg-test-alzempmax-max/providers/Microsoft.Authorization/policySetDefinitions/custom-tags-policy-set-definition-1'
+    policyDefinitionId: '/providers/Microsoft.Management/managementGroups/mg-test-alzempmax/providers/Microsoft.Authorization/policySetDefinitions/custom-tags-policy-set-definition-1'
   }
 ]
 param managementGroupRoleAssignments = '<managementGroupRoleAssignments>'
@@ -1012,7 +1012,7 @@ An integer that specifies the number of blank ARM deployments prior to the polic
 
 - Required: No
 - Type: int
-- Default: `30`
+- Default: `10`
 
 ### Parameter: `waitForConsistencyCounterBeforeRoleAssignments`
 

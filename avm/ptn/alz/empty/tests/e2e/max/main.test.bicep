@@ -280,7 +280,7 @@ module testDeployment '../../../main.bicep' = [
           displayName: 'Tag checking'
           identity: 'None'
           enforcementMode: 'Default'
-          policyDefinitionId: '/providers/Microsoft.Management/managementGroups/mg-${namePrefix}-test-${serviceShort}-max/providers/Microsoft.Authorization/policySetDefinitions/custom-tags-policy-set-definition-1'
+          policyDefinitionId: '/providers/Microsoft.Management/managementGroups/mg-${namePrefix}-test-${serviceShort}/providers/Microsoft.Authorization/policySetDefinitions/custom-tags-policy-set-definition-1'
           parameters: {
             tagName: {
               value: 'costCenter'
