@@ -6,10 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "9377935714402678341"
+      "templateHash": "7181453398359478269"
     },
     "name": "avm/ptn/alz/empty",
-    "description": "Azure Landing Zones - Bicep - Empty"
+    "description": "Azure Landing Zones - Bicep - Empty\n\nPlease review the [Usage examples](#Usage-examples) below, but please ensure for the `max` example you review the entire [directory](tests/e2e/max) to see the supplementary files that are required for the example.\n\nAlso please ensure you review the [Notes section of this README](#Notes) for important information about the module as well as features that exist outside of parameter inputs."
   },
   "definitions": {
     "policyAssignmentType": {
@@ -835,7 +835,7 @@
         "mode": "serial",
         "batchSize": 1
       },
-      "condition": "[greater(parameters('waitForConsistencyCounterBeforeSubPlacement'), 0)]",
+      "condition": "[and(greater(parameters('waitForConsistencyCounterBeforeSubPlacement'), 0), not(empty(parameters('subscriptionsToPlaceInManagementGroup'))))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-{1}', variables('deploymentNames').mgSubPlacementWait, copyIndex())]",
@@ -868,7 +868,7 @@
         "mode": "serial",
         "batchSize": 1
       },
-      "condition": "[greater(parameters('waitForConsistencyCounterBeforeCustomPolicyDefinitions'), 0)]",
+      "condition": "[and(greater(parameters('waitForConsistencyCounterBeforeCustomPolicyDefinitions'), 0), not(empty(parameters('managementGroupCustomPolicyDefinitions'))))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-{1}', variables('deploymentNames').mgCustomPolicyDefinitionsWait, copyIndex())]",
@@ -997,7 +997,7 @@
         "mode": "serial",
         "batchSize": 1
       },
-      "condition": "[greater(parameters('waitForConsistencyCounterBeforeCustomPolicySetDefinitions'), 0)]",
+      "condition": "[and(greater(parameters('waitForConsistencyCounterBeforeCustomPolicySetDefinitions'), 0), not(empty(parameters('managementGroupCustomPolicySetDefinitions'))))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-{1}', variables('deploymentNames').mgCustomPolicySetDefinitionsWait, copyIndex())]",
@@ -1139,7 +1139,7 @@
         "mode": "serial",
         "batchSize": 1
       },
-      "condition": "[greater(parameters('waitForConsistencyCounterBeforePolicyAssignments'), 0)]",
+      "condition": "[and(greater(parameters('waitForConsistencyCounterBeforePolicyAssignments'), 0), not(empty(parameters('managementGroupPolicyAssignments'))))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-{1}', variables('deploymentNames').mgPolicyAssignmentsWait, copyIndex())]",
@@ -2747,7 +2747,7 @@
         "mode": "serial",
         "batchSize": 1
       },
-      "condition": "[greater(parameters('waitForConsistencyCounterBeforeCustomRoleDefinitions'), 0)]",
+      "condition": "[and(greater(parameters('waitForConsistencyCounterBeforeCustomRoleDefinitions'), 0), not(empty(parameters('managementGroupCustomRoleDefinitions'))))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-{1}', variables('deploymentNames').mgRoleDefinitionsWait, copyIndex())]",
@@ -2983,7 +2983,7 @@
         "mode": "serial",
         "batchSize": 1
       },
-      "condition": "[greater(parameters('waitForConsistencyCounterBeforeRoleAssignments'), 0)]",
+      "condition": "[and(greater(parameters('waitForConsistencyCounterBeforeRoleAssignments'), 0), not(empty(variables('formattedRoleAssignments'))))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-{1}', variables('deploymentNames').mgRoleAssignmentsWait, copyIndex())]",

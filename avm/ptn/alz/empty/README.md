@@ -2,6 +2,10 @@
 
 Azure Landing Zones - Bicep - Empty
 
+Please review the [Usage examples](#Usage-examples) below, but please ensure for the `max` example you review the entire [directory](tests/e2e/max) to see the supplementary files that are required for the example.
+
+Also please ensure you review the [Notes section of this README](#Notes) for important information about the module as well as features that exist outside of parameter inputs.
+
 ## Navigation
 
 - [Resource Types](#Resource-Types)
@@ -9,6 +13,7 @@ Azure Landing Zones - Bicep - Empty
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
 - [Cross-referenced modules](#Cross-referenced-modules)
+- [Notes](#Notes)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -1045,6 +1050,16 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/ptn/authorization/role-definition:0.1.0` | Remote reference |
 | `br/public:avm/res/management/management-group:0.1.2` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
+
+## Notes
+
+For Custom Policy Set Definitions, the property of `properties.policyDefinitions.policyDefinitionId` for each child policy definition in a policy set definition must be provided. If you are trying to provide the ID of a policy definition that you are also creating in this module, or it exists at the same management group scope, you can use the following input syntax to ensure the correct resource ID for the policy definition is used:
+
+```bicep
+{customPolicyDefinitionScopeId}/providers/Microsoft.Authorization/policyDefinitions/<policy-definition-name>
+```
+
+The `{customPolicyDefinitionScopeId}` is replaced by resource ID of the management group that this module is creating or deploying to. This will ensure that the correct resource ID is used for the policy definition without you having to hardcode the management group ID in the policy set definitions.
 
 ## Data Collection
 
