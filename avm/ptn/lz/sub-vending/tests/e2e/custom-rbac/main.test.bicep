@@ -24,11 +24,6 @@ param subscriptionGuid string = toLower(substring(newGuid(), 0, 4))
 @secure()
 param testUserObjectId string = ''
 
-module dependencies './dependencies.bicep' = {
-  name: 'dependencies'
-  params: {}
-}
-
 module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${subscriptionGuid}'
   params: {
@@ -48,7 +43,7 @@ module testDeployment '../../../main.bicep' = {
     roleAssignments: [
       {
         principalId: testUserObjectId
-        definition: dependencies.outputs.customRoleDefinitionId
+        definition: '/providers/Microsoft.Authorization/roleDefinitions/005cfb9e-dccd-4458-831d-a83a616f2a5c'
         relativeScope: 'bicep-lz-vending-automation-child'
         isCustomRole: true
         principalType: 'User'
