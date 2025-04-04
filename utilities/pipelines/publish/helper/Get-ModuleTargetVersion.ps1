@@ -38,37 +38,18 @@ function Get-ModuleTargetVersion {
     . (Join-Path (Get-Item -Path $PSScriptRoot).FullName 'Get-ModuleVersionChange.ps1')
     . (Join-Path (Get-Item -Path $PSScriptRoot).FullName 'Get-ModuleTargetPatchVersion.ps1')
     . (Join-Path (Get-Item -Path $PSScriptRoot).FullName 'Get-ModulePublishedVersions.ps1')
+    . (Join-Path (Get-Item -Path $PSScriptRoot).FullName 'Get-ModuleJsonVersionChange.ps1')
 
     # 0. Check if [main.json] version number changed. This overrides the logic to check the version in the version.json file
-    $mainJsonFilePath = Join-Path $ModuleFolderPath 'main.json'
-    if ($compareJsonVersion -eq $true -and (Test-Path -Path $mainJsonFilePath)) {
-        $currentJsonVersion = (Get-Content $mainJsonFilePath | ConvertFrom-Json).metadata._generator.version
-
-        # Fetch the content of the file in GitHub
-        $repoOwner = 'Azure'
-        $repoName = 'bicep-registry-modules'
-        $module = ($ModuleFolderPath -split '[\/|\\]avm[\/|\\]')[-1]
-        $filePathInRepo = 'avm/{0}/main.json' -f ($module -replace '\\', '/')
-        $apiUrl = 'https://api.github.com/repos/{0}/{1}/contents/{2}' -f $repoOwner, $repoName, $filePathInRepo
-        Write-Verbose "Fetching the content of the file '[$filePathInRepo]' from GitHub." -Verbose
-
-        try {
-            $response = Invoke-RestMethod -Uri $apiUrl -Headers @{ 'User-Agent' = 'PowerShell' }
-            $githubFileContent = [System.Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($response.content))
-            $githubJsonVersion = ($githubFileContent | ConvertFrom-Json).metadata._generator.version
-        } catch {
-            throw "Failed to fetch the file content from GitHub: $($_.Exception.Message)"
-        }
-
-        # Compare the versions in the main.json file. This may override the logic from above to be able to get the current and not the next version
-        if ($currentJsonVersion -eq $githubJsonVersion) {
-            # need to check if the version in the current verion.json file is newer than the one in the published GitHub version.json
-            Write-Verbose "No need to bump the version. Current version: $currentJsonVersion, GitHub version: $githubJsonVersion" -Verbose
+    if ($CompareJsonVersion -eq $true) {
+        $jsonVersionChanged = Get-ModuleJsonVersionChange -ModuleFolderPath $ModuleFolderPath
+        if ($jsonVersionChanged -eq $false) {
+            Write-Verbose 'Version in main.json file did not change. No need to bump the version.' -Verbose
             $publishedVersions = Get-ModulePublishedVersions -TagListUrl ('https://mcr.microsoft.com/v2/bicep/avm/{0}/tags/list' -f ($module -replace '\\', '/'))
             # the last version in the array is the latest published version
+            Write-Verbose "Latest published version is [$($publishedVersions[-1])]." -Verbose
             return $publishedVersions[-1]
         }
-        Write-Verbose "Version in main.json file changed. Current version: $currentJsonVersion, GitHub version: $githubJsonVersion. Fallback to regular logic to calculate the Version." -Verbose
     }
 
     # 1. Get [version.json] file path
