@@ -44,7 +44,7 @@ module testDeployment '../../../main.bicep' = {
       {
         principalId: testUserObjectId
         definition: '/providers/Microsoft.Authorization/roleDefinitions/005cfb9e-dccd-4458-831d-a83a616f2a5c'
-        relativeScope: 'bicep-lz-vending-automation-child'
+        relativeScope: ''
         isCustomRole: true
         principalType: 'User'
       }

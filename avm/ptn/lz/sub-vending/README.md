@@ -290,7 +290,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
         isCustomRole: true
         principalId: '<principalId>'
         principalType: 'User'
-        relativeScope: 'bicep-lz-vending-automation-child'
+        relativeScope: ''
       }
       {
         definition: 'contributor'
@@ -339,7 +339,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
           "isCustomRole": true,
           "principalId": "<principalId>",
           "principalType": "User",
-          "relativeScope": "bicep-lz-vending-automation-child"
+          "relativeScope": ""
         },
         {
           "definition": "contributor",
@@ -398,7 +398,7 @@ param roleAssignments = [
     isCustomRole: true
     principalId: '<principalId>'
     principalType: 'User'
-    relativeScope: 'bicep-lz-vending-automation-child'
+    relativeScope: ''
   }
   {
     definition: 'contributor'
