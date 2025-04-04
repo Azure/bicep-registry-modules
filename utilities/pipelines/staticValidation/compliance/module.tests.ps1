@@ -64,6 +64,7 @@ BeforeDiscovery {
         $childModuleAllowedList = (Get-Content -Path $childModuleAllowedListPath | ConvertFrom-Json).'allowed-child-modules'
     } else {
         Write-Warning "The child modules allowed list file [$childModuleAllowedListPath] does not exist."
+        $childModuleAllowedList = @()
     }
 }
 Describe 'File/folder tests' -Tag 'Modules' {
