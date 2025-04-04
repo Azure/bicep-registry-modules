@@ -25,9 +25,12 @@ on:
 
 env:
   workflowPath: ".github/workflows/platform.check.psrule.yml"
-  targetPath: "avm/res/"
-  PSRuleOutputFilePath: "avm/res/PSRule-output.csv"
-  PSRuleInputFilePath: "avm/res/PSRule-output.md"
+  targetPath: "avm/"
+  PSRuleOutputFilePath: "avm/PSRule-output.csv"
+  PSRuleInputFilePath: "avm/PSRule-output.md"
+  # targetPath: "avm/res/"
+  # PSRuleOutputFilePath: "avm/res/PSRule-output.csv"
+  # PSRuleInputFilePath: "avm/res/PSRule-output.md"
   psRuleFilterRegex: "(defaults|waf-aligned)" # The regex used to filter PSRule compliant files
   psrulePath: "utilities/pipelines/staticValidation/psrule"
   ARM_SUBSCRIPTION_ID: "${{ secrets.ARM_SUBSCRIPTION_ID }}"
