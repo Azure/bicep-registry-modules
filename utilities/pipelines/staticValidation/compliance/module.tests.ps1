@@ -131,7 +131,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
         }
 
         # (Pilot for child module publishing) only a subset of child modules is allowed to have a version.json file
-        It '[<moduleFolderName>] child module should not contain a [` version.json `] file.' -TestCases ($moduleFolderTestCases | Where-Object { -Not $_.isTopLevelModule }) {
+        It '[<moduleFolderName>] child module should not contain a [` version.json `] file unless explicitly allowed for publishing.' -TestCases ($moduleFolderTestCases | Where-Object { -Not $_.isTopLevelModule }) {
 
             param (
                 [string] $moduleFolderPath,
@@ -140,13 +140,17 @@ Describe 'File/folder tests' -Tag 'Modules' {
                 [string[]] $childModuleAllowedList
             )
 
-            if ($childModuleAllowedList -contains $moduleFullName) {
-                Set-ItResult -Skipped -Because "$moduleFullName is in the child module publishing allowed list."
-                return
+            if (Test-Path (Join-Path -Path $moduleFolderPath 'version.json')) {
+                $childModuleAllowedList | Should -Contain $moduleFullName -Because "only the child modules listed in the [./$childModuleAllowedListRelativePath] list may have a version.json file."
             }
 
-            $pathExisting = Test-Path (Join-Path -Path $moduleFolderPath 'version.json')
-            $pathExisting | Should -Be $false -Because "only the child modules listed in the [./$childModuleAllowedListRelativePath] list may have a version.json file."
+            # if ($childModuleAllowedList -contains $moduleFullName) {
+            #     Set-ItResult -Skipped -Because "$moduleFullName is in the child module publishing allowed list."
+            #     return
+            # }
+
+            # $pathExisting = Test-Path (Join-Path -Path $moduleFolderPath 'version.json')
+            # $pathExisting | Should -Be $false -Because "only the child modules listed in the [./$childModuleAllowedListRelativePath] list may have a version.json file."
         }
 
         # if the child modules version has been increased, the main modules version should be increased as well
