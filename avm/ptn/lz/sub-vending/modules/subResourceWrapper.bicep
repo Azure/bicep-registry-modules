@@ -812,7 +812,7 @@ module createLzRoleAssignmentsRsgsNotSelf 'br/public:avm/ptn/authorization/role-
 module createLzCustomRoleAssignmentsSub 'br/public:avm/ptn/authorization/role-assignment:0.2.0' = [
   for assignment in customRoleAssignmentsSubscription: if (roleAssignmentEnabled && !empty(customRoleAssignmentsSubscription)) {
     dependsOn: [
-      createResourceGroupForLzNetworking
+      moveSubscriptionToManagementGroup
     ]
     name: take(
       '${deploymentNames.createLzCustomRoleAssignmentsSub}-${uniqueString(assignment.principalId, assignment.definition, assignment.relativeScope)}',

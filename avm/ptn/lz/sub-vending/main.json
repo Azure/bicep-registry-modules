@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "9617641022352856844"
+      "templateHash": "10820711547962239968"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -1506,7 +1506,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.34.44.8038",
-              "templateHash": "1185860995783522621"
+              "templateHash": "10272487131702226093"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -9966,7 +9966,7 @@
                 }
               },
               "dependsOn": [
-                "createResourceGroupForLzNetworking"
+                "moveSubscriptionToManagementGroup"
               ]
             },
             "createLzPimActiveRoleAssignmentsSub": {
