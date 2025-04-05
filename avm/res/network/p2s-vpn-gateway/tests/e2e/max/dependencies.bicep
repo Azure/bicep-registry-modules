@@ -73,7 +73,7 @@ resource hubRouteMap 'Microsoft.Network/virtualHubs/routeMaps@2024-01-01' = {
             parameters: [
               {
                 asPath: [
-                  '65050'
+                  '22334'
                 ]
               }
             ]
@@ -83,7 +83,7 @@ resource hubRouteMap 'Microsoft.Network/virtualHubs/routeMaps@2024-01-01' = {
         matchCriteria: [
           {
             asPath: [
-              '65050'
+              '22334'
             ]
             matchCondition: 'Equals'
           }
