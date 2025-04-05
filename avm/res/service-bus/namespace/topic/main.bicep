@@ -212,7 +212,8 @@ output resourceGroupName string = resourceGroup().name
 //   Definitions   //
 // =============== //
 
-import { ruleType } from 'subscription/main.bicep'
+import { ruleType } from 'subscription/rule/main.bicep'
+
 @export()
 @description('The type for a subscription.')
 type subscriptionType = {
