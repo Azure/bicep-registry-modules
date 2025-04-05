@@ -127,7 +127,7 @@ import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-ty
 param diagnosticSettings diagnosticSettingFullType[]?
 
 @description('Optional. The Principal Assignments for the Kusto Cluster.')
-param principalAssignments principalAssignmentType[]?
+param clusterPrincipalAssignments clusterPrincipalAssignmentType[]?
 
 @description('Optional. The Kusto Cluster databases.')
 param databases databaseType[]?
@@ -325,8 +325,8 @@ resource kustoCluster_roleAssignments 'Microsoft.Authorization/roleAssignments@2
 ]
 
 module kustoCluster_principalAssignments 'principal-assignment/main.bicep' = [
-  for (principalAssignment, index) in (principalAssignments ?? []): {
-    name: '${uniqueString(deployment().name, location)}-KustoCluster-PrincipalAssign-${index}'
+  for (principalAssignment, index) in (clusterPrincipalAssignments ?? []): {
+    name: '${uniqueString(deployment().name, location)}-KC-PrincipalAssignment-${index}'
     params: {
       kustoClusterName: kustoCluster.name
       principalId: principalAssignment.principalId
@@ -401,6 +401,7 @@ module kustoCluster_databases 'database/main.bicep' = [
       kustoClusterName: kustoCluster.name
       databaseKind: database.kind
       databaseReadWriteProperties: database.kind == 'ReadWrite' ? database.readWriteProperties : null
+      databasePrincipalAssignments: database.databasePrincipalAssignments
     }
   }
 ]
@@ -447,30 +448,7 @@ output databases array = [
 //   Definitions   //
 // =============== //
 
-@export()
-@description('The type for the private endpoint output.')
-type privateEndpointOutputType = {
-  @description('The name of the private endpoint.')
-  name: string
-
-  @description('The resource ID of the private endpoint.')
-  resourceId: string
-
-  @description('The group Id for the private endpoint Group.')
-  groupId: string?
-
-  @description('The custom DNS configurations of the private endpoint.')
-  customDnsConfigs: {
-    @description('FQDN that resolves to private endpoint IP address.')
-    fqdn: string?
-
-    @description('A list of private IP addresses of the private endpoint.')
-    ipAddresses: string[]
-  }[]
-
-  @description('The IDs of the network interfaces associated with the private endpoint.')
-  networkInterfaceResourceIds: string[]
-}
+import { databasePrincipalAssignmentType, databaseReadWriteType  } from 'database/main.bicep'
 
 @export()
 @description('The type for the accepted audience.')
@@ -513,8 +491,8 @@ type virtualNetworkConfigurationType = {
 }
 
 @export()
-@description('The type for the principal assignment.')
-type principalAssignmentType = {
+@description('The type for the cluster principal assignment.')
+type clusterPrincipalAssignmentType = {
   @description('Required. The principal id assigned to the Kusto Cluster principal. It can be a user email, application id, or security group name.')
   principalId: string
 
@@ -528,15 +506,43 @@ type principalAssignmentType = {
   tenantId: string?
 }
 
-import { databaseReadWriteType } from './database/main.bicep'
-
 @export()
 @description('The type for the database.')
 type databaseType = {
   @description('Required. The name of the Kusto Cluster database.')
   name: string
-  @description('Required. The object type of the databse.')
+
+  @description('Required. The object type of the database.')
   kind: 'ReadWrite' | 'ReadOnlyFollowing'
+
   @description('Conditional. Required if the database kind is ReadWrite. Contains the properties of the database.')
   readWriteProperties: databaseReadWriteType?
+
+  @description('Optional. The principal assignments for the Kusto Cluster database.')
+  databasePrincipalAssignments: databasePrincipalAssignmentType[]?
+}
+
+@export()
+@description('The type for the private endpoint output.')
+type privateEndpointOutputType = {
+  @description('The name of the private endpoint.')
+  name: string
+
+  @description('The resource ID of the private endpoint.')
+  resourceId: string
+
+  @description('The group Id for the private endpoint Group.')
+  groupId: string?
+
+  @description('The custom DNS configurations of the private endpoint.')
+  customDnsConfigs: {
+    @description('FQDN that resolves to private endpoint IP address.')
+    fqdn: string?
+
+    @description('A list of private IP addresses of the private endpoint.')
+    ipAddresses: string[]
+  }[]
+
+  @description('The IDs of the network interfaces associated with the private endpoint.')
+  networkInterfaceResourceIds: string[]
 }
