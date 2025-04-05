@@ -180,8 +180,8 @@ type linuxDcrPropertiesType = {
   @description('Required. The platform type specifies the type of resources this rule can apply to.')
   kind: 'Linux'
 
-  @description('Required. Specification of data sources that will be collected.')
-  dataSources: object
+  @description('Optional. Specification of data sources that will be collected.')
+  dataSources: object?
 
   @description('Required. The specification of data flows.')
   dataFlows: array
@@ -204,8 +204,8 @@ type windowsDcrPropertiesType = {
   @description('Required. The platform type specifies the type of resources this rule can apply to.')
   kind: 'Windows'
 
-  @description('Required. Specification of data sources that will be collected.')
-  dataSources: object
+  @description('Optional. Specification of data sources that will be collected.')
+  dataSources: object?
 
   @description('Required. The specification of data flows.')
   dataFlows: array
@@ -228,8 +228,8 @@ type allPlatformsDcrPropertiesType = {
   @description('Required. The platform type specifies the type of resources this rule can apply to.')
   kind: 'All'
 
-  @description('Required. Specification of data sources that will be collected.')
-  dataSources: object
+  @description('Optional. Specification of data sources that will be collected.')
+  dataSources: object?
 
   @description('Required. The specification of data flows.')
   dataFlows: array
