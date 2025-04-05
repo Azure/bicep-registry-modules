@@ -11,6 +11,9 @@ Builds target version as major.minor.patch
 .PARAMETER ModuleFolderPath
 Mandatory. Path to the main/parent module folder.
 
+.PARAMETER CompareJsonVersion
+Optional. If set to true, compares the version in main.json with the one in the published GitHub version.json. A new version is not needed if they are the same. In this case, the function returns 0.0.0.
+
 .EXAMPLE
 # Note: "version" value in version.json is "0.1" and was not updated in the last commit
 # Note: The latest published release tag is "avm/res/key-vault/vault/0.1.6"
@@ -25,26 +28,43 @@ function Get-ModuleTargetVersion {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory = $true)]
-        [string] $ModuleFolderPath
+        [string] $ModuleFolderPath,
+
+        [Parameter(Mandatory = $false)]
+        [bool] $CompareJsonVersion = $false
     )
 
     # Load used functions
     . (Join-Path (Get-Item -Path $PSScriptRoot).FullName 'Get-ModuleVersionChange.ps1')
     . (Join-Path (Get-Item -Path $PSScriptRoot).FullName 'Get-ModuleTargetPatchVersion.ps1')
+    . (Join-Path (Get-Item -Path $PSScriptRoot).FullName 'Get-ModulePublishedVersions.ps1')
+    . (Join-Path (Get-Item -Path $PSScriptRoot).FullName 'Get-ModuleJsonVersionChange.ps1')
+
+    # 0. Check if [main.json] version number changed. This overrides the logic to check the version in the version.json file
+    if ($CompareJsonVersion -eq $true) {
+        $jsonVersionChanged = Get-ModuleJsonVersionChange -ModuleFolderPath $ModuleFolderPath
+        if ($jsonVersionChanged -eq $false) {
+            Write-Verbose 'Version in main.json file did not change. No need to bump the version.' -Verbose
+            $publishedVersions = Get-ModulePublishedVersions -TagListUrl ('https://mcr.microsoft.com/v2/bicep/avm/{0}/tags/list' -f ($module -replace '\\', '/'))
+            # the last version in the array is the latest published version
+            Write-Verbose "Latest published version is [$($publishedVersions[-1])]." -Verbose
+            return $publishedVersions[-1]
+        }
+    }
 
     # 1. Get [version.json] file path
     $versionFilePath = Join-Path $ModuleFolderPath 'version.json'
-    if (-not (Test-Path -Path $VersionFilePath)) {
-        throw "No version file found at: [$VersionFilePath]"
+    if (-not (Test-Path -Path $versionFilePath)) {
+        throw "No version file found at: [$versionFilePath]"
     }
 
     # 2. Get MAJOR and MINOR from [version.json]
-    $versionFileTargetVersion = (Get-Content $VersionFilePath | ConvertFrom-Json).version
+    $versionFileTargetVersion = (Get-Content $versionFilePath | ConvertFrom-Json).version
     $major, $minor = $versionFileTargetVersion -split '\.'
 
     # 3. Get PATCH
     # Check if [version.json] file version property was updated (compare with previous head)
-    $versionChange = Get-ModuleVersionChange -VersionFilePath $VersionFilePath
+    $versionChange = Get-ModuleVersionChange -VersionFilePath $versionFilePath
 
     if ($versionChange) {
         # If [version.json] file version property was updated, reset the patch/bug version back to 0
