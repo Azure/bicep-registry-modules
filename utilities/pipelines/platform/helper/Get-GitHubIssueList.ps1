@@ -1,4 +1,37 @@
-﻿function Get-GitHubIssueList {
+﻿<#
+.SYNOPSIS
+Get a list of all GitHub issues for a given repository.
+
+.DESCRIPTION
+Via the function's parameters you can filter the issus to your needs.
+
+.PARAMETER PersonalAccessToken
+Optional. The PAT to use to interact with either GitHub. If not provided, the script will use the GitHub CLI to authenticate.
+
+.PARAMETER RepositoryOwner
+Optional. The GitHub organization the issues are located in.
+
+.PARAMETER RepositoryName
+Optional. The GitHub repository the issues are located in.
+
+.PARAMETER State
+Optional. Indicates the state of the issues to return.
+
+.PARAMETER Assignee
+Optional. Pass in `none` for issues with no assigned user, `*` for issues assigned to any user, or `all` for either.
+
+.PARAMETER SortBy
+Optional. What to sort results by.
+
+.PARAMETER SortDirection
+Optional. The direction to sort the results by.
+
+.EXAMPLE
+Get-GitHubIssueList -RepositoryOwner 'Azure' -RepositoryName 'bicep-registry-modules'
+
+Get all issues from the repository [Azure/bicep-registry-modules] with the default parameters.
+#>
+function Get-GitHubIssueList {
 
     [CmdletBinding()]
     param (
