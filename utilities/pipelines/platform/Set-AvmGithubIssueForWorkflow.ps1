@@ -94,24 +94,22 @@ function Set-AvmGitHubIssueForWorkflow {
     ############################################
     #   Fetching latest run of each workflow   #
     ############################################
-    # $workflowRunsToProcess = [System.Collections.ArrayList]@()
-    # $totalCount = $workflows.Count
-    # $currentCount = 1
-    # foreach ($workflow in $workflows) {
+    $workflowRunsToProcess = [System.Collections.ArrayList]@()
+    $totalCount = $workflows.Count
+    $currentCount = 1
+    foreach ($workflow in $workflows) {
 
-    #     $percentageComplete = [math]::Round(($currentCount / $totalCount) * 100)
-    #     Write-Progress -Activity ('Fetching workflow [{0}]' -f $workflow.name) -Status "$percentageComplete% complete" -PercentComplete $percentageComplete
-    #     # Get relevant run
-    #     $latestWorkflowRun = Get-GitHubModuleWorkflowLatestRun @baseInputObject -WorkflowId $workflow.id
+        $percentageComplete = [math]::Round(($currentCount / $totalCount) * 100)
+        Write-Progress -Activity ('Fetching workflow [{0}]' -f $workflow.name) -Status "$percentageComplete% complete" -PercentComplete $percentageComplete
+        # Get relevant run
+        $latestWorkflowRun = Get-GitHubModuleWorkflowLatestRun @baseInputObject -WorkflowId $workflow.id
 
-    #     if ($latestWorkflowRun.status -eq 'completed') {
-    #         $workflowRunsToProcess += $latestWorkflowRun
-    #     }
+        if ($latestWorkflowRun.status -eq 'completed') {
+            $workflowRunsToProcess += $latestWorkflowRun
+        }
 
-    #     $currentCount++
-    # }
-    # TODO: Replace with above
-    $workflowRunsToProcess = Get-Content -Path 'C:\Users\alsehr\OneDrive - Microsoft\Docs\Code\temp\workflowsDump.json' | ConvertFrom-Json
+        $currentCount++
+    }
 
     ############################
     #   Processing workflows   #
