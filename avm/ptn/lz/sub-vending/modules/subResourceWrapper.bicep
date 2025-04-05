@@ -255,6 +255,18 @@ var deploymentNames = {
     'lz-vend-rbac-rsg-nself-create-${uniqueString(subscriptionId, deployment().name)}',
     64
   )
+  createLzCustomRoleAssignmentsSub: take(
+    'lz-vend-crbac-sub-create-${uniqueString(subscriptionId, deployment().name)}',
+    64
+  )
+  createLzCustomRoleAssignmentsRsgsSelf: take(
+    'lz-vend-crbac-rsg-self-create-${uniqueString(subscriptionId, deployment().name)}',
+    64
+  )
+  createLzCustomRoleAssignmentsRsgsNotSelf: take(
+    'lz-vend-crbac-rsg-nself-create-${uniqueString(subscriptionId, deployment().name)}',
+    64
+  )
   createLzPimRoleAssignmentsSub: take(
     'lz-vend-pim-rbac-sub-create-${uniqueString(subscriptionId, deployment().name)}',
     64
@@ -312,7 +324,7 @@ var deploymentNames = {
 // Role Assignments filtering and splitting
 var roleAssignmentsSubscription = filter(
   roleAssignments,
-  assignment => !contains(assignment.relativeScope, '/resourceGroups/')
+  assignment => !contains(assignment.relativeScope, '/resourceGroups/') && (assignment.?isCustomRole ?? false == false)
 )
 var roleAssignmentsResourceGroups = filter(
   roleAssignments,
@@ -325,6 +337,12 @@ var roleAssignmentsResourceGroupSelf = filter(
 var roleAssignmentsResourceGroupNotSelf = filter(
   roleAssignmentsResourceGroups,
   assignment => !contains(assignment.relativeScope, '/resourceGroups/${virtualNetworkResourceGroupName}')
+)
+
+// Custom Role Assignments filtering and splitting
+var customRoleAssignmentsSubscription = filter(
+  roleAssignments,
+  assignment => !contains(assignment.relativeScope, '/resourceGroups/') && (assignment.?isCustomRole ?? false == true)
 )
 
 // PIM Role Assignments filtering and splitting
@@ -771,6 +789,41 @@ module createLzRoleAssignmentsRsgsNotSelf 'br/public:avm/ptn/authorization/role-
       principalType: assignment.?principalType
       subscriptionId: subscriptionId
       resourceGroupName: split(assignment.relativeScope, '/')[2]
+      conditionVersion: !(empty(assignment.?roleAssignmentCondition ?? {}))
+        ? (assignment.?roleAssignmentCondition.?conditionVersion ?? '2.0')
+        : null
+      condition: (empty(assignment.?roleAssignmentCondition ?? {}))
+        ? null
+        : assignment.?roleAssignmentCondition.?roleConditionType.templateName == 'constrainRoles' && (empty(assignment.?roleAssignmentCondition.?delegationCode))
+            ? generateCodeRolesType(any(assignment.?roleAssignmentCondition.?roleConditionType))
+            : assignment.?roleAssignmentCondition.?roleConditionType.templateName == 'constrainRolesAndPrincipalTypes' && (empty(assignment.?roleAssignmentCondition.?delegationCode))
+                ? generateCodeRolesAndPrincipalsTypes(any(assignment.?roleAssignmentCondition.?roleConditionType))
+                : assignment.?roleAssignmentCondition.?roleConditionType.templateName == 'constrainRolesAndPrincipals' && (empty(assignment.?roleAssignmentCondition.?delegationCode))
+                    ? generateCodeRolesAndPrincipals(any(assignment.?roleAssignmentCondition.?roleConditionType))
+                    : assignment.?roleAssignmentCondition.?roleConditionType.templateName == 'excludeRoles' && (empty(assignment.?roleAssignmentCondition.?delegationCode))
+                        ? generateCodeExcludeRoles(any(assignment.?roleAssignmentCondition.?roleConditionType))
+                        : !(empty(assignment.?roleAssignmentCondition.?delegationCode))
+                            ? assignment.?roleAssignmentCondition.?delegationCode
+                            : null
+    }
+  }
+]
+
+module createLzCustomRoleAssignmentsSub 'br/public:avm/ptn/authorization/role-assignment:0.2.0' = [
+  for assignment in customRoleAssignmentsSubscription: if (roleAssignmentEnabled && !empty(customRoleAssignmentsSubscription)) {
+    dependsOn: [
+      moveSubscriptionToManagementGroup
+    ]
+    name: take(
+      '${deploymentNames.createLzCustomRoleAssignmentsSub}-${uniqueString(assignment.principalId, assignment.definition, assignment.relativeScope)}',
+      64
+    )
+    params: {
+      location: virtualNetworkLocation
+      principalId: assignment.principalId
+      roleDefinitionIdOrName: assignment.definition
+      principalType: assignment.?principalType
+      subscriptionId: subscriptionId
       conditionVersion: !(empty(assignment.?roleAssignmentCondition ?? {}))
         ? (assignment.?roleAssignmentCondition.?conditionVersion ?? '2.0')
         : null
@@ -1249,7 +1302,7 @@ module createNatGateway 'br/public:avm/res/network/nat-gateway:1.2.1' = if (virt
 }
 
 module createBastionHost 'br/public:avm/res/network/bastion-host:0.5.0' = if (virtualNetworkDeployBastion && (virtualNetworkEnabled && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName))) {
-  name: 'bastion-${virtualNetworkName}'
+  name: take('bastion-${virtualNetworkName}', 64)
   scope: resourceGroup(subscriptionId, virtualNetworkResourceGroupName)
   dependsOn: [
     createResourceGroupForLzNetworking
@@ -1328,6 +1381,9 @@ type roleAssignmentType = {
   @description('Required. The relative scope of the role assignment.')
   relativeScope: string
 
+  @description('Optional. Determine if the role assignment is a custom role or not.')
+  isCustomRole: bool?
+
   @description('Optional. The condition for the role assignment.')
   roleAssignmentCondition: roleAssignmentConditionType?
 
@@ -1378,7 +1434,7 @@ type excludeRolesType = {
   templateName: 'excludeRoles'
 
   @description('Required. The list of roles that are not allowed to be assigned by the delegate.')
-  ExludededRoles: array
+  excludedRoles: array
 }
 
 // Discriminator for the constrainedDelegationTemplatesType
@@ -1423,7 +1479,7 @@ func generateCodeRolesAndPrincipals(constrainRolesAndPrincipals constrainRolesAn
 @description('Generates the code for the "Exclude Roles" condition template.')
 @export()
 func generateCodeExcludeRoles(excludeRoles excludeRolesType) string =>
-  '((!(ActionMatches{\'Microsoft.Authorization/roleAssignments/write\'}) OR ( @Request[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAllValues:GuidNotEquals {${joinArray(excludeRoles.ExludededRoles)}})) AND ((!(ActionMatches{\'Microsoft.Authorization/roleAssignments/delete\'}) OR (@Request[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAllValues:GuidNotEquals {${joinArray(excludeRoles.ExludededRoles)}}))))'
+  '((!(ActionMatches{\'Microsoft.Authorization/roleAssignments/write\'}) OR ( @Request[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAllValues:GuidNotEquals {${joinArray(excludeRoles.excludedRoles)}})) AND ((!(ActionMatches{\'Microsoft.Authorization/roleAssignments/delete\'}) OR (@Request[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAllValues:GuidNotEquals {${joinArray(excludeRoles.excludedRoles)}}))))'
 
 // Helper functions
 @export()
@@ -1551,8 +1607,14 @@ type pimRoleAssignmentTypeType = {
   @description('Required. The role definition ID or name.')
   definition: string
 
+  @description('Optional. The condition for the role assignment.')
+  roleAssignmentCondition: roleAssignmentConditionType?
+
   @description('Optional. The justification for the role assignment.')
   justification: string?
+
+  @description('Optional. The request type of the role assignment.')
+  requestType: requestTypeType?
 }
 
 @discriminator('durationType')
