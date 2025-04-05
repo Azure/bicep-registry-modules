@@ -32,7 +32,6 @@ jobs:
           $functionInput = @{
             Repo            = "${{ github.repository_owner }}/${{ github.event.repository.name }}"
             RepoRoot        = $env:GITHUB_WORKSPACE
-            IgnoreWorkflows = @()
           }
 
           Write-Verbose "Invoke task with" -Verbose

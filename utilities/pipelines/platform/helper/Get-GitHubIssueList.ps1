@@ -16,7 +16,8 @@
         [string] $State = 'open',
 
         [Parameter(Mandatory = $false)]
-        [string] $Assignee = '*',
+        [ValidateSet('*', 'none', 'all')]
+        [string] $Assignee = 'all',
 
         [Parameter(Mandatory = $false)]
         [ValidateSet('created', 'updated', 'comments')]
@@ -34,11 +35,14 @@
         $queryParameters = @(
             "sort=$SortBy",
             "direction=$SortDirection",
-            "assignee=$Assignee",
             "state=$State",
             'per_page=100',
             "page=$page"
-        ) -join '&'
+        )
+        if ($Assignee -ne 'all') {
+            $queryParameters += "assignee=$Assignee"
+        }
+        $queryParameters = $queryParameters -join '&'
         $queryUrl = "/repos/$RepositoryOwner/$RepositoryName/issues?$queryParameters"
         if ($PersonalAccessToken) {
             # Using PAT

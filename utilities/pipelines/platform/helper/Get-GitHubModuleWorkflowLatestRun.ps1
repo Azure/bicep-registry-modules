@@ -70,5 +70,5 @@ function Get-GitHubModuleWorkflowLatestRun {
         return @{}
     }
 
-    return $response.workflow_runs | Select-Object -Property @('id', 'name', 'path', 'status', 'head_branch', 'created_at', 'run_number', 'run_attempt', 'conclusion')
+    return $response.workflow_runs | Select-Object -Property @('id', 'name', 'path', 'status', 'head_branch', 'created_at', 'run_number', 'run_attempt', 'conclusion', 'url')
 }
