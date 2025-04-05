@@ -1,15 +1,15 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "10838639279177354544"
+      "version": "0.33.93.31351",
+      "templateHash": "15850672413939004144"
     },
     "name": "Azure Virtual Desktop Application Group Application",
-    "description": "This module deploys an Azure Virtual Desktop Application Group Application.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Azure Virtual Desktop Application Group Application."
   },
   "parameters": {
     "applicationGroupName": {
@@ -26,7 +26,7 @@
     },
     "description": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Description of the Application."
       }
@@ -57,7 +57,7 @@
     },
     "commandLineArguments": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Command-Line Arguments for the Application."
       }
@@ -71,7 +71,7 @@
     },
     "iconPath": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Path to icon."
       }
@@ -84,8 +84,14 @@
       }
     }
   },
-  "resources": [
-    {
+  "resources": {
+    "appGroup": {
+      "existing": true,
+      "type": "Microsoft.DesktopVirtualization/applicationGroups",
+      "apiVersion": "2023-09-05",
+      "name": "[parameters('applicationGroupName')]"
+    },
+    "application": {
       "type": "Microsoft.DesktopVirtualization/applicationGroups/applications",
       "apiVersion": "2023-09-05",
       "name": "[format('{0}/{1}', parameters('applicationGroupName'), parameters('name'))]",
@@ -100,7 +106,7 @@
         "iconIndex": "[parameters('iconIndex')]"
       }
     }
-  ],
+  },
   "outputs": {
     "resourceId": {
       "type": "string",

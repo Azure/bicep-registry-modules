@@ -2,7 +2,6 @@ metadata name = 'Azd Container App Upsert'
 metadata description = '''Creates or updates an existing Azure Container App.
 
 **Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case'''
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the Container App.')
 param name string

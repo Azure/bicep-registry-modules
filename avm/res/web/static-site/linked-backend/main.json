@@ -4,12 +4,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "12808204824131403769"
+      "version": "0.34.44.8038",
+      "templateHash": "13255454067128443657"
     },
     "name": "Static Web App Site Linked Backends",
-    "description": "This module deploys a Custom Function App into a Static Web App Site using the Linked Backends property.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Custom Function App into a Static Web App Site using the Linked Backends property."
   },
   "parameters": {
     "backendResourceId": {

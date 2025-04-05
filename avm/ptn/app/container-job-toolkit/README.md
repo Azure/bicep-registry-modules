@@ -848,6 +848,8 @@ The priority of the rule. The value can be between 100 and 4096. The priority nu
 
 - Required: Yes
 - Type: int
+- MinValue: 100
+- MaxValue: 4096
 
 ### Parameter: `customNetworkSecurityGroups.properties.protocol`
 

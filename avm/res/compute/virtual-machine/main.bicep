@@ -1,12 +1,5 @@
 metadata name = 'Virtual Machines'
 metadata description = 'This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.'
-metadata owner = 'Azure/module-maintainers'
-
-import {
-  lockType
-  managedIdentityAllType
-  roleAssignmentType
-} from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 
 @description('Required. The name of the virtual machine to be created. You should use a unique prefix to reduce name collisions in Active Directory.')
 param name string
@@ -44,7 +37,7 @@ param plan object = {}
 param osDisk osDiskType
 
 @description('Optional. Specifies the data disks. For security reasons, it is recommended to specify DiskEncryptionSet into the dataDisk object. Restrictions: DiskEncryptionSet cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.')
-param dataDisks dataDisksType
+param dataDisks dataDiskType[]?
 
 @description('Optional. The flag that enables or disables a capability to have one or more managed data disks with UltraSSD_LRS storage account type on the VM or VMSS. Managed disks with storage account type UltraSSD_LRS can be added to a virtual machine or virtual machine scale set only if this property is enabled.')
 param ultraSSDEnabled bool = false
@@ -100,6 +93,7 @@ param licenseType string = ''
 @description('Optional. The list of SSH public keys used to authenticate with linux based VMs.')
 param publicKeys publicKeyType[] = []
 
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The managed identity definition for this resource. The system-assigned managed identity will automatically be enabled if extensionAadJoinConfig.enabled = "True".')
 param managedIdentities managedIdentityAllType?
 
@@ -170,9 +164,11 @@ param extensionAadJoinConfig object = {
 }
 
 @description('Optional. The configuration for the [Anti Malware] extension. Must at least contain the ["enabled": true] property to be executed.')
-param extensionAntiMalwareConfig object = {
-  enabled: false
-}
+param extensionAntiMalwareConfig object = osType == 'Windows'
+  ? {
+      enabled: true
+    }
+  : { enabled: false }
 
 @description('Optional. The configuration for the [Monitoring Agent] extension. Must at least contain the ["enabled": true] property to be executed.')
 param extensionMonitoringAgentConfig object = {
@@ -236,9 +232,11 @@ param extensionGuestConfigurationExtensionProtectedSettings object = {}
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -314,6 +312,8 @@ param winRM array = []
 
 @description('Optional. The configuration profile of automanage. Either \'/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction\', \'providers/Microsoft.Automanage/bestPractices/AzureBestPracticesDevTest\' or the resource Id of custom profile.')
 param configurationProfile string = ''
+
+var enableReferencedModulesTelemetry = false
 
 var publicKeysFormatted = [
   for publicKey in publicKeys: {
@@ -505,7 +505,7 @@ module vm_nic 'modules/nic-configuration.bicep' = [
       tags: nicConfiguration.?tags ?? tags
       diagnosticSettings: nicConfiguration.?diagnosticSettings
       roleAssignments: nicConfiguration.?roleAssignments
-      enableTelemetry: nicConfiguration.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -525,7 +525,7 @@ resource managedDataDisks 'Microsoft.Compute/disks@2024-03-02' = [
       diskIOPSReadWrite: dataDisk.?diskIOPSReadWrite
       diskMBpsReadWrite: dataDisk.?diskMBpsReadWrite
     }
-    zones: zone != 0 ? array(string(zone)) : null
+    zones: zone != 0 && !contains(dataDisk.managedDisk.storageAccountType, 'ZRS') ? array(string(zone)) : null
   }
 ]
 
@@ -553,7 +553,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
     storageProfile: {
       imageReference: imageReference
       osDisk: {
-        caching: osDisk.?caching ?? 'ReadOnly'
+        name: osDisk.?name ?? '${name}-disk-os-01'
         createOption: osDisk.?createOption ?? 'FromImage'
         deleteOption: osDisk.?deleteOption ?? 'Delete'
         diffDiskSettings: empty(osDisk.?diffDiskSettings ?? {})
@@ -563,13 +563,13 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
               placement: osDisk.diffDiskSettings!.placement
             }
         diskSizeGB: osDisk.diskSizeGB
+        caching: osDisk.?caching ?? 'ReadOnly'
         managedDisk: {
+          storageAccountType: osDisk.managedDisk.storageAccountType
           diskEncryptionSet: {
             id: osDisk.managedDisk.?diskEncryptionSetResourceId
           }
-          storageAccountType: osDisk.managedDisk.storageAccountType
         }
-        name: osDisk.?name ?? '${name}-disk-os-01'
       }
       dataDisks: [
         for (dataDisk, index) in dataDisks ?? []: {
@@ -758,7 +758,17 @@ module vm_microsoftAntiMalwareExtension 'extension/main.bicep' = if (extensionAn
     typeHandlerVersion: extensionAntiMalwareConfig.?typeHandlerVersion ?? '1.3'
     autoUpgradeMinorVersion: extensionAntiMalwareConfig.?autoUpgradeMinorVersion ?? true
     enableAutomaticUpgrade: extensionAntiMalwareConfig.?enableAutomaticUpgrade ?? false
-    settings: extensionAntiMalwareConfig.settings
+    settings: extensionAntiMalwareConfig.?settings ?? {
+      AntimalwareEnabled: 'true'
+      Exclusions: {}
+      RealtimeProtectionEnabled: 'true'
+      ScheduledScanSettings: {
+        day: '7'
+        isEnabled: 'true'
+        scanType: 'Quick'
+        time: '120'
+      }
+    }
     supressFailures: extensionAntiMalwareConfig.?supressFailures ?? false
     tags: extensionAntiMalwareConfig.?tags ?? tags
   }
@@ -1044,7 +1054,7 @@ output resourceId string = vm.id
 output resourceGroupName string = resourceGroup().name
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = vm.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = vm.?identity.?principalId
 
 @description('The location the resource was deployed into.')
 output location string = vm.location
@@ -1053,7 +1063,50 @@ output location string = vm.location
 //   Definitions   //
 // =============== //
 
-type dataDisksType = {
+@export()
+@description('The type describing an OS disk.')
+type osDiskType = {
+  @description('Optional. The disk name.')
+  name: string?
+
+  @description('Optional. Specifies the size of an empty data disk in gigabytes.')
+  diskSizeGB: int?
+
+  @description('Optional. Specifies how the virtual machine should be created.')
+  createOption: 'Attach' | 'Empty' | 'FromImage'?
+
+  @description('Optional. Specifies whether data disk should be deleted or detached upon VM deletion.')
+  deleteOption: 'Delete' | 'Detach'?
+
+  @description('Optional. Specifies the caching requirements.')
+  caching: 'None' | 'ReadOnly' | 'ReadWrite'?
+
+  @description('Optional. Specifies the ephemeral Disk Settings for the operating system disk.')
+  diffDiskSettings: {
+    @description('Required. Specifies the ephemeral disk placement for the operating system disk.')
+    placement: ('CacheDisk' | 'NvmeDisk' | 'ResourceDisk')
+  }?
+
+  @description('Required. The managed disk parameters.')
+  managedDisk: {
+    @description('Optional. Specifies the storage account type for the managed disk.')
+    storageAccountType:
+      | 'PremiumV2_LRS'
+      | 'Premium_LRS'
+      | 'Premium_ZRS'
+      | 'StandardSSD_LRS'
+      | 'StandardSSD_ZRS'
+      | 'Standard_LRS'
+      | 'UltraSSD_LRS'?
+
+    @description('Optional. Specifies the customer managed disk encryption set resource id for the managed disk.')
+    diskEncryptionSetResourceId: string?
+  }
+}
+
+@export()
+@description('The type describing a data disk.')
+type dataDiskType = {
   @description('Optional. The disk name.')
   name: string?
 
@@ -1096,45 +1149,6 @@ type dataDisksType = {
     @description('Optional. Specifies the customer managed disk id for the managed disk.')
     id: string?
   }
-}[]?
-
-type osDiskType = {
-  @description('Optional. Specifies the caching requirements.')
-  caching: 'None' | 'ReadOnly' | 'ReadWrite'?
-
-  @description('Optional. Specifies how the virtual machine should be created.')
-  createOption: 'Attach' | 'Empty' | 'FromImage'?
-
-  @description('Optional. Specifies the ephemeral Disk Settings for the operating system disk.')
-  diffDiskSettings: {
-    @description('Required. Specifies the ephemeral disk placement for the operating system disk.')
-    placement: ('CacheDisk' | 'NvmeDisk' | 'ResourceDisk')
-  }?
-
-  @description('Optional. Specifies the size of an empty data disk in gigabytes.')
-  diskSizeGB: int?
-
-  @description('Optional. Specifies whether data disk should be deleted or detached upon VM deletion.')
-  deleteOption: 'Delete' | 'Detach'?
-
-  @description('Required. The managed disk parameters.')
-  managedDisk: {
-    @description('Optional. Specifies the customer managed disk encryption set resource id for the managed disk.')
-    diskEncryptionSetResourceId: string?
-
-    @description('Optional. Specifies the storage account type for the managed disk.')
-    storageAccountType:
-      | 'PremiumV2_LRS'
-      | 'Premium_LRS'
-      | 'Premium_ZRS'
-      | 'StandardSSD_LRS'
-      | 'StandardSSD_ZRS'
-      | 'Standard_LRS'
-      | 'UltraSSD_LRS'?
-  }
-
-  @description('Optional. The disk name.')
-  name: string?
 }
 
 type publicKeyType = {

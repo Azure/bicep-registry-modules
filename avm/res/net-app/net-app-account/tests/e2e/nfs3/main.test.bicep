@@ -66,21 +66,29 @@ module testDeployment '../../../main.bicep' = {
           }
         ]
         serviceLevel: 'Premium'
-        size: 4398046511104
+        size: 1
         volumes: [
           {
-            exportPolicyRules: [
-              {
-                allowedClients: '0.0.0.0/0'
-                nfsv3: true
-                nfsv41: false
-                ruleIndex: 1
-                unixReadOnly: false
-                unixReadWrite: true
-              }
-            ]
+            exportPolicy: {
+              rules: [
+                {
+                  allowedClients: '0.0.0.0/0'
+                  nfsv3: true
+                  nfsv41: false
+                  ruleIndex: 1
+                  unixReadOnly: false
+                  unixReadWrite: true
+                  kerberos5iReadOnly: false
+                  kerberos5pReadOnly: false
+                  kerberos5ReadOnly: false
+                  kerberos5iReadWrite: false
+                  kerberos5pReadWrite: false
+                  kerberos5ReadWrite: false
+                }
+              ]
+            }
             name: '${namePrefix}-${serviceShort}-vol-001'
-            zones: ['1']
+            zone: 1
             networkFeatures: 'Standard'
             encryptionKeySource: encryptionKeySource
             protocolTypes: [
@@ -98,7 +106,7 @@ module testDeployment '../../../main.bicep' = {
           }
           {
             name: '${namePrefix}-${serviceShort}-vol-002'
-            zones: ['1']
+            zone: 1
             networkFeatures: 'Standard'
             encryptionKeySource: encryptionKeySource
             protocolTypes: [
@@ -119,7 +127,7 @@ module testDeployment '../../../main.bicep' = {
           }
         ]
         serviceLevel: 'Premium'
-        size: 4398046511104
+        size: 1
         volumes: []
       }
     ]
@@ -157,7 +165,4 @@ module testDeployment '../../../main.bicep' = {
       ServiceName: 'DeploymentValidation'
     }
   }
-  dependsOn: [
-    nestedDependencies
-  ]
 }

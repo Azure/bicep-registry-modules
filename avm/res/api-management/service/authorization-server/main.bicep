@@ -1,6 +1,5 @@
 metadata name = 'API Management Service Authorization Servers'
 metadata description = 'This module deploys an API Management Service Authorization Server.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Identifier of the authorization server.')
 param name string
@@ -48,10 +47,16 @@ param defaultScope string = ''
 param serverDescription string = ''
 
 @description('Required. Form of an authorization grant, which the client uses to request the access token. - authorizationCode, implicit, resourceOwnerPassword, clientCredentials.')
-param grantTypes array
+@allowed([
+  'authorizationCode'
+  'clientCredentials'
+  'implicit'
+  'resourceOwnerPassword'
+])
+param grantTypes string[]
 
+@secure()
 @description('Optional. Can be optionally specified when resource owner password grant type is supported by this authorization server. Default resource owner password.')
-#disable-next-line secure-secrets-in-params // Not a secret
 param resourceOwnerPassword string = ''
 
 @description('Optional. Can be optionally specified when resource owner password grant type is supported by this authorization server. Default resource owner username.')
@@ -60,8 +65,8 @@ param resourceOwnerUsername string = ''
 @description('Optional. If true, authorization server will include state parameter from the authorization request to its response. Client may use state parameter to raise protocol security.')
 param supportState bool = false
 
-@description('Optional. Additional parameters required by the token endpoint of this authorization server represented as an array of JSON objects with name and value string properties, i.e. {"name" : "name value", "value": "a value"}. - TokenBodyParameterContract object.')
-param tokenBodyParameters array = []
+@description('Optional. Additional parameters required by the token endpoint of this authorization server represented as an array of JSON objects with name and value string properties.')
+param tokenBodyParameters tokenBodyParameterType[] = []
 
 @description('Optional. OAuth token endpoint. Contains absolute URI to entity being referenced.')
 param tokenEndpoint string = ''
@@ -106,3 +111,17 @@ output resourceId string = authorizationServer.id
 
 @description('The resource group the API management service authorization server was deployed into.')
 output resourceGroupName string = resourceGroup().name
+
+// =============== //
+//   Definitions   //
+// =============== //
+
+@export()
+@description('The type for a token body parameter.')
+type tokenBodyParameterType = {
+  @description('Required. Body parameter name.')
+  name: string
+
+  @description('Required. Body parameter value.')
+  value: string
+}

@@ -62,6 +62,12 @@ module testDeployment '../../../main.bicep' = [
         'hidden-title': 'This is visible in the resource name'
         Env: 'test'
       }
+      identitySettings: [
+        {
+          identity: nestedDependencies.outputs.managedIdentityResourceId
+          lifecycle: 'None'
+        }
+      ]
       roleAssignments: [
         {
           name: 'e9bac1ee-aebe-4513-9337-49e87a7be05e'
@@ -95,19 +101,17 @@ module testDeployment '../../../main.bicep' = [
           nestedDependencies.outputs.managedIdentityResourceId
         ]
       }
-      secrets: {
-        secureList: [
-          {
-            name: 'containerappstoredsecret'
-            value: myCustomContainerAppSecret
-          }
-          {
-            name: 'keyvaultstoredsecret'
-            keyVaultUrl: nestedDependencies.outputs.keyVaultSecretURI
-            identity: nestedDependencies.outputs.managedIdentityResourceId
-          }
-        ]
-      }
+      secrets: [
+        {
+          name: 'containerappstoredsecret'
+          value: myCustomContainerAppSecret
+        }
+        {
+          name: 'keyvaultstoredsecret'
+          keyVaultUrl: nestedDependencies.outputs.keyVaultSecretURI
+          identity: nestedDependencies.outputs.managedIdentityResourceId
+        }
+      ]
       containers: [
         {
           name: 'simple-hello-world-container'
@@ -146,9 +150,24 @@ module testDeployment '../../../main.bicep' = [
           ]
         }
       ]
+      runtime: {
+        java: {
+          enableJavaAgent: true
+          enableMetrics: false
+          loggerSettings: [
+            {
+              level: 'info'
+              logger: 'test'
+            }
+          ]
+        }
+      }
+      scaleSettings: {
+        maxReplicas: 11
+        minReplicas: 4
+        cooldownPeriod: 500
+        pollingInterval: 45
+      }
     }
-    dependsOn: [
-      nestedDependencies
-    ]
   }
 ]

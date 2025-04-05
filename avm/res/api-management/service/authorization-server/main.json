@@ -1,15 +1,38 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.34.60546",
-      "templateHash": "7143680740173420481"
+      "version": "0.33.13.18514",
+      "templateHash": "12052045734240221562"
     },
     "name": "API Management Service Authorization Servers",
-    "description": "This module deploys an API Management Service Authorization Server.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an API Management Service Authorization Server."
+  },
+  "definitions": {
+    "tokenBodyParameterType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Body parameter name."
+          }
+        },
+        "value": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Body parameter value."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a token body parameter."
+      }
+    }
   },
   "parameters": {
     "name": {
@@ -99,12 +122,21 @@
     },
     "grantTypes": {
       "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "allowedValues": [
+        "authorizationCode",
+        "clientCredentials",
+        "implicit",
+        "resourceOwnerPassword"
+      ],
       "metadata": {
         "description": "Required. Form of an authorization grant, which the client uses to request the access token. - authorizationCode, implicit, resourceOwnerPassword, clientCredentials."
       }
     },
     "resourceOwnerPassword": {
-      "type": "string",
+      "type": "securestring",
       "defaultValue": "",
       "metadata": {
         "description": "Optional. Can be optionally specified when resource owner password grant type is supported by this authorization server. Default resource owner password."
@@ -126,9 +158,12 @@
     },
     "tokenBodyParameters": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/tokenBodyParameterType"
+      },
       "defaultValue": [],
       "metadata": {
-        "description": "Optional. Additional parameters required by the token endpoint of this authorization server represented as an array of JSON objects with name and value string properties, i.e. {\"name\" : \"name value\", \"value\": \"a value\"}. - TokenBodyParameterContract object."
+        "description": "Optional. Additional parameters required by the token endpoint of this authorization server represented as an array of JSON objects with name and value string properties."
       }
     },
     "tokenEndpoint": {
@@ -145,8 +180,14 @@
     ],
     "setAuthorizationMethods": "[union(parameters('authorizationMethods'), variables('defaultAuthorizationMethods'))]"
   },
-  "resources": [
-    {
+  "resources": {
+    "service": {
+      "existing": true,
+      "type": "Microsoft.ApiManagement/service",
+      "apiVersion": "2023-05-01-preview",
+      "name": "[parameters('apiManagementServiceName')]"
+    },
+    "authorizationServer": {
       "type": "Microsoft.ApiManagement/service/authorizationServers",
       "apiVersion": "2022-08-01",
       "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
@@ -169,7 +210,7 @@
         "clientSecret": "[parameters('clientSecret')]"
       }
     }
-  ],
+  },
   "outputs": {
     "name": {
       "type": "string",

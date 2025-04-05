@@ -13,7 +13,7 @@ This module controls the Network Security Group Flow Logs and analytics settings
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Network/networkWatchers/flowLogs` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/networkWatchers/flowLogs) |
+| `Microsoft.Network/networkWatchers/flowLogs` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/networkWatchers/flowLogs) |
 
 ## Parameters
 
@@ -106,6 +106,8 @@ Specifies the number of days that logs will be kept for; a value of 0 will retai
 - Required: No
 - Type: int
 - Default: `365`
+- MinValue: 0
+- MaxValue: 365
 
 ### Parameter: `tags`
 

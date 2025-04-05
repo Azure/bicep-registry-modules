@@ -5,34 +5,33 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "801055427127865897"
+      "version": "0.33.13.18514",
+      "templateHash": "11342877423398402081"
     },
     "name": "Network Manager Network Groups",
-    "description": "This module deploys a Network Manager Network Group.\nA network group is a collection of same-type network resources that you can associate with network manager configurations. You can add same-type network resources after you create the network group.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Network Manager Network Group.\nA network group is a collection of same-type network resources that you can associate with network manager configurations. You can add same-type network resources after you create the network group."
   },
   "definitions": {
-    "staticMembersType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The name of the static member."
-            }
-          },
-          "resourceId": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. Resource ID of the virtual network."
-            }
+    "staticMemberType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the static member."
+          }
+        },
+        "resourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Resource ID of the virtual network."
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of a static member."
+      }
     }
   },
   "parameters": {
@@ -51,14 +50,29 @@
     },
     "description": {
       "type": "string",
-      "nullable": true,
+      "defaultValue": "",
       "maxLength": 500,
       "metadata": {
         "description": "Optional. A description of the network group."
       }
     },
+    "memberType": {
+      "type": "string",
+      "defaultValue": "VirtualNetwork",
+      "allowedValues": [
+        "Subnet",
+        "VirtualNetwork"
+      ],
+      "metadata": {
+        "description": "Optional. The type of the group member. Subnet member type is used for routing configurations."
+      }
+    },
     "staticMembers": {
-      "$ref": "#/definitions/staticMembersType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/staticMemberType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Static Members to create for the network group. Contains virtual networks to add to the network group."
       }
@@ -68,19 +82,17 @@
     "networkManager": {
       "existing": true,
       "type": "Microsoft.Network/networkManagers",
-      "apiVersion": "2023-11-01",
+      "apiVersion": "2024-05-01",
       "name": "[parameters('networkManagerName')]"
     },
     "networkGroup": {
       "type": "Microsoft.Network/networkManagers/networkGroups",
-      "apiVersion": "2023-11-01",
+      "apiVersion": "2024-05-01",
       "name": "[format('{0}/{1}', parameters('networkManagerName'), parameters('name'))]",
       "properties": {
-        "description": "[coalesce(parameters('description'), '')]"
-      },
-      "dependsOn": [
-        "networkManager"
-      ]
+        "description": "[parameters('description')]",
+        "memberType": "[parameters('memberType')]"
+      }
     },
     "networkGroup_staticMembers": {
       "copy": {
@@ -115,12 +127,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "13401706108335869614"
+              "version": "0.33.13.18514",
+              "templateHash": "17520354652811358915"
             },
             "name": "Network Manager Network Group Static Members",
-            "description": "This module deploys a Network Manager Network Group Static Member.\nStatic membership allows you to explicitly add virtual networks to a group by manually selecting individual virtual networks.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Network Manager Network Group Static Member.\nStatic membership allows you to explicitly add virtual networks to a group by manually selecting individual virtual networks."
           },
           "parameters": {
             "networkManagerName": {
@@ -151,7 +162,7 @@
           "resources": [
             {
               "type": "Microsoft.Network/networkManagers/networkGroups/staticMembers",
-              "apiVersion": "2023-11-01",
+              "apiVersion": "2024-05-01",
               "name": "[format('{0}/{1}/{2}', parameters('networkManagerName'), parameters('networkGroupName'), parameters('name'))]",
               "properties": {
                 "resourceId": "[parameters('resourceId')]"
@@ -184,8 +195,7 @@
         }
       },
       "dependsOn": [
-        "networkGroup",
-        "networkManager"
+        "networkGroup"
       ]
     }
   },

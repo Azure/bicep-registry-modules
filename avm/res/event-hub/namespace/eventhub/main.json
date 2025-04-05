@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "17504773495438271921"
+      "version": "0.33.93.31351",
+      "templateHash": "3890887436119201915"
     },
     "name": "Event Hub Namespace Event Hubs",
-    "description": "This module deploys an Event Hub Namespace Event Hub.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Event Hub Namespace Event Hub."
   },
   "definitions": {
     "lockType": {
@@ -39,7 +38,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     },
@@ -114,7 +113,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     }
@@ -441,12 +440,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "7140787813388812663"
+              "version": "0.33.93.31351",
+              "templateHash": "6600585942129882296"
             },
             "name": "Event Hub Namespace Event Hub Consumer Groups",
-            "description": "This module deploys an Event Hub Namespace Event Hub Consumer Group.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Event Hub Namespace Event Hub Consumer Group."
           },
           "parameters": {
             "namespaceName": {
@@ -547,12 +545,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "14846437278716777277"
+              "version": "0.33.93.31351",
+              "templateHash": "5591325767835614815"
             },
             "name": "Event Hub Namespace Event Hub Authorization Rules",
-            "description": "This module deploys an Event Hub Namespace Event Hub Authorization Rule.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Event Hub Namespace Event Hub Authorization Rule."
           },
           "parameters": {
             "namespaceName": {

@@ -78,7 +78,8 @@ function Initialize-DeploymentRemoval {
             'Microsoft.Insights/diagnosticSettings',
             'Microsoft.Network/privateEndpoints/privateDnsZoneGroups',
             'Microsoft.Network/privateEndpoints',
-            'Microsoft.Network/azureFirewalls',
+            'Microsoft.Network/virtualHubs/routingIntent', # Must be deleted before e.g., an Azure Firewall that it is referencing
+            'Microsoft.Network/azureFirewalls', # Must be deleted before e.g., a Virtual Hub that it is using.
             'Microsoft.Network/virtualHubs',
             'Microsoft.Network/virtualWans',
             'Microsoft.OperationsManagement/solutions',
@@ -94,7 +95,16 @@ function Initialize-DeploymentRemoval {
             'Microsoft.Compute/virtualMachines',
             'Microsoft.ContainerInstance/containerGroups' # Must be removed before their MSI
             'Microsoft.ManagedIdentity/userAssignedIdentities',
-            'Microsoft.Databricks/workspaces'
+            'Microsoft.Databricks/workspaces',
+            'Microsoft.NetApp/netAppAccounts/capacityPools/volumes', # Must be deleted before netapp account capacity pool & attached policies because if any policies are linked to a volume their removal with fail
+            'Microsoft.NetApp/netAppAccounts/backupPolicies', # Must be deleted before netapp volume backup can be removed because the Resource Provider does not allow deleting the account as long as it has nested resources
+            'Microsoft.NetApp/netAppAccounts/backupVaults/backups', # Must be deleted before netapp account backup vault because you cannot delete a backup vault while it still contains backups
+            'Microsoft.NetApp/netAppAccounts/backupVaults', # Must be deleted before netapp account because the Resource Provider does not allow deleting the account as long as it has nested resources
+            'Microsoft.NetApp/netAppAccounts/snapshotPolicies', # Must be deleted before netapp account because the Resource Provider does not allow deleting the account as long as it has nested resources
+            'Microsoft.NetApp/netAppAccounts/capacityPools', # Must be deleted before netapp account because the Resource Provider does not allow deleting the account as long as it has nested resources
+            'Microsoft.Network/virtualNetworkGateways', # Must be deleted before the Public IP that is associated with it
+            'Microsoft.Network/loadBalancers', # Must be deleted before e.g. a GatewaySubnet that is associated with it
+            'Microsoft.DataProtection/backupVaults', # This resource has a custom removal logic and hence needs to be deleted before its resource group
             'Microsoft.Resources/resourceGroups'
         )
 

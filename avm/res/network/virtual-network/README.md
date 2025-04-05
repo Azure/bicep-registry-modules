@@ -1,10 +1,5 @@
 # Virtual Networks `[Microsoft.Network/virtualNetworks]`
 
-> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
-> 
-> - Only security and bug fixes are being handled by the AVM core team at present.
-> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
-
 This module deploys a Virtual Network (vNet).
 
 ## Navigation
@@ -1337,6 +1332,7 @@ The flow timeout in minutes for the Virtual Network, which is used to enable con
 - Required: No
 - Type: int
 - Default: `0`
+- MaxValue: 30
 
 ### Parameter: `location`
 

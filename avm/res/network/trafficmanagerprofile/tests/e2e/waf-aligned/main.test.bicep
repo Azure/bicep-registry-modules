@@ -73,7 +73,6 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, enforcedLocation01)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      location: 'global'
       monitorConfig: {
         protocol: 'https'
         port: '443'
@@ -93,10 +92,6 @@ module testDeployment '../../../main.bicep' = [
           workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
         }
       ]
-      lock: {
-        kind: 'CanNotDelete'
-        name: 'myCustomLockName'
-      }
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'
@@ -110,7 +105,7 @@ module testDeployment '../../../main.bicep' = [
             targetResourceId: nestedDependencies.outputs.webApp01ResourceId
             weight: 1
             priority: 1
-            endpointLocation: '${enforcedLocation01}'
+            endpointLocation: enforcedLocation01
             endpointStatus: 'Enabled'
           }
         }
@@ -121,7 +116,7 @@ module testDeployment '../../../main.bicep' = [
             targetResourceId: nestedDependencies.outputs.webApp02ResourceId
             weight: 1
             priority: 2
-            endpointLocation: '${enforcedLocation02}'
+            endpointLocation: enforcedLocation02
             endpointStatus: 'Enabled'
           }
         }

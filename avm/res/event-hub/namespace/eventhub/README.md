@@ -153,6 +153,8 @@ The time window allows you to set the frequency with which the capture to Azure 
 - Required: No
 - Type: int
 - Default: `300`
+- MinValue: 60
+- MaxValue: 900
 
 ### Parameter: `captureDescriptionSizeLimitInBytes`
 
@@ -161,6 +163,8 @@ The size window defines the amount of data built up in your Event Hub before an 
 - Required: No
 - Type: int
 - Default: `314572800`
+- MinValue: 10485760
+- MaxValue: 524288000
 
 ### Parameter: `captureDescriptionSkipEmptyArchives`
 
@@ -228,6 +232,8 @@ Number of days to retain the events for this Event Hub, value should be 1 to 7 d
 - Required: No
 - Type: int
 - Default: `1`
+- MinValue: 1
+- MaxValue: 7
 
 ### Parameter: `partitionCount`
 
@@ -236,6 +242,8 @@ Number of partitions created for the Event Hub, allowed values are from 1 to 32 
 - Required: No
 - Type: int
 - Default: `2`
+- MinValue: 1
+- MaxValue: 32
 
 ### Parameter: `retentionDescriptionCleanupPolicy`
 
@@ -259,6 +267,8 @@ Retention time in hours. Number of hours to retain the events for this Event Hub
 - Required: No
 - Type: int
 - Default: `1`
+- MinValue: 1
+- MaxValue: 168
 
 ### Parameter: `retentionDescriptionTombstoneRetentionTimeInHours`
 
@@ -267,6 +277,8 @@ Retention cleanup policy. Number of hours to retain the tombstone markers of a c
 - Required: No
 - Type: int
 - Default: `1`
+- MinValue: 1
+- MaxValue: 168
 
 ### Parameter: `roleAssignments`
 
@@ -410,4 +422,4 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |

@@ -38,7 +38,7 @@ This module deploys a Storage Account Blob Service.
 | [`containerDeleteRetentionPolicyDays`](#parameter-containerdeleteretentionpolicydays) | int | Indicates the number of days that the deleted item should be retained. |
 | [`containerDeleteRetentionPolicyEnabled`](#parameter-containerdeleteretentionpolicyenabled) | bool | The blob service properties for container soft delete. Indicates whether DeleteRetentionPolicy is enabled. |
 | [`containers`](#parameter-containers) | array | Blob containers to create. |
-| [`corsRules`](#parameter-corsrules) | array | Specifies CORS rules for the Blob service. You can include up to five CorsRule elements in the request. If no CorsRule elements are included in the request body, all CORS rules will be deleted, and CORS will be disabled for the Blob service. |
+| [`corsRules`](#parameter-corsrules) | array | The List of CORS rules. You can include up to five CorsRule elements in the request. |
 | [`defaultServiceVersion`](#parameter-defaultserviceversion) | string | Indicates the default version to use for requests to the Blob service if an incoming request's version is not specified. Possible values include version 2008-10-27 and all more recent versions. |
 | [`deleteRetentionPolicyAllowPermanentDelete`](#parameter-deleteretentionpolicyallowpermanentdelete) | bool | This property when set to true allows deletion of the soft deleted blob versions and snapshots. This property cannot be used with blob restore policy. This property only applies to blob service and does not apply to containers or file share. |
 | [`deleteRetentionPolicyDays`](#parameter-deleteretentionpolicydays) | int | Indicates the number of days that the deleted blob should be retained. |
@@ -78,6 +78,8 @@ Indicates whether change feed event logging is enabled for the Blob service. Ind
 
 - Required: No
 - Type: int
+- MinValue: 1
+- MaxValue: 146000
 
 ### Parameter: `containerDeleteRetentionPolicyAllowPermanentDelete`
 
@@ -93,6 +95,8 @@ Indicates the number of days that the deleted item should be retained.
 
 - Required: No
 - Type: int
+- MinValue: 1
+- MaxValue: 365
 
 ### Parameter: `containerDeleteRetentionPolicyEnabled`
 
@@ -111,11 +115,70 @@ Blob containers to create.
 
 ### Parameter: `corsRules`
 
-Specifies CORS rules for the Blob service. You can include up to five CorsRule elements in the request. If no CorsRule elements are included in the request body, all CORS rules will be deleted, and CORS will be disabled for the Blob service.
+The List of CORS rules. You can include up to five CorsRule elements in the request.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`allowedHeaders`](#parameter-corsrulesallowedheaders) | array | A list of headers allowed to be part of the cross-origin request. |
+| [`allowedMethods`](#parameter-corsrulesallowedmethods) | array | A list of HTTP methods that are allowed to be executed by the origin. |
+| [`allowedOrigins`](#parameter-corsrulesallowedorigins) | array | A list of origin domains that will be allowed via CORS, or "*" to allow all domains. |
+| [`exposedHeaders`](#parameter-corsrulesexposedheaders) | array | A list of response headers to expose to CORS clients. |
+| [`maxAgeInSeconds`](#parameter-corsrulesmaxageinseconds) | int | The number of seconds that the client/browser should cache a preflight response. |
+
+### Parameter: `corsRules.allowedHeaders`
+
+A list of headers allowed to be part of the cross-origin request.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `corsRules.allowedMethods`
+
+A list of HTTP methods that are allowed to be executed by the origin.
+
+- Required: Yes
+- Type: array
+- Allowed:
+  ```Bicep
+  [
+    'CONNECT'
+    'DELETE'
+    'GET'
+    'HEAD'
+    'MERGE'
+    'OPTIONS'
+    'PATCH'
+    'POST'
+    'PUT'
+    'TRACE'
+  ]
+  ```
+
+### Parameter: `corsRules.allowedOrigins`
+
+A list of origin domains that will be allowed via CORS, or "*" to allow all domains.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `corsRules.exposedHeaders`
+
+A list of response headers to expose to CORS clients.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `corsRules.maxAgeInSeconds`
+
+The number of seconds that the client/browser should cache a preflight response.
+
+- Required: Yes
+- Type: int
 
 ### Parameter: `defaultServiceVersion`
 
@@ -140,6 +203,8 @@ Indicates the number of days that the deleted blob should be retained.
 - Required: No
 - Type: int
 - Default: `7`
+- MinValue: 1
+- MaxValue: 365
 
 ### Parameter: `deleteRetentionPolicyEnabled`
 
@@ -317,7 +382,8 @@ How long this blob can be restored. It should be less than DeleteRetentionPolicy
 
 - Required: No
 - Type: int
-- Default: `6`
+- Default: `7`
+- MinValue: 1
 
 ### Parameter: `restorePolicyEnabled`
 
@@ -341,4 +407,4 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |

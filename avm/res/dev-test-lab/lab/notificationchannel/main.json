@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "1470030882457989802"
+      "version": "0.34.44.8038",
+      "templateHash": "11014266698746418553"
     },
     "name": "DevTest Lab Notification Channels",
-    "description": "This module deploys a DevTest Lab Notification Channel.\n\nNotification channels are used by the schedule resource type in order to send notifications or events to email addresses and/or webhooks.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a DevTest Lab Notification Channel.\n\nNotification channels are used by the schedule resource type in order to send notifications or events to email addresses and/or webhooks."
   },
   "parameters": {
     "labName": {
@@ -97,10 +96,7 @@
         "emailRecipient": "[parameters('emailRecipient')]",
         "webHookUrl": "[parameters('webHookUrl')]",
         "notificationLocale": "[parameters('notificationLocale')]"
-      },
-      "dependsOn": [
-        "lab"
-      ]
+      }
     }
   },
   "outputs": {

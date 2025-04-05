@@ -4,12 +4,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "9799909568020880663"
+      "version": "0.34.44.8038",
+      "templateHash": "5747070610235343863"
     },
     "name": "DocumentDB Database Account MongoDB Database Collections",
-    "description": "This module deploys a MongoDB Database Collection.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a MongoDB Database Collection."
   },
   "parameters": {
     "databaseAccountName": {
@@ -34,7 +33,7 @@
       "type": "int",
       "defaultValue": 400,
       "metadata": {
-        "description": "Optional. Request Units per second."
+        "description": "Optional. Request Units per second. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the collection level and not at the database level."
       }
     },
     "indexes": {
@@ -53,10 +52,10 @@
   "resources": [
     {
       "type": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections",
-      "apiVersion": "2023-04-15",
+      "apiVersion": "2024-11-15",
       "name": "[format('{0}/{1}/{2}', parameters('databaseAccountName'), parameters('mongodbDatabaseName'), parameters('name'))]",
       "properties": {
-        "options": "[if(contains(reference(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), '2023-04-15').capabilities, createObject('name', 'EnableServerless')), null(), createObject('throughput', parameters('throughput')))]",
+        "options": "[if(contains(reference(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), '2024-11-15').capabilities, createObject('name', 'EnableServerless')), null(), createObject('throughput', parameters('throughput')))]",
         "resource": {
           "id": "[parameters('name')]",
           "indexes": "[parameters('indexes')]",

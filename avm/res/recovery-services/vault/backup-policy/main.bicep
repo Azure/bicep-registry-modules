@@ -1,6 +1,5 @@
 metadata name = 'Recovery Services Vault Backup Policies'
 metadata description = 'This module deploys a Recovery Services Vault Backup Policy.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent Azure Recovery Service Vault. Required if the template is used in a standalone deployment.')
 param recoveryVaultName string
@@ -15,7 +14,7 @@ resource rsv 'Microsoft.RecoveryServices/vaults@2023-01-01' existing = {
   name: recoveryVaultName
 }
 
-resource backupPolicy 'Microsoft.RecoveryServices/vaults/backupPolicies@2023-01-01' = {
+resource backupPolicy 'Microsoft.RecoveryServices/vaults/backupPolicies@2024-10-01' = {
   name: name
   parent: rsv
   properties: properties

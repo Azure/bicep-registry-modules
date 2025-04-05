@@ -4,12 +4,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "15278651865125879516"
+      "version": "0.34.44.8038",
+      "templateHash": "9670645583410999867"
     },
     "name": "DevTest Lab Policy Sets Policies",
-    "description": "This module deploys a DevTest Lab Policy Sets Policy.\n\nDevTest lab policies are used to modify the lab settings such as only allowing certain VM Size SKUs, marketplace image types, number of VMs allowed per user and other settings.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a DevTest Lab Policy Sets Policy.\n\nDevTest lab policies are used to modify the lab settings such as only allowing certain VM Size SKUs, marketplace image types, number of VMs allowed per user and other settings."
   },
   "parameters": {
     "labName": {

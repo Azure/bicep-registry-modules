@@ -61,6 +61,8 @@ module testDeployment '../../../main.bicep' = [
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
       }
+      publicNetworkAccess: 'Enabled'
+      virtualNetworkResourceId: nestedDependencies.outputs.virtualNetworkResourceId
       privateEndpoints: [
         {
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
@@ -135,8 +137,5 @@ module testDeployment '../../../main.bicep' = [
         Role: 'DeploymentValidation'
       }
     }
-    dependsOn: [
-      nestedDependencies
-    ]
   }
 ]

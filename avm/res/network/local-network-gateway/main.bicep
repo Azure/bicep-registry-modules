@@ -1,6 +1,5 @@
 metadata name = 'Local Network Gateways'
 metadata description = 'This module deploys a Local Network Gateway.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the Local Network Gateway.')
 @minLength(1)
@@ -15,20 +14,13 @@ param localAddressPrefixes array
 @description('Required. Public IP of the local gateway.')
 param localGatewayPublicIpAddress string
 
-@description('Optional. The BGP speaker\'s ASN. Not providing this value will automatically disable BGP on this Local Network Gateway resource.')
-param localAsn string = ''
-
-@description('Optional. The BGP peering address and BGP identifier of this BGP speaker. Not providing this value will automatically disable BGP on this Local Network Gateway resource.')
-param localBgpPeeringAddress string = ''
-
-@description('Optional. The weight added to routes learned from this BGP speaker. This will only take effect if both the localAsn and the localBgpPeeringAddress values are provided.')
-param localPeerWeight string = ''
-
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
-param lock lockType
+param lock lockType?
 
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
 param tags object?
@@ -39,11 +31,8 @@ param enableTelemetry bool = true
 @description('Optional. FQDN of local network gateway.')
 param fqdn string = ''
 
-var bgpSettings = {
-  asn: localAsn
-  bgpPeeringAddress: localBgpPeeringAddress
-  peerWeight: !empty(localPeerWeight) ? localPeerWeight : '0'
-}
+@description('Optional. Local network gateway\'s BGP speaker settings.')
+param bgpSettings bgpSettingsType?
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
@@ -106,7 +95,13 @@ resource localNetworkGateway 'Microsoft.Network/localNetworkGateways@2023-04-01'
     }
     fqdn: !empty(fqdn) ? fqdn : null
     gatewayIpAddress: localGatewayPublicIpAddress
-    bgpSettings: !empty(localAsn) && !empty(localBgpPeeringAddress) ? bgpSettings : null
+    bgpSettings: !empty(bgpSettings)
+      ? {
+          asn: bgpSettings!.localAsn
+          bgpPeeringAddress: bgpSettings!.localBgpPeeringAddress
+          peerWeight: bgpSettings.?peerWeight ?? 0
+        }
+      : null
   }
 }
 
@@ -157,36 +152,17 @@ output location string = localNetworkGateway.location
 //   Definitions   //
 // =============== //
 
-type lockType = {
-  @description('Optional. Specify the name of lock.')
-  name: string?
+@export()
+@description('The type of BGP settings.')
+type bgpSettingsType = {
+  @description('Required. The BGP speaker\'s ASN.')
+  @minValue(0)
+  @maxValue(4294967295)
+  localAsn: int
 
-  @description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?
+  @description('Required. The BGP peering address and BGP identifier of this BGP speaker.')
+  localBgpPeeringAddress: string
 
-type roleAssignmentType = {
-  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
-  name: string?
-
-  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
-
-  @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
-
-  @description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
-
-  @description('Optional. The description of the role assignment.')
-  description: string?
-
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
-
-  @description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
-
-  @description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?
+  @description('Optional. The weight added to routes learned from this BGP speaker.')
+  peerWeight: int?
+}

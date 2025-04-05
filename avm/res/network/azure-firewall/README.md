@@ -18,8 +18,8 @@ This module deploys an Azure Firewall.
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Network/azureFirewalls` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/azureFirewalls) |
-| `Microsoft.Network/publicIPAddresses` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-09-01/publicIPAddresses) |
+| `Microsoft.Network/azureFirewalls` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/azureFirewalls) |
+| `Microsoft.Network/publicIPAddresses` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/publicIPAddresses) |
 
 ## Usage examples
 
@@ -1858,7 +1858,48 @@ IP addresses associated with AzureFirewall. Required if `virtualHubId` is suppli
 
 - Required: No
 - Type: object
-- Default: `{}`
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`privateIPAddress`](#parameter-hubipaddressesprivateipaddress) | string | Private IP Address associated with AzureFirewall. |
+| [`publicIPs`](#parameter-hubipaddressespublicips) | object | List of public IP addresses associated with AzureFirewall. |
+
+### Parameter: `hubIPAddresses.privateIPAddress`
+
+Private IP Address associated with AzureFirewall.
+
+- Required: No
+- Type: string
+
+### Parameter: `hubIPAddresses.publicIPs`
+
+List of public IP addresses associated with AzureFirewall.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`addresses`](#parameter-hubipaddressespublicipsaddresses) | array | The list of Public IP addresses associated with AzureFirewall or IP addresses to be retained. |
+| [`count`](#parameter-hubipaddressespublicipscount) | int | Public IP address count. |
+
+### Parameter: `hubIPAddresses.publicIPs.addresses`
+
+The list of Public IP addresses associated with AzureFirewall or IP addresses to be retained.
+
+- Required: No
+- Type: array
+
+### Parameter: `hubIPAddresses.publicIPs.count`
+
+Public IP address count.
+
+- Required: No
+- Type: int
 
 ### Parameter: `virtualHubId`
 
@@ -1953,6 +1994,8 @@ Priority of the application rule collection.
 
 - Required: Yes
 - Type: int
+- MinValue: 100
+- MaxValue: 65000
 
 ### Parameter: `applicationRuleCollections.properties.rules`
 
@@ -2025,6 +2068,7 @@ Port number for the protocol.
 
 - Required: No
 - Type: int
+- MaxValue: 64000
 
 ### Parameter: `applicationRuleCollections.properties.rules.description`
 
@@ -2376,6 +2420,8 @@ Priority of the NAT rule collection.
 
 - Required: Yes
 - Type: int
+- MinValue: 100
+- MaxValue: 65000
 
 ### Parameter: `natRuleCollections.properties.rules`
 
@@ -2552,6 +2598,8 @@ Priority of the network rule collection.
 
 - Required: Yes
 - Type: int
+- MinValue: 100
+- MaxValue: 65000
 
 ### Parameter: `networkRuleCollections.properties.rules`
 
@@ -2833,7 +2881,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/public-ip-address:0.6.0` | Remote reference |
+| `br/public:avm/res/network/public-ip-address:0.8.0` | Remote reference |
 
 ## Data Collection
 

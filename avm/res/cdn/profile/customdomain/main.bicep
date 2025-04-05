@@ -1,6 +1,5 @@
 metadata name = 'CDN Profiles Custom Domains'
 metadata description = 'This module deploys a CDN Profile Custom Domains.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the custom domain.')
 param name string
@@ -41,7 +40,7 @@ param secretName string = ''
 resource profile 'Microsoft.Cdn/profiles@2023-05-01' existing = {
   name: profileName
 
-  resource secrect 'secrets@2023-05-01' existing = if (!empty(secretName)) {
+  resource secret 'secrets@2023-05-01' existing = if (!empty(secretName)) {
     name: secretName
   }
 }
@@ -67,7 +66,7 @@ resource customDomain 'Microsoft.Cdn/profiles/customDomains@2023-05-01' = {
       minimumTlsVersion: minimumTlsVersion
       secret: !(empty(secretName))
         ? {
-            id: profile::secrect.id
+            id: profile::secret.id
           }
         : null
     }
@@ -84,7 +83,7 @@ output resourceId string = customDomain.id
 output resourceGroupName string = resourceGroup().name
 
 @description('The DNS validation records.')
-output dnsValidation dnsValidationType = {
+output dnsValidation dnsValidationOutputType = {
   dnsTxtRecordName: '_dnsauth.${customDomain.properties.hostName}'
   dnsTxtRecordValue: customDomain.properties.validationProperties.validationToken
   dnsTxtRecordExpiry: customDomain.properties.validationProperties.expirationDate
@@ -95,6 +94,7 @@ output dnsValidation dnsValidationType = {
 // =============== //
 
 @export()
+@description('The type of the custom domain.')
 type customDomainType = {
   @description('Required. The name of the custom domain.')
   name: string
@@ -122,13 +122,14 @@ type customDomainType = {
 }
 
 @export()
-type dnsValidationType = {
-  @description('Required. The DNS record name.')
-  dnsTxtRecordName: string
+@description('The type of the DNS validation.')
+type dnsValidationOutputType = {
+  @description('The DNS record name.')
+  dnsTxtRecordName: string?
 
-  @description('Required. The DNS record value.')
-  dnsTxtRecordValue: string
+  @description('The DNS record value.')
+  dnsTxtRecordValue: string?
 
-  @description('Required. The expiry date of the DNS record.')
-  dnsTxtRecordExpiry: string
+  @description('The expiry date of the DNS record.')
+  dnsTxtRecordExpiry: string?
 }

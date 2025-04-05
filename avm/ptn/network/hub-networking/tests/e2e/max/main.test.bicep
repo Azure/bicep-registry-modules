@@ -65,14 +65,19 @@ module testDeployment '../../../main.bicep' = [
           addressPrefixes: array(addressPrefix)
           azureFirewallSettings: {
             azureSkuTier: 'Standard'
-            enableTelemetry: true
             location: resourceLocation
             publicIPAddressObject: {
               name: 'hub1-waf-pip'
             }
             threatIntelMode: 'Alert'
+            zones: [
+              1
+              2
+              3
+            ]
           }
           bastionHost: {
+            bastionHostName: 'bastion-hub1'
             disableCopyPaste: true
             enableFileCopy: false
             enableIpConnect: false
@@ -98,7 +103,6 @@ module testDeployment '../../../main.bicep' = [
           enableAzureFirewall: true
           enableBastion: true
           enablePeering: false
-          enableTelemetry: true
           flowTimeoutInMinutes: 30
           location: resourceLocation
           lock: {
@@ -149,7 +153,6 @@ module testDeployment '../../../main.bicep' = [
           addressPrefixes: array(addressPrefix2)
           azureFirewallSettings: {
             azureSkuTier: 'Standard'
-            enableTelemetry: true
             location: resourceLocation
             publicIPAddressObject: {
               name: 'hub2-waf-pip'
@@ -172,7 +175,6 @@ module testDeployment '../../../main.bicep' = [
           enableAzureFirewall: true
           enableBastion: true
           enablePeering: false
-          enableTelemetry: false
           flowTimeoutInMinutes: 10
           location: resourceLocation
           lock: {

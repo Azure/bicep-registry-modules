@@ -1,6 +1,5 @@
 metadata name = 'P2S VPN Gateway'
 metadata description = 'This module deploys a Virtual Hub P2S Gateway.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the P2S VPN Gateway.')
 param name string
@@ -57,8 +56,9 @@ param vpnServerConfigurationResourceId string?
 @description('Optional. Tags of the resource.')
 param tags object?
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
-param lock lockType
+param lock lockType?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -105,19 +105,27 @@ resource p2sVpnGateway 'Microsoft.Network/p2svpnGateways@2024-01-01' = {
         properties: {
           enableInternetSecurity: enableInternetSecurity
           routingConfiguration: {
-            associatedRouteTable:  {
-              id: resourceId('Microsoft.Network/virtualHubs/hubRouteTables','${virtualHubName}','${associatedRouteTableName}')
+            associatedRouteTable: {
+              id: resourceId(
+                'Microsoft.Network/virtualHubs/hubRouteTables',
+                '${virtualHubName}',
+                '${associatedRouteTableName}'
+              )
             }
-            inboundRouteMap: (!empty(inboundRouteMapResourceId)) ? {
-              id:  inboundRouteMapResourceId
-            } : null
-            outboundRouteMap: (!empty(outboundRouteMapResourceId)) ? {
-              id: outboundRouteMapResourceId
-            } : null
+            inboundRouteMap: (!empty(inboundRouteMapResourceId))
+              ? {
+                  id: inboundRouteMapResourceId
+                }
+              : null
+            outboundRouteMap: (!empty(outboundRouteMapResourceId))
+              ? {
+                  id: outboundRouteMapResourceId
+                }
+              : null
             propagatedRouteTables: {
               ids: [
                 for table in (propagatedRouteTableNames): {
-                  id: resourceId('Microsoft.Network/virtualHubs/hubRouteTables','${virtualHubName}','${table}')
+                  id: resourceId('Microsoft.Network/virtualHubs/hubRouteTables', '${virtualHubName}', '${table}')
                 }
               ]
               labels: propagatedLabelNames
@@ -167,14 +175,6 @@ output location string = p2sVpnGateway.location
 //   Definitions   //
 // =============== //
 
-type lockType = {
-  @description('Optional. Specify the name of lock.')
-  name: string?
-
-  @description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?
-
 @export()
 @description('Optional. A Type representing the VNET static routes for the P2S VPN Gateway.')
 type vnetRoutesStaticRoutesType = {
@@ -195,4 +195,3 @@ type vnetRoutesStaticRoutesType = {
     vnetLocalRouteOverrideCriteria: string?
   }?
 }
-

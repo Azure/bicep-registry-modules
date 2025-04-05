@@ -491,6 +491,8 @@ Length of the Public IP Prefix.
 
 - Required: Yes
 - Type: int
+- MinValue: 21
+- MaxValue: 127
 
 ### Parameter: `customIPPrefix`
 

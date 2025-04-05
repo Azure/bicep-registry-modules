@@ -1,6 +1,5 @@
 metadata name = 'Azure SQL Servers'
 metadata description = 'This module deploys an Azure SQL Server.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The administrator username for the server. Required if no `administrators` object for AAD authentication is provided.')
 param administratorLogin string = ''
@@ -15,18 +14,18 @@ param location string = resourceGroup().location
 @description('Required. The name of the server.')
 param name string
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
 @description('Conditional. The resource ID of a user assigned identity to be used by default. Required if "userAssignedIdentities" is not empty.')
 param primaryUserAssignedIdentityId string = ''
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -54,6 +53,10 @@ param securityAlertPolicies securityAlerPolicyType[] = []
 @description('Optional. The keys to configure.')
 param keys keyType[] = []
 
+import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+@description('Optional. The customer managed key definition for server TDE.')
+param customerManagedKey customerManagedKeyWithAutoRotateType?
+
 @description('Conditional. The Azure Active Directory (AAD) administrator authentication. Required if no `administratorLogin` & `administratorLoginPassword` is provided.')
 param administrators serverExternalAdministratorType?
 
@@ -61,9 +64,6 @@ param administrators serverExternalAdministratorType?
 @minLength(36)
 @maxLength(36)
 param federatedClientId string?
-
-@description('Optional. A CMK URI of the key to use for encryption.')
-param keyId string?
 
 @allowed([
   '1.0'
@@ -81,7 +81,7 @@ param minimalTlsVersion string = '1.2'
 @description('Optional. Whether or not to enable IPv6 support for this server.')
 param isIPv6Enabled string = 'Disabled'
 
-import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointSingleServiceType[]?
 
@@ -117,17 +117,21 @@ var identity = !empty(managedIdentities)
     }
   : null
 
-@description('Optional. The encryption protection configuration.')
-param encryptionProtectorObj encryptionProtectorType?
-
 @description('Optional. The vulnerability assessment configuration.')
 param vulnerabilityAssessmentsObj vulnerabilityAssessmentType?
 
-@description('Optional. The audit settings configuration.')
-param auditSettings auditSettingsType = {} //Use the defaults from the child module
+@description('Optional. The audit settings configuration. If you want to disable auditing, set the parmaeter to an empty object.')
+param auditSettings auditSettingsType = {
+  state: 'Enabled'
+}
 
 @description('Optional. Key vault reference and secret settings for the module\'s secrets export.')
 param secretsExportConfiguration secretsExportConfigurationType?
+
+@description('Optional. The failover groups configuration.')
+param failoverGroups failoverGroupType[] = []
+
+var enableReferencedModulesTelemetry = false
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
@@ -182,6 +186,18 @@ var formattedRoleAssignments = [
   })
 ]
 
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+  name: last(split(customerManagedKey.?keyVaultResourceId!, '/'))
+  scope: resourceGroup(
+    split(customerManagedKey.?keyVaultResourceId!, '/')[2],
+    split(customerManagedKey.?keyVaultResourceId!, '/')[4]
+  )
+
+  resource cMKKey 'keys@2023-07-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+    name: customerManagedKey.?keyName!
+  }
+}
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.sql-server.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
@@ -212,7 +228,13 @@ resource server 'Microsoft.Sql/servers@2023-08-01-preview' = {
     administrators: union({ administratorType: 'ActiveDirectory' }, administrators ?? {})
     federatedClientId: federatedClientId
     isIPv6Enabled: isIPv6Enabled
-    keyId: keyId
+    keyId: customerManagedKey != null
+      ? !empty(customerManagedKey.?keyVersion)
+          ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.?keyVersion}'
+          : (customerManagedKey.?autoRotationEnabled ?? true)
+              ? cMKKeyVault::cMKKey.properties.keyUri
+              : cMKKeyVault::cMKKey.properties.keyUriWithVersion
+      : null
     version: '12.0'
     minimalTlsVersion: minimalTlsVersion
     primaryUserAssignedIdentityId: !empty(primaryUserAssignedIdentityId) ? primaryUserAssignedIdentityId : null
@@ -336,10 +358,13 @@ module server_elasticPools 'elastic-pool/main.bicep' = [
   }
 ]
 
-module server_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
+module server_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-server-PrivateEndpoint-${index}'
-    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
+    scope: resourceGroup(
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
+    )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(server.id, '/'))}-${privateEndpoint.?service ?? 'sqlServer'}-${index}'
       privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
@@ -370,7 +395,7 @@ module server_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
-      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',
@@ -456,20 +481,31 @@ module server_keys 'key/main.bicep' = [
   }
 ]
 
-module server_encryptionProtector 'encryption-protector/main.bicep' = if (encryptionProtectorObj != null) {
+module cmk_key 'key/main.bicep' = if (customerManagedKey != null) {
+  name: '${uniqueString(deployment().name, location)}-Sql-Key'
+  params: {
+    serverName: server.name
+    name: '${cMKKeyVault.name}_${customerManagedKey.?keyName}_${customerManagedKey.?keyVersion}'
+    serverKeyType: 'AzureKeyVault'
+    uri: !empty(customerManagedKey.?keyVersion)
+      ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.?keyVersion}'
+      : (customerManagedKey.?autoRotationEnabled ?? true)
+          ? cMKKeyVault::cMKKey.properties.keyUri
+          : cMKKeyVault::cMKKey.properties.keyUriWithVersion
+  }
+}
+
+module server_encryptionProtector 'encryption-protector/main.bicep' = if (customerManagedKey != null) {
   name: '${uniqueString(deployment().name, location)}-Sql-EncryProtector'
   params: {
     sqlServerName: server.name
-    serverKeyName: encryptionProtectorObj!.serverKeyName
-    serverKeyType: encryptionProtectorObj.?serverKeyType
-    autoRotationEnabled: encryptionProtectorObj.?autoRotationEnabled
+    serverKeyName: cmk_key.outputs.name
+    serverKeyType: 'AzureKeyVault'
+    autoRotationEnabled: customerManagedKey.?autoRotationEnabled
   }
-  dependsOn: [
-    server_keys
-  ]
 }
 
-module server_audit_settings 'audit-settings/main.bicep' = if (auditSettings != null) {
+module server_audit_settings 'audit-settings/main.bicep' = if (!empty(auditSettings)) {
   name: '${uniqueString(deployment().name, location)}-Sql-AuditSettings'
   params: {
     serverName: server.name
@@ -489,17 +525,17 @@ module server_audit_settings 'audit-settings/main.bicep' = if (auditSettings != 
 module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfiguration != null) {
   name: '${uniqueString(deployment().name, location)}-secrets-kv'
   scope: resourceGroup(
-    split((secretsExportConfiguration.?keyVaultResourceId ?? '//'), '/')[2],
-    split((secretsExportConfiguration.?keyVaultResourceId ?? '////'), '/')[4]
+    split(secretsExportConfiguration.?keyVaultResourceId!, '/')[2],
+    split(secretsExportConfiguration.?keyVaultResourceId!, '/')[4]
   )
   params: {
-    keyVaultName: last(split(secretsExportConfiguration.?keyVaultResourceId ?? '//', '/'))
+    keyVaultName: last(split(secretsExportConfiguration.?keyVaultResourceId!, '/'))
     secretsToSet: union(
       [],
       contains(secretsExportConfiguration!, 'sqlAdminPasswordSecretName')
         ? [
             {
-              name: secretsExportConfiguration!.sqlAdminPasswordSecretName
+              name: secretsExportConfiguration!.?sqlAdminPasswordSecretName
               value: administratorLoginPassword
             }
           ]
@@ -507,7 +543,7 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
       contains(secretsExportConfiguration!, 'sqlAzureConnectionStringSercretName')
         ? [
             {
-              name: secretsExportConfiguration!.sqlAzureConnectionStringSercretName
+              name: secretsExportConfiguration!.?sqlAzureConnectionStringSercretName
               value: 'Server=${server.properties.fullyQualifiedDomainName}; Database=${!empty(databases) ? databases[0].name : ''}; User=${administratorLogin}; Password=${administratorLoginPassword}'
             }
           ]
@@ -515,6 +551,25 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
     )
   }
 }
+
+module failover_groups 'failover-group/main.bicep' = [
+  for (failoverGroup, index) in failoverGroups: {
+    name: '${uniqueString(deployment().name, location)}-Sql-FailoverGroup-${index}'
+    params: {
+      name: failoverGroup.name
+      tags: failoverGroup.?tags ?? tags
+      serverName: server.name
+      databases: failoverGroup.databases
+      partnerServers: failoverGroup.partnerServers
+      readOnlyEndpoint: failoverGroup.?readOnlyEndpoint
+      readWriteEndpoint: failoverGroup.readWriteEndpoint
+      secondaryType: failoverGroup.secondaryType
+    }
+    dependsOn: [
+      server_databases
+    ]
+  }
+]
 
 @description('The name of the deployed SQL server.')
 output name string = server.name
@@ -529,25 +584,25 @@ output fullyQualifiedDomainName string = server.properties.fullyQualifiedDomainN
 output resourceGroupName string = resourceGroup().name
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = server.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = server.?identity.?principalId
 
 @description('The location the resource was deployed into.')
 output location string = server.location
 
-import { secretsOutputType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { secretsOutputType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret\'s name.')
 output exportedSecrets secretsOutputType = (secretsExportConfiguration != null)
   ? toObject(secretsExport.outputs.secretsSet, secret => last(split(secret.secretResourceId, '/')), secret => secret)
   : {}
 
 @description('The private endpoints of the SQL server.')
-output privateEndpoints array = [
-  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
-    name: server_privateEndpoints[i].outputs.name
-    resourceId: server_privateEndpoints[i].outputs.resourceId
-    groupId: server_privateEndpoints[i].outputs.groupId
-    customDnsConfig: server_privateEndpoints[i].outputs.customDnsConfig
-    networkInterfaceIds: server_privateEndpoints[i].outputs.networkInterfaceIds
+output privateEndpoints privateEndpointOutputType[] = [
+  for (pe, index) in (privateEndpoints ?? []): {
+    name: server_privateEndpoints[index].outputs.name
+    resourceId: server_privateEndpoints[index].outputs.resourceId
+    groupId: server_privateEndpoints[index].outputs.?groupId!
+    customDnsConfigs: server_privateEndpoints[index].outputs.customDnsConfigs
+    networkInterfaceResourceIds: server_privateEndpoints[index].outputs.networkInterfaceResourceIds
   }
 ]
 
@@ -555,10 +610,36 @@ output privateEndpoints array = [
 //   Definitions   //
 // =============== //
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 import { elasticPoolPerDatabaseSettingsType, elasticPoolSkuType } from 'elastic-pool/main.bicep'
 import { databaseSkuType, shortTermBackupRetentionPolicyType, longTermBackupRetentionPolicyType } from 'database/main.bicep'
 import { recurringScansType } from 'vulnerability-assessment/main.bicep'
+import { failoverGroupReadOnlyEndpointType, failoverGroupReadWriteEndpointType } from 'failover-group/main.bicep'
+
+@export()
+@description('The type for a private endpoint output.')
+type privateEndpointOutputType = {
+  @description('The name of the private endpoint.')
+  name: string
+
+  @description('The resource ID of the private endpoint.')
+  resourceId: string
+
+  @description('The group Id for the private endpoint Group.')
+  groupId: string?
+
+  @description('The custom DNS configurations of the private endpoint.')
+  customDnsConfigs: {
+    @description('FQDN that resolves to private endpoint IP address.')
+    fqdn: string?
+
+    @description('A list of private IP addresses of the private endpoint.')
+    ipAddresses: string[]
+  }[]
+
+  @description('The IDs of the network interfaces associated with the private endpoint.')
+  networkInterfaceResourceIds: string[]
+}
 
 @export()
 type auditSettingsType = {
@@ -899,4 +980,28 @@ type securityAlerPolicyType = {
 
   @description('Optional. Specifies the blob storage endpoint. This blob storage will hold all Threat Detection audit logs.')
   storageEndpoint: string?
+}
+
+@export()
+type failoverGroupType = {
+  @description('Required. The name of the failover group.')
+  name: string
+
+  @description('Optional. Tags of the resource.')
+  tags: object?
+
+  @description('Required. List of databases in the failover group.')
+  databases: string[]
+
+  @description('Required. List of the partner servers for the failover group.')
+  partnerServers: string[]
+
+  @description('Optional. Read-only endpoint of the failover group instance.')
+  readOnlyEndpoint: failoverGroupReadOnlyEndpointType?
+
+  @description('Required. Read-write endpoint of the failover group instance.')
+  readWriteEndpoint: failoverGroupReadWriteEndpointType
+
+  @description('Required. Databases secondary type on partner server.')
+  secondaryType: 'Geo' | 'Standby'
 }

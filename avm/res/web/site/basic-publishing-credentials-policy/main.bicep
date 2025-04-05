@@ -1,6 +1,5 @@
 metadata name = 'Web Site Basic Publishing Credentials Policies'
 metadata description = 'This module deploys a Web Site Basic Publishing Credentials Policy.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the resource.')
 @allowed([
@@ -22,7 +21,7 @@ resource webApp 'Microsoft.Web/sites@2023-12-01' existing = {
   name: webAppName
 }
 
-resource basicPublishingCredentialsPolicy 'Microsoft.Web/sites/basicPublishingCredentialsPolicies@2023-12-01' = {
+resource basicPublishingCredentialsPolicy 'Microsoft.Web/sites/basicPublishingCredentialsPolicies@2024-04-01' = {
   #disable-next-line BCP225 // False-positive. Value is required.
   name: name
   location: location

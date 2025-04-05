@@ -1,6 +1,5 @@
 metadata name = 'Azure Virtual Desktop Host Pool'
 metadata description = 'This module deploys an Azure Virtual Desktop Host Pool'
-metadata owner = 'Azure/module-maintainers'
 
 @sys.description('Required. Name of the scaling plan.')
 param name string
@@ -9,10 +8,10 @@ param name string
 param location string = resourceGroup().location
 
 @sys.description('Optional. Friendly name of the scaling plan.')
-param friendlyName string = ''
+param friendlyName string?
 
 @sys.description('Optional. Description of the scaling plan.')
-param description string = ''
+param description string?
 
 @sys.description('Optional. Set this parameter to Personal if you would like to enable Persistent Desktop experience. Defaults to Pooled.')
 @allowed([
@@ -30,8 +29,9 @@ param hostPoolType string = 'Pooled'
 ])
 param publicNetworkAccess string = 'Enabled'
 
-@sys.description('Optional. Configuration details for private endpoints.')
-param privateEndpoints privateEndpointType
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+@sys.description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
+param privateEndpoints privateEndpointSingleServiceType[]?
 
 @sys.description('Optional. Set the type of assignment for a Personal Host Pool type.')
 @allowed([
@@ -94,14 +94,14 @@ param agentUpdate object = {
 param ring int = -1
 
 @sys.description('Optional. URL to customer ADFS server for signing WVD SSO certificates.')
-param ssoadfsAuthority string = ''
+param ssoadfsAuthority string?
 
 @sys.description('Optional. ClientId for the registered Relying Party used to issue WVD SSO certificates.')
-param ssoClientId string = ''
+param ssoClientId string?
 
 @sys.description('Optional. Path to Azure KeyVault storing the secret used for communication to ADFS.')
 #disable-next-line secure-secrets-in-params
-param ssoClientSecretKeyVaultPath string = ''
+param ssoClientSecretKeyVaultPath string?
 
 @sys.description('Optional. The type of single sign on Secret Type.')
 @allowed([
@@ -112,22 +112,27 @@ param ssoClientSecretKeyVaultPath string = ''
   'SharedKeyInKeyVault'
 ])
 #disable-next-line secure-secrets-in-params
-param ssoSecretType string = ''
+param ssoSecretType string?
 
 @sys.description('Optional. Tags of the resource.')
 param tags object?
 
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @sys.description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+param roleAssignments roleAssignmentType[]?
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @sys.description('Optional. The lock settings of the service.')
-param lock lockType
+param lock lockType?
 
 @sys.description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @sys.description('Optional. The diagnostic settings of the service.')
-param diagnosticSettings diagnosticSettingType
+param diagnosticSettings diagnosticSettingLogsOnlyType[]?
+
+var enableReferencedModulesTelemetry = false
 
 var builtInRoleNames = {
   Owner: '/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
@@ -218,10 +223,13 @@ resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2024-04-03' = {
   }
 }
 
-module hostPool_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
+module hostPool_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-hostPool-PrivateEndpoint-${index}'
-    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
+    scope: resourceGroup(
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
+    )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(hostPool.id, '/'))}-${privateEndpoint.?service ?? 'connection'}-${index}'
       privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
@@ -252,7 +260,7 @@ module hostPool_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
-      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',
@@ -332,172 +340,40 @@ output name string = hostPool.name
 output location string = hostPool.location
 
 @sys.description('The private endpoints of the host pool.')
-output privateEndpoints array = [
-  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
-    name: hostPool_privateEndpoints[i].outputs.name
-    resourceId: hostPool_privateEndpoints[i].outputs.resourceId
-    groupId: hostPool_privateEndpoints[i].outputs.groupId
-    customDnsConfig: hostPool_privateEndpoints[i].outputs.customDnsConfig
-    networkInterfaceIds: hostPool_privateEndpoints[i].outputs.networkInterfaceIds
+output privateEndpoints privateEndpointOutputType[] = [
+  for (pe, index) in (privateEndpoints ?? []): {
+    name: hostPool_privateEndpoints[index].outputs.name
+    resourceId: hostPool_privateEndpoints[index].outputs.resourceId
+    groupId: hostPool_privateEndpoints[index].outputs.?groupId!
+    customDnsConfigs: hostPool_privateEndpoints[index].outputs.customDnsConfigs
+    networkInterfaceResourceIds: hostPool_privateEndpoints[index].outputs.networkInterfaceResourceIds
   }
 ]
 
-// ================ //
-// Definitions      //
-// ================ //
+// =============== //
+//   Definitions   //
+// =============== //
 
-type diagnosticSettingType = {
-  @sys.description('Optional. The name of diagnostic setting.')
-  name: string?
+@export()
+type privateEndpointOutputType = {
+  @sys.description('The name of the private endpoint.')
+  name: string
 
-  @sys.description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.')
-  logCategoriesAndGroups: {
-    @sys.description('Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.')
-    category: string?
+  @sys.description('The resource ID of the private endpoint.')
+  resourceId: string
 
-    @sys.description('Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.')
-    categoryGroup: string?
+  @sys.description('The group Id for the private endpoint Group.')
+  groupId: string?
 
-    @sys.description('Optional. Enable or disable the category explicitly. Default is `true`.')
-    enabled: bool?
-  }[]?
-
-  @sys.description('Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.')
-  logAnalyticsDestinationType: ('Dedicated' | 'AzureDiagnostics')?
-
-  @sys.description('Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  workspaceResourceId: string?
-
-  @sys.description('Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  storageAccountResourceId: string?
-
-  @sys.description('Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.')
-  eventHubAuthorizationRuleResourceId: string?
-
-  @sys.description('Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  eventHubName: string?
-
-  @sys.description('Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.')
-  marketplacePartnerResourceId: string?
-}[]?
-
-type roleAssignmentType = {
-  @sys.description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
-  name: string?
-
-  @sys.description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
-
-  @sys.description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
-
-  @sys.description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
-
-  @sys.description('Optional. The description of the role assignment.')
-  description: string?
-
-  @sys.description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
-
-  @sys.description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
-
-  @sys.description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?
-
-type privateEndpointType = {
-  @sys.description('Optional. The name of the private endpoint.')
-  name: string?
-
-  @sys.description('Optional. The location to deploy the private endpoint to.')
-  location: string?
-
-  @sys.description('Optional. The name of the private link connection to create.')
-  privateLinkServiceConnectionName: string?
-
-  @sys.description('Optional. The subresource to deploy the private endpoint for. For example "vault", "mysqlServer" or "dataFactory".')
-  service: string?
-
-  @sys.description('Required. Resource ID of the subnet where the endpoint needs to be created.')
-  subnetResourceId: string
-
-  @sys.description('Optional. The private DNS zone group to configure for the private endpoint.')
-  privateDnsZoneGroup: {
-    @sys.description('Optional. The name of the Private DNS Zone Group.')
-    name: string?
-
-    @sys.description('Required. The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.')
-    privateDnsZoneGroupConfigs: {
-      @sys.description('Optional. The name of the private DNS zone group config.')
-      name: string?
-
-      @sys.description('Required. The resource id of the private DNS zone.')
-      privateDnsZoneResourceId: string
-    }[]
-  }?
-
-  @sys.description('Optional. If Manual Private Link Connection is required.')
-  isManualConnection: bool?
-
-  @sys.description('Optional. A message passed to the owner of the remote resource with the manual connection request.')
-  @maxLength(140)
-  manualConnectionRequestMessage: string?
-
-  @sys.description('Optional. Custom DNS configurations.')
+  @sys.description('The custom DNS configurations of the private endpoint.')
   customDnsConfigs: {
-    @sys.description('Optional. FQDN that resolves to private endpoint IP address.')
+    @sys.description('FQDN that resolves to private endpoint IP address.')
     fqdn: string?
 
-    @sys.description('Required. A list of private IP addresses of the private endpoint.')
+    @sys.description('A list of private IP addresses of the private endpoint.')
     ipAddresses: string[]
-  }[]?
+  }[]
 
-  @sys.description('Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints.')
-  ipConfigurations: {
-    @sys.description('Required. The name of the resource that is unique within a resource group.')
-    name: string
-
-    @sys.description('Required. Properties of private endpoint IP configurations.')
-    properties: {
-      @sys.description('Required. The ID of a group obtained from the remote resource that this private endpoint should connect to.')
-      groupId: string
-
-      @sys.description('Required. The member name of a group obtained from the remote resource that this private endpoint should connect to.')
-      memberName: string
-
-      @sys.description('Required. A private IP address obtained from the private endpoint\'s subnet.')
-      privateIPAddress: string
-    }
-  }[]?
-
-  @sys.description('Optional. Application security groups in which the private endpoint IP configuration is included.')
-  applicationSecurityGroupResourceIds: string[]?
-
-  @sys.description('Optional. The custom name of the network interface attached to the private endpoint.')
-  customNetworkInterfaceName: string?
-
-  @sys.description('Optional. Specify the type of lock.')
-  lock: lockType
-
-  @sys.description('Optional. Array of role assignments to create.')
-  roleAssignments: roleAssignmentType
-
-  @sys.description('Optional. Tags to be applied on all resources/resource groups in this deployment.')
-  tags: object?
-
-  @sys.description('Optional. Enable/Disable usage telemetry for module.')
-  enableTelemetry: bool?
-
-  @sys.description('Optional. Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.')
-  resourceGroupName: string?
-}[]?
-
-type lockType = {
-  @sys.description('Optional. Specify the name of lock.')
-  name: string?
-
-  @sys.description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?
+  @sys.description('The IDs of the network interfaces associated with the private endpoint.')
+  networkInterfaceResourceIds: string[]
+}

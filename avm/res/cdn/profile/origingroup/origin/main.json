@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "5172201899085933507"
+      "version": "0.34.1.11899",
+      "templateHash": "3299448810125740577"
     },
     "name": "CDN Profiles Origin",
-    "description": "This module deploys a CDN Profile Origin.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a CDN Profile Origin."
   },
   "definitions": {
     "originType": {
@@ -90,7 +89,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The name of the origin type."
       }
     }
   },

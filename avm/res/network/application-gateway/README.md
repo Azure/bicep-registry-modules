@@ -3190,6 +3190,8 @@ The number of Application instances to be configured.
 - Required: No
 - Type: int
 - Default: `2`
+- MinValue: 0
+- MaxValue: 10
 
 ### Parameter: `customErrorConfigurations`
 

@@ -4,18 +4,18 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "9353006983422977081"
+      "version": "0.33.93.31351",
+      "templateHash": "4471544038808802530"
     },
     "name": "SQL Managed Instance Database Backup Long-Term Retention Policies",
-    "description": "This module deploys a SQL Managed Instance Database Backup Long-Term Retention Policy.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a SQL Managed Instance Database Backup Long-Term Retention Policy."
   },
   "parameters": {
     "name": {
       "type": "string",
+      "defaultValue": "default",
       "metadata": {
-        "description": "Required. The name of the Long Term Retention backup policy. For example \"default\"."
+        "description": "Optional. The name of the Long Term Retention backup policy."
       }
     },
     "databaseName": {
@@ -28,6 +28,17 @@
       "type": "string",
       "metadata": {
         "description": "Conditional. The name of the parent managed instance. Required if the template is used in a standalone deployment."
+      }
+    },
+    "backupStorageAccessTier": {
+      "type": "string",
+      "defaultValue": "Hot",
+      "allowedValues": [
+        "Archive",
+        "Hot"
+      ],
+      "metadata": {
+        "description": "Optional. The BackupStorageAccessTier for the LTR backups."
       }
     },
     "weekOfYear": {
@@ -62,9 +73,10 @@
   "resources": [
     {
       "type": "Microsoft.Sql/managedInstances/databases/backupLongTermRetentionPolicies",
-      "apiVersion": "2022-05-01-preview",
+      "apiVersion": "2024-05-01-preview",
       "name": "[format('{0}/{1}/{2}', parameters('managedInstanceName'), parameters('databaseName'), parameters('name'))]",
       "properties": {
+        "backupStorageAccessTier": "[parameters('backupStorageAccessTier')]",
         "monthlyRetention": "[parameters('monthlyRetention')]",
         "weeklyRetention": "[parameters('weeklyRetention')]",
         "weekOfYear": "[parameters('weekOfYear')]",

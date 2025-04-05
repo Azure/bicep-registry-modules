@@ -1,6 +1,5 @@
 metadata name = 'Action Groups'
 metadata description = 'This module deploys an Action Group.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the action group.')
 param name string
@@ -11,11 +10,15 @@ param groupShortName string
 @description('Optional. Indicates whether this action group is enabled. If an action group is not enabled, then none of its receivers will receive communications.')
 param enabled bool = true
 
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+param roleAssignments roleAssignmentType[]?
 
 @description('Optional. The list of email receivers that are part of this action group.')
 param emailReceivers array?
+
+@description('Optional. The list of Event Hub receivers that are part of this action group.')
+param eventHubReceivers array?
 
 @description('Optional. The list of SMS receivers that are part of this action group.')
 param smsReceivers array?
@@ -105,6 +108,7 @@ resource actionGroup 'Microsoft.Insights/actionGroups@2023-01-01' = {
     groupShortName: groupShortName
     enabled: enabled
     emailReceivers: emailReceivers
+    eventHubReceivers: eventHubReceivers
     smsReceivers: smsReceivers
     webhookReceivers: webhookReceivers
     itsmReceivers: itsmReceivers
@@ -144,33 +148,3 @@ output resourceId string = actionGroup.id
 
 @description('The location the resource was deployed into.')
 output location string = actionGroup.location
-
-// ================ //
-// Definitions      //
-// ================ //
-
-type roleAssignmentType = {
-  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
-  name: string?
-
-  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
-
-  @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
-
-  @description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
-
-  @description('Optional. The description of the role assignment.')
-  description: string?
-
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
-
-  @description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
-
-  @description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?

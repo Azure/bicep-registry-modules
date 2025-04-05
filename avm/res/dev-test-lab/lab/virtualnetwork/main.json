@@ -5,139 +5,132 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "136709431680015650"
+      "version": "0.34.44.8038",
+      "templateHash": "6830177169160833613"
     },
     "name": "DevTest Lab Virtual Networks",
-    "description": "This module deploys a DevTest Lab Virtual Network.\n\nLab virtual machines must be deployed into a virtual network. This resource type allows configuring the virtual network and subnet settings used for the lab virtual machines.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a DevTest Lab Virtual Network.\n\nLab virtual machines must be deployed into a virtual network. This resource type allows configuring the virtual network and subnet settings used for the lab virtual machines."
   },
   "definitions": {
     "allowedSubnetType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "allowPublicIp": {
-            "type": "string",
-            "allowedValues": [
-              "Allow",
-              "Default",
-              "Deny"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The permission policy of the subnet for allowing public IP addresses (i.e. Allow, Deny))."
-            }
-          },
-          "resourceId": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The resource ID of the allowed subnet."
-            }
-          },
-          "labSubnetName": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The name of the subnet as seen in the lab."
-            }
+      "type": "object",
+      "properties": {
+        "allowPublicIp": {
+          "type": "string",
+          "allowedValues": [
+            "Allow",
+            "Default",
+            "Deny"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The permission policy of the subnet for allowing public IP addresses (i.e. Allow, Deny))."
+          }
+        },
+        "resourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of the allowed subnet."
+          }
+        },
+        "labSubnetName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the subnet as seen in the lab."
           }
         }
       },
-      "nullable": true,
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for the allowed subnet."
       }
     },
     "subnetOverrideType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "labSubnetName": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The name given to the subnet within the lab."
-            }
-          },
-          "resourceId": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The resource ID of the subnet."
-            }
-          },
-          "sharedPublicIpAddressConfiguration": {
-            "type": "object",
-            "properties": {
-              "allowedPorts": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "backendPort": {
-                      "type": "int",
-                      "metadata": {
-                        "description": "Required. Backend port of the target virtual machine."
-                      }
-                    },
-                    "transportProtocol": {
-                      "type": "string",
-                      "allowedValues": [
-                        "Tcp",
-                        "Udp"
-                      ],
-                      "metadata": {
-                        "description": "Required. Protocol type of the port."
-                      }
+      "type": "object",
+      "properties": {
+        "labSubnetName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name given to the subnet within the lab."
+          }
+        },
+        "resourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of the subnet."
+          }
+        },
+        "sharedPublicIpAddressConfiguration": {
+          "type": "object",
+          "properties": {
+            "allowedPorts": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "backendPort": {
+                    "type": "int",
+                    "metadata": {
+                      "description": "Required. Backend port of the target virtual machine."
+                    }
+                  },
+                  "transportProtocol": {
+                    "type": "string",
+                    "allowedValues": [
+                      "Tcp",
+                      "Udp"
+                    ],
+                    "metadata": {
+                      "description": "Required. Protocol type of the port."
                     }
                   }
-                },
-                "metadata": {
-                  "description": "Required. Backend ports that virtual machines on this subnet are allowed to expose."
                 }
+              },
+              "metadata": {
+                "description": "Required. Backend ports that virtual machines on this subnet are allowed to expose."
               }
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The permission policy of the subnet for allowing public IP addresses (i.e. Allow, Deny))."
             }
           },
-          "useInVmCreationPermission": {
-            "type": "string",
-            "allowedValues": [
-              "Allow",
-              "Default",
-              "Deny"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Indicates whether this subnet can be used during virtual machine creation (i.e. Allow, Deny)."
-            }
-          },
-          "usePublicIpAddressPermission": {
-            "type": "string",
-            "allowedValues": [
-              "Allow",
-              "Default",
-              "Deny"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Indicates whether public IP addresses can be assigned to virtual machines on this subnet (i.e. Allow, Deny)."
-            }
-          },
-          "virtualNetworkPoolName": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The virtual network pool associated with this subnet."
-            }
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The permission policy of the subnet for allowing public IP addresses (i.e. Allow, Deny))."
+          }
+        },
+        "useInVmCreationPermission": {
+          "type": "string",
+          "allowedValues": [
+            "Allow",
+            "Default",
+            "Deny"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Indicates whether this subnet can be used during virtual machine creation (i.e. Allow, Deny)."
+          }
+        },
+        "usePublicIpAddressPermission": {
+          "type": "string",
+          "allowedValues": [
+            "Allow",
+            "Default",
+            "Deny"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Indicates whether public IP addresses can be assigned to virtual machines on this subnet (i.e. Allow, Deny)."
+          }
+        },
+        "virtualNetworkPoolName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The virtual network pool associated with this subnet."
           }
         }
       },
-      "nullable": true,
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for the subnet override."
       }
     }
   },
@@ -175,13 +168,21 @@
       }
     },
     "allowedSubnets": {
-      "$ref": "#/definitions/allowedSubnetType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/allowedSubnetType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. The allowed subnets of the virtual network."
       }
     },
     "subnetOverrides": {
-      "$ref": "#/definitions/subnetOverrideType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/subnetOverrideType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. The subnet overrides of the virtual network."
       }
@@ -204,10 +205,7 @@
         "externalProviderResourceId": "[parameters('externalProviderResourceId')]",
         "allowedSubnets": "[parameters('allowedSubnets')]",
         "subnetOverrides": "[parameters('subnetOverrides')]"
-      },
-      "dependsOn": [
-        "lab"
-      ]
+      }
     }
   },
   "outputs": {

@@ -1,6 +1,5 @@
 metadata name = 'Azure Security Center (Defender for Cloud)'
 metadata description = 'This module deploys an Azure Security Center (Defender for Cloud) Configuration.'
-metadata owner = 'Azure/module-maintainers'
 
 targetScope = 'subscription'
 

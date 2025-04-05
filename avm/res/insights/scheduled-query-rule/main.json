@@ -5,86 +5,162 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "14700883695004277595"
+      "version": "0.34.44.8038",
+      "templateHash": "8867518354956441115"
     },
     "name": "Scheduled Query Rules",
-    "description": "This module deploys a Scheduled Query Rule.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Scheduled Query Rule."
   },
   "definitions": {
-    "roleAssignmentType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
+    "actionsType": {
+      "type": "object",
+      "properties": {
+        "actionGroupResourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Action Group resource Ids to invoke when the alert fires."
+          }
+        },
+        "actionProperties": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": {
             "type": "string",
-            "nullable": true,
             "metadata": {
-              "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+              "description": "Optional. A property of an action payload."
             }
           },
-          "roleDefinitionIdOrName": {
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The properties of an action properties."
+          }
+        },
+        "customProperties": {
+          "type": "object",
+          "properties": {},
+          "additionalProperties": {
             "type": "string",
             "metadata": {
-              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+              "description": "Optional. A custom property of an action payload."
             }
           },
-          "principalId": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-            }
-          },
-          "principalType": {
-            "type": "string",
-            "allowedValues": [
-              "Device",
-              "ForeignGroup",
-              "Group",
-              "ServicePrincipal",
-              "User"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The principal type of the assigned principal ID."
-            }
-          },
-          "description": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The description of the role assignment."
-            }
-          },
-          "condition": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-            }
-          },
-          "conditionVersion": {
-            "type": "string",
-            "allowedValues": [
-              "2.0"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Version of the condition."
-            }
-          },
-          "delegatedManagedIdentityResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The Resource Id of the delegated managed identity resource."
-            }
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The properties of an alert payload."
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for an actions configuration."
+      }
+    },
+    "managedIdentityAllType": {
+      "type": "object",
+      "properties": {
+        "systemAssigned": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enables system assigned managed identity on the resource."
+          }
+        },
+        "userAssignedResourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    },
+    "roleAssignmentType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+          }
+        },
+        "roleDefinitionIdOrName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+          }
+        },
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+          }
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "Device",
+            "ForeignGroup",
+            "Group",
+            "ServicePrincipal",
+            "User"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The principal type of the assigned principal ID."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The description of the role assignment."
+          }
+        },
+        "condition": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+          }
+        },
+        "conditionVersion": {
+          "type": "string",
+          "allowedValues": [
+            "2.0"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Version of the condition."
+          }
+        },
+        "delegatedManagedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Resource Id of the delegated managed identity resource."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a role assignment.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
     }
   },
   "parameters": {
@@ -137,12 +213,12 @@
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. The flag that indicates whether the alert should be automatically resolved or not. Relevant only for rules of the kind LogAlert."
+        "description": "Optional. The flag that indicates whether the alert should be automatically resolved or not. Relevant only for rules of the kind LogAlert. Note, ResolveConfiguration can't be used together with AutoMitigate."
       }
     },
     "queryTimeRange": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. If specified (in ISO 8601 duration format) then overrides the query time range. Relevant only for rules of the kind LogAlert."
       }
@@ -162,7 +238,11 @@
       }
     },
     "roleAssignments": {
-      "$ref": "#/definitions/roleAssignmentType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/roleAssignmentType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Array of role assignments to create."
       }
@@ -171,7 +251,7 @@
       "type": "object",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Defines the configuration for resolving fired alerts. Relevant only for rules of the kind LogAlert."
+        "description": "Optional. Defines the configuration for resolving fired alerts. Relevant only for rules of the kind LogAlert. Note, ResolveConfiguration can't be used together with AutoMitigate."
       }
     },
     "scopes": {
@@ -196,21 +276,21 @@
     },
     "evaluationFrequency": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. How often the scheduled query rule is evaluated represented in ISO 8601 duration format. Relevant and required only for rules of the kind LogAlert."
       }
     },
     "windowSize": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Conditional. The period of time (in ISO 8601 duration format) on which the Alert query will be executed (bin size). Required if the kind is set to 'LogAlert', otherwise not relevant."
       }
     },
     "actions": {
-      "type": "array",
-      "defaultValue": [],
+      "$ref": "#/definitions/actionsType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Actions to invoke when the alert fires."
       }
@@ -223,9 +303,9 @@
     },
     "suppressForMinutes": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
-        "description": "Optional. Mute actions for the chosen period of time (in ISO 8601 duration format) after the alert is fired. If set, autoMitigate must be disabled.Relevant only for rules of the kind LogAlert."
+        "description": "Optional. Mute actions for the chosen period of time (in ISO 8601 duration format) after the alert is fired. If set, autoMitigate must be disabled. Relevant only for rules of the kind LogAlert."
       }
     },
     "tags": {
@@ -241,6 +321,13 @@
       "metadata": {
         "description": "Optional. Enable/Disable usage telemetry for module."
       }
+    },
+    "managedIdentities": {
+      "$ref": "#/definitions/managedIdentityAllType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The managed identity definition for this resource. You can only configure either a system-assigned or user-assigned identities, not both."
+      }
     }
   },
   "variables": {
@@ -251,6 +338,8 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
+    "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
+    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'))), 'UserAssigned', 'SystemAssigned'), if(not(empty(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
@@ -286,27 +375,9 @@
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
+      "identity": "[variables('identity')]",
       "kind": "[parameters('kind')]",
-      "properties": {
-        "actions": {
-          "actionGroups": "[parameters('actions')]",
-          "customProperties": {}
-        },
-        "autoMitigate": "[if(equals(parameters('kind'), 'LogAlert'), parameters('autoMitigate'), null())]",
-        "criteria": "[parameters('criterias')]",
-        "description": "[parameters('alertDescription')]",
-        "displayName": "[coalesce(parameters('alertDisplayName'), parameters('name'))]",
-        "enabled": "[parameters('enabled')]",
-        "evaluationFrequency": "[if(and(equals(parameters('kind'), 'LogAlert'), not(empty(parameters('evaluationFrequency')))), parameters('evaluationFrequency'), null())]",
-        "muteActionsDuration": "[if(and(equals(parameters('kind'), 'LogAlert'), not(empty(parameters('suppressForMinutes')))), parameters('suppressForMinutes'), null())]",
-        "overrideQueryTimeRange": "[if(and(equals(parameters('kind'), 'LogAlert'), not(empty(parameters('queryTimeRange')))), parameters('queryTimeRange'), null())]",
-        "ruleResolveConfiguration": "[if(and(equals(parameters('kind'), 'LogAlert'), not(empty(parameters('ruleResolveConfiguration')))), parameters('ruleResolveConfiguration'), null())]",
-        "scopes": "[parameters('scopes')]",
-        "severity": "[if(equals(parameters('kind'), 'LogAlert'), parameters('severity'), null())]",
-        "skipQueryValidation": "[if(equals(parameters('kind'), 'LogAlert'), parameters('skipQueryValidation'), null())]",
-        "targetResourceTypes": "[if(equals(parameters('kind'), 'LogAlert'), parameters('targetResourceTypes'), null())]",
-        "windowSize": "[if(and(equals(parameters('kind'), 'LogAlert'), not(empty(parameters('windowSize')))), parameters('windowSize'), null())]"
-      }
+      "properties": "[shallowMerge(createArray(createObject('actions', createObject('actionGroups', tryGet(parameters('actions'), 'actionGroupResourceIds'), 'actionProperties', coalesce(tryGet(parameters('actions'), 'actionProperties'), createObject()), 'customProperties', coalesce(tryGet(parameters('actions'), 'customProperties'), createObject())), 'criteria', parameters('criterias'), 'description', parameters('alertDescription'), 'displayName', coalesce(parameters('alertDisplayName'), parameters('name')), 'enabled', parameters('enabled')), if(and(equals(parameters('kind'), 'LogAlert'), empty(parameters('ruleResolveConfiguration'))), createObject('autoMitigate', parameters('autoMitigate'), 'muteActionsDuration', parameters('suppressForMinutes')), createObject()), createObject('resolveConfiguration', if(equals(parameters('kind'), 'LogAlert'), parameters('ruleResolveConfiguration'), null()), 'evaluationFrequency', if(equals(parameters('kind'), 'LogAlert'), parameters('evaluationFrequency'), null()), 'overrideQueryTimeRange', if(equals(parameters('kind'), 'LogAlert'), parameters('queryTimeRange'), null()), 'severity', if(equals(parameters('kind'), 'LogAlert'), parameters('severity'), null()), 'skipQueryValidation', if(equals(parameters('kind'), 'LogAlert'), parameters('skipQueryValidation'), null()), 'targetResourceTypes', if(equals(parameters('kind'), 'LogAlert'), parameters('targetResourceTypes'), null()), 'windowSize', if(equals(parameters('kind'), 'LogAlert'), parameters('windowSize'), null()), 'scopes', parameters('scopes'))))]"
     },
     "queryRule_roleAssignments": {
       "copy": {
@@ -359,6 +430,14 @@
         "description": "The location the resource was deployed into."
       },
       "value": "[reference('queryRule', '2023-03-15-preview', 'full').location]"
+    },
+    "systemAssignedMIPrincipalId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "The principal ID of the system assigned identity."
+      },
+      "value": "[tryGet(tryGet(reference('queryRule', '2023-03-15-preview', 'full'), 'identity'), 'principalId')]"
     }
   }
 }

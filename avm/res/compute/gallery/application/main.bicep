@@ -1,6 +1,5 @@
 metadata name = 'Compute Galleries Applications'
 metadata description = 'This module deploys an Azure Compute Gallery Application.'
-metadata owner = 'Azure/module-maintainers'
 
 @sys.description('Required. Name of the application definition.')
 param name string
@@ -34,7 +33,7 @@ param supportedOSType string
 @sys.description('Optional. The end of life date of the gallery Image Definition. This property can be used for decommissioning purposes. This property is updatable. Allowed format: 2020-01-10T23:00:00.000Z.')
 param endOfLifeDate string?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.3.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @sys.description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -73,11 +72,11 @@ var formattedRoleAssignments = [
   })
 ]
 
-resource gallery 'Microsoft.Compute/galleries@2022-03-03' existing = {
+resource gallery 'Microsoft.Compute/galleries@2024-03-03' existing = {
   name: galleryName
 }
 
-resource application 'Microsoft.Compute/galleries/applications@2022-03-03' = {
+resource application 'Microsoft.Compute/galleries/applications@2024-03-03' = {
   name: name
   parent: gallery
   location: location
@@ -126,6 +125,7 @@ output location string = application.location
 // =============== //
 
 @export()
+@sys.description('The type for a custom action.')
 type customActionType = {
   @sys.description('Required. The name of the custom action. Must be unique within the Gallery Application Version.')
   name: string

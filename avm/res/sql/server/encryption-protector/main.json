@@ -4,12 +4,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "3436938593239210559"
+      "version": "0.33.93.31351",
+      "templateHash": "3546869587910650701"
     },
     "name": "Azure SQL Server Encryption Protector",
-    "description": "This module deploys an Azure SQL Server Encryption Protector.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Azure SQL Server Encryption Protector."
   },
   "parameters": {
     "sqlServerName": {

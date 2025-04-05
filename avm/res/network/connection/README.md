@@ -527,6 +527,8 @@ The dead peer detection timeout of this connection in seconds. Setting the timeo
 - Required: No
 - Type: int
 - Default: `45`
+- MinValue: 9
+- MaxValue: 3600
 
 ### Parameter: `enableBgp`
 

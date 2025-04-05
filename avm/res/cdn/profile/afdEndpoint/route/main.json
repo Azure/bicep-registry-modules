@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "11233659924871585320"
+      "version": "0.34.1.11899",
+      "templateHash": "1335284301571538933"
     },
     "name": "CDN Profiles AFD Endpoint Route",
-    "description": "This module deploys a CDN Profile AFD Endpoint route.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a CDN Profile AFD Endpoint route."
   },
   "definitions": {
     "routeType": {
@@ -123,7 +122,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type of the route."
       }
     },
     "afdRoutecacheConfigurationType": {
@@ -141,7 +141,7 @@
                 "description": "Required. List of content types on which compression applies. The value should be a valid MIME type."
               }
             },
-            "iscontentTypeToCompressAll": {
+            "isCompressionEnabled": {
               "type": "bool",
               "nullable": true,
               "metadata": {
@@ -171,6 +171,10 @@
             "description": "Required. Defines how Frontdoor caches requests that include query strings."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of the route cache configuration."
       }
     }
   },
@@ -303,7 +307,7 @@
     },
     "profile::customDomains": {
       "copy": {
-        "name": "customDomains",
+        "name": "profile::customDomains",
         "count": "[length(coalesce(parameters('customDomainNames'), createArray()))]"
       },
       "existing": true,
@@ -319,7 +323,7 @@
     },
     "profile::ruleSet": {
       "copy": {
-        "name": "ruleSet",
+        "name": "profile::ruleSet",
         "count": "[length(parameters('ruleSets'))]"
       },
       "existing": true,

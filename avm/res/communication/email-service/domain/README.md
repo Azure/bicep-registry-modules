@@ -7,6 +7,7 @@ This module deploys an Email Service Domain
 - [Resource Types](#Resource-Types)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 
 ## Resource Types
 
@@ -14,8 +15,8 @@ This module deploys an Email Service Domain
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Communication/emailServices/domains` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Communication/emailServices/domains) |
-| `Microsoft.Communication/emailServices/domains/senderUsernames` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Communication/emailServices/domains/senderUsernames) |
+| `Microsoft.Communication/emailServices/domains` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Communication/2023-04-01/emailServices/domains) |
+| `Microsoft.Communication/emailServices/domains/senderUsernames` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Communication/2023-04-01/emailServices/domains/senderUsernames) |
 
 ## Parameters
 
@@ -256,3 +257,11 @@ Describes whether user engagement tracking is enabled or disabled.
 | `name` | string | The name of the domain. |
 | `resourceGroupName` | string | The name of the resource group the domain was created in. |
 | `resourceId` | string | The resource ID of the domain. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |

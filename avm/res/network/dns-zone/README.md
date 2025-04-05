@@ -1649,6 +1649,8 @@ The flags for this CAA record as an integer between 0 and 255.
 
 - Required: Yes
 - Type: int
+- MinValue: 0
+- MaxValue: 255
 
 ### Parameter: `caa.caaRecords.tag`
 

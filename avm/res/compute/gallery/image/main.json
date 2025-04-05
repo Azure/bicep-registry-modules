@@ -5,87 +5,13 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.31.92.45157",
-      "templateHash": "14463616698185324661"
+      "version": "0.33.13.18514",
+      "templateHash": "3721966103700835789"
     },
     "name": "Compute Galleries Image Definitions",
-    "description": "This module deploys an Azure Compute Gallery Image Definition.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Azure Compute Gallery Image Definition."
   },
   "definitions": {
-    "roleAssignmentType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
-            }
-          },
-          "roleDefinitionIdOrName": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-            }
-          },
-          "principalId": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-            }
-          },
-          "principalType": {
-            "type": "string",
-            "allowedValues": [
-              "Device",
-              "ForeignGroup",
-              "Group",
-              "ServicePrincipal",
-              "User"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The principal type of the assigned principal ID."
-            }
-          },
-          "description": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The description of the role assignment."
-            }
-          },
-          "condition": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-            }
-          },
-          "conditionVersion": {
-            "type": "string",
-            "allowedValues": [
-              "2.0"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Version of the condition."
-            }
-          },
-          "delegatedManagedIdentityResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The Resource Id of the delegated managed identity resource."
-            }
-          }
-        }
-      },
-      "nullable": true
-    },
     "resourceRangeType": {
       "type": "object",
       "properties": {
@@ -106,7 +32,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for a resource range."
       }
     },
     "disallowedType": {
@@ -123,7 +50,9 @@
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "description": "The type for a list of disallowed disk types."
+      }
     },
     "identifierType": {
       "type": "object",
@@ -148,7 +77,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for an image identifier."
       }
     },
     "purchasePlanType": {
@@ -173,9 +103,84 @@
           }
         }
       },
-      "nullable": true,
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for an image purchase plan."
+      }
+    },
+    "roleAssignmentType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+          }
+        },
+        "roleDefinitionIdOrName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+          }
+        },
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+          }
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "Device",
+            "ForeignGroup",
+            "Group",
+            "ServicePrincipal",
+            "User"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The principal type of the assigned principal ID."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The description of the role assignment."
+          }
+        },
+        "condition": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+          }
+        },
+        "conditionVersion": {
+          "type": "string",
+          "allowedValues": [
+            "2.0"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Version of the condition."
+          }
+        },
+        "delegatedManagedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Resource Id of the delegated managed identity resource."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a role assignment.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
       }
     }
   },
@@ -286,7 +291,7 @@
     },
     "isAcceleratedNetworkSupported": {
       "type": "bool",
-      "defaultValue": true,
+      "nullable": true,
       "metadata": {
         "description": "Optional. Specify if the image supports accelerated networking."
       }
@@ -296,6 +301,13 @@
       "nullable": true,
       "metadata": {
         "description": "Optional. Specifiy if the image supports hibernation."
+      }
+    },
+    "allowUpdateImage": {
+      "type": "bool",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Must be set to true if the gallery image features are being updated."
       }
     },
     "architecture": {
@@ -348,8 +360,24 @@
         "description": "Optional. The hypervisor generation of the Virtual Machine. If this value is not specified, then it is determined by the securityType parameter. If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1."
       }
     },
+    "diskControllerType": {
+      "type": "string",
+      "allowedValues": [
+        "NVMe, SCSI",
+        "SCSI",
+        "SCSI, NVMe"
+      ],
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The disk controllers that an OS disk supports."
+      }
+    },
     "roleAssignments": {
-      "$ref": "#/definitions/roleAssignmentType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/roleAssignmentType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Array of role assignments to create."
       }
@@ -384,16 +412,17 @@
     "gallery": {
       "existing": true,
       "type": "Microsoft.Compute/galleries",
-      "apiVersion": "2023-07-03",
+      "apiVersion": "2024-03-03",
       "name": "[parameters('galleryName')]"
     },
     "image": {
       "type": "Microsoft.Compute/galleries/images",
-      "apiVersion": "2023-07-03",
+      "apiVersion": "2024-03-03",
       "name": "[format('{0}/{1}', parameters('galleryName'), parameters('name'))]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "properties": {
+        "allowUpdateImage": "[if(not(equals(parameters('allowUpdateImage'), null())), parameters('allowUpdateImage'), null())]",
         "architecture": "[parameters('architecture')]",
         "description": "[parameters('description')]",
         "disallowed": {
@@ -401,7 +430,7 @@
         },
         "endOfLifeDate": "[parameters('endOfLifeDate')]",
         "eula": "[parameters('eula')]",
-        "features": "[union(createArray(createObject('name', 'IsAcceleratedNetworkSupported', 'value', format('{0}', parameters('isAcceleratedNetworkSupported')))), if(and(not(equals(parameters('securityType'), null())), not(equals(parameters('securityType'), 'Standard'))), createArray(createObject('name', 'SecurityType', 'value', format('{0}', parameters('securityType')))), createArray()), if(not(equals(parameters('isHibernateSupported'), null())), createArray(createObject('name', 'IsHibernateSupported', 'value', format('{0}', parameters('isHibernateSupported')))), createArray()))]",
+        "features": "[union(if(not(equals(parameters('isAcceleratedNetworkSupported'), null())), createArray(createObject('name', 'IsAcceleratedNetworkSupported', 'value', format('{0}', parameters('isAcceleratedNetworkSupported')))), createArray()), if(and(not(equals(parameters('securityType'), null())), not(equals(parameters('securityType'), 'Standard'))), createArray(createObject('name', 'SecurityType', 'value', format('{0}', parameters('securityType')))), createArray()), if(not(equals(parameters('isHibernateSupported'), null())), createArray(createObject('name', 'IsHibernateSupported', 'value', format('{0}', parameters('isHibernateSupported')))), createArray()), if(not(equals(parameters('diskControllerType'), null())), createArray(createObject('name', 'DiskControllerTypes', 'value', format('{0}', parameters('diskControllerType')))), createArray()))]",
         "hyperVGeneration": "[coalesce(parameters('hyperVGeneration'), if(not(empty(coalesce(parameters('securityType'), ''))), 'V2', 'V1'))]",
         "identifier": {
           "publisher": "[parameters('identifier').publisher]",
@@ -417,10 +446,7 @@
           "memory": "[parameters('memory')]"
         },
         "releaseNoteUri": "[parameters('releaseNoteUri')]"
-      },
-      "dependsOn": [
-        "gallery"
-      ]
+      }
     },
     "image_roleAssignments": {
       "copy": {
@@ -472,7 +498,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('image', '2023-07-03', 'full').location]"
+      "value": "[reference('image', '2024-03-03', 'full').location]"
     }
   }
 }

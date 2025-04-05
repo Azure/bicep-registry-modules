@@ -1,6 +1,5 @@
 metadata name = 'Azure Synapse Analytics'
 metadata description = 'This module deploys an Azure Synapse Analytics (Private Link Hub).'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the Private Link Hub.')
 param name string
@@ -25,6 +24,8 @@ param roleAssignments roleAssignmentType[]?
 import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointSingleServiceType[]?
+
+var enableReferencedModulesTelemetry = false
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
@@ -140,7 +141,7 @@ module privateLinkHub_privateEndpoints 'br/public:avm/res/network/private-endpoi
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
-      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',

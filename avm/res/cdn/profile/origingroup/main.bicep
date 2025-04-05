@@ -1,6 +1,5 @@
 metadata name = 'CDN Profiles Origin Group'
 metadata description = 'This module deploys a CDN Profile Origin Group.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the origin group.')
 param name string
@@ -80,6 +79,7 @@ output location string = profile.location
 
 import { originType } from './origin/main.bicep'
 @export()
+@description('The type of the origin group.')
 type originGroupType = {
   @description('Required. The name of the origin group.')
   name: string
@@ -101,6 +101,7 @@ type originGroupType = {
 }
 
 @export()
+@description('The type of the load balancing settings.')
 type loadBalancingSettingsType = {
   @description('Required. Additional latency in milliseconds for probes to the backend. Must be between 0 and 1000.')
   additionalLatencyInMilliseconds: int
@@ -113,6 +114,7 @@ type loadBalancingSettingsType = {
 }
 
 @export()
+@description('The type of the health probe settings.')
 type healthProbeSettingsType = {
   @description('Optional. The path relative to the origin that is used to determine the health of the origin.')
   probePath: string?

@@ -182,6 +182,7 @@ The maximum number of replicas to run. Must be at least 1.
 - Required: No
 - Type: int
 - Default: `10`
+- MinValue: 1
 
 ### Parameter: `containerMemory`
 
