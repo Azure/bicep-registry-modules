@@ -127,7 +127,7 @@ import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-ty
 param diagnosticSettings diagnosticSettingFullType[]?
 
 @description('Optional. The Principal Assignments for the Kusto Cluster.')
-param principalAssignments principalAssignmentType[]?
+param clusterPrincipalAssignments clusterPrincipalAssignmentType[]?
 
 @description('Optional. The Kusto Cluster databases.')
 param databases databaseType[]?
@@ -227,10 +227,10 @@ resource kustoCluster 'Microsoft.Kusto/clusters@2024-04-13' = {
           keyName: customerManagedKey!.keyName
           keyVaultUri: cMKKeyVault.properties.vaultUri
           keyVersion: !empty(customerManagedKey.?keyVersion ?? '')
-            ? customerManagedKey!.keyVersion
+            ? customerManagedKey!.?keyVersion
             : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
           userIdentity: !empty(customerManagedKey.?userAssignedIdentityResourceId)
-            ? customerManagedKey!.userAssignedIdentityResourceId
+            ? customerManagedKey!.?userAssignedIdentityResourceId
             : null
         }
       : null
@@ -325,8 +325,8 @@ resource kustoCluster_roleAssignments 'Microsoft.Authorization/roleAssignments@2
 ]
 
 module kustoCluster_principalAssignments 'principal-assignment/main.bicep' = [
-  for (principalAssignment, index) in (principalAssignments ?? []): {
-    name: '${uniqueString(deployment().name, location)}-KustoCluster-PrincipalAssignment-${index}'
+  for (principalAssignment, index) in (clusterPrincipalAssignments ?? []): {
+    name: '${uniqueString(deployment().name, location)}-KC-PrincipalAssignment-${index}'
     params: {
       kustoClusterName: kustoCluster.name
       principalId: principalAssignment.principalId
@@ -338,10 +338,13 @@ module kustoCluster_principalAssignments 'principal-assignment/main.bicep' = [
 ]
 
 @batchSize(1)
-module kustoCluster_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
+module kustoCluster_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
-    name: '${uniqueString(deployment().name, location)}-kustoCluster-PrivateEndpoint-${index}'
-    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
+    name: '${uniqueString(deployment().name, location)}-keyVault-PrivateEndpoint-${index}'
+    scope: resourceGroup(
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
+    )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(kustoCluster.id, '/'))}-${privateEndpoint.service}-${index}'
       privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
@@ -398,6 +401,7 @@ module kustoCluster_databases 'database/main.bicep' = [
       kustoClusterName: kustoCluster.name
       databaseKind: database.kind
       databaseReadWriteProperties: database.kind == 'ReadWrite' ? database.readWriteProperties : null
+      databasePrincipalAssignments: database.databasePrincipalAssignments
     }
   }
 ]
@@ -420,17 +424,16 @@ output name string = kustoCluster.name
 
 @description('The location the resource was deployed into.')
 output location string = kustoCluster.location
-
-@description('The private endpoints of the kusto cluster.')
-output privateEndpoints array = [
-  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
-    name: kustoCluster_privateEndpoints[i].outputs.name
-    resourceId: kustoCluster_privateEndpoints[i].outputs.resourceId
-    groupId: kustoCluster_privateEndpoints[i].outputs.groupId
-    customDnsConfig: kustoCluster_privateEndpoints[i].outputs.customDnsConfig
-    networkInterfaceIds: kustoCluster_privateEndpoints[i].outputs.networkInterfaceIds
-  }
-]
+@description('The private endpoints of the key vault.')
+ output privateEndpoints privateEndpointOutputType[] = [
+   for (item, index) in (privateEndpoints ?? []): {
+     name: kustoCluster_privateEndpoints[index].outputs.name
+     resourceId: kustoCluster_privateEndpoints[index].outputs.resourceId
+     groupId: kustoCluster_privateEndpoints[index].outputs.?groupId!
+     customDnsConfigs: kustoCluster_privateEndpoints[index].outputs.customDnsConfigs
+     networkInterfaceResourceIds: kustoCluster_privateEndpoints[index].outputs.networkInterfaceResourceIds
+   }
+ ]
 
 @description('The databases of the kusto cluster.')
 output databases array = [
@@ -443,6 +446,8 @@ output databases array = [
 // =============== //
 //   Definitions   //
 // =============== //
+
+import { databasePrincipalAssignmentType, databaseReadWriteType  } from 'database/main.bicep'
 
 @export()
 type acceptedAudienceType = {
@@ -481,7 +486,7 @@ type virtualNetworkConfigurationType = {
 }
 
 @export()
-type principalAssignmentType = {
+type clusterPrincipalAssignmentType = {
   @description('Required. The principal id assigned to the Kusto Cluster principal. It can be a user email, application id, or security group name.')
   principalId: string
 
@@ -495,14 +500,41 @@ type principalAssignmentType = {
   tenantId: string?
 }
 
-import { databaseReadWriteType } from './database/main.bicep'
-
 @export()
 type databaseType = {
   @description('Required. The name of the Kusto Cluster database.')
   name: string
-  @description('Required. The object type of the databse.')
+
+  @description('Required. The object type of the database.')
   kind: 'ReadWrite' | 'ReadOnlyFollowing'
+
   @description('Conditional. Required if the database kind is ReadWrite. Contains the properties of the database.')
   readWriteProperties: databaseReadWriteType?
+
+  @description('Optional. The principal assignments for the Kusto Cluster database.')
+  databasePrincipalAssignments: databasePrincipalAssignmentType[]?
+}
+
+@export()
+type privateEndpointOutputType = {
+  @description('The name of the private endpoint.')
+  name: string
+
+  @description('The resource ID of the private endpoint.')
+  resourceId: string
+
+  @description('The group Id for the private endpoint Group.')
+  groupId: string?
+
+  @description('The custom DNS configurations of the private endpoint.')
+  customDnsConfigs: {
+    @description('FQDN that resolves to private endpoint IP address.')
+    fqdn: string?
+
+    @description('A list of private IP addresses of the private endpoint.')
+    ipAddresses: string[]
+  }[]
+
+  @description('The IDs of the network interfaces associated with the private endpoint.')
+  networkInterfaceResourceIds: string[]
 }

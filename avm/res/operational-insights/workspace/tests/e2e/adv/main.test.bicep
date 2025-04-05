@@ -207,7 +207,7 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       publicNetworkAccessForIngestion: 'Disabled'
-      publicNetworkAccessForQuery: 'Disabled'
+      publicNetworkAccessForQuery: 'Enabled'
       savedSearches: [
         {
           category: 'VDC Saved Searches'
