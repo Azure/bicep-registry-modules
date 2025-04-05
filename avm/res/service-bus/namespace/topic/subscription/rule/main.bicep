@@ -43,10 +43,16 @@ resource rule 'Microsoft.ServiceBus/namespaces/topics/subscriptions/rules@2022-1
   name: name
   parent: namespace::topic::subscription
   properties: {
-    action: action
-    correlationFilter: correlationFilter
+    action: !empty(action) ? action : null
+    correlationFilter: !empty(correlationFilter) ? correlationFilter : null
     filterType: filterType
-    sqlFilter: sqlFilter
+    sqlFilter: !empty(sqlFilter)
+      ? {
+          compatibilityLevel: sqlFilter.?compatibilityLevel ?? 20
+          requiresPreprocessing: sqlFilter.?requiresPreprocessing
+          sqlExpression: sqlFilter.?sqlExpression
+        }
+      : null
   }
 }
 
