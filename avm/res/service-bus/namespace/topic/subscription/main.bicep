@@ -79,7 +79,13 @@ resource subscription 'Microsoft.ServiceBus/namespaces/topics/subscriptions@2021
   parent: namespace::topic
   properties: {
     autoDeleteOnIdle: autoDeleteOnIdle
-    clientAffineProperties: clientAffineProperties
+    clientAffineProperties: !empty(clientAffineProperties)
+      ? {
+          clientId: clientAffineProperties.?clientId
+          isDurable: clientAffineProperties.?isDurable ?? true
+          isShared: clientAffineProperties.?isShared ?? false
+        }
+      : null
     deadLetteringOnFilterEvaluationExceptions: deadLetteringOnFilterEvaluationExceptions
     deadLetteringOnMessageExpiration: deadLetteringOnMessageExpiration
     defaultMessageTimeToLive: defaultMessageTimeToLive
@@ -105,7 +111,7 @@ module subscription_rule 'rule/main.bicep' = [
       topicName: topicName
       action: rule.?action
       correlationFilter: rule.?correlationFilter
-      filterType: rule.?filterType
+      filterType: rule.filterType
       sqlFilter: rule.?sqlFilter
     }
   }
@@ -123,69 +129,18 @@ output resourceGroupName string = resourceGroup().name
 // =============== //
 //   Definitions   //
 // =============== //
+
+import { ruleType } from 'rule/main.bicep'
+
 @export()
-@description('Optional. The type for rules.')
-type ruleType = {
-  @description('Required. The name of the service bus namespace topic subscription rule.')
-  name: string
+@description('Properties specific to client affine subscriptions.')
+type clientAffinePropertiesType = {
+  @description('Required. Indicates the Client ID of the application that created the client-affine subscription.')
+  clientId: string
 
-  @description('Optional. Represents the filter actions which are allowed for the transformation of a message that have been matched by a filter expression.')
-  action: {
-    @description('Optional. This property is reserved for future use. An integer value showing the compatibility level, currently hard-coded to 20.')
-    compatibilityLevel: int?
+  @description('Optional. For client-affine subscriptions, this value indicates whether the subscription is durable or not. Defaults to true.')
+  isDurable: bool?
 
-    @description('Optional. Value that indicates whether the rule action requires preprocessing.')
-    requiresPreprocessing: bool?
-
-    @description('Optional. SQL expression. e.g. MyProperty=\'ABC\'.')
-    sqlExpression: string?
-  }?
-
-  @description('Optional. Properties of correlationFilter.')
-  correlationFilter: {
-    @description('Optional. Content type of the message.')
-    contentType: string?
-
-    @description('Optional. Identifier of the correlation.')
-    correlationId: string?
-
-    @description('Optional. Application specific label.')
-    label: string?
-
-    @description('Optional. Identifier of the message.')
-    messageId: string?
-
-    @description('Optional. dictionary object for custom filters.')
-    properties: {}[]?
-
-    @description('Optional. Address of the queue to reply to.')
-    replyTo: string?
-
-    @description('Optional. Session identifier to reply to.')
-    replyToSessionId: string?
-
-    @description('Optional. Value that indicates whether the rule action requires preprocessing.')
-    requiresPreprocessing: bool?
-
-    @description('Optional. Session identifier.')
-    sessionId: string?
-
-    @description('Required. Address to send to.')
-    to: string
-  }?
-
-  @description('Optional. Filter type that is evaluated against a BrokeredMessage.')
-  filterType: ('CorrelationFilter' | 'SqlFilter')?
-
-  @description('Optional. Properties of sqlFilter.')
-  sqlFilter: {
-    @description('Optional. This property is reserved for future use. An integer value showing the compatibility level, currently hard-coded to 20.')
-    compatibilityLevel: int?
-
-    @description('Optional. Value that indicates whether the rule action requires preprocessing.')
-    requiresPreprocessing: bool?
-
-    @description('Optional. SQL expression. e.g. MyProperty=\'ABC\'.')
-    sqlExpression: string?
-  }?
+  @description('Optional. For client-affine subscriptions, this value indicates whether the subscription is shared or not. Defaults to false.')
+  isShared: bool?
 }
