@@ -1653,6 +1653,7 @@ List of the language extensions of the Kusto Cluster.
 
 - Required: No
 - Type: array
+- Default: `[]`
 
 **Required parameters**
 

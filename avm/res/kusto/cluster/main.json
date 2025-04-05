@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "979279741677285933"
+      "templateHash": "501442185035724680"
     },
     "name": "Kusto Cluster",
     "description": "This module deploys a Kusto Cluster."
@@ -1045,7 +1045,7 @@
       "items": {
         "$ref": "#/definitions/languageExtensionType"
       },
-      "nullable": true,
+      "defaultValue": [],
       "metadata": {
         "description": "Optional. List of the language extensions of the Kusto Cluster."
       }
@@ -1284,7 +1284,7 @@
         "engineType": "[parameters('engineType')]",
         "keyVaultProperties": "[if(not(empty(parameters('customerManagedKey'))), createObject('keyName', parameters('customerManagedKey').keyName, 'keyVaultUri', reference('cMKKeyVault').vaultUri, 'keyVersion', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'keyVersion'), ''))), tryGet(parameters('customerManagedKey'), 'keyVersion'), last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/'))), 'userIdentity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), null())), null())]",
         "languageExtensions": {
-          "value": "[coalesce(parameters('languageExtensions'), createArray())]"
+          "value": "[parameters('languageExtensions')]"
         },
         "optimizedAutoscale": {
           "isEnabled": "[parameters('enableAutoScale')]",

@@ -62,7 +62,7 @@ import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types
 param customerManagedKey customerManagedKeyType?
 
 @description('Optional. List of the language extensions of the Kusto Cluster.')
-param languageExtensions languageExtensionType[]?
+param languageExtensions languageExtensionType[] = []
 
 @description('Optional. Enable/disable auto-scale.')
 param enableAutoScale bool = false
@@ -235,7 +235,7 @@ resource kustoCluster 'Microsoft.Kusto/clusters@2024-04-13' = {
         }
       : null
     languageExtensions: {
-      value: languageExtensions ?? []
+      value: languageExtensions
     }
     optimizedAutoscale: {
       isEnabled: enableAutoScale
