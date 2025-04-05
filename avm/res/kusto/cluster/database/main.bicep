@@ -18,7 +18,7 @@ param location string = resourceGroup().location
 param databaseKind string = 'ReadWrite'
 
 @description('Optional. The properties of the database if using read-write. Only used if databaseKind is ReadWrite.')
-param databaseReadWriteProperties databaseReadWriteType
+param databaseReadWriteProperties databaseReadWriteType?
 
 resource kustoCluster 'Microsoft.Kusto/clusters@2024-04-13' existing = {
   name: kustoClusterName
@@ -57,7 +57,7 @@ output resourceGroupName string = resourceGroup().name
 // =============== //
 
 @export()
-@description('Conditional. The properties of the database if using read-write.')
+@description('The properties of the database if using read-write.')
 type databaseReadWriteType = {
   @description('Optional. Te time the data should be kept in cache for fast queries in TimeSpan.')
   hotCachePeriod: string?
@@ -74,4 +74,4 @@ type databaseReadWriteType = {
   }?
   @description('Optional. The time the data should be kept before it stops being accessible to queries in TimeSpan.')
   softDeletePeriod: string?
-}?
+}
