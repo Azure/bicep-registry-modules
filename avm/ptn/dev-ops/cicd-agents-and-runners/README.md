@@ -1294,17 +1294,12 @@ param privateNetworking = true
 | [`networkingConfiguration`](#parameter-networkingconfiguration) | object | The networking configuration. |
 | [`selfHostedConfig`](#parameter-selfhostedconfig) | object | The self-hosted runner configuration. This can be either GitHub or Azure DevOps. |
 
-**Conditional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`infrastructureResourceGroupName`](#parameter-infrastructureresourcegroupname) | string | Name of the infrastructure resource group for the container apps environment. |
-
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`infrastructureResourceGroupName`](#parameter-infrastructureresourcegroupname) | string | Name of the infrastructure resource group for the container apps environment. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`privateNetworking`](#parameter-privatenetworking) | bool | Whether to use private or public networking for the Azure Container Registry. |
 
@@ -1372,7 +1367,7 @@ To use this variant, set the property `networkType` to `createNew`.
 | [`containerRegistryPrivateEndpointSubnetName`](#parameter-networkingconfigurationnetworktype-createnewcontainerregistryprivateendpointsubnetname) | string | The subnet name for the container registry private endpoint. If not provided, a default name will be used. |
 | [`containerRegistrySubnetPrefix`](#parameter-networkingconfigurationnetworktype-createnewcontainerregistrysubnetprefix) | string | The container registry subnet address prefix in the created virtual network. If not provided, a default subnet prefix will be used. |
 | [`deploymentScriptPrivateDnsZoneResourceId`](#parameter-networkingconfigurationnetworktype-createnewdeploymentscriptprivatednszoneresourceid) | string | The deployment script private DNS zone Id. If not provided, a new private DNS zone will be created. Only required if private networking is used. |
-| [`natGatewayPublicIpAddressResourceId`](#parameter-networkingconfigurationnetworktype-createnewnatgatewaypublicipaddressresourceid) | string | The existing public IP address to assosciate with the NAT gateway. This should be provided if an existing public Ip address is available to be used. If this parameter is not provided, a new Public Ip address will be created. |
+| [`natGatewayPublicIpAddressResourceId`](#parameter-networkingconfigurationnetworktype-createnewnatgatewaypublicipaddressresourceid) | string | The existing public IP address to associate with the NAT gateway. This should be provided if an existing public Ip address is available to be used. If this parameter is not provided, a new Public Ip address will be created. |
 | [`natGatewayResourceId`](#parameter-networkingconfigurationnetworktype-createnewnatgatewayresourceid) | string | The existing NAT Gateway resource Id. This should be provided if an existing NAT gateway is available to be used. If this parameter is not provided, a new NAT gateway will be created. |
 
 ### Parameter: `networkingConfiguration.networkType-createNew.addressSpace`
@@ -1481,7 +1476,7 @@ The deployment script private DNS zone Id. If not provided, a new private DNS zo
 
 ### Parameter: `networkingConfiguration.networkType-createNew.natGatewayPublicIpAddressResourceId`
 
-The existing public IP address to assosciate with the NAT gateway. This should be provided if an existing public Ip address is available to be used. If this parameter is not provided, a new Public Ip address will be created.
+The existing public IP address to associate with the NAT gateway. This should be provided if an existing public Ip address is available to be used. If this parameter is not provided, a new Public Ip address will be created.
 
 - Required: No
 - Type: string
@@ -1512,7 +1507,7 @@ To use this variant, set the property `networkType` to `useExisting`.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`containerRegistryPrivateDnsZoneResourceId`](#parameter-networkingconfigurationnetworktype-useexistingcontainerregistryprivatednszoneresourceid) | string | The container registry private DNS zone Id. If not provided, a new private DNS zone will be created. |
-| [`natGatewayPublicIpAddressResourceId`](#parameter-networkingconfigurationnetworktype-useexistingnatgatewaypublicipaddressresourceid) | string | The existing public IP address to assosciate with the NAT gateway. This should be provided if an existing public Ip address is available to be used. If this parameter is not provided, a new Public Ip address will be created. |
+| [`natGatewayPublicIpAddressResourceId`](#parameter-networkingconfigurationnetworktype-useexistingnatgatewaypublicipaddressresourceid) | string | The existing public IP address to associate with the NAT gateway. This should be provided if an existing public Ip address is available to be used. If this parameter is not provided, a new Public Ip address will be created. |
 | [`natGatewayResourceId`](#parameter-networkingconfigurationnetworktype-useexistingnatgatewayresourceid) | string | The existing NAT Gateway resource Id. This should be provided if an existing NAT gateway is available to be used. If this parameter is not provided, a new NAT gateway will be created. |
 
 ### Parameter: `networkingConfiguration.networkType-useExisting.computeNetworking`
@@ -1659,16 +1654,16 @@ The container registry private DNS zone Id. If not provided, a new private DNS z
 
 ### Parameter: `networkingConfiguration.networkType-useExisting.natGatewayPublicIpAddressResourceId`
 
-The existing public IP address to assosciate with the NAT gateway. This should be provided if an existing public Ip address is available to be used. If this parameter is not provided, a new Public Ip address will be created.
+The existing public IP address to associate with the NAT gateway. This should be provided if an existing public Ip address is available to be used. If this parameter is not provided, a new Public Ip address will be created.
 
-- Required: Yes
+- Required: No
 - Type: string
 
 ### Parameter: `networkingConfiguration.networkType-useExisting.natGatewayResourceId`
 
 The existing NAT Gateway resource Id. This should be provided if an existing NAT gateway is available to be used. If this parameter is not provided, a new NAT gateway will be created.
 
-- Required: Yes
+- Required: No
 - Type: string
 
 ### Parameter: `selfHostedConfig`
@@ -2193,13 +2188,6 @@ The target pipelines queue length.
 - Required: No
 - Type: string
 
-### Parameter: `infrastructureResourceGroupName`
-
-Name of the infrastructure resource group for the container apps environment.
-
-- Required: No
-- Type: string
-
 ### Parameter: `enableTelemetry`
 
 Enable/Disable usage telemetry for module.
@@ -2207,6 +2195,13 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `infrastructureResourceGroupName`
+
+Name of the infrastructure resource group for the container apps environment.
+
+- Required: No
+- Type: string
 
 ### Parameter: `location`
 

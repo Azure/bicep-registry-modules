@@ -26,7 +26,7 @@ param privateNetworking bool = true
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-@description('Conditional. Name of the infrastructure resource group for the container apps environment.')
+@description('Optional. Name of the infrastructure resource group for the container apps environment.')
 param infrastructureResourceGroupName string?
 
 // ================ //
@@ -836,7 +836,7 @@ type newNetworkType = {
   @description('Optional. The existing NAT Gateway resource Id. This should be provided if an existing NAT gateway is available to be used. If this parameter is not provided, a new NAT gateway will be created.')
   natGatewayResourceId: string?
 
-  @description('Optional. The existing public IP address to assosciate with the NAT gateway. This should be provided if an existing public Ip address is available to be used. If this parameter is not provided, a new Public Ip address will be created.')
+  @description('Optional. The existing public IP address to associate with the NAT gateway. This should be provided if an existing public Ip address is available to be used. If this parameter is not provided, a new Public Ip address will be created.')
   natGatewayPublicIpAddressResourceId: string?
 
   @description('Optional. The container instance subnet name in the created virtual network. If not provided, a default name will be used.')
@@ -888,10 +888,10 @@ type existingNetworkType = {
   containerRegistryPrivateDnsZoneResourceId: string?
 
   @description('Optional. The existing NAT Gateway resource Id. This should be provided if an existing NAT gateway is available to be used. If this parameter is not provided, a new NAT gateway will be created.')
-  natGatewayResourceId: string
+  natGatewayResourceId: string?
 
-  @description('Optional. The existing public IP address to assosciate with the NAT gateway. This should be provided if an existing public Ip address is available to be used. If this parameter is not provided, a new Public Ip address will be created.')
-  natGatewayPublicIpAddressResourceId: string
+  @description('Optional. The existing public IP address to associate with the NAT gateway. This should be provided if an existing public Ip address is available to be used. If this parameter is not provided, a new Public Ip address will be created.')
+  natGatewayPublicIpAddressResourceId: string?
 
   @description('Required. The compute type networking type.')
   computeNetworking: computeNetworkingType

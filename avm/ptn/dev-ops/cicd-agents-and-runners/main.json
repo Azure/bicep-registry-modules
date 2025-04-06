@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "16179964066821510333"
+      "templateHash": "13075259490337673296"
     },
     "name": "CI CD Agents and Runners",
     "description": "This module deploys self-hosted agents and runners for Azure DevOps and GitHub on Azure Container Instances and/or Azure Container Apps."
@@ -47,7 +47,7 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The existing public IP address to assosciate with the NAT gateway. This should be provided if an existing public Ip address is available to be used. If this parameter is not provided, a new Public Ip address will be created."
+            "description": "Optional. The existing public IP address to associate with the NAT gateway. This should be provided if an existing public Ip address is available to be used. If this parameter is not provided, a new Public Ip address will be created."
           }
         },
         "containerInstanceSubnetName": {
@@ -165,14 +165,16 @@
         },
         "natGatewayResourceId": {
           "type": "string",
+          "nullable": true,
           "metadata": {
             "description": "Optional. The existing NAT Gateway resource Id. This should be provided if an existing NAT gateway is available to be used. If this parameter is not provided, a new NAT gateway will be created."
           }
         },
         "natGatewayPublicIpAddressResourceId": {
           "type": "string",
+          "nullable": true,
           "metadata": {
-            "description": "Optional. The existing public IP address to assosciate with the NAT gateway. This should be provided if an existing public Ip address is available to be used. If this parameter is not provided, a new Public Ip address will be created."
+            "description": "Optional. The existing public IP address to associate with the NAT gateway. This should be provided if an existing public Ip address is available to be used. If this parameter is not provided, a new Public Ip address will be created."
           }
         },
         "computeNetworking": {
@@ -676,7 +678,7 @@
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Conditional. Name of the infrastructure resource group for the container apps environment."
+        "description": "Optional. Name of the infrastructure resource group for the container apps environment."
       }
     }
   },
