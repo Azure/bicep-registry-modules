@@ -22,18 +22,18 @@ param sku string
 ])
 param tier string = 'Standard'
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
 @description('Optional. The Kusto Cluster\'s accepted audiences.')
-param acceptedAudiences acceptedAudienceType[] = []
+param acceptedAudiences acceptedAudienceType[]?
 
 @description('Optional. List of allowed fully-qulified domain names (FQDNs) for egress from the Kusto Cluster.')
-param allowedFqdnList string[] = []
+param allowedFqdnList string[]?
 
 @description('Optional. List of IP addresses in CIDR format allowed to connect to the Kusto Cluster.')
-param allowedIpRangeList string[] = []
+param allowedIpRangeList string[]?
 
 @description('Optional. Enable/disable auto-stop.')
 param enableAutoStop bool = true
@@ -57,7 +57,7 @@ param enableStreamingIngest bool = false
 @description('Optional. The engine type of the Kusto Cluster.')
 param engineType string = 'V3'
 
-import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyType?
 
@@ -92,7 +92,7 @@ param enablePublicNetworkAccess bool = true
 param enableRestrictOutboundNetworkAccess bool = false
 
 @description('Optional. The external tenants trusted by the Kusto Cluster.')
-param trustedExternalTenants trustedExternalTenantType[] = []
+param trustedExternalTenants trustedExternalTenantType[]?
 
 @secure()
 @description('Optional. The virtual cluster graduation properties of the Kusto Cluster.')
@@ -101,11 +101,11 @@ param virtualClusterGraduationProperties string?
 @description('Optional. The virtual network configuration of the Kusto Cluster.')
 param virtualNetworkConfiguration virtualNetworkConfigurationType?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -115,14 +115,14 @@ param tags object?
 @description('Optional. Enable/disable zone redundancy.')
 param enableZoneRedundant bool = false
 
-import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointMultiServiceType[]?
 
 @description('Optional. Enable/disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
@@ -340,7 +340,7 @@ module kustoCluster_principalAssignments 'principal-assignment/main.bicep' = [
 @batchSize(1)
 module kustoCluster_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
-    name: '${uniqueString(deployment().name, location)}-keyVault-PrivateEndpoint-${index}'
+    name: '${uniqueString(deployment().name, location)}-kustoCluster-PrivateEndpoint-${index}'
     scope: resourceGroup(
       split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
       split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
@@ -424,16 +424,17 @@ output name string = kustoCluster.name
 
 @description('The location the resource was deployed into.')
 output location string = kustoCluster.location
-@description('The private endpoints of the key vault.')
- output privateEndpoints privateEndpointOutputType[] = [
-   for (item, index) in (privateEndpoints ?? []): {
-     name: kustoCluster_privateEndpoints[index].outputs.name
-     resourceId: kustoCluster_privateEndpoints[index].outputs.resourceId
-     groupId: kustoCluster_privateEndpoints[index].outputs.?groupId!
-     customDnsConfigs: kustoCluster_privateEndpoints[index].outputs.customDnsConfigs
-     networkInterfaceResourceIds: kustoCluster_privateEndpoints[index].outputs.networkInterfaceResourceIds
-   }
- ]
+
+@description('The private endpoints of the resource.')
+output privateEndpoints privateEndpointOutputType[] = [
+  for (pe, index) in (privateEndpoints ?? []): {
+    name: kustoCluster_privateEndpoints[index].outputs.name
+    resourceId: kustoCluster_privateEndpoints[index].outputs.resourceId
+    groupId: kustoCluster_privateEndpoints[index].outputs.?groupId!
+    customDnsConfigs: kustoCluster_privateEndpoints[index].outputs.customDnsConfigs
+    networkInterfaceResourceIds: kustoCluster_privateEndpoints[index].outputs.networkInterfaceResourceIds
+  }
+]
 
 @description('The databases of the kusto cluster.')
 output databases array = [
@@ -450,12 +451,14 @@ output databases array = [
 import { databasePrincipalAssignmentType, databaseReadWriteType  } from 'database/main.bicep'
 
 @export()
+@description('The type for the accepted audience.')
 type acceptedAudienceType = {
   @description('Required. GUID or valid URL representing an accepted audience.')
   value: string
 }
 
 @export()
+@description('The type for the language extension.')
 type languageExtensionType = {
   @description('Required. The name of the language extension custom image.')
   languageExtensionCustomImageName: string
@@ -468,12 +471,14 @@ type languageExtensionType = {
 }
 
 @export()
+@description('The type for the trusted external tenant.')
 type trustedExternalTenantType = {
   @description('Required. GUID representing an external tenant.')
   value: string
 }
 
 @export()
+@description('The type for the virtual network configuration.')
 type virtualNetworkConfigurationType = {
   @description('Required. The public IP address resource id of the data management service..')
   dataManagementPublicIpResourceId: string
@@ -486,6 +491,7 @@ type virtualNetworkConfigurationType = {
 }
 
 @export()
+@description('The type for the cluster principal assignment.')
 type clusterPrincipalAssignmentType = {
   @description('Required. The principal id assigned to the Kusto Cluster principal. It can be a user email, application id, or security group name.')
   principalId: string
@@ -501,6 +507,7 @@ type clusterPrincipalAssignmentType = {
 }
 
 @export()
+@description('The type for the database.')
 type databaseType = {
   @description('Required. The name of the Kusto Cluster database.')
   name: string
@@ -516,6 +523,7 @@ type databaseType = {
 }
 
 @export()
+@description('The type for the private endpoint output.')
 type privateEndpointOutputType = {
   @description('The name of the private endpoint.')
   name: string
