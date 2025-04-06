@@ -49,7 +49,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
   }
 }
 
-resource natGateway 'Microsoft.Network/natGateways@2024-01-01' = {
+resource natGateway 'Microsoft.Network/natGateways@2024-05-01' = {
   name: natGatewayName
   location: location
   sku: {
@@ -64,12 +64,12 @@ resource natGateway 'Microsoft.Network/natGateways@2024-01-01' = {
   }
 }
 
-resource acrPrivateDNSZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
+resource acrPrivateDNSZone 'Microsoft.Network/privateDnsZones@2024-06-01' = {
   name: 'privatelink.azurecr.io'
   location: 'global'
 }
 
-resource vnetLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
+resource vnetLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2024-06-01' = {
   name: '${acrPrivateDNSZone.name}-link'
   location: 'global'
   parent: acrPrivateDNSZone

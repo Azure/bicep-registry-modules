@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "5159656684810190867"
+      "templateHash": "12605653584146545027"
     },
     "name": "CI CD Agents and Runners",
     "description": "This module deploys self-hosted agents and runners for Azure DevOps and GitHub on Azure Container Instances and/or Azure Container Apps."
@@ -784,10 +784,10 @@
         "buildImagesRoleAssignment"
       ]
     },
-    "logAnalyticsWokrspace": {
+    "logAnalyticsWorkspace": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "logAnalyticsWokrspace",
+      "name": "[format('logAnalyticsWorkspace-{0}', uniqueString(resourceGroup().id))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -796,6 +796,9 @@
         "parameters": {
           "name": {
             "value": "[format('law-{0}-{1}-law', parameters('namingPrefix'), uniqueString(resourceGroup().id))]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -3803,7 +3806,7 @@
     "userAssignedIdentity": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "userAssignedIdentity",
+      "name": "[format('userAssignedIdentity-{0}', uniqueString(resourceGroup().id))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -3812,9 +3815,6 @@
         "parameters": {
           "name": {
             "value": "[format('msi-{0}-{1}', parameters('namingPrefix'), uniqueString(resourceGroup().id))]"
-          },
-          "location": {
-            "value": "[parameters('location')]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -11973,7 +11973,7 @@
             "value": "[format('appEnv{0}{1}', parameters('namingPrefix'), uniqueString(resourceGroup().id))]"
           },
           "logAnalyticsWorkspaceResourceId": {
-            "value": "[reference('logAnalyticsWokrspace').outputs.resourceId.value]"
+            "value": "[reference('logAnalyticsWorkspace').outputs.resourceId.value]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -12625,7 +12625,7 @@
         }
       },
       "dependsOn": [
-        "logAnalyticsWokrspace",
+        "logAnalyticsWorkspace",
         "newVnet"
       ]
     },

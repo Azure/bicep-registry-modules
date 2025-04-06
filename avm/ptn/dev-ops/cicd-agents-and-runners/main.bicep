@@ -207,19 +207,19 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
-module logAnalyticsWokrspace 'br/public:avm/res/operational-insights/workspace:0.11.1' = {
-  name: 'logAnalyticsWokrspace'
+module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.11.1' = {
+  name: 'logAnalyticsWorkspace-${uniqueString(resourceGroup().id)}'
   params: {
     name: 'law-${namingPrefix}-${uniqueString(resourceGroup().id)}-law'
+    location: location
     enableTelemetry: enableTelemetry
   }
 }
 
 module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0' = {
-  name: 'userAssignedIdentity'
+  name: 'userAssignedIdentity-${uniqueString(resourceGroup().id)}'
   params: {
     name: 'msi-${namingPrefix}-${uniqueString(resourceGroup().id)}'
-    location: location
     enableTelemetry: enableTelemetry
   }
 }
@@ -352,7 +352,7 @@ module appEnvironment 'br/public:avm/res/app/managed-environment:0.10.1' = if (c
   name: 'appEnv-${uniqueString(resourceGroup().id)}'
   params: {
     name: 'appEnv${namingPrefix}${uniqueString(resourceGroup().id)}'
-    logAnalyticsWorkspaceResourceId: logAnalyticsWokrspace.outputs.resourceId
+    logAnalyticsWorkspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
     location: location
     enableTelemetry: enableTelemetry
     infrastructureResourceGroupName: infrastructureResourceGroupName
