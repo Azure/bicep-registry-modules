@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "11307312411904561160"
+      "templateHash": "10709706716219857119"
     },
     "name": "Kusto Cluster Databases",
     "description": "This module deploys a Kusto Cluster Database."
@@ -67,10 +67,9 @@
           }
         }
       },
-      "nullable": true,
       "metadata": {
         "__bicep_export!": true,
-        "description": "Conditional. The properties of the database if using read-write."
+        "description": "The properties of the database if using read-write."
       }
     },
     "databasePrincipalAssignmentType": {
@@ -154,6 +153,7 @@
     },
     "databaseReadWriteProperties": {
       "$ref": "#/definitions/databaseReadWriteType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The properties of the database if using read-write. Only used if databaseKind is ReadWrite."
       }
