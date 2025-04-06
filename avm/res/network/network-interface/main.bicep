@@ -20,7 +20,7 @@ param enableIPForwarding bool = false
 param enableAcceleratedNetworking bool = false
 
 @description('Optional. List of DNS servers IP addresses. Use \'AzureProvidedDNS\' to switch to azure provided DNS resolution. \'AzureProvidedDNS\' value cannot be combined with other IPs, it must be the only value in dnsServers collection.')
-param dnsServers array = []
+param dnsServers string[] = []
 
 @description('Optional. The network security group (NSG) to attach to the network interface.')
 param networkSecurityGroupResourceId string = ''
@@ -47,7 +47,7 @@ param auxiliarySku string = 'None'
 param disableTcpStateTracking bool = false
 
 @description('Required. A list of IPConfigurations of the network interface.')
-param ipConfigurations array
+param ipConfigurations networkInterfaceIPConfigurationType[]
 
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
@@ -146,16 +146,12 @@ resource networkInterface 'Microsoft.Network/networkInterfaces@2023-04-01' = {
         name: ipConfiguration.?name ?? 'ipconfig0${index + 1}'
         properties: {
           primary: index == 0 ? true : false
-          privateIPAllocationMethod: contains(ipConfiguration, 'privateIPAllocationMethod')
-            ? (!empty(ipConfiguration.privateIPAllocationMethod) ? ipConfiguration.privateIPAllocationMethod : null)
-            : null
-          privateIPAddress: contains(ipConfiguration, 'privateIPAddress')
-            ? (!empty(ipConfiguration.privateIPAddress) ? ipConfiguration.privateIPAddress : null)
-            : null
+          privateIPAllocationMethod: ipConfiguration.?privateIPAllocationMethod
+          privateIPAddress: ipConfiguration.?privateIPAddress
           publicIPAddress: contains(ipConfiguration, 'publicIPAddressResourceId')
-            ? (ipConfiguration.publicIPAddressResourceId != null
+            ? (ipConfiguration.?publicIPAddressResourceId != null
                 ? {
-                    id: ipConfiguration.publicIPAddressResourceId
+                    id: ipConfiguration.?publicIPAddressResourceId
                   }
                 : null)
             : null
@@ -238,3 +234,161 @@ output resourceGroupName string = resourceGroup().name
 
 @description('The location the resource was deployed into.')
 output location string = networkInterface.location
+
+// ================ //
+// Definitions      //
+// ================ //
+
+@export()
+@description('The resource ID of the deployed resource.')
+type networkInterfaceIPConfigurationType = {
+  @description('Optional. The name of the IP configuration.')
+  name: string?
+
+  @description('Optional. The private IP address allocation method.')
+  privateIPAllocationMethod: ('Dynamic' | 'Static')?
+
+  @description('Optional. The private IP address.')
+  privateIPAddress: string?
+
+  @description('Optional. The resource ID of the public IP address.')
+  publicIPAddressResourceId: string?
+
+  @description('Required. The resource ID of the subnet.')
+  subnetResourceId: string
+
+  @description('Optional. Array of load balancer backend address pools.')
+  loadBalancerBackendAddressPools: backendAddressPoolType[]?
+
+  @description('Optional. A list of references of LoadBalancerInboundNatRules.')
+  loadBalancerInboundNatRules: inboundNatRuleType[]?
+
+  @description('Optional. Application security groups in which the IP configuration is included.')
+  applicationSecurityGroups: applicationSecurityGroupType[]?
+
+  @description('Optional. The reference to Application Gateway Backend Address Pools.')
+  applicationGatewayBackendAddressPools: applicationGatewayBackendAddressPoolsType[]?
+
+  @description('Optional. The reference to gateway load balancer frontend IP.')
+  gatewayLoadBalancer: subResourceType?
+
+  @description('Optional. Whether the specific IP configuration is IPv4 or IPv6.')
+  privateIPAddressVersion: ('IPv4' | 'IPv6')?
+
+  @description('Optional. The reference to Virtual Network Taps.')
+  virtualNetworkTaps: virtualNetworkTapType[]?
+}
+
+@export()
+@description('The type for a backend address pool.')
+type backendAddressPoolType = {
+  @description('Optional. The resource ID of the backend address pool.')
+  id: string?
+
+  @description('Optional. The name of the backend address pool.')
+  name: string?
+
+  @description('Optional. The properties of the backend address pool.')
+  properties: object?
+}
+
+@export()
+@description('The type for the application security group.')
+type applicationSecurityGroupType = {
+  @description('Optional. Resource ID of the application security group.')
+  id: string?
+
+  @description('Optional. Location of the application security group.')
+  location: string?
+
+  @description('Optional. Properties of the application security group.')
+  properties: object?
+
+  @description('Optional. Tags of the application security group.')
+  tags: object?
+}
+
+@export()
+@description('The type for the application gateway backend address pool.')
+type applicationGatewayBackendAddressPoolsType = {
+  @description('Optional. Resource ID of the backend address pool.')
+  id: string?
+
+  @description('Optional. Name of the backend address pool that is unique within an Application Gateway.')
+  name: string?
+
+  @description('Optional. Properties of the application gateway backend address pool.')
+  properties: {
+    @description('Optional. Backend addresses.')
+    backendAddresses: {
+      @description('Optional. IP address of the backend address.')
+      ipAddress: string?
+
+      @description('Optional. FQDN of the backend address.')
+      fqdn: string?
+    }[]?
+  }?
+}
+
+@export()
+@description('The type for the sub resource.')
+type subResourceType = {
+  @description('Optional. Resource ID of the sub resource.')
+  id: string?
+}
+
+@export()
+@description('The type for the inbound NAT rule.')
+type inboundNatRuleType = {
+  @description('Optional. Resource ID of the inbound NAT rule.')
+  id: string?
+
+  @description('Optional. Name of the resource that is unique within the set of inbound NAT rules used by the load balancer. This name can be used to access the resource.')
+  name: string?
+
+  @description('Optional. Properties of the inbound NAT rule.')
+  properties: {
+    @description('Optional. A reference to backendAddressPool resource.')
+    backendAddressPool: subResourceType?
+
+    @description('Optional. The port used for the internal endpoint. Acceptable values range from 1 to 65535.')
+    backendPort: int?
+
+    @description('Optional. Configures a virtual machine\'s endpoint for the floating IP capability required to configure a SQL AlwaysOn Availability Group. This setting is required when using the SQL AlwaysOn Availability Groups in SQL server. This setting can\'t be changed after you create the endpoint.')
+    enableFloatingIP: bool?
+
+    @description('Optional. Receive bidirectional TCP Reset on TCP flow idle timeout or unexpected connection termination. This element is only used when the protocol is set to TCP.')
+    enableTcpReset: bool?
+
+    @description('Optional. A reference to frontend IP addresses.')
+    frontendIPConfiguration: subResourceType?
+
+    @description('Optional. The port for the external endpoint. Port numbers for each rule must be unique within the Load Balancer. Acceptable values range from 1 to 65534.')
+    frontendPort: int?
+
+    @description('Optional. The port range start for the external endpoint. This property is used together with BackendAddressPool and FrontendPortRangeEnd. Individual inbound NAT rule port mappings will be created for each backend address from BackendAddressPool. Acceptable values range from 1 to 65534.')
+    frontendPortRangeStart: int?
+
+    @description('Optional. The port range end for the external endpoint. This property is used together with BackendAddressPool and FrontendPortRangeStart. Individual inbound NAT rule port mappings will be created for each backend address from BackendAddressPool. Acceptable values range from 1 to 65534.')
+    frontendPortRangeEnd: int?
+
+    @description('Optional. The reference to the transport protocol used by the load balancing rule.')
+    protocol: ('All' | 'Tcp' | 'Udp')?
+  }
+}
+
+@export()
+@description('The type for the virtual network tap.')
+type virtualNetworkTapType = {
+  @description('Optional. Resource ID of the virtual network tap.')
+  id: string?
+
+  @description('Optional. Location of the virtual network tap.')
+  location: string?
+
+  @description('Optional. Properties of the virtual network tap.')
+  properties: object?
+
+  @description('Optional. Tags of the virtual network tap.')
+  tags: object?
+}
