@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "18332239589490550682"
+      "templateHash": "226424885599603100"
     },
     "name": "Network Interface",
     "description": "This module deploys a Network Interface."
@@ -804,7 +804,7 @@
     },
     "networkInterface": {
       "type": "Microsoft.Network/networkInterfaces",
-      "apiVersion": "2023-04-01",
+      "apiVersion": "2024-05-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -939,7 +939,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('networkInterface', '2023-04-01', 'full').location]"
+      "value": "[reference('networkInterface', '2024-05-01', 'full').location]"
     }
   }
 }

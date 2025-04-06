@@ -121,7 +121,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource networkInterface 'Microsoft.Network/networkInterfaces@2023-04-01' = {
+resource networkInterface 'Microsoft.Network/networkInterfaces@2024-05-01' = {
   name: name
   location: location
   tags: tags
@@ -151,11 +151,13 @@ resource networkInterface 'Microsoft.Network/networkInterfaces@2023-04-01' = {
           publicIPAddress: contains(ipConfiguration, 'publicIPAddressResourceId')
             ? (ipConfiguration.?publicIPAddressResourceId != null
                 ? {
+                    #disable-next-line use-resource-id-functions // the resource id is prvided via a parameter
                     id: ipConfiguration.?publicIPAddressResourceId
                   }
                 : null)
             : null
           subnet: {
+            #disable-next-line use-resource-id-functions // the resource id is prvided via a parameter
             id: ipConfiguration.subnetResourceId
           }
           loadBalancerBackendAddressPools: ipConfiguration.?loadBalancerBackendAddressPools
