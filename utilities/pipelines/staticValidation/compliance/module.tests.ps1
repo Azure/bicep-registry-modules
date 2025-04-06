@@ -140,11 +140,6 @@ Describe 'File/folder tests' -Tag 'Modules' {
                 [string[]] $childModuleAllowedList
             )
 
-            if ($childModuleAllowedList -contains $moduleFullName) {
-                Set-ItResult -Skipped -Because "$moduleFullName is in the child module publishing allowed list."
-                return
-            }
-
             $pathExisting = Test-Path (Join-Path -Path $moduleFolderPath 'version.json')
             if ($pathExisting) {
                 $childModuleAllowedList | Should -Contain $moduleFullName -Because "only the child modules listed in the [./$childModuleAllowedListRelativePath] list may have a version.json file."
