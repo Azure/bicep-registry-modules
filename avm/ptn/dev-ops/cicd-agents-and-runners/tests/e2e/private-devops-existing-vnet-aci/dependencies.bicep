@@ -81,7 +81,7 @@ resource vnetLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06
   }
 }
 
-resource publicIP 'Microsoft.Network/publicIPAddresses@2023-04-01' = {
+resource publicIP 'Microsoft.Network/publicIPAddresses@2024-05-01' = {
   name: publicIPName
   location: location
   sku: {
