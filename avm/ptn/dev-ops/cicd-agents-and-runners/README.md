@@ -1537,12 +1537,12 @@ To use this variant, set the property `computeNetworkType` to `azureContainerApp
 | [`computeNetworkType`](#parameter-networkingconfigurationnetworktype-useexistingcomputenetworkingcomputenetworktype-azurecontainerappcomputenetworktype) | string | The Azure Container App networking type. |
 | [`containerAppDeploymentScriptSubnetName`](#parameter-networkingconfigurationnetworktype-useexistingcomputenetworkingcomputenetworktype-azurecontainerappcontainerappdeploymentscriptsubnetname) | string | The existing subnet name for the container app deployment script. |
 | [`containerAppSubnetName`](#parameter-networkingconfigurationnetworktype-useexistingcomputenetworkingcomputenetworktype-azurecontainerappcontainerappsubnetname) | string | The existing network container app subnet name. This is required for Container Apps compute type. This subnet needs to have service delegation for App environments. |
-| [`containerInstanceSubnetName`](#parameter-networkingconfigurationnetworktype-useexistingcomputenetworkingcomputenetworktype-azurecontainerappcontainerinstancesubnetname) | string | The container instance subnet name in the created virtual network. If not provided, a default name will be used. This subnet is required for private networking Azure DevOps scenarios to deploy the deployment script which starts the placeholder agent privately. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`containerInstanceSubnetName`](#parameter-networkingconfigurationnetworktype-useexistingcomputenetworkingcomputenetworktype-azurecontainerappcontainerinstancesubnetname) | string | The container instance subnet name in the created virtual network. If not provided, a default name will be used. This subnet is required for private networking Azure DevOps scenarios to deploy the deployment script which starts the placeholder agent privately. |
 | [`deploymentScriptPrivateDnsZoneResourceId`](#parameter-networkingconfigurationnetworktype-useexistingcomputenetworkingcomputenetworktype-azurecontainerappdeploymentscriptprivatednszoneresourceid) | string | The deployment script private DNS zone Id. If not provided, a new private DNS zone will be created. |
 
 ### Parameter: `networkingConfiguration.networkType-useExisting.computeNetworking.computeNetworkType-azureContainerApp.computeNetworkType`
@@ -1698,7 +1698,6 @@ To use this variant, set the property `selfHostedType` to `github`.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`githubOrganization`](#parameter-selfhostedconfigselfhostedtype-githubgithuborganization) | string | The GitHub organization name. |
-| [`githubRepository`](#parameter-selfhostedconfigselfhostedtype-githubgithubrepository) | string | The GitHub repository name. |
 | [`personalAccessToken`](#parameter-selfhostedconfigselfhostedtype-githubpersonalaccesstoken) | securestring | The GitHub personal access token with permissions to create and manage self-hosted runners.  See https://learn.microsoft.com/azure/container-apps/tutorial-ci-cd-runners-jobs?tabs=bash&pivots=container-apps-jobs-self-hosted-ci-cd-github-actions#get-a-github-personal-access-token for PAT permissions. The permissions will change based on the scope of the runner. |
 | [`selfHostedType`](#parameter-selfhostedconfigselfhostedtype-githubselfhostedtype) | string | The self-hosted runner type. |
 
@@ -1709,6 +1708,7 @@ To use this variant, set the property `selfHostedType` to `github`.
 | [`azureContainerAppTarget`](#parameter-selfhostedconfigselfhostedtype-githubazurecontainerapptarget) | object | The GitHub runner Azure Container app configuration. |
 | [`azureContainerInstanceTarget`](#parameter-selfhostedconfigselfhostedtype-githubazurecontainerinstancetarget) | object | The GitHub runner Azure Container instance configuration. |
 | [`ephemeral`](#parameter-selfhostedconfigselfhostedtype-githubephemeral) | bool | Deploy ephemeral runners. |
+| [`githubRepository`](#parameter-selfhostedconfigselfhostedtype-githubgithubrepository) | string | The GitHub repository name. |
 | [`runnerGroup`](#parameter-selfhostedconfigselfhostedtype-githubrunnergroup) | string | The GitHub runner group. |
 | [`runnerName`](#parameter-selfhostedconfigselfhostedtype-githubrunnername) | string | The GitHub runner name. |
 | [`runnerNamePrefix`](#parameter-selfhostedconfigselfhostedtype-githubrunnernameprefix) | string | The GitHub runner name prefix. |
@@ -1720,13 +1720,6 @@ To use this variant, set the property `selfHostedType` to `github`.
 The GitHub organization name.
 
 - Required: Yes
-- Type: string
-
-### Parameter: `selfHostedConfig.selfHostedType-github.githubRepository`
-
-The GitHub repository name.
-
-- Required: No
 - Type: string
 
 ### Parameter: `selfHostedConfig.selfHostedType-github.personalAccessToken`
@@ -1909,6 +1902,13 @@ Deploy ephemeral runners.
     true
   ]
   ```
+
+### Parameter: `selfHostedConfig.selfHostedType-github.githubRepository`
+
+The GitHub repository name.
+
+- Required: No
+- Type: string
 
 ### Parameter: `selfHostedConfig.selfHostedType-github.runnerGroup`
 
