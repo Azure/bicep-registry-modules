@@ -810,7 +810,7 @@ Name of the resource that is unique within the set of inbound NAT rules used by 
 
 Properties of the inbound NAT rule.
 
-- Required: Yes
+- Required: No
 - Type: object
 
 **Optional parameters**

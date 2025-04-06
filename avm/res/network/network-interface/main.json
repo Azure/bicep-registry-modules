@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "6802200491591389236"
+      "templateHash": "18332239589490550682"
     },
     "name": "Network Interface",
     "description": "This module deploys a Network Interface."
@@ -357,6 +357,7 @@
               }
             }
           },
+          "nullable": true,
           "metadata": {
             "description": "Optional. Properties of the inbound NAT rule."
           }

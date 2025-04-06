@@ -374,7 +374,7 @@ type inboundNatRuleType = {
 
     @description('Optional. The reference to the transport protocol used by the load balancing rule.')
     protocol: ('All' | 'Tcp' | 'Udp')?
-  }
+  }?
 }
 
 @export()
