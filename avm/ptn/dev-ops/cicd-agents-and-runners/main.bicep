@@ -317,14 +317,7 @@ module newVnet 'br/public:avm/res/network/virtual-network:0.6.1' = if (networkin
               natGatewayResourceId: empty(networkingConfiguration.?natGatewayResourceId ?? '') && privateNetworking
                 ? natGateway.outputs.resourceId
                 : networkingConfiguration.?natGatewayResourceId ?? ''
-              delegations: [
-                {
-                  name: 'Microsoft.ContainerInstance/containerGroups'
-                  properties: {
-                    serviceName: 'Microsoft.ContainerInstance/containerGroups'
-                  }
-                }
-              ]
+              delegation: 'Microsoft.ContainerInstance/containerGroups'
             }
           ]
         : [],
@@ -336,14 +329,7 @@ module newVnet 'br/public:avm/res/network/virtual-network:0.6.1' = if (networkin
               natGatewayResourceId: empty(networkingConfiguration.?natGatewayResourceId ?? '') && privateNetworking
                 ? natGateway.outputs.resourceId
                 : networkingConfiguration.?natGatewayResourceId ?? ''
-              delegations: [
-                {
-                  name: 'Microsoft.App.environments'
-                  properties: {
-                    serviceName: 'Microsoft.App/environments'
-                  }
-                }
-              ]
+              delegation: 'Microsoft.App/environments'
             }
           ]
         : [],
