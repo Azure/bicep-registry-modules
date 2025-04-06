@@ -26,7 +26,7 @@ param privateNetworking bool = true
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-@description('Optional. Name of the infrastructure resource group for the container apps environment.')
+@description('Conditional. Name of the infrastructure resource group for the container apps environment.')
 param infrastructureResourceGroupName string?
 
 // ================ //

@@ -1294,12 +1294,17 @@ param privateNetworking = true
 | [`networkingConfiguration`](#parameter-networkingconfiguration) | object | The networking configuration. |
 | [`selfHostedConfig`](#parameter-selfhostedconfig) | object | The self-hosted runner configuration. This can be either GitHub or Azure DevOps. |
 
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`infrastructureResourceGroupName`](#parameter-infrastructureresourcegroupname) | string | Name of the infrastructure resource group for the container apps environment. |
+
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`infrastructureResourceGroupName`](#parameter-infrastructureresourcegroupname) | string | Name of the infrastructure resource group for the container apps environment. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`privateNetworking`](#parameter-privatenetworking) | bool | Whether to use private or public networking for the Azure Container Registry. |
 
@@ -2188,6 +2193,13 @@ The target pipelines queue length.
 - Required: No
 - Type: string
 
+### Parameter: `infrastructureResourceGroupName`
+
+Name of the infrastructure resource group for the container apps environment.
+
+- Required: No
+- Type: string
+
 ### Parameter: `enableTelemetry`
 
 Enable/Disable usage telemetry for module.
@@ -2195,13 +2207,6 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
-
-### Parameter: `infrastructureResourceGroupName`
-
-Name of the infrastructure resource group for the container apps environment.
-
-- Required: No
-- Type: string
 
 ### Parameter: `location`
 
