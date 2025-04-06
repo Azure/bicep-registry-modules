@@ -507,7 +507,7 @@ module aciJob 'br/public:avm/res/container-instance/container-group:0.2.0' = [
             subnetId => contains(subnetId, networkingConfiguration.?containerInstanceSubnetName ?? 'aci-subnet')
           )[0]
         : privateNetworking && networkingConfiguration.networkType == 'useExisting'
-            ? '${networkingConfiguration.virtualNetworkResourceId}/subnets/${networkingConfiguration.computeNetworking.containerInstanceSubnetName}'
+            ? '${networkingConfiguration.virtualNetworkResourceId}/subnets/${networkingConfiguration.computeNetworking.?containerInstanceSubnetName}'
             : null
       ipAddressType: privateNetworking ? 'Private' : 'Public'
       sku: 'Standard'
@@ -800,7 +800,7 @@ module runPlaceHolderAgent 'br/public:avm/res/resources/deployment-script:0.3.1'
         ]
       : privateNetworking && networkingConfiguration.networkType == 'useExisting'
           ? [
-              '${networkingConfiguration.virtualNetworkResourceId}/subnets/${networkingConfiguration.computeNetworking.containerInstanceSubnetName}'
+              '${networkingConfiguration.virtualNetworkResourceId}/subnets/${networkingConfiguration.computeNetworking.?containerInstanceSubnetName}'
             ]
           : null
     arguments: '-resourceGroup ${resourceGroup().name} -jobName ${acaPlaceholderJob.outputs.name} -subscriptionId ${subscription().subscriptionId}'
@@ -911,7 +911,7 @@ type containerAppNetworkConfigType = {
   @description('Optional. The deployment script private DNS zone Id. If not provided, a new private DNS zone will be created.')
   deploymentScriptPrivateDnsZoneResourceId: string?
 
-  @description('Required. The container instance subnet name in the created virtual network. If not provided, a default name will be used. This subnet is required for private networking Azure DevOps scenarios to deploy the deployment script which starts the placeholder agent privately.')
+  @description('Optional. The container instance subnet name in the created virtual network. If not provided, a default name will be used. This subnet is required for private networking Azure DevOps scenarios to deploy the deployment script which starts the placeholder agent privately.')
   containerInstanceSubnetName: string?
 }
 
@@ -967,7 +967,7 @@ type gitHubRunnersType = {
   @description('Required. The GitHub organization name.')
   githubOrganization: string
 
-  @description('Required. The GitHub repository name.')
+  @description('Optional. The GitHub repository name.')
   githubRepository: string?
 
   @description('Optional. The GitHub runner name.')

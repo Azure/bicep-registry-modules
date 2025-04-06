@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "13075259490337673296"
+      "templateHash": "10260777897904827918"
     },
     "name": "CI CD Agents and Runners",
     "description": "This module deploys self-hosted agents and runners for Azure DevOps and GitHub on Azure Container Instances and/or Azure Container Apps."
@@ -223,7 +223,7 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Required. The container instance subnet name in the created virtual network. If not provided, a default name will be used. This subnet is required for private networking Azure DevOps scenarios to deploy the deployment script which starts the placeholder agent privately."
+            "description": "Optional. The container instance subnet name in the created virtual network. If not provided, a default name will be used. This subnet is required for private networking Azure DevOps scenarios to deploy the deployment script which starts the placeholder agent privately."
           }
         }
       },
@@ -375,7 +375,7 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Required. The GitHub repository name."
+            "description": "Optional. The GitHub repository name."
           }
         },
         "runnerName": {
@@ -15139,7 +15139,7 @@
               }
             ]
           },
-          "subnetId": "[if(and(parameters('privateNetworking'), equals(parameters('networkingConfiguration').networkType, 'createNew')), createObject('value', filter(reference('newVnet').outputs.subnetResourceIds.value, lambda('subnetId', contains(lambdaVariables('subnetId'), coalesce(tryGet(parameters('networkingConfiguration'), 'containerInstanceSubnetName'), 'aci-subnet'))))[0]), if(and(parameters('privateNetworking'), equals(parameters('networkingConfiguration').networkType, 'useExisting')), createObject('value', format('{0}/subnets/{1}', parameters('networkingConfiguration').virtualNetworkResourceId, parameters('networkingConfiguration').computeNetworking.containerInstanceSubnetName)), createObject('value', null())))]",
+          "subnetId": "[if(and(parameters('privateNetworking'), equals(parameters('networkingConfiguration').networkType, 'createNew')), createObject('value', filter(reference('newVnet').outputs.subnetResourceIds.value, lambda('subnetId', contains(lambdaVariables('subnetId'), coalesce(tryGet(parameters('networkingConfiguration'), 'containerInstanceSubnetName'), 'aci-subnet'))))[0]), if(and(parameters('privateNetworking'), equals(parameters('networkingConfiguration').networkType, 'useExisting')), createObject('value', format('{0}/subnets/{1}', parameters('networkingConfiguration').virtualNetworkResourceId, tryGet(parameters('networkingConfiguration').computeNetworking, 'containerInstanceSubnetName'))), createObject('value', null())))]",
           "ipAddressType": "[if(parameters('privateNetworking'), createObject('value', 'Private'), createObject('value', 'Public'))]",
           "sku": {
             "value": "Standard"
@@ -26385,7 +26385,7 @@
             "value": "[parameters('enableTelemetry')]"
           },
           "storageAccountResourceId": "[if(parameters('privateNetworking'), createObject('value', reference('deploymentScriptStg').outputs.resourceId.value), createObject('value', null()))]",
-          "subnetResourceIds": "[if(and(parameters('privateNetworking'), equals(parameters('networkingConfiguration').networkType, 'createNew')), createObject('value', createArray(filter(reference('newVnet').outputs.subnetResourceIds.value, lambda('subnetId', contains(lambdaVariables('subnetId'), coalesce(tryGet(parameters('networkingConfiguration'), 'containerInstanceSubnetName'), 'aci-subnet'))))[0])), if(and(parameters('privateNetworking'), equals(parameters('networkingConfiguration').networkType, 'useExisting')), createObject('value', createArray(format('{0}/subnets/{1}', parameters('networkingConfiguration').virtualNetworkResourceId, parameters('networkingConfiguration').computeNetworking.containerInstanceSubnetName))), createObject('value', null())))]",
+          "subnetResourceIds": "[if(and(parameters('privateNetworking'), equals(parameters('networkingConfiguration').networkType, 'createNew')), createObject('value', createArray(filter(reference('newVnet').outputs.subnetResourceIds.value, lambda('subnetId', contains(lambdaVariables('subnetId'), coalesce(tryGet(parameters('networkingConfiguration'), 'containerInstanceSubnetName'), 'aci-subnet'))))[0])), if(and(parameters('privateNetworking'), equals(parameters('networkingConfiguration').networkType, 'useExisting')), createObject('value', createArray(format('{0}/subnets/{1}', parameters('networkingConfiguration').virtualNetworkResourceId, tryGet(parameters('networkingConfiguration').computeNetworking, 'containerInstanceSubnetName')))), createObject('value', null())))]",
           "arguments": {
             "value": "[format('-resourceGroup {0} -jobName {1} -subscriptionId {2}', resourceGroup().name, reference('acaPlaceholderJob').outputs.name.value, subscription().subscriptionId)]"
           },
