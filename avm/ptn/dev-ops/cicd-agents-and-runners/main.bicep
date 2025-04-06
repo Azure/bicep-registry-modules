@@ -26,6 +26,9 @@ param privateNetworking bool = true
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+@description('Optional. Name of the infrastructure resource group for the container apps environment.')
+param infrastructureResourceGroupName string?
+
 // ================ //
 // Variables        //
 // ================ //
@@ -204,7 +207,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
-module logAnalyticsWokrspace 'br/public:avm/res/operational-insights/workspace:0.5.0' = {
+module logAnalyticsWokrspace 'br/public:avm/res/operational-insights/workspace:0.11.1' = {
   name: 'logAnalyticsWokrspace'
   params: {
     name: 'law-${namingPrefix}-${uniqueString(resourceGroup().id)}-law'
@@ -212,7 +215,7 @@ module logAnalyticsWokrspace 'br/public:avm/res/operational-insights/workspace:0
   }
 }
 
-module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.3.0' = {
+module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0' = {
   name: 'userAssignedIdentity'
   params: {
     name: 'msi-${namingPrefix}-${uniqueString(resourceGroup().id)}'
@@ -221,7 +224,7 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
   }
 }
 
-module acrPrivateDNSZone 'br/public:avm/res/network/private-dns-zone:0.5.0' = if (privateNetworking && empty(networkingConfiguration.?containerRegistryPrivateDnsZoneResourceId ?? '')) {
+module acrPrivateDNSZone 'br/public:avm/res/network/private-dns-zone:0.7.0' = if (privateNetworking && empty(networkingConfiguration.?containerRegistryPrivateDnsZoneResourceId ?? '')) {
   name: 'acrdnszone${namingPrefix}${uniqueString(resourceGroup().id)}'
   params: {
     name: 'privatelink.azurecr.io'
@@ -236,7 +239,7 @@ module acrPrivateDNSZone 'br/public:avm/res/network/private-dns-zone:0.5.0' = if
   }
 }
 
-module acr 'br/public:avm/res/container-registry/registry:0.4.0' = {
+module acr 'br/public:avm/res/container-registry/registry:0.9.1' = {
   name: 'acr${namingPrefix}${uniqueString(resourceGroup().id)}'
   params: {
     name: 'acr${namingPrefix}${uniqueString(resourceGroup().id)}'
@@ -285,7 +288,7 @@ module acr 'br/public:avm/res/container-registry/registry:0.4.0' = {
       : null
   }
 }
-module newVnet 'br/public:avm/res/network/virtual-network:0.2.0' = if (networkingConfiguration.networkType == 'createNew') {
+module newVnet 'br/public:avm/res/network/virtual-network:0.6.1' = if (networkingConfiguration.networkType == 'createNew') {
   name: 'vnet-${uniqueString(resourceGroup().id)}'
   params: {
     name: 'vnet-${namingPrefix}-${uniqueString(resourceGroup().id)}'
@@ -356,7 +359,7 @@ module newVnet 'br/public:avm/res/network/virtual-network:0.2.0' = if (networkin
     )
   }
 }
-module appEnvironment 'br/public:avm/res/app/managed-environment:0.6.2' = if (contains(
+module appEnvironment 'br/public:avm/res/app/managed-environment:0.10.1' = if (contains(
   computeTypes,
   'azure-container-app'
 )) {
@@ -366,6 +369,7 @@ module appEnvironment 'br/public:avm/res/app/managed-environment:0.6.2' = if (co
     logAnalyticsWorkspaceResourceId: logAnalyticsWokrspace.outputs.resourceId
     location: location
     enableTelemetry: enableTelemetry
+    infrastructureResourceGroupName: infrastructureResourceGroupName
     infrastructureSubnetId: networkingConfiguration.networkType == 'createNew'
       ? filter(
           newVnet.outputs.subnetResourceIds,
@@ -385,7 +389,7 @@ module appEnvironment 'br/public:avm/res/app/managed-environment:0.6.2' = if (co
   }
 }
 
-module natGatewayPublicIp 'br/public:avm/res/network/public-ip-address:0.5.1' = if (empty(networkingConfiguration.?natGatewayResourceId ?? '') && empty(networkingConfiguration.?natGatewayPublicIpAddressResourceId ?? '') && networkingConfiguration.networkType == 'createNew' && privateNetworking) {
+module natGatewayPublicIp 'br/public:avm/res/network/public-ip-address:0.8.0' = if (empty(networkingConfiguration.?natGatewayResourceId ?? '') && empty(networkingConfiguration.?natGatewayPublicIpAddressResourceId ?? '') && networkingConfiguration.networkType == 'createNew' && privateNetworking) {
   name: 'natGatewayPublicIp-${uniqueString(resourceGroup().id)}'
   params: {
     name: 'natGatewayPublicIp-${uniqueString(resourceGroup().id)}'
@@ -396,7 +400,7 @@ module natGatewayPublicIp 'br/public:avm/res/network/public-ip-address:0.5.1' = 
   }
 }
 
-module natGateway 'br/public:avm/res/network/nat-gateway:1.1.0' = if (privateNetworking && empty(networkingConfiguration.?natGatewayResourceId ?? '') && networkingConfiguration.networkType == 'createNew') {
+module natGateway 'br/public:avm/res/network/nat-gateway:1.2.2' = if (privateNetworking && empty(networkingConfiguration.?natGatewayResourceId ?? '') && networkingConfiguration.networkType == 'createNew') {
   name: 'natGateway-${uniqueString(resourceGroup().id)}'
   params: {
     name: 'natGateway-${namingPrefix}-${uniqueString(resourceGroup().id)}'
@@ -445,7 +449,7 @@ resource buildImages 'Microsoft.ContainerRegistry/registries/tasks@2019-06-01-pr
   }
 ]
 
-module buildImagesRoleAssignment 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.1' = [
+module buildImagesRoleAssignment 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = [
   for (image, i) in computeTypes: {
     name: 'buildImagesRoleAssignment-${uniqueString(resourceGroup().id)}-${i}'
     params: {
