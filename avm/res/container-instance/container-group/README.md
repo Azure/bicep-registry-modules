@@ -245,7 +245,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
         }
       }
     ]
-    name: 'cicgencr001'
+    name: 'cicenc001'
     // Non-required parameters
     customerManagedKey: {
       keyName: '<keyName>'
@@ -341,7 +341,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
       ]
     },
     "name": {
-      "value": "cicgencr001"
+      "value": "cicenc001"
     },
     // Non-required parameters
     "customerManagedKey": {
@@ -443,7 +443,7 @@ param containers = [
     }
   }
 ]
-param name = 'cicgencr001'
+param name = 'cicenc001'
 // Non-required parameters
 param customerManagedKey = {
   keyName: '<keyName>'
