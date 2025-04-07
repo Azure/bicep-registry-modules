@@ -217,7 +217,7 @@ var managementGroupCustomPolicySetDefinitions = [
 
 var managementGroupRoleAssignments = [
   {
-    principalId: 'd543c6f0-89ce-4d51-a9fd-5b61986278a9'
+    principalId: deployer().objectId
     roleDefinitionIdOrName: 'Security Reader'
   }
   {
@@ -225,7 +225,7 @@ var managementGroupRoleAssignments = [
     roleDefinitionIdOrName: 'Reader'
   }
   {
-    principalId: 'd543c6f0-89ce-4d51-a9fd-5b61986278a9'
+    principalId: deployer().objectId
     roleDefinitionIdOrName: alzCustomRbacRoleDefsJson[4].name
   }
 ]

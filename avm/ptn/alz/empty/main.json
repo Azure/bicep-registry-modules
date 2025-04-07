@@ -6,10 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "8495464171036363476"
+      "templateHash": "18222221275297383351"
     },
     "name": "avm/ptn/alz/empty",
-    "description": "Azure Landing Zones - Bicep - Empty\n\nPlease review the [Usage examples](#Usage-examples) below, but please ensure for the `max` example you review the entire [directory](tests/e2e/max) to see the supplementary files that are required for the example.\n\nAlso please ensure you review the [Notes section of this README](#Notes) for important information about the module as well as features that exist outside of parameter inputs."
+    "description": "Azure Landing Zones - Bicep - Empty\n\nPlease review the [Usage examples](https://github.com/Azure/bicep-registry-modules/tree/main/avm/ptn/alz/empty#Usage-examples) section in the module's README, but please ensure for the `max` example you review the entire [directory](https://github.com/Azure/bicep-registry-modules/tree/main/avm/ptn/alz/empty/tests/e2e/max) to see the supplementary files that are required for the example.\n\nAlso please ensure you review the [Notes section of the module's README](https://github.com/Azure/bicep-registry-modules/tree/main/avm/ptn/alz/empty#Notes) for important information about the module as well as features that exist outside of parameter inputs."
   },
   "definitions": {
     "policyAssignmentType": {
@@ -369,7 +369,7 @@
       "metadata": {
         "description": "A type for policy definitions.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "modules/policy-definitions/main.bicep"
+          "sourceTemplate": "modules/policy-definitions.bicep"
         }
       }
     },
@@ -396,7 +396,7 @@
       "metadata": {
         "description": "A type for policy set definitions.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "modules/policy-set-definitions/main.bicep"
+          "sourceTemplate": "modules/policy-set-definitions.bicep"
         }
       }
     },
@@ -852,10 +852,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.34.44.8038",
-              "templateHash": "10903625116367993727"
+              "templateHash": "10017467904567479058"
             },
             "name": "avm/ptn/alz/empty/wait",
-            "description": "Azure Landing Zones - Bicep - Empty - Wait Module"
+            "description": "Azure Landing Zones - Bicep - Empty - Wait Module\n\nThis module is used to create sequential empty/blank ARM deployments to introuce an artificial wait between deployments in the pattern module. When the `wait()` and `retry()` functions become available in GA in Bicep, this approach will be deprecated and we will migrate to using those functions instead.\n"
           },
           "resources": []
         }
@@ -885,10 +885,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.34.44.8038",
-              "templateHash": "10903625116367993727"
+              "templateHash": "10017467904567479058"
             },
             "name": "avm/ptn/alz/empty/wait",
-            "description": "Azure Landing Zones - Bicep - Empty - Wait Module"
+            "description": "Azure Landing Zones - Bicep - Empty - Wait Module\n\nThis module is used to create sequential empty/blank ARM deployments to introuce an artificial wait between deployments in the pattern module. When the `wait()` and `retry()` functions become available in GA in Bicep, this approach will be deprecated and we will migrate to using those functions instead.\n"
           },
           "resources": []
         }
@@ -1014,10 +1014,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.34.44.8038",
-              "templateHash": "10903625116367993727"
+              "templateHash": "10017467904567479058"
             },
             "name": "avm/ptn/alz/empty/wait",
-            "description": "Azure Landing Zones - Bicep - Empty - Wait Module"
+            "description": "Azure Landing Zones - Bicep - Empty - Wait Module\n\nThis module is used to create sequential empty/blank ARM deployments to introuce an artificial wait between deployments in the pattern module. When the `wait()` and `retry()` functions become available in GA in Bicep, this approach will be deprecated and we will migrate to using those functions instead.\n"
           },
           "resources": []
         }
@@ -1156,10 +1156,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.34.44.8038",
-              "templateHash": "10903625116367993727"
+              "templateHash": "10017467904567479058"
             },
             "name": "avm/ptn/alz/empty/wait",
-            "description": "Azure Landing Zones - Bicep - Empty - Wait Module"
+            "description": "Azure Landing Zones - Bicep - Empty - Wait Module\n\nThis module is used to create sequential empty/blank ARM deployments to introuce an artificial wait between deployments in the pattern module. When the `wait()` and `retry()` functions become available in GA in Bicep, this approach will be deprecated and we will migrate to using those functions instead.\n"
           },
           "resources": []
         }
@@ -2764,10 +2764,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.34.44.8038",
-              "templateHash": "10903625116367993727"
+              "templateHash": "10017467904567479058"
             },
             "name": "avm/ptn/alz/empty/wait",
-            "description": "Azure Landing Zones - Bicep - Empty - Wait Module"
+            "description": "Azure Landing Zones - Bicep - Empty - Wait Module\n\nThis module is used to create sequential empty/blank ARM deployments to introuce an artificial wait between deployments in the pattern module. When the `wait()` and `retry()` functions become available in GA in Bicep, this approach will be deprecated and we will migrate to using those functions instead.\n"
           },
           "resources": []
         }
@@ -3000,10 +3000,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.34.44.8038",
-              "templateHash": "10903625116367993727"
+              "templateHash": "10017467904567479058"
             },
             "name": "avm/ptn/alz/empty/wait",
-            "description": "Azure Landing Zones - Bicep - Empty - Wait Module"
+            "description": "Azure Landing Zones - Bicep - Empty - Wait Module\n\nThis module is used to create sequential empty/blank ARM deployments to introuce an artificial wait between deployments in the pattern module. When the `wait()` and `retry()` functions become available in GA in Bicep, this approach will be deprecated and we will migrate to using those functions instead.\n"
           },
           "resources": []
         }

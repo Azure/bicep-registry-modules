@@ -2,9 +2,9 @@ metadata name = 'avm/ptn/alz/empty'
 metadata description = '''
 Azure Landing Zones - Bicep - Empty
 
-Please review the [Usage examples](#Usage-examples) below, but please ensure for the `max` example you review the entire [directory](tests/e2e/max) to see the supplementary files that are required for the example.
+Please review the [Usage examples](https://github.com/Azure/bicep-registry-modules/tree/main/avm/ptn/alz/empty#Usage-examples) section in the module's README, but please ensure for the `max` example you review the entire [directory](https://github.com/Azure/bicep-registry-modules/tree/main/avm/ptn/alz/empty/tests/e2e/max) to see the supplementary files that are required for the example.
 
-Also please ensure you review the [Notes section of this README](#Notes) for important information about the module as well as features that exist outside of parameter inputs.'''
+Also please ensure you review the [Notes section of the module's README](https://github.com/Azure/bicep-registry-modules/tree/main/avm/ptn/alz/empty#Notes) for important information about the module as well as features that exist outside of parameter inputs.'''
 
 targetScope = 'managementGroup'
 
@@ -51,11 +51,11 @@ param managementGroupRoleAssignments roleAssignmentType[]?
 @description('Optional. Array of custom role definitions to create on the management group.')
 param managementGroupCustomRoleDefinitions roleDefinitionType[]?
 
-import { policyDefinitionType } from 'modules/policy-definitions/main.bicep'
+import { policyDefinitionType } from 'modules/policy-definitions.bicep'
 @description('Optional. Array of custom policy definitions to create on the management group.')
 param managementGroupCustomPolicyDefinitions policyDefinitionType[]?
 
-import { policySetDefinitionsType } from 'modules/policy-set-definitions/main.bicep'
+import { policySetDefinitionsType } from 'modules/policy-set-definitions.bicep'
 @description('Optional. Array of custom policy set definitions (initiatives) to create on the management group.')
 param managementGroupCustomPolicySetDefinitions policySetDefinitionsType[]?
 
@@ -190,7 +190,7 @@ resource mgExisting 'Microsoft.Management/managementGroups@2023-04-01' existing 
 
 // N x Subscription Placement in Management Group Created or Existing (Optional)
 @batchSize(1)
-module mgSubPlacementWait 'modules/wait/main.bicep' = [
+module mgSubPlacementWait 'modules/wait.bicep' = [
   for (item, index) in range(0, waitForConsistencyCounterBeforeSubPlacement): if (waitForConsistencyCounterBeforeSubPlacement > 0 && !empty(subscriptionsToPlaceInManagementGroup)) {
     name: '${deploymentNames.mgSubPlacementWait}-${index}'
   }
@@ -208,13 +208,13 @@ resource mgSubPlacement 'Microsoft.Management/managementGroups/subscriptions@202
 
 // Custom Policy Definitions Created on Management Group (Optional)
 @batchSize(1)
-module mgCustomPolicyDefinitionsWait 'modules/wait/main.bicep' = [
+module mgCustomPolicyDefinitionsWait 'modules/wait.bicep' = [
   for (item, index) in range(0, waitForConsistencyCounterBeforeCustomPolicyDefinitions): if (waitForConsistencyCounterBeforeCustomPolicyDefinitions > 0 && !(empty(managementGroupCustomPolicyDefinitions))) {
     name: '${deploymentNames.mgCustomPolicyDefinitionsWait}-${index}'
   }
 ]
 
-module mgCustomPolicyDefinitions 'modules/policy-definitions/main.bicep' = if (!empty(managementGroupCustomPolicyDefinitions)) {
+module mgCustomPolicyDefinitions 'modules/policy-definitions.bicep' = if (!empty(managementGroupCustomPolicyDefinitions)) {
   scope: managementGroup(managementGroupName)
   name: deploymentNames.mgPolicyDefinitions
   params: {
@@ -227,13 +227,13 @@ module mgCustomPolicyDefinitions 'modules/policy-definitions/main.bicep' = if (!
 
 // Custom Policy Set Definitions/Initiatives Created on Management Group (Optional)
 @batchSize(1)
-module mgCustomPolicySetDefinitionsWait 'modules/wait/main.bicep' = [
+module mgCustomPolicySetDefinitionsWait 'modules/wait.bicep' = [
   for (item, index) in range(0, waitForConsistencyCounterBeforeCustomPolicySetDefinitions): if (waitForConsistencyCounterBeforeCustomPolicySetDefinitions > 0 && !empty(managementGroupCustomPolicySetDefinitions)) {
     name: '${deploymentNames.mgCustomPolicySetDefinitionsWait}-${index}'
   }
 ]
 
-module mgCustomPolicySetDefinitions 'modules/policy-set-definitions/main.bicep' = if (!empty(managementGroupCustomPolicySetDefinitions)) {
+module mgCustomPolicySetDefinitions 'modules/policy-set-definitions.bicep' = if (!empty(managementGroupCustomPolicySetDefinitions)) {
   scope: managementGroup(managementGroupName)
   dependsOn: [
     mgCustomPolicyDefinitions
@@ -247,7 +247,7 @@ module mgCustomPolicySetDefinitions 'modules/policy-set-definitions/main.bicep' 
 
 // Policy Assignments Created on Management Group (Optional)
 @batchSize(1)
-module mgPolicyAssignmentsWait 'modules/wait/main.bicep' = [
+module mgPolicyAssignmentsWait 'modules/wait.bicep' = [
   for (item, index) in range(0, waitForConsistencyCounterBeforePolicyAssignments): if (waitForConsistencyCounterBeforePolicyAssignments > 0 && !empty(managementGroupPolicyAssignments)) {
     name: '${deploymentNames.mgPolicyAssignmentsWait}-${index}'
   }
@@ -290,7 +290,7 @@ module mgPolicyAssignments 'br/public:avm/ptn/authorization/policy-assignment:0.
 
 // Custom Role Definitions Created on Management Group (Optional)
 @batchSize(1)
-module mgRoleDefinitionsWait 'modules/wait/main.bicep' = [
+module mgRoleDefinitionsWait 'modules/wait.bicep' = [
   for (item, index) in range(0, waitForConsistencyCounterBeforeCustomRoleDefinitions): if (waitForConsistencyCounterBeforeCustomRoleDefinitions > 0 && !empty(managementGroupCustomRoleDefinitions)) {
     name: '${deploymentNames.mgRoleDefinitionsWait}-${index}'
   }
@@ -320,7 +320,7 @@ module mgRoleDefinitions 'br/public:avm/ptn/authorization/role-definition:0.1.0'
 
 // Role Assignments Created on Management Group (Optional)
 @batchSize(1)
-module mgRoleAssignmentsWait 'modules/wait/main.bicep' = [
+module mgRoleAssignmentsWait 'modules/wait.bicep' = [
   for (item, index) in range(0, waitForConsistencyCounterBeforeRoleAssignments): if (waitForConsistencyCounterBeforeRoleAssignments > 0 && !empty(formattedRoleAssignments)) {
     name: '${deploymentNames.mgRoleAssignmentsWait}-${index}'
   }

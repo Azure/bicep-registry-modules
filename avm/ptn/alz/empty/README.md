@@ -2,9 +2,9 @@
 
 Azure Landing Zones - Bicep - Empty
 
-Please review the [Usage examples](#Usage-examples) below, but please ensure for the `max` example you review the entire [directory](tests/e2e/max) to see the supplementary files that are required for the example.
+Please review the [Usage examples](https://github.com/Azure/bicep-registry-modules/tree/main/avm/ptn/alz/empty#Usage-examples) section in the module's README, but please ensure for the `max` example you review the entire [directory](https://github.com/Azure/bicep-registry-modules/tree/main/avm/ptn/alz/empty/tests/e2e/max) to see the supplementary files that are required for the example.
 
-Also please ensure you review the [Notes section of this README](#Notes) for important information about the module as well as features that exist outside of parameter inputs.
+Also please ensure you review the [Notes section of the module's README](https://github.com/Azure/bicep-registry-modules/tree/main/avm/ptn/alz/empty#Notes) for important information about the module as well as features that exist outside of parameter inputs.
 
 ## Navigation
 
