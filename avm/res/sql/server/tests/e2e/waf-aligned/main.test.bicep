@@ -64,126 +64,124 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
 // ============== //
 // Test Execution //
 // ============== //
-
-module testDeployment '../../../main.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}'
-  params: {
-    name: '${namePrefix}-${serviceShort}'
-    primaryUserAssignedIdentityId: nestedDependencies.outputs.managedIdentityResourceId
-    administrators: {
-      azureADOnlyAuthentication: true
-      login: 'myspn'
-      sid: nestedDependencies.outputs.managedIdentityPrincipalId
-      principalType: 'Application'
-      tenantId: tenant().tenantId
-    }
-    location: enforcedLocation
-    vulnerabilityAssessmentsObj: {
-      name: 'default'
-      recurringScans: {
-        emailSubscriptionAdmins: true
-        isEnabled: true
-        emails: [
-          'test1@contoso.com'
-          'test2@contoso.com'
-        ]
+@batchSize(1)
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}-${serviceShort}'
+      primaryUserAssignedIdentityId: nestedDependencies.outputs.managedIdentityResourceId
+      administrators: {
+        azureADOnlyAuthentication: true
+        login: 'myspn'
+        sid: nestedDependencies.outputs.managedIdentityPrincipalId
+        principalType: 'Application'
+        tenantId: tenant().tenantId
       }
-      storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-    }
-    elasticPools: [
-      {
-        name: '${namePrefix}-${serviceShort}-ep-001'
-        sku: {
-          name: 'GP_Gen5'
-          tier: 'GeneralPurpose'
-          capacity: 10
-        }
-        maintenanceConfigurationId: '${subscription().id}/providers/Microsoft.Maintenance/publicMaintenanceConfigurations/SQL_${enforcedLocation}_DB_1'
-      }
-    ]
-    databases: [
-      {
-        name: '${namePrefix}-${serviceShort}db-001'
-        collation: 'SQL_Latin1_General_CP1_CI_AS'
-        sku: {
-          name: 'ElasticPool'
-          tier: 'GeneralPurpose'
-          capacity: 0
-        }
-        maxSizeBytes: 34359738368
-        licenseType: 'LicenseIncluded'
-        diagnosticSettings: [
-          {
-            name: 'customSetting'
-            eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-            eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-            storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-            workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-          }
-        ]
-        elasticPoolResourceId: '${resourceGroup.id}/providers/Microsoft.Sql/servers/${namePrefix}-${serviceShort}/elasticPools/${namePrefix}-${serviceShort}-ep-001'
-        backupShortTermRetentionPolicy: {
-          retentionDays: 14
-        }
-        backupLongTermRetentionPolicy: {
-          monthlyRetention: 'P6M'
-        }
-      }
-    ]
-    customerManagedKey: {
-      keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
-      keyName: nestedDependencies.outputs.keyVaultKeyName
-      keyVersion: last(split(nestedDependencies.outputs.keyVaultEncryptionKeyUrl, '/'))
-      autoRotationEnabled: true
-    }
-    securityAlertPolicies: [
-      {
-        name: 'Default'
-        state: 'Enabled'
-        emailAccountAdmins: true
-      }
-    ]
-    managedIdentities: {
-      systemAssigned: true
-      userAssignedResourceIds: [
-        nestedDependencies.outputs.managedIdentityResourceId
-      ]
-    }
-    privateEndpoints: [
-      {
-        subnetResourceId: nestedDependencies.outputs.privateEndpointSubnetResourceId
-        service: 'sqlServer'
-        privateDnsZoneGroup: {
-          privateDnsZoneGroupConfigs: [
-            {
-              privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
-            }
+      location: enforcedLocation
+      vulnerabilityAssessmentsObj: {
+        name: 'default'
+        recurringScans: {
+          emailSubscriptionAdmins: true
+          isEnabled: true
+          emails: [
+            'test1@contoso.com'
+            'test2@contoso.com'
           ]
         }
-        tags: {
-          'hidden-title': 'This is visible in the resource name'
-          Environment: 'Non-Prod'
-          Role: 'DeploymentValidation'
+        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+      }
+      elasticPools: [
+        {
+          name: '${namePrefix}-${serviceShort}-ep-001'
+          sku: {
+            name: 'GP_Gen5'
+            tier: 'GeneralPurpose'
+            capacity: 10
+          }
+          maintenanceConfigurationId: '${subscription().id}/providers/Microsoft.Maintenance/publicMaintenanceConfigurations/SQL_${enforcedLocation}_DB_1'
         }
+      ]
+      databases: [
+        {
+          name: '${namePrefix}-${serviceShort}db-001'
+          collation: 'SQL_Latin1_General_CP1_CI_AS'
+          sku: {
+            name: 'ElasticPool'
+            tier: 'GeneralPurpose'
+            capacity: 0
+          }
+          maxSizeBytes: 34359738368
+          licenseType: 'LicenseIncluded'
+          diagnosticSettings: [
+            {
+              name: 'customSetting'
+              eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+              eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+              storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+              workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+            }
+          ]
+          elasticPoolResourceId: '${resourceGroup.id}/providers/Microsoft.Sql/servers/${namePrefix}-${serviceShort}/elasticPools/${namePrefix}-${serviceShort}-ep-001'
+          backupShortTermRetentionPolicy: {
+            retentionDays: 14
+          }
+          backupLongTermRetentionPolicy: {
+            monthlyRetention: 'P6M'
+          }
+        }
+      ]
+      customerManagedKey: {
+        keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
+        keyName: nestedDependencies.outputs.keyVaultKeyName
+        keyVersion: last(split(nestedDependencies.outputs.keyVaultEncryptionKeyUrl, '/'))
+        autoRotationEnabled: true
       }
-    ]
-    virtualNetworkRules: [
-      {
-        ignoreMissingVnetServiceEndpoint: true
-        name: 'newVnetRule1'
-        virtualNetworkSubnetId: nestedDependencies.outputs.serviceEndpointSubnetResourceId
+      securityAlertPolicies: [
+        {
+          name: 'Default'
+          state: 'Enabled'
+          emailAccountAdmins: true
+        }
+      ]
+      managedIdentities: {
+        systemAssigned: true
+        userAssignedResourceIds: [
+          nestedDependencies.outputs.managedIdentityResourceId
+        ]
       }
-    ]
-    restrictOutboundNetworkAccess: 'Disabled'
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
+      privateEndpoints: [
+        {
+          subnetResourceId: nestedDependencies.outputs.privateEndpointSubnetResourceId
+          service: 'sqlServer'
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+            ]
+          }
+          tags: {
+            'hidden-title': 'This is visible in the resource name'
+            Environment: 'Non-Prod'
+            Role: 'DeploymentValidation'
+          }
+        }
+      ]
+      virtualNetworkRules: [
+        {
+          ignoreMissingVnetServiceEndpoint: true
+          name: 'newVnetRule1'
+          virtualNetworkSubnetId: nestedDependencies.outputs.serviceEndpointSubnetResourceId
+        }
+      ]
+      restrictOutboundNetworkAccess: 'Disabled'
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
+      }
     }
   }
-  dependsOn: [
-    nestedDependencies
-    diagnosticDependencies
-  ]
-}
+]

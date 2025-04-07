@@ -5,35 +5,134 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "15569717694154014978"
+      "version": "0.34.44.8038",
+      "templateHash": "6548535891657862733"
     },
     "name": "Event Grid System Topics",
     "description": "This module deploys an Event Grid System Topic."
   },
   "definitions": {
-    "managedIdentitiesType": {
+    "diagnosticSettingFullType": {
       "type": "object",
       "properties": {
-        "systemAssigned": {
-          "type": "bool",
+        "name": {
+          "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Enables system assigned managed identity on the resource."
+            "description": "Optional. The name of the diagnostic setting."
           }
         },
-        "userAssignedResourcesIds": {
+        "logCategoriesAndGroups": {
           "type": "array",
           "items": {
-            "type": "string"
+            "type": "object",
+            "properties": {
+              "category": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
+                }
+              },
+              "categoryGroup": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
+                }
+              },
+              "enabled": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                }
+              }
+            }
           },
           "nullable": true,
           "metadata": {
-            "description": "Optional. The resource ID(s) to assign to the resource."
+            "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
+          }
+        },
+        "metricCategories": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "category": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
+                }
+              },
+              "enabled": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
+          }
+        },
+        "logAnalyticsDestinationType": {
+          "type": "string",
+          "allowedValues": [
+            "AzureDiagnostics",
+            "Dedicated"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
+          }
+        },
+        "workspaceResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "storageAccountResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "eventHubAuthorizationRuleResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
+          }
+        },
+        "eventHubName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "marketplacePartnerResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
     },
     "lockType": {
       "type": "object",
@@ -58,200 +157,115 @@
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    },
+    "managedIdentityAllType": {
+      "type": "object",
+      "properties": {
+        "systemAssigned": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enables system assigned managed identity on the resource."
+          }
+        },
+        "userAssignedResourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
     },
     "roleAssignmentType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
-            }
-          },
-          "roleDefinitionIdOrName": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-            }
-          },
-          "principalId": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-            }
-          },
-          "principalType": {
-            "type": "string",
-            "allowedValues": [
-              "Device",
-              "ForeignGroup",
-              "Group",
-              "ServicePrincipal",
-              "User"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The principal type of the assigned principal ID."
-            }
-          },
-          "description": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The description of the role assignment."
-            }
-          },
-          "condition": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-            }
-          },
-          "conditionVersion": {
-            "type": "string",
-            "allowedValues": [
-              "2.0"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Version of the condition."
-            }
-          },
-          "delegatedManagedIdentityResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The Resource Id of the delegated managed identity resource."
-            }
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+          }
+        },
+        "roleDefinitionIdOrName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+          }
+        },
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+          }
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "Device",
+            "ForeignGroup",
+            "Group",
+            "ServicePrincipal",
+            "User"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The principal type of the assigned principal ID."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The description of the role assignment."
+          }
+        },
+        "condition": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+          }
+        },
+        "conditionVersion": {
+          "type": "string",
+          "allowedValues": [
+            "2.0"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Version of the condition."
+          }
+        },
+        "delegatedManagedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Resource Id of the delegated managed identity resource."
           }
         }
       },
-      "nullable": true
-    },
-    "diagnosticSettingType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of diagnostic setting."
-            }
-          },
-          "logCategoriesAndGroups": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "category": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
-                  }
-                },
-                "categoryGroup": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
-                  }
-                },
-                "enabled": {
-                  "type": "bool",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
-                  }
-                }
-              }
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
-            }
-          },
-          "metricCategories": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "category": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
-                  }
-                },
-                "enabled": {
-                  "type": "bool",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
-                  }
-                }
-              }
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
-            }
-          },
-          "logAnalyticsDestinationType": {
-            "type": "string",
-            "allowedValues": [
-              "AzureDiagnostics",
-              "Dedicated"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
-            }
-          },
-          "workspaceResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-            }
-          },
-          "storageAccountResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-            }
-          },
-          "eventHubAuthorizationRuleResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
-            }
-          },
-          "eventHubName": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-            }
-          },
-          "marketplacePartnerResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
-            }
-          }
+      "metadata": {
+        "description": "An AVM-aligned type for a role assignment.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
-      },
-      "nullable": true
+      }
     }
   },
   "parameters": {
@@ -282,31 +296,41 @@
     },
     "eventSubscriptions": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. Event subscriptions to deploy."
       }
     },
     "diagnosticSettings": {
-      "$ref": "#/definitions/diagnosticSettingType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/diagnosticSettingFullType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. The diagnostic settings of the service."
       }
     },
     "roleAssignments": {
-      "$ref": "#/definitions/roleAssignmentType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/roleAssignmentType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Array of role assignments to create."
       }
     },
     "lock": {
       "$ref": "#/definitions/lockType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The lock settings of the service."
       }
     },
     "managedIdentities": {
-      "$ref": "#/definitions/managedIdentitiesType",
+      "$ref": "#/definitions/managedIdentityAllType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The managed identity definition for this resource."
       }
@@ -334,8 +358,8 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
-    "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
-    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourcesIds'), createObject()))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
+    "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
+    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "EventGrid Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1e241071-0855-49ea-94dc-649edcd759de')]",
@@ -461,11 +485,11 @@
     "systemTopics_eventSubscriptions": {
       "copy": {
         "name": "systemTopics_eventSubscriptions",
-        "count": "[length(parameters('eventSubscriptions'))]"
+        "count": "[length(coalesce(parameters('eventSubscriptions'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-EventGrid-SystemTopics-EventSubscriptions-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "name": "[format('{0}-EventGrid-SysTopics-EventSubs-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -473,31 +497,48 @@
         "mode": "Incremental",
         "parameters": {
           "destination": {
-            "value": "[parameters('eventSubscriptions')[copyIndex()].destination]"
+            "value": "[coalesce(parameters('eventSubscriptions'), createArray())[copyIndex()].destination]"
           },
           "systemTopicName": {
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[parameters('eventSubscriptions')[copyIndex()].name]"
+            "value": "[coalesce(parameters('eventSubscriptions'), createArray())[copyIndex()].name]"
           },
-          "deadLetterDestination": "[if(contains(parameters('eventSubscriptions')[copyIndex()], 'deadLetterDestination'), createObject('value', parameters('eventSubscriptions')[copyIndex()].deadLetterDestination), createObject('value', createObject()))]",
-          "deadLetterWithResourceIdentity": "[if(contains(parameters('eventSubscriptions')[copyIndex()], 'deadLetterWithResourceIdentity'), createObject('value', parameters('eventSubscriptions')[copyIndex()].deadLetterWithResourceIdentity), createObject('value', createObject()))]",
-          "deliveryWithResourceIdentity": "[if(contains(parameters('eventSubscriptions')[copyIndex()], 'deliveryWithResourceIdentity'), createObject('value', parameters('eventSubscriptions')[copyIndex()].deliveryWithResourceIdentity), createObject('value', createObject()))]",
-          "eventDeliverySchema": "[if(contains(parameters('eventSubscriptions')[copyIndex()], 'eventDeliverySchema'), createObject('value', parameters('eventSubscriptions')[copyIndex()].eventDeliverySchema), createObject('value', 'EventGridSchema'))]",
-          "expirationTimeUtc": "[if(contains(parameters('eventSubscriptions')[copyIndex()], 'expirationTimeUtc'), createObject('value', parameters('eventSubscriptions')[copyIndex()].expirationTimeUtc), createObject('value', ''))]",
-          "filter": "[if(contains(parameters('eventSubscriptions')[copyIndex()], 'filter'), createObject('value', parameters('eventSubscriptions')[copyIndex()].filter), createObject('value', createObject()))]",
-          "labels": "[if(contains(parameters('eventSubscriptions')[copyIndex()], 'labels'), createObject('value', parameters('eventSubscriptions')[copyIndex()].labels), createObject('value', createArray()))]",
-          "retryPolicy": "[if(contains(parameters('eventSubscriptions')[copyIndex()], 'retryPolicy'), createObject('value', parameters('eventSubscriptions')[copyIndex()].retryPolicy), createObject('value', createObject()))]"
+          "deadLetterDestination": {
+            "value": "[tryGet(coalesce(parameters('eventSubscriptions'), createArray())[copyIndex()], 'deadLetterDestination')]"
+          },
+          "deadLetterWithResourceIdentity": {
+            "value": "[tryGet(coalesce(parameters('eventSubscriptions'), createArray())[copyIndex()], 'deadLetterWithResourceIdentity')]"
+          },
+          "deliveryWithResourceIdentity": {
+            "value": "[tryGet(coalesce(parameters('eventSubscriptions'), createArray())[copyIndex()], 'deliveryWithResourceIdentity')]"
+          },
+          "eventDeliverySchema": {
+            "value": "[tryGet(coalesce(parameters('eventSubscriptions'), createArray())[copyIndex()], 'eventDeliverySchema')]"
+          },
+          "expirationTimeUtc": {
+            "value": "[tryGet(coalesce(parameters('eventSubscriptions'), createArray())[copyIndex()], 'expirationTimeUtc')]"
+          },
+          "filter": {
+            "value": "[tryGet(coalesce(parameters('eventSubscriptions'), createArray())[copyIndex()], 'filter')]"
+          },
+          "labels": {
+            "value": "[tryGet(coalesce(parameters('eventSubscriptions'), createArray())[copyIndex()], 'labels')]"
+          },
+          "retryPolicy": {
+            "value": "[tryGet(coalesce(parameters('eventSubscriptions'), createArray())[copyIndex()], 'retryPolicy')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "5663324417229692476"
+              "version": "0.34.44.8038",
+              "templateHash": "14799612617605682724"
             },
             "name": "Event Grid System Topic Event Subscriptions",
             "description": "This module deploys an Event Grid System Topic Event Subscription."
@@ -517,21 +558,21 @@
             },
             "deadLetterDestination": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Dead Letter Destination. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#deadletterdestination-objects for more information)."
               }
             },
             "deadLetterWithResourceIdentity": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Dead Letter with Resource Identity Configuration. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#deadletterwithresourceidentity-objects for more information)."
               }
             },
             "deliveryWithResourceIdentity": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Delivery with Resource Identity Configuration. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#deliverywithresourceidentity-objects for more information)."
               }
@@ -557,51 +598,57 @@
             },
             "expirationTimeUtc": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The expiration time for the event subscription. Format is ISO-8601 (yyyy-MM-ddTHH:mm:ssZ)."
               }
             },
             "filter": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The filter for the event subscription. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#eventsubscriptionfilter for more information)."
               }
             },
             "labels": {
               "type": "array",
-              "defaultValue": [],
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The list of user defined labels."
               }
             },
             "retryPolicy": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The retry policy for events. This can be used to configure the TTL and maximum number of delivery attempts and time to live for events."
               }
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "systemTopic": {
+              "existing": true,
+              "type": "Microsoft.EventGrid/systemTopics",
+              "apiVersion": "2023-12-15-preview",
+              "name": "[parameters('systemTopicName')]"
+            },
+            "eventSubscription": {
               "type": "Microsoft.EventGrid/systemTopics/eventSubscriptions",
               "apiVersion": "2023-12-15-preview",
               "name": "[format('{0}/{1}', parameters('systemTopicName'), parameters('name'))]",
               "properties": {
-                "deadLetterDestination": "[if(not(empty(parameters('deadLetterDestination'))), parameters('deadLetterDestination'), null())]",
-                "deadLetterWithResourceIdentity": "[if(not(empty(parameters('deadLetterWithResourceIdentity'))), parameters('deadLetterWithResourceIdentity'), null())]",
-                "deliveryWithResourceIdentity": "[if(not(empty(parameters('deliveryWithResourceIdentity'))), parameters('deliveryWithResourceIdentity'), null())]",
+                "deadLetterDestination": "[parameters('deadLetterDestination')]",
+                "deadLetterWithResourceIdentity": "[parameters('deadLetterWithResourceIdentity')]",
+                "deliveryWithResourceIdentity": "[parameters('deliveryWithResourceIdentity')]",
                 "destination": "[if(empty(parameters('deliveryWithResourceIdentity')), parameters('destination'), null())]",
                 "eventDeliverySchema": "[parameters('eventDeliverySchema')]",
-                "expirationTimeUtc": "[if(not(empty(parameters('expirationTimeUtc'))), parameters('expirationTimeUtc'), '')]",
-                "filter": "[if(not(empty(parameters('filter'))), parameters('filter'), createObject())]",
-                "labels": "[if(not(empty(parameters('labels'))), parameters('labels'), createArray())]",
-                "retryPolicy": "[if(not(empty(parameters('retryPolicy'))), parameters('retryPolicy'), null())]"
+                "expirationTimeUtc": "[coalesce(parameters('expirationTimeUtc'), '')]",
+                "filter": "[coalesce(parameters('filter'), createObject())]",
+                "labels": "[coalesce(parameters('labels'), createArray())]",
+                "retryPolicy": "[parameters('retryPolicy')]"
               }
             }
-          ],
+          },
           "outputs": {
             "name": {
               "type": "string",
@@ -629,7 +676,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference(resourceId('Microsoft.EventGrid/systemTopics', parameters('systemTopicName')), '2023-12-15-preview', 'full').location]"
+              "value": "[reference('systemTopic', '2023-12-15-preview', 'full').location]"
             }
           }
         }
