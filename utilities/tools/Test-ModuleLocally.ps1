@@ -294,7 +294,7 @@ function Test-ModuleLocally {
                     foreach ($moduleTestFile in $moduleTestFiles) {
                         $ignoreFilePath = Join-Path (Split-Path $moduleTestFile) '.e2eignore'
                         if ((Test-Path $ignoreFilePath) -and ($RespectE2eIgnoreFlag -eq $true)) {
-                            Write-Output "File '.e2eignore' exists in the folder: $moduleTestFile"
+                            Write-Verbose "The module folder [$moduleTestFile] contains an [.e2eignore] file and is skipped." -Verbose
                         } else {
                             Write-Verbose ('Validating module [{0}] with test file [{1}]' -f $ModuleName, (Split-Path $moduleTestFile -Leaf)) -Verbose
                             Test-TemplateDeployment @functionInput -TemplateFilePath $moduleTestFile
@@ -309,7 +309,7 @@ function Test-ModuleLocally {
                     foreach ($moduleTestFile in $moduleTestFiles) {
                         $ignoreFilePath = Join-Path (Split-Path $moduleTestFile) '.e2eignore'
                         if ((Test-Path $ignoreFilePath) -and ($RespectE2eIgnoreFlag -eq $true)) {
-                            Write-Output "File '.e2eignore' exists in the folder: $moduleTestFile"
+                            Write-Verbose "The module folder [$moduleTestFile] contains an [.e2eignore] file and is skipped." -Verbose
                         } else {
                             Write-Verbose ('Get Deployment What-If result for module [{0}] with test file [{1}]' -f $ModuleName, (Split-Path $moduleTestFile -Leaf)) -Verbose
                             Get-TemplateDeploymentWhatIf @functionInput -TemplateFilePath $moduleTestFile
@@ -325,7 +325,7 @@ function Test-ModuleLocally {
                     foreach ($moduleTestFile in $moduleTestFiles) {
                         $ignoreFilePath = Join-Path (Split-Path $moduleTestFile) '.e2eignore'
                         if ((Test-Path $ignoreFilePath) -and ($RespectE2eIgnoreFlag -eq $true)) {
-                            Write-Output "File '.e2eignore' exists in the folder: $moduleTestFile"
+                            Write-Verbose "The module folder [$moduleTestFile] contains an [.e2eignore] file and is skipped." -Verbose
                         } else {
                             Write-Verbose ('Deploy Module [{0}] with test file [{1}]' -f $ModuleName, (Split-Path $moduleTestFile -Leaf)) -Verbose
                             if ($PSCmdlet.ShouldProcess(('Module [{0}] with test file [{1}]' -f $ModuleName, (Split-Path $moduleTestFile -Leaf)), 'Deploy')) {
