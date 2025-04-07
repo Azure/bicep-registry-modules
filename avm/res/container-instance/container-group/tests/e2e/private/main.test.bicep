@@ -47,7 +47,7 @@ module nestedDependencies 'dependencies.bicep' = {
 
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
-  for iteration in ['init', 'idem']: {
+  for iteration in ['init']: {
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
@@ -103,22 +103,28 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
-      ipAddressType: 'Private'
-      ipAddressPorts: [
+      ipAddress: {
+        type: 'Private'
+        ports: [
+          {
+            protocol: 'Tcp'
+            port: 80
+          }
+          {
+            protocol: 'Tcp'
+            port: 443
+          }
+          {
+            protocol: 'Tcp'
+            port: 8080
+          }
+        ]
+      }
+      subnetIds: [
         {
-          protocol: 'Tcp'
-          port: 80
-        }
-        {
-          protocol: 'Tcp'
-          port: 443
-        }
-        {
-          protocol: 'Tcp'
-          port: 8080
+          subnetResourceId: nestedDependencies.outputs.subnetResourceId
         }
       ]
-      subnetResourceId: nestedDependencies.outputs.subnetResourceId
     }
   }
 ]

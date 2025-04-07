@@ -115,16 +115,19 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
-      ipAddressPorts: [
-        {
-          protocol: 'Tcp'
-          port: 80
-        }
-        {
-          protocol: 'Tcp'
-          port: 443
-        }
-      ]
+      ipAddress: {
+        ports: [
+          {
+            protocol: 'Tcp'
+            port: 80
+          }
+          {
+            protocol: 'Tcp'
+            port: 443
+          }
+        ]
+      }
+      // TODO Add volumes
       managedIdentities: {
         systemAssigned: true
         userAssignedResourceIds: [
