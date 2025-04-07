@@ -818,6 +818,7 @@ module createLzCustomRoleAssignmentsSub 'br/public:avm/ptn/authorization/role-as
       '${deploymentNames.createLzCustomRoleAssignmentsSub}-${uniqueString(assignment.principalId, assignment.definition, assignment.relativeScope)}',
       64
     )
+    scope: managementGroup(subscriptionManagementGroupId)
     params: {
       location: virtualNetworkLocation
       principalId: assignment.principalId

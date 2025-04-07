@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "10820711547962239968"
+      "templateHash": "11675745579426361647"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -1506,7 +1506,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.34.44.8038",
-              "templateHash": "10272487131702226093"
+              "templateHash": "5039777857997948957"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -9273,6 +9273,7 @@
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[take(format('{0}-{1}', variables('deploymentNames').createLzCustomRoleAssignmentsSub, uniqueString(variables('customRoleAssignmentsSubscription')[copyIndex()].principalId, variables('customRoleAssignmentsSubscription')[copyIndex()].definition, variables('customRoleAssignmentsSubscription')[copyIndex()].relativeScope)), 64)]",
+              "scope": "[format('Microsoft.Management/managementGroups/{0}', parameters('subscriptionManagementGroupId'))]",
               "location": "[deployment().location]",
               "properties": {
                 "expressionEvaluationOptions": {
