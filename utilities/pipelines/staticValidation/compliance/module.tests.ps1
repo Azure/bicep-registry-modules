@@ -1431,8 +1431,12 @@ Describe 'Module tests' -Tag 'Module' {
                 [string[]] $changelogContent
             )
 
-            if (-not (Test-Path -Path $changelogFilePath) -or $changelogContent.Count -le 4) {
-                Set-ItResult -Skipped -Because 'CHANGELOG.md file not found or uncomplete.'
+            if (-not (Test-Path -Path $changelogFilePath)) {
+                Set-ItResult -Skipped -Because "CHANGELOG.md file was not found in path [$changelogFilePath]."
+                return
+            }
+            if ($changelogContent.Count -le 4) {
+                Set-ItResult -Skipped -Because "The CHANGELOG.md file's header is either missing or incorrect. You can find an example of the header [here](https://azure.github.io/Azure-Verified-Modules/spec/BCPNRF22/#example-content-of-the-changelogmd)."
                 return
             }
 
@@ -1471,7 +1475,7 @@ Describe 'Module tests' -Tag 'Module' {
             $changelogSection.Count | Should -BeExactly 1 -Because "the `## $newModuleVersion` section should be in the changelog only once"
         }
 
-        It '[<moduleFolderName>] `CHANGELOG.md` versions must be ordered descending.' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleVersionExists }) {
+        It '[<moduleFolderName>] `CHANGELOG.md` file''s sections must be sorted in a decending order.' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleVersionExists }) {
 
             param(
                 [string] $changelogFilePath,
@@ -1562,7 +1566,6 @@ Describe 'Module tests' -Tag 'Module' {
                 return
             }
 
-            $changelogContent = Get-Content $changelogFilePath
             # all versions, that are mentioned in the changelog
             $sections = $changelogContent | Where-Object { $_ -match '^##\s+' }
             # the initial version is not published yet

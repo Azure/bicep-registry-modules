@@ -1,10 +1,10 @@
 <#
 .SYNOPSIS
-Compares the version in main.json with the one in the published GitHub version.json.
+Compares the main.json of a module with the one published on GitHub.
 
 .DESCRIPTION
-The version in the main.json files are generated before publishing the module.
-Comparing the version in main.json with the one in the published GitHub version.json allows to check if a new version is needed.
+Ommiting the Bicep version specific _generator property, the function compares the main.json file in the module with the one published on GitHub.
+If they are different, the function returns $true.
 
 .PARAMETER ModuleFolderPath
 Mandatory. Path to the main/parent module folder.
@@ -16,14 +16,13 @@ Optional. The repository owner. Default is 'Azure'.
 Optional. The repository name. Default is 'bicep-registry-modules'.
 
 .EXAMPLE
-# Note: "version" value in main.json is "0.32.4.45862" and on GitHub "0.34.4.45862"
-Get-ModuleJsonVersionChange -ModuleFolderPath 'C:\avm\res\key-vault\vault'
+Get-ModuleJsonChange -ModuleFolderPath 'C:\avm\res\key-vault\vault'
 
 Returns $true
 
 #>
 
-function Get-ModuleJsonVersionChange {
+function Get-ModuleJsonChange {
 
     [CmdletBinding()]
     param (
@@ -44,7 +43,9 @@ function Get-ModuleJsonVersionChange {
         return $false
     }
 
-    $currentJsonVersion = (Get-Content $mainJsonFilePath | ConvertFrom-Json).metadata._generator.version
+    $currentJson = Get-Content $mainJsonFilePath | ConvertFrom-Json
+    # the _generator property is specific to the Bicep version used, and not relevant for the comparison of the content
+    $currentJson.metadata.PSObject.Properties.Remove('_generator')
 
     # Fetch the content of the file in GitHub
     $module = ($ModuleFolderPath -split '[\/|\\]avm[\/|\\]')[-1]
@@ -55,13 +56,14 @@ function Get-ModuleJsonVersionChange {
     try {
         $response = Invoke-RestMethod -Uri $apiUrl -Headers @{ 'User-Agent' = 'PowerShell' }
         $githubFileContent = [System.Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($response.content))
-        $githubJsonVersion = ($githubFileContent | ConvertFrom-Json).metadata._generator.version
+        $githubJson = $githubFileContent | ConvertFrom-Json
+        # the _generator property is specific to the Bicep version used, and not relevant for the comparison of the content
+        $githubJson.metadata.PSObject.Properties.Remove('_generator')
     } catch {
         throw "Failed to fetch the file content from GitHub: $($_.Exception.Message)"
     }
 
-    # Compare the versions in the main.json file.
+    # Compare main.json files (without the Bicep version specific _generator property)
     $versionChanged = $currentJsonVersion -ne $githubJsonVersion
-    Write-Verbose "main.json Version of the current file is '$currentJsonVersion'. The GitHub version of the file is '$githubJsonVersion. Returning '$versionChanged'" -Verbose
     return $versionChanged
 }

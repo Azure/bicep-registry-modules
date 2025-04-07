@@ -5,6 +5,7 @@ Get current and previous major and minor version, if different.
 .DESCRIPTION
 Get current and previous major and minor version, if different.
 Retrieves target Major.Minor from module version.json and compares with values from the previous git head.
+If the version did not change, the function will return null.
 
 .PARAMETER VersionFilePath
 Mandatory. Path to the module version.json file.
@@ -33,7 +34,6 @@ function Get-ModuleVersionChange {
         [string] $VersionFilePath
     )
 
-    Write-Verbose "Getting version change from file '$VersionFilePath'..." -Verbose
     # the diff will be empty, if the version.json file was not updated
     # if the version did not change, the function will return null
     $diff = git diff --diff-filter=AM HEAD^ HEAD $VersionFilePath | Out-String
