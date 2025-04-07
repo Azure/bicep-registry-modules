@@ -50,10 +50,8 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
   name: 'natGatewayDeployment'
   params: {
     // Required parameters
+    availabilityZone: 1
     name: 'nngmin001'
-    zone: 1
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -71,15 +69,11 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "name": {
-      "value": "nngmin001"
-    },
-    "zone": {
+    "availabilityZone": {
       "value": 1
     },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
+    "name": {
+      "value": "nngmin001"
     }
   }
 }
@@ -96,10 +90,8 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
 using 'br/public:avm/res/network/nat-gateway:<version>'
 
 // Required parameters
+param availabilityZone = 1
 param name = 'nngmin001'
-param zone = 1
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -119,10 +111,9 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
   name: 'natGatewayDeployment'
   params: {
     // Required parameters
+    availabilityZone: -1
     name: 'nngepip001'
-    zone: 1
     // Non-required parameters
-    location: '<location>'
     publicIpResourceIds: '<publicIpResourceIds>'
   }
 }
@@ -141,16 +132,13 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "availabilityZone": {
+      "value": -1
+    },
     "name": {
       "value": "nngepip001"
     },
-    "zone": {
-      "value": 1
-    },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
     "publicIpResourceIds": {
       "value": "<publicIpResourceIds>"
     }
@@ -169,10 +157,9 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
 using 'br/public:avm/res/network/nat-gateway:<version>'
 
 // Required parameters
+param availabilityZone = -1
 param name = 'nngepip001'
-param zone = 1
 // Non-required parameters
-param location = '<location>'
 param publicIpResourceIds = '<publicIpResourceIds>'
 ```
 
@@ -193,8 +180,8 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
   name: 'natGatewayDeployment'
   params: {
     // Required parameters
+    availabilityZone: 1
     name: 'nngmax001'
-    zone: 1
     // Non-required parameters
     location: '<location>'
     lock: {
@@ -284,11 +271,11 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "availabilityZone": {
+      "value": 1
+    },
     "name": {
       "value": "nngmax001"
-    },
-    "zone": {
-      "value": 1
     },
     // Non-required parameters
     "location": {
@@ -387,8 +374,8 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
 using 'br/public:avm/res/network/nat-gateway:<version>'
 
 // Required parameters
+param availabilityZone = 1
 param name = 'nngmax001'
-param zone = 1
 // Non-required parameters
 param location = '<location>'
 param lock = {
@@ -480,10 +467,9 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
   name: 'natGatewayDeployment'
   params: {
     // Required parameters
+    availabilityZone: -1
     name: 'nngcprx001'
-    zone: 0
     // Non-required parameters
-    location: '<location>'
     publicIPPrefixObjects: [
       {
         name: 'nngcprx001-pippre'
@@ -510,16 +496,13 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "availabilityZone": {
+      "value": -1
+    },
     "name": {
       "value": "nngcprx001"
     },
-    "zone": {
-      "value": 0
-    },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
     "publicIPPrefixObjects": {
       "value": [
         {
@@ -546,10 +529,9 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
 using 'br/public:avm/res/network/nat-gateway:<version>'
 
 // Required parameters
+param availabilityZone = -1
 param name = 'nngcprx001'
-param zone = 0
 // Non-required parameters
-param location = '<location>'
 param publicIPPrefixObjects = [
   {
     name: 'nngcprx001-pippre'
@@ -578,14 +560,9 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
   name: 'natGatewayDeployment'
   params: {
     // Required parameters
+    availabilityZone: 1
     name: 'nngwaf001'
-    zone: 1
     // Non-required parameters
-    location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     publicIPAddressObjects: [
       {
         diagnosticSettings: [
@@ -633,22 +610,13 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "availabilityZone": {
+      "value": 1
+    },
     "name": {
       "value": "nngwaf001"
     },
-    "zone": {
-      "value": 1
-    },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
     "publicIPAddressObjects": {
       "value": [
         {
@@ -698,14 +666,9 @@ module natGateway 'br/public:avm/res/network/nat-gateway:<version>' = {
 using 'br/public:avm/res/network/nat-gateway:<version>'
 
 // Required parameters
+param availabilityZone = 1
 param name = 'nngwaf001'
-param zone = 1
 // Non-required parameters
-param location = '<location>'
-param lock = {
-  kind: 'CanNotDelete'
-  name: 'myCustomLockName'
-}
 param publicIPAddressObjects = [
   {
     diagnosticSettings: [
@@ -747,8 +710,8 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`availabilityZone`](#parameter-availabilityzone) | int | If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone number here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones). |
 | [`name`](#parameter-name) | string | Name of the Azure Bastion resource. |
-| [`zone`](#parameter-zone) | int | A list of availability zones denoting the zone in which Nat Gateway should be deployed. |
 
 **Optional parameters**
 
@@ -765,28 +728,28 @@ param tags = {
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags for the resource. |
 
-### Parameter: `name`
+### Parameter: `availabilityZone`
 
-Name of the Azure Bastion resource.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `zone`
-
-A list of availability zones denoting the zone in which Nat Gateway should be deployed.
+If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone number here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones).
 
 - Required: Yes
 - Type: int
 - Allowed:
   ```Bicep
   [
-    0
+    -1
     1
     2
     3
   ]
   ```
+
+### Parameter: `name`
+
+Name of the Azure Bastion resource.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `enableTelemetry`
 
@@ -1006,6 +969,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | :-- | :-- |
 | `br/public:avm/res/network/public-ip-address:0.5.1` | Remote reference |
 | `br/public:avm/res/network/public-ip-prefix:0.4.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

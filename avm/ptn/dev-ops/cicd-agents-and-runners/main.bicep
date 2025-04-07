@@ -26,6 +26,9 @@ param privateNetworking bool = true
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+@description('Optional. Name of the infrastructure resource group for the container apps environment.')
+param infrastructureResourceGroupName string?
+
 // ================ //
 // Variables        //
 // ================ //
@@ -204,24 +207,24 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
-module logAnalyticsWokrspace 'br/public:avm/res/operational-insights/workspace:0.5.0' = {
-  name: 'logAnalyticsWokrspace'
+module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.11.1' = {
+  name: 'logAnalyticsWorkspace-${uniqueString(resourceGroup().id)}'
   params: {
     name: 'law-${namingPrefix}-${uniqueString(resourceGroup().id)}-law'
-    enableTelemetry: enableTelemetry
-  }
-}
-
-module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.3.0' = {
-  name: 'userAssignedIdentity'
-  params: {
-    name: 'msi-${namingPrefix}-${uniqueString(resourceGroup().id)}'
     location: location
     enableTelemetry: enableTelemetry
   }
 }
 
-module acrPrivateDNSZone 'br/public:avm/res/network/private-dns-zone:0.5.0' = if (privateNetworking && empty(networkingConfiguration.?containerRegistryPrivateDnsZoneResourceId ?? '')) {
+module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0' = {
+  name: 'userAssignedIdentity-${uniqueString(resourceGroup().id)}'
+  params: {
+    name: 'msi-${namingPrefix}-${uniqueString(resourceGroup().id)}'
+    enableTelemetry: enableTelemetry
+  }
+}
+
+module acrPrivateDNSZone 'br/public:avm/res/network/private-dns-zone:0.7.0' = if (privateNetworking && empty(networkingConfiguration.?containerRegistryPrivateDnsZoneResourceId ?? '')) {
   name: 'acrdnszone${namingPrefix}${uniqueString(resourceGroup().id)}'
   params: {
     name: 'privatelink.azurecr.io'
@@ -236,7 +239,7 @@ module acrPrivateDNSZone 'br/public:avm/res/network/private-dns-zone:0.5.0' = if
   }
 }
 
-module acr 'br/public:avm/res/container-registry/registry:0.4.0' = {
+module acr 'br/public:avm/res/container-registry/registry:0.9.1' = {
   name: 'acr${namingPrefix}${uniqueString(resourceGroup().id)}'
   params: {
     name: 'acr${namingPrefix}${uniqueString(resourceGroup().id)}'
@@ -285,7 +288,7 @@ module acr 'br/public:avm/res/container-registry/registry:0.4.0' = {
       : null
   }
 }
-module newVnet 'br/public:avm/res/network/virtual-network:0.2.0' = if (networkingConfiguration.networkType == 'createNew') {
+module newVnet 'br/public:avm/res/network/virtual-network:0.6.1' = if (networkingConfiguration.networkType == 'createNew') {
   name: 'vnet-${uniqueString(resourceGroup().id)}'
   params: {
     name: 'vnet-${namingPrefix}-${uniqueString(resourceGroup().id)}'
@@ -314,14 +317,7 @@ module newVnet 'br/public:avm/res/network/virtual-network:0.2.0' = if (networkin
               natGatewayResourceId: empty(networkingConfiguration.?natGatewayResourceId ?? '') && privateNetworking
                 ? natGateway.outputs.resourceId
                 : networkingConfiguration.?natGatewayResourceId ?? ''
-              delegations: [
-                {
-                  name: 'Microsoft.ContainerInstance/containerGroups'
-                  properties: {
-                    serviceName: 'Microsoft.ContainerInstance/containerGroups'
-                  }
-                }
-              ]
+              delegation: 'Microsoft.ContainerInstance/containerGroups'
             }
           ]
         : [],
@@ -333,14 +329,7 @@ module newVnet 'br/public:avm/res/network/virtual-network:0.2.0' = if (networkin
               natGatewayResourceId: empty(networkingConfiguration.?natGatewayResourceId ?? '') && privateNetworking
                 ? natGateway.outputs.resourceId
                 : networkingConfiguration.?natGatewayResourceId ?? ''
-              delegations: [
-                {
-                  name: 'Microsoft.App.environments'
-                  properties: {
-                    serviceName: 'Microsoft.App/environments'
-                  }
-                }
-              ]
+              delegation: 'Microsoft.App/environments'
             }
           ]
         : [],
@@ -356,16 +345,17 @@ module newVnet 'br/public:avm/res/network/virtual-network:0.2.0' = if (networkin
     )
   }
 }
-module appEnvironment 'br/public:avm/res/app/managed-environment:0.6.2' = if (contains(
+module appEnvironment 'br/public:avm/res/app/managed-environment:0.10.1' = if (contains(
   computeTypes,
   'azure-container-app'
 )) {
   name: 'appEnv-${uniqueString(resourceGroup().id)}'
   params: {
     name: 'appEnv${namingPrefix}${uniqueString(resourceGroup().id)}'
-    logAnalyticsWorkspaceResourceId: logAnalyticsWokrspace.outputs.resourceId
+    logAnalyticsWorkspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
     location: location
     enableTelemetry: enableTelemetry
+    infrastructureResourceGroupName: infrastructureResourceGroupName
     infrastructureSubnetId: networkingConfiguration.networkType == 'createNew'
       ? filter(
           newVnet.outputs.subnetResourceIds,
@@ -385,7 +375,7 @@ module appEnvironment 'br/public:avm/res/app/managed-environment:0.6.2' = if (co
   }
 }
 
-module natGatewayPublicIp 'br/public:avm/res/network/public-ip-address:0.5.1' = if (empty(networkingConfiguration.?natGatewayResourceId ?? '') && empty(networkingConfiguration.?natGatewayPublicIpAddressResourceId ?? '') && networkingConfiguration.networkType == 'createNew' && privateNetworking) {
+module natGatewayPublicIp 'br/public:avm/res/network/public-ip-address:0.8.0' = if (empty(networkingConfiguration.?natGatewayResourceId ?? '') && empty(networkingConfiguration.?natGatewayPublicIpAddressResourceId ?? '') && networkingConfiguration.networkType == 'createNew' && privateNetworking) {
   name: 'natGatewayPublicIp-${uniqueString(resourceGroup().id)}'
   params: {
     name: 'natGatewayPublicIp-${uniqueString(resourceGroup().id)}'
@@ -396,7 +386,7 @@ module natGatewayPublicIp 'br/public:avm/res/network/public-ip-address:0.5.1' = 
   }
 }
 
-module natGateway 'br/public:avm/res/network/nat-gateway:1.1.0' = if (privateNetworking && empty(networkingConfiguration.?natGatewayResourceId ?? '') && networkingConfiguration.networkType == 'createNew') {
+module natGateway 'br/public:avm/res/network/nat-gateway:1.2.2' = if (privateNetworking && empty(networkingConfiguration.?natGatewayResourceId ?? '') && networkingConfiguration.networkType == 'createNew') {
   name: 'natGateway-${uniqueString(resourceGroup().id)}'
   params: {
     name: 'natGateway-${namingPrefix}-${uniqueString(resourceGroup().id)}'
@@ -445,7 +435,7 @@ resource buildImages 'Microsoft.ContainerRegistry/registries/tasks@2019-06-01-pr
   }
 ]
 
-module buildImagesRoleAssignment 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.1' = [
+module buildImagesRoleAssignment 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = [
   for (image, i) in computeTypes: {
     name: 'buildImagesRoleAssignment-${uniqueString(resourceGroup().id)}-${i}'
     params: {
@@ -503,7 +493,7 @@ module aciJob 'br/public:avm/res/container-instance/container-group:0.2.0' = [
             subnetId => contains(subnetId, networkingConfiguration.?containerInstanceSubnetName ?? 'aci-subnet')
           )[0]
         : privateNetworking && networkingConfiguration.networkType == 'useExisting'
-            ? '${networkingConfiguration.virtualNetworkResourceId}/subnets/${networkingConfiguration.computeNetworking.containerInstanceSubnetName}'
+            ? '${networkingConfiguration.virtualNetworkResourceId}/subnets/${networkingConfiguration.computeNetworking.?containerInstanceSubnetName}'
             : null
       ipAddressType: privateNetworking ? 'Private' : 'Public'
       sku: 'Standard'
@@ -796,7 +786,7 @@ module runPlaceHolderAgent 'br/public:avm/res/resources/deployment-script:0.3.1'
         ]
       : privateNetworking && networkingConfiguration.networkType == 'useExisting'
           ? [
-              '${networkingConfiguration.virtualNetworkResourceId}/subnets/${networkingConfiguration.computeNetworking.containerInstanceSubnetName}'
+              '${networkingConfiguration.virtualNetworkResourceId}/subnets/${networkingConfiguration.computeNetworking.?containerInstanceSubnetName}'
             ]
           : null
     arguments: '-resourceGroup ${resourceGroup().name} -jobName ${acaPlaceholderJob.outputs.name} -subscriptionId ${subscription().subscriptionId}'
@@ -832,7 +822,7 @@ type newNetworkType = {
   @description('Optional. The existing NAT Gateway resource Id. This should be provided if an existing NAT gateway is available to be used. If this parameter is not provided, a new NAT gateway will be created.')
   natGatewayResourceId: string?
 
-  @description('Optional. The existing public IP address to assosciate with the NAT gateway. This should be provided if an existing public Ip address is available to be used. If this parameter is not provided, a new Public Ip address will be created.')
+  @description('Optional. The existing public IP address to associate with the NAT gateway. This should be provided if an existing public Ip address is available to be used. If this parameter is not provided, a new Public Ip address will be created.')
   natGatewayPublicIpAddressResourceId: string?
 
   @description('Optional. The container instance subnet name in the created virtual network. If not provided, a default name will be used.')
@@ -884,10 +874,10 @@ type existingNetworkType = {
   containerRegistryPrivateDnsZoneResourceId: string?
 
   @description('Optional. The existing NAT Gateway resource Id. This should be provided if an existing NAT gateway is available to be used. If this parameter is not provided, a new NAT gateway will be created.')
-  natGatewayResourceId: string
+  natGatewayResourceId: string?
 
-  @description('Optional. The existing public IP address to assosciate with the NAT gateway. This should be provided if an existing public Ip address is available to be used. If this parameter is not provided, a new Public Ip address will be created.')
-  natGatewayPublicIpAddressResourceId: string
+  @description('Optional. The existing public IP address to associate with the NAT gateway. This should be provided if an existing public Ip address is available to be used. If this parameter is not provided, a new Public Ip address will be created.')
+  natGatewayPublicIpAddressResourceId: string?
 
   @description('Required. The compute type networking type.')
   computeNetworking: computeNetworkingType
@@ -907,7 +897,7 @@ type containerAppNetworkConfigType = {
   @description('Optional. The deployment script private DNS zone Id. If not provided, a new private DNS zone will be created.')
   deploymentScriptPrivateDnsZoneResourceId: string?
 
-  @description('Required. The container instance subnet name in the created virtual network. If not provided, a default name will be used. This subnet is required for private networking Azure DevOps scenarios to deploy the deployment script which starts the placeholder agent privately.')
+  @description('Optional. The container instance subnet name in the created virtual network. If not provided, a default name will be used. This subnet is required for private networking Azure DevOps scenarios to deploy the deployment script which starts the placeholder agent privately.')
   containerInstanceSubnetName: string?
 }
 
@@ -963,7 +953,7 @@ type gitHubRunnersType = {
   @description('Required. The GitHub organization name.')
   githubOrganization: string
 
-  @description('Required. The GitHub repository name.')
+  @description('Optional. The GitHub repository name.')
   githubRepository: string?
 
   @description('Optional. The GitHub runner name.')
