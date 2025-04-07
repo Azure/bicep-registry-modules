@@ -64,7 +64,6 @@ Dead Letter Destination. (See https://learn.microsoft.com/en-us/azure/templates/
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `deadLetterWithResourceIdentity`
 
@@ -72,7 +71,6 @@ Dead Letter with Resource Identity Configuration. (See https://learn.microsoft.c
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `deliveryWithResourceIdentity`
 
@@ -80,7 +78,6 @@ Delivery with Resource Identity Configuration. (See https://learn.microsoft.com/
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `eventDeliverySchema`
 
@@ -105,7 +102,6 @@ The expiration time for the event subscription. Format is ISO-8601 (yyyy-MM-ddTH
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `filter`
 
@@ -113,7 +109,6 @@ The filter for the event subscription. (See https://learn.microsoft.com/en-us/az
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `labels`
 
@@ -121,7 +116,6 @@ The list of user defined labels.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `retryPolicy`
 
@@ -129,7 +123,6 @@ The retry policy for events. This can be used to configure the TTL and maximum n
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ## Outputs
 
