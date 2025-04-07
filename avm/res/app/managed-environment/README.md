@@ -316,7 +316,6 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
       name: 'myCustomLockName'
     }
     logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
-    logsDestination: 'log-analytics'
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [
@@ -442,9 +441,6 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     "logAnalyticsWorkspaceResourceId": {
       "value": "<logAnalyticsWorkspaceResourceId>"
     },
-    "logsDestination": {
-      "value": "log-analytics"
-    },
     "managedIdentities": {
       "value": {
         "systemAssigned": true,
@@ -564,7 +560,6 @@ param lock = {
   name: 'myCustomLockName'
 }
 param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
-param logsDestination = 'log-analytics'
 param managedIdentities = {
   systemAssigned: true
   userAssignedResourceIds: [

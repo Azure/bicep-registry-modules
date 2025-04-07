@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "10427147393160324678"
+      "templateHash": "17029014497311493186"
     },
     "name": "App ManagedEnvironments",
     "description": "This module deploys an App Managed Environment (also known as a Container App Environment)."
@@ -306,11 +306,6 @@
     "logsDestination": {
       "type": "string",
       "defaultValue": "",
-      "allowedValues": [
-        "log-analytics",
-        "azure-monitor",
-        ""
-      ],
       "metadata": {
         "description": "Optional. Logs destination."
       }
@@ -545,7 +540,7 @@
         "appInsightsConfiguration": {
           "connectionString": "[parameters('appInsightsConnectionString')]"
         },
-        "appLogsConfiguration": "[if(not(empty(parameters('logsDestination'))), createObject('destination', parameters('logsDestination'), 'logAnalyticsConfiguration', if(not(empty(parameters('logAnalyticsWorkspaceResourceId'))), createObject('customerId', reference('logAnalyticsWorkspace').customerId, 'sharedKey', listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('logAnalyticsWorkspaceResourceId'), '/')[2], split(parameters('logAnalyticsWorkspaceResourceId'), '/')[4]), 'Microsoft.OperationalInsights/workspaces', last(split(parameters('logAnalyticsWorkspaceResourceId'), '/'))), '2023-09-01').primarySharedKey), null())), null())]",
+        "appLogsConfiguration": "[if(not(empty(parameters('logsDestination'))), createObject('destination', parameters('logsDestination'), 'logAnalyticsConfiguration', if(not(empty(parameters('logAnalyticsWorkspaceResourceId'))), createObject('customerId', reference('logAnalyticsWorkspace').customerId, 'sharedKey', listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('logAnalyticsWorkspaceResourceId'), '/')[2], split(parameters('logAnalyticsWorkspaceResourceId'), '/')[4]), 'Microsoft.OperationalInsights/workspaces', last(split(parameters('logAnalyticsWorkspaceResourceId'), '/'))), '2023-09-01').primarySharedKey), null())), createObject())]",
         "daprAIConnectionString": "[parameters('daprAIConnectionString')]",
         "daprAIInstrumentationKey": "[parameters('daprAIInstrumentationKey')]",
         "customDomainConfiguration": {

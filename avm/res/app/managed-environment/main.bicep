@@ -94,6 +94,9 @@ param infrastructureResourceGroupName string = take('ME_${name}', 63)
 @description('Optional. The list of storages to mount on the environment.')
 param storages storageType[]?
 
+@description('Optional. A Managed Environment Certificate.')
+param certificate certificateType?
+
 var appLogsConfiguration = !empty(logsDestination)
   ? {
       destination: logsDestination
