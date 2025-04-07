@@ -217,6 +217,10 @@ var deploymentNames = {
     'lz-vend-move-sub-delay-${uniqueString(subscriptionId, subscriptionManagementGroupId, deployment().name)}',
     64
   )
+  moveSubscriptionToManagementGroupDelay_rbac: take(
+    'lz-vend-move-sub-delay-rbac-${uniqueString(subscriptionId, subscriptionManagementGroupId, deployment().name)}',
+    64
+  )
   moveSubscriptionToManagementGroup: take(
     'lz-vend-move-sub-${uniqueString(subscriptionId, subscriptionManagementGroupId, deployment().name)}',
     64
@@ -813,7 +817,7 @@ module createLzRoleAssignmentsRsgsNotSelf 'br/public:avm/ptn/authorization/role-
 #disable-next-line no-deployments-resources
 resource moveSubscriptionToManagementGroupDelay_rbac 'Microsoft.Resources/deployments@2024-03-01' = [
   for (cycle, i) in range(0, managementGroupAssociationDelayCount): if (roleAssignmentEnabled && !empty(customRoleAssignmentsSubscription)) {
-    name: '${deploymentNames.moveSubscriptionToManagementGroupDelay}-${i}'
+    name: '${deploymentNames.moveSubscriptionToManagementGroupDelay_rbac}-${i}'
     location: virtualNetworkLocation
     properties: {
       mode: 'Incremental'
