@@ -3409,7 +3409,17 @@ Frontend ports of the application gateway resource.
 
 - Required: No
 - Type: array
-- Default: `[]`
+- Default:
+  ```Bicep
+  [
+    {
+      name: 'https'
+      properties: {
+        port: 443
+      }
+    }
+  ]
+  ```
 
 ### Parameter: `gatewayIPConfigurations`
 
@@ -4075,7 +4085,7 @@ The name of the SKU for the Application Gateway.
 
 - Required: No
 - Type: string
-- Default: `'Standard_v2'`
+- Default: `'WAF_v2'`
 - Allowed:
   ```Bicep
   [
@@ -4241,7 +4251,12 @@ Application gateway web application firewall configuration. Should be configured
 
 - Required: No
 - Type: object
-- Default: `{}`
+- Default:
+  ```Bicep
+  {
+      enabled: true
+  }
+  ```
 
 ### Parameter: `zones`
 

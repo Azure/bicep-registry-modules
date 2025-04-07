@@ -43,7 +43,14 @@ param firewallPolicyResourceId string = ''
 param frontendIPConfigurations array = []
 
 @description('Optional. Frontend ports of the application gateway resource.')
-param frontendPorts array = []
+param frontendPorts array = [
+  {
+    name: 'https'
+    properties: {
+      port: 443
+    }
+  }
+]
 
 @description('Optional. Subnets of the application gateway resource.')
 param gatewayIPConfigurations array = []
@@ -89,7 +96,7 @@ param rewriteRuleSets array = []
   'Standard_v2'
   'WAF_v2'
 ])
-param sku string = 'Standard_v2'
+param sku string = 'WAF_v2'
 
 @description('Optional. The number of Application instances to be configured.')
 @minValue(0)
@@ -176,7 +183,9 @@ param trustedRootCertificates array = []
 param urlPathMaps array = []
 
 @description('Optional. Application gateway web application firewall configuration. Should be configured for security reasons.')
-param webApplicationFirewallConfiguration object = {}
+param webApplicationFirewallConfiguration object = {
+  enabled: true
+}
 
 @description('Optional. A list of availability zones denoting where the resource needs to come from.')
 param zones array = [

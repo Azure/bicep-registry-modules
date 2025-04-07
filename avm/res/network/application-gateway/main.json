@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "3645549464537482903"
+      "templateHash": "15052431933701183554"
     },
     "name": "Network Application Gateways",
     "description": "This module deploys a Network Application Gateway."
@@ -669,7 +669,14 @@
     },
     "frontendPorts": {
       "type": "array",
-      "defaultValue": [],
+      "defaultValue": [
+        {
+          "name": "https",
+          "properties": {
+            "port": 443
+          }
+        }
+      ],
       "metadata": {
         "description": "Optional. Frontend ports of the application gateway resource."
       }
@@ -756,7 +763,7 @@
     },
     "sku": {
       "type": "string",
-      "defaultValue": "Standard_v2",
+      "defaultValue": "WAF_v2",
       "allowedValues": [
         "Standard_Small",
         "Standard_Medium",
@@ -896,7 +903,9 @@
     },
     "webApplicationFirewallConfiguration": {
       "type": "object",
-      "defaultValue": {},
+      "defaultValue": {
+        "enabled": true
+      },
       "metadata": {
         "description": "Optional. Application gateway web application firewall configuration. Should be configured for security reasons."
       }
