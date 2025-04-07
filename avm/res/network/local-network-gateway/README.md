@@ -471,8 +471,6 @@ The BGP peering address and BGP identifier of this BGP speaker.
 
 - Required: Yes
 - Type: string
-- MinValue: 0
-- MaxValue: 4294967295
 
 ### Parameter: `bgpSettings.peerWeight`
 
@@ -480,8 +478,6 @@ The weight added to routes learned from this BGP speaker.
 
 - Required: No
 - Type: int
-- MinValue: 0
-- MaxValue: 4294967295
 
 ### Parameter: `enableTelemetry`
 
