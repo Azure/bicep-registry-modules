@@ -63,7 +63,7 @@ module testDeployment '../../../main.bicep' = [
           customerId: nestedDependencies.outputs.logAnalyticsCustomerId
           sharedKey: listKeys(
             '${resourceGroup.id}/providers/Microsoft.OperationalInsights/workspaces/dep-${namePrefix}-law-${serviceShort}',
-            '2023-00-01'
+            '2023-09-01'
           ).primarySharedKey
         }
       }
