@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "10674092740314043985"
+      "templateHash": "15129169225455150163"
     },
     "name": "Container Instances Container Groups",
     "description": "This module deploys a Container Instance Container Group."
@@ -516,7 +516,7 @@
           ],
           "nullable": true,
           "metadata": {
-            "description": "Required. Specifies if the IP is exposed to the public internet or private VNET."
+            "description": "Optional. Specifies if the IP is exposed to the public internet or private VNET."
           }
         }
       },
