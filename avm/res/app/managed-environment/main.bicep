@@ -4,9 +4,6 @@ metadata description = 'This module deploys an App Managed Environment (also kno
 @description('Required. Name of the Container Apps Managed Environment.')
 param name string
 
-@description('Optional. Existing Log Analytics Workspace resource ID. Note: This value is not required as per the resource type. However, not providing it currently causes an issue that is tracked [here](https://github.com/Azure/bicep/issues/9990).')
-param logAnalyticsWorkspaceResourceId string = ''
-
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
@@ -20,9 +17,6 @@ param managedIdentities managedIdentityAllType?
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
-
-@description('Optional. Logs destination.')
-param logsDestination string = ''
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -97,17 +91,20 @@ param storages storageType[]?
 @description('Optional. A Managed Environment Certificate.')
 param certificate certificateType?
 
-var appLogsConfiguration = !empty(logsDestination)
-  ? {
-      destination: logsDestination
-      logAnalyticsConfiguration: !empty(logAnalyticsWorkspaceResourceId)
-        ? {
-            customerId: logAnalyticsWorkspace.properties.customerId
-            sharedKey: logAnalyticsWorkspace.listKeys().primarySharedKey
-          }
-        : null
-    }
-  : {}
+@description('Optional. The AppLogsConfiguration for the Managed Environment.')
+param appLogsConfiguration appLogsConfigurationType?
+
+// var appLogsConfiguration = !empty(logsDestination)
+//   ? {
+//       destination: logsDestination
+//       logAnalyticsConfiguration: !empty(logAnalyticsWorkspaceResourceId)
+//         ? {
+//             customerId: logAnalyticsWorkspace.properties.customerId
+//             sharedKey: logAnalyticsWorkspace.listKeys().primarySharedKey
+//           }
+//         : null
+//     }
+//   : {}
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -166,11 +163,6 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
       }
     }
   }
-}
-
-resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09-01' existing = if (!empty(logAnalyticsWorkspaceResourceId)) {
-  name: last(split(logAnalyticsWorkspaceResourceId, '/'))!
-  scope: resourceGroup(split(logAnalyticsWorkspaceResourceId, '/')[2], split(logAnalyticsWorkspaceResourceId, '/')[4])
 }
 
 resource managedEnvironment 'Microsoft.App/managedEnvironments@2024-10-02-preview' = {
@@ -349,3 +341,17 @@ type storageType = {
   @description('Required. File share name.')
   shareName: string
 }
+
+type appLogsConfigurationType = {
+  @description('Optional. The destination of the logs.')
+  destination: string?
+
+  @description('Optional. The configuration for Log Analytics.')
+  logAnalyticsConfiguration: {
+    @description('Required. The customer ID of the Log Analytics workspace.')
+    customerId: string
+
+    @description('Required. The shared key of the Log Analytics workspace.')
+    sharedKey: string
+  }?
+}?

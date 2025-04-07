@@ -52,11 +52,13 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     // Required parameters
     name: 'ameamon001'
     // Non-required parameters
+    appLogsConfiguration: {
+      destination: 'azure-monitor'
+    }
     dockerBridgeCidr: '172.16.0.1/28'
     infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
     infrastructureSubnetId: '<infrastructureSubnetId>'
     internal: true
-    logsDestination: 'azure-monitor'
     platformReservedCidr: '172.17.17.0/24'
     platformReservedDnsIP: '172.17.17.17'
     workloadProfiles: [
@@ -88,6 +90,11 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
       "value": "ameamon001"
     },
     // Non-required parameters
+    "appLogsConfiguration": {
+      "value": {
+        "destination": "azure-monitor"
+      }
+    },
     "dockerBridgeCidr": {
       "value": "172.16.0.1/28"
     },
@@ -99,9 +106,6 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     },
     "internal": {
       "value": true
-    },
-    "logsDestination": {
-      "value": "azure-monitor"
     },
     "platformReservedCidr": {
       "value": "172.17.17.0/24"
@@ -136,11 +140,13 @@ using 'br/public:avm/res/app/managed-environment:<version>'
 // Required parameters
 param name = 'ameamon001'
 // Non-required parameters
+param appLogsConfiguration = {
+  destination: 'azure-monitor'
+}
 param dockerBridgeCidr = '172.16.0.1/28'
 param infrastructureResourceGroupName = '<infrastructureResourceGroupName>'
 param infrastructureSubnetId = '<infrastructureSubnetId>'
 param internal = true
-param logsDestination = 'azure-monitor'
 param platformReservedCidr = '172.17.17.0/24'
 param platformReservedDnsIP = '172.17.17.17'
 param workloadProfiles = [
@@ -172,12 +178,17 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     // Required parameters
     name: 'amemin001'
     // Non-required parameters
+    appLogsConfiguration: {
+      destination: 'log-analytics'
+      logAnalyticsConfiguration: {
+        customerId: '<customerId>'
+        sharedKey: '<sharedKey>'
+      }
+    }
     dockerBridgeCidr: '172.16.0.1/28'
     infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
     infrastructureSubnetId: '<infrastructureSubnetId>'
     internal: true
-    logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
-    logsDestination: 'log-analytics'
     platformReservedCidr: '172.17.17.0/24'
     platformReservedDnsIP: '172.17.17.17'
     workloadProfiles: [
@@ -209,6 +220,15 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
       "value": "amemin001"
     },
     // Non-required parameters
+    "appLogsConfiguration": {
+      "value": {
+        "destination": "log-analytics",
+        "logAnalyticsConfiguration": {
+          "customerId": "<customerId>",
+          "sharedKey": "<sharedKey>"
+        }
+      }
+    },
     "dockerBridgeCidr": {
       "value": "172.16.0.1/28"
     },
@@ -220,12 +240,6 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     },
     "internal": {
       "value": true
-    },
-    "logAnalyticsWorkspaceResourceId": {
-      "value": "<logAnalyticsWorkspaceResourceId>"
-    },
-    "logsDestination": {
-      "value": "log-analytics"
     },
     "platformReservedCidr": {
       "value": "172.17.17.0/24"
@@ -260,12 +274,17 @@ using 'br/public:avm/res/app/managed-environment:<version>'
 // Required parameters
 param name = 'amemin001'
 // Non-required parameters
+param appLogsConfiguration = {
+  destination: 'log-analytics'
+  logAnalyticsConfiguration: {
+    customerId: '<customerId>'
+    sharedKey: '<sharedKey>'
+  }
+}
 param dockerBridgeCidr = '172.16.0.1/28'
 param infrastructureResourceGroupName = '<infrastructureResourceGroupName>'
 param infrastructureSubnetId = '<infrastructureSubnetId>'
 param internal = true
-param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
-param logsDestination = 'log-analytics'
 param platformReservedCidr = '172.17.17.0/24'
 param platformReservedDnsIP = '172.17.17.17'
 param workloadProfiles = [
@@ -298,6 +317,13 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     name: 'amemax001'
     // Non-required parameters
     appInsightsConnectionString: '<appInsightsConnectionString>'
+    appLogsConfiguration: {
+      destination: 'log-analytics'
+      logAnalyticsConfiguration: {
+        customerId: '<customerId>'
+        sharedKey: '<sharedKey>'
+      }
+    }
     certificate: {
       certificateKeyVaultProperties: {
         identityResourceId: '<identityResourceId>'
@@ -315,7 +341,6 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [
@@ -405,6 +430,15 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     "appInsightsConnectionString": {
       "value": "<appInsightsConnectionString>"
     },
+    "appLogsConfiguration": {
+      "value": {
+        "destination": "log-analytics",
+        "logAnalyticsConfiguration": {
+          "customerId": "<customerId>",
+          "sharedKey": "<sharedKey>"
+        }
+      }
+    },
     "certificate": {
       "value": {
         "certificateKeyVaultProperties": {
@@ -437,9 +471,6 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
       }
-    },
-    "logAnalyticsWorkspaceResourceId": {
-      "value": "<logAnalyticsWorkspaceResourceId>"
     },
     "managedIdentities": {
       "value": {
@@ -542,6 +573,13 @@ using 'br/public:avm/res/app/managed-environment:<version>'
 param name = 'amemax001'
 // Non-required parameters
 param appInsightsConnectionString = '<appInsightsConnectionString>'
+param appLogsConfiguration = {
+  destination: 'log-analytics'
+  logAnalyticsConfiguration: {
+    customerId: '<customerId>'
+    sharedKey: '<sharedKey>'
+  }
+}
 param certificate = {
   certificateKeyVaultProperties: {
     identityResourceId: '<identityResourceId>'
@@ -559,7 +597,6 @@ param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
 }
-param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
 param managedIdentities = {
   systemAssigned: true
   userAssignedResourceIds: [
@@ -761,12 +798,17 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     // Required parameters
     name: 'amepa001'
     // Non-required parameters
+    appLogsConfiguration: {
+      destination: 'log-analytics'
+      logAnalyticsConfiguration: {
+        customerId: '<customerId>'
+        sharedKey: '<sharedKey>'
+      }
+    }
     dockerBridgeCidr: '172.16.0.1/28'
     infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
     infrastructureSubnetId: '<infrastructureSubnetId>'
     location: '<location>'
-    logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
-    logsDestination: 'log-analytics'
     platformReservedCidr: '172.17.17.0/24'
     platformReservedDnsIP: '172.17.17.17'
     publicNetworkAccess: 'Enabled'
@@ -799,6 +841,15 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
       "value": "amepa001"
     },
     // Non-required parameters
+    "appLogsConfiguration": {
+      "value": {
+        "destination": "log-analytics",
+        "logAnalyticsConfiguration": {
+          "customerId": "<customerId>",
+          "sharedKey": "<sharedKey>"
+        }
+      }
+    },
     "dockerBridgeCidr": {
       "value": "172.16.0.1/28"
     },
@@ -810,12 +861,6 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     },
     "location": {
       "value": "<location>"
-    },
-    "logAnalyticsWorkspaceResourceId": {
-      "value": "<logAnalyticsWorkspaceResourceId>"
-    },
-    "logsDestination": {
-      "value": "log-analytics"
     },
     "platformReservedCidr": {
       "value": "172.17.17.0/24"
@@ -853,12 +898,17 @@ using 'br/public:avm/res/app/managed-environment:<version>'
 // Required parameters
 param name = 'amepa001'
 // Non-required parameters
+param appLogsConfiguration = {
+  destination: 'log-analytics'
+  logAnalyticsConfiguration: {
+    customerId: '<customerId>'
+    sharedKey: '<sharedKey>'
+  }
+}
 param dockerBridgeCidr = '172.16.0.1/28'
 param infrastructureResourceGroupName = '<infrastructureResourceGroupName>'
 param infrastructureSubnetId = '<infrastructureSubnetId>'
 param location = '<location>'
-param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
-param logsDestination = 'log-analytics'
 param platformReservedCidr = '172.17.17.0/24'
 param platformReservedDnsIP = '172.17.17.17'
 param publicNetworkAccess = 'Enabled'
@@ -891,12 +941,17 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     // Required parameters
     name: 'amewaf001'
     // Non-required parameters
+    appLogsConfiguration: {
+      destination: 'log-analytics'
+      logAnalyticsConfiguration: {
+        customerId: '<customerId>'
+        sharedKey: '<sharedKey>'
+      }
+    }
     dockerBridgeCidr: '172.16.0.1/28'
     infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
     infrastructureSubnetId: '<infrastructureSubnetId>'
     internal: true
-    logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
-    logsDestination: 'log-analytics'
     platformReservedCidr: '172.17.17.0/24'
     platformReservedDnsIP: '172.17.17.17'
     tags: {
@@ -932,6 +987,15 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
       "value": "amewaf001"
     },
     // Non-required parameters
+    "appLogsConfiguration": {
+      "value": {
+        "destination": "log-analytics",
+        "logAnalyticsConfiguration": {
+          "customerId": "<customerId>",
+          "sharedKey": "<sharedKey>"
+        }
+      }
+    },
     "dockerBridgeCidr": {
       "value": "172.16.0.1/28"
     },
@@ -943,12 +1007,6 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     },
     "internal": {
       "value": true
-    },
-    "logAnalyticsWorkspaceResourceId": {
-      "value": "<logAnalyticsWorkspaceResourceId>"
-    },
-    "logsDestination": {
-      "value": "log-analytics"
     },
     "platformReservedCidr": {
       "value": "172.17.17.0/24"
@@ -989,12 +1047,17 @@ using 'br/public:avm/res/app/managed-environment:<version>'
 // Required parameters
 param name = 'amewaf001'
 // Non-required parameters
+param appLogsConfiguration = {
+  destination: 'log-analytics'
+  logAnalyticsConfiguration: {
+    customerId: '<customerId>'
+    sharedKey: '<sharedKey>'
+  }
+}
 param dockerBridgeCidr = '172.16.0.1/28'
 param infrastructureResourceGroupName = '<infrastructureResourceGroupName>'
 param infrastructureSubnetId = '<infrastructureSubnetId>'
 param internal = true
-param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
-param logsDestination = 'log-analytics'
 param platformReservedCidr = '172.17.17.0/24'
 param platformReservedDnsIP = '172.17.17.17'
 param tags = {
@@ -1039,6 +1102,7 @@ param workloadProfiles = [
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`appInsightsConnectionString`](#parameter-appinsightsconnectionstring) | securestring | Application Insights connection string. |
+| [`appLogsConfiguration`](#parameter-applogsconfiguration) | object | The AppLogsConfiguration for the Managed Environment. |
 | [`certificate`](#parameter-certificate) | object | A Managed Environment Certificate. |
 | [`certificatePassword`](#parameter-certificatepassword) | securestring | Password of the certificate used by the custom domain. |
 | [`certificateValue`](#parameter-certificatevalue) | securestring | Certificate to use for the custom domain. PFX or PEM. |
@@ -1048,8 +1112,6 @@ param workloadProfiles = [
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
-| [`logAnalyticsWorkspaceResourceId`](#parameter-loganalyticsworkspaceresourceid) | string | Existing Log Analytics Workspace resource ID. Note: This value is not required as per the resource type. However, not providing it currently causes an issue that is tracked [here](https://github.com/Azure/bicep/issues/9990). |
-| [`logsDestination`](#parameter-logsdestination) | string | Logs destination. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`openTelemetryConfiguration`](#parameter-opentelemetryconfiguration) | object | Open Telemetry configuration. |
 | [`peerTrafficEncryption`](#parameter-peertrafficencryption) | bool | Whether or not to encrypt peer traffic. |
@@ -1129,6 +1191,55 @@ Application Insights connection string.
 - Required: No
 - Type: securestring
 - Default: `''`
+
+### Parameter: `appLogsConfiguration`
+
+The AppLogsConfiguration for the Managed Environment.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`destination`](#parameter-applogsconfigurationdestination) | string | The destination of the logs. |
+| [`logAnalyticsConfiguration`](#parameter-applogsconfigurationloganalyticsconfiguration) | object | The configuration for Log Analytics. |
+
+### Parameter: `appLogsConfiguration.destination`
+
+The destination of the logs.
+
+- Required: No
+- Type: string
+
+### Parameter: `appLogsConfiguration.logAnalyticsConfiguration`
+
+The configuration for Log Analytics.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`customerId`](#parameter-applogsconfigurationloganalyticsconfigurationcustomerid) | string | The customer ID of the Log Analytics workspace. |
+| [`sharedKey`](#parameter-applogsconfigurationloganalyticsconfigurationsharedkey) | string | The shared key of the Log Analytics workspace. |
+
+### Parameter: `appLogsConfiguration.logAnalyticsConfiguration.customerId`
+
+The customer ID of the Log Analytics workspace.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `appLogsConfiguration.logAnalyticsConfiguration.sharedKey`
+
+The shared key of the Log Analytics workspace.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `certificate`
 
@@ -1301,22 +1412,6 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
-
-### Parameter: `logAnalyticsWorkspaceResourceId`
-
-Existing Log Analytics Workspace resource ID. Note: This value is not required as per the resource type. However, not providing it currently causes an issue that is tracked [here](https://github.com/Azure/bicep/issues/9990).
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `logsDestination`
-
-Logs destination.
-
-- Required: No
-- Type: string
-- Default: `''`
 
 ### Parameter: `managedIdentities`
 

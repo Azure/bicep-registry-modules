@@ -41,6 +41,11 @@ module nestedDependencies 'dependencies.bicep' = {
   }
 }
 
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09-01' existing = {
+  name: 'dep-${namePrefix}-law-${serviceShort}'
+  scope: resourceGroup
+}
+
 // ============== //
 // Test Execution //
 // ============== //
@@ -52,8 +57,13 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      logsDestination: 'log-analytics'
-      logAnalyticsWorkspaceResourceId: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
+      appLogsConfiguration: {
+        destination: 'log-analytics'
+        logAnalyticsConfiguration: {
+          customerId: logAnalyticsWorkspace.properties.customerId
+          sharedKey: logAnalyticsWorkspace.listKeys().primarySharedKey
+        }
+      }
       workloadProfiles: [
         {
           workloadProfileType: 'D4'
