@@ -286,7 +286,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     roleAssignmentEnabled: true
     roleAssignments: [
       {
-        definition: '/providers/Microsoft.Authorization/roleDefinitions/005cfb9e-dccd-4458-831d-a83a616f2a5c'
+        definition: '/providers/Microsoft.Authorization/roleDefinitions/fe651197-73b0-4f39-92b3-3ee9dbeeb14f'
         isCustomRole: true
         principalId: '<principalId>'
         principalType: 'User'
@@ -335,7 +335,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "definition": "/providers/Microsoft.Authorization/roleDefinitions/005cfb9e-dccd-4458-831d-a83a616f2a5c",
+          "definition": "/providers/Microsoft.Authorization/roleDefinitions/fe651197-73b0-4f39-92b3-3ee9dbeeb14f",
           "isCustomRole": true,
           "principalId": "<principalId>",
           "principalType": "User",
@@ -394,7 +394,7 @@ param resourceProviders = {}
 param roleAssignmentEnabled = true
 param roleAssignments = [
   {
-    definition: '/providers/Microsoft.Authorization/roleDefinitions/005cfb9e-dccd-4458-831d-a83a616f2a5c'
+    definition: '/providers/Microsoft.Authorization/roleDefinitions/fe651197-73b0-4f39-92b3-3ee9dbeeb14f'
     isCustomRole: true
     principalId: '<principalId>'
     principalType: 'User'
