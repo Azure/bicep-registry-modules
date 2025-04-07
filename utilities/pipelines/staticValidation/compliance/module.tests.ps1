@@ -1437,11 +1437,13 @@ Describe 'Module tests' -Tag 'Module' {
             }
 
             # the changelog should start with '# Changelog'
-            $changelogContent[0] + $changelogContent[1] | Should -Be '# Changelog' -Because 'the changelog should start with `# Changelog`, followed by an empty line'
+            $changelogContent[0] | Should -Be '# Changelog' -Because 'the changelog should start with `# Changelog`'
+            $changelogContent[1] | Should -BeNullOrEmpty -Because "the changelog's second line should be empty"
 
             # The latest version of the changelog can be found [here](/Azure/bicep-registry-modules/blob/main/avm/res/aad/domain-service/CHANGELOG.md).
             $linkToLatestVersionChangelog = 'The latest version of the changelog can be found [here](/Azure/bicep-registry-modules/blob/main/avm/{0}/{1}/Changelog.md).' -f $moduleType, $moduleFolderName
-            $changelogContent[2] + $changelogContent[3] | Should -Be $linkToLatestVersionChangelog -Because ('the changelog must contain a link to the latest version {0}' -f $linkToLatestVersionChangelog)
+            $changelogContent[2] | Should -Be $linkToLatestVersionChangelog -Because ('the changelog must contain a link to the latest version {0}' -f $linkToLatestVersionChangelog)
+            $changelogContent[3] | Should -BeNullOrEmpty -Because "the changelog's forth line should be empty"
         }
 
         It '[<moduleFolderName>] `CHANGELOG.md` must contain a section for the module version.' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleVersionExists }) {
