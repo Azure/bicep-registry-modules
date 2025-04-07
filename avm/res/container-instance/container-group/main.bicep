@@ -444,7 +444,7 @@ type ipAddressType = {
   @description('Required. The list of ports exposed on the container group.')
   ports: ipAddressPortsType[]
 
-  @description('Required. Specifies if the IP is exposed to the public internet or private VNET.')
+  @description('Optional. Specifies if the IP is exposed to the public internet or private VNET.')
   type: ('Public' | 'Private')?
 }
 
