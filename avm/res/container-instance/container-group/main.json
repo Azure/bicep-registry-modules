@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "9856306901881065735"
+      "templateHash": "10674092740314043985"
     },
     "name": "Container Instances Container Groups",
     "description": "This module deploys a Container Instance Container Group."
@@ -92,6 +92,7 @@
               }
             }
           },
+          "nullable": true,
           "metadata": {
             "description": "Optional. The HTTP request to perform."
           }
@@ -481,7 +482,7 @@
           ],
           "nullable": true,
           "metadata": {
-            "description": "Required. The value representing the security enum."
+            "description": "Optional. The value representing the security enum."
           }
         },
         "dnsNameLabel": {
