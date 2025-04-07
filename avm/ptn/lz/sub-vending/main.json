@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "11675745579426361647"
+      "templateHash": "8256115344920130539"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -1506,7 +1506,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.34.44.8038",
-              "templateHash": "5039777857997948957"
+              "templateHash": "588753269279915123"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -2766,6 +2766,30 @@
                   "resources": []
                 }
               }
+            },
+            "moveSubscriptionToManagementGroupDelay_rbac": {
+              "copy": {
+                "name": "moveSubscriptionToManagementGroupDelay_rbac",
+                "count": "[length(range(0, parameters('managementGroupAssociationDelayCount')))]",
+                "mode": "serial",
+                "batchSize": 1
+              },
+              "condition": "[and(parameters('roleAssignmentEnabled'), not(empty(variables('customRoleAssignmentsSubscription'))))]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('{0}-{1}', variables('deploymentNames').moveSubscriptionToManagementGroupDelay, copyIndex())]",
+              "location": "[parameters('virtualNetworkLocation')]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": []
+                }
+              },
+              "dependsOn": [
+                "moveSubscriptionToManagementGroup"
+              ]
             },
             "moveSubscriptionToManagementGroup": {
               "condition": "[and(parameters('subscriptionManagementGroupAssociationEnabled'), not(empty(parameters('subscriptionManagementGroupId'))))]",
@@ -9967,7 +9991,7 @@
                 }
               },
               "dependsOn": [
-                "moveSubscriptionToManagementGroup"
+                "moveSubscriptionToManagementGroupDelay_rbac"
               ]
             },
             "createLzPimActiveRoleAssignmentsSub": {

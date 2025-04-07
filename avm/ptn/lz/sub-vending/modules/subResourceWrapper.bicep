@@ -809,10 +809,30 @@ module createLzRoleAssignmentsRsgsNotSelf 'br/public:avm/ptn/authorization/role-
   }
 ]
 
+@batchSize(1)
+#disable-next-line no-deployments-resources
+resource moveSubscriptionToManagementGroupDelay_rbac 'Microsoft.Resources/deployments@2024-03-01' = [
+  for (cycle, i) in range(0, managementGroupAssociationDelayCount): if (roleAssignmentEnabled && !empty(customRoleAssignmentsSubscription)) {
+    name: '${deploymentNames.moveSubscriptionToManagementGroupDelay}-${i}'
+    location: virtualNetworkLocation
+    properties: {
+      mode: 'Incremental'
+      template: {
+        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+        contentVersion: '1.0.0.0'
+        resources: []
+      }
+    }
+    dependsOn: [
+      moveSubscriptionToManagementGroup
+    ]
+  }
+]
+
 module createLzCustomRoleAssignmentsSub 'br/public:avm/ptn/authorization/role-assignment:0.2.0' = [
   for assignment in customRoleAssignmentsSubscription: if (roleAssignmentEnabled && !empty(customRoleAssignmentsSubscription)) {
     dependsOn: [
-      moveSubscriptionToManagementGroup
+      moveSubscriptionToManagementGroupDelay_rbac
     ]
     name: take(
       '${deploymentNames.createLzCustomRoleAssignmentsSub}-${uniqueString(assignment.principalId, assignment.definition, assignment.relativeScope)}',
