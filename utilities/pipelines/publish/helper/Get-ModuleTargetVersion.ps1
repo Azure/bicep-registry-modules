@@ -32,7 +32,7 @@ function Get-ModuleTargetVersion {
         [string] $ModuleFolderPath,
 
         [Parameter(Mandatory = $false)]
-        [bool] $CompareJson = $false
+        [switch] $CompareJson
     )
 
     # Load used functions
@@ -42,7 +42,7 @@ function Get-ModuleTargetVersion {
     . (Join-Path (Get-Item -Path $PSScriptRoot).FullName 'Get-ModuleJsonChange.ps1')
 
     # 0. Check if [main.json] version number changed. This overrides the logic to check the version in the version.json file
-    if ($CompareJson -eq $true) {
+    if ($CompareJson) {
         $jsonChanged = Get-ModuleJsonChange -ModuleFolderPath $ModuleFolderPath
         if ($jsonChanged -eq $false) {
             Write-Verbose 'Version in main.json file did not change. No need to bump the version.' -Verbose

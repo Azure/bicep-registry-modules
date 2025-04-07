@@ -18,7 +18,7 @@ Optional. The repository name. Default is 'bicep-registry-modules'.
 .EXAMPLE
 Get-ModuleJsonChange -ModuleFolderPath 'C:\avm\res\key-vault\vault'
 
-Returns $true
+Compares the `avm\res\key-vault\vault` module's local `main.json` with the one in the main branch on GitHub. Returns e.g., `$true`
 
 #>
 
@@ -39,8 +39,7 @@ function Get-ModuleJsonChange {
     # Check if [main.json] version number changed
     $mainJsonFilePath = Join-Path $ModuleFolderPath 'main.json'
     if (-not(Test-Path -Path $mainJsonFilePath)) {
-        Write-Error "The file '[$mainJsonFilePath]' does not exist."
-        return $false
+        throw "The file '[$mainJsonFilePath]' does not exist."
     }
 
     $currentJson = Get-Content $mainJsonFilePath | ConvertFrom-Json
@@ -54,7 +53,7 @@ function Get-ModuleJsonChange {
     Write-Verbose "Fetching the content of the file '[$filePathInRepo]' from GitHub." -Verbose
 
     try {
-        $response = Invoke-RestMethod -Uri $apiUrl -Headers @{ 'User-Agent' = 'PowerShell' }
+        $response = Invoke-RestMethod -Uri $apiUrl -Headers @{ 'Accept' = 'application/vnd.github+json' }
         $githubFileContent = [System.Text.Encoding]::UTF8.GetString([Convert]::FromBase64String($response.content))
         $githubJson = $githubFileContent | ConvertFrom-Json
         # the _generator property is specific to the Bicep version used, and not relevant for the comparison of the content
