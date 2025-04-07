@@ -21,11 +21,6 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-@allowed([
-  'log-analytics'
-  'azure-monitor'
-  ''
-])
 @description('Optional. Logs destination.')
 param logsDestination string = ''
 
@@ -112,7 +107,7 @@ var appLogsConfiguration = !empty(logsDestination)
           }
         : null
     }
-  : null
+  : {}
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),

@@ -1263,14 +1263,6 @@ Logs destination.
 - Required: No
 - Type: string
 - Default: `''`
-- Allowed:
-  ```Bicep
-  [
-    ''
-    'azure-monitor'
-    'log-analytics'
-  ]
-  ```
 
 ### Parameter: `managedIdentities`
 
