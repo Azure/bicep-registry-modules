@@ -64,6 +64,13 @@ function Get-ModuleJsonChange {
     }
 
     # Compare main.json files (without the Bicep version specific _generator property)
-    $versionChanged = $currentJsonVersion -ne $githubJsonVersion
-    return $versionChanged
+    $currentJsonString = $currentJson | ConvertTo-Json -Depth 99
+    $githubJsonString = $githubJson | ConvertTo-Json -Depth 99
+
+    # Compute hash values for both JSON strings
+    $currentJsonHash = [System.Security.Cryptography.HashAlgorithm]::Create('SHA256').ComputeHash([System.Text.Encoding]::UTF8.GetBytes($currentJsonString)) -join ''
+    $githubJsonHash = [System.Security.Cryptography.HashAlgorithm]::Create('SHA256').ComputeHash([System.Text.Encoding]::UTF8.GetBytes($githubJsonString)) -join ''
+
+    # Compare the hash values
+    return $currentJsonHash -ne $githubJsonHash
 }

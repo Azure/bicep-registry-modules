@@ -1464,7 +1464,7 @@ Describe 'Module tests' -Tag 'Module' {
                 return
             }
 
-            $newModuleVersion = Get-ModuleTargetVersion -ModuleFolderPath $moduleFolderPath -CompareJsonVersion $true
+            $newModuleVersion = Get-ModuleTargetVersion -ModuleFolderPath $moduleFolderPath -CompareJson $true
             $sections = $changelogContent | Where-Object { $_ -match '^##\s+' }
             $changelogSection = $sections | Where-Object { $_ -match "^##\s+$newModuleVersion" }
 
