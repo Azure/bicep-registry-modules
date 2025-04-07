@@ -34,10 +34,6 @@ BeforeDiscovery {
     # Import any helper function used in this test script
     Import-Module (Join-Path $PSScriptRoot 'helper' 'helper.psm1') -Force
 
-    # Load used functions
-    . (Join-Path $repoRootPath 'utilities' 'pipelines' 'publish' 'helper' 'Get-ModuleTargetVersion.ps1')
-    . (Join-Path $repoRootPath 'utilities' 'pipelines' 'publish' 'helper' 'Get-ModulePublishedVersions.ps1')
-
     # Building all required files for tests to optimize performance (using thread-safe multithreading) to consume later
     # Collecting paths
     $pathsToBuild = [System.Collections.ArrayList]@()
@@ -79,10 +75,6 @@ Describe 'File/folder tests' -Tag 'Modules' {
                     changelogContent    = Get-Content (Join-Path -Path $moduleFolderPath 'CHANGELOG.md') -ErrorAction SilentlyContinue
                 }
             }
-        }
-
-        BeforeAll {
-            . (Join-Path $repoRootPath 'utilities' 'pipelines' 'publish' 'helper' 'Get-ModulePublishedVersions.ps1')
         }
 
         It '[<moduleFolderName>] Module should contain a [` main.bicep `] file.' -TestCases $moduleFolderTestCases {
