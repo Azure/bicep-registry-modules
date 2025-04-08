@@ -43,8 +43,8 @@ resource rule 'Microsoft.ServiceBus/namespaces/topics/subscriptions/rules@2022-1
   name: name
   parent: namespace::topic::subscription
   properties: {
-    action: !empty(action) ? action : null
-    correlationFilter: !empty(correlationFilter) ? correlationFilter : null
+    action: action
+    correlationFilter: correlationFilter
     filterType: filterType
     sqlFilter: !empty(sqlFilter)
       ? {
