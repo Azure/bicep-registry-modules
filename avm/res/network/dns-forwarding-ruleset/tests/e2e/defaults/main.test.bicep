@@ -57,8 +57,5 @@ module testDeployment '../../../main.bicep' = [
       ]
       location: resourceLocation
     }
-    dependsOn: [
-      nestedDependencies
-    ]
   }
 ]
