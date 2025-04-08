@@ -44,14 +44,27 @@ module nestedDependencies 'dependencies.bicep' = {
 // Test Execution //
 // ============== //
 
+var availabilityZones = [1, 2]
+var iterations = ['init', 'idem']
+
+var testConfigurations = flatten(map(
+  availabilityZones,
+  zone =>
+    map(iterations, iter => {
+      iteration: iter
+      availabilityZone: zone
+    })
+))
+
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
-  for iteration in ['init', 'idem']: {
+  for config in testConfigurations: {
     scope: resourceGroup
-    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${config.iteration}-${config.availabilityZone}'
     params: {
       location: resourceLocation
-      name: '${namePrefix}${serviceShort}001'
+      name: '${namePrefix}${serviceShort}001-${config.availabilityZone}'
+      availabilityZone: config.availabilityZone
       lock: {
         kind: 'CanNotDelete'
         name: 'myCustomLockName'

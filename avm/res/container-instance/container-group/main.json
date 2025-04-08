@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "15129169225455150163"
+      "templateHash": "9739873752143909726"
     },
     "name": "Container Instances Container Groups",
     "description": "This module deploys a Container Instance Container Group."
@@ -777,14 +777,14 @@
         "description": "Optional. A list of container definitions which will be executed before the application container starts."
       }
     },
-    "subnetIds": {
+    "subnets": {
       "type": "array",
       "items": {
         "$ref": "#/definitions/containerGroupSubnetIdType"
       },
       "nullable": true,
       "metadata": {
-        "description": "Optional. The subnet resource IDs for a container group."
+        "description": "Optional. The subnets to use by the container group."
       }
     },
     "volumes": {
@@ -840,14 +840,16 @@
         "description": "Optional. The customer managed key definition."
       }
     },
-    "zones": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "nullable": true,
+    "availabilityZone": {
+      "type": "int",
+      "allowedValues": [
+        -1,
+        1,
+        2,
+        3
+      ],
       "metadata": {
-        "description": "Optional. The zones for the container group."
+        "description": "Required. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones)."
       }
     },
     "priority": {
@@ -921,7 +923,7 @@
       "location": "[parameters('location')]",
       "identity": "[variables('identity')]",
       "tags": "[parameters('tags')]",
-      "zones": "[parameters('zones')]",
+      "zones": "[if(not(equals(parameters('availabilityZone'), -1)), array(string(parameters('availabilityZone'))), null())]",
       "properties": {
         "copy": [
           {
@@ -951,10 +953,10 @@
           },
           {
             "name": "subnetIds",
-            "count": "[length(coalesce(parameters('subnetIds'), createArray()))]",
+            "count": "[length(coalesce(parameters('subnets'), createArray()))]",
             "input": {
-              "id": "[coalesce(parameters('subnetIds'), createArray())[copyIndex('subnetIds')].subnetResourceId]",
-              "name": "[tryGet(coalesce(parameters('subnetIds'), createArray())[copyIndex('subnetIds')], 'name')]"
+              "id": "[coalesce(parameters('subnets'), createArray())[copyIndex('subnetIds')].subnetResourceId]",
+              "name": "[tryGet(coalesce(parameters('subnets'), createArray())[copyIndex('subnetIds')], 'name')]"
             }
           }
         ],

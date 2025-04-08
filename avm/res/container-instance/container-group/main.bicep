@@ -33,8 +33,8 @@ param dnsConfig dnsConfigType?
 @description('Optional. A list of container definitions which will be executed before the application container starts.')
 param initContainers array?
 
-@description('Optional. The subnet resource IDs for a container group.')
-param subnetIds containerGroupSubnetIdType[]?
+@description('Optional. The subnets to use by the container group.')
+param subnets containerGroupSubnetIdType[]?
 
 @description('Optional. Specify if volumes (emptyDir, AzureFileShare or GitRepo) shall be attached to your containergroup.')
 param volumes array?
@@ -64,8 +64,14 @@ import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/av
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyWithAutoRotateType?
 
-@description('Optional. The zones for the container group.')
-param zones string[]?
+@description('Required. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones).')
+@allowed([
+  -1
+  1
+  2
+  3
+])
+param availabilityZone int
 
 @description('Optional. The priority of the container group.')
 param priority 'Regular' | 'Spot' = 'Regular'
@@ -129,7 +135,7 @@ resource containergroup 'Microsoft.ContainerInstance/containerGroups@2023-05-01'
   location: location
   identity: identity
   tags: tags
-  zones: zones
+  zones: availabilityZone != -1 ? array(string(availabilityZone)) : null
   properties: {
     // We could have assigned `containers` prop directly
     // if the memoryInGB would accept fractional numbers for int...
@@ -171,7 +177,7 @@ resource containergroup 'Microsoft.ContainerInstance/containerGroups@2023-05-01'
           identity: !empty(customerManagedKey.?userAssignedIdentityResourceId) ? cMKUserAssignedIdentity.id : null
           vaultBaseUrl: cMKKeyVault.properties.vaultUri
           keyName: customerManagedKey!.keyName
-          // TODO: keyRotation support if possible
+          // FYI: Key Rotation is not (yet) supported by the RP
           keyVersion: !empty(customerManagedKey.?keyVersion ?? '')
             ? customerManagedKey!.keyVersion!
             : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
@@ -194,9 +200,9 @@ resource containergroup 'Microsoft.ContainerInstance/containerGroups@2023-05-01'
       : null
     sku: sku
     subnetIds: [
-      for subnetId in subnetIds ?? []: {
-        id: subnetId.subnetResourceId
-        name: subnetId.?name
+      for subnet in subnets ?? []: {
+        id: subnet.subnetResourceId
+        name: subnet.?name
       }
     ]
     volumes: volumes

@@ -47,6 +47,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
   name: 'containerGroupDeployment'
   params: {
     // Required parameters
+    availabilityZone: -1
     containers: [
       {
         name: 'az-aci-x-001'
@@ -95,6 +96,9 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "availabilityZone": {
+      "value": -1
+    },
     "containers": {
       "value": [
         {
@@ -149,6 +153,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
 using 'br/public:avm/res/container-instance/container-group:<version>'
 
 // Required parameters
+param availabilityZone = -1
 param containers = [
   {
     name: 'az-aci-x-001'
@@ -199,6 +204,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
   name: 'containerGroupDeployment'
   params: {
     // Required parameters
+    availabilityZone: -1
     containers: [
       {
         name: 'az-aci-x-001'
@@ -292,6 +298,9 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "availabilityZone": {
+      "value": -1
+    },
     "containers": {
       "value": [
         {
@@ -397,6 +406,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
 using 'br/public:avm/res/container-instance/container-group:<version>'
 
 // Required parameters
+param availabilityZone = -1
 param containers = [
   {
     name: 'az-aci-x-001'
@@ -492,6 +502,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
   name: 'containerGroupDeployment'
   params: {
     // Required parameters
+    availabilityZone: -1
     containers: [
       {
         name: 'az-aci-x-001'
@@ -540,6 +551,9 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "availabilityZone": {
+      "value": -1
+    },
     "containers": {
       "value": [
         {
@@ -594,6 +608,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
 using 'br/public:avm/res/container-instance/container-group:<version>'
 
 // Required parameters
+param availabilityZone = -1
 param containers = [
   {
     name: 'az-aci-x-001'
@@ -644,6 +659,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
   name: 'containerGroupDeployment'
   params: {
     // Required parameters
+    availabilityZone: '<availabilityZone>'
     containers: [
       {
         name: 'az-aci-x-001'
@@ -703,7 +719,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
         }
       }
     ]
-    name: 'cicgmax001'
+    name: '<name>'
     // Non-required parameters
     ipAddress: {
       ports: [
@@ -750,6 +766,9 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "availabilityZone": {
+      "value": "<availabilityZone>"
+    },
     "containers": {
       "value": [
         {
@@ -812,7 +831,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
       ]
     },
     "name": {
-      "value": "cicgmax001"
+      "value": "<name>"
     },
     // Non-required parameters
     "ipAddress": {
@@ -868,6 +887,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
 using 'br/public:avm/res/container-instance/container-group:<version>'
 
 // Required parameters
+param availabilityZone = '<availabilityZone>'
 param containers = [
   {
     name: 'az-aci-x-001'
@@ -927,7 +947,7 @@ param containers = [
     }
   }
 ]
-param name = 'cicgmax001'
+param name = '<name>'
 // Non-required parameters
 param ipAddress = {
   ports: [
@@ -976,6 +996,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
   name: 'containerGroupDeployment'
   params: {
     // Required parameters
+    availabilityZone: -1
     containers: [
       {
         name: 'az-aci-x-001'
@@ -1046,7 +1067,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    subnetIds: [
+    subnets: [
       {
         subnetResourceId: '<subnetResourceId>'
       }
@@ -1068,6 +1089,9 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "availabilityZone": {
+      "value": -1
+    },
     "containers": {
       "value": [
         {
@@ -1148,7 +1172,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
         "name": "myCustomLockName"
       }
     },
-    "subnetIds": {
+    "subnets": {
       "value": [
         {
           "subnetResourceId": "<subnetResourceId>"
@@ -1170,6 +1194,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
 using 'br/public:avm/res/container-instance/container-group:<version>'
 
 // Required parameters
+param availabilityZone = -1
 param containers = [
   {
     name: 'az-aci-x-001'
@@ -1240,7 +1265,7 @@ param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
 }
-param subnetIds = [
+param subnets = [
   {
     subnetResourceId: '<subnetResourceId>'
   }
@@ -1264,6 +1289,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
   name: 'containerGroupDeployment'
   params: {
     // Required parameters
+    availabilityZone: 1
     containers: [
       {
         name: 'az-aci-x-001'
@@ -1347,6 +1373,9 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "availabilityZone": {
+      "value": 1
+    },
     "containers": {
       "value": [
         {
@@ -1438,6 +1467,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
 using 'br/public:avm/res/container-instance/container-group:<version>'
 
 // Required parameters
+param availabilityZone = 1
 param containers = [
   {
     name: 'az-aci-x-001'
@@ -1515,6 +1545,7 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`availabilityZone`](#parameter-availabilityzone) | int | If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones). |
 | [`containers`](#parameter-containers) | array | The containers and their respective config within the container group. |
 | [`name`](#parameter-name) | string | Name for the container group. |
 
@@ -1535,10 +1566,25 @@ param tags = {
 | [`priority`](#parameter-priority) | string | The priority of the container group. |
 | [`restartPolicy`](#parameter-restartpolicy) | string | Restart policy for all containers within the container group. - Always: Always restart. OnFailure: Restart on failure. Never: Never restart. - Always, OnFailure, Never. |
 | [`sku`](#parameter-sku) | string | The container group SKU. |
-| [`subnetIds`](#parameter-subnetids) | array | The subnet resource IDs for a container group. |
+| [`subnets`](#parameter-subnets) | array | The subnets to use by the container group. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`volumes`](#parameter-volumes) | array | Specify if volumes (emptyDir, AzureFileShare or GitRepo) shall be attached to your containergroup. |
-| [`zones`](#parameter-zones) | array | The zones for the container group. |
+
+### Parameter: `availabilityZone`
+
+If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones).
+
+- Required: Yes
+- Type: int
+- Allowed:
+  ```Bicep
+  [
+    -1
+    1
+    2
+    3
+  ]
+  ```
 
 ### Parameter: `containers`
 
@@ -2651,9 +2697,9 @@ The container group SKU.
   ]
   ```
 
-### Parameter: `subnetIds`
+### Parameter: `subnets`
 
-The subnet resource IDs for a container group.
+The subnets to use by the container group.
 
 - Required: No
 - Type: array
@@ -2662,22 +2708,22 @@ The subnet resource IDs for a container group.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`subnetResourceId`](#parameter-subnetidssubnetresourceid) | string | Resource ID of virtual network and subnet. |
+| [`subnetResourceId`](#parameter-subnetssubnetresourceid) | string | Resource ID of virtual network and subnet. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-subnetidsname) | string | Friendly name for the subnet. |
+| [`name`](#parameter-subnetsname) | string | Friendly name for the subnet. |
 
-### Parameter: `subnetIds.subnetResourceId`
+### Parameter: `subnets.subnetResourceId`
 
 Resource ID of virtual network and subnet.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `subnetIds.name`
+### Parameter: `subnets.name`
 
 Friendly name for the subnet.
 
@@ -2694,13 +2740,6 @@ Tags of the resource.
 ### Parameter: `volumes`
 
 Specify if volumes (emptyDir, AzureFileShare or GitRepo) shall be attached to your containergroup.
-
-- Required: No
-- Type: array
-
-### Parameter: `zones`
-
-The zones for the container group.
 
 - Required: No
 - Type: array

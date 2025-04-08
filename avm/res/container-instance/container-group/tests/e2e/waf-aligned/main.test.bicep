@@ -52,6 +52,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       location: resourceLocation
       name: '${namePrefix}${serviceShort}001'
+      availabilityZone: 1
       containers: [
         {
           name: '${namePrefix}-az-aci-x-001'
