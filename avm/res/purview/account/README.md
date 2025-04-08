@@ -20,7 +20,7 @@ This module deploys a Purview Account.
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
-| `Microsoft.Purview/accounts` | [2021-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Purview/2021-12-01/accounts) |
+| `Microsoft.Purview/accounts` | [2024-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Purview/2024-04-01-preview/accounts) |
 
 ## Usage examples
 
@@ -1068,6 +1068,8 @@ param tags = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`accountPrivateEndpoints`](#parameter-accountprivateendpoints) | array | Configuration details for Purview Account private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Make sure the service property is set to 'account'. |
+| [`accountSku`](#parameter-accountsku) | string | The SKU of the Purview Account. |
+| [`accountSkuCapacity`](#parameter-accountskucapacity) | int | The capacity of the Purview Account SKU. The default value is 1. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`eventHubPrivateEndpoints`](#parameter-eventhubprivateendpoints) | array | Configuration details for Purview Managed Event Hub namespace private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Make sure the service property is set to 'namespace'. |
@@ -1083,6 +1085,7 @@ param tags = {
 | [`storageBlobPrivateEndpoints`](#parameter-storageblobprivateendpoints) | array | Configuration details for Purview Managed Storage Account blob private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Make sure the service property is set to 'blob'. |
 | [`storageQueuePrivateEndpoints`](#parameter-storagequeueprivateendpoints) | array | Configuration details for Purview Managed Storage Account queue private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Make sure the service property is set to 'queue'. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
+| [`tenantEndpointState`](#parameter-tenantendpointstate) | string | The state of tenant endpoint. |
 
 ### Parameter: `name`
 
@@ -1501,6 +1504,29 @@ Tags to be applied on all resources/Resource Groups in this deployment.
 
 - Required: No
 - Type: object
+
+### Parameter: `accountSku`
+
+The SKU of the Purview Account.
+
+- Required: No
+- Type: string
+- Default: `'Standard'`
+- Allowed:
+  ```Bicep
+  [
+    'Free'
+    'Standard'
+  ]
+  ```
+
+### Parameter: `accountSkuCapacity`
+
+The capacity of the Purview Account SKU. The default value is 1.
+
+- Required: No
+- Type: int
+- Default: `1`
 
 ### Parameter: `diagnosticSettings`
 
@@ -3529,6 +3555,22 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+
+### Parameter: `tenantEndpointState`
+
+The state of tenant endpoint.
+
+- Required: No
+- Type: string
+- Default: `'NotSpecified'`
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+    'NotSpecified'
+  ]
+  ```
 
 ## Outputs
 

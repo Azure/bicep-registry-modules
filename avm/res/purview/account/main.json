@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "11260171183181471992"
+      "templateHash": "9338002538470438514"
     },
     "name": "Purview Accounts",
     "description": "This module deploys a Purview Account."
@@ -648,6 +648,36 @@
         "description": "Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set."
       }
     },
+    "tenantEndpointState": {
+      "type": "string",
+      "defaultValue": "NotSpecified",
+      "allowedValues": [
+        "Enabled",
+        "Disabled",
+        "NotSpecified"
+      ],
+      "metadata": {
+        "description": "Optional. The state of tenant endpoint."
+      }
+    },
+    "accountSku": {
+      "type": "string",
+      "defaultValue": "Standard",
+      "allowedValues": [
+        "Standard",
+        "Free"
+      ],
+      "metadata": {
+        "description": "Optional. The SKU of the Purview Account."
+      }
+    },
+    "accountSkuCapacity": {
+      "type": "int",
+      "defaultValue": 1,
+      "metadata": {
+        "description": "Optional. The capacity of the Purview Account SKU. The default value is 1."
+      }
+    },
     "diagnosticSettings": {
       "type": "array",
       "items": {
@@ -778,17 +808,25 @@
     },
     "account": {
       "type": "Microsoft.Purview/accounts",
-      "apiVersion": "2021-12-01",
+      "apiVersion": "2024-04-01-preview",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "identity": "[variables('identity')]",
       "properties": {
         "cloudConnectors": {},
+        "ingestionStorage": {
+          "publicNetworkAccess": "[parameters('publicNetworkAccess')]"
+        },
         "managedEventHubState": "[parameters('managedEventHubState')]",
         "managedResourceGroupName": "[parameters('managedResourceGroupName')]",
         "managedResourcesPublicNetworkAccess": "[parameters('managedResourcesPublicNetworkAccess')]",
-        "publicNetworkAccess": "[parameters('publicNetworkAccess')]"
+        "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
+        "tenantEndpointState": "[parameters('tenantEndpointState')]"
+      },
+      "sku": {
+        "capacity": "[parameters('accountSkuCapacity')]",
+        "name": "[parameters('accountSku')]"
       }
     },
     "account_lock": {
@@ -4681,7 +4719,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('account', '2021-12-01', 'full').location]"
+      "value": "[reference('account', '2024-04-01-preview', 'full').location]"
     },
     "managedResourceGroupName": {
       "type": "string",
@@ -4717,7 +4755,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('account', '2021-12-01', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('account', '2024-04-01-preview', 'full'), 'identity'), 'principalId')]"
     },
     "accountPrivateEndpoints": {
       "type": "array",

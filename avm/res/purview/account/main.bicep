@@ -43,6 +43,24 @@ param managedResourcesPublicNetworkAccess string = 'NotSpecified'
 ])
 param publicNetworkAccess string = 'NotSpecified'
 
+@description('Optional. The state of tenant endpoint.')
+@allowed([
+  'Enabled'
+  'Disabled'
+  'NotSpecified'
+])
+param tenantEndpointState string = 'NotSpecified'
+
+@description('Optional. The SKU of the Purview Account.')
+@allowed([
+  'Standard'
+  'Free'
+])
+param accountSku string = 'Standard'
+
+@description('Optional. The capacity of the Purview Account SKU. The default value is 1.')
+param accountSkuCapacity int = 1
+
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
@@ -135,17 +153,25 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource account 'Microsoft.Purview/accounts@2021-12-01' = {
+resource account 'Microsoft.Purview/accounts@2024-04-01-preview' = {
   name: name
   location: location
   tags: tags
   identity: identity
   properties: {
     cloudConnectors: {}
+    ingestionStorage: {
+      publicNetworkAccess: publicNetworkAccess
+    }
     managedEventHubState: managedEventHubState
     managedResourceGroupName: managedResourceGroupName
     managedResourcesPublicNetworkAccess: managedResourcesPublicNetworkAccess
     publicNetworkAccess: publicNetworkAccess
+    tenantEndpointState: tenantEndpointState
+  }
+  sku: {
+    capacity: accountSkuCapacity
+    name: accountSku
   }
 }
 
