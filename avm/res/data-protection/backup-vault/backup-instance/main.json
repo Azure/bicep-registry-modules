@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "193224384736045923"
+      "templateHash": "8716624718450485737"
     },
     "name": "Data Protection Backup Vault Backup Instances",
     "description": "This module deploys a Data Protection Backup Vault Backup Instance."
@@ -116,13 +116,13 @@
     "backupVault::backupPolicy": {
       "existing": true,
       "type": "Microsoft.DataProtection/backupVaults/backupPolicies",
-      "apiVersion": "2023-05-01",
+      "apiVersion": "2024-04-01",
       "name": "[format('{0}/{1}', parameters('backupVaultName'), parameters('policyInfo').policyName)]"
     },
     "backupVault": {
       "existing": true,
       "type": "Microsoft.DataProtection/backupVaults",
-      "apiVersion": "2023-05-01",
+      "apiVersion": "2024-04-01",
       "name": "[parameters('backupVaultName')]"
     },
     "backupInstance": {
@@ -157,7 +157,7 @@
             "value": "[parameters('dataSourceInfo').resourceID]"
           },
           "principalId": {
-            "value": "[reference('backupVault', '2023-05-01', 'full').identity.principalId]"
+            "value": "[reference('backupVault', '2024-04-01', 'full').identity.principalId]"
           }
         },
         "template": {
