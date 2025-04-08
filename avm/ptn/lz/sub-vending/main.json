@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "430031578801879446"
+      "templateHash": "11658478639509175106"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -1506,7 +1506,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.34.44.8038",
-              "templateHash": "11966181244014121008"
+              "templateHash": "18335849742851910021"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -2723,11 +2723,11 @@
               "createNatGateway": "[take(format('lz-vend-nat-gw-create-{0}', uniqueString(parameters('subscriptionId'), parameters('virtualNetworkResourceGroupName'), parameters('virtualNetworkName'), deployment().name)), 64)]",
               "createDsFilePrivateDnsZone": "[take(format('lz-vend-ds-pdns-create-{0}', uniqueString(parameters('subscriptionId'), parameters('deploymentScriptResourceGroupName'), parameters('deploymentScriptLocation'), parameters('deploymentScriptStorageAccountName'), parameters('deploymentScriptVirtualNetworkName'), deployment().name)), 64)]"
             },
-            "roleAssignmentsSubscription": "[filter(parameters('roleAssignments'), lambda('assignment', and(not(contains(lambdaVariables('assignment').relativeScope, '/resourceGroups/')), coalesce(tryGet(lambdaVariables('assignment'), 'isCustomRole'), equals(false(), false())))))]",
+            "roleAssignmentsSubscription": "[filter(parameters('roleAssignments'), lambda('assignment', and(not(contains(lambdaVariables('assignment').relativeScope, '/resourceGroups/')), equals(coalesce(tryGet(lambdaVariables('assignment'), 'isCustomRole'), false()), false()))))]",
             "roleAssignmentsResourceGroups": "[filter(parameters('roleAssignments'), lambda('assignment', contains(lambdaVariables('assignment').relativeScope, '/resourceGroups/')))]",
             "roleAssignmentsResourceGroupSelf": "[filter(variables('roleAssignmentsResourceGroups'), lambda('assignment', contains(lambdaVariables('assignment').relativeScope, format('/resourceGroups/{0}', parameters('virtualNetworkResourceGroupName')))))]",
             "roleAssignmentsResourceGroupNotSelf": "[filter(variables('roleAssignmentsResourceGroups'), lambda('assignment', not(contains(lambdaVariables('assignment').relativeScope, format('/resourceGroups/{0}', parameters('virtualNetworkResourceGroupName'))))))]",
-            "customRoleAssignmentsSubscription": "[filter(parameters('roleAssignments'), lambda('assignment', and(not(contains(lambdaVariables('assignment').relativeScope, '/resourceGroups/')), coalesce(tryGet(lambdaVariables('assignment'), 'isCustomRole'), equals(false(), true())))))]",
+            "customRoleAssignmentsSubscription": "[filter(parameters('roleAssignments'), lambda('assignment', and(not(contains(lambdaVariables('assignment').relativeScope, '/resourceGroups/')), equals(coalesce(tryGet(lambdaVariables('assignment'), 'isCustomRole'), false()), true()))))]",
             "pimRoleAssignmentsSubscription": "[filter(parameters('pimRoleAssignments'), lambda('assignment', not(contains(lambdaVariables('assignment').relativeScope, '/resourceGroups/'))))]",
             "pimRoleAssignmentsResourceGroups": "[filter(parameters('pimRoleAssignments'), lambda('assignment', contains(lambdaVariables('assignment').relativeScope, '/resourceGroups/')))]",
             "pimRoleAssignmentsResourceGroupSelf": "[filter(variables('pimRoleAssignmentsResourceGroups'), lambda('assignment', contains(lambdaVariables('assignment').relativeScope, format('/resourceGroups/{0}', parameters('virtualNetworkResourceGroupName')))))]",

@@ -328,7 +328,8 @@ var deploymentNames = {
 // Role Assignments filtering and splitting
 var roleAssignmentsSubscription = filter(
   roleAssignments,
-  assignment => !contains(assignment.relativeScope, '/resourceGroups/') && (assignment.?isCustomRole ?? false == false)
+  assignment =>
+    !contains(assignment.relativeScope, '/resourceGroups/') && ((assignment.?isCustomRole ?? false) == false)
 )
 var roleAssignmentsResourceGroups = filter(
   roleAssignments,
@@ -346,7 +347,7 @@ var roleAssignmentsResourceGroupNotSelf = filter(
 // Custom Role Assignments filtering and splitting
 var customRoleAssignmentsSubscription = filter(
   roleAssignments,
-  assignment => !contains(assignment.relativeScope, '/resourceGroups/') && (assignment.?isCustomRole ?? false == true)
+  assignment => !contains(assignment.relativeScope, '/resourceGroups/') && ((assignment.?isCustomRole ?? false) == true)
 )
 
 // PIM Role Assignments filtering and splitting
