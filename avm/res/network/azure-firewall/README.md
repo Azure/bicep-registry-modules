@@ -667,6 +667,9 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
     // Required parameters
     name: 'nafmax001'
     // Non-required parameters
+    additionalProperties: {
+      'Network.DNS.EnableProxy': 'true'
+    }
     applicationRuleCollections: [
       {
         name: 'allow-app-rules'
@@ -835,6 +838,11 @@ module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
       "value": "nafmax001"
     },
     // Non-required parameters
+    "additionalProperties": {
+      "value": {
+        "Network.DNS.EnableProxy": "true"
+      }
+    },
     "applicationRuleCollections": {
       "value": [
         {
@@ -1019,6 +1027,9 @@ using 'br/public:avm/res/network/azure-firewall:<version>'
 // Required parameters
 param name = 'nafmax001'
 // Non-required parameters
+param additionalProperties = {
+  'Network.DNS.EnableProxy': 'true'
+}
 param applicationRuleCollections = [
   {
     name: 'allow-app-rules'
@@ -1825,6 +1836,7 @@ param zones = [
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`additionalProperties`](#parameter-additionalproperties) | object | Specifies additional properties of the Azure Firewall. This is used to add additional properties to the Azure Firewall resource. |
 | [`additionalPublicIpConfigurations`](#parameter-additionalpublicipconfigurations) | array | This is to add any additional Public IP configurations on top of the Public IP with subnet IP configuration. |
 | [`applicationRuleCollections`](#parameter-applicationrulecollections) | array | Collection of application rule collections used by Azure Firewall. |
 | [`azureSkuTier`](#parameter-azureskutier) | string | Tier of an Azure Firewall. |
@@ -1916,6 +1928,14 @@ Shared services Virtual Network resource ID. The virtual network ID containing A
 - Required: No
 - Type: string
 - Default: `''`
+
+### Parameter: `additionalProperties`
+
+Specifies additional properties of the Azure Firewall. This is used to add additional properties to the Azure Firewall resource.
+
+- Required: No
+- Type: object
+- Default: `{}`
 
 ### Parameter: `additionalPublicIpConfigurations`
 

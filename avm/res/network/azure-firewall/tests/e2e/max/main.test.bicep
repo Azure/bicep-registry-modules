@@ -69,6 +69,9 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       name: '${namePrefix}${serviceShort}001'
       virtualNetworkResourceId: nestedDependencies.outputs.virtualNetworkResourceId
+      additionalProperties: {
+        'Network.DNS.EnableProxy': 'true'
+      }
       applicationRuleCollections: [
         {
           name: 'allow-app-rules'
