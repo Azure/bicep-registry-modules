@@ -38,7 +38,7 @@ function Get-ModuleTargetVersion {
     # Load used functions
     . (Join-Path (Get-Item -Path $PSScriptRoot).FullName 'Get-ModuleVersionChange.ps1')
     . (Join-Path (Get-Item -Path $PSScriptRoot).FullName 'Get-ModuleTargetPatchVersion.ps1')
-    . (Join-Path (Get-Item -Path $PSScriptRoot).FullName 'Get-ModulePublishedVersions.ps1')
+    . (Join-Path (Get-Item -Path $PSScriptRoot).Parent.Parent.FullName 'SharedScripts' 'Get-ModulePublishedVersions.ps1')
     . (Join-Path (Get-Item -Path $PSScriptRoot).FullName 'Get-ModuleJsonChange.ps1')
 
     # 0. Check if [main.json] version number changed. This overrides the logic to check the version in the version.json file
