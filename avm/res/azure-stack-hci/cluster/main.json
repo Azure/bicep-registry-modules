@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "11879016027829789532"
+      "templateHash": "12673893715836444693"
     },
     "name": "Azure Stack HCI Cluster",
     "description": "This module deploys an Azure Stack HCI Cluster on the provided Arc Machines."
@@ -822,7 +822,15 @@
       "Azure Stack HCI Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'bda0d508-adf1-4af0-9c28-88919fc3ae06')]",
       "Windows Admin Center Administrator Login": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a6333a3e-0164-44c3-b281-7a577aff287f')]"
     },
-    "sortedDeploymentOperations": "[if(not(empty(parameters('deploymentOperations'))), sort(parameters('deploymentOperations'), lambda('a', 'b', greater(lambdaVariables('a'), lambdaVariables('b')))), createArray())]"
+    "sortedDeploymentOperations": "[if(not(empty(parameters('deploymentOperations'))), sort(parameters('deploymentOperations'), lambda('a', 'b', greater(lambdaVariables('a'), lambdaVariables('b')))), createArray())]",
+    "managementNetworks": "[filter(parameters('deploymentSettings').networkIntents, lambda('n', contains(lambdaVariables('n').trafficType, 'Management')))]",
+    "management_adapters": "[flatten(map(variables('managementNetworks'), lambda('n', lambdaVariables('n').adapter)))]",
+    "storageNetworks": "[filter(parameters('deploymentSettings').networkIntents, lambda('n', contains(lambdaVariables('n').trafficType, 'Storage')))]",
+    "storage_adapters": "[flatten(map(variables('storageNetworks'), lambda('n', lambdaVariables('n').adapter)))]",
+    "overlapping_adapters": "[filter(variables('management_adapters'), lambda('a', contains(variables('storage_adapters'), lambdaVariables('a'))))]",
+    "computeNetworks": "[filter(parameters('deploymentSettings').networkIntents, lambda('n', contains(lambdaVariables('n').trafficType, 'Compute')))]",
+    "compute_intent_name": "[if(greater(length(variables('computeNetworks')), 0), variables('computeNetworks')[0].name, '')]",
+    "converged": "[and(equals(length(variables('overlapping_adapters')), length(variables('management_adapters'))), equals(length(variables('overlapping_adapters')), length(variables('storage_adapters'))))]"
   },
   "resources": {
     "avmTelemetry": {
@@ -1267,7 +1275,7 @@
             "value": "[tryGet(parameters('deploymentSettings'), 'hvciProtection')]"
           },
           "isEuropeanUnionLocation": {
-            "value": "[tryGet(parameters('deploymentSettings'), 'isRFEuropeanUnionLocation')]"
+            "value": "[tryGet(parameters('deploymentSettings'), 'isEuropeanUnionLocation')]"
           },
           "sideChannelMitigationEnforced": {
             "value": "[tryGet(parameters('deploymentSettings'), 'sideChannelMitigationEnforced')]"
@@ -1726,6 +1734,13 @@
         "description": "The location of the cluster."
       },
       "value": "[reference('cluster', '2024-04-01', 'full').location]"
+    },
+    "vSwitchName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the vSwitch."
+      },
+      "value": "[if(variables('converged'), format('ConvergedSwitch({0})', toLower(parameters('deploymentSettings').networkIntents[0].name)), format('ConvergedSwitch({0})', toLower(variables('compute_intent_name'))))]"
     }
   }
 }
