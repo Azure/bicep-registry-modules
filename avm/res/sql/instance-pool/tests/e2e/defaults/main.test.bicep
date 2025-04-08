@@ -19,7 +19,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // Note, we set the location of the NetworkWatcherRG to avoid conflicts with the already existing NetworkWatcherRG
 #disable-next-line no-hardcoded-location
-var enforcedLocation = 'uksouth'
+var enforcedLocation = 'northeurope'
 
 // ============ //
 // Dependencies //
