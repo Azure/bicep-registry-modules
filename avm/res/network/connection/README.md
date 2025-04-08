@@ -8,6 +8,7 @@ This module deploys a Virtual Network Gateway Connection.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Notes](#Notes)
 - [Data Collection](#Data-Collection)
 
@@ -684,6 +685,14 @@ Specifies a VPN shared key. The same value has to be specified on both Virtual N
 | `name` | string | The name of the remote connection. |
 | `resourceGroupName` | string | The resource group the remote connection was deployed into. |
 | `resourceId` | string | The resource ID of the remote connection. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Notes
 
