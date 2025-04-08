@@ -31,7 +31,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5
 param roleAssignments roleAssignmentType[]?
 
 module networkInterface_publicIPAddresses 'br/public:avm/res/network/public-ip-address:0.6.0' = [
-  for (ipConfiguration, index) in ipConfigurations: if (contains(ipConfiguration, 'pipConfiguration') && !contains(
+  for (ipConfiguration, index) in ipConfigurations: if (contains(ipConfiguration, 'pipConfiguration') && !empty(ipConfiguration.pipConfiguration) && !contains(
     ipConfiguration.pipConfiguration,
     'publicIPAddressResourceId'
   )) {
@@ -75,7 +75,7 @@ module networkInterface 'br/public:avm/res/network/network-interface:0.4.0' = {
         privateIPAddress: contains(ipConfiguration, 'privateIPAddress')
           ? (!empty(ipConfiguration.privateIPAddress) ? ipConfiguration.privateIPAddress : null)
           : null
-        publicIPAddressResourceId: contains(ipConfiguration, 'pipConfiguration')
+        publicIPAddressResourceId: contains(ipConfiguration, 'pipConfiguration') && !empty(ipConfiguration.pipConfiguration)
           ? !contains(ipConfiguration.pipConfiguration, 'publicIPAddressResourceId')
               ? resourceId(
                   'Microsoft.Network/publicIPAddresses',
