@@ -165,21 +165,21 @@ The properties of the connection, specific to the auth type.
 
 | Variant | Description |
 | :-- | :-- |
-| [`AAD`](#variant-connectionpropertiesauthtype-aad) |  |
-| [`AccessKey`](#variant-connectionpropertiesauthtype-accesskey) |  |
-| [`AccountKey`](#variant-connectionpropertiesauthtype-accountkey) |  |
-| [`ApiKey`](#variant-connectionpropertiesauthtype-apikey) |  |
-| [`CustomKeys`](#variant-connectionpropertiesauthtype-customkeys) |  |
-| [`ManagedIdentity`](#variant-connectionpropertiesauthtype-managedidentity) |  |
-| [`None`](#variant-connectionpropertiesauthtype-none) |  |
-| [`OAuth2`](#variant-connectionpropertiesauthtype-oauth2) |  |
-| [`PAT`](#variant-connectionpropertiesauthtype-pat) |  |
-| [`SAS`](#variant-connectionpropertiesauthtype-sas) |  |
-| [`ServicePrincipal`](#variant-connectionpropertiesauthtype-serviceprincipal) |  |
-| [`UsernamePassword`](#variant-connectionpropertiesauthtype-usernamepassword) |  |
+| [`AAD`](#variant-connectionpropertiesauthtype-aad) | The connection properties when the auth type is AAD. |
+| [`AccessKey`](#variant-connectionpropertiesauthtype-accesskey) | The connection properties when the auth type is AccessKey. |
+| [`AccountKey`](#variant-connectionpropertiesauthtype-accountkey) | The connection properties when the auth type is AccountKey. |
+| [`ApiKey`](#variant-connectionpropertiesauthtype-apikey) | The connection properties when the auth type is ApiKey. |
+| [`CustomKeys`](#variant-connectionpropertiesauthtype-customkeys) | The connection properties when the auth type are CustomKeys. |
+| [`ManagedIdentity`](#variant-connectionpropertiesauthtype-managedidentity) | The connection properties when the auth type is ManagedIdentity. |
+| [`None`](#variant-connectionpropertiesauthtype-none) | The connection properties when the auth type is None. |
+| [`OAuth2`](#variant-connectionpropertiesauthtype-oauth2) | The connection properties when the auth type is OAuth2. |
+| [`PAT`](#variant-connectionpropertiesauthtype-pat) | The connection properties when the auth type is PAT. |
+| [`SAS`](#variant-connectionpropertiesauthtype-sas) | The connection properties when the auth type is SAS. |
+| [`ServicePrincipal`](#variant-connectionpropertiesauthtype-serviceprincipal) | The connection properties when the auth type is ServicePrincipal. |
+| [`UsernamePassword`](#variant-connectionpropertiesauthtype-usernamepassword) | The connection properties when the auth type is UsernamePassword. |
 
 ### Variant: `connectionProperties.authType-AAD`
-
+The connection properties when the auth type is AAD.
 
 To use this variant, set the property `authType` to `AAD`.
 
@@ -203,7 +203,7 @@ The authentication type of the connection target.
   ```
 
 ### Variant: `connectionProperties.authType-AccessKey`
-
+The connection properties when the auth type is AccessKey.
 
 To use this variant, set the property `authType` to `AccessKey`.
 
@@ -256,7 +256,7 @@ The connection secret access key.
 - Type: string
 
 ### Variant: `connectionProperties.authType-AccountKey`
-
+The connection properties when the auth type is AccountKey.
 
 To use this variant, set the property `authType` to `AccountKey`.
 
@@ -301,7 +301,7 @@ The connection key.
 - Type: string
 
 ### Variant: `connectionProperties.authType-ApiKey`
-
+The connection properties when the auth type is ApiKey.
 
 To use this variant, set the property `authType` to `ApiKey`.
 
@@ -346,7 +346,7 @@ The connection API key.
 - Type: string
 
 ### Variant: `connectionProperties.authType-CustomKeys`
-
+The connection properties when the auth type are CustomKeys.
 
 To use this variant, set the property `authType` to `CustomKeys`.
 
@@ -404,7 +404,7 @@ Key-value pairs for the custom keys.
 - Type: string
 
 ### Variant: `connectionProperties.authType-ManagedIdentity`
-
+The connection properties when the auth type is ManagedIdentity.
 
 To use this variant, set the property `authType` to `ManagedIdentity`.
 
@@ -457,7 +457,7 @@ The connection managed identity resource ID.
 - Type: string
 
 ### Variant: `connectionProperties.authType-None`
-
+The connection properties when the auth type is None.
 
 To use this variant, set the property `authType` to `None`.
 
@@ -481,7 +481,7 @@ The authentication type of the connection target.
   ```
 
 ### Variant: `connectionProperties.authType-OAuth2`
-
+The connection properties when the auth type is OAuth2.
 
 To use this variant, set the property `authType` to `OAuth2`.
 
@@ -587,7 +587,7 @@ The connection username. Required if connection category is Concur or ServiceNow
 - Type: string
 
 ### Variant: `connectionProperties.authType-PAT`
-
+The connection properties when the auth type is PAT.
 
 To use this variant, set the property `authType` to `PAT`.
 
@@ -632,7 +632,7 @@ The connection personal access token.
 - Type: string
 
 ### Variant: `connectionProperties.authType-SAS`
-
+The connection properties when the auth type is SAS.
 
 To use this variant, set the property `authType` to `SAS`.
 
@@ -677,7 +677,7 @@ The connection SAS token.
 - Type: string
 
 ### Variant: `connectionProperties.authType-ServicePrincipal`
-
+The connection properties when the auth type is ServicePrincipal.
 
 To use this variant, set the property `authType` to `ServicePrincipal`.
 
@@ -738,7 +738,7 @@ The connection tenant ID.
 - Type: string
 
 ### Variant: `connectionProperties.authType-UsernamePassword`
-
+The connection properties when the auth type is UsernamePassword.
 
 To use this variant, set the property `authType` to `UsernamePassword`.
 
