@@ -257,13 +257,9 @@ module loadBalancer_backendAddressPools 'backend-address-pool/main.bicep' = [
     params: {
       loadBalancerName: loadBalancer.name
       name: backendAddressPool.name
-      tunnelInterfaces: contains(backendAddressPool, 'tunnelInterfaces') && !empty(backendAddressPool.tunnelInterfaces)
-        ? backendAddressPool.tunnelInterfaces
-        : []
-      loadBalancerBackendAddresses: contains(backendAddressPool, 'loadBalancerBackendAddresses') && !empty(backendAddressPool.loadBalancerBackendAddresses)
-        ? backendAddressPool.loadBalancerBackendAddresses
-        : []
-      drainPeriodInSeconds: backendAddressPool.?drainPeriodInSeconds ?? 0
+      tunnelInterfaces: backendAddressPool.?tunnelInterfaces
+      loadBalancerBackendAddresses: backendAddressPool.?loadBalancerBackendAddresses
+      drainPeriodInSeconds: backendAddressPool.?drainPeriodInSeconds
     }
   }
 ]
