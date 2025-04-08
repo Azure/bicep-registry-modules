@@ -808,7 +808,11 @@
     },
     "account": {
       "type": "Microsoft.Purview/accounts",
+<<<<<<< HEAD
       "apiVersion": "2024-04-01-preview",
+=======
+      "apiVersion": "2023-05-01-preview",
+>>>>>>> fd349de038a34042db426f61559af4ecd730b920
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -4719,7 +4723,11 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
+<<<<<<< HEAD
       "value": "[reference('account', '2024-04-01-preview', 'full').location]"
+=======
+      "value": "[reference('account', '2023-05-01-preview', 'full').location]"
+>>>>>>> fd349de038a34042db426f61559af4ecd730b920
     },
     "managedResourceGroupName": {
       "type": "string",
@@ -4755,7 +4763,11 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
+<<<<<<< HEAD
       "value": "[tryGet(tryGet(reference('account', '2024-04-01-preview', 'full'), 'identity'), 'principalId')]"
+=======
+      "value": "[tryGet(tryGet(reference('account', '2023-05-01-preview', 'full'), 'identity'), 'principalId')]"
+>>>>>>> fd349de038a34042db426f61559af4ecd730b920
     },
     "accountPrivateEndpoints": {
       "type": "array",
