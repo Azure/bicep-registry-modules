@@ -56,7 +56,7 @@ output resourceGroupName string = resourceGroup().name
 //   Definitions   //
 // =============== //
 
-import { appliesToType, rulesType } from 'rule-collection/main.bicep'
+import { appliesToType, ruleType } from 'rule-collection/main.bicep'
 @export()
 @sys.description('The type of a routing configuration rule collection.')
 type routingConfigurationRuleCollectionType = {
@@ -73,5 +73,5 @@ type routingConfigurationRuleCollectionType = {
   disableBgpRoutePropagation: bool?
 
   @sys.description('Optional. List of rules for the routing rules collection. Warning: A rule collection without a rule will cause a deployment of routing configuration to fail in network manager.')
-  rules: rulesType?
+  rules: ruleType[]?
 }

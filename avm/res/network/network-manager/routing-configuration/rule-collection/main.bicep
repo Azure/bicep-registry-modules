@@ -23,7 +23,7 @@ param appliesTo appliesToType
 param disableBgpRoutePropagation bool = true
 
 @sys.description('Optional. List of rules for the routing rules collection. Warning: A rule collection without a rule will cause a deployment of routing configuration to fail in network manager.')
-param rules rulesType
+param rules ruleType[]?
 
 resource networkManager 'Microsoft.Network/networkManagers@2024-05-01' existing = {
   name: networkManagerName
@@ -81,7 +81,7 @@ type appliesToType = {
 
 import { destinationType, nextHopType } from 'rule/main.bicep'
 @export()
-type rulesType = {
+type ruleType = {
   @sys.description('Required. The name of the rule.')
   name: string
 
@@ -93,4 +93,4 @@ type rulesType = {
 
   @sys.description('Required. The next hop handles the matching packets for this route. It can be the virtual network, the virtual network gateway, the internet, a virtual appliance, or none. Virtual network gateways cannot be used if the address prefix is IPv6. If the next hop type is VirtualAppliance, the next hop address must be specified.')
   nextHop: nextHopType
-}[]?
+}
