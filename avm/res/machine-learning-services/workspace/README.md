@@ -1716,21 +1716,21 @@ The properties of the connection, specific to the auth type.
 
 | Variant | Description |
 | :-- | :-- |
-| [`AAD`](#variant-connectionsconnectionpropertiesauthtype-aad) |  |
-| [`AccessKey`](#variant-connectionsconnectionpropertiesauthtype-accesskey) |  |
-| [`AccountKey`](#variant-connectionsconnectionpropertiesauthtype-accountkey) |  |
-| [`ApiKey`](#variant-connectionsconnectionpropertiesauthtype-apikey) |  |
-| [`CustomKeys`](#variant-connectionsconnectionpropertiesauthtype-customkeys) |  |
-| [`ManagedIdentity`](#variant-connectionsconnectionpropertiesauthtype-managedidentity) |  |
-| [`None`](#variant-connectionsconnectionpropertiesauthtype-none) |  |
-| [`OAuth2`](#variant-connectionsconnectionpropertiesauthtype-oauth2) |  |
-| [`PAT`](#variant-connectionsconnectionpropertiesauthtype-pat) |  |
-| [`SAS`](#variant-connectionsconnectionpropertiesauthtype-sas) |  |
-| [`ServicePrincipal`](#variant-connectionsconnectionpropertiesauthtype-serviceprincipal) |  |
-| [`UsernamePassword`](#variant-connectionsconnectionpropertiesauthtype-usernamepassword) |  |
+| [`AAD`](#variant-connectionsconnectionpropertiesauthtype-aad) | The connection properties when the auth type is AAD. |
+| [`AccessKey`](#variant-connectionsconnectionpropertiesauthtype-accesskey) | The connection properties when the auth type is AccessKey. |
+| [`AccountKey`](#variant-connectionsconnectionpropertiesauthtype-accountkey) | The connection properties when the auth type is AccountKey. |
+| [`ApiKey`](#variant-connectionsconnectionpropertiesauthtype-apikey) | The connection properties when the auth type is ApiKey. |
+| [`CustomKeys`](#variant-connectionsconnectionpropertiesauthtype-customkeys) | The connection properties when the auth type are CustomKeys. |
+| [`ManagedIdentity`](#variant-connectionsconnectionpropertiesauthtype-managedidentity) | The connection properties when the auth type is ManagedIdentity. |
+| [`None`](#variant-connectionsconnectionpropertiesauthtype-none) | The connection properties when the auth type is None. |
+| [`OAuth2`](#variant-connectionsconnectionpropertiesauthtype-oauth2) | The connection properties when the auth type is OAuth2. |
+| [`PAT`](#variant-connectionsconnectionpropertiesauthtype-pat) | The connection properties when the auth type is PAT. |
+| [`SAS`](#variant-connectionsconnectionpropertiesauthtype-sas) | The connection properties when the auth type is SAS. |
+| [`ServicePrincipal`](#variant-connectionsconnectionpropertiesauthtype-serviceprincipal) | The connection properties when the auth type is ServicePrincipal. |
+| [`UsernamePassword`](#variant-connectionsconnectionpropertiesauthtype-usernamepassword) | The connection properties when the auth type is UsernamePassword. |
 
 ### Variant: `connections.connectionProperties.authType-AAD`
-
+The connection properties when the auth type is AAD.
 
 To use this variant, set the property `authType` to `AAD`.
 
@@ -1754,7 +1754,7 @@ The authentication type of the connection target.
   ```
 
 ### Variant: `connections.connectionProperties.authType-AccessKey`
-
+The connection properties when the auth type is AccessKey.
 
 To use this variant, set the property `authType` to `AccessKey`.
 
@@ -1807,7 +1807,7 @@ The connection secret access key.
 - Type: string
 
 ### Variant: `connections.connectionProperties.authType-AccountKey`
-
+The connection properties when the auth type is AccountKey.
 
 To use this variant, set the property `authType` to `AccountKey`.
 
@@ -1852,7 +1852,7 @@ The connection key.
 - Type: string
 
 ### Variant: `connections.connectionProperties.authType-ApiKey`
-
+The connection properties when the auth type is ApiKey.
 
 To use this variant, set the property `authType` to `ApiKey`.
 
@@ -1897,7 +1897,7 @@ The connection API key.
 - Type: string
 
 ### Variant: `connections.connectionProperties.authType-CustomKeys`
-
+The connection properties when the auth type are CustomKeys.
 
 To use this variant, set the property `authType` to `CustomKeys`.
 
@@ -1955,7 +1955,7 @@ Key-value pairs for the custom keys.
 - Type: string
 
 ### Variant: `connections.connectionProperties.authType-ManagedIdentity`
-
+The connection properties when the auth type is ManagedIdentity.
 
 To use this variant, set the property `authType` to `ManagedIdentity`.
 
@@ -2008,7 +2008,7 @@ The connection managed identity resource ID.
 - Type: string
 
 ### Variant: `connections.connectionProperties.authType-None`
-
+The connection properties when the auth type is None.
 
 To use this variant, set the property `authType` to `None`.
 
@@ -2032,7 +2032,7 @@ The authentication type of the connection target.
   ```
 
 ### Variant: `connections.connectionProperties.authType-OAuth2`
-
+The connection properties when the auth type is OAuth2.
 
 To use this variant, set the property `authType` to `OAuth2`.
 
@@ -2069,17 +2069,17 @@ The credentials for the connection.
 | :-- | :-- | :-- |
 | [`clientId`](#parameter-connectionsconnectionpropertiesauthtype-oauth2credentialsclientid) | string | The connection client ID in the format of UUID. |
 | [`clientSecret`](#parameter-connectionsconnectionpropertiesauthtype-oauth2credentialsclientsecret) | string | The connection client secret. |
-| [`tenantId`](#parameter-connectionsconnectionpropertiesauthtype-oauth2credentialstenantid) | string | The connection tenant ID. Required by QuickBooks and Xero connection categories. |
 
 **Conditional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`authUrl`](#parameter-connectionsconnectionpropertiesauthtype-oauth2credentialsauthurl) | string | The connection auth URL. Required by Concur connection category. |
-| [`developerToken`](#parameter-connectionsconnectionpropertiesauthtype-oauth2credentialsdevelopertoken) | string | The connection developer token. Required by GoogleAdWords connection category. |
-| [`password`](#parameter-connectionsconnectionpropertiesauthtype-oauth2credentialspassword) | string | The connection password. Required by Concur and ServiceNow connection categories where AccessToken grant type is 'Password'. |
-| [`refreshToken`](#parameter-connectionsconnectionpropertiesauthtype-oauth2credentialsrefreshtoken) | string | The connection refresh token. Required by GoogleBigQuery, GoogleAdWords, Hubspot, QuickBooks, Square, Xero and Zoho connection categories. |
-| [`username`](#parameter-connectionsconnectionpropertiesauthtype-oauth2credentialsusername) | string | The connection username. Required by Concur and ServiceNow connection categories where AccessToken grant type is 'Password'. |
+| [`authUrl`](#parameter-connectionsconnectionpropertiesauthtype-oauth2credentialsauthurl) | string | The connection auth URL. Required if connection category is Concur. |
+| [`developerToken`](#parameter-connectionsconnectionpropertiesauthtype-oauth2credentialsdevelopertoken) | string | The connection developer token. Required if connection category is GoogleAdWords. |
+| [`password`](#parameter-connectionsconnectionpropertiesauthtype-oauth2credentialspassword) | string | The connection password. Required if connection category is Concur or ServiceNow where AccessToken grant type is 'Password'. |
+| [`refreshToken`](#parameter-connectionsconnectionpropertiesauthtype-oauth2credentialsrefreshtoken) | string | The connection refresh token. Required if connection category is GoogleBigQuery, GoogleAdWords, Hubspot, QuickBooks, Square, Xero or Zoho. |
+| [`tenantId`](#parameter-connectionsconnectionpropertiesauthtype-oauth2credentialstenantid) | string | The connection tenant ID. Required if connection category is QuickBooks or Xero. |
+| [`username`](#parameter-connectionsconnectionpropertiesauthtype-oauth2credentialsusername) | string | The connection username. Required if connection category is Concur or ServiceNow where AccessToken grant type is 'Password'. |
 
 ### Parameter: `connections.connectionProperties.authType-OAuth2.credentials.clientId`
 
@@ -2095,50 +2095,50 @@ The connection client secret.
 - Required: Yes
 - Type: string
 
-### Parameter: `connections.connectionProperties.authType-OAuth2.credentials.tenantId`
-
-The connection tenant ID. Required by QuickBooks and Xero connection categories.
-
-- Required: No
-- Type: string
-
 ### Parameter: `connections.connectionProperties.authType-OAuth2.credentials.authUrl`
 
-The connection auth URL. Required by Concur connection category.
+The connection auth URL. Required if connection category is Concur.
 
 - Required: No
 - Type: string
 
 ### Parameter: `connections.connectionProperties.authType-OAuth2.credentials.developerToken`
 
-The connection developer token. Required by GoogleAdWords connection category.
+The connection developer token. Required if connection category is GoogleAdWords.
 
 - Required: No
 - Type: string
 
 ### Parameter: `connections.connectionProperties.authType-OAuth2.credentials.password`
 
-The connection password. Required by Concur and ServiceNow connection categories where AccessToken grant type is 'Password'.
+The connection password. Required if connection category is Concur or ServiceNow where AccessToken grant type is 'Password'.
 
 - Required: No
 - Type: string
 
 ### Parameter: `connections.connectionProperties.authType-OAuth2.credentials.refreshToken`
 
-The connection refresh token. Required by GoogleBigQuery, GoogleAdWords, Hubspot, QuickBooks, Square, Xero and Zoho connection categories.
+The connection refresh token. Required if connection category is GoogleBigQuery, GoogleAdWords, Hubspot, QuickBooks, Square, Xero or Zoho.
+
+- Required: No
+- Type: string
+
+### Parameter: `connections.connectionProperties.authType-OAuth2.credentials.tenantId`
+
+The connection tenant ID. Required if connection category is QuickBooks or Xero.
 
 - Required: No
 - Type: string
 
 ### Parameter: `connections.connectionProperties.authType-OAuth2.credentials.username`
 
-The connection username. Required by Concur and ServiceNow connection categories where AccessToken grant type is 'Password'.
+The connection username. Required if connection category is Concur or ServiceNow where AccessToken grant type is 'Password'.
 
 - Required: No
 - Type: string
 
 ### Variant: `connections.connectionProperties.authType-PAT`
-
+The connection properties when the auth type is PAT.
 
 To use this variant, set the property `authType` to `PAT`.
 
@@ -2183,7 +2183,7 @@ The connection personal access token.
 - Type: string
 
 ### Variant: `connections.connectionProperties.authType-SAS`
-
+The connection properties when the auth type is SAS.
 
 To use this variant, set the property `authType` to `SAS`.
 
@@ -2228,7 +2228,7 @@ The connection SAS token.
 - Type: string
 
 ### Variant: `connections.connectionProperties.authType-ServicePrincipal`
-
+The connection properties when the auth type is ServicePrincipal.
 
 To use this variant, set the property `authType` to `ServicePrincipal`.
 
@@ -2289,7 +2289,7 @@ The connection tenant ID.
 - Type: string
 
 ### Variant: `connections.connectionProperties.authType-UsernamePassword`
-
+The connection properties when the auth type is UsernamePassword.
 
 To use this variant, set the property `authType` to `UsernamePassword`.
 
@@ -2331,7 +2331,7 @@ The credentials for the connection.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`securityToken`](#parameter-connectionsconnectionpropertiesauthtype-usernamepasswordcredentialssecuritytoken) | string | The connection security token. Required by connections like SalesForce for extra security in addition to 'UsernamePassword'. |
+| [`securityToken`](#parameter-connectionsconnectionpropertiesauthtype-usernamepasswordcredentialssecuritytoken) | string | The connection security token. Required if connection is like SalesForce for extra security in addition to 'UsernamePassword'. |
 
 ### Parameter: `connections.connectionProperties.authType-UsernamePassword.credentials.password`
 
@@ -2349,7 +2349,7 @@ The connection username.
 
 ### Parameter: `connections.connectionProperties.authType-UsernamePassword.credentials.securityToken`
 
-The connection security token. Required by connections like SalesForce for extra security in addition to 'UsernamePassword'.
+The connection security token. Required if connection is like SalesForce for extra security in addition to 'UsernamePassword'.
 
 - Required: No
 - Type: string
@@ -2838,12 +2838,12 @@ The outbound rule. The name of the rule is the object key.
 
 | Variant | Description |
 | :-- | :-- |
-| [`FQDN`](#variant-managednetworksettingsoutboundrules>any_other_property<type-fqdn) |  |
-| [`PrivateEndpoint`](#variant-managednetworksettingsoutboundrules>any_other_property<type-privateendpoint) |  |
-| [`ServiceTag`](#variant-managednetworksettingsoutboundrules>any_other_property<type-servicetag) |  |
+| [`FQDN`](#variant-managednetworksettingsoutboundrules>any_other_property<type-fqdn) | The type for the FQDN outbound rule. |
+| [`PrivateEndpoint`](#variant-managednetworksettingsoutboundrules>any_other_property<type-privateendpoint) | The type for the private endpoint outbound rule. |
+| [`ServiceTag`](#variant-managednetworksettingsoutboundrules>any_other_property<type-servicetag) | The type for the service tag outbound rule. |
 
 ### Variant: `managedNetworkSettings.outboundRules.>Any_other_property<.type-FQDN`
-
+The type for the FQDN outbound rule.
 
 To use this variant, set the property `type` to `FQDN`.
 
@@ -2897,7 +2897,7 @@ Category of a managed network Outbound Rule of a machine learning workspace.
   ```
 
 ### Variant: `managedNetworkSettings.outboundRules.>Any_other_property<.type-PrivateEndpoint`
-
+The type for the private endpoint outbound rule.
 
 To use this variant, set the property `type` to `PrivateEndpoint`.
 
@@ -2985,7 +2985,7 @@ Category of a managed network Outbound Rule of a machine learning workspace.
   ```
 
 ### Variant: `managedNetworkSettings.outboundRules.>Any_other_property<.type-ServiceTag`
-
+The type for the service tag outbound rule.
 
 To use this variant, set the property `type` to `ServiceTag`.
 
@@ -3105,7 +3105,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 | [`name`](#parameter-privateendpointsname) | string | The name of the Private Endpoint. |
 | [`privateDnsZoneGroup`](#parameter-privateendpointsprivatednszonegroup) | object | The private DNS Zone Group to configure for the Private Endpoint. |
 | [`privateLinkServiceConnectionName`](#parameter-privateendpointsprivatelinkserviceconnectionname) | string | The name of the private link connection to create. |
-| [`resourceGroupName`](#parameter-privateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different Resource Group than the main resource. |
+| [`resourceGroupResourceId`](#parameter-privateendpointsresourcegroupresourceid) | string | The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
 | [`service`](#parameter-privateendpointsservice) | string | The subresource to deploy the Private Endpoint for. For example "vault" for a Key Vault Private Endpoint. |
 | [`tags`](#parameter-privateendpointstags) | object | Tags to be applied on all resources/Resource Groups in this deployment. |
@@ -3358,9 +3358,9 @@ The name of the private link connection to create.
 - Required: No
 - Type: string
 
-### Parameter: `privateEndpoints.resourceGroupName`
+### Parameter: `privateEndpoints.resourceGroupResourceId`
 
-Specify if you want to deploy the Private Endpoint into a different Resource Group than the main resource.
+The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used.
 
 - Required: No
 - Type: string
@@ -3381,7 +3381,7 @@ Array of role assignments to create.
   - `'Owner'`
   - `'Private DNS Zone Contributor'`
   - `'Reader'`
-  - `'Role Based Access Control Administrator (Preview)'`
+  - `'Role Based Access Control Administrator'`
 
 **Required parameters**
 
@@ -3714,6 +3714,7 @@ The resource ID of the default resource group for projects created in the worksp
 | :-- | :-- | :-- |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the machine learning service. |
+| `privateEndpoints` | array | The private endpoints of the resource. |
 | `resourceGroupName` | string | The resource group the machine learning service was deployed into. |
 | `resourceId` | string | The resource ID of the machine learning service. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
@@ -3724,8 +3725,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.7.0` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.10.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Notes
 

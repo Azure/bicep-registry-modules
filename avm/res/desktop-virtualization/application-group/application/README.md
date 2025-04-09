@@ -75,7 +75,6 @@ Command-Line Arguments for the Application.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `commandLineSetting`
 
@@ -99,7 +98,6 @@ Description of the Application.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `iconIndex`
 
@@ -115,7 +113,6 @@ Path to icon.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `showInPortal`
 

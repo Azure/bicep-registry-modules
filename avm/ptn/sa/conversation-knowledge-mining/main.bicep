@@ -4,20 +4,20 @@ targetScope = 'resourceGroup'
 metadata name = 'Conversation Knowledge Mining Solution Accelerator'
 metadata description = '''This module deploys the [Conversation Knowledge Mining Solution Accelerator](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator).
 
-> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator product. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.
+> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.
 '''
 
 // ========== Parameters ========== //
 // PARAMETERS: Solution configuration
 @description('Required. The prefix to add in the default names given to all deployed Azure resources.')
-@maxLength(12)
+@maxLength(19)
 param solutionPrefix string
 
-@description('Optional. Location for all the deployed Azure resources except databases. Defaulted to East US.')
+@description('Optional. Location for all the deployed Azure resources except databases. Defaults to the location of the Resource Group.')
 @metadata({ azd: { type: 'location' } })
-param solutionLocation string = 'East US'
+param solutionLocation string = resourceGroup().location
 
-@description('Optional. Location for all the deployed databases Azure resources. Defaulted to East US 2.')
+@description('Optional. Location for all the deployed databases Azure resources. Defaults to East US 2.')
 @metadata({ azd: { type: 'location' } })
 param databasesLocation string = 'East US 2'
 
@@ -45,17 +45,22 @@ param aiFoundryAiProjectConfiguration ckmAiFoundryAiProjectType = {
 @description('Optional. The configuration to apply for the Conversation Knowledge Mining AI Foundry AI Services Content Understanding resource.')
 param aiFoundryAiServicesContentUnderstandingConfiguration ckmAiFoundryAiServicesContentUnderstandingType = {
   name: '${solutionPrefix}-aifd-aisr-cu'
-  location: 'West US'
+  location: contains(
+      ['West US', 'westus', 'Sweden Central', 'swedencentral', 'Australia East', 'australiaeast'],
+      solutionLocation
+    )
+    ? solutionLocation
+    : 'West US'
   sku: 'S0'
 }
 
 @description('Optional. The configuration to apply for the Conversation Knowledge Mining AI Foundry AI Services resource.')
 param aiFoundryAiServicesConfiguration ckmAiFoundryAiServicesType = {
   name: '${solutionPrefix}-aifd-aisr'
-  location: 'East US'
+  location: solutionLocation
   sku: 'S0'
   gptModelName: 'gpt-4o-mini'
-  gptModelSku: 'Standard'
+  gptModelSku: 'GlobalStandard'
   gptModelCapacity: 100
   textEmbeddingModelName: 'text-embedding-ada-002'
   textEmbeddingModelSku: 'Standard'
@@ -175,7 +180,7 @@ param sqlServerConfiguration ckmSqlServerType = {
   name: '${solutionPrefix}-sqls'
   location: databasesLocation
   administratorLogin: 'sqladmin'
-  administratorPassword: 'TestPassword_1234'
+  administratorPassword: guid(solutionPrefix, subscription().subscriptionId)
   databaseName: '${solutionPrefix}-ckmdb'
   databaseSkuName: 'GP_Gen5_2'
   databaseSkuTier: 'GeneralPurpose'
@@ -214,24 +219,29 @@ var localModuleDeploymentNameFormat = 'ckm-deploy-module-{0}'
 // VARIABLES: AI Foundry AI Hub configuration defaults
 var aiFoundryAiHubResourceName = aiFoundryAiHubConfiguration.?name ?? '${solutionPrefix}-aifd-aihb'
 var aiFoundryAiHubLocation = aiFoundryAiHubConfiguration.?location ?? solutionLocation
-var aiFoundryAiHubSkuName = aiFoundryAiHubConfiguration.?aiFoundryAiHubSkuName ?? 'Basic'
+var aiFoundryAiHubSkuName = aiFoundryAiHubConfiguration.?sku ?? 'Basic'
 
 // VARIABLES: AI Foundry AI Project configuration defaults
 var aiFoundryAiProjectResourceName = aiFoundryAiProjectConfiguration.?name ?? '${solutionPrefix}-aifd-aipj'
 var aiFoundryAiProjectLocation = aiFoundryAiProjectConfiguration.?location ?? solutionLocation
-var aiFoundryAiProjectSkuName = aiFoundryAiProjectConfiguration.?aiFoundryAiProjectSkuName ?? 'Standard'
+var aiFoundryAiProjectSkuName = aiFoundryAiProjectConfiguration.?sku ?? 'Standard'
 
 // VARIABLES: AI Foundry AI Service Content Understanding configuration defaults
 var aiFoundryAiServicesContentUnderstandingResourceName = aiFoundryAiServicesContentUnderstandingConfiguration.?name ?? '${solutionPrefix}-aifd-aisr-cu'
-var aiFoundryAiServicesContentUnderstandingLocation = aiFoundryAiServicesContentUnderstandingConfiguration.?location ?? 'West US'
+var aiFoundryAiServicesContentUnderstandingLocation = aiFoundryAiServicesContentUnderstandingConfiguration.?location ?? (contains(
+    ['West US', 'westus', 'Sweden Central', 'swedencentral', 'Australia East', 'australiaeast'],
+    solutionLocation
+  )
+  ? solutionLocation
+  : 'West US')
 var aiFoundryAiServicesContentUnderstandingSkuName = aiFoundryAiServicesContentUnderstandingConfiguration.?sku ?? 'S0'
 
 // VARIABLES: AI Foundry AI Service configuration defaults
 var aiFoundryAiServicesResourceName = aiFoundryAiServicesConfiguration.?name ?? '${solutionPrefix}-aifd-aisr-cu'
-var aiFoundryAiServicesLocation = aiFoundryAiServicesConfiguration.?location ?? 'West US'
+var aiFoundryAiServicesLocation = aiFoundryAiServicesConfiguration.?location ?? solutionLocation
 var aiFoundryAiServicesSkuName = aiFoundryAiServicesConfiguration.?sku ?? 'S0'
 var aiFoundryAIServicesGptModelName = aiFoundryAiServicesConfiguration.?gptModelName ?? 'gpt-4o-mini'
-var aiFoundryAiServicesGptModelSku = aiFoundryAiServicesConfiguration.?gptModelSku ?? 'Standard'
+var aiFoundryAiServicesGptModelSku = aiFoundryAiServicesConfiguration.?gptModelSku ?? 'GlobalStandard'
 var aiFoundryAIServicesGptModelCapacity = aiFoundryAiServicesConfiguration.?gptModelCapacity ?? 100
 var aiFoundryAiServicesTextEmbeddingModelName = aiFoundryAiServicesConfiguration.?textEmbeddingModelName ?? 'text-embedding-ada-002'
 var aiFoundryAiServicesTextEmbeddingModelSku = aiFoundryAiServicesConfiguration.?textEmbeddingModelSku ?? 'Standard'
@@ -318,22 +328,22 @@ var functionChartsResourceName = functionChartsConfiguration.?name ?? '${solutio
 var functionChartsLocation = functionChartsConfiguration.?location ?? solutionLocation
 var functionChartDockerImageContainerRegistryUrl = functionChartsConfiguration.?dockerImageContainerRegistryUrl ?? 'kmcontainerreg.azurecr.io'
 var functionChartDockerImageName = functionChartsConfiguration.?dockerImageName ?? 'km-charts-function'
-var functionChartDockerImageTag = functionChartsConfiguration.?functionChartDockerImageTag ?? 'latest_2025-03-20_276'
-var functionChartCpu = functionChartsConfiguration.?functionChartCpu ?? 1
-var functionChartMemory = functionChartsConfiguration.?functionChartMemory ?? '2Gi'
-var functionChartAppScaleLimit = functionChartsConfiguration.?functionChartAppScaleLimit ?? 10
-var functionChartsFunctionName = functionChartsConfiguration.?functionChartsFunctionName ?? 'get_metrics'
+var functionChartDockerImageTag = functionChartsConfiguration.?dockerImageTag ?? 'latest_2025-03-20_276'
+var functionChartCpu = functionChartsConfiguration.?cpu ?? 1
+var functionChartMemory = functionChartsConfiguration.?memory ?? '2Gi'
+var functionChartAppScaleLimit = functionChartsConfiguration.?appScaleLimit ?? 10
+var functionChartsFunctionName = functionChartsConfiguration.?functionName ?? 'get_metrics'
 
 // VARIABLES: Function Rag configuration defaults
 var functionRagResourceName = functionRagConfiguration.?name ?? '${solutionPrefix}-azfn-frag'
 var functionRagLocation = functionRagConfiguration.?location ?? solutionLocation
 var functionRagDockerImageContainerRegistryUrl = functionRagConfiguration.?dockerImageContainerRegistryUrl ?? 'kmcontainerreg.azurecr.io'
 var functionRagDockerImageName = functionRagConfiguration.?dockerImageName ?? 'km-rag-function'
-var functionRagDockerImageTag = functionRagConfiguration.?functionRagDockerImageTag ?? 'latest_2025-03-20_276'
-var functionRagCpu = functionRagConfiguration.?functionRagCpu ?? 1
-var functionRagMemory = functionRagConfiguration.?functionRagMemory ?? '2Gi'
-var functionRagAppScaleLimit = functionRagConfiguration.?functionRagAppScaleLimit ?? 10
-var functionRagFunctionName = functionRagConfiguration.?functionRagFunctionName ?? 'stream_openai_text'
+var functionRagDockerImageTag = functionRagConfiguration.?dockerImageTag ?? 'latest_2025-03-20_276'
+var functionRagCpu = functionRagConfiguration.?cpu ?? 1
+var functionRagMemory = functionRagConfiguration.?memory ?? '2Gi'
+var functionRagAppScaleLimit = functionRagConfiguration.?appScaleLimit ?? 10
+var functionRagFunctionName = functionRagConfiguration.?functionName ?? 'stream_openai_text'
 
 // VARIABLES: Functions Managed Environment configuration defaults
 var functionsManagedEnvironmentResourceName = functionsManagedEnvironmentConfiguration.?name ?? '${solutionPrefix}-fnme'
@@ -378,7 +388,10 @@ var scriptIndexDataScriptUrl = scriptIndexDataConfiguration.?scriptUrl ?? 'https
 var sqlServerResourceName = sqlServerConfiguration.?name ?? '${solutionPrefix}-sqls'
 var sqlServerLocation = sqlServerConfiguration.?location ?? databasesLocation
 var sqlServerAdministratorLogin = sqlServerConfiguration.?administratorLogin ?? 'sqladmin'
-var sqlServerAdministratorPassword = sqlServerConfiguration.?administratorPassword ?? 'TestPassword_1234'
+var sqlServerAdministratorPassword = sqlServerConfiguration.?administratorPassword ?? guid(
+  solutionPrefix,
+  subscription().subscriptionId
+)
 var sqlServerDatabaseName = sqlServerConfiguration.?databaseName ?? '${solutionPrefix}-ckmdb'
 var sqlServerDatabaseSkuName = sqlServerConfiguration.?databaseSkuName ?? 'GP_Gen5_2'
 var sqlServerDatabaseSkuTier = sqlServerConfiguration.?databaseSkuTier ?? 'GeneralPurpose'
@@ -1054,7 +1067,7 @@ type ckmAiFoundryAiServicesContentUnderstandingType = {
   name: string?
   @description('Optional. Location for the AI Foundry Content Understanding service deployment.')
   @metadata({ azd: { type: 'location' } })
-  location: ('West US' | 'Sweden Central' | 'Australia East')?
+  location: ('West US' | 'westus' | 'Sweden Central' | 'swedencentral' | 'Australia East' | 'australiaeast')?
   @description('Optional. The SKU of the AI Foundry AI Services account. Use \'Get-AzCognitiveServicesAccountSku\' to determine a valid combinations of \'kind\' and \'SKU\' for your Azure region.')
   sku: (
     | 'C2'

@@ -2,7 +2,7 @@
 
 This module deploys the [Conversation Knowledge Mining Solution Accelerator](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator).
 
-> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator product. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.
+> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.
 
 
 ## Navigation
@@ -191,7 +191,7 @@ param solutionPrefix = 'sbxdft'
 | [`aiFoundrySearchServiceConfiguration`](#parameter-aifoundrysearchserviceconfiguration) | object | The configuration to apply for the Conversation Knowledge Mining AI Foundry Search Services resource. |
 | [`aiFoundryStorageAccountConfiguration`](#parameter-aifoundrystorageaccountconfiguration) | object | The configuration to apply for the Conversation Knowledge Mining AI Foundry Storage Account resource. |
 | [`cosmosDbAccountConfiguration`](#parameter-cosmosdbaccountconfiguration) | object | The configuration to apply for the Conversation Knowledge Mining Cosmos DB Account resource. |
-| [`databasesLocation`](#parameter-databaseslocation) | string | Location for all the deployed databases Azure resources. Defaulted to East US 2. |
+| [`databasesLocation`](#parameter-databaseslocation) | string | Location for all the deployed databases Azure resources. Defaults to East US 2. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`functionChartsConfiguration`](#parameter-functionchartsconfiguration) | object | The configuration to apply for the Conversation Knowledge Mining Charts Function resource. |
 | [`functionRagConfiguration`](#parameter-functionragconfiguration) | object | The configuration to apply for the Conversation Knowledge Mining Rag Function resource. |
@@ -201,7 +201,7 @@ param solutionPrefix = 'sbxdft'
 | [`managedIdentityConfiguration`](#parameter-managedidentityconfiguration) | object | The configuration to apply for the Conversation Knowledge Mining Managed Identity resource. |
 | [`scriptCopyDataConfiguration`](#parameter-scriptcopydataconfiguration) | object | The configuration to apply for the Conversation Knowledge Mining Copy Data Script resource. |
 | [`scriptIndexDataConfiguration`](#parameter-scriptindexdataconfiguration) | object | The configuration to apply for the Conversation Knowledge Mining Copy Data Script resource. |
-| [`solutionLocation`](#parameter-solutionlocation) | string | Location for all the deployed Azure resources except databases. Defaulted to East US. |
+| [`solutionLocation`](#parameter-solutionlocation) | string | Location for all the deployed Azure resources except databases. Defaults to the location of the Resource Group. |
 | [`sqlServerConfiguration`](#parameter-sqlserverconfiguration) | object | The configuration to apply for the Conversation Knowledge Mining SQL Server resource. |
 | [`storageAccountConfiguration`](#parameter-storageaccountconfiguration) | object | The configuration to apply for the Conversation Knowledge Mining Storage Account resource. |
 | [`tags`](#parameter-tags) | object | The tags to apply to all deployed Azure resources. |
@@ -331,8 +331,8 @@ The configuration to apply for the Conversation Knowledge Mining AI Foundry AI S
   {
       gptModelCapacity: 100
       gptModelName: 'gpt-4o-mini'
-      gptModelSku: 'Standard'
-      location: 'East US'
+      gptModelSku: 'GlobalStandard'
+      location: '[parameters(\'solutionLocation\')]'
       name: '[format(\'{0}-aifd-aisr\', parameters(\'solutionPrefix\'))]'
       sku: 'S0'
       textEmbeddingModelCapacity: 80
@@ -478,7 +478,7 @@ The configuration to apply for the Conversation Knowledge Mining AI Foundry AI S
 - Default:
   ```Bicep
   {
-      location: 'West US'
+      location: '[if(contains(createArray(\'West US\', \'westus\', \'Sweden Central\', \'swedencentral\', \'Australia East\', \'australiaeast\'), parameters(\'solutionLocation\')), parameters(\'solutionLocation\'), \'West US\')]'
       name: '[format(\'{0}-aifd-aisr-cu\', parameters(\'solutionPrefix\'))]'
       sku: 'S0'
   }
@@ -502,8 +502,11 @@ Location for the AI Foundry Content Understanding service deployment.
   ```Bicep
   [
     'Australia East'
+    'australiaeast'
     'Sweden Central'
+    'swedencentral'
     'West US'
+    'westus'
   ]
   ```
 
@@ -801,7 +804,7 @@ The name of the Cosmos DB Account resource.
 
 ### Parameter: `databasesLocation`
 
-Location for all the deployed databases Azure resources. Defaulted to East US 2.
+Location for all the deployed databases Azure resources. Defaults to East US 2.
 
 - Required: No
 - Type: string
@@ -1451,11 +1454,11 @@ The Url where the Copy Data Script is located.
 
 ### Parameter: `solutionLocation`
 
-Location for all the deployed Azure resources except databases. Defaulted to East US.
+Location for all the deployed Azure resources except databases. Defaults to the location of the Resource Group.
 
 - Required: No
 - Type: string
-- Default: `'East US'`
+- Default: `[resourceGroup().location]`
 
 ### Parameter: `sqlServerConfiguration`
 
@@ -1467,7 +1470,7 @@ The configuration to apply for the Conversation Knowledge Mining SQL Server reso
   ```Bicep
   {
       administratorLogin: 'sqladmin'
-      administratorPassword: 'TestPassword_1234'
+      administratorPassword: '[guid(parameters(\'solutionPrefix\'), subscription().subscriptionId)]'
       databaseName: '[format(\'{0}-ckmdb\', parameters(\'solutionPrefix\'))]'
       databaseSkuCapacity: 2
       databaseSkuFamily: 'Gen5'
