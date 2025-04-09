@@ -662,9 +662,13 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
     availabilityZone: '<availabilityZone>'
     containers: [
       {
-        name: 'az-aci-x-001'
+        name: '<name>'
         properties: {
-          command: []
+          command: [
+            '-c'
+            '/bin/sh'
+            'node /usr/src/app/index.js & (sleep 10; touch /tmp/ready); wait'
+          ]
           environmentVariables: [
             {
               name: 'CLIENT_ID'
@@ -686,6 +690,17 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
               protocol: 'Tcp'
             }
           ]
+          readinessProbe: {
+            exec: {
+              command: [
+                '/tmp/ready'
+                'cat'
+              ]
+            }
+            failureThreshold: 3
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          }
           resources: {
             limits: {
               cpu: 4
@@ -699,7 +714,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
         }
       }
       {
-        name: 'az-aci-x-002'
+        name: '<name>'
         properties: {
           command: []
           environmentVariables: []
@@ -772,9 +787,13 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
     "containers": {
       "value": [
         {
-          "name": "az-aci-x-001",
+          "name": "<name>",
           "properties": {
-            "command": [],
+            "command": [
+              "-c",
+              "/bin/sh",
+              "node /usr/src/app/index.js & (sleep 10; touch /tmp/ready); wait"
+            ],
             "environmentVariables": [
               {
                 "name": "CLIENT_ID",
@@ -796,6 +815,17 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
                 "protocol": "Tcp"
               }
             ],
+            "readinessProbe": {
+              "exec": {
+                "command": [
+                  "/tmp/ready",
+                  "cat"
+                ]
+              },
+              "failureThreshold": 3,
+              "initialDelaySeconds": 10,
+              "periodSeconds": 5
+            },
             "resources": {
               "limits": {
                 "cpu": 4,
@@ -809,7 +839,7 @@ module containerGroup 'br/public:avm/res/container-instance/container-group:<ver
           }
         },
         {
-          "name": "az-aci-x-002",
+          "name": "<name>",
           "properties": {
             "command": [],
             "environmentVariables": [],
@@ -890,9 +920,13 @@ using 'br/public:avm/res/container-instance/container-group:<version>'
 param availabilityZone = '<availabilityZone>'
 param containers = [
   {
-    name: 'az-aci-x-001'
+    name: '<name>'
     properties: {
-      command: []
+      command: [
+        '-c'
+        '/bin/sh'
+        'node /usr/src/app/index.js & (sleep 10; touch /tmp/ready); wait'
+      ]
       environmentVariables: [
         {
           name: 'CLIENT_ID'
@@ -914,6 +948,17 @@ param containers = [
           protocol: 'Tcp'
         }
       ]
+      readinessProbe: {
+        exec: {
+          command: [
+            '/tmp/ready'
+            'cat'
+          ]
+        }
+        failureThreshold: 3
+        initialDelaySeconds: 10
+        periodSeconds: 5
+      }
       resources: {
         limits: {
           cpu: 4
@@ -927,7 +972,7 @@ param containers = [
     }
   }
   {
-    name: 'az-aci-x-002'
+    name: '<name>'
     properties: {
       command: []
       environmentVariables: []

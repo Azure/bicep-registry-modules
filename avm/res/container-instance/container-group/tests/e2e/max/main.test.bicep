@@ -71,9 +71,24 @@ module testDeployment '../../../main.bicep' = [
       }
       containers: [
         {
-          name: '${namePrefix}-az-aci-x-001'
+          name: '${namePrefix}-az-aci-x-1-${config.availabilityZone}'
           properties: {
-            command: []
+            command: [
+              '/bin/sh'
+              '-c'
+              'node /usr/src/app/index.js & (sleep 10; touch /tmp/ready); wait'
+            ]
+            readinessProbe: {
+              exec: {
+                command: [
+                  'cat'
+                  '/tmp/ready'
+                ]
+              }
+              initialDelaySeconds: 10
+              periodSeconds: 5
+              failureThreshold: 3
+            }
             environmentVariables: [
               {
                 name: 'CLIENT_ID'
@@ -108,7 +123,7 @@ module testDeployment '../../../main.bicep' = [
           }
         }
         {
-          name: '${namePrefix}-az-aci-x-002'
+          name: '${namePrefix}-az-aci-x-2-${config.availabilityZone}'
           properties: {
             command: []
             environmentVariables: []
