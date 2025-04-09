@@ -66,7 +66,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource ddosProtectionPlan 'Microsoft.Network/ddosProtectionPlans@2023-11-01' = {
+resource ddosProtectionPlan 'Microsoft.Network/ddosProtectionPlans@2024-05-01' = {
   name: name
   location: location
   tags: tags
