@@ -1670,7 +1670,7 @@ Compression settings.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`iscontentTypeToCompressAll`](#parameter-afdendpointsroutescacheconfigurationcompressionsettingsiscontenttypetocompressall) | bool | Indicates whether content compression is enabled on AzureFrontDoor. Default value is false. If compression is enabled, content will be served as compressed if user requests for a compressed version. Content won't be compressed on AzureFrontDoor when requested content is smaller than 1 byte or larger than 1 MB. |
+| [`isCompressionEnabled`](#parameter-afdendpointsroutescacheconfigurationcompressionsettingsiscompressionenabled) | bool | Indicates whether content compression is enabled on AzureFrontDoor. Default value is false. If compression is enabled, content will be served as compressed if user requests for a compressed version. Content won't be compressed on AzureFrontDoor when requested content is smaller than 1 byte or larger than 1 MB. |
 
 ### Parameter: `afdEndpoints.routes.cacheConfiguration.compressionSettings.contentTypesToCompress`
 
@@ -1679,7 +1679,7 @@ List of content types on which compression applies. The value should be a valid 
 - Required: Yes
 - Type: array
 
-### Parameter: `afdEndpoints.routes.cacheConfiguration.compressionSettings.iscontentTypeToCompressAll`
+### Parameter: `afdEndpoints.routes.cacheConfiguration.compressionSettings.isCompressionEnabled`
 
 Indicates whether content compression is enabled on AzureFrontDoor. Default value is false. If compression is enabled, content will be served as compressed if user requests for a compressed version. Content won't be compressed on AzureFrontDoor when requested content is smaller than 1 byte or larger than 1 MB.
 
@@ -2129,7 +2129,7 @@ The managed identity definition for this resource.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
-| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
 
 ### Parameter: `managedIdentities.systemAssigned`
 
@@ -2140,7 +2140,7 @@ Enables system assigned managed identity on the resource.
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
-The resource ID(s) to assign to the resource.
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
 
 - Required: No
 - Type: array
@@ -2459,7 +2459,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

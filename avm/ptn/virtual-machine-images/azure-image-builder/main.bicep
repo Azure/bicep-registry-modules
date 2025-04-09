@@ -586,6 +586,7 @@ module imageTemplate_wait 'br/public:avm/res/resources/deployment-script:0.5.0' 
         deploymentScriptSubnetName
       )
     ]
+    enableTelemetry: enableTelemetry
   }
   dependsOn: [
     imageTemplate_trigger

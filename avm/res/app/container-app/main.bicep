@@ -55,14 +55,11 @@ param ingressAllowInsecure bool = true
 @description('Optional. Target Port in containers for traffic from ingress.')
 param ingressTargetPort int = 80
 
-@description('Optional. Maximum number of container replicas. Defaults to 10 if not set.')
-param scaleMaxReplicas int = 10
-
-@description('Optional. Minimum number of container replicas. Defaults to 3 if not set.')
-param scaleMinReplicas int = 3
-
-@description('Optional. Scaling rules.')
-param scaleRules array = []
+@description('Optional. The scaling settings of the service.')
+param scaleSettings scaleType = {
+  maxReplicas: 10
+  minReplicas: 3
+}
 
 @description('Optional. List of container app services bound to the app.')
 param serviceBinds serviceBindingType[]?
@@ -122,11 +119,14 @@ param trafficWeight int = 100
 @description('Optional. Dapr configuration for the Container App.')
 param dapr object = {}
 
+@description('Optional. Settings for Managed Identities that are assigned to the Container App. If a Managed Identity is not specified here, default settings will be used.')
+param identitySettings resourceInput<'Microsoft.App/containerApps@2024-10-02-preview'>.properties.configuration.identitySettings?
+
 @description('Optional. Max inactive revisions a Container App can have.')
 param maxInactiveRevisions int = 0
 
 @description('Optional. Runtime configuration for the Container App.')
-param runtime runtimeType
+param runtime runtimeType?
 
 @description('Required. List of container definitions for the Container App.')
 param containers containerType[]
@@ -219,6 +219,7 @@ resource containerApp 'Microsoft.App/containerApps@2024-10-02-preview' = {
     configuration: {
       activeRevisionsMode: activeRevisionsMode
       dapr: !empty(dapr) ? dapr : null
+      identitySettings: !empty(identitySettings) ? identitySettings : null
       ingress: disableIngress
         ? null
         : {
@@ -282,11 +283,7 @@ resource containerApp 'Microsoft.App/containerApps@2024-10-02-preview' = {
       containers: containers
       initContainers: !empty(initContainersTemplate) ? initContainersTemplate : null
       revisionSuffix: revisionSuffix
-      scale: {
-        maxReplicas: scaleMaxReplicas
-        minReplicas: scaleMinReplicas
-        rules: !empty(scaleRules) ? scaleRules : null
-      }
+      scale: scaleSettings
       serviceBinds: (includeAddOns && !empty(serviceBinds)) ? serviceBinds : null
       volumes: !empty(volumes) ? volumes : null
     }
@@ -506,6 +503,42 @@ type containerAppProbeTcpSocketType = {
   port: int
 }
 
+@description('The scale settings for the Container App.')
+type scaleType = {
+  @description('Required. The maximum number of replicas.')
+  maxReplicas: int
+
+  @description('Required. The minimum number of replicas.')
+  minReplicas: int
+
+  @description('Optional. The cooldown period in seconds.')
+  cooldownPeriod: int?
+
+  @description('Optional. The polling interval in seconds.')
+  pollingInterval: int?
+
+  @description('Optional. The scaling rules.')
+  rules: scaleRuleType[]?
+}
+
+@description('The scaling rules for the Container App.')
+type scaleRuleType = {
+  @description('Required. The name of the scaling rule.')
+  name: string
+
+  @description('Optional. The custom scaling rule.')
+  custom: object?
+
+  @description('Optional. The Azure Queue based scaling rule.')
+  azureQueue: object?
+
+  @description('Optional. The HTTP requests based scaling rule.')
+  http: object?
+
+  @description('Optional. The TCP based scaling rule.')
+  tcp: object?
+}
+
 @description('The type for a volume mount.')
 type volumeMountType = {
   @description('Required. Path within the container at which the volume should be mounted.Must not contain \':\'.')
@@ -544,7 +577,7 @@ type runtimeType = {
       level: ('debug' | 'error' | 'info' | 'off' | 'trace' | 'warn')
     }[]?
   }?
-}?
+}
 
 @export()
 @description('The type for a secret.')
@@ -552,13 +585,13 @@ type secretType = {
   @description('Optional. Resource ID of a managed identity to authenticate with Azure Key Vault, or System to use a system-assigned identity.')
   identity: string?
 
-  @description('Conditional. Azure Key Vault URL pointing to the secret referenced by the Container App Job. Required if `value` is null.')
+  @description('Conditional. The URL of the Azure Key Vault secret referenced by the Container App. Required if `value` is null.')
   keyVaultUrl: string?
 
-  @description('Optional. The name of the secret.')
+  @description('Optional. The name of the container app secret.')
   name: string?
 
-  @description('Conditional. The secret value, if not fetched from Key Vault. Required if `keyVaultUrl` is not null.')
+  @description('Conditional. The container app secret value, if not fetched from the Key Vault. Required if `keyVaultUrl` is not null.')
   @secure()
   value: string?
 }

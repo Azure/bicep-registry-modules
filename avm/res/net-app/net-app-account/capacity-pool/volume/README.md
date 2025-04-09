@@ -14,7 +14,7 @@ This module deploys an Azure NetApp Files Capacity Pool Volume.
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.NetApp/netAppAccounts/capacityPools/volumes` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-07-01/netAppAccounts/capacityPools/volumes) |
+| `Microsoft.NetApp/netAppAccounts/capacityPools/volumes` | [2024-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-09-01/netAppAccounts/capacityPools/volumes) |
 
 ## Parameters
 
@@ -51,10 +51,12 @@ This module deploys an Azure NetApp Files Capacity Pool Volume.
 | [`networkFeatures`](#parameter-networkfeatures) | string | Network feature for the volume. |
 | [`protocolTypes`](#parameter-protocoltypes) | array | Set of protocol types. Default value is `['NFSv3']`. If you are creating a dual-stack volume, set either `['NFSv3','CIFS']` or `['NFSv4.1','CIFS']`. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`securityStyle`](#parameter-securitystyle) | string | Defines the security style of the Volume. |
 | [`serviceLevel`](#parameter-servicelevel) | string | The pool service level. Must match the one of the parent capacity pool. |
 | [`smbContinuouslyAvailable`](#parameter-smbcontinuouslyavailable) | bool | Enables continuously available share property for SMB volume. Only applicable for SMB volume. |
 | [`smbEncryption`](#parameter-smbencryption) | bool | Enables SMB encryption. Only applicable for SMB/DualProtocol volume. |
 | [`smbNonBrowsable`](#parameter-smbnonbrowsable) | string | Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProtocol volume. |
+| [`unixPermissions`](#parameter-unixpermissions) | string | Unix Permissions for NFS volume. |
 | [`volumeType`](#parameter-volumetype) | string | The type of the volume. DataProtection volumes are used for replication. |
 
 ### Parameter: `coolAccess`
@@ -637,6 +639,20 @@ The principal type of the assigned principal ID.
   ]
   ```
 
+### Parameter: `securityStyle`
+
+Defines the security style of the Volume.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'ntfs'
+    'unix'
+  ]
+  ```
+
 ### Parameter: `serviceLevel`
 
 The pool service level. Must match the one of the parent capacity pool.
@@ -685,6 +701,13 @@ Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProto
   ]
   ```
 
+### Parameter: `unixPermissions`
+
+Unix Permissions for NFS volume.
+
+- Required: No
+- Type: string
+
 ### Parameter: `volumeType`
 
 The type of the volume. DataProtection volumes are used for replication.
@@ -707,4 +730,4 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |

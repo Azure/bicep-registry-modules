@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "10702362485253818591"
+      "version": "0.34.44.8038",
+      "templateHash": "2490416937519336508"
     },
     "name": "DocumentDB Database Account SQL Role.",
     "description": "This module deploys SQL Role Definision and Assignment in a CosmosDB Account."
@@ -90,8 +90,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "226082505863315224"
+              "version": "0.34.44.8038",
+              "templateHash": "16003674161646405716"
             },
             "name": "DocumentDB Database Account SQL Role Definitions.",
             "description": "This module deploys a SQL Role Definision in a CosmosDB Account."
@@ -132,7 +132,7 @@
           "resources": [
             {
               "type": "Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions",
-              "apiVersion": "2023-04-15",
+              "apiVersion": "2024-11-15",
               "name": "[format('{0}/{1}', parameters('databaseAccountName'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), 'sql-role'))]",
               "properties": {
                 "assignableScopes": [
@@ -210,8 +210,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "4459562534723287578"
+              "version": "0.34.44.8038",
+              "templateHash": "16164048892239373889"
             },
             "name": "DocumentDB Database Account SQL Role Assignments.",
             "description": "This module deploys a SQL Role Assignment in a CosmosDB Account."
@@ -246,7 +246,7 @@
           "resources": [
             {
               "type": "Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments",
-              "apiVersion": "2023-04-15",
+              "apiVersion": "2024-11-15",
               "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('name'))]",
               "properties": {
                 "principalId": "[parameters('principalId')]",

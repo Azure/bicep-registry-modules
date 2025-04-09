@@ -1,0 +1,5 @@
+{
+  "allowed-child-modules": [
+    "avm/res/network/virtual-network/subnet"
+  ]
+}

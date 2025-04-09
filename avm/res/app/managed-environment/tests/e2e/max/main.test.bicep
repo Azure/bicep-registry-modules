@@ -70,9 +70,12 @@ module testDeployment '../../../main.bicep' = [
       ]
       internal: true
       dnsSuffix: 'contoso.com'
-      certificateKeyVaultProperties: {
-        identityResourceId: nestedDependencies.outputs.managedIdentityResourceId
-        keyVaultUrl: '${nestedDependencies.outputs.keyVaultUri}secrets/${split(nestedDependencies.outputs.certificateSecretUrl, '/')[4]}'
+      certificate: {
+        name: 'dep-${namePrefix}-cert-${serviceShort}'
+        certificateKeyVaultProperties: {
+          identityResourceId: nestedDependencies.outputs.managedIdentityResourceId
+          keyVaultUrl: '${nestedDependencies.outputs.keyVaultUri}secrets/${split(nestedDependencies.outputs.certificateSecretUrl, '/')[4]}'
+        }
       }
       dockerBridgeCidr: '172.16.0.1/28'
       peerTrafficEncryption: true
@@ -96,7 +99,6 @@ module testDeployment '../../../main.bicep' = [
       }
       roleAssignments: [
         {
-          name: '43fc5250-f111-472b-8722-f1cb4a0e754b'
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
@@ -131,7 +133,6 @@ module testDeployment '../../../main.bicep' = [
           storageAccountName: nestedDependencies.outputs.storageAccountName
         }
       ]
-
       lock: {
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
@@ -141,8 +142,5 @@ module testDeployment '../../../main.bicep' = [
         Env: 'test'
       }
     }
-    dependsOn: [
-      nestedDependencies
-    ]
   }
 ]

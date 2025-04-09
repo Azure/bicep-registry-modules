@@ -51,6 +51,7 @@ The following section provides usage examples for the module, which were used to
 - [Deploying Windows VM with premium SSDv2 data disk](#example-10-deploying-windows-vm-with-premium-ssdv2-data-disk)
 - [Using disk encryption set for the VM.](#example-11-using-disk-encryption-set-for-the-vm)
 - [Adding the VM to a VMSS.](#example-12-adding-the-vm-to-a-vmss)
+- [Deploying Windows VM in a defined zone with a premium zrs data disk](#example-13-deploying-windows-vm-in-a-defined-zone-with-a-premium-zrs-data-disk)
 
 ### Example 1: _Using automanage for the VM._
 
@@ -2479,7 +2480,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       sku: '2022-datacenter-azure-edition'
       version: 'latest'
     }
-    name: 'cvmwinguest'
+    name: 'cvmwingst'
     nicConfigurations: [
       {
         ipConfigurations: [
@@ -2566,7 +2567,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     },
     "name": {
-      "value": "cvmwinguest"
+      "value": "cvmwingst"
     },
     "nicConfigurations": {
       "value": [
@@ -2667,7 +2668,7 @@ param imageReference = {
   sku: '2022-datacenter-azure-edition'
   version: 'latest'
 }
-param name = 'cvmwinguest'
+param name = 'cvmwingst'
 param nicConfigurations = [
   {
     ipConfigurations: [
@@ -4175,7 +4176,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       sku: '2022-datacenter-azure-edition'
       version: 'latest'
     }
-    name: 'cvmwinssdv2'
+    name: 'cvmwinssd2'
     nicConfigurations: [
       {
         ipConfigurations: [
@@ -4240,7 +4241,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     },
     "name": {
-      "value": "cvmwinssdv2"
+      "value": "cvmwinssd2"
     },
     "nicConfigurations": {
       "value": [
@@ -4315,7 +4316,7 @@ param imageReference = {
   sku: '2022-datacenter-azure-edition'
   version: 'latest'
 }
-param name = 'cvmwinssdv2'
+param name = 'cvmwinssd2'
 param nicConfigurations = [
   {
     ipConfigurations: [
@@ -4736,6 +4737,202 @@ param virtualMachineScaleSetResourceId = '<virtualMachineScaleSetResourceId>'
 </details>
 <p>
 
+### Example 13: _Deploying Windows VM in a defined zone with a premium zrs data disk_
+
+This instance deploys the module with a premium zrs data disk.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
+  name: 'virtualMachineDeployment'
+  params: {
+    // Required parameters
+    adminUsername: 'localAdminUser'
+    imageReference: {
+      offer: 'WindowsServer'
+      publisher: 'MicrosoftWindowsServer'
+      sku: '2022-datacenter-azure-edition'
+      version: 'latest'
+    }
+    name: 'cvmwinzrs'
+    nicConfigurations: [
+      {
+        ipConfigurations: [
+          {
+            name: 'ipconfig01'
+            subnetResourceId: '<subnetResourceId>'
+          }
+        ]
+        nicSuffix: '-nic-01'
+      }
+    ]
+    osDisk: {
+      caching: 'ReadWrite'
+      diskSizeGB: 128
+      managedDisk: {
+        storageAccountType: 'Premium_ZRS'
+      }
+    }
+    osType: 'Windows'
+    vmSize: 'Standard_D2s_v3'
+    zone: 2
+    // Non-required parameters
+    adminPassword: '<adminPassword>'
+    dataDisks: [
+      {
+        caching: 'None'
+        diskSizeGB: 1024
+        managedDisk: {
+          storageAccountType: 'Premium_ZRS'
+        }
+      }
+    ]
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "adminUsername": {
+      "value": "localAdminUser"
+    },
+    "imageReference": {
+      "value": {
+        "offer": "WindowsServer",
+        "publisher": "MicrosoftWindowsServer",
+        "sku": "2022-datacenter-azure-edition",
+        "version": "latest"
+      }
+    },
+    "name": {
+      "value": "cvmwinzrs"
+    },
+    "nicConfigurations": {
+      "value": [
+        {
+          "ipConfigurations": [
+            {
+              "name": "ipconfig01",
+              "subnetResourceId": "<subnetResourceId>"
+            }
+          ],
+          "nicSuffix": "-nic-01"
+        }
+      ]
+    },
+    "osDisk": {
+      "value": {
+        "caching": "ReadWrite",
+        "diskSizeGB": 128,
+        "managedDisk": {
+          "storageAccountType": "Premium_ZRS"
+        }
+      }
+    },
+    "osType": {
+      "value": "Windows"
+    },
+    "vmSize": {
+      "value": "Standard_D2s_v3"
+    },
+    "zone": {
+      "value": 2
+    },
+    // Non-required parameters
+    "adminPassword": {
+      "value": "<adminPassword>"
+    },
+    "dataDisks": {
+      "value": [
+        {
+          "caching": "None",
+          "diskSizeGB": 1024,
+          "managedDisk": {
+            "storageAccountType": "Premium_ZRS"
+          }
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/virtual-machine:<version>'
+
+// Required parameters
+param adminUsername = 'localAdminUser'
+param imageReference = {
+  offer: 'WindowsServer'
+  publisher: 'MicrosoftWindowsServer'
+  sku: '2022-datacenter-azure-edition'
+  version: 'latest'
+}
+param name = 'cvmwinzrs'
+param nicConfigurations = [
+  {
+    ipConfigurations: [
+      {
+        name: 'ipconfig01'
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    nicSuffix: '-nic-01'
+  }
+]
+param osDisk = {
+  caching: 'ReadWrite'
+  diskSizeGB: 128
+  managedDisk: {
+    storageAccountType: 'Premium_ZRS'
+  }
+}
+param osType = 'Windows'
+param vmSize = 'Standard_D2s_v3'
+param zone = 2
+// Non-required parameters
+param adminPassword = '<adminPassword>'
+param dataDisks = [
+  {
+    caching: 'None'
+    diskSizeGB: 1024
+    managedDisk: {
+      storageAccountType: 'Premium_ZRS'
+    }
+  }
+]
+param location = '<location>'
+```
+
+</details>
+<p>
+
 ## Parameters
 
 **Required parameters**
@@ -4775,10 +4972,10 @@ param virtualMachineScaleSetResourceId = '<virtualMachineScaleSetResourceId>'
 | [`dedicatedHostId`](#parameter-dedicatedhostid) | string | Specifies resource ID about the dedicated host that the virtual machine resides in. |
 | [`disablePasswordAuthentication`](#parameter-disablepasswordauthentication) | bool | Specifies whether password authentication should be disabled. |
 | [`enableAutomaticUpdates`](#parameter-enableautomaticupdates) | bool | Indicates whether Automatic Updates is enabled for the Windows virtual machine. Default value is true. When patchMode is set to Manual, this parameter must be set to false. For virtual machine scale sets, this property can be updated and updates will take effect on OS reprovisioning. |
-| [`enableEvictionPolicy`](#parameter-enableevictionpolicy) | bool | Specifies the eviction policy for the low priority virtual machine. Will result in 'Deallocate' eviction policy. |
 | [`enableHotpatching`](#parameter-enablehotpatching) | bool | Enables customers to patch their Azure VMs without requiring a reboot. For enableHotpatching, the 'provisionVMAgent' must be set to true and 'patchMode' must be set to 'AutomaticByPlatform'. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`encryptionAtHost`](#parameter-encryptionathost) | bool | This property can be used by user in the request to enable or disable the Host Encryption for the virtual machine. This will enable the encryption for all the disks including Resource/Temp disk at host itself. For security reasons, it is recommended to set encryptionAtHost to True. Restrictions: Cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs. |
+| [`evictionPolicy`](#parameter-evictionpolicy) | string | Specifies the eviction policy for the low priority virtual machine. |
 | [`extensionAadJoinConfig`](#parameter-extensionaadjoinconfig) | object | The configuration for the [AAD Join] extension. Must at least contain the ["enabled": true] property to be executed. To enroll in Intune, add the setting mdmId: "0000000a-0000-0000-c000-000000000000". |
 | [`extensionAntiMalwareConfig`](#parameter-extensionantimalwareconfig) | object | The configuration for the [Anti Malware] extension. Must at least contain the ["enabled": true] property to be executed. |
 | [`extensionAzureDiskEncryptionConfig`](#parameter-extensionazurediskencryptionconfig) | object | The configuration for the [Azure Disk Encryption] extension. Must at least contain the ["enabled": true] property to be executed. Restrictions: Cannot be enabled on disks that have encryption at host enabled. Managed disks encrypted using Azure Disk Encryption cannot be encrypted using customer-managed keys. |
@@ -4876,6 +5073,7 @@ Specifies the OS disk. For security reasons, it is recommended to specify DiskEn
 | [`caching`](#parameter-osdiskcaching) | string | Specifies the caching requirements. |
 | [`createOption`](#parameter-osdiskcreateoption) | string | Specifies how the virtual machine should be created. |
 | [`deleteOption`](#parameter-osdiskdeleteoption) | string | Specifies whether data disk should be deleted or detached upon VM deletion. |
+| [`diffDiskSettings`](#parameter-osdiskdiffdisksettings) | object | Specifies the ephemeral Disk Settings for the operating system disk. |
 | [`diskSizeGB`](#parameter-osdiskdisksizegb) | int | Specifies the size of an empty data disk in gigabytes. |
 | [`name`](#parameter-osdiskname) | string | The disk name. |
 
@@ -4960,6 +5158,34 @@ Specifies whether data disk should be deleted or detached upon VM deletion.
   [
     'Delete'
     'Detach'
+  ]
+  ```
+
+### Parameter: `osDisk.diffDiskSettings`
+
+Specifies the ephemeral Disk Settings for the operating system disk.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`placement`](#parameter-osdiskdiffdisksettingsplacement) | string | Specifies the ephemeral disk placement for the operating system disk. |
+
+### Parameter: `osDisk.diffDiskSettings.placement`
+
+Specifies the ephemeral disk placement for the operating system disk.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'CacheDisk'
+    'NvmeDisk'
+    'ResourceDisk'
   ]
   ```
 
@@ -5324,14 +5550,6 @@ Indicates whether Automatic Updates is enabled for the Windows virtual machine. 
 - Type: bool
 - Default: `True`
 
-### Parameter: `enableEvictionPolicy`
-
-Specifies the eviction policy for the low priority virtual machine. Will result in 'Deallocate' eviction policy.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
 ### Parameter: `enableHotpatching`
 
 Enables customers to patch their Azure VMs without requiring a reboot. For enableHotpatching, the 'provisionVMAgent' must be set to true and 'patchMode' must be set to 'AutomaticByPlatform'.
@@ -5355,6 +5573,21 @@ This property can be used by user in the request to enable or disable the Host E
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `evictionPolicy`
+
+Specifies the eviction policy for the low priority virtual machine.
+
+- Required: No
+- Type: string
+- Default: `'Deallocate'`
+- Allowed:
+  ```Bicep
+  [
+    'Deallocate'
+    'Delete'
+  ]
+  ```
 
 ### Parameter: `extensionAadJoinConfig`
 
@@ -5626,7 +5859,7 @@ The managed identity definition for this resource. The system-assigned managed i
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
-| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
 
 ### Parameter: `managedIdentities.systemAssigned`
 
@@ -5637,7 +5870,7 @@ Enables system assigned managed identity on the resource.
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
-The resource ID(s) to assign to the resource.
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
 
 - Required: No
 - Type: array
@@ -5730,6 +5963,27 @@ The list of SSH public keys used to authenticate with linux based VMs.
 - Required: No
 - Type: array
 - Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`keyData`](#parameter-publickeyskeydata) | string | Specifies the SSH public key data used to authenticate through ssh. |
+| [`path`](#parameter-publickeyspath) | string | Specifies the full path on the created VM where ssh public key is stored. If the file already exists, the specified key is appended to the file. |
+
+### Parameter: `publicKeys.keyData`
+
+Specifies the SSH public key data used to authenticate through ssh.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `publicKeys.path`
+
+Specifies the full path on the created VM where ssh public key is stored. If the file already exists, the specified key is appended to the file.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `rebootSetting`
 
@@ -5977,6 +6231,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | :-- | :-- |
 | `br/public:avm/res/network/network-interface:0.4.0` | Remote reference |
 | `br/public:avm/res/network/public-ip-address:0.6.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Notes
 

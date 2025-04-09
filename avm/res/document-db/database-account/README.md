@@ -17,16 +17,16 @@ This module deploys a DocumentDB Database Account.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.DocumentDB/databaseAccounts` | [2023-04-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2023-04-15/databaseAccounts) |
-| `Microsoft.DocumentDB/databaseAccounts/gremlinDatabases` | [2023-04-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2023-04-15/databaseAccounts/gremlinDatabases) |
-| `Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs` | [2023-04-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2023-04-15/databaseAccounts/gremlinDatabases/graphs) |
-| `Microsoft.DocumentDB/databaseAccounts/mongodbDatabases` | [2023-04-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2023-04-15/databaseAccounts/mongodbDatabases) |
-| `Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections` | [2023-04-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2023-04-15/databaseAccounts/mongodbDatabases/collections) |
-| `Microsoft.DocumentDB/databaseAccounts/sqlDatabases` | [2023-04-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2023-04-15/databaseAccounts/sqlDatabases) |
-| `Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers` | [2023-04-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2023-04-15/databaseAccounts/sqlDatabases/containers) |
-| `Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments` | [2023-04-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2023-04-15/databaseAccounts/sqlRoleAssignments) |
-| `Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions` | [2023-04-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2023-04-15/databaseAccounts/sqlRoleDefinitions) |
-| `Microsoft.DocumentDB/databaseAccounts/tables` | [2023-04-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2023-04-15/databaseAccounts/tables) |
+| `Microsoft.DocumentDB/databaseAccounts` | [2024-11-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts) |
+| `Microsoft.DocumentDB/databaseAccounts/gremlinDatabases` | [2024-11-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/gremlinDatabases) |
+| `Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs` | [2024-11-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/gremlinDatabases/graphs) |
+| `Microsoft.DocumentDB/databaseAccounts/mongodbDatabases` | [2024-11-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/mongodbDatabases) |
+| `Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections` | [2024-11-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/mongodbDatabases/collections) |
+| `Microsoft.DocumentDB/databaseAccounts/sqlDatabases` | [2024-11-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/sqlDatabases) |
+| `Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers` | [2024-11-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/sqlDatabases/containers) |
+| `Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments` | [2024-11-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/sqlRoleAssignments) |
+| `Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions` | [2024-11-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/sqlRoleDefinitions) |
+| `Microsoft.DocumentDB/databaseAccounts/tables` | [2024-11-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/tables) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
@@ -51,7 +51,7 @@ The following section provides usage examples for the module, which were used to
 - [Plain](#example-9-plain)
 - [Public network restricted access with ACL](#example-10-public-network-restricted-access-with-acl)
 - [SQL Database](#example-11-sql-database)
-- [Deploying with a sql role definision and assignment](#example-12-deploying-with-a-sql-role-definision-and-assignment)
+- [Deploying with a sql role definition and assignment](#example-12-deploying-with-a-sql-role-definition-and-assignment)
 - [API for Table](#example-13-api-for-table)
 - [WAF-aligned](#example-14-waf-aligned)
 
@@ -2641,9 +2641,9 @@ param sqlDatabases = [
 </details>
 <p>
 
-### Example 12: _Deploying with a sql role definision and assignment_
+### Example 12: _Deploying with a sql role definition and assignment_
 
-This instance deploys the module with sql role definision and assignment
+This instance deploys the module with sql role definition and assignment
 
 
 <details>
@@ -3040,7 +3040,7 @@ param sqlDatabases = [
 | [`backupPolicyType`](#parameter-backuppolicytype) | string | Default to Continuous. Describes the mode of backups. Periodic backup must be used if multiple write locations are used. |
 | [`backupRetentionIntervalInHours`](#parameter-backupretentionintervalinhours) | int | Default to 8. An integer representing the time (in hours) that each backup is retained. Only applies to periodic backup type. |
 | [`backupStorageRedundancy`](#parameter-backupstorageredundancy) | string | Default to Local. Enum to indicate type of backup residency. Only applies to periodic backup type. |
-| [`capabilitiesToAdd`](#parameter-capabilitiestoadd) | array | List of Cosmos DB capabilities for the account. |
+| [`capabilitiesToAdd`](#parameter-capabilitiestoadd) | array | List of Cosmos DB capabilities for the account. THE DeleteAllItemsByPartitionKey VALUE USED IN THIS PARAMETER IS USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION. |
 | [`databaseAccountOfferType`](#parameter-databaseaccountoffertype) | string | Default to Standard. The offer type for the Azure Cosmos DB database account. |
 | [`defaultConsistencyLevel`](#parameter-defaultconsistencylevel) | string | Default to Session. The default consistency level of the Cosmos DB account. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
@@ -3061,7 +3061,7 @@ param sqlDatabases = [
 | [`mongodbDatabases`](#parameter-mongodbdatabases) | array | MongoDB Databases configurations. |
 | [`networkRestrictions`](#parameter-networkrestrictions) | object | The network configuration of this module. Defaults to `{ ipRules: [], virtualNetworkRules: [], publicNetworkAccess: 'Disabled' }`. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
-| [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalIds' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+| [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`secretsExportConfiguration`](#parameter-secretsexportconfiguration) | object | Key vault reference and secret settings for the module's secrets export. |
 | [`serverVersion`](#parameter-serverversion) | string | Default to 4.2. Specifies the MongoDB server version to use. |
 | [`sqlDatabases`](#parameter-sqldatabases) | array | SQL Databases configurations. |
@@ -3110,8 +3110,6 @@ Default to Continuous30Days. Configuration values for continuous mode backup.
     'Continuous7Days'
   ]
   ```
-- MinValue: 60
-- MaxValue: 1440
 
 ### Parameter: `backupPolicyType`
 
@@ -3127,8 +3125,6 @@ Default to Continuous. Describes the mode of backups. Periodic backup must be us
     'Periodic'
   ]
   ```
-- MinValue: 60
-- MaxValue: 1440
 
 ### Parameter: `backupRetentionIntervalInHours`
 
@@ -3155,12 +3151,10 @@ Default to Local. Enum to indicate type of backup residency. Only applies to per
     'Zone'
   ]
   ```
-- MinValue: 2
-- MaxValue: 720
 
 ### Parameter: `capabilitiesToAdd`
 
-List of Cosmos DB capabilities for the account.
+List of Cosmos DB capabilities for the account. THE DeleteAllItemsByPartitionKey VALUE USED IN THIS PARAMETER IS USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION.
 
 - Required: No
 - Type: array
@@ -3168,6 +3162,7 @@ List of Cosmos DB capabilities for the account.
 - Allowed:
   ```Bicep
   [
+    'DeleteAllItemsByPartitionKey'
     'DisableRateLimitingResponses'
     'EnableCassandra'
     'EnableGremlin'
@@ -3179,8 +3174,6 @@ List of Cosmos DB capabilities for the account.
     'EnableTable'
   ]
   ```
-- MinValue: 2
-- MaxValue: 720
 
 ### Parameter: `databaseAccountOfferType`
 
@@ -3195,8 +3188,6 @@ Default to Standard. The offer type for the Azure Cosmos DB database account.
     'Standard'
   ]
   ```
-- MinValue: 2
-- MaxValue: 720
 
 ### Parameter: `defaultConsistencyLevel`
 
@@ -3215,8 +3206,6 @@ Default to Session. The default consistency level of the Cosmos DB account.
     'Strong'
   ]
   ```
-- MinValue: 2
-- MaxValue: 720
 
 ### Parameter: `diagnosticSettings`
 
@@ -3224,8 +3213,6 @@ The diagnostic settings of the service.
 
 - Required: No
 - Type: array
-- MinValue: 2
-- MaxValue: 720
 
 **Optional parameters**
 
@@ -3237,7 +3224,7 @@ The diagnostic settings of the service.
 | [`logCategoriesAndGroups`](#parameter-diagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
 | [`marketplacePartnerResourceId`](#parameter-diagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
 | [`metricCategories`](#parameter-diagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
-| [`name`](#parameter-diagnosticsettingsname) | string | The name of diagnostic setting. |
+| [`name`](#parameter-diagnosticsettingsname) | string | The name of the diagnostic setting. |
 | [`storageAccountResourceId`](#parameter-diagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 | [`workspaceResourceId`](#parameter-diagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 
@@ -3247,8 +3234,6 @@ Resource ID of the diagnostic event hub authorization rule for the Event Hubs na
 
 - Required: No
 - Type: string
-- MinValue: 2
-- MaxValue: 720
 
 ### Parameter: `diagnosticSettings.eventHubName`
 
@@ -3256,8 +3241,6 @@ Name of the diagnostic event hub within the namespace to which logs are streamed
 
 - Required: No
 - Type: string
-- MinValue: 2
-- MaxValue: 720
 
 ### Parameter: `diagnosticSettings.logAnalyticsDestinationType`
 
@@ -3272,8 +3255,6 @@ A string indicating whether the export to Log Analytics should use the default d
     'Dedicated'
   ]
   ```
-- MinValue: 2
-- MaxValue: 720
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups`
 
@@ -3281,8 +3262,6 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 
 - Required: No
 - Type: array
-- MinValue: 2
-- MaxValue: 720
 
 **Optional parameters**
 
@@ -3298,8 +3277,6 @@ Name of a Diagnostic Log category for a resource type this setting is applied to
 
 - Required: No
 - Type: string
-- MinValue: 2
-- MaxValue: 720
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.categoryGroup`
 
@@ -3307,8 +3284,6 @@ Name of a Diagnostic Log category group for a resource type this setting is appl
 
 - Required: No
 - Type: string
-- MinValue: 2
-- MaxValue: 720
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.enabled`
 
@@ -3316,8 +3291,6 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
-- MinValue: 2
-- MaxValue: 720
 
 ### Parameter: `diagnosticSettings.marketplacePartnerResourceId`
 
@@ -3325,8 +3298,6 @@ The full ARM resource ID of the Marketplace resource to which you would like to 
 
 - Required: No
 - Type: string
-- MinValue: 2
-- MaxValue: 720
 
 ### Parameter: `diagnosticSettings.metricCategories`
 
@@ -3334,8 +3305,6 @@ The name of metrics that will be streamed. "allMetrics" includes all possible me
 
 - Required: No
 - Type: array
-- MinValue: 2
-- MaxValue: 720
 
 **Required parameters**
 
@@ -3355,8 +3324,6 @@ Name of a Diagnostic Metric category for a resource type this setting is applied
 
 - Required: Yes
 - Type: string
-- MinValue: 2
-- MaxValue: 720
 
 ### Parameter: `diagnosticSettings.metricCategories.enabled`
 
@@ -3364,17 +3331,13 @@ Enable or disable the category explicitly. Default is `true`.
 
 - Required: No
 - Type: bool
-- MinValue: 2
-- MaxValue: 720
 
 ### Parameter: `diagnosticSettings.name`
 
-The name of diagnostic setting.
+The name of the diagnostic setting.
 
 - Required: No
 - Type: string
-- MinValue: 2
-- MaxValue: 720
 
 ### Parameter: `diagnosticSettings.storageAccountResourceId`
 
@@ -3382,8 +3345,6 @@ Resource ID of the diagnostic storage account. For security reasons, it is recom
 
 - Required: No
 - Type: string
-- MinValue: 2
-- MaxValue: 720
 
 ### Parameter: `diagnosticSettings.workspaceResourceId`
 
@@ -3391,8 +3352,6 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 - Required: No
 - Type: string
-- MinValue: 2
-- MaxValue: 720
 
 ### Parameter: `disableKeyBasedMetadataWriteAccess`
 
@@ -3401,8 +3360,6 @@ Default to true. Disable write operations on metadata resources (databases, cont
 - Required: No
 - Type: bool
 - Default: `True`
-- MinValue: 2
-- MaxValue: 720
 
 ### Parameter: `disableLocalAuth`
 
@@ -3411,8 +3368,6 @@ Default to true. Opt-out of local authentication and ensure only MSI and AAD can
 - Required: No
 - Type: bool
 - Default: `True`
-- MinValue: 2
-- MaxValue: 720
 
 ### Parameter: `enableAnalyticalStorage`
 
@@ -3421,8 +3376,6 @@ Default to false. Flag to indicate whether to enable storage analytics.
 - Required: No
 - Type: bool
 - Default: `False`
-- MinValue: 2
-- MaxValue: 720
 
 ### Parameter: `enableFreeTier`
 
@@ -3431,8 +3384,6 @@ Default to false. Flag to indicate whether Free Tier is enabled.
 - Required: No
 - Type: bool
 - Default: `False`
-- MinValue: 2
-- MaxValue: 720
 
 ### Parameter: `enableMultipleWriteLocations`
 
@@ -3441,8 +3392,6 @@ Default to false. Enables the account to write in multiple locations. Periodic b
 - Required: No
 - Type: bool
 - Default: `False`
-- MinValue: 2
-- MaxValue: 720
 
 ### Parameter: `enableTelemetry`
 
@@ -3451,8 +3400,6 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
-- MinValue: 2
-- MaxValue: 720
 
 ### Parameter: `gremlinDatabases`
 
@@ -3461,8 +3408,6 @@ Gremlin Databases configurations.
 - Required: No
 - Type: array
 - Default: `[]`
-- MinValue: 2
-- MaxValue: 720
 
 ### Parameter: `location`
 
@@ -3471,8 +3416,6 @@ Default to current resource group scope location. Location for all resources.
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
-- MinValue: 2
-- MaxValue: 720
 
 ### Parameter: `locations`
 
@@ -3481,8 +3424,6 @@ Default to the location where the account is deployed. Locations enabled for the
 - Required: No
 - Type: array
 - Default: `[]`
-- MinValue: 2
-- MaxValue: 720
 
 **Required parameters**
 
@@ -3503,8 +3444,6 @@ The failover priority of the region. A failover priority of 0 indicates a write 
 
 - Required: Yes
 - Type: int
-- MinValue: 2
-- MaxValue: 720
 
 ### Parameter: `locations.locationName`
 
@@ -3512,8 +3451,6 @@ The name of the region.
 
 - Required: Yes
 - Type: string
-- MinValue: 2
-- MaxValue: 720
 
 ### Parameter: `locations.isZoneRedundant`
 
@@ -3521,8 +3458,6 @@ Default to true. Flag to indicate whether or not this region is an AvailabilityZ
 
 - Required: No
 - Type: bool
-- MinValue: 2
-- MaxValue: 720
 
 ### Parameter: `lock`
 
@@ -3530,8 +3465,6 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
-- MinValue: 2
-- MaxValue: 720
 
 **Optional parameters**
 
@@ -3554,8 +3487,6 @@ Specify the type of lock.
     'ReadOnly'
   ]
   ```
-- MinValue: 2
-- MaxValue: 720
 
 ### Parameter: `lock.name`
 
@@ -3563,8 +3494,6 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
-- MinValue: 2
-- MaxValue: 720
 
 ### Parameter: `managedIdentities`
 
@@ -3572,15 +3501,13 @@ The managed identity definition for this resource.
 
 - Required: No
 - Type: object
-- MinValue: 2
-- MaxValue: 720
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
-| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
 
 ### Parameter: `managedIdentities.systemAssigned`
 
@@ -3588,17 +3515,13 @@ Enables system assigned managed identity on the resource.
 
 - Required: No
 - Type: bool
-- MinValue: 2
-- MaxValue: 720
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
-The resource ID(s) to assign to the resource.
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
 
 - Required: No
 - Type: array
-- MinValue: 2
-- MaxValue: 720
 
 ### Parameter: `maxIntervalInSeconds`
 
@@ -3633,8 +3556,6 @@ Default to TLS 1.2. Enum to indicate the minimum allowed TLS version. Azure Cosm
     'Tls12'
   ]
   ```
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `mongodbDatabases`
 
@@ -3643,8 +3564,6 @@ MongoDB Databases configurations.
 - Required: No
 - Type: array
 - Default: `[]`
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `networkRestrictions`
 
@@ -3660,8 +3579,6 @@ The network configuration of this module. Defaults to `{ ipRules: [], virtualNet
       virtualNetworkRules: []
   }
   ```
-- MinValue: 1
-- MaxValue: 2147483647
 
 **Optional parameters**
 
@@ -3678,8 +3595,6 @@ A single IPv4 address or a single IPv4 address range in CIDR format. Provided IP
 
 - Required: No
 - Type: array
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `networkRestrictions.networkAclBypass`
 
@@ -3694,8 +3609,6 @@ Default to None. Specifies the network ACL bypass for Azure services.
     'None'
   ]
   ```
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `networkRestrictions.publicNetworkAccess`
 
@@ -3710,8 +3623,6 @@ Default to Disabled. Whether requests from Public Network are allowed.
     'Enabled'
   ]
   ```
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `networkRestrictions.virtualNetworkRules`
 
@@ -3719,8 +3630,6 @@ List of Virtual Network ACL rules configured for the Cosmos DB account..
 
 - Required: No
 - Type: array
-- MinValue: 1
-- MaxValue: 2147483647
 
 **Required parameters**
 
@@ -3734,8 +3643,6 @@ Resource ID of a subnet.
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `privateEndpoints`
 
@@ -3743,14 +3650,12 @@ Configuration details for private endpoints. For security reasons, it is recomme
 
 - Required: No
 - Type: array
-- MinValue: 1
-- MaxValue: 2147483647
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`service`](#parameter-privateendpointsservice) | string | The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file". |
+| [`service`](#parameter-privateendpointsservice) | string | The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file" for a Storage Account's Private Endpoints. |
 | [`subnetResourceId`](#parameter-privateendpointssubnetresourceid) | string | Resource ID of the subnet where the endpoint needs to be created. |
 
 **Optional parameters**
@@ -3769,18 +3674,16 @@ Configuration details for private endpoints. For security reasons, it is recomme
 | [`name`](#parameter-privateendpointsname) | string | The name of the private endpoint. |
 | [`privateDnsZoneGroup`](#parameter-privateendpointsprivatednszonegroup) | object | The private DNS zone group to configure for the private endpoint. |
 | [`privateLinkServiceConnectionName`](#parameter-privateendpointsprivatelinkserviceconnectionname) | string | The name of the private link connection to create. |
-| [`resourceGroupName`](#parameter-privateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different resource group than the main resource. |
+| [`resourceGroupResourceId`](#parameter-privateendpointsresourcegroupresourceid) | string | The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-privateendpointstags) | object | Tags to be applied on all resources/resource groups in this deployment. |
 
 ### Parameter: `privateEndpoints.service`
 
-The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file".
+The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file" for a Storage Account's Private Endpoints.
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `privateEndpoints.subnetResourceId`
 
@@ -3788,8 +3691,6 @@ Resource ID of the subnet where the endpoint needs to be created.
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `privateEndpoints.applicationSecurityGroupResourceIds`
 
@@ -3797,8 +3698,6 @@ Application security groups in which the private endpoint IP configuration is in
 
 - Required: No
 - Type: array
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `privateEndpoints.customDnsConfigs`
 
@@ -3806,14 +3705,12 @@ Custom DNS configurations.
 
 - Required: No
 - Type: array
-- MinValue: 1
-- MaxValue: 2147483647
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`ipAddresses`](#parameter-privateendpointscustomdnsconfigsipaddresses) | array | A list of private ip addresses of the private endpoint. |
+| [`ipAddresses`](#parameter-privateendpointscustomdnsconfigsipaddresses) | array | A list of private IP addresses of the private endpoint. |
 
 **Optional parameters**
 
@@ -3823,12 +3720,10 @@ Custom DNS configurations.
 
 ### Parameter: `privateEndpoints.customDnsConfigs.ipAddresses`
 
-A list of private ip addresses of the private endpoint.
+A list of private IP addresses of the private endpoint.
 
 - Required: Yes
 - Type: array
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `privateEndpoints.customDnsConfigs.fqdn`
 
@@ -3836,8 +3731,6 @@ FQDN that resolves to private endpoint IP address.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `privateEndpoints.customNetworkInterfaceName`
 
@@ -3845,8 +3738,6 @@ The custom name of the network interface attached to the private endpoint.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `privateEndpoints.enableTelemetry`
 
@@ -3854,8 +3745,6 @@ Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `privateEndpoints.ipConfigurations`
 
@@ -3863,8 +3752,6 @@ A list of IP configurations of the private endpoint. This will be used to map to
 
 - Required: No
 - Type: array
-- MinValue: 1
-- MaxValue: 2147483647
 
 **Required parameters**
 
@@ -3879,8 +3766,6 @@ The name of the resource that is unique within a resource group.
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `privateEndpoints.ipConfigurations.properties`
 
@@ -3888,8 +3773,6 @@ Properties of private endpoint IP configurations.
 
 - Required: Yes
 - Type: object
-- MinValue: 1
-- MaxValue: 2147483647
 
 **Required parameters**
 
@@ -3897,7 +3780,7 @@ Properties of private endpoint IP configurations.
 | :-- | :-- | :-- |
 | [`groupId`](#parameter-privateendpointsipconfigurationspropertiesgroupid) | string | The ID of a group obtained from the remote resource that this private endpoint should connect to. |
 | [`memberName`](#parameter-privateendpointsipconfigurationspropertiesmembername) | string | The member name of a group obtained from the remote resource that this private endpoint should connect to. |
-| [`privateIPAddress`](#parameter-privateendpointsipconfigurationspropertiesprivateipaddress) | string | A private ip address obtained from the private endpoint's subnet. |
+| [`privateIPAddress`](#parameter-privateendpointsipconfigurationspropertiesprivateipaddress) | string | A private IP address obtained from the private endpoint's subnet. |
 
 ### Parameter: `privateEndpoints.ipConfigurations.properties.groupId`
 
@@ -3905,8 +3788,6 @@ The ID of a group obtained from the remote resource that this private endpoint s
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `privateEndpoints.ipConfigurations.properties.memberName`
 
@@ -3914,17 +3795,13 @@ The member name of a group obtained from the remote resource that this private e
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `privateEndpoints.ipConfigurations.properties.privateIPAddress`
 
-A private ip address obtained from the private endpoint's subnet.
+A private IP address obtained from the private endpoint's subnet.
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `privateEndpoints.isManualConnection`
 
@@ -3932,8 +3809,6 @@ If Manual Private Link Connection is required.
 
 - Required: No
 - Type: bool
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `privateEndpoints.location`
 
@@ -3941,8 +3816,6 @@ The location to deploy the private endpoint to.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `privateEndpoints.lock`
 
@@ -3950,8 +3823,6 @@ Specify the type of lock.
 
 - Required: No
 - Type: object
-- MinValue: 1
-- MaxValue: 2147483647
 
 **Optional parameters**
 
@@ -3974,8 +3845,6 @@ Specify the type of lock.
     'ReadOnly'
   ]
   ```
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `privateEndpoints.lock.name`
 
@@ -3983,8 +3852,6 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `privateEndpoints.manualConnectionRequestMessage`
 
@@ -3992,8 +3859,6 @@ A message passed to the owner of the remote resource with the manual connection 
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `privateEndpoints.name`
 
@@ -4001,8 +3866,6 @@ The name of the private endpoint.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup`
 
@@ -4010,14 +3873,12 @@ The private DNS zone group to configure for the private endpoint.
 
 - Required: No
 - Type: object
-- MinValue: 1
-- MaxValue: 2147483647
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`privateDnsZoneGroupConfigs`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigs) | array | The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones. |
+| [`privateDnsZoneGroupConfigs`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigs) | array | The private DNS Zone Groups to associate the Private Endpoint. A DNS Zone Group can support up to 5 DNS zones. |
 
 **Optional parameters**
 
@@ -4027,12 +3888,10 @@ The private DNS zone group to configure for the private endpoint.
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs`
 
-The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones.
+The private DNS Zone Groups to associate the Private Endpoint. A DNS Zone Group can support up to 5 DNS zones.
 
 - Required: Yes
 - Type: array
-- MinValue: 1
-- MaxValue: 2147483647
 
 **Required parameters**
 
@@ -4044,7 +3903,7 @@ The private DNS zone groups to associate the private endpoint. A DNS zone group 
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigsname) | string | The name of the private DNS zone group config. |
+| [`name`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigsname) | string | The name of the private DNS Zone Group config. |
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.privateDnsZoneResourceId`
 
@@ -4052,17 +3911,13 @@ The resource id of the private DNS zone.
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.name`
 
-The name of the private DNS zone group config.
+The name of the private DNS Zone Group config.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `privateEndpoints.privateDnsZoneGroup.name`
 
@@ -4070,8 +3925,6 @@ The name of the Private DNS Zone Group.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `privateEndpoints.privateLinkServiceConnectionName`
 
@@ -4079,17 +3932,13 @@ The name of the private link connection to create.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 2147483647
 
-### Parameter: `privateEndpoints.resourceGroupName`
+### Parameter: `privateEndpoints.resourceGroupResourceId`
 
-Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.
+The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `privateEndpoints.roleAssignments`
 
@@ -4097,8 +3946,6 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
-- MinValue: 1
-- MaxValue: 2147483647
 - Roles configurable by name:
   - `'Contributor'`
   - `'DNS Resolver Contributor'`
@@ -4109,7 +3956,7 @@ Array of role assignments to create.
   - `'Owner'`
   - `'Private DNS Zone Contributor'`
   - `'Reader'`
-  - `'Role Based Access Control Administrator (Preview)'`
+  - `'Role Based Access Control Administrator'`
 
 **Required parameters**
 
@@ -4135,8 +3982,6 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `privateEndpoints.roleAssignments.roleDefinitionIdOrName`
 
@@ -4144,8 +3989,6 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `privateEndpoints.roleAssignments.condition`
 
@@ -4153,8 +3996,6 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `privateEndpoints.roleAssignments.conditionVersion`
 
@@ -4168,8 +4009,6 @@ Version of the condition.
     '2.0'
   ]
   ```
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `privateEndpoints.roleAssignments.delegatedManagedIdentityResourceId`
 
@@ -4177,8 +4016,6 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `privateEndpoints.roleAssignments.description`
 
@@ -4186,8 +4023,6 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `privateEndpoints.roleAssignments.name`
 
@@ -4195,8 +4030,6 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `privateEndpoints.roleAssignments.principalType`
 
@@ -4214,8 +4047,6 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `privateEndpoints.tags`
 
@@ -4223,17 +4054,13 @@ Tags to be applied on all resources/resource groups in this deployment.
 
 - Required: No
 - Type: object
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `roleAssignments`
 
-Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalIds' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+Array of role assignments to create.
 
 - Required: No
 - Type: array
-- MinValue: 1
-- MaxValue: 2147483647
 - Roles configurable by name:
   - `'Contributor'`
   - `'Cosmos DB Account Reader Role'`
@@ -4270,8 +4097,6 @@ The principal ID of the principal (user/group/identity) to assign the role to.
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `roleAssignments.roleDefinitionIdOrName`
 
@@ -4279,8 +4104,6 @@ The role to assign. You can provide either the display name of the role definiti
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `roleAssignments.condition`
 
@@ -4288,8 +4111,6 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `roleAssignments.conditionVersion`
 
@@ -4303,8 +4124,6 @@ Version of the condition.
     '2.0'
   ]
   ```
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `roleAssignments.delegatedManagedIdentityResourceId`
 
@@ -4312,8 +4131,6 @@ The Resource Id of the delegated managed identity resource.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `roleAssignments.description`
 
@@ -4321,8 +4138,6 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `roleAssignments.name`
 
@@ -4330,8 +4145,6 @@ The name (as GUID) of the role assignment. If not provided, a GUID will be gener
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -4349,8 +4162,6 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `secretsExportConfiguration`
 
@@ -4358,8 +4169,6 @@ Key vault reference and secret settings for the module's secrets export.
 
 - Required: No
 - Type: object
-- MinValue: 1
-- MaxValue: 2147483647
 
 **Required parameters**
 
@@ -4386,8 +4195,6 @@ The resource ID of the key vault where to store the secrets of this module.
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `secretsExportConfiguration.primaryReadonlyConnectionStringSecretName`
 
@@ -4395,8 +4202,6 @@ The primary readonly connection string secret name to create.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `secretsExportConfiguration.primaryReadOnlyKeySecretName`
 
@@ -4404,8 +4209,6 @@ The primary readonly key secret name to create.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `secretsExportConfiguration.primaryWriteConnectionStringSecretName`
 
@@ -4413,8 +4216,6 @@ The primary write connection string secret name to create.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `secretsExportConfiguration.primaryWriteKeySecretName`
 
@@ -4422,8 +4223,6 @@ The primary write key secret name to create.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `secretsExportConfiguration.secondaryReadonlyConnectionStringSecretName`
 
@@ -4431,8 +4230,6 @@ The primary readonly connection string secret name to create.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `secretsExportConfiguration.secondaryReadonlyKeySecretName`
 
@@ -4440,8 +4237,6 @@ The primary readonly key secret name to create.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `secretsExportConfiguration.secondaryWriteConnectionStringSecretName`
 
@@ -4449,8 +4244,6 @@ The primary write connection string secret name to create.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `secretsExportConfiguration.secondaryWriteKeySecretName`
 
@@ -4458,8 +4251,6 @@ The primary write key secret name to create.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `serverVersion`
 
@@ -4480,8 +4271,6 @@ Default to 4.2. Specifies the MongoDB server version to use.
     '7.0'
   ]
   ```
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `sqlDatabases`
 
@@ -4490,8 +4279,6 @@ SQL Databases configurations.
 - Required: No
 - Type: array
 - Default: `[]`
-- MinValue: 1
-- MaxValue: 2147483647
 
 **Required parameters**
 
@@ -4513,8 +4300,6 @@ Name of the SQL database .
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `sqlDatabases.autoscaleSettingsMaxThroughput`
 
@@ -4522,8 +4307,6 @@ Specifies the Autoscale settings and represents maximum throughput, the resource
 
 - Required: No
 - Type: int
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `sqlDatabases.containers`
 
@@ -4531,8 +4314,6 @@ Array of containers to deploy in the SQL database.
 
 - Required: No
 - Type: array
-- MinValue: 1
-- MaxValue: 2147483647
 
 **Required parameters**
 
@@ -4561,8 +4342,6 @@ Name of the container.
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `sqlDatabases.containers.paths`
 
@@ -4570,8 +4349,6 @@ List of paths using which data within the container can be partitioned. For kind
 
 - Required: Yes
 - Type: array
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `sqlDatabases.containers.analyticalStorageTtl`
 
@@ -4579,8 +4356,6 @@ Default to 0. Indicates how long data should be retained in the analytical store
 
 - Required: No
 - Type: int
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `sqlDatabases.containers.autoscaleSettingsMaxThroughput`
 
@@ -4588,7 +4363,6 @@ Specifies the Autoscale settings and represents maximum throughput, the resource
 
 - Required: No
 - Type: int
-- MinValue: 1
 - MaxValue: 1000000
 
 ### Parameter: `sqlDatabases.containers.conflictResolutionPolicy`
@@ -4597,8 +4371,6 @@ The conflict resolution policy for the container. Conflicts and conflict resolut
 
 - Required: No
 - Type: object
-- MinValue: 1
-- MaxValue: 1000000
 
 **Required parameters**
 
@@ -4626,8 +4398,6 @@ Indicates the conflict resolution mode.
     'LastWriterWins'
   ]
   ```
-- MinValue: 1
-- MaxValue: 1000000
 
 ### Parameter: `sqlDatabases.containers.conflictResolutionPolicy.conflictResolutionPath`
 
@@ -4635,8 +4405,6 @@ The conflict resolution path in the case of LastWriterWins mode. Required if `mo
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 1000000
 
 ### Parameter: `sqlDatabases.containers.conflictResolutionPolicy.conflictResolutionProcedure`
 
@@ -4644,8 +4412,6 @@ The procedure to resolve conflicts in the case of custom mode. Required if `mode
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 1000000
 
 ### Parameter: `sqlDatabases.containers.defaultTtl`
 
@@ -4662,8 +4428,6 @@ Indexing policy of the container.
 
 - Required: No
 - Type: object
-- MinValue: -1
-- MaxValue: 2147483647
 
 ### Parameter: `sqlDatabases.containers.kind`
 
@@ -4678,8 +4442,6 @@ Default to Hash. Indicates the kind of algorithm used for partitioning.
     'MultiHash'
   ]
   ```
-- MinValue: -1
-- MaxValue: 2147483647
 
 ### Parameter: `sqlDatabases.containers.throughput`
 
@@ -4687,8 +4449,6 @@ Default to 400. Request Units per second. Will be ignored if autoscaleSettingsMa
 
 - Required: No
 - Type: int
-- MinValue: -1
-- MaxValue: 2147483647
 
 ### Parameter: `sqlDatabases.containers.uniqueKeyPolicyKeys`
 
@@ -4696,8 +4456,6 @@ The unique key policy configuration containing a list of unique keys that enforc
 
 - Required: No
 - Type: array
-- MinValue: -1
-- MaxValue: 2147483647
 
 **Required parameters**
 
@@ -4711,8 +4469,6 @@ List of paths must be unique for each document in the Azure Cosmos DB service.
 
 - Required: Yes
 - Type: array
-- MinValue: -1
-- MaxValue: 2147483647
 
 ### Parameter: `sqlDatabases.containers.version`
 
@@ -4727,8 +4483,6 @@ Default to 1 for Hash and 2 for MultiHash - 1 is not allowed for MultiHash. Vers
     2
   ]
   ```
-- MinValue: -1
-- MaxValue: 2147483647
 
 ### Parameter: `sqlDatabases.throughput`
 
@@ -4736,8 +4490,6 @@ Default to 400. Request units per second. Will be ignored if autoscaleSettingsMa
 
 - Required: No
 - Type: int
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `sqlRoleAssignmentsPrincipalIds`
 
@@ -4746,8 +4498,6 @@ SQL Role Definitions configurations.
 - Required: No
 - Type: array
 - Default: `[]`
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `sqlRoleDefinitions`
 
@@ -4755,8 +4505,6 @@ SQL Role Definitions configurations.
 
 - Required: No
 - Type: array
-- MinValue: 1
-- MaxValue: 2147483647
 
 **Required parameters**
 
@@ -4778,8 +4526,6 @@ Name of the SQL Role Definition.
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `sqlRoleDefinitions.dataAction`
 
@@ -4787,8 +4533,6 @@ An array of data actions that are allowed.
 
 - Required: No
 - Type: array
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `sqlRoleDefinitions.roleName`
 
@@ -4796,8 +4540,6 @@ A user-friendly name for the Role Definition. Must be unique for the database ac
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `sqlRoleDefinitions.roleType`
 
@@ -4812,8 +4554,6 @@ Indicates whether the Role Definition was built-in or user created.
     'CustomRole'
   ]
   ```
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `tables`
 
@@ -4822,8 +4562,6 @@ Table configurations.
 - Required: No
 - Type: array
 - Default: `[]`
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `tags`
 
@@ -4831,8 +4569,6 @@ Tags of the Database Account resource.
 
 - Required: No
 - Type: object
-- MinValue: 1
-- MaxValue: 2147483647
 
 ### Parameter: `totalThroughputLimit`
 
@@ -4841,8 +4577,6 @@ Default to unlimited. The total throughput limit imposed on this Cosmos DB accou
 - Required: No
 - Type: int
 - Default: `-1`
-- MinValue: 1
-- MaxValue: 2147483647
 
 ## Outputs
 
@@ -4863,7 +4597,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.7.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.10.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 
