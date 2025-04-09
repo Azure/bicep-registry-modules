@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "9338002538470438514"
+      "templateHash": "6477192952891756676"
     },
     "name": "Purview Accounts",
     "description": "This module deploys a Purview Account."
@@ -607,7 +607,7 @@
     },
     "managedEventHubState": {
       "type": "string",
-      "defaultValue": "Enabled",
+      "defaultValue": "Disabled",
       "allowedValues": [
         "Enabled",
         "Disabled",
@@ -4723,31 +4723,35 @@
     },
     "managedResourceGroupName": {
       "type": "string",
+      "nullable": true,
       "metadata": {
         "description": "The name of the managed resource group."
       },
-      "value": "[reference('account').managedResourceGroupName]"
+      "value": "[tryGet(reference('account'), 'managedResourceGroupName')]"
     },
     "managedResourceGroupId": {
       "type": "string",
+      "nullable": true,
       "metadata": {
         "description": "The resource ID of the managed resource group."
       },
-      "value": "[reference('account').managedResources.resourceGroup]"
+      "value": "[tryGet(tryGet(reference('account'), 'managedResources'), 'resourceGroup')]"
     },
     "managedStorageAccountId": {
       "type": "string",
+      "nullable": true,
       "metadata": {
         "description": "The resource ID of the managed storage account."
       },
-      "value": "[reference('account').managedResources.storageAccount]"
+      "value": "[tryGet(tryGet(reference('account'), 'managedResources'), 'storageAccount')]"
     },
     "managedEventHubId": {
       "type": "string",
+      "nullable": true,
       "metadata": {
         "description": "The resource ID of the managed Event Hub Namespace."
       },
-      "value": "[reference('account').managedResources.eventHubNamespace]"
+      "value": "[tryGet(tryGet(reference('account'), 'managedResources'), 'eventHubNamespace')]"
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",

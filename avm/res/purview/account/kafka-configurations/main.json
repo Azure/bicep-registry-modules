@@ -1,0 +1,128 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.33.93.31351",
+      "templateHash": "14239720468631955663"
+    },
+    "name": "Purview Account Kafka Configuration",
+    "description": "This module deploys a Purview Account Kafka Configuration."
+  },
+  "definitions": {
+    "kafkaConfigurationType": {
+      "type": "object",
+      "properties": {
+        "consumerGroup": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The consumer group for the hook event hub."
+          }
+        },
+        "credentials": {
+          "type": "object",
+          "properties": {
+            "identityId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The identity ID of the Kafka configuration."
+              }
+            },
+            "type": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The type of the credentials for the Kafka configuration."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. The credentials for the event streaming service."
+          }
+        },
+        "eventHubPartitionId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The partition ID for the notification event hub. If not set, all partitions will be used."
+          }
+        },
+        "eventHubResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The event hub resource ID of the Kafka configuration."
+          }
+        },
+        "eventHubType": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The event hub type."
+          }
+        },
+        "eventStreamingState": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The event streaming state."
+          }
+        },
+        "eventStreamingType": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The event streaming type."
+          }
+        }
+      },
+      "nullable": true,
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Optional. The type for Kafka configuration properties."
+      }
+    }
+  },
+  "parameters": {
+    "accountName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the Purview account."
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the Kafka configuration."
+      }
+    },
+    "kakfaConfiguration": {
+      "$ref": "#/definitions/kafkaConfigurationType",
+      "metadata": {
+        "description": "Optional. The Kafka configuration properties."
+      }
+    }
+  },
+  "resources": {
+    "account": {
+      "existing": true,
+      "type": "Microsoft.Purview/accounts",
+      "apiVersion": "2024-04-01-preview",
+      "name": "[parameters('accountName')]"
+    },
+    "kafkaConfiguration": {
+      "type": "Microsoft.Purview/accounts/kafkaConfigurations",
+      "apiVersion": "2024-04-01-preview",
+      "name": "[format('{0}/{1}', parameters('accountName'), parameters('name'))]",
+      "properties": {
+        "consumerGroup": "[tryGet(parameters('kakfaConfiguration'), 'consumerGroup')]",
+        "credentials": {
+          "identityId": "string",
+          "type": "string"
+        },
+        "eventHubPartitionId": "[tryGet(parameters('kakfaConfiguration'), 'eventHubPartitionId')]",
+        "eventHubResourceId": "[tryGet(parameters('kakfaConfiguration'), 'eventHubResourceId')]",
+        "eventHubType": "[tryGet(parameters('kakfaConfiguration'), 'eventHubType')]",
+        "eventStreamingState": "[tryGet(parameters('kakfaConfiguration'), 'eventStreamingState')]",
+        "eventStreamingType": "[tryGet(parameters('kakfaConfiguration'), 'eventStreamingType')]"
+      }
+    }
+  }
+}

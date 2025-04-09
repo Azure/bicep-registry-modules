@@ -81,6 +81,7 @@ module testDeployment '../../../main.bicep' = [
           nestedDependencies.outputs.managedIdentityResourceId
         ]
       }
+      managedEventHubState: 'Enabled'
       managedResourceGroupName: '${namePrefix}${serviceShort}001-managed-rg'
       publicNetworkAccess: 'Disabled'
       diagnosticSettings: [

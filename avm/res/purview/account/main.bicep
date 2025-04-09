@@ -22,7 +22,7 @@ param managedIdentities managedIdentityOnlyUserAssignedType?
   'Disabled'
   'NotSpecified'
 ])
-param managedEventHubState string = 'Enabled'
+param managedEventHubState string = 'Disabled'
 
 @description('Optional. The Managed Resource Group Name. A managed Storage Account, and an Event Hubs will be created in the selected subscription for catalog ingestion scenarios. Default is \'managed-rg-<purview-account-name>\'.')
 param managedResourceGroupName string = 'managed-rg-${name}'
@@ -519,16 +519,16 @@ output resourceId string = account.id
 output location string = account.location
 
 @description('The name of the managed resource group.')
-output managedResourceGroupName string = account.properties.managedResourceGroupName
+output managedResourceGroupName string? = account.properties.?managedResourceGroupName
 
 @description('The resource ID of the managed resource group.')
-output managedResourceGroupId string = account.properties.managedResources.resourceGroup
+output managedResourceGroupId string? = account.properties.?managedResources.?resourceGroup
 
 @description('The resource ID of the managed storage account.')
-output managedStorageAccountId string = account.properties.managedResources.storageAccount
+output managedStorageAccountId string? = account.properties.?managedResources.?storageAccount
 
 @description('The resource ID of the managed Event Hub Namespace.')
-output managedEventHubId string = account.properties.managedResources.eventHubNamespace
+output managedEventHubId string? = account.properties.?managedResources.?eventHubNamespace
 
 @description('The principal ID of the system assigned identity.')
 output systemAssignedMIPrincipalId string? = account.?identity.?principalId
