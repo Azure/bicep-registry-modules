@@ -239,7 +239,6 @@ module account 'br/public:avm/res/purview/account:<version>' = {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    managedEventHubState: 'Enabled'
     managedIdentities: {
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
@@ -430,9 +429,6 @@ module account 'br/public:avm/res/purview/account:<version>' = {
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
       }
-    },
-    "managedEventHubState": {
-      "value": "Enabled"
     },
     "managedIdentities": {
       "value": {
@@ -627,7 +623,6 @@ param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
 }
-param managedEventHubState = 'Enabled'
 param managedIdentities = {
   userAssignedResourceIds: [
     '<managedIdentityResourceId>'
