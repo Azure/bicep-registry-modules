@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "8568820823436494723"
+      "templateHash": "3136394094144397199"
     },
     "name": "Network Managers",
     "description": "This module deploys a Network Manager."
@@ -257,15 +257,12 @@
       }
     },
     "_1.appliesToType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "networkGroupResourceId": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The resource ID of the network group."
-            }
+      "type": "object",
+      "properties": {
+        "networkGroupResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of the network group."
           }
         }
       },
@@ -748,7 +745,10 @@
           }
         },
         "appliesTo": {
-          "$ref": "#/definitions/_1.appliesToType",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/_1.appliesToType"
+          },
           "metadata": {
             "description": "Required. List of network groups for configuration. A routing rule collection must be associated to at least one network group."
           }
@@ -2706,7 +2706,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.34.44.8038",
-              "templateHash": "6967374606990183919"
+              "templateHash": "8937430648481358947"
             },
             "name": "Network Manager Routing Configurations",
             "description": "This module deploys an Network Manager Routing Configuration.\nRouting configurations are the building blocks of UDR management. They're used to describe the desired routing behavior for a network group."
@@ -2729,7 +2729,10 @@
                   }
                 },
                 "appliesTo": {
-                  "$ref": "#/definitions/appliesToType",
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/appliesToType"
+                  },
                   "metadata": {
                     "description": "Required. List of network groups for configuration. A routing rule collection must be associated to at least one network group."
                   }
@@ -2816,15 +2819,12 @@
               }
             },
             "appliesToType": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "networkGroupResourceId": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. The resource ID of the network group."
-                    }
+              "type": "object",
+              "properties": {
+                "networkGroupResourceId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The resource ID of the network group."
                   }
                 }
               },
@@ -2962,22 +2962,19 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.34.44.8038",
-                      "templateHash": "13010354467836878648"
+                      "templateHash": "4079432994771742579"
                     },
                     "name": "Network Manager Routing Configuration Rule Collections",
                     "description": "This module deploys an Network Manager Routing Configuration Rule Collection.\nRouting configurations are the building blocks of UDR management. They're used to describe the desired routing behavior for a network group. Each routing configuration contains one ore more rule collections. Warning: A rule collection without a rule will cause a deployment of routing configuration to fail in network manager."
                   },
                   "definitions": {
                     "appliesToType": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "networkGroupResourceId": {
-                            "type": "string",
-                            "metadata": {
-                              "description": "Required. The resource ID of the network group."
-                            }
+                      "type": "object",
+                      "properties": {
+                        "networkGroupResourceId": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. The resource ID of the network group."
                           }
                         }
                       },
@@ -3106,7 +3103,10 @@
                       }
                     },
                     "appliesTo": {
-                      "$ref": "#/definitions/appliesToType",
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/appliesToType"
+                      },
                       "metadata": {
                         "description": "Required. List of network groups for configuration. A routing rule collection must be associated to at least one network group."
                       }

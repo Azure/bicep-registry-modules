@@ -17,7 +17,7 @@ param name string
 param description string = ''
 
 @sys.description('Required. List of network groups for configuration. A routing rule collection must be associated to at least one network group.')
-param appliesTo appliesToType
+param appliesTo appliesToType[]
 
 @sys.description('Optional. Determines whether BGP route propagation is enabled for the routing rule collection. Defaults to true.')
 param disableBgpRoutePropagation bool = true
@@ -77,7 +77,7 @@ output resourceGroupName string = resourceGroup().name
 type appliesToType = {
   @sys.description('Required. The resource ID of the network group.')
   networkGroupResourceId: string
-}[]
+}
 
 import { destinationType, nextHopType } from 'rule/main.bicep'
 @export()

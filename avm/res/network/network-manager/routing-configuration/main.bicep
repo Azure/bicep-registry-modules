@@ -67,7 +67,7 @@ type routingConfigurationRuleCollectionType = {
   description: string?
 
   @sys.description('Required. List of network groups for configuration. A routing rule collection must be associated to at least one network group.')
-  appliesTo: appliesToType
+  appliesTo: appliesToType[]
 
   @sys.description('Optional. Disables BGP route propagation for the rule collection. Defaults to true.')
   disableBgpRoutePropagation: bool?
