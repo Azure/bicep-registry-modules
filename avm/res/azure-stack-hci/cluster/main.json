@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "12673893715836444693"
+      "version": "0.33.93.31351",
+      "templateHash": "11031081758158537975"
     },
     "name": "Azure Stack HCI Cluster",
     "description": "This module deploys an Azure Stack HCI Cluster on the provided Arc Machines."
@@ -824,13 +824,7 @@
     },
     "sortedDeploymentOperations": "[if(not(empty(parameters('deploymentOperations'))), sort(parameters('deploymentOperations'), lambda('a', 'b', greater(lambdaVariables('a'), lambdaVariables('b')))), createArray())]",
     "managementNetworks": "[filter(parameters('deploymentSettings').networkIntents, lambda('n', contains(lambdaVariables('n').trafficType, 'Management')))]",
-    "management_adapters": "[flatten(map(variables('managementNetworks'), lambda('n', lambdaVariables('n').adapter)))]",
-    "storageNetworks": "[filter(parameters('deploymentSettings').networkIntents, lambda('n', contains(lambdaVariables('n').trafficType, 'Storage')))]",
-    "storage_adapters": "[flatten(map(variables('storageNetworks'), lambda('n', lambdaVariables('n').adapter)))]",
-    "overlapping_adapters": "[filter(variables('management_adapters'), lambda('a', contains(variables('storage_adapters'), lambdaVariables('a'))))]",
-    "computeNetworks": "[filter(parameters('deploymentSettings').networkIntents, lambda('n', contains(lambdaVariables('n').trafficType, 'Compute')))]",
-    "compute_intent_name": "[if(greater(length(variables('computeNetworks')), 0), variables('computeNetworks')[0].name, '')]",
-    "converged": "[and(equals(length(variables('overlapping_adapters')), length(variables('management_adapters'))), equals(length(variables('overlapping_adapters')), length(variables('storage_adapters'))))]"
+    "managementIntentName": "[if(greater(length(variables('managementNetworks')), 0), variables('managementNetworks')[0].name, '')]"
   },
   "resources": {
     "avmTelemetry": {
@@ -967,8 +961,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "18231557278397526039"
+              "version": "0.33.93.31351",
+              "templateHash": "5238695736774441169"
             }
           },
           "parameters": {
@@ -1303,8 +1297,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "3701439978420477660"
+              "version": "0.33.93.31351",
+              "templateHash": "1370422971386346503"
             },
             "name": "Azure Stack HCI Cluster Deployment Settings",
             "description": "This module deploys an Azure Stack HCI Cluster Deployment Settings resource."
@@ -1740,7 +1734,7 @@
       "metadata": {
         "description": "The name of the vSwitch."
       },
-      "value": "[if(variables('converged'), format('ConvergedSwitch({0})', toLower(parameters('deploymentSettings').networkIntents[0].name)), format('ConvergedSwitch({0})', toLower(variables('compute_intent_name'))))]"
+      "value": "[format('ConvergedSwitch({0})', variables('managementIntentName'))]"
     }
   }
 }

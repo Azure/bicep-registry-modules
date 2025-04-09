@@ -268,17 +268,7 @@ resource cluster_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-0
 ]
 
 var managementNetworks = filter(deploymentSettings.networkIntents, n => contains(n.trafficType, 'Management'))
-var management_adapters = flatten(map(managementNetworks, n => n.adapter))
-
-var storageNetworks = filter(deploymentSettings.networkIntents, n => contains(n.trafficType, 'Storage'))
-var storage_adapters = flatten(map(storageNetworks, n => n.adapter))
-
-var overlapping_adapters = filter(management_adapters, a => contains(storage_adapters, a))
-
-var computeNetworks = filter(deploymentSettings.networkIntents, n => contains(n.trafficType, 'Compute'))
-var compute_intent_name = length(computeNetworks) > 0 ? computeNetworks[0].name : ''
-
-var converged = (length(overlapping_adapters) == length(management_adapters)) && (length(overlapping_adapters) == length(storage_adapters))
+var managementIntentName = length(managementNetworks) > 0 ? managementNetworks[0].name : ''
 
 @description('The name of the cluster.')
 output name string = cluster.name
@@ -296,9 +286,7 @@ output systemAssignedMIPrincipalId string = cluster.identity.principalId
 output location string = cluster.location
 
 @description('The name of the vSwitch.')
-output vSwitchName string = converged
-  ? 'ConvergedSwitch(${toLower(deploymentSettings.networkIntents[0].name)})'
-  : 'ConvergedSwitch(${toLower(compute_intent_name)})'
+output vSwitchName string = 'ConvergedSwitch(${managementIntentName})'
 
 // =============== //
 //   Definitions   //
