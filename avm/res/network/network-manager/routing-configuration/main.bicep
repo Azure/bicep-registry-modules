@@ -30,7 +30,7 @@ resource routingConfigurations 'Microsoft.Network/networkManagers/routingConfigu
 
 module routingConfigurations_ruleCollections 'rule-collection/main.bicep' = [
   for (ruleCollection, index) in ruleCollections ?? []: {
-    name: '${uniqueString(deployment().name)}-RoutingConfigurations-RuleCollections-${index}'
+    name: '${uniqueString(deployment().name)}-RoutingConfig-RuleCollections-${index}'
     params: {
       networkManagerName: networkManager.name
       routingConfigurationName: routingConfigurations.name
