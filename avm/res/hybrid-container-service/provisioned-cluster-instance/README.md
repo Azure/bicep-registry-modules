@@ -1,4 +1,4 @@
-# Hybrid Container Service Provisioned Cluster Instance `[Microsoft.HybridContainerService/provisionedClusterInstances]`
+# Hybrid Container Service Provisioned Cluster Instance `[Microsoft.hybridcontainerservice/provisionedclusterinstance]`
 
 Deploy a provisioned cluster instance.
 
