@@ -246,7 +246,7 @@ module testDeployment '../../../main.bicep' = {
               {
                 objectType: 'AzureOperationalStoreParameters'
                 dataStoreType: 'OperationalStore'
-                resourceGroupId: resourceGroup_src.id
+                resourceGroupId: resourceGroup.id
               }
             ]
           }
