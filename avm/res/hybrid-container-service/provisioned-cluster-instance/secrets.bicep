@@ -48,6 +48,7 @@ resource sshPublicKeyPem 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {
   parent: kv
   name: sshPublicKeySecretName
   properties: {
+    contentType: 'Secret'
     value: generateSSHKey.properties.outputs.publicKey
   }
 }
@@ -56,6 +57,7 @@ resource sshPrivateKeyPem 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {
   parent: kv
   name: sshPrivateKeyPemSecretName
   properties: {
+    contentType: 'Secret'
     value: generateSSHKey.properties.outputs.privateKey
   }
 }
