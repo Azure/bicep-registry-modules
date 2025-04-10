@@ -131,7 +131,7 @@ function Set-AvmGitHubIssueOwnerConfig {
             }
 
             if ($issue.labels.name -contains 'Status: Module Orphaned :eyes:') {
-                if ($PSCmdlet.ShouldProcess("remove orphaned label from issue [$($issue.title)]")) {
+                if ($PSCmdlet.ShouldProcess("orphaned label from issue [$($issue.title)]", 'Remove')) {
                     gh issue edit $issue.url --remove-label 'Status: Module Orphaned :eyes:' --repo $Repo
                 }
             }
