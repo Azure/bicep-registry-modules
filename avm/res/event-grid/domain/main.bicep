@@ -56,6 +56,14 @@ param managedIdentities managedIdentityAllType?
 @description('Optional. Allow only Azure AD authentication. Should be enabled for security reasons.')
 param disableLocalAuth bool = true
 
+@description('Optional. Minimum TLS version to be used for the domain. If not specified, it will be set to 1.2.')
+@allowed([
+  '1.0'
+  '1.1'
+  '1.2'
+])
+param minimumTlsVersionAllowed string = '1.2'
+
 var enableReferencedModulesTelemetry = false
 
 var formattedUserAssignedIdentities = reduce(
@@ -149,6 +157,7 @@ resource domain 'Microsoft.EventGrid/domains@2023-06-01-preview' = {
     autoCreateTopicWithFirstSubscription: autoCreateTopicWithFirstSubscription
     autoDeleteTopicWithLastSubscription: autoDeleteTopicWithLastSubscription
     disableLocalAuth: disableLocalAuth
+    minimumTlsVersionAllowed: minimumTlsVersionAllowed
   }
 }
 
