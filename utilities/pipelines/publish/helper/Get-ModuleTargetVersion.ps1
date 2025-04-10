@@ -46,7 +46,8 @@ function Get-ModuleTargetVersion {
         $jsonChanged = Get-ModuleJsonChange -ModuleFolderPath $ModuleFolderPath
         if ($jsonChanged -eq $false) {
             Write-Verbose 'Version in main.json file did not change. No need to bump the version.' -Verbose
-            $publishedVersions = Get-ModulePublishedVersions -TagListUrl ('https://mcr.microsoft.com/v2/bicep/avm/{0}/tags/list' -f ($module -replace '\\', '/'))
+            $null, $moduleType, $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]') # 'avm/res|ptn|utl/<provider>/<resourceType>' would return 'avm', 'res|ptn|utl', '<provider>/<resourceType>'
+            $publishedVersions = Get-ModulePublishedVersions -TagListUrl ('https://mcr.microsoft.com/v2/bicep/avm/{0}/{1}/tags/list' -f $moduleType, ($resourceTypeIdentifier -replace '\\', '/'))
             # the last version in the array is the latest published version
             Write-Verbose "Latest published version is [$($publishedVersions[-1])]." -Verbose
             return $publishedVersions[-1]
