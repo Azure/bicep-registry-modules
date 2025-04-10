@@ -14,7 +14,7 @@ This module deploys an Azure SQL Server Instance Pool.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Sql/instancePools` | [2023-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-05-01-preview/instancePools) |
+| `Microsoft.Sql/instancePools` | [2024-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2024-05-01-preview/instancePools) |
 
 ## Usage examples
 
@@ -183,9 +183,11 @@ param skuName = 'GP_Gen8IM'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`capacity`](#parameter-capacity) | int | Capacity of the particular SKU. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`licenseType`](#parameter-licensetype) | string | The license type to apply for this database. |
 | [`location`](#parameter-location) | string | Location for all resources. |
+| [`size`](#parameter-size) | string | Size of the particular SKU |
 | [`skuFamily`](#parameter-skufamily) | string | If the service has different generations of hardware, for the same SKU, then that can be captured here. |
 | [`skuName`](#parameter-skuname) | string | The SKU name for the instance pool. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
@@ -205,6 +207,14 @@ The subnet resource ID for the instance pool.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `capacity`
+
+Capacity of the particular SKU.
+
+- Required: No
+- Type: int
+- Default: `8`
 
 ### Parameter: `enableTelemetry`
 
@@ -236,6 +246,14 @@ Location for all resources.
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
+
+### Parameter: `size`
+
+Size of the particular SKU
+
+- Required: No
+- Type: string
+- Default: `'8'`
 
 ### Parameter: `skuFamily`
 
