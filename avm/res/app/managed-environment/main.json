@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "17762768820086498534"
+      "templateHash": "18342086610939241088"
     },
     "name": "App ManagedEnvironments",
     "description": "This module deploys an App Managed Environment (also known as a Container App Environment)."
@@ -120,7 +120,7 @@
               }
             },
             "sharedKey": {
-              "type": "string",
+              "type": "securestring",
               "metadata": {
                 "description": "Required. The shared key of the Log Analytics workspace."
               }
@@ -132,7 +132,10 @@
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for the App Logs Configuration."
+      }
     },
     "certificateKeyVaultPropertiesType": {
       "type": "object",

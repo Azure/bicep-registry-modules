@@ -342,6 +342,8 @@ type storageType = {
   shareName: string
 }
 
+@export()
+@description('The type for the App Logs Configuration.')
 type appLogsConfigurationType = {
   @description('Optional. The destination of the logs.')
   destination: string?
@@ -352,6 +354,7 @@ type appLogsConfigurationType = {
     customerId: string
 
     @description('Required. The shared key of the Log Analytics workspace.')
+    @secure()
     sharedKey: string
   }?
-}?
+}

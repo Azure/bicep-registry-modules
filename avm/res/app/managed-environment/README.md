@@ -1225,7 +1225,7 @@ The configuration for Log Analytics.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`customerId`](#parameter-applogsconfigurationloganalyticsconfigurationcustomerid) | string | The customer ID of the Log Analytics workspace. |
-| [`sharedKey`](#parameter-applogsconfigurationloganalyticsconfigurationsharedkey) | string | The shared key of the Log Analytics workspace. |
+| [`sharedKey`](#parameter-applogsconfigurationloganalyticsconfigurationsharedkey) | securestring | The shared key of the Log Analytics workspace. |
 
 ### Parameter: `appLogsConfiguration.logAnalyticsConfiguration.customerId`
 
@@ -1239,7 +1239,7 @@ The customer ID of the Log Analytics workspace.
 The shared key of the Log Analytics workspace.
 
 - Required: Yes
-- Type: string
+- Type: securestring
 
 ### Parameter: `certificate`
 
