@@ -272,6 +272,8 @@ output location string = privateDnsZone.location
 // Definitions      //
 // ================ //
 
+@export()
+@description('The type for the A record.')
 type aType = {
   @description('Required. The name of the record.')
   name: string
@@ -292,6 +294,8 @@ type aType = {
   }[]?
 }
 
+@export()
+@description('The type for the AAAA record.')
 type aaaaType = {
   @description('Required. The name of the record.')
   name: string
@@ -312,6 +316,8 @@ type aaaaType = {
   }[]?
 }
 
+@export()
+@description('The type for the CNAME record.')
 type cnameType = {
   @description('Required. The name of the record.')
   name: string
@@ -332,6 +338,8 @@ type cnameType = {
   }?
 }
 
+@export()
+@description('The type for the MX record.')
 type mxType = {
   @description('Required. The name of the record.')
   name: string
@@ -355,6 +363,8 @@ type mxType = {
   }[]?
 }
 
+@export()
+@description('The type for the PTR record.')
 type ptrType = {
   @description('Required. The name of the record.')
   name: string
@@ -375,6 +385,8 @@ type ptrType = {
   }[]?
 }
 
+@export()
+@description('The type for the SOA record.')
 type soaType = {
   @description('Required. The name of the record.')
   name: string
@@ -413,6 +425,8 @@ type soaType = {
   }?
 }
 
+@export()
+@description('The type for the SRV record.')
 type srvType = {
   @description('Required. The name of the record.')
   name: string
@@ -442,6 +456,8 @@ type srvType = {
   }[]?
 }
 
+@export()
+@description('The type for the TXT record.')
 type txtType = {
   @description('Required. The name of the record.')
   name: string
@@ -462,6 +478,8 @@ type txtType = {
   }[]?
 }
 
+@export()
+@description('The type for the virtual network link.')
 type virtualNetworkLinkType = {
   @description('Optional. The resource name.')
   @minLength(1)

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "2222560326529390231"
+      "templateHash": "8106198446742632452"
     },
     "name": "Private DNS Zones",
     "description": "This module deploys a Private DNS zone."
@@ -63,6 +63,10 @@
             "description": "Optional. The list of A records in the record set."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for the A record."
       }
     },
     "aaaaType": {
@@ -116,6 +120,10 @@
             "description": "Optional. The list of AAAA records in the record set."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for the AAAA record."
       }
     },
     "cnameType": {
@@ -166,6 +174,10 @@
             "description": "Optional. The CNAME record in the record set."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for the CNAME record."
       }
     },
     "mxType": {
@@ -225,6 +237,10 @@
             "description": "Optional. The list of MX records in the record set."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for the MX record."
       }
     },
     "ptrType": {
@@ -278,6 +294,10 @@
             "description": "Optional. The list of PTR records in the record set."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for the PTR record."
       }
     },
     "soaType": {
@@ -364,6 +384,10 @@
             "description": "Optional. The SOA record in the record set."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for the SOA record."
       }
     },
     "srvType": {
@@ -435,6 +459,10 @@
             "description": "Optional. The list of SRV records in the record set."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for the SRV record."
       }
     },
     "txtType": {
@@ -491,6 +519,10 @@
             "description": "Optional. The list of TXT records in the record set."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for the TXT record."
       }
     },
     "virtualNetworkLinkType": {
@@ -543,6 +575,10 @@
             "description": "Optional. The resolution type of the private-dns-zone fallback machanism."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for the virtual network link."
       }
     },
     "lockType": {
