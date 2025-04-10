@@ -32,9 +32,8 @@ The following section provides usage examples for the module, which were used to
 - [No App Logging](#example-1-no-app-logging)
 - [Using only defaults](#example-2-using-only-defaults)
 - [Using large parameter set](#example-3-using-large-parameter-set)
-- [No App Logging](#example-4-no-app-logging)
-- [Enable public access](#example-5-enable-public-access)
-- [WAF-aligned](#example-6-waf-aligned)
+- [Enable public access](#example-4-enable-public-access)
+- [WAF-aligned](#example-5-waf-aligned)
 
 ### Example 1: _No App Logging_
 
@@ -644,122 +643,7 @@ param workloadProfiles = [
 </details>
 <p>
 
-### Example 4: _No App Logging_
-
-This instance deploys the module with app logging disabled.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' = {
-  name: 'managedEnvironmentDeployment'
-  params: {
-    // Required parameters
-    name: 'amenlog001'
-    // Non-required parameters
-    dockerBridgeCidr: '172.16.0.1/28'
-    infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
-    infrastructureSubnetId: '<infrastructureSubnetId>'
-    internal: true
-    platformReservedCidr: '172.17.17.0/24'
-    platformReservedDnsIP: '172.17.17.17'
-    workloadProfiles: [
-      {
-        maximumCount: 3
-        minimumCount: 0
-        name: 'CAW01'
-        workloadProfileType: 'D4'
-      }
-    ]
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "amenlog001"
-    },
-    // Non-required parameters
-    "dockerBridgeCidr": {
-      "value": "172.16.0.1/28"
-    },
-    "infrastructureResourceGroupName": {
-      "value": "<infrastructureResourceGroupName>"
-    },
-    "infrastructureSubnetId": {
-      "value": "<infrastructureSubnetId>"
-    },
-    "internal": {
-      "value": true
-    },
-    "platformReservedCidr": {
-      "value": "172.17.17.0/24"
-    },
-    "platformReservedDnsIP": {
-      "value": "172.17.17.17"
-    },
-    "workloadProfiles": {
-      "value": [
-        {
-          "maximumCount": 3,
-          "minimumCount": 0,
-          "name": "CAW01",
-          "workloadProfileType": "D4"
-        }
-      ]
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/app/managed-environment:<version>'
-
-// Required parameters
-param name = 'amenlog001'
-// Non-required parameters
-param dockerBridgeCidr = '172.16.0.1/28'
-param infrastructureResourceGroupName = '<infrastructureResourceGroupName>'
-param infrastructureSubnetId = '<infrastructureSubnetId>'
-param internal = true
-param platformReservedCidr = '172.17.17.0/24'
-param platformReservedDnsIP = '172.17.17.17'
-param workloadProfiles = [
-  {
-    maximumCount: 3
-    minimumCount: 0
-    name: 'CAW01'
-    workloadProfileType: 'D4'
-  }
-]
-```
-
-</details>
-<p>
-
-### Example 5: _Enable public access_
+### Example 4: _Enable public access_
 
 This instance deploys the module with public access enabled.
 
@@ -902,7 +786,7 @@ param workloadProfiles = [
 </details>
 <p>
 
-### Example 6: _WAF-aligned_
+### Example 5: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
