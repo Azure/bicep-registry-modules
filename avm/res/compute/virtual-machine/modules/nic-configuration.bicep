@@ -31,7 +31,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5
 param roleAssignments roleAssignmentType[]?
 
 module networkInterface_publicIPAddresses 'br/public:avm/res/network/public-ip-address:0.6.0' = [
-  for (ipConfiguration, index) in ipConfigurations: !empty(ipConfiguration.?pipConfiguration) && empty(ipConfiguration.?pipConfiguration.?publicIPAddressResourceId) {
+  for (ipConfiguration, index) in ipConfigurations: if (!empty(ipConfiguration.?pipConfiguration) && empty(ipConfiguration.?pipConfiguration.?publicIPAddressResourceId)) {
     name: '${deployment().name}-publicIP-${index}'
     params: {
       name: ipConfiguration.pipConfiguration.?name ?? '${virtualMachineName}${ipConfiguration.pipConfiguration.?publicIpNameSuffix}'
