@@ -92,7 +92,9 @@ var identity = !empty(managedIdentities)
         : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
-  : null
+  : {
+      type: 'None'
+    }
 
 var builtInRoleNames = {
   'Backup Contributor': subscriptionResourceId(

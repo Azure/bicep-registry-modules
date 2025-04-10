@@ -67,8 +67,12 @@ param certificatesToBeInstalled array = []
 ])
 param priority string = 'Regular'
 
-@description('Optional. Specifies the eviction policy for the low priority virtual machine. Will result in \'Deallocate\' eviction policy.')
-param enableEvictionPolicy bool = false
+@description('Optional. Specifies the eviction policy for the low priority virtual machine.')
+@allowed([
+  'Deallocate'
+  'Delete'
+])
+param evictionPolicy string = 'Deallocate'
 
 @description('Optional. Specifies the maximum price you are willing to pay for a low priority VM/VMSS. This price is in US Dollars.')
 param maxPriceForLowPriorityVm string = ''
@@ -87,7 +91,7 @@ param dedicatedHostId string = ''
 param licenseType string = ''
 
 @description('Optional. The list of SSH public keys used to authenticate with linux based VMs.')
-param publicKeys array = []
+param publicKeys publicKeyType[] = []
 
 import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The managed identity definition for this resource. The system-assigned managed identity will automatically be enabled if extensionAadJoinConfig.enabled = "True".')
@@ -552,6 +556,12 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
         name: osDisk.?name ?? '${name}-disk-os-01'
         createOption: osDisk.?createOption ?? 'FromImage'
         deleteOption: osDisk.?deleteOption ?? 'Delete'
+        diffDiskSettings: empty(osDisk.?diffDiskSettings ?? {})
+          ? null
+          : {
+              option: 'Local'
+              placement: osDisk.diffDiskSettings!.placement
+            }
         diskSizeGB: osDisk.diskSizeGB
         caching: osDisk.?caching ?? 'ReadOnly'
         managedDisk: {
@@ -636,7 +646,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
         }
       : null
     priority: priority
-    evictionPolicy: enableEvictionPolicy ? 'Deallocate' : null
+    evictionPolicy: 'Regular' != priority ? evictionPolicy : null
     #disable-next-line BCP036
     billingProfile: !empty(priority) && !empty(maxPriceForLowPriorityVm)
       ? {
@@ -1071,6 +1081,12 @@ type osDiskType = {
   @description('Optional. Specifies the caching requirements.')
   caching: 'None' | 'ReadOnly' | 'ReadWrite'?
 
+  @description('Optional. Specifies the ephemeral Disk Settings for the operating system disk.')
+  diffDiskSettings: {
+    @description('Required. Specifies the ephemeral disk placement for the operating system disk.')
+    placement: ('CacheDisk' | 'NvmeDisk' | 'ResourceDisk')
+  }?
+
   @description('Required. The managed disk parameters.')
   managedDisk: {
     @description('Optional. Specifies the storage account type for the managed disk.')
@@ -1133,4 +1149,12 @@ type dataDiskType = {
     @description('Optional. Specifies the customer managed disk id for the managed disk.')
     id: string?
   }
+}
+
+type publicKeyType = {
+  @description('Required. Specifies the SSH public key data used to authenticate through ssh.')
+  keyData: string
+
+  @description('Required. Specifies the full path on the created VM where ssh public key is stored. If the file already exists, the specified key is appended to the file.')
+  path: string
 }
