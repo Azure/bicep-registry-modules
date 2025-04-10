@@ -72,7 +72,7 @@ module networkInterface 'br/public:avm/res/network/network-interface:0.4.0' = {
         privateIPAddress: contains(ipConfiguration, 'privateIPAddress')
           ? (!empty(ipConfiguration.privateIPAddress) ? ipConfiguration.privateIPAddress : null)
           : null
-        publicIPAddressResourceId: contains(ipConfiguration, 'pipConfiguration') && !empty(ipConfiguration.pipConfiguration)
+        publicIPAddressResourceId: !empty(ipConfiguration.?pipConfiguration)
           ? !contains(ipConfiguration.pipConfiguration, 'publicIPAddressResourceId')
               ? resourceId(
                   'Microsoft.Network/publicIPAddresses',
