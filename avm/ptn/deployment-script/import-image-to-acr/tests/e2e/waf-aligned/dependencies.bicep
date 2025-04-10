@@ -7,7 +7,7 @@ param managedIdentityName string
 @description('Required. The name of the Azure Container Registry.')
 param acrName string
 
-module identity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0' = {
+module identity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.1' = {
   name: managedIdentityName
   params: {
     name: managedIdentityName
