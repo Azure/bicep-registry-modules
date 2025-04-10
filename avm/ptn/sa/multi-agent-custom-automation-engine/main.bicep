@@ -2,13 +2,19 @@ metadata name = '<Add module name>'
 metadata description = '<Add description>'
 
 @description('Required. Name of the resource to create.')
-param name string
+param solutionPrefix string
 
 @description('Optional. Location for all Resources.')
-param location string = resourceGroup().location
+param solutionLocation string = resourceGroup().location
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
+
+@description('Optional. The tags to apply to all deployed Azure resources.')
+param tags object = {
+  app: solutionPrefix
+  location: solutionLocation
+}
 
 //
 // Add your parameters here
@@ -18,7 +24,7 @@ param enableTelemetry bool = true
 // Resources      //
 // ============== //
 
-#disable-next-line no-deployments-resources
+/* #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.[[REPLACE WITH TELEMETRY IDENTIFIER]].${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
@@ -35,11 +41,20 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
       }
     }
   }
-}
+} */
 
-//
-// Add your resources here
-//
+// ========== Log Analytics Workspace ========== //
+module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.11.1' = {
+  name: 'avm.ptn.sa.macae.operational-insights-workspace'
+  params: {
+    name: '${solutionPrefix}law'
+    tags: tags
+    location: solutionLocation
+    enableTelemetry: enableTelemetry
+    skuName: 'PerGB2018'
+    dataRetention: 30
+  }
+}
 
 // ============ //
 // Outputs      //
