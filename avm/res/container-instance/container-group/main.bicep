@@ -342,6 +342,7 @@ type containerType = {
 }
 
 @export()
+@description('The type for the group diagnostics.')
 type diagnosticsType = {
 
   @description('Optional. Container group log analytics information.')
