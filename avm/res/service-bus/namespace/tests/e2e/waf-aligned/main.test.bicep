@@ -182,7 +182,7 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
-      publicNetworkAccess: 'Enabled'
+      publicNetworkAccess: 'Disabled'
     }
   }
 ]

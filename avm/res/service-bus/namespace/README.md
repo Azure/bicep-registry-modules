@@ -470,14 +470,50 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
         ]
         subscriptions: [
           {
-            name: 'subscription001'
+            name: 'subscriptionwithoutrules001'
+          }
+          {
+            name: 'subscriptionwithsqlfilterrule001'
             rules: [
               {
+                action: {
+                  compatibilityLevel: 20
+                  requiresPreprocessing: true
+                  sqlExpression: 'SET Foo = 1;'
+                }
                 filterType: 'SqlFilter'
-                name: 'test-filter'
+                name: 'test-sql-filter'
                 sqlFilter: {
                   sqlExpression: 'Test=1'
                 }
+              }
+            ]
+          }
+          {
+            name: 'subscriptionwithcorrelationfilterrule001'
+            rules: [
+              {
+                action: {
+                  compatibilityLevel: 20
+                  requiresPreprocessing: true
+                  sqlExpression: 'SET Foo = 1;'
+                }
+                correlationFilter: {
+                  contentType: 'application/json'
+                  correlationId: 'Test'
+                  label: 'Test'
+                  messageId: 'Test'
+                  properties: {
+                    barHeader: 'Bar'
+                    fooHeader: 'Foo'
+                  }
+                  replyTo: 'Test'
+                  replyToSessionId: 'Test'
+                  sessionId: 'Test'
+                  to: 'Test'
+                }
+                filterType: 'CorrelationFilter'
+                name: 'test-correlation-filter'
               }
             ]
           }
@@ -762,14 +798,50 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
           ],
           "subscriptions": [
             {
-              "name": "subscription001",
+              "name": "subscriptionwithoutrules001"
+            },
+            {
+              "name": "subscriptionwithsqlfilterrule001",
               "rules": [
                 {
+                  "action": {
+                    "compatibilityLevel": 20,
+                    "requiresPreprocessing": true,
+                    "sqlExpression": "SET Foo = 1;"
+                  },
                   "filterType": "SqlFilter",
-                  "name": "test-filter",
+                  "name": "test-sql-filter",
                   "sqlFilter": {
                     "sqlExpression": "Test=1"
                   }
+                }
+              ]
+            },
+            {
+              "name": "subscriptionwithcorrelationfilterrule001",
+              "rules": [
+                {
+                  "action": {
+                    "compatibilityLevel": 20,
+                    "requiresPreprocessing": true,
+                    "sqlExpression": "SET Foo = 1;"
+                  },
+                  "correlationFilter": {
+                    "contentType": "application/json",
+                    "correlationId": "Test",
+                    "label": "Test",
+                    "messageId": "Test",
+                    "properties": {
+                      "barHeader": "Bar",
+                      "fooHeader": "Foo"
+                    },
+                    "replyTo": "Test",
+                    "replyToSessionId": "Test",
+                    "sessionId": "Test",
+                    "to": "Test"
+                  },
+                  "filterType": "CorrelationFilter",
+                  "name": "test-correlation-filter"
                 }
               ]
             }
@@ -1020,14 +1092,50 @@ param topics = [
     ]
     subscriptions: [
       {
-        name: 'subscription001'
+        name: 'subscriptionwithoutrules001'
+      }
+      {
+        name: 'subscriptionwithsqlfilterrule001'
         rules: [
           {
+            action: {
+              compatibilityLevel: 20
+              requiresPreprocessing: true
+              sqlExpression: 'SET Foo = 1;'
+            }
             filterType: 'SqlFilter'
-            name: 'test-filter'
+            name: 'test-sql-filter'
             sqlFilter: {
               sqlExpression: 'Test=1'
             }
+          }
+        ]
+      }
+      {
+        name: 'subscriptionwithcorrelationfilterrule001'
+        rules: [
+          {
+            action: {
+              compatibilityLevel: 20
+              requiresPreprocessing: true
+              sqlExpression: 'SET Foo = 1;'
+            }
+            correlationFilter: {
+              contentType: 'application/json'
+              correlationId: 'Test'
+              label: 'Test'
+              messageId: 'Test'
+              properties: {
+                barHeader: 'Bar'
+                fooHeader: 'Foo'
+              }
+              replyTo: 'Test'
+              replyToSessionId: 'Test'
+              sessionId: 'Test'
+              to: 'Test'
+            }
+            filterType: 'CorrelationFilter'
+            name: 'test-correlation-filter'
           }
         ]
       }
@@ -1118,7 +1226,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
         }
       }
     ]
-    publicNetworkAccess: 'Enabled'
+    publicNetworkAccess: 'Disabled'
     queues: [
       {
         authorizationRules: [
@@ -1265,7 +1373,7 @@ module namespace 'br/public:avm/res/service-bus/namespace:<version>' = {
       ]
     },
     "publicNetworkAccess": {
-      "value": "Enabled"
+      "value": "Disabled"
     },
     "queues": {
       "value": [
@@ -1406,7 +1514,7 @@ param privateEndpoints = [
     }
   }
 ]
-param publicNetworkAccess = 'Enabled'
+param publicNetworkAccess = 'Disabled'
 param queues = [
   {
     authorizationRules: [
@@ -3339,17 +3447,17 @@ The subscriptions of the topic.
 | :-- | :-- | :-- |
 | [`autoDeleteOnIdle`](#parameter-topicssubscriptionsautodeleteonidle) | string | ISO 8601 timespan idle interval after which the syubscription is automatically deleted. The minimum duration is 5 minutes. |
 | [`clientAffineProperties`](#parameter-topicssubscriptionsclientaffineproperties) | object | The properties that are associated with a subscription that is client-affine. |
-| [`deadLetteringOnFilterEvaluationExceptions`](#parameter-topicssubscriptionsdeadletteringonfilterevaluationexceptions) | bool | A value that indicates whether a subscription has dead letter support when a message expires. |
+| [`deadLetteringOnFilterEvaluationExceptions`](#parameter-topicssubscriptionsdeadletteringonfilterevaluationexceptions) | bool | A value that indicates whether a subscription has dead letter support on filter evaluation exceptions. |
 | [`deadLetteringOnMessageExpiration`](#parameter-topicssubscriptionsdeadletteringonmessageexpiration) | bool | A value that indicates whether a subscription has dead letter support when a message expires. |
-| [`defaultMessageTimeToLive`](#parameter-topicssubscriptionsdefaultmessagetimetolive) | string | ISO 8601 timespan idle interval after which the message expires. The minimum duration is 5 minutes. |
+| [`defaultMessageTimeToLive`](#parameter-topicssubscriptionsdefaultmessagetimetolive) | string | ISO 8061 Default message timespan to live value. This is the duration after which the message expires, starting from when the message is sent to Service Bus. This is the default value used when TimeToLive is not set on a message itself. |
 | [`duplicateDetectionHistoryTimeWindow`](#parameter-topicssubscriptionsduplicatedetectionhistorytimewindow) | string | ISO 8601 timespan that defines the duration of the duplicate detection history. The default value is 10 minutes. |
 | [`enableBatchedOperations`](#parameter-topicssubscriptionsenablebatchedoperations) | bool | A value that indicates whether server-side batched operations are enabled. |
-| [`forwardDeadLetteredMessagesTo`](#parameter-topicssubscriptionsforwarddeadletteredmessagesto) | string | The name of the recipient entity to which all the messages sent to the subscription are forwarded to. |
-| [`forwardTo`](#parameter-topicssubscriptionsforwardto) | string | The name of the recipient entity to which all the messages sent to the subscription are forwarded to. |
-| [`isClientAffine`](#parameter-topicssubscriptionsisclientaffine) | bool | A value that indicates whether the subscription supports the concept of session. |
+| [`forwardDeadLetteredMessagesTo`](#parameter-topicssubscriptionsforwarddeadletteredmessagesto) | string | Queue/Topic name to forward the Dead Letter messages to. |
+| [`forwardTo`](#parameter-topicssubscriptionsforwardto) | string | Queue/Topic name to forward the messages to. |
+| [`isClientAffine`](#parameter-topicssubscriptionsisclientaffine) | bool | A value that indicates whether the subscription has an affinity to the client id. |
 | [`lockDuration`](#parameter-topicssubscriptionslockduration) | string | ISO 8601 timespan duration of a peek-lock; that is, the amount of time that the message is locked for other receivers. The maximum value for LockDuration is 5 minutes; the default value is 1 minute. |
 | [`maxDeliveryCount`](#parameter-topicssubscriptionsmaxdeliverycount) | int | Number of maximum deliveries. A message is automatically deadlettered after this number of deliveries. Default value is 10. |
-| [`requiresSession`](#parameter-topicssubscriptionsrequiressession) | bool | A value that indicates whether the subscription supports the concept of session. |
+| [`requiresSession`](#parameter-topicssubscriptionsrequiressession) | bool | A value that indicates whether the subscription supports the concept of sessions. |
 | [`rules`](#parameter-topicssubscriptionsrules) | array | The subscription rules. |
 | [`status`](#parameter-topicssubscriptionsstatus) | string | Enumerates the possible values for the status of a messaging entity. |
 
@@ -3410,7 +3518,7 @@ For client-affine subscriptions, this value indicates whether the subscription i
 
 ### Parameter: `topics.subscriptions.deadLetteringOnFilterEvaluationExceptions`
 
-A value that indicates whether a subscription has dead letter support when a message expires.
+A value that indicates whether a subscription has dead letter support on filter evaluation exceptions.
 
 - Required: No
 - Type: bool
@@ -3424,7 +3532,7 @@ A value that indicates whether a subscription has dead letter support when a mes
 
 ### Parameter: `topics.subscriptions.defaultMessageTimeToLive`
 
-ISO 8601 timespan idle interval after which the message expires. The minimum duration is 5 minutes.
+ISO 8061 Default message timespan to live value. This is the duration after which the message expires, starting from when the message is sent to Service Bus. This is the default value used when TimeToLive is not set on a message itself.
 
 - Required: No
 - Type: string
@@ -3445,21 +3553,21 @@ A value that indicates whether server-side batched operations are enabled.
 
 ### Parameter: `topics.subscriptions.forwardDeadLetteredMessagesTo`
 
-The name of the recipient entity to which all the messages sent to the subscription are forwarded to.
+Queue/Topic name to forward the Dead Letter messages to.
 
 - Required: No
 - Type: string
 
 ### Parameter: `topics.subscriptions.forwardTo`
 
-The name of the recipient entity to which all the messages sent to the subscription are forwarded to.
+Queue/Topic name to forward the messages to.
 
 - Required: No
 - Type: string
 
 ### Parameter: `topics.subscriptions.isClientAffine`
 
-A value that indicates whether the subscription supports the concept of session.
+A value that indicates whether the subscription has an affinity to the client id.
 
 - Required: No
 - Type: bool
@@ -3480,7 +3588,7 @@ Number of maximum deliveries. A message is automatically deadlettered after this
 
 ### Parameter: `topics.subscriptions.requiresSession`
 
-A value that indicates whether the subscription supports the concept of session.
+A value that indicates whether the subscription supports the concept of sessions.
 
 - Required: No
 - Type: bool
@@ -3496,7 +3604,8 @@ The subscription rules.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-topicssubscriptionsrulesname) | string | The name of the service bus namespace topic subscription rule. |
+| [`filterType`](#parameter-topicssubscriptionsrulesfiltertype) | string | Filter type that is evaluated against a BrokeredMessage. |
+| [`name`](#parameter-topicssubscriptionsrulesname) | string | The name of the Service Bus Namespace Topic Subscription Rule. |
 
 **Optional parameters**
 
@@ -3504,12 +3613,25 @@ The subscription rules.
 | :-- | :-- | :-- |
 | [`action`](#parameter-topicssubscriptionsrulesaction) | object | Represents the filter actions which are allowed for the transformation of a message that have been matched by a filter expression. |
 | [`correlationFilter`](#parameter-topicssubscriptionsrulescorrelationfilter) | object | Properties of correlationFilter. |
-| [`filterType`](#parameter-topicssubscriptionsrulesfiltertype) | string | Filter type that is evaluated against a BrokeredMessage. |
 | [`sqlFilter`](#parameter-topicssubscriptionsrulessqlfilter) | object | Properties of sqlFilter. |
+
+### Parameter: `topics.subscriptions.rules.filterType`
+
+Filter type that is evaluated against a BrokeredMessage.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'CorrelationFilter'
+    'SqlFilter'
+  ]
+  ```
 
 ### Parameter: `topics.subscriptions.rules.name`
 
-The name of the service bus namespace topic subscription rule.
+The name of the Service Bus Namespace Topic Subscription Rule.
 
 - Required: Yes
 - Type: string
@@ -3557,12 +3679,6 @@ Properties of correlationFilter.
 - Required: No
 - Type: object
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`to`](#parameter-topicssubscriptionsrulescorrelationfilterto) | string | Address to send to. |
-
 **Optional parameters**
 
 | Parameter | Type | Description |
@@ -3571,18 +3687,12 @@ Properties of correlationFilter.
 | [`correlationId`](#parameter-topicssubscriptionsrulescorrelationfiltercorrelationid) | string | Identifier of the correlation. |
 | [`label`](#parameter-topicssubscriptionsrulescorrelationfilterlabel) | string | Application specific label. |
 | [`messageId`](#parameter-topicssubscriptionsrulescorrelationfiltermessageid) | string | Identifier of the message. |
-| [`properties`](#parameter-topicssubscriptionsrulescorrelationfilterproperties) | array | dictionary object for custom filters. |
+| [`properties`](#parameter-topicssubscriptionsrulescorrelationfilterproperties) | object | Dictionary object for custom filters. |
 | [`replyTo`](#parameter-topicssubscriptionsrulescorrelationfilterreplyto) | string | Address of the queue to reply to. |
 | [`replyToSessionId`](#parameter-topicssubscriptionsrulescorrelationfilterreplytosessionid) | string | Session identifier to reply to. |
 | [`requiresPreprocessing`](#parameter-topicssubscriptionsrulescorrelationfilterrequirespreprocessing) | bool | Value that indicates whether the rule action requires preprocessing. |
 | [`sessionId`](#parameter-topicssubscriptionsrulescorrelationfiltersessionid) | string | Session identifier. |
-
-### Parameter: `topics.subscriptions.rules.correlationFilter.to`
-
-Address to send to.
-
-- Required: Yes
-- Type: string
+| [`to`](#parameter-topicssubscriptionsrulescorrelationfilterto) | string | Address to send to. |
 
 ### Parameter: `topics.subscriptions.rules.correlationFilter.contentType`
 
@@ -3614,16 +3724,10 @@ Identifier of the message.
 
 ### Parameter: `topics.subscriptions.rules.correlationFilter.properties`
 
-dictionary object for custom filters.
+Dictionary object for custom filters.
 
 - Required: No
-- Type: array
-- Allowed:
-  ```Bicep
-  [
-    {}
-  ]
-  ```
+- Type: object
 
 ### Parameter: `topics.subscriptions.rules.correlationFilter.replyTo`
 
@@ -3653,19 +3757,12 @@ Session identifier.
 - Required: No
 - Type: string
 
-### Parameter: `topics.subscriptions.rules.filterType`
+### Parameter: `topics.subscriptions.rules.correlationFilter.to`
 
-Filter type that is evaluated against a BrokeredMessage.
+Address to send to.
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'CorrelationFilter'
-    'SqlFilter'
-  ]
-  ```
 
 ### Parameter: `topics.subscriptions.rules.sqlFilter`
 
@@ -3674,13 +3771,25 @@ Properties of sqlFilter.
 - Required: No
 - Type: object
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`sqlExpression`](#parameter-topicssubscriptionsrulessqlfiltersqlexpression) | string | The SQL expression. e.g. MyProperty='ABC'. |
+
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`compatibilityLevel`](#parameter-topicssubscriptionsrulessqlfiltercompatibilitylevel) | int | This property is reserved for future use. An integer value showing the compatibility level, currently hard-coded to 20. |
 | [`requiresPreprocessing`](#parameter-topicssubscriptionsrulessqlfilterrequirespreprocessing) | bool | Value that indicates whether the rule action requires preprocessing. |
-| [`sqlExpression`](#parameter-topicssubscriptionsrulessqlfiltersqlexpression) | string | SQL expression. e.g. MyProperty='ABC'. |
+
+### Parameter: `topics.subscriptions.rules.sqlFilter.sqlExpression`
+
+The SQL expression. e.g. MyProperty='ABC'.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `topics.subscriptions.rules.sqlFilter.compatibilityLevel`
 
@@ -3695,13 +3804,6 @@ Value that indicates whether the rule action requires preprocessing.
 
 - Required: No
 - Type: bool
-
-### Parameter: `topics.subscriptions.rules.sqlFilter.sqlExpression`
-
-SQL expression. e.g. MyProperty='ABC'.
-
-- Required: No
-- Type: string
 
 ### Parameter: `topics.subscriptions.status`
 

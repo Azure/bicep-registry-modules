@@ -2,6 +2,8 @@ metadata name = 'Service Bus Namespace Topic Subscription'
 metadata description = 'This module deploys a Service Bus Namespace Topic Subscription.'
 
 @description('Required. The name of the service bus namespace topic subscription.')
+@minLength(1)
+@maxLength(50)
 param name string
 
 @description('Conditional. The name of the parent Service Bus Namespace. Required if the template is used in a standalone deployment.')
@@ -13,16 +15,16 @@ param topicName string
 @description('Optional. ISO 8601 timespan idle interval after which the subscription is automatically deleted. The minimum duration is 5 minutes.')
 param autoDeleteOnIdle string = 'P10675198DT2H48M5.477S'
 
-@description('Optional. The properties that are associated with a subscription that is client-affine.')
-param clientAffineProperties object = {}
+@description('Conditional. The properties that are associated with a subscription that is client-affine. Required if \'isClientAffine\' is set to true.')
+param clientAffineProperties clientAffinePropertiesType?
 
-@description('Optional. A value that indicates whether a subscription has dead letter support when a message expires.')
+@description('Optional. A value that indicates whether a subscription has dead letter support on filter evaluation exceptions.')
 param deadLetteringOnFilterEvaluationExceptions bool = false
 
 @description('Optional. A value that indicates whether a subscription has dead letter support when a message expires.')
 param deadLetteringOnMessageExpiration bool = false
 
-@description('Optional. ISO 8601 timespan idle interval after which the message expires. The minimum duration is 5 minutes.')
+@description('Optional. ISO 8061 Default message timespan to live value. This is the duration after which the message expires, starting from when the message is sent to Service Bus. This is the default value used when TimeToLive is not set on a message itself.')
 param defaultMessageTimeToLive string = 'P10675199DT2H48M5.4775807S'
 
 @description('Optional. ISO 8601 timespan that defines the duration of the duplicate detection history. The default value is 10 minutes.')
@@ -31,22 +33,22 @@ param duplicateDetectionHistoryTimeWindow string = 'PT10M'
 @description('Optional. A value that indicates whether server-side batched operations are enabled.')
 param enableBatchedOperations bool = true
 
-@description('Optional. The name of the recipient entity to which all the messages sent to the subscription are forwarded to.')
+@description('Optional. Queue/Topic name to forward the Dead Letter messages to.')
 param forwardDeadLetteredMessagesTo string = ''
 
-@description('Optional. The name of the recipient entity to which all the messages sent to the subscription are forwarded to.')
+@description('Optional. Queue/Topic name to forward the messages to.')
 param forwardTo string = ''
 
-@description('Optional. A value that indicates whether the subscription supports the concept of session.')
+@description('Optional. A value that indicates whether the subscription has an affinity to the client id.')
 param isClientAffine bool = false
 
-@description('Optional. ISO 8601 timespan duration of a peek-lock; that is, the amount of time that the message is locked for other receivers. The maximum value for LockDuration is 5 minutes; the default value is 1 minute.')
+@description('Optional. ISO 8061 lock duration timespan for the subscription. The default value is 1 minute.')
 param lockDuration string = 'PT1M'
 
 @description('Optional. Number of maximum deliveries. A message is automatically deadlettered after this number of deliveries. Default value is 10.')
 param maxDeliveryCount int = 10
 
-@description('Optional. A value that indicates whether the subscription supports the concept of session.')
+@description('Optional. A value that indicates whether the subscription supports the concept of sessions.')
 param requiresSession bool = false
 
 @description('Optional. The subscription rules.')
@@ -79,7 +81,13 @@ resource subscription 'Microsoft.ServiceBus/namespaces/topics/subscriptions@2021
   parent: namespace::topic
   properties: {
     autoDeleteOnIdle: autoDeleteOnIdle
-    clientAffineProperties: clientAffineProperties
+    clientAffineProperties: !empty(clientAffineProperties)
+      ? {
+          clientId: clientAffineProperties.?clientId
+          isDurable: clientAffineProperties.?isDurable ?? true
+          isShared: clientAffineProperties.?isShared ?? false
+        }
+      : null
     deadLetteringOnFilterEvaluationExceptions: deadLetteringOnFilterEvaluationExceptions
     deadLetteringOnMessageExpiration: deadLetteringOnMessageExpiration
     defaultMessageTimeToLive: defaultMessageTimeToLive
@@ -105,7 +113,7 @@ module subscription_rule 'rule/main.bicep' = [
       topicName: topicName
       action: rule.?action
       correlationFilter: rule.?correlationFilter
-      filterType: rule.?filterType
+      filterType: rule.filterType
       sqlFilter: rule.?sqlFilter
     }
   }
@@ -123,69 +131,18 @@ output resourceGroupName string = resourceGroup().name
 // =============== //
 //   Definitions   //
 // =============== //
+
+import { ruleType } from 'rule/main.bicep'
+
 @export()
-@description('Optional. The type for rules.')
-type ruleType = {
-  @description('Required. The name of the service bus namespace topic subscription rule.')
-  name: string
+@description('Properties specific to client affine subscriptions.')
+type clientAffinePropertiesType = {
+  @description('Required. Indicates the Client ID of the application that created the client-affine subscription.')
+  clientId: string
 
-  @description('Optional. Represents the filter actions which are allowed for the transformation of a message that have been matched by a filter expression.')
-  action: {
-    @description('Optional. This property is reserved for future use. An integer value showing the compatibility level, currently hard-coded to 20.')
-    compatibilityLevel: int?
+  @description('Optional. For client-affine subscriptions, this value indicates whether the subscription is durable or not. Defaults to true.')
+  isDurable: bool?
 
-    @description('Optional. Value that indicates whether the rule action requires preprocessing.')
-    requiresPreprocessing: bool?
-
-    @description('Optional. SQL expression. e.g. MyProperty=\'ABC\'.')
-    sqlExpression: string?
-  }?
-
-  @description('Optional. Properties of correlationFilter.')
-  correlationFilter: {
-    @description('Optional. Content type of the message.')
-    contentType: string?
-
-    @description('Optional. Identifier of the correlation.')
-    correlationId: string?
-
-    @description('Optional. Application specific label.')
-    label: string?
-
-    @description('Optional. Identifier of the message.')
-    messageId: string?
-
-    @description('Optional. dictionary object for custom filters.')
-    properties: {}[]?
-
-    @description('Optional. Address of the queue to reply to.')
-    replyTo: string?
-
-    @description('Optional. Session identifier to reply to.')
-    replyToSessionId: string?
-
-    @description('Optional. Value that indicates whether the rule action requires preprocessing.')
-    requiresPreprocessing: bool?
-
-    @description('Optional. Session identifier.')
-    sessionId: string?
-
-    @description('Required. Address to send to.')
-    to: string
-  }?
-
-  @description('Optional. Filter type that is evaluated against a BrokeredMessage.')
-  filterType: ('CorrelationFilter' | 'SqlFilter')?
-
-  @description('Optional. Properties of sqlFilter.')
-  sqlFilter: {
-    @description('Optional. This property is reserved for future use. An integer value showing the compatibility level, currently hard-coded to 20.')
-    compatibilityLevel: int?
-
-    @description('Optional. Value that indicates whether the rule action requires preprocessing.')
-    requiresPreprocessing: bool?
-
-    @description('Optional. SQL expression. e.g. MyProperty=\'ABC\'.')
-    sqlExpression: string?
-  }?
+  @description('Optional. For client-affine subscriptions, this value indicates whether the subscription is shared or not. Defaults to false.')
+  isShared: bool?
 }
