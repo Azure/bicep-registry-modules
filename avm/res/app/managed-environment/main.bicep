@@ -94,18 +94,6 @@ param certificate certificateType?
 @description('Optional. The AppLogsConfiguration for the Managed Environment.')
 param appLogsConfiguration appLogsConfigurationType?
 
-// var appLogsConfiguration = !empty(logsDestination)
-//   ? {
-//       destination: logsDestination
-//       logAnalyticsConfiguration: !empty(logAnalyticsWorkspaceResourceId)
-//         ? {
-//             customerId: logAnalyticsWorkspace.properties.customerId
-//             sharedKey: logAnalyticsWorkspace.listKeys().primarySharedKey
-//           }
-//         : null
-//     }
-//   : {}
-
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
