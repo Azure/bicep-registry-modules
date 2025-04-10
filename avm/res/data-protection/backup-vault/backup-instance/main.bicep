@@ -16,10 +16,10 @@ param dataSourceInfo dataSourceInfoType
 @description('Required. Gets or sets the policy information.')
 param policyInfo policyInfoType
 
-resource backupVault 'Microsoft.DataProtection/backupVaults@2023-05-01' existing = {
+resource backupVault 'Microsoft.DataProtection/backupVaults@2024-04-01' existing = {
   name: backupVaultName
 
-  resource backupPolicy 'backupPolicies@2023-05-01' existing = {
+  resource backupPolicy 'backupPolicies@2024-04-01' existing = {
     name: policyInfo.policyName
   }
 }
