@@ -358,7 +358,6 @@ type diagnosticsType = {
     workspaceKey: string
 
     @description('Optional. The workspace resource id for log analytics.')
-    @secure()
     workspaceResourceId: string?
 
     @description('Optional. Metadata for log analytics.')
