@@ -178,13 +178,6 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     // Required parameters
     name: 'amemin001'
     // Non-required parameters
-    appLogsConfiguration: {
-      destination: 'log-analytics'
-      logAnalyticsConfiguration: {
-        customerId: '<customerId>'
-        sharedKey: '<sharedKey>'
-      }
-    }
     dockerBridgeCidr: '172.16.0.1/28'
     infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
     infrastructureSubnetId: '<infrastructureSubnetId>'
@@ -220,15 +213,6 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
       "value": "amemin001"
     },
     // Non-required parameters
-    "appLogsConfiguration": {
-      "value": {
-        "destination": "log-analytics",
-        "logAnalyticsConfiguration": {
-          "customerId": "<customerId>",
-          "sharedKey": "<sharedKey>"
-        }
-      }
-    },
     "dockerBridgeCidr": {
       "value": "172.16.0.1/28"
     },
@@ -274,13 +258,6 @@ using 'br/public:avm/res/app/managed-environment:<version>'
 // Required parameters
 param name = 'amemin001'
 // Non-required parameters
-param appLogsConfiguration = {
-  destination: 'log-analytics'
-  logAnalyticsConfiguration: {
-    customerId: '<customerId>'
-    sharedKey: '<sharedKey>'
-  }
-}
 param dockerBridgeCidr = '172.16.0.1/28'
 param infrastructureResourceGroupName = '<infrastructureResourceGroupName>'
 param infrastructureSubnetId = '<infrastructureSubnetId>'

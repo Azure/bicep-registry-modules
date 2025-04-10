@@ -36,7 +36,6 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     location: resourceLocation
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
-    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
   }
 }
 
@@ -51,16 +50,6 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      appLogsConfiguration: {
-        destination: 'log-analytics'
-        logAnalyticsConfiguration: {
-          customerId: nestedDependencies.outputs.logAnalyticsCustomerId
-          sharedKey: listKeys(
-            '${resourceGroup.id}/providers/Microsoft.OperationalInsights/workspaces/dep-${namePrefix}-law-${serviceShort}',
-            '2023-09-01'
-          ).primarySharedKey
-        }
-      }
       workloadProfiles: [
         {
           workloadProfileType: 'D4'
