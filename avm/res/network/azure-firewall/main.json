@@ -5,664 +5,446 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "6156875504515419129"
+      "version": "0.34.44.8038",
+      "templateHash": "4418461235381695290"
     },
     "name": "Azure Firewalls",
     "description": "This module deploys an Azure Firewall."
   },
   "definitions": {
-    "lockType": {
+    "natRuleCollectionType": {
       "type": "object",
       "properties": {
         "name": {
           "type": "string",
-          "nullable": true,
           "metadata": {
-            "description": "Optional. Specify the name of lock."
+            "description": "Required. Name of the NAT rule collection."
           }
         },
-        "kind": {
-          "type": "string",
-          "allowedValues": [
-            "CanNotDelete",
-            "None",
-            "ReadOnly"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Specify the type of lock."
-          }
-        }
-      },
-      "nullable": true
-    },
-    "roleAssignmentType": {
-      "type": "array",
-      "items": {
-        "type": "object",
         "properties": {
-          "name": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
-            }
-          },
-          "roleDefinitionIdOrName": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-            }
-          },
-          "principalId": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-            }
-          },
-          "principalType": {
-            "type": "string",
-            "allowedValues": [
-              "Device",
-              "ForeignGroup",
-              "Group",
-              "ServicePrincipal",
-              "User"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The principal type of the assigned principal ID."
-            }
-          },
-          "description": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The description of the role assignment."
-            }
-          },
-          "condition": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-            }
-          },
-          "conditionVersion": {
-            "type": "string",
-            "allowedValues": [
-              "2.0"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Version of the condition."
-            }
-          },
-          "delegatedManagedIdentityResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The Resource Id of the delegated managed identity resource."
-            }
-          }
-        }
-      },
-      "nullable": true
-    },
-    "diagnosticSettingType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of diagnostic setting."
-            }
-          },
-          "logCategoriesAndGroups": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "category": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
-                  }
-                },
-                "categoryGroup": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
-                  }
-                },
-                "enabled": {
-                  "type": "bool",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
-                  }
-                }
-              }
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
-            }
-          },
-          "metricCategories": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "category": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
-                  }
-                },
-                "enabled": {
-                  "type": "bool",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
-                  }
-                }
-              }
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
-            }
-          },
-          "logAnalyticsDestinationType": {
-            "type": "string",
-            "allowedValues": [
-              "AzureDiagnostics",
-              "Dedicated"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
-            }
-          },
-          "workspaceResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-            }
-          },
-          "storageAccountResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-            }
-          },
-          "eventHubAuthorizationRuleResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
-            }
-          },
-          "eventHubName": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-            }
-          },
-          "marketplacePartnerResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
-            }
-          }
-        }
-      },
-      "nullable": true
-    },
-    "natRuleCollectionType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. Name of the NAT rule collection."
-            }
-          },
+          "type": "object",
           "properties": {
-            "type": "object",
-            "properties": {
-              "action": {
+            "action": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Dnat",
+                    "Snat"
+                  ],
+                  "metadata": {
+                    "description": "Required. The type of action."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "Required. The action type of a NAT rule collection."
+              }
+            },
+            "priority": {
+              "type": "int",
+              "minValue": 100,
+              "maxValue": 65000,
+              "metadata": {
+                "description": "Required. Priority of the NAT rule collection."
+              }
+            },
+            "rules": {
+              "type": "array",
+              "items": {
                 "type": "object",
                 "properties": {
-                  "type": {
+                  "name": {
                     "type": "string",
+                    "metadata": {
+                      "description": "Required. Name of the NAT rule."
+                    }
+                  },
+                  "description": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. Description of the rule."
+                    }
+                  },
+                  "protocols": {
+                    "type": "array",
                     "allowedValues": [
-                      "Dnat",
-                      "Snat"
+                      "Any",
+                      "ICMP",
+                      "TCP",
+                      "UDP"
                     ],
                     "metadata": {
-                      "description": "Required. The type of action."
+                      "description": "Required. Array of AzureFirewallNetworkRuleProtocols applicable to this NAT rule."
+                    }
+                  },
+                  "destinationAddresses": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. List of destination IP addresses for this rule. Supports IP ranges, prefixes, and service tags."
+                    }
+                  },
+                  "destinationPorts": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. List of destination ports."
+                    }
+                  },
+                  "sourceAddresses": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. List of source IP addresses for this rule."
+                    }
+                  },
+                  "sourceIpGroups": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. List of source IpGroups for this rule."
+                    }
+                  },
+                  "translatedAddress": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The translated address for this NAT rule."
+                    }
+                  },
+                  "translatedFqdn": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The translated FQDN for this NAT rule."
+                    }
+                  },
+                  "translatedPort": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The translated port for this NAT rule."
                     }
                   }
-                },
-                "metadata": {
-                  "description": "Required. The action type of a NAT rule collection."
                 }
               },
-              "priority": {
-                "type": "int",
-                "minValue": 100,
-                "maxValue": 65000,
-                "metadata": {
-                  "description": "Required. Priority of the NAT rule collection."
-                }
-              },
-              "rules": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "name": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. Name of the NAT rule."
-                      }
-                    },
-                    "description": {
-                      "type": "string",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. Description of the rule."
-                      }
-                    },
-                    "protocols": {
-                      "type": "array",
-                      "allowedValues": [
-                        "Any",
-                        "ICMP",
-                        "TCP",
-                        "UDP"
-                      ],
-                      "metadata": {
-                        "description": "Required. Array of AzureFirewallNetworkRuleProtocols applicable to this NAT rule."
-                      }
-                    },
-                    "destinationAddresses": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      },
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. List of destination IP addresses for this rule. Supports IP ranges, prefixes, and service tags."
-                      }
-                    },
-                    "destinationPorts": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      },
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. List of destination ports."
-                      }
-                    },
-                    "sourceAddresses": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      },
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. List of source IP addresses for this rule."
-                      }
-                    },
-                    "sourceIpGroups": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      },
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. List of source IpGroups for this rule."
-                      }
-                    },
-                    "translatedAddress": {
-                      "type": "string",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. The translated address for this NAT rule."
-                      }
-                    },
-                    "translatedFqdn": {
-                      "type": "string",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. The translated FQDN for this NAT rule."
-                      }
-                    },
-                    "translatedPort": {
-                      "type": "string",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. The translated port for this NAT rule."
-                      }
-                    }
-                  }
-                },
-                "metadata": {
-                  "description": "Required. Collection of rules used by a NAT rule collection."
-                }
+              "metadata": {
+                "description": "Required. Collection of rules used by a NAT rule collection."
               }
-            },
-            "metadata": {
-              "description": "Required. Properties of the azure firewall NAT rule collection."
             }
+          },
+          "metadata": {
+            "description": "Required. Properties of the azure firewall NAT rule collection."
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a NAT rule collection."
+      }
     },
     "applicationRuleCollectionType": {
-      "type": "array",
-      "items": {
-        "type": "object",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Name of the application rule collection."
+          }
+        },
         "properties": {
-          "name": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. Name of the application rule collection."
-            }
-          },
+          "type": "object",
           "properties": {
-            "type": "object",
-            "properties": {
-              "action": {
+            "action": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Allow",
+                    "Deny"
+                  ],
+                  "metadata": {
+                    "description": "Required. The type of action."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "Required. The action type of a rule collection."
+              }
+            },
+            "priority": {
+              "type": "int",
+              "minValue": 100,
+              "maxValue": 65000,
+              "metadata": {
+                "description": "Required. Priority of the application rule collection."
+              }
+            },
+            "rules": {
+              "type": "array",
+              "items": {
                 "type": "object",
                 "properties": {
-                  "type": {
+                  "name": {
                     "type": "string",
-                    "allowedValues": [
-                      "Allow",
-                      "Deny"
-                    ],
                     "metadata": {
-                      "description": "Required. The type of action."
+                      "description": "Required. Name of the application rule."
                     }
-                  }
-                },
-                "metadata": {
-                  "description": "Required. The action type of a rule collection."
-                }
-              },
-              "priority": {
-                "type": "int",
-                "minValue": 100,
-                "maxValue": 65000,
-                "metadata": {
-                  "description": "Required. Priority of the application rule collection."
-                }
-              },
-              "rules": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "name": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. Name of the application rule."
-                      }
-                    },
-                    "description": {
-                      "type": "string",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. Description of the rule."
-                      }
-                    },
-                    "protocols": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "port": {
-                            "type": "int",
-                            "nullable": true,
-                            "maxValue": 64000,
-                            "metadata": {
-                              "description": "Optional. Port number for the protocol."
-                            }
-                          },
-                          "protocolType": {
-                            "type": "string",
-                            "allowedValues": [
-                              "Http",
-                              "Https",
-                              "Mssql"
-                            ],
-                            "metadata": {
-                              "description": "Required. Protocol type."
-                            }
+                  },
+                  "description": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. Description of the rule."
+                    }
+                  },
+                  "protocols": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "port": {
+                          "type": "int",
+                          "nullable": true,
+                          "maxValue": 64000,
+                          "metadata": {
+                            "description": "Optional. Port number for the protocol."
+                          }
+                        },
+                        "protocolType": {
+                          "type": "string",
+                          "allowedValues": [
+                            "Http",
+                            "Https",
+                            "Mssql"
+                          ],
+                          "metadata": {
+                            "description": "Required. Protocol type."
                           }
                         }
-                      },
-                      "metadata": {
-                        "description": "Required. Array of ApplicationRuleProtocols."
                       }
                     },
-                    "fqdnTags": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      },
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. List of FQDN Tags for this rule."
-                      }
+                    "metadata": {
+                      "description": "Required. Array of ApplicationRuleProtocols."
+                    }
+                  },
+                  "fqdnTags": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
                     },
-                    "targetFqdns": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      },
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. List of FQDNs for this rule."
-                      }
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. List of FQDN Tags for this rule."
+                    }
+                  },
+                  "targetFqdns": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
                     },
-                    "sourceAddresses": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      },
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. List of source IP addresses for this rule."
-                      }
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. List of FQDNs for this rule."
+                    }
+                  },
+                  "sourceAddresses": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
                     },
-                    "sourceIpGroups": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      },
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. List of source IpGroups for this rule."
-                      }
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. List of source IP addresses for this rule."
+                    }
+                  },
+                  "sourceIpGroups": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. List of source IpGroups for this rule."
                     }
                   }
-                },
-                "metadata": {
-                  "description": "Required. Collection of rules used by a application rule collection."
                 }
+              },
+              "metadata": {
+                "description": "Required. Collection of rules used by a application rule collection."
               }
-            },
-            "metadata": {
-              "description": "Required. Properties of the azure firewall application rule collection."
-            }
-          }
-        }
-      },
-      "nullable": true
-    },
-    "networkRuleCollectionType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. Name of the network rule collection."
             }
           },
-          "properties": {
-            "type": "object",
-            "properties": {
-              "action": {
-                "type": "object",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "allowedValues": [
-                      "Allow",
-                      "Deny"
-                    ],
-                    "metadata": {
-                      "description": "Required. The type of action."
-                    }
-                  }
-                },
-                "metadata": {
-                  "description": "Required. The action type of a rule collection."
-                }
-              },
-              "priority": {
-                "type": "int",
-                "minValue": 100,
-                "maxValue": 65000,
-                "metadata": {
-                  "description": "Required. Priority of the network rule collection."
-                }
-              },
-              "rules": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "name": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. Name of the network rule."
-                      }
-                    },
-                    "description": {
-                      "type": "string",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. Description of the rule."
-                      }
-                    },
-                    "protocols": {
-                      "type": "array",
-                      "allowedValues": [
-                        "Any",
-                        "ICMP",
-                        "TCP",
-                        "UDP"
-                      ],
-                      "metadata": {
-                        "description": "Required. Array of AzureFirewallNetworkRuleProtocols."
-                      }
-                    },
-                    "destinationAddresses": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      },
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. List of destination IP addresses."
-                      }
-                    },
-                    "destinationFqdns": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      },
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. List of destination FQDNs."
-                      }
-                    },
-                    "destinationIpGroups": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      },
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. List of destination IP groups for this rule."
-                      }
-                    },
-                    "destinationPorts": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      },
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. List of destination ports."
-                      }
-                    },
-                    "sourceAddresses": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      },
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. List of source IP addresses for this rule."
-                      }
-                    },
-                    "sourceIpGroups": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      },
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. List of source IpGroups for this rule."
-                      }
-                    }
-                  }
-                },
-                "metadata": {
-                  "description": "Required. Collection of rules used by a network rule collection."
-                }
-              }
-            },
-            "metadata": {
-              "description": "Required. Properties of the azure firewall network rule collection."
-            }
+          "metadata": {
+            "description": "Required. Properties of the azure firewall application rule collection."
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for an application rule collection."
+      }
+    },
+    "networkRuleCollectionType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Name of the network rule collection."
+          }
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "action": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Allow",
+                    "Deny"
+                  ],
+                  "metadata": {
+                    "description": "Required. The type of action."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "Required. The action type of a rule collection."
+              }
+            },
+            "priority": {
+              "type": "int",
+              "minValue": 100,
+              "maxValue": 65000,
+              "metadata": {
+                "description": "Required. Priority of the network rule collection."
+              }
+            },
+            "rules": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. Name of the network rule."
+                    }
+                  },
+                  "description": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. Description of the rule."
+                    }
+                  },
+                  "protocols": {
+                    "type": "array",
+                    "allowedValues": [
+                      "Any",
+                      "ICMP",
+                      "TCP",
+                      "UDP"
+                    ],
+                    "metadata": {
+                      "description": "Required. Array of AzureFirewallNetworkRuleProtocols."
+                    }
+                  },
+                  "destinationAddresses": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. List of destination IP addresses."
+                    }
+                  },
+                  "destinationFqdns": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. List of destination FQDNs."
+                    }
+                  },
+                  "destinationIpGroups": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. List of destination IP groups for this rule."
+                    }
+                  },
+                  "destinationPorts": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. List of destination ports."
+                    }
+                  },
+                  "sourceAddresses": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. List of source IP addresses for this rule."
+                    }
+                  },
+                  "sourceIpGroups": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. List of source IpGroups for this rule."
+                    }
+                  }
+                }
+              },
+              "metadata": {
+                "description": "Required. Collection of rules used by a network rule collection."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. Properties of the azure firewall network rule collection."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a network rule collection."
+      }
     },
     "hubIPAddressesType": {
       "type": "object",
@@ -711,6 +493,237 @@
           "metadata": {
             "description": "Optional. List of public IP addresses associated with AzureFirewall."
           }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for the hub IP addresses."
+      }
+    },
+    "diagnosticSettingFullType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the diagnostic setting."
+          }
+        },
+        "logCategoriesAndGroups": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "category": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
+                }
+              },
+              "categoryGroup": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
+                }
+              },
+              "enabled": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
+          }
+        },
+        "metricCategories": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "category": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
+                }
+              },
+              "enabled": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
+          }
+        },
+        "logAnalyticsDestinationType": {
+          "type": "string",
+          "allowedValues": [
+            "AzureDiagnostics",
+            "Dedicated"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
+          }
+        },
+        "workspaceResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "storageAccountResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "eventHubAuthorizationRuleResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
+          }
+        },
+        "eventHubName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "marketplacePartnerResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    },
+    "lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    },
+    "roleAssignmentType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+          }
+        },
+        "roleDefinitionIdOrName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+          }
+        },
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+          }
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "Device",
+            "ForeignGroup",
+            "Group",
+            "ServicePrincipal",
+            "User"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The principal type of the assigned principal ID."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The description of the role assignment."
+          }
+        },
+        "condition": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+          }
+        },
+        "conditionVersion": {
+          "type": "string",
+          "allowedValues": [
+            "2.0"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Version of the condition."
+          }
+        },
+        "delegatedManagedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Resource Id of the delegated managed identity resource."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a role assignment.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     }
@@ -779,19 +792,31 @@
       }
     },
     "applicationRuleCollections": {
-      "$ref": "#/definitions/applicationRuleCollectionType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/applicationRuleCollectionType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Collection of application rule collections used by Azure Firewall."
       }
     },
     "networkRuleCollections": {
-      "$ref": "#/definitions/networkRuleCollectionType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/networkRuleCollectionType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Collection of network rule collections used by Azure Firewall."
       }
     },
     "natRuleCollections": {
-      "$ref": "#/definitions/natRuleCollectionType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/natRuleCollectionType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Collection of NAT rule collections used by Azure Firewall."
       }
@@ -848,7 +873,11 @@
       }
     },
     "diagnosticSettings": {
-      "$ref": "#/definitions/diagnosticSettingType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/diagnosticSettingFullType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. The diagnostic settings of the service."
       }
@@ -862,12 +891,17 @@
     },
     "lock": {
       "$ref": "#/definitions/lockType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The lock settings of the service."
       }
     },
     "roleAssignments": {
-      "$ref": "#/definitions/roleAssignmentType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/roleAssignmentType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Array of role assignments to create."
       }
@@ -1769,7 +1803,7 @@
             "value": "[parameters('zones')]"
           },
           "enableTelemetry": {
-            "value": "[coalesce(tryGet(parameters('managementIPAddressObject'), 'enableTelemetry'), parameters('enableTelemetry'))]"
+            "value": "[variables('enableReferencedModulesTelemetry')]"
           }
         },
         "template": {
