@@ -1033,18 +1033,23 @@ The AppLogsConfiguration for the Managed Environment.
 - Required: No
 - Type: object
 
-**Optional parameters**
+**Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`destination`](#parameter-applogsconfigurationdestination) | string | The destination of the logs. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
 | [`logAnalyticsWorkspaceResourceId`](#parameter-applogsconfigurationloganalyticsworkspaceresourceid) | string | Existing Log Analytics Workspace resource ID. |
 
 ### Parameter: `appLogsConfiguration.destination`
 
 The destination of the logs.
 
-- Required: No
+- Required: Yes
 - Type: string
 
 ### Parameter: `appLogsConfiguration.logAnalyticsWorkspaceResourceId`

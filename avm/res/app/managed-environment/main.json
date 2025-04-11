@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "10578369212633047881"
+      "templateHash": "15810384327679164260"
     },
     "name": "App ManagedEnvironments",
     "description": "This module deploys an App Managed Environment (also known as a Container App Environment)."
@@ -105,9 +105,8 @@
       "properties": {
         "destination": {
           "type": "string",
-          "nullable": true,
           "metadata": {
-            "description": "Optional. The destination of the logs."
+            "description": "Required. The destination of the logs."
           }
         },
         "logAnalyticsWorkspaceResourceId": {
@@ -556,7 +555,7 @@
         "appInsightsConfiguration": {
           "connectionString": "[parameters('appInsightsConnectionString')]"
         },
-        "appLogsConfiguration": "[if(not(empty(parameters('appLogsConfiguration'))), createObject('destination', tryGet(parameters('appLogsConfiguration'), 'destination'), 'logAnalyticsConfiguration', if(not(empty(tryGet(parameters('appLogsConfiguration'), 'logAnalyticsWorkspaceResourceId'))), createObject('customerId', reference('logAnalyticsWorkspace').customerId, 'sharedKey', listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(tryGet(parameters('appLogsConfiguration'), 'logAnalyticsWorkspaceResourceId'), ''), '/')[2], split(coalesce(tryGet(parameters('appLogsConfiguration'), 'logAnalyticsWorkspaceResourceId'), ''), '/')[4]), 'Microsoft.OperationalInsights/workspaces', last(split(coalesce(tryGet(parameters('appLogsConfiguration'), 'logAnalyticsWorkspaceResourceId'), ''), '/'))), '2023-09-01').primarySharedKey), null())), createObject())]",
+        "appLogsConfiguration": "[if(not(empty(parameters('appLogsConfiguration'))), createObject('destination', tryGet(parameters('appLogsConfiguration'), 'destination'), 'logAnalyticsConfiguration', if(not(empty(tryGet(parameters('appLogsConfiguration'), 'logAnalyticsWorkspaceResourceId'))), createObject('customerId', reference('logAnalyticsWorkspace').customerId, 'sharedKey', listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(tryGet(parameters('appLogsConfiguration'), 'logAnalyticsWorkspaceResourceId'), ''), '/')[2], split(coalesce(tryGet(parameters('appLogsConfiguration'), 'logAnalyticsWorkspaceResourceId'), ''), '/')[4]), 'Microsoft.OperationalInsights/workspaces', last(split(coalesce(tryGet(parameters('appLogsConfiguration'), 'logAnalyticsWorkspaceResourceId'), ''), '/'))), '2023-09-01').primarySharedKey), null())), null())]",
         "daprAIConnectionString": "[parameters('daprAIConnectionString')]",
         "daprAIInstrumentationKey": "[parameters('daprAIInstrumentationKey')]",
         "customDomainConfiguration": {

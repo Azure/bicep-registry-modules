@@ -180,7 +180,7 @@ resource managedEnvironment 'Microsoft.App/managedEnvironments@2024-10-02-previe
               }
             : null
         }
-      : {}
+      : null
     daprAIConnectionString: daprAIConnectionString
     daprAIInstrumentationKey: daprAIInstrumentationKey
     customDomainConfiguration: {
@@ -351,8 +351,8 @@ type storageType = {
 @export()
 @description('The type for the App Logs Configuration.')
 type appLogsConfigurationType = {
-  @description('Optional. The destination of the logs.')
-  destination: string?
+  @description('Required. The destination of the logs.')
+  destination: string
 
   @description('Optional. Existing Log Analytics Workspace resource ID.')
   logAnalyticsWorkspaceResourceId: string?
