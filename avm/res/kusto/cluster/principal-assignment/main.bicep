@@ -27,7 +27,7 @@ param role string
 @description('Optional. The tenant id of the principal id.')
 param tenantId string = tenant().tenantId
 
-resource kustoCluster 'Microsoft.Kusto/clusters@2023-08-15' existing = {
+resource kustoCluster 'Microsoft.Kusto/clusters@2024-04-13' existing = {
   name: kustoClusterName
 }
 
@@ -41,6 +41,10 @@ resource kustoClusterPrincipalAssignment 'Microsoft.Kusto/clusters/principalAssi
     tenantId: tenantId
   }
 }
+
+// =============== //
+//     Outputs     //
+// =============== //
 
 @description('The name of the deployed Kusto Cluster Principal Assignment.')
 output name string = kustoClusterPrincipalAssignment.name

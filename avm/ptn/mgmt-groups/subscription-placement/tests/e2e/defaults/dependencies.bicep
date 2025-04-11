@@ -55,6 +55,12 @@ output managementGroupId string = managementGroup.id
 @description('Output of the management group name.')
 output managementGroupName string = managementGroup.name
 
+@description('Output of the second management group resource ID.')
+output managementGroupId2 string = managementGroup2.id
+
+@description('Output of the second management group name.')
+output managementGroupName2 string = managementGroup2.name
+
 @description('Output of the subscription vending resource ID.')
 output subVendingResourceId string = subVending.outputs.subscriptionResourceId
 

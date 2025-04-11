@@ -1,0 +1,259 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.33.93.31351",
+      "templateHash": "8716624718450485737"
+    },
+    "name": "Data Protection Backup Vault Backup Instances",
+    "description": "This module deploys a Data Protection Backup Vault Backup Instance."
+  },
+  "definitions": {
+    "dataSourceInfoType": {
+      "type": "object",
+      "properties": {
+        "datasourceType": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The data source type of the resource."
+          }
+        },
+        "resourceID": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of the resource."
+          }
+        },
+        "resourceLocation": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The location of the data source."
+          }
+        },
+        "resourceName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Unique identifier of the resource in the context of parent."
+          }
+        },
+        "resourceType": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource type of the data source."
+          }
+        },
+        "resourceUri": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The Uri of the resource."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for backup instance data source info properties."
+      }
+    },
+    "policyInfoType": {
+      "type": "object",
+      "properties": {
+        "policyName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the backup instance policy."
+          }
+        },
+        "policyParameters": {
+          "type": "object",
+          "metadata": {
+            "description": "Required. Policy parameters for the backup instance."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for backup instance policy info properties."
+      }
+    }
+  },
+  "parameters": {
+    "backupVaultName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent Backup Vault. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the backup instance."
+      }
+    },
+    "friendlyName": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The friendly name of the backup instance."
+      }
+    },
+    "dataSourceInfo": {
+      "$ref": "#/definitions/dataSourceInfoType",
+      "metadata": {
+        "description": "Required. Gets or sets the data source information."
+      }
+    },
+    "policyInfo": {
+      "$ref": "#/definitions/policyInfoType",
+      "metadata": {
+        "description": "Required. Gets or sets the policy information."
+      }
+    }
+  },
+  "resources": {
+    "backupVault::backupPolicy": {
+      "existing": true,
+      "type": "Microsoft.DataProtection/backupVaults/backupPolicies",
+      "apiVersion": "2024-04-01",
+      "name": "[format('{0}/{1}', parameters('backupVaultName'), parameters('policyInfo').policyName)]"
+    },
+    "backupVault": {
+      "existing": true,
+      "type": "Microsoft.DataProtection/backupVaults",
+      "apiVersion": "2024-04-01",
+      "name": "[parameters('backupVaultName')]"
+    },
+    "backupInstance": {
+      "type": "Microsoft.DataProtection/backupVaults/backupInstances",
+      "apiVersion": "2024-04-01",
+      "name": "[format('{0}/{1}', parameters('backupVaultName'), parameters('name'))]",
+      "properties": {
+        "friendlyName": "[parameters('friendlyName')]",
+        "objectType": "BackupInstance",
+        "dataSourceInfo": "[union(parameters('dataSourceInfo'), createObject('objectType', 'Datasource'))]",
+        "policyInfo": {
+          "policyId": "[resourceId('Microsoft.DataProtection/backupVaults/backupPolicies', parameters('backupVaultName'), parameters('policyInfo').policyName)]",
+          "policyParameters": "[parameters('policyInfo').policyParameters]"
+        }
+      },
+      "dependsOn": [
+        "backupInstance_dataSourceResource_rbac"
+      ]
+    },
+    "backupInstance_dataSourceResource_rbac": {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-RBAC', deployment().name)]",
+      "resourceGroup": "[split(parameters('dataSourceInfo').resourceID, '/')[4]]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "resourceId": {
+            "value": "[parameters('dataSourceInfo').resourceID]"
+          },
+          "principalId": {
+            "value": "[reference('backupVault', '2024-04-01', 'full').identity.principalId]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.33.93.31351",
+              "templateHash": "2784484236946400432"
+            }
+          },
+          "parameters": {
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The resource ID of the backup instance data source."
+              }
+            },
+            "principalId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The Principal or Object ID of the Security Principal (User, Group, Service Principal, Managed Identity)."
+              }
+            }
+          },
+          "variables": {
+            "resourceType": "[format('{0}/{1}', split(parameters('resourceId'), '/')[6], split(parameters('resourceId'), '/')[7])]"
+          },
+          "resources": [
+            {
+              "condition": "[equals(variables('resourceType'), 'Microsoft.Storage/storageAccounts')]",
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[format('Microsoft.Storage/storageAccounts/{0}', last(split(parameters('resourceId'), '/')))]",
+              "name": "[guid(format('{0}-{1}-Storage-Account-Backup-Contributor', parameters('resourceId'), parameters('principalId')))]",
+              "properties": {
+                "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'e5e2a7ff-d759-4cd2-bb51-3152d37e2eb1')]",
+                "principalId": "[parameters('principalId')]",
+                "principalType": "ServicePrincipal"
+              }
+            },
+            {
+              "condition": "[equals(variables('resourceType'), 'Microsoft.Compute/disks')]",
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "name": "[guid(format('{0}-{1}-Disk-Backup-Reader', parameters('resourceId'), parameters('principalId')))]",
+              "properties": {
+                "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '3e5e47e6-65f7-47ef-90b5-e5dd4d455f24')]",
+                "principalId": "[parameters('principalId')]",
+                "principalType": "ServicePrincipal"
+              }
+            },
+            {
+              "condition": "[equals(variables('resourceType'), 'Microsoft.Compute/disks')]",
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "name": "[guid(format('{0}-{1}-Disk-Snapshot-Contributor', parameters('resourceId'), parameters('principalId')))]",
+              "properties": {
+                "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7efff54f-a5b4-42b5-a1c5-5411624893ce')]",
+                "principalId": "[parameters('principalId')]",
+                "principalType": "ServicePrincipal"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Authorization/roleAssignments', guid(format('{0}-{1}-Disk-Backup-Reader', parameters('resourceId'), parameters('principalId'))))]"
+              ]
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "backupVault"
+      ]
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the backup instance."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the backup instance."
+      },
+      "value": "[resourceId('Microsoft.DataProtection/backupVaults/backupInstances', parameters('backupVaultName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the backup instance was created in."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

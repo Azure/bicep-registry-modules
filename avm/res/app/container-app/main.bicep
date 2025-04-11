@@ -119,6 +119,9 @@ param trafficWeight int = 100
 @description('Optional. Dapr configuration for the Container App.')
 param dapr object = {}
 
+@description('Optional. Settings for Managed Identities that are assigned to the Container App. If a Managed Identity is not specified here, default settings will be used.')
+param identitySettings resourceInput<'Microsoft.App/containerApps@2024-10-02-preview'>.properties.configuration.identitySettings?
+
 @description('Optional. Max inactive revisions a Container App can have.')
 param maxInactiveRevisions int = 0
 
@@ -219,6 +222,7 @@ resource containerApp 'Microsoft.App/containerApps@2024-10-02-preview' = {
     configuration: {
       activeRevisionsMode: activeRevisionsMode
       dapr: !empty(dapr) ? dapr : null
+      identitySettings: !empty(identitySettings) ? identitySettings : null
       ingress: disableIngress
         ? null
         : {
