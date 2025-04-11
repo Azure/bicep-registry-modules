@@ -321,8 +321,8 @@ resource containerApp_roleAssignments 'Microsoft.Authorization/roleAssignments@2
   }
 ]
 
-module containerAppAuthConfigs './auth-configs/main.bicep' = if (!empty(authConfigs)) {
-  name: '${uniqueString(deployment().name, location)}-auth-configs'
+module containerAppAuthConfigs './auth-config/main.bicep' = if (!empty(authConfig)) {
+  name: '${uniqueString(deployment().name, location)}-auth-config'
   params: {
     containerAppName: containerApp.name
     encryptionSettings: authConfigs.?encryptionSettings
