@@ -148,7 +148,7 @@ resource rg 'Microsoft.Resources/resourceGroups@2024-03-01' = if (deploymentsToP
 }
 
 // User Assigned Identity (MSI)
-module dsMsi 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
+module dsMsi 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.1' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
   name: '${deployment().name}-ds-msi'
   scope: rg
   params: {
@@ -158,7 +158,7 @@ module dsMsi 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0' =
   }
 }
 
-module imageMSI 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
+module imageMSI 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.1' = if (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only base') {
   name: '${deployment().name}-image-msi'
   scope: rg
   params: {
