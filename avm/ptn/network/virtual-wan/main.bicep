@@ -48,10 +48,13 @@ module virtualHubModule 'br/public:avm/res/network/virtual-hub:0.3.0' = [
       allowBranchToBranchTraffic: virtualHub.?allowBranchToBranchTraffic
       enableTelemetry: enableTelemetry
       hubRoutingPreference: virtualHub.?hubRoutingPreference
+      hubRouteTables: virtualHub.?hubRouteTables 
+      hubVirtualNetworkConnections: virtualHub.?hubVirtualNetworkConnections
       lock: lock ?? {}
+      sku: virtualHub.?sku
+      tags: virtualHub.?tags
       virtualRouterAsn: virtualHub.?virtualRouterAsn
       virtualRouterIps: virtualHub.?virtualRouterIps
-      tags: virtualHub.?tags
     }
   }
 ]
@@ -175,6 +178,9 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
 
 import {vpnClientIpsecPoliciesType} from '../../../res/network/vpn-server-configuration/main.bicep'
 import {vnetRoutesStaticRoutesType} from '../../../res/network/p2s-vpn-gateway/main.bicep'
+import {hubVirtualNetworkConnectionType } from '../../../res/network/virtual-hub/main.bicep'
+import {routingIntentType} from '../../../res/network/virtual-hub/main.bicep'
+import {hubRouteTableType } from '../../../res/network/virtual-hub/main.bicep'
 
 type virtualWanParameterType = {
   virtualWanName: string
@@ -212,6 +218,8 @@ type virtualHubParameterType = {
   hubAddressPrefix: string
   allowBranchToBranchTraffic: bool?
   hubRoutingPreference: ('ASPath' | 'ExpressRoute' | 'VpnGateway')?
+  hubRouteTables: hubRouteTableType[]?
+  hubVirtualNetworkConnections: hubVirtualNetworkConnectionType[]?
   p2sVpnParameters: {
     customDnsServers: array?
     deployP2SVpnGateway: bool
@@ -238,6 +246,7 @@ type virtualHubParameterType = {
     azureFirewallSku: ('Premium' | 'Standard' | 'Basic')?
     azureFirewallPublicIPCount: int?
   }?
+  sku: ('Standard' | 'Basic')?
   tags: object?
   virtualRouterAsn: int?
   virtualRouterIps: array?
