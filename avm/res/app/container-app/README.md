@@ -282,6 +282,18 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     environmentResourceId: '<environmentResourceId>'
     name: 'acamax001'
     // Non-required parameters
+    authConfigs: {
+      globalValidation: {
+        unauthenticatedClientAction: 'Return401'
+      }
+      httpSettings: {
+        requireHttps: true
+      }
+      name: 'ca-auth-configs'
+      platform: {
+        enabled: true
+      }
+    }
     identitySettings: [
       {
         identity: '<identity>'
@@ -413,6 +425,20 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
       "value": "acamax001"
     },
     // Non-required parameters
+    "authConfigs": {
+      "value": {
+        "globalValidation": {
+          "unauthenticatedClientAction": "Return401"
+        },
+        "httpSettings": {
+          "requireHttps": true
+        },
+        "name": "ca-auth-configs",
+        "platform": {
+          "enabled": true
+        }
+      }
+    },
     "identitySettings": {
       "value": [
         {
@@ -554,6 +580,18 @@ param containers = [
 param environmentResourceId = '<environmentResourceId>'
 param name = 'acamax001'
 // Non-required parameters
+param authConfigs = {
+  globalValidation: {
+    unauthenticatedClientAction: 'Return401'
+  }
+  httpSettings: {
+    requireHttps: true
+  }
+  name: 'ca-auth-configs'
+  platform: {
+    enabled: true
+  }
+}
 param identitySettings = [
   {
     identity: '<identity>'
@@ -1434,12 +1472,6 @@ The name of the Container App Auth configs.
 - Required: No
 - Type: object
 
-**Conditional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-authconfigsname) | string | The name of the set of Container App Auth configs. Required if auth configs are required for the Container App. |
-
 **Optional parameters**
 
 | Parameter | Type | Description |
@@ -1449,14 +1481,8 @@ The name of the Container App Auth configs.
 | [`httpSettings`](#parameter-authconfigshttpsettings) | object | The configuration settings of the HTTP requests for authentication and authorization requests made against ContainerApp Service Authentication/Authorization. |
 | [`identityProviders`](#parameter-authconfigsidentityproviders) | object | The configuration settings of each of the identity providers used to configure ContainerApp Service Authentication/Authorization. |
 | [`login`](#parameter-authconfigslogin) | object | The configuration settings of the login flow of users using ContainerApp Service Authentication/Authorization. |
+| [`name`](#parameter-authconfigsname) | string | The name of the set of Container App Auth configs. |
 | [`platform`](#parameter-authconfigsplatform) | object | The configuration settings of the platform of ContainerApp Service Authentication/Authorization. |
-
-### Parameter: `authConfigs.name`
-
-The name of the set of Container App Auth configs. Required if auth configs are required for the Container App.
-
-- Required: No
-- Type: string
 
 ### Parameter: `authConfigs.encryptionSettings`
 
@@ -1492,6 +1518,13 @@ The configuration settings of the login flow of users using ContainerApp Service
 
 - Required: No
 - Type: object
+
+### Parameter: `authConfigs.name`
+
+The name of the set of Container App Auth configs.
+
+- Required: No
+- Type: string
 
 ### Parameter: `authConfigs.platform`
 
