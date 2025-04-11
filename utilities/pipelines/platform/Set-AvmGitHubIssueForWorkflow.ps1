@@ -56,6 +56,7 @@ function Set-AvmGitHubIssueForWorkflow {
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Add-GithubIssueToProject.ps1')
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Get-GitHubModuleWorkflowList.ps1')
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Get-GitHubModuleWorkflowLatestRun.ps1')
+    . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Get-GitHubIssueCommentsList.ps1')
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Get-GitHubIssueList.ps1')
 
 
@@ -191,6 +192,8 @@ function Set-AvmGitHubIssueForWorkflow {
                 $issueToComment = @() + ($issues | Where-Object {
                         $_.title -eq $issueName
                     })
+
+                # Handling duplicated issues (which should be cleaned up)
                 if ($issueToComment.Count -gt 1) {
                     Write-Warning ('[{0}] identical issues found for [{1}]' -f $issueToComment.Count, $issueName)
                     $sortedIssues = $issueToComment | Sort-Object -Property 'created_at' -Descending
@@ -207,6 +210,13 @@ function Set-AvmGitHubIssueForWorkflow {
                         Write-Verbose ('✅ Closed issue {0} ({1}) as it was redundant and a newer issue for the same worklow exists' -f $issueToClose.html_url, $issueToClose.title) -Verbose
                         $issuesClosed++
                     }
+                }
+
+                # Comment on latest issue - but ONLY if the same comment was not already provided at the same day
+                $existingComments = Get-GitHubIssueCommentsList -RepositoryOwner $RepositoryOwner -RepositoryName $RepositoryName -IssueNumber $issueToComment.number -SinceWhen (Get-Date -AsUTC).ToString('yyyy-MM-ddT00:00:00Z')
+                if ($existingComments.body -contains $failedRunText) {
+                    Write-Verbose ('📎 Issue {0} ({1}) was already commented today using the same text. Skipping.' -f $issueToComment.html_url, $issueToComment.title)
+                    continue
                 }
                 if ($PSCmdlet.ShouldProcess(('Comment to issue [{0}] with URL [{1}] as its lastest run in the main branch failed' -f $issueToComment.title, $issueToComment.html_url), 'Add')) {
                     $commentUrl = gh issue comment $issueToComment.html_url --body $failedRunText --repo "$RepositoryOwner/$RepositoryName"
