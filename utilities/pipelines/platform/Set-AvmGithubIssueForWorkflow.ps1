@@ -94,22 +94,23 @@ function Set-AvmGitHubIssueForWorkflow {
     ############################################
     #   Fetching latest run of each workflow   #
     ############################################
-    $workflowRunsToProcess = [System.Collections.ArrayList]@()
-    $totalCount = $workflows.Count
-    $currentCount = 1
-    foreach ($workflow in $workflows) {
+    # $workflowRunsToProcess = [System.Collections.ArrayList]@()
+    # $totalCount = $workflows.Count
+    # $currentCount = 1
+    # foreach ($workflow in $workflows) {
 
-        $percentageComplete = [math]::Round(($currentCount / $totalCount) * 100)
-        Write-Progress -Activity ('Fetching workflow [{0}]' -f $workflow.name) -Status "$percentageComplete% complete" -PercentComplete $percentageComplete
-        # Get relevant run
-        $latestWorkflowRun = Get-GitHubModuleWorkflowLatestRun @baseInputObject -WorkflowId $workflow.id
+    #     $percentageComplete = [math]::Round(($currentCount / $totalCount) * 100)
+    #     Write-Progress -Activity ('Fetching workflow [{0}]' -f $workflow.name) -Status "$percentageComplete% complete" -PercentComplete $percentageComplete
+    #     # Get relevant run
+    #     $latestWorkflowRun = Get-GitHubModuleWorkflowLatestRun @baseInputObject -WorkflowId $workflow.id
 
-        if ($latestWorkflowRun.status -eq 'completed') {
-            $workflowRunsToProcess += $latestWorkflowRun
-        }
+    #     if ($latestWorkflowRun.status -eq 'completed') {
+    #         $workflowRunsToProcess += $latestWorkflowRun
+    #     }
 
-        $currentCount++
-    }
+    #     $currentCount++
+    # }
+    $workflowRunsToProcess = Get-Content 'C:\Users\alsehr\OneDrive - Microsoft\Docs\Code\temp\workflowsDump.json' | ConvertFrom-Json -AsHashtable
 
     ############################
     #   Processing workflows   #
@@ -180,18 +181,29 @@ function Set-AvmGitHubIssueForWorkflow {
                 $issuesCreated++
             } else {
                 # If an issue does already exist, add a comment to it
-                $issuesToComment = @() + ($issues | Where-Object {
+                $issueToComment = @() + ($issues | Where-Object {
                         $_.title -eq $issueName
                     })
-                if ($issuesToComment.Count -gt 1) {
-                    Write-Warning ('[{0}] identical issues found for [{1}]' -f $issuesToComment.Count, $issueName)
-                }
-                foreach ($issueToComment in $issuesToComment) {
-                    if ($PSCmdlet.ShouldProcess(('Comment to issue [{0}] with URL [{1}] as its lastest run in the main branch failed' -f $issueToComment.title, $issueToComment.html_url), 'Add')) {
-                        gh issue comment $issueToComment.html_url --body $failedRunText --repo "$RepositoryOwner/$RepositoryName"
+                if ($issueToComment.Count -gt 1) {
+                    Write-Warning ('[{0}] identical issues found for [{1}]' -f $issueToComment.Count, $issueName)
+                    $sortedIssues = $issueToComment | Sort-Object -Property 'created_at' -Descending
+
+                    # We only comment on the newest duplicated issue
+                    $issueToComment = $sortedIssues[0]
+
+                    # We close all older duplicated issues
+                    $issuesToClose = $sortedIssues[1..$sortedIssues.Count]
+                    foreach ($issueToClose in $issuesToClose) {
+                        if ($PSCmdlet.ShouldProcess(('Issue [{0}] with URL [{1}] created [{2}], as it is a duplicate issue and older than the latest issue [{3}] from [{4}].' -f $issueToClose.title, $issueToClose.html_url, $issueToClose.created_at, $issueToComment.html_url, $issueToComment.created_at), 'Close')) {
+                            gh issue close $issueToClose.html_url --comment ('This issue is succeeded by the newer issue [{0}].' -f $issueToComment.html_url) --repo "$RepositoryOwner/$RepositoryName"
+                        }
+                        $issuesClosed++
                     }
-                    $issuesCommented++
                 }
+                if ($PSCmdlet.ShouldProcess(('Comment to issue [{0}] with URL [{1}] as its lastest run in the main branch failed' -f $issueToComment.title, $issueToComment.html_url), 'Add')) {
+                    gh issue comment $issueToComment.html_url --body $failedRunText --repo "$RepositoryOwner/$RepositoryName"
+                }
+                $issuesCommented++
             }
         } else {
             # Fetch and close all issues that match the issue name and match the successful run
