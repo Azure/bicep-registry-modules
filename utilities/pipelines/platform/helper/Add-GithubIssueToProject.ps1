@@ -46,7 +46,7 @@ function Add-GithubIssueToProject {
     $ProjectId = $Project.data.organization.projectV2.id
     $IssueId = (gh issue view $IssueUrl.Replace('api.', '').Replace('repos/', '') --repo $Repo --json 'id' | ConvertFrom-Json -Depth 100).id
 
-    gh api graphql -f query='
+    $null = gh api graphql -f query='
   mutation($project:ID!, $issue:ID!) {
     addProjectV2ItemById(input: {projectId: $project, contentId: $issue}) {
       item {
