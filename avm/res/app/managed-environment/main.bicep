@@ -4,9 +4,6 @@ metadata description = 'This module deploys an App Managed Environment (also kno
 @description('Required. Name of the Container Apps Managed Environment.')
 param name string
 
-@description('Required. Existing Log Analytics Workspace resource ID. Note: This value is not required as per the resource type. However, not providing it currently causes an issue that is tracked [here](https://github.com/Azure/bicep/issues/9990).')
-param logAnalyticsWorkspaceResourceId string
-
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
@@ -20,9 +17,6 @@ param managedIdentities managedIdentityAllType?
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
-
-@description('Optional. Logs destination.')
-param logsDestination string = 'log-analytics'
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -97,6 +91,9 @@ param storages storageType[]?
 @description('Optional. A Managed Environment Certificate.')
 param certificate certificateType?
 
+@description('Optional. The AppLogsConfiguration for the Managed Environment.')
+param appLogsConfiguration appLogsConfigurationType?
+
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
@@ -138,7 +135,7 @@ var formattedRoleAssignments = [
 ]
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-11-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.app-managedenvironment.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -156,9 +153,12 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09-01' existing = if (!empty(logAnalyticsWorkspaceResourceId)) {
-  name: last(split(logAnalyticsWorkspaceResourceId, '/'))!
-  scope: resourceGroup(split(logAnalyticsWorkspaceResourceId, '/')[2], split(logAnalyticsWorkspaceResourceId, '/')[4])
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09-01' existing = if (!empty(appLogsConfiguration.?logAnalyticsWorkspaceResourceId)) {
+  name: last(split(appLogsConfiguration.?logAnalyticsWorkspaceResourceId ?? '', '/'))
+  scope: resourceGroup(
+    split(appLogsConfiguration.?logAnalyticsWorkspaceResourceId ?? '', '/')[2],
+    split(appLogsConfiguration.?logAnalyticsWorkspaceResourceId ?? '', '/')[4]
+  )
 }
 
 resource managedEnvironment 'Microsoft.App/managedEnvironments@2024-10-02-preview' = {
@@ -170,13 +170,17 @@ resource managedEnvironment 'Microsoft.App/managedEnvironments@2024-10-02-previe
     appInsightsConfiguration: {
       connectionString: appInsightsConnectionString
     }
-    appLogsConfiguration: {
-      destination: logsDestination
-      logAnalyticsConfiguration: {
-        customerId: logAnalyticsWorkspace.properties.customerId
-        sharedKey: logAnalyticsWorkspace.listKeys().primarySharedKey
-      }
-    }
+    appLogsConfiguration: !empty(appLogsConfiguration)
+      ? {
+          destination: appLogsConfiguration.?destination
+          logAnalyticsConfiguration: !empty(appLogsConfiguration.?logAnalyticsWorkspaceResourceId)
+            ? {
+                customerId: logAnalyticsWorkspace.properties.customerId
+                sharedKey: logAnalyticsWorkspace.listKeys().primarySharedKey
+              }
+            : null
+        }
+      : null
     daprAIConnectionString: daprAIConnectionString
     daprAIInstrumentationKey: daprAIInstrumentationKey
     customDomainConfiguration: {
@@ -342,4 +346,14 @@ type storageType = {
 
   @description('Required. File share name.')
   shareName: string
+}
+
+@export()
+@description('The type for the App Logs Configuration.')
+type appLogsConfigurationType = {
+  @description('Required. The destination of the logs.')
+  destination: string
+
+  @description('Optional. Existing Log Analytics Workspace resource ID.')
+  logAnalyticsWorkspaceResourceId: string?
 }
