@@ -1065,7 +1065,7 @@ The AppLogsConfiguration for the Managed Environment.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`destination`](#parameter-applogsconfigurationdestination) | string | The destination of the logs. |
-| [`logAnalyticsConfiguration`](#parameter-applogsconfigurationloganalyticsconfiguration) | object | The configuration for Log Analytics. |
+| [`logAnalyticsWorkspaceResourceId`](#parameter-applogsconfigurationloganalyticsworkspaceresourceid) | string | Existing Log Analytics Workspace resource ID. |
 
 ### Parameter: `appLogsConfiguration.destination`
 
@@ -1074,33 +1074,12 @@ The destination of the logs.
 - Required: No
 - Type: string
 
-### Parameter: `appLogsConfiguration.logAnalyticsConfiguration`
+### Parameter: `appLogsConfiguration.logAnalyticsWorkspaceResourceId`
 
-The configuration for Log Analytics.
+Existing Log Analytics Workspace resource ID.
 
 - Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`customerId`](#parameter-applogsconfigurationloganalyticsconfigurationcustomerid) | string | The customer ID of the Log Analytics workspace. |
-| [`sharedKey`](#parameter-applogsconfigurationloganalyticsconfigurationsharedkey) | securestring | The shared key of the Log Analytics workspace. |
-
-### Parameter: `appLogsConfiguration.logAnalyticsConfiguration.customerId`
-
-The customer ID of the Log Analytics workspace.
-
-- Required: Yes
 - Type: string
-
-### Parameter: `appLogsConfiguration.logAnalyticsConfiguration.sharedKey`
-
-The shared key of the Log Analytics workspace.
-
-- Required: Yes
-- Type: securestring
 
 ### Parameter: `certificate`
 

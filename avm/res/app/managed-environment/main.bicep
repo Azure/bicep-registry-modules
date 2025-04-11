@@ -153,6 +153,14 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-11-01' = if (enableT
   }
 }
 
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09-01' existing = if (!empty(appLogsConfiguration.?logAnalyticsWorkspaceResourceId)) {
+  name: last(split(appLogsConfiguration!.?logAnalyticsWorkspaceResourceId ?? '', '/'))
+  scope: resourceGroup(
+    split(appLogsConfiguration!.?logAnalyticsWorkspaceResourceId ?? '', '/')[2],
+    split(appLogsConfiguration!.?logAnalyticsWorkspaceResourceId ?? '', '/')[4]
+  )
+}
+
 resource managedEnvironment 'Microsoft.App/managedEnvironments@2024-10-02-preview' = {
   name: name
   location: location
@@ -162,7 +170,17 @@ resource managedEnvironment 'Microsoft.App/managedEnvironments@2024-10-02-previe
     appInsightsConfiguration: {
       connectionString: appInsightsConnectionString
     }
-    appLogsConfiguration: appLogsConfiguration
+    appLogsConfiguration: !empty(appLogsConfiguration)
+      ? {
+          destination: appLogsConfiguration.?logsDestination
+          logAnalyticsConfiguration: !empty(appLogsConfiguration.?logAnalyticsWorkspaceResourceId)
+            ? {
+                customerId: logAnalyticsWorkspace.properties.customerId
+                sharedKey: logAnalyticsWorkspace.listKeys().primarySharedKey
+              }
+            : null
+        }
+      : null
     daprAIConnectionString: daprAIConnectionString
     daprAIInstrumentationKey: daprAIInstrumentationKey
     customDomainConfiguration: {
@@ -336,13 +354,6 @@ type appLogsConfigurationType = {
   @description('Optional. The destination of the logs.')
   destination: string?
 
-  @description('Optional. The configuration for Log Analytics.')
-  logAnalyticsConfiguration: {
-    @description('Required. The customer ID of the Log Analytics workspace.')
-    customerId: string
-
-    @description('Required. The shared key of the Log Analytics workspace.')
-    @secure()
-    sharedKey: string
-  }?
+  @description('Optional. Existing Log Analytics Workspace resource ID.')
+  logAnalyticsWorkspaceResourceId: string?
 }
