@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "10079937790652670637"
+      "templateHash": "1810394669488216028"
     },
     "name": "Data Protection Backup Vaults",
     "description": "This module deploys a Data Protection Backup Vault."
@@ -478,7 +478,7 @@
       }
     ],
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
-    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
+    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), createObject('type', 'None'))]",
     "builtInRoleNames": {
       "Backup Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '5e467623-bb1f-42f4-a55d-6e525e11384b')]",
       "Backup Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '00c29273-979b-4161-815c-10b084fb9324')]",
@@ -635,7 +635,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "2595831843524944301"
+              "templateHash": "12332562471547164783"
             },
             "name": "Data Protection Backup Vault Backup Policies",
             "description": "This module deploys a Data Protection Backup Vault Backup Policy."
@@ -665,7 +665,7 @@
           "resources": [
             {
               "type": "Microsoft.DataProtection/backupVaults/backupPolicies",
-              "apiVersion": "2023-05-01",
+              "apiVersion": "2024-04-01",
               "name": "[format('{0}/{1}', parameters('backupVaultName'), parameters('name'))]",
               "properties": "[parameters('properties')]"
             }
@@ -739,7 +739,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "4267912347368729816"
+              "templateHash": "8716624718450485737"
             },
             "name": "Data Protection Backup Vault Backup Instances",
             "description": "This module deploys a Data Protection Backup Vault Backup Instance."
@@ -849,13 +849,13 @@
             "backupVault::backupPolicy": {
               "existing": true,
               "type": "Microsoft.DataProtection/backupVaults/backupPolicies",
-              "apiVersion": "2023-05-01",
+              "apiVersion": "2024-04-01",
               "name": "[format('{0}/{1}', parameters('backupVaultName'), parameters('policyInfo').policyName)]"
             },
             "backupVault": {
               "existing": true,
               "type": "Microsoft.DataProtection/backupVaults",
-              "apiVersion": "2023-05-01",
+              "apiVersion": "2024-04-01",
               "name": "[parameters('backupVaultName')]"
             },
             "backupInstance_snapshotRG_rbac": {
@@ -905,7 +905,7 @@
                     "value": "[parameters('dataSourceInfo').resourceID]"
                   },
                   "principalId": {
-                    "value": "[reference('backupVault', '2023-05-01', 'full').identity.principalId]"
+                    "value": "[reference('backupVault', '2024-04-01', 'full').identity.principalId]"
                   }
                 },
                 "template": {
