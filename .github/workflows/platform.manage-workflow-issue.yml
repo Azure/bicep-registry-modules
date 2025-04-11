@@ -30,7 +30,8 @@ jobs:
           . (Join-Path $env:GITHUB_WORKSPACE 'utilities' 'pipelines' 'platform' 'Set-AvmGitHubIssueForWorkflow.ps1')
 
           $functionInput = @{
-            Repo            = "${{ github.repository_owner }}/${{ github.event.repository.name }}"
+            RepositoryOwner = "${{ github.repository_owner }}"
+            RepositoryName  = "${{ github.event.repository.name }}"
             RepoRoot        = $env:GITHUB_WORKSPACE
           }
 
