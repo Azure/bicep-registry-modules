@@ -180,7 +180,7 @@ resource managedEnvironment 'Microsoft.App/managedEnvironments@2024-10-02-previe
               }
             : null
         }
-      : null
+      : {}
     daprAIConnectionString: daprAIConnectionString
     daprAIInstrumentationKey: daprAIInstrumentationKey
     customDomainConfiguration: {
