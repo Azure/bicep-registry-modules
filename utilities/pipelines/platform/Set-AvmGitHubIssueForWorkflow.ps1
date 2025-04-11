@@ -45,8 +45,9 @@ function Set-AvmGitHubIssueForWorkflow {
 
         [Parameter(Mandatory = $false)]
         [String[]] $IgnoreWorkflows = @(
+            '.Platform - Check PSRule', # Ignoring as a PSRule check workflow. It failing usually just shows that modules failed the rules.
             '.Platform - Semantic PR Check', # Ignoring as a PR check workflow. It failing usually just shows that a PR is invalid.
-            '.Platform - Check PSRule' # Ignoring as a PSRule check workflow. It failing usually just shows that modules failed the rules.
+            'Semantic PR Check' # Outdated, yet seemingly still existing somewhere.
         )
     )
 
