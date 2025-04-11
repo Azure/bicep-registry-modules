@@ -45,7 +45,8 @@ function Set-AvmGitHubIssueForWorkflow {
 
         [Parameter(Mandatory = $false)]
         [String[]] $IgnoreWorkflows = @(
-            '.Platform - Semantic PR Check' # Ignoring as a PR check workflow. Failing is expected.
+            '.Platform - Semantic PR Check' # Ignoring as a PR check workflow. It failing usually just shows that a PR is invalid.
+            '.Platform - Check PSRule' # Ignoring as a PSRule check workflow. It failing usually just shows that modules failed the rules.
         )
     )
 
@@ -175,7 +176,7 @@ function Set-AvmGitHubIssueForWorkflow {
                 }
 
                 if ($PSCmdlet.ShouldProcess("Issue [$issueName] to project [AVM - Issue Triage]", 'Add')) {
-                    Add-GithubIssueToProject -Repo "$RepositoryOwner/$RepositoryName" -ProjectNumber $ProjectNumber -IssueUrl $issueUrl
+                    $null = Add-GithubIssueToProject -Repo "$RepositoryOwner/$RepositoryName" -ProjectNumber $ProjectNumber -IssueUrl $issueUrl
                 }
 
                 if ($PSCmdlet.ShouldProcess("Comment to issue [$issueName]", 'Add')) {
