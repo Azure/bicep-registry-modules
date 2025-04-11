@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "15080254335929163426"
+      "version": "0.34.44.8038",
+      "templateHash": "9477907896029614262"
     },
     "name": "Virtual Hubs",
     "description": "This module deploys a Virtual Hub.\nIf you are planning to deploy a Secure Virtual Hub (with an Azure Firewall integrated), please refer to the Azure Firewall module."
@@ -30,6 +30,51 @@
         },
         "routes": {
           "type": "array",
+          "prefixItems": [
+            {
+              "type": "object",
+              "properties": {
+                "destinations": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "metadata": {
+                    "description": "Optional. The route name."
+                  }
+                },
+                "destinationType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "CIDR"
+                  ],
+                  "metadata": {
+                    "description": "Optional. The address prefix for the route."
+                  }
+                },
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Optional. The name of the route."
+                  }
+                },
+                "nextHopType": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Optional. The next hop type for the route."
+                  }
+                },
+                "nextHop": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The next hop IP address for the route."
+                  }
+                }
+              }
+            }
+          ],
+          "items": false,
           "nullable": true,
           "metadata": {
             "description": "Optional. List of all routes."
@@ -409,8 +454,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "7933241653038038304"
+              "version": "0.34.44.8038",
+              "templateHash": "2615375367429978288"
             },
             "name": "Virtual Hub Routing Intent",
             "description": "This module configures Routing Intent for a Virtual Hub; this module requires an existing Virtual Hub, as well the firewall Resource ID."
@@ -526,8 +571,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "8923325353506893806"
+              "version": "0.34.44.8038",
+              "templateHash": "6773877177810809325"
             },
             "name": "Virtual Hub Route Tables",
             "description": "This module deploys a Virtual Hub Route Table."
@@ -643,8 +688,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "764444428633484381"
+              "version": "0.34.44.8038",
+              "templateHash": "964059116414122383"
             },
             "name": "Virtual Hub Virtual Network Connections",
             "description": "This module deploys a Virtual Hub Virtual Network Connection."

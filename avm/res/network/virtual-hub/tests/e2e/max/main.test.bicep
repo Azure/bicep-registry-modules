@@ -62,6 +62,17 @@ module testDeployment '../../../main.bicep' = [
       hubRouteTables: [
         {
           name: 'routeTable1'
+          routes: [
+            {
+              name: 'route1'
+              destinationType: 'CIDR'
+              destinations: [
+                '10.150.0.0/24'
+              ]
+              nextHop: nestedDependencies.outputs.virtualNetworkResourceId
+              nextHopType: 'ResourceId'
+            }
+          ]
         }
       ]
       hubVirtualNetworkConnections: [

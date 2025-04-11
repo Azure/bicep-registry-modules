@@ -236,7 +236,24 @@ type hubRouteTableType = {
   labels: array?
 
   @description('Optional. List of all routes.')
-  routes: array?
+  routes: [
+    {
+      @description('Optional. The route name.')
+      destinations: string[]
+
+      @description('Optional. The address prefix for the route.')
+      destinationType: ('CIDR')
+
+      @description('Optional. The name of the route.')
+      name: string
+
+      @description('Optional. The next hop type for the route.')
+      nextHopType: string
+
+      @description('Optional. The next hop IP address for the route.')
+      nextHop: string?
+    }
+  ]?
 }
 
 @export()
