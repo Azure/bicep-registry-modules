@@ -21,6 +21,18 @@ resource managementGroup 'Microsoft.Management/managementGroups@2023-04-01' = {
   }
 }
 
+resource managementGroup2 'Microsoft.Management/managementGroups@2023-04-01' = {
+  name: 'test-mgmt-group-2'
+  properties: {
+    displayName: 'Test Management Group'
+    details:{
+      parent:{
+        id: rootManagementGroupResourceId
+      }
+    }
+  }
+}
+
 module subVending 'br/public:avm/ptn/lz/sub-vending:0.2.4' = {
   name: 'subVendingDeployment'
   scope: managementGroup

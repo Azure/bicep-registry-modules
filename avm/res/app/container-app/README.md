@@ -16,6 +16,7 @@ This module deploys a Container App.
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.App/containerApps` | [2024-10-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-10-02-preview/containerApps) |
+| `Microsoft.App/containerApps/authConfigs` | [2024-10-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-10-02-preview/containerApps/authConfigs) |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 
@@ -949,6 +950,7 @@ param tags = {
 | :-- | :-- | :-- |
 | [`activeRevisionsMode`](#parameter-activerevisionsmode) | string | Controls how active revisions are handled for the Container app. |
 | [`additionalPortMappings`](#parameter-additionalportmappings) | array | Settings to expose additional ports on container app. |
+| [`authConfigs`](#parameter-authconfigs) | object | The name of the Container App Auth configs. |
 | [`clientCertificateMode`](#parameter-clientcertificatemode) | string | Client certificate mode for mTLS. |
 | [`corsPolicy`](#parameter-corspolicy) | object | Object userd to configure CORS policy. |
 | [`customDomains`](#parameter-customdomains) | array | Custom domain bindings for Container App hostnames. |
@@ -1403,6 +1405,79 @@ Specifies the exposed port for the target port. If not specified, it defaults to
 
 - Required: No
 - Type: int
+
+### Parameter: `authConfigs`
+
+The name of the Container App Auth configs.
+
+- Required: No
+- Type: object
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-authconfigsname) | string | The name of the set of Container App Auth configs. Required if auth configs are required for the Container App. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`encryptionSettings`](#parameter-authconfigsencryptionsettings) | object | The configuration settings of the secrets references of encryption key and signing key for ContainerApp Service Authentication/Authorization. |
+| [`globalValidation`](#parameter-authconfigsglobalvalidation) | object | The configuration settings that determines the validation flow of users using Service Authentication and/or Authorization. |
+| [`httpSettings`](#parameter-authconfigshttpsettings) | object | The configuration settings of the HTTP requests for authentication and authorization requests made against ContainerApp Service Authentication/Authorization. |
+| [`identityProviders`](#parameter-authconfigsidentityproviders) | object | The configuration settings of each of the identity providers used to configure ContainerApp Service Authentication/Authorization. |
+| [`login`](#parameter-authconfigslogin) | object | The configuration settings of the login flow of users using ContainerApp Service Authentication/Authorization. |
+| [`platform`](#parameter-authconfigsplatform) | object | The configuration settings of the platform of ContainerApp Service Authentication/Authorization. |
+
+### Parameter: `authConfigs.name`
+
+The name of the set of Container App Auth configs. Required if auth configs are required for the Container App.
+
+- Required: No
+- Type: string
+
+### Parameter: `authConfigs.encryptionSettings`
+
+The configuration settings of the secrets references of encryption key and signing key for ContainerApp Service Authentication/Authorization.
+
+- Required: No
+- Type: object
+
+### Parameter: `authConfigs.globalValidation`
+
+The configuration settings that determines the validation flow of users using Service Authentication and/or Authorization.
+
+- Required: No
+- Type: object
+
+### Parameter: `authConfigs.httpSettings`
+
+The configuration settings of the HTTP requests for authentication and authorization requests made against ContainerApp Service Authentication/Authorization.
+
+- Required: No
+- Type: object
+
+### Parameter: `authConfigs.identityProviders`
+
+The configuration settings of each of the identity providers used to configure ContainerApp Service Authentication/Authorization.
+
+- Required: No
+- Type: object
+
+### Parameter: `authConfigs.login`
+
+The configuration settings of the login flow of users using ContainerApp Service Authentication/Authorization.
+
+- Required: No
+- Type: object
+
+### Parameter: `authConfigs.platform`
+
+The configuration settings of the platform of ContainerApp Service Authentication/Authorization.
+
+- Required: No
+- Type: object
 
 ### Parameter: `clientCertificateMode`
 
