@@ -6,18 +6,12 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "7621766618789326869"
+      "templateHash": "1521483894843552371"
     },
     "name": "Container App Auth Configs",
     "description": "This module deploys Container App Auth Configs."
   },
   "parameters": {
-    "name": {
-      "type": "string",
-      "metadata": {
-        "description": "Required. The name of the set of Container App Auth configs."
-      }
-    },
     "containerAppName": {
       "type": "string",
       "metadata": {
@@ -95,7 +89,7 @@
     "containerAppAuthConfigs": {
       "type": "Microsoft.App/containerApps/authConfigs",
       "apiVersion": "2024-10-02-preview",
-      "name": "[format('{0}/{1}', parameters('containerAppName'), parameters('name'))]",
+      "name": "[format('{0}/{1}', parameters('containerAppName'), 'current')]",
       "properties": {
         "encryptionSettings": "[parameters('encryptionSettings')]",
         "globalValidation": "[parameters('globalValidation')]",
@@ -112,14 +106,14 @@
       "metadata": {
         "description": "The name of the set of Container App Auth configs."
       },
-      "value": "[parameters('name')]"
+      "value": "current"
     },
     "resourceId": {
       "type": "string",
       "metadata": {
         "description": "The resource ID of the set of Container App Auth configs."
       },
-      "value": "[resourceId('Microsoft.App/containerApps/authConfigs', parameters('containerAppName'), parameters('name'))]"
+      "value": "[resourceId('Microsoft.App/containerApps/authConfigs', parameters('containerAppName'), 'current')]"
     },
     "resourceGroupName": {
       "type": "string",

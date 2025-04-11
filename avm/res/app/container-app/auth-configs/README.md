@@ -16,12 +16,6 @@ This module deploys Container App Auth Configs.
 
 ## Parameters
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | The name of the set of Container App Auth configs. |
-
 **Conditional parameters**
 
 | Parameter | Type | Description |
@@ -38,13 +32,6 @@ This module deploys Container App Auth Configs.
 | [`identityProviders`](#parameter-identityproviders) | object | The configuration settings of each of the identity providers used to configure ContainerApp Service Authentication/Authorization. |
 | [`login`](#parameter-login) | object | The configuration settings of the login flow of users using ContainerApp Service Authentication/Authorization. |
 | [`platform`](#parameter-platform) | object | The configuration settings of the platform of ContainerApp Service Authentication/Authorization. |
-
-### Parameter: `name`
-
-The name of the set of Container App Auth configs.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `containerAppName`
 

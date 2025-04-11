@@ -1,9 +1,6 @@
 metadata name = 'Container App Auth Configs'
 metadata description = 'This module deploys Container App Auth Configs.'
 
-@description('Required. The name of the set of Container App Auth configs.')
-param name string
-
 @description('Conditional. The name of the parent Container App. Required if the template is used in a standalone deployment.')
 param containerAppName string
 
@@ -34,7 +31,7 @@ resource containerApp 'Microsoft.App/containerApps@2024-10-02-preview' existing 
 }
 
 resource containerAppAuthConfigs 'Microsoft.App/containerApps/authConfigs@2024-10-02-preview' = {
-  name: name
+  name: 'current'
   parent: containerApp
   properties: {
     encryptionSettings: encryptionSettings

@@ -324,7 +324,6 @@ resource containerApp_roleAssignments 'Microsoft.Authorization/roleAssignments@2
 module containerAppAuthConfigs './auth-configs/main.bicep' = if (!empty(authConfigs)) {
   name: '${uniqueString(deployment().name, location)}-auth-configs'
   params: {
-    name: authConfigs.?name ?? '${containerApp.name}-auth-configs'
     containerAppName: containerApp.name
     encryptionSettings: authConfigs.?encryptionSettings
     globalValidation: authConfigs.?globalValidation
@@ -615,9 +614,6 @@ type secretType = {
 
 @export()
 type authConfigType = {
-  @description('Optional. The name of the set of Container App Auth configs.')
-  name: string?
-
   @description('Optional. The configuration settings of the secrets references of encryption key and signing key for ContainerApp Service Authentication/Authorization.')
   encryptionSettings: resourceInput<'Microsoft.App/containerApps/authConfigs@2024-10-02-preview'>.properties.encryptionSettings?
 
