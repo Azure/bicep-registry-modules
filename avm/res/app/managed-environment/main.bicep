@@ -154,10 +154,10 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-11-01' = if (enableT
 }
 
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09-01' existing = if (!empty(appLogsConfiguration.?logAnalyticsWorkspaceResourceId)) {
-  name: last(split(appLogsConfiguration!.?logAnalyticsWorkspaceResourceId ?? '', '/'))
+  name: last(split(appLogsConfiguration.?logAnalyticsWorkspaceResourceId ?? '', '/'))
   scope: resourceGroup(
-    split(appLogsConfiguration!.?logAnalyticsWorkspaceResourceId ?? '', '/')[2],
-    split(appLogsConfiguration!.?logAnalyticsWorkspaceResourceId ?? '', '/')[4]
+    split(appLogsConfiguration.?logAnalyticsWorkspaceResourceId ?? '', '/')[2],
+    split(appLogsConfiguration.?logAnalyticsWorkspaceResourceId ?? '', '/')[4]
   )
 }
 
