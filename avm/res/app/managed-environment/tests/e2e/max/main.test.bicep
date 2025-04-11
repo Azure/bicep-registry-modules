@@ -59,13 +59,7 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       appLogsConfiguration: {
         destination: 'log-analytics'
-        logAnalyticsConfiguration: {
-          customerId: nestedDependencies.outputs.logAnalyticsCustomerId
-          sharedKey: listKeys(
-            '${resourceGroup.id}/providers/Microsoft.OperationalInsights/workspaces/dep-${namePrefix}-law-${serviceShort}',
-            '2023-09-01'
-          ).primarySharedKey
-        }
+        logAnalyticsWorkspaceResourceId: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
       }
       location: resourceLocation
       appInsightsConnectionString: nestedDependencies.outputs.appInsightsConnectionString

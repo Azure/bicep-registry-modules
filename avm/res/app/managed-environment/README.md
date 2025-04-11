@@ -295,10 +295,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     appInsightsConnectionString: '<appInsightsConnectionString>'
     appLogsConfiguration: {
       destination: 'log-analytics'
-      logAnalyticsConfiguration: {
-        customerId: '<customerId>'
-        sharedKey: '<sharedKey>'
-      }
+      logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     }
     certificate: {
       certificateKeyVaultProperties: {
@@ -409,10 +406,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     "appLogsConfiguration": {
       "value": {
         "destination": "log-analytics",
-        "logAnalyticsConfiguration": {
-          "customerId": "<customerId>",
-          "sharedKey": "<sharedKey>"
-        }
+        "logAnalyticsWorkspaceResourceId": "<logAnalyticsWorkspaceResourceId>"
       }
     },
     "certificate": {
@@ -551,10 +545,7 @@ param name = 'amemax001'
 param appInsightsConnectionString = '<appInsightsConnectionString>'
 param appLogsConfiguration = {
   destination: 'log-analytics'
-  logAnalyticsConfiguration: {
-    customerId: '<customerId>'
-    sharedKey: '<sharedKey>'
-  }
+  logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
 }
 param certificate = {
   certificateKeyVaultProperties: {
@@ -661,10 +652,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     // Non-required parameters
     appLogsConfiguration: {
       destination: 'log-analytics'
-      logAnalyticsConfiguration: {
-        customerId: '<customerId>'
-        sharedKey: '<sharedKey>'
-      }
+      logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     }
     dockerBridgeCidr: '172.16.0.1/28'
     infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
@@ -705,10 +693,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     "appLogsConfiguration": {
       "value": {
         "destination": "log-analytics",
-        "logAnalyticsConfiguration": {
-          "customerId": "<customerId>",
-          "sharedKey": "<sharedKey>"
-        }
+        "logAnalyticsWorkspaceResourceId": "<logAnalyticsWorkspaceResourceId>"
       }
     },
     "dockerBridgeCidr": {
@@ -761,10 +746,7 @@ param name = 'amepa001'
 // Non-required parameters
 param appLogsConfiguration = {
   destination: 'log-analytics'
-  logAnalyticsConfiguration: {
-    customerId: '<customerId>'
-    sharedKey: '<sharedKey>'
-  }
+  logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
 }
 param dockerBridgeCidr = '172.16.0.1/28'
 param infrastructureResourceGroupName = '<infrastructureResourceGroupName>'
@@ -804,10 +786,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     // Non-required parameters
     appLogsConfiguration: {
       destination: 'log-analytics'
-      logAnalyticsConfiguration: {
-        customerId: '<customerId>'
-        sharedKey: '<sharedKey>'
-      }
+      logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     }
     dockerBridgeCidr: '172.16.0.1/28'
     infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
@@ -851,10 +830,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     "appLogsConfiguration": {
       "value": {
         "destination": "log-analytics",
-        "logAnalyticsConfiguration": {
-          "customerId": "<customerId>",
-          "sharedKey": "<sharedKey>"
-        }
+        "logAnalyticsWorkspaceResourceId": "<logAnalyticsWorkspaceResourceId>"
       }
     },
     "dockerBridgeCidr": {
@@ -910,10 +886,7 @@ param name = 'amewaf001'
 // Non-required parameters
 param appLogsConfiguration = {
   destination: 'log-analytics'
-  logAnalyticsConfiguration: {
-    customerId: '<customerId>'
-    sharedKey: '<sharedKey>'
-  }
+  logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
 }
 param dockerBridgeCidr = '172.16.0.1/28'
 param infrastructureResourceGroupName = '<infrastructureResourceGroupName>'

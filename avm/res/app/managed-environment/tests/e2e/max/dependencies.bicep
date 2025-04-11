@@ -187,9 +187,6 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
 @description('The resource ID of the created Log Analytics Workspace.')
 output logAnalyticsWorkspaceResourceId string = logAnalyticsWorkspace.id
 
-@description('The customer ID of the created Log Analytics Workspace.')
-output logAnalyticsCustomerId string = logAnalyticsWorkspace.properties.customerId
-
 @description('The resource ID of the created Virtual Network Subnet.')
 output subnetResourceId string = virtualNetwork.properties.subnets[0].id
 
