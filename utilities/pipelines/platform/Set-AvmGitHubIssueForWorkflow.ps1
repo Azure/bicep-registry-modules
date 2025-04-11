@@ -215,7 +215,7 @@ function Set-AvmGitHubIssueForWorkflow {
                 # Comment on latest issue - but ONLY if the same comment was not already provided at the same day
                 $existingComments = Get-GitHubIssueCommentsList -RepositoryOwner $RepositoryOwner -RepositoryName $RepositoryName -IssueNumber $issueToComment.number -SinceWhen (Get-Date -AsUTC).ToString('yyyy-MM-ddT00:00:00Z')
                 if ($existingComments.body -contains $failedRunText) {
-                    Write-Verbose ('📎 Issue {0} ({1}) was already commented today using the same text. Skipping.' -f $issueToComment.html_url, $issueToComment.title)
+                    Write-Verbose ('📎 Issue {0} ({1}) was already commented today using the same text. Skipping.' -f $issueToComment.html_url, $issueToComment.title) -Verbose
                     continue
                 }
                 if ($PSCmdlet.ShouldProcess(('Comment to issue [{0}] with URL [{1}] as its lastest run in the main branch failed' -f $issueToComment.title, $issueToComment.html_url), 'Add')) {
