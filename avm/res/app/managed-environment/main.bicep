@@ -172,7 +172,7 @@ resource managedEnvironment 'Microsoft.App/managedEnvironments@2024-10-02-previe
     }
     appLogsConfiguration: !empty(appLogsConfiguration)
       ? {
-          destination: appLogsConfiguration.?logsDestination
+          destination: appLogsConfiguration.?destination
           logAnalyticsConfiguration: !empty(appLogsConfiguration.?logAnalyticsWorkspaceResourceId)
             ? {
                 customerId: logAnalyticsWorkspace.properties.customerId
