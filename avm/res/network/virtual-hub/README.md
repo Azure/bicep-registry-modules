@@ -17,7 +17,7 @@ If you are planning to deploy a Secure Virtual Hub (with an Azure Firewall integ
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Network/virtualHubs` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/virtualHubs) |
+| `Microsoft.Network/virtualHubs` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualHubs) |
 | `Microsoft.Network/virtualHubs/hubRouteTables` | [2022-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2022-11-01/virtualHubs/hubRouteTables) |
 | `Microsoft.Network/virtualHubs/hubVirtualNetworkConnections` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualHubs/hubVirtualNetworkConnections) |
 | `Microsoft.Network/virtualHubs/routingIntent` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/virtualHubs/routingIntent) |
@@ -161,10 +161,14 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
+    sku: 'Standard'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
+    }
+    virtualRouterAutoScaleConfiguration: {
+      minCount: 2
     }
   }
 }
@@ -243,11 +247,19 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
         "name": "myCustomLockName"
       }
     },
+    "sku": {
+      "value": "Standard"
+    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
         "hidden-title": "This is visible in the resource name",
         "Role": "DeploymentValidation"
+      }
+    },
+    "virtualRouterAutoScaleConfiguration": {
+      "value": {
+        "minCount": 2
       }
     }
   }
@@ -311,10 +323,14 @@ param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
 }
+param sku = 'Standard'
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
   Role: 'DeploymentValidation'
+}
+param virtualRouterAutoScaleConfiguration = {
+  minCount: 2
 }
 ```
 
@@ -635,6 +651,7 @@ param tags = {
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`virtualHubRouteTableV2s`](#parameter-virtualhubroutetablev2s) | array | List of all virtual hub route table v2s associated with this VirtualHub. |
 | [`virtualRouterAsn`](#parameter-virtualrouterasn) | int | VirtualRouter ASN. |
+| [`virtualRouterAutoScaleConfiguration`](#parameter-virtualrouterautoscaleconfiguration) | object | The auto scale configuration for the virtual router. |
 | [`virtualRouterIps`](#parameter-virtualrouterips) | array | VirtualRouter IPs. |
 | [`vpnGatewayResourceId`](#parameter-vpngatewayresourceid) | string | Resource ID of the VPN Gateway to link to. |
 
@@ -946,6 +963,26 @@ List of all virtual hub route table v2s associated with this VirtualHub.
 VirtualRouter ASN.
 
 - Required: No
+- Type: int
+
+### Parameter: `virtualRouterAutoScaleConfiguration`
+
+The auto scale configuration for the virtual router.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`minCount`](#parameter-virtualrouterautoscaleconfigurationmincount) | int | The minimum number of virtual routers in the scale set. |
+
+### Parameter: `virtualRouterAutoScaleConfiguration.minCount`
+
+The minimum number of virtual routers in the scale set.
+
+- Required: Yes
 - Type: int
 
 ### Parameter: `virtualRouterIps`

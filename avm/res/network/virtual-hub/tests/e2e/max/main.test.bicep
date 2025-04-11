@@ -96,6 +96,10 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
+      sku:'Standard'
+      virtualRouterAutoScaleConfiguration: {
+        minCount: 2
+      }
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'

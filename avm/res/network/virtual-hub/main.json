@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "9477907896029614262"
+      "templateHash": "5349454539641649600"
     },
     "name": "Virtual Hubs",
     "description": "This module deploys a Virtual Hub.\nIf you are planning to deploy a Secure Virtual Hub (with an Azure Firewall integrated), please refer to the Azure Firewall module."
@@ -307,6 +307,21 @@
         "description": "Optional. VirtualRouter IPs."
       }
     },
+    "virtualRouterAutoScaleConfiguration": {
+      "type": "object",
+      "properties": {
+        "minCount": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. The minimum number of virtual routers in the scale set."
+          }
+        }
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The auto scale configuration for the virtual router."
+      }
+    },
     "virtualWanResourceId": {
       "type": "string",
       "metadata": {
@@ -385,7 +400,7 @@
     },
     "virtualHub": {
       "type": "Microsoft.Network/virtualHubs",
-      "apiVersion": "2023-11-01",
+      "apiVersion": "2024-05-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -404,6 +419,9 @@
         "virtualHubRouteTableV2s": "[parameters('virtualHubRouteTableV2s')]",
         "virtualRouterAsn": "[parameters('virtualRouterAsn')]",
         "virtualRouterIps": "[parameters('virtualRouterIps')]",
+        "virtualRouterAutoScaleConfiguration": {
+          "minCapacity": "[tryGet(parameters('virtualRouterAutoScaleConfiguration'), 'minCount')]"
+        },
         "virtualWan": {
           "id": "[parameters('virtualWanResourceId')]"
         },
@@ -806,7 +824,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('virtualHub', '2023-11-01', 'full').location]"
+      "value": "[reference('virtualHub', '2024-05-01', 'full').location]"
     }
   }
 }
