@@ -209,7 +209,7 @@ function Set-AvmGitHubIssueForWorkflow {
                     }
                 }
                 if ($PSCmdlet.ShouldProcess(('Comment to issue [{0}] with URL [{1}] as its lastest run in the main branch failed' -f $issueToComment.title, $issueToComment.html_url), 'Add')) {
-                    #TODO: Undo commenting $commentUrl = gh issue comment $issueToComment.html_url --body $failedRunText --repo "$RepositoryOwner/$RepositoryName"
+                    $commentUrl = gh issue comment $issueToComment.html_url --body $failedRunText --repo "$RepositoryOwner/$RepositoryName"
                 }
                 Write-Verbose ('💬 Commented issue {0} ({1}) as its lastest run in the main branch failed. ({2})' -f $issueToComment.html_url, $issueToComment.title, $commentUrl) -Verbose
                 $issuesCommented++
