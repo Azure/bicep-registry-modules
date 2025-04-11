@@ -18,13 +18,13 @@ This module provides you with a packaged solution to create custom images using 
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Compute/galleries` | [2023-07-03](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2023-07-03/galleries) |
-| `Microsoft.Compute/galleries/applications` | [2022-03-03](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2022-03-03/galleries/applications) |
-| `Microsoft.Compute/galleries/images` | [2023-07-03](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2023-07-03/galleries/images) |
+| `Microsoft.Compute/galleries` | [2024-03-03](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-03-03/galleries) |
+| `Microsoft.Compute/galleries/applications` | [2024-03-03](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-03-03/galleries/applications) |
+| `Microsoft.Compute/galleries/images` | [2024-03-03](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-03-03/galleries/images) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
-| `Microsoft.ManagedIdentity/userAssignedIdentities` | [2023-01-31](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-01-31/userAssignedIdentities) |
-| `Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials` | [2023-01-31](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-01-31/userAssignedIdentities/federatedIdentityCredentials) |
+| `Microsoft.ManagedIdentity/userAssignedIdentities` | [2024-11-30](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2024-11-30/userAssignedIdentities) |
+| `Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials` | [2024-11-30](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2024-11-30/userAssignedIdentities/federatedIdentityCredentials) |
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
 | `Microsoft.Network/virtualNetworks` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks) |
@@ -45,7 +45,7 @@ This module provides you with a packaged solution to create custom images using 
 | `Microsoft.Storage/storageAccounts/queueServices/queues` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/queueServices/queues) |
 | `Microsoft.Storage/storageAccounts/tableServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/tableServices) |
 | `Microsoft.Storage/storageAccounts/tableServices/tables` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/tableServices/tables) |
-| `Microsoft.VirtualMachineImages/imageTemplates` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.VirtualMachineImages/2023-07-01/imageTemplates) |
+| `Microsoft.VirtualMachineImages/imageTemplates` | [2024-02-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.VirtualMachineImages/2024-02-01/imageTemplates) |
 
 ## Usage examples
 
@@ -1295,8 +1295,10 @@ The Image Definitions in the Azure Compute Gallery.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`allowUpdateImage`](#parameter-computegalleryimagedefinitionsallowupdateimage) | bool | Must be set to true if the gallery image features are being updated. |
 | [`architecture`](#parameter-computegalleryimagedefinitionsarchitecture) | string | The architecture of the image. Applicable to OS disks only. |
 | [`description`](#parameter-computegalleryimagedefinitionsdescription) | string | The description of this gallery image definition resource. This property is updatable. |
+| [`diskControllerType`](#parameter-computegalleryimagedefinitionsdiskcontrollertype) | string | The disk controllers that an OS disk supports. |
 | [`endOfLife`](#parameter-computegalleryimagedefinitionsendoflife) | string | The end of life date of the gallery image definition. This property can be used for decommissioning purposes. This property is updatable. |
 | [`eula`](#parameter-computegalleryimagedefinitionseula) | string | The Eula agreement for the gallery image definition. |
 | [`excludedDiskTypes`](#parameter-computegalleryimagedefinitionsexcludeddisktypes) | array | Describes the disallowed disk types. |
@@ -1381,6 +1383,13 @@ This property allows you to specify the type of the OS that is included in the d
   ]
   ```
 
+### Parameter: `computeGalleryImageDefinitions.allowUpdateImage`
+
+Must be set to true if the gallery image features are being updated.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `computeGalleryImageDefinitions.architecture`
 
 The architecture of the image. Applicable to OS disks only.
@@ -1401,6 +1410,21 @@ The description of this gallery image definition resource. This property is upda
 
 - Required: No
 - Type: string
+
+### Parameter: `computeGalleryImageDefinitions.diskControllerType`
+
+The disk controllers that an OS disk supports.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'NVMe, SCSI'
+    'SCSI'
+    'SCSI, NVMe'
+  ]
+  ```
 
 ### Parameter: `computeGalleryImageDefinitions.endOfLife`
 
@@ -1841,13 +1865,13 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/compute/gallery:0.8.0` | Remote reference |
-| `br/public:avm/res/managed-identity/user-assigned-identity:0.4.0` | Remote reference |
-| `br/public:avm/res/network/virtual-network:0.5.1` | Remote reference |
-| `br/public:avm/res/resources/deployment-script:0.5.0` | Remote reference |
-| `br/public:avm/res/resources/resource-group:0.4.0` | Remote reference |
-| `br/public:avm/res/storage/storage-account:0.15.0` | Remote reference |
-| `br/public:avm/res/virtual-machine-images/image-template:0.4.2` | Remote reference |
+| `br/public:avm/res/compute/gallery:0.9.1` | Remote reference |
+| `br/public:avm/res/managed-identity/user-assigned-identity:0.4.1` | Remote reference |
+| `br/public:avm/res/network/virtual-network:0.6.1` | Remote reference |
+| `br/public:avm/res/resources/deployment-script:0.5.1` | Remote reference |
+| `br/public:avm/res/resources/resource-group:0.4.1` | Remote reference |
+| `br/public:avm/res/storage/storage-account:0.19.0` | Remote reference |
+| `br/public:avm/res/virtual-machine-images/image-template:0.5.1` | Remote reference |
 
 ## Notes
 
