@@ -45,7 +45,7 @@ function Set-AvmGitHubIssueForWorkflow {
 
         [Parameter(Mandatory = $false)]
         [String[]] $IgnoreWorkflows = @(
-            '.Platform - Semantic PR Check' # Ignoring as a PR check workflow. It failing usually just shows that a PR is invalid.
+            '.Platform - Semantic PR Check', # Ignoring as a PR check workflow. It failing usually just shows that a PR is invalid.
             '.Platform - Check PSRule' # Ignoring as a PSRule check workflow. It failing usually just shows that modules failed the rules.
         )
     )
@@ -208,7 +208,7 @@ function Set-AvmGitHubIssueForWorkflow {
                     }
                 }
                 if ($PSCmdlet.ShouldProcess(('Comment to issue [{0}] with URL [{1}] as its lastest run in the main branch failed' -f $issueToComment.title, $issueToComment.html_url), 'Add')) {
-                    $commentUrl = gh issue comment $issueToComment.html_url --body $failedRunText --repo "$RepositoryOwner/$RepositoryName"
+                    #TODO: Undo commenting $commentUrl = gh issue comment $issueToComment.html_url --body $failedRunText --repo "$RepositoryOwner/$RepositoryName"
                 }
                 Write-Verbose ('💬 Commented issue {0} ({1}) as its lastest run in the main branch failed. ({2})' -f $issueToComment.html_url, $issueToComment.title, $commentUrl) -Verbose
                 $issuesCommented++
