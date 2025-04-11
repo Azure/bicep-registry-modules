@@ -199,7 +199,7 @@ function Set-AvmGitHubIssueForWorkflow {
                     $issuesToClose = $sortedIssues[1..$sortedIssues.Count]
                     foreach ($issueToClose in $issuesToClose) {
                         if ($PSCmdlet.ShouldProcess(('Issue [{0}] with URL [{1}] created [{2}], as it is a duplicate issue and older than the latest issue [{3}] from [{4}].' -f $issueToClose.title, $issueToClose.html_url, $issueToClose.created_at, $issueToComment.html_url, $issueToComment.created_at), 'Close')) {
-                            gh issue close $issueToClose.html_url --comment ('This issue is succeeded by the newer issue [{0}].' -f $issueToComment.html_url) --repo "$RepositoryOwner/$RepositoryName" 2>&1 # Suppressing output to show custom message
+                            $null = gh issue close $issueToClose.html_url --comment ('This issue is succeeded by the newer issue [{0}].' -f $issueToComment.html_url) --repo "$RepositoryOwner/$RepositoryName" 2>&1 # Suppressing output to show custom message
                         }
                         Write-Verbose ('✅ Closed issue {0} ({1}) as it was redundant and a newer issue for the same worklow exists' -f $issueToClose.html_url, $issueToClose.title) -Verbose
                         $issuesClosed++
@@ -220,7 +220,7 @@ function Set-AvmGitHubIssueForWorkflow {
             foreach ($issueToClose in $issuesToClose) {
                 $comment = 'Successful run: {0}' -f $workflowRun.url -replace 'api\.github.com\/repos', 'github.com'
                 if ($PSCmdlet.ShouldProcess(('Issue [{0}] with URL [{1}] as its lastest run in the main branch was successful' -f $issueToClose.title, $issueToClose.html_url), 'Close')) {
-                    gh issue close $issueToClose.html_url --comment $comment --repo "$RepositoryOwner/$RepositoryName" 2>&1 # Suppressing output to show custom message
+                    $null = gh issue close $issueToClose.html_url --comment $comment --repo "$RepositoryOwner/$RepositoryName" 2>&1 # Suppressing output to show custom message
                 }
                 Write-Verbose ('✅ Closed issue {0} ({1}) as it its latest run in the main branch was successful.' -f $issueToClose.html_url, $issueToClose.title) -Verbose
                 $issuesClosed++
