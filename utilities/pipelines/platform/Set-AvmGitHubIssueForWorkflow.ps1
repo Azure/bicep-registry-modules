@@ -94,6 +94,7 @@ function Set-AvmGitHubIssueForWorkflow {
     ############################################
     #   Fetching latest run of each workflow   #
     ############################################
+    Write-Verbose '⏳ Fetching each workflow''s latest run using the main branch' -Verbose
     $workflowRunsToProcess = [System.Collections.ArrayList]@()
     $totalCount = $workflows.Count
     $currentCount = 1
