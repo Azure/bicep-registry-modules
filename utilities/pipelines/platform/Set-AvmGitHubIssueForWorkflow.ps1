@@ -130,7 +130,7 @@ function Set-AvmGitHubIssueForWorkflow {
                 if ($PSCmdlet.ShouldProcess("Issue [$issueName]", 'Create')) {
                     $issueUrl = gh issue create --title $issueName --body $failedRunText --label 'Type: AVM :a: :v: :m:,Type: Bug :bug:' --repo "$RepositoryOwner/$RepositoryName"
                 }
-                Write-Warning ('⚠️   Created issue {0} ({1}) as the module''s latest run in the main branch failed.' -f $issueUrl, $issueName)s
+                Write-Warning ('⚠️   Created issue {0} ({1}) as the module''s latest run in the main branch failed.' -f $issueUrl, $issueName)
 
                 $ProjectNumber = 538 # AVM - Issue Triage
                 $comment = @"
