@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "1810394669488216028"
+      "templateHash": "18129990982185634757"
     },
     "name": "Data Protection Backup Vaults",
     "description": "This module deploys a Data Protection Backup Vault."
@@ -739,7 +739,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "8716624718450485737"
+              "templateHash": "10390013005713732753"
             },
             "name": "Data Protection Backup Vault Backup Instances",
             "description": "This module deploys a Data Protection Backup Vault Backup Instance."
@@ -865,7 +865,7 @@
               "name": "[guid(format('{0}-{1}-Disk-Snapshot-Contributor', resourceGroup().id, resourceId('Microsoft.DataProtection/backupVaults', parameters('backupVaultName'))))]",
               "properties": {
                 "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7efff54f-a5b4-42b5-a1c5-5411624893ce')]",
-                "principalId": "[reference('backupVault', '2023-05-01', 'full').identity.principalId]",
+                "principalId": "[reference('backupVault', '2024-04-01', 'full').identity.principalId]",
                 "principalType": "ServicePrincipal"
               },
               "dependsOn": [
