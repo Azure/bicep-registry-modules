@@ -4,8 +4,6 @@ param location string = 'EastUS2' //Fixed for model availability, change back to
 @description('Location for OpenAI resources.')
 param azureOpenAILocation string = 'EastUS' //Fixed for model availability
 
-
-
 @description('A prefix to add to the start of all resource names. Note: A "unique" suffix will also be added')
 param prefix string = 'macae'
 
@@ -31,7 +29,6 @@ param resourceSize {
   }
 }
 
-
 var appVersion = 'latest'
 var resgistryName = 'biabcontainerreg'
 var dockerRegistryUrl = 'https://${resgistryName}.azurecr.io'
@@ -42,7 +39,6 @@ var frontendDockerImageURL = '${resgistryName}.azurecr.io/macaefrontend:${appVer
 
 var uniqueNameFormat = '${prefix}-{0}-${uniqueString(resourceGroup().id, prefix)}'
 var aoaiApiVersion = '2024-08-01-preview'
-
 
 resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2023-09-01' = {
   name: format(uniqueNameFormat, 'logs')
@@ -122,7 +118,7 @@ resource cosmos 'Microsoft.DocumentDB/databaseAccounts@2024-05-15' = {
         locationName: location
       }
     ]
-    capabilities: [ { name: 'EnableServerless' } ]
+    capabilities: [{ name: 'EnableServerless' }]
   }
 
   resource contributorRoleDefinition 'sqlRoleDefinitions' existing = {
@@ -157,13 +153,10 @@ resource cosmos 'Microsoft.DocumentDB/databaseAccounts@2024-05-15' = {
 }
 // Define existing ACR resource
 
-
 resource pullIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-07-31-preview' = {
   name: format(uniqueNameFormat, 'containerapp-pull')
   location: location
 }
-
-
 
 resource containerAppEnv 'Microsoft.App/managedEnvironments@2024-03-01' = {
   name: format(uniqueNameFormat, 'containerapp')
@@ -283,10 +276,8 @@ resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
         }
       ]
     }
-    
   }
-
-  }
+}
 resource frontendAppServicePlan 'Microsoft.Web/serverfarms@2021-02-01' = {
   name: format(uniqueNameFormat, 'frontend-plan')
   location: location
@@ -299,19 +290,19 @@ resource frontendAppServicePlan 'Microsoft.Web/serverfarms@2021-02-01' = {
   properties: {
     reserved: true
   }
-  kind: 'linux'  // Add this line to support Linux containers
+  kind: 'linux' // Add this line to support Linux containers
 }
 
 resource frontendAppService 'Microsoft.Web/sites@2021-02-01' = {
   name: format(uniqueNameFormat, 'frontend')
   location: location
   tags: tags
-  kind: 'app,linux,container'  // Add this line
+  kind: 'app,linux,container' // Add this line
   properties: {
     serverFarmId: frontendAppServicePlan.id
     reserved: true
     siteConfig: {
-      linuxFxVersion:'DOCKER|${frontendDockerImageURL}'
+      linuxFxVersion: 'DOCKER|${frontendDockerImageURL}'
       appSettings: [
         {
           name: 'DOCKER_REGISTRY_SERVER_URL'
@@ -322,8 +313,8 @@ resource frontendAppService 'Microsoft.Web/sites@2021-02-01' = {
           value: '3000'
         }
         {
-          name: 'WEBSITES_CONTAINER_START_TIME_LIMIT'  // Add startup time limit
-          value: '1800'  // 30 minutes, adjust as needed
+          name: 'WEBSITES_CONTAINER_START_TIME_LIMIT' // Add startup time limit
+          value: '1800' // 30 minutes, adjust as needed
         }
         {
           name: 'BACKEND_API_URL'
