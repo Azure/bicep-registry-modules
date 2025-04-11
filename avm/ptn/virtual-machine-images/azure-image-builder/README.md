@@ -1295,8 +1295,10 @@ The Image Definitions in the Azure Compute Gallery.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`allowUpdateImage`](#parameter-computegalleryimagedefinitionsallowupdateimage) | bool | Must be set to true if the gallery image features are being updated. |
 | [`architecture`](#parameter-computegalleryimagedefinitionsarchitecture) | string | The architecture of the image. Applicable to OS disks only. |
 | [`description`](#parameter-computegalleryimagedefinitionsdescription) | string | The description of this gallery image definition resource. This property is updatable. |
+| [`diskControllerType`](#parameter-computegalleryimagedefinitionsdiskcontrollertype) | string | The disk controllers that an OS disk supports. |
 | [`endOfLife`](#parameter-computegalleryimagedefinitionsendoflife) | string | The end of life date of the gallery image definition. This property can be used for decommissioning purposes. This property is updatable. |
 | [`eula`](#parameter-computegalleryimagedefinitionseula) | string | The Eula agreement for the gallery image definition. |
 | [`excludedDiskTypes`](#parameter-computegalleryimagedefinitionsexcludeddisktypes) | array | Describes the disallowed disk types. |
@@ -1381,6 +1383,13 @@ This property allows you to specify the type of the OS that is included in the d
   ]
   ```
 
+### Parameter: `computeGalleryImageDefinitions.allowUpdateImage`
+
+Must be set to true if the gallery image features are being updated.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `computeGalleryImageDefinitions.architecture`
 
 The architecture of the image. Applicable to OS disks only.
@@ -1401,6 +1410,21 @@ The description of this gallery image definition resource. This property is upda
 
 - Required: No
 - Type: string
+
+### Parameter: `computeGalleryImageDefinitions.diskControllerType`
+
+The disk controllers that an OS disk supports.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'NVMe, SCSI'
+    'SCSI'
+    'SCSI, NVMe'
+  ]
+  ```
 
 ### Parameter: `computeGalleryImageDefinitions.endOfLife`
 
@@ -1841,11 +1865,9 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/compute/gallery:0.8.0` | Remote reference |
 | `br/public:avm/res/compute/gallery:0.9.1` | Remote reference |
 | `br/public:avm/res/managed-identity/user-assigned-identity:0.4.0` | Remote reference |
 | `br/public:avm/res/network/virtual-network:0.6.1` | Remote reference |
-| `br/public:avm/res/resources/deployment-script:0.5.0` | Remote reference |
 | `br/public:avm/res/resources/deployment-script:0.5.1` | Remote reference |
 | `br/public:avm/res/resources/resource-group:0.4.1` | Remote reference |
 | `br/public:avm/res/storage/storage-account:0.19.0` | Remote reference |

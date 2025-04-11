@@ -34,7 +34,7 @@ param imageManagedIdentityName string = 'msi-aib'
 @description('Required. The name of the Azure Compute Gallery.')
 param computeGalleryName string
 
-import { imageType } from 'br/public:avm/res/compute/gallery:0.8.0'
+import { imageType } from 'br/public:avm/res/compute/gallery:0.9.1'
 @description('Required. The Image Definitions in the Azure Compute Gallery.')
 param computeGalleryImageDefinitions imageType[]
 
@@ -549,7 +549,7 @@ module imageTemplate_trigger 'br/public:avm/res/resources/deployment-script:0.5.
   ]
 }
 
-module imageTemplate_wait 'br/public:avm/res/resources/deployment-script:0.5.0' = if (waitForImageBuild && (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only assets & image' || deploymentsToPerform == 'Only image')) {
+module imageTemplate_wait 'br/public:avm/res/resources/deployment-script:0.5.1' = if (waitForImageBuild && (deploymentsToPerform == 'All' || deploymentsToPerform == 'Only assets & image' || deploymentsToPerform == 'Only image')) {
   name: '${deployment().name}-imageTemplate-wait-ds'
   scope: resourceGroup(resourceGroupName)
   params: {
