@@ -212,7 +212,7 @@ function Set-AvmGitHubIssueForWorkflow {
             }
 
             foreach ($issueToClose in $issuesToClose) {
-                $comment = 'Successful run: {0}' -f $workflowRun.html_url
+                $comment = 'Successful run: {0}' -f $workflowRun.url -replace 'api\.github.com\/repos', 'github.com'
                 if ($PSCmdlet.ShouldProcess(('Issue [{0}] with URL [{1}] as its lastest run in the main branch was successful' -f $issueToClose.title, $issueToClose.html_url), 'Close')) {
                     gh issue close $issueToClose.html_url --comment $comment --repo "$RepositoryOwner/$RepositoryName"
                 }
