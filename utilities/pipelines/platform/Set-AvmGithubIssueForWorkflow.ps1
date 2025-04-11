@@ -121,7 +121,7 @@ function Set-AvmGitHubIssueForWorkflow {
         $issueName = '[Failed pipeline] {0}' -f $workflowRun.name
 
         if ($workflowRun.conclusion -eq 'failure') {
-            $failedRunText = 'Failed run: {0}' -f $workflowRun.url
+            $failedRunText = 'Failed run: {0}' -f $workflowRun.html_url
             $moduleName = $workflowRun.name.Replace('.', '/')
 
             if ($issues.title -notcontains $issueName) {
@@ -187,8 +187,8 @@ function Set-AvmGitHubIssueForWorkflow {
                     Write-Warning ('[{0}] identical issues found for [{1}]' -f $issuesToComment.Count, $issueName)
                 }
                 foreach ($issueToComment in $issuesToComment) {
-                    if ($PSCmdlet.ShouldProcess(('Comment to issue [{0}] with URL [{1}] as its lastest run in the main branch failed' -f $issueToComment.title, $issueToComment.url), 'Add')) {
-                        gh issue comment $issueToComment.url --body $failedRunText --repo "$RepositoryOwner/$RepositoryName"
+                    if ($PSCmdlet.ShouldProcess(('Comment to issue [{0}] with URL [{1}] as its lastest run in the main branch failed' -f $issueToComment.title, $issueToComment.html_url), 'Add')) {
+                        gh issue comment $issueToComment.html_url --body $failedRunText --repo "$RepositoryOwner/$RepositoryName"
                     }
                     $issuesCommented++
                 }
@@ -200,9 +200,9 @@ function Set-AvmGitHubIssueForWorkflow {
             }
 
             foreach ($issueToClose in $issuesToClose) {
-                $comment = 'Successful run: {0}' -f $workflowRun.url
-                if ($PSCmdlet.ShouldProcess(('Issue [{0}] with URL [{1}] as its lastest run in the main branch was successful' -f $issueToClose.title, $issueToClose.url), 'Close')) {
-                    gh issue close $issueToClose.url --comment $comment --repo "$RepositoryOwner/$RepositoryName"
+                $comment = 'Successful run: {0}' -f $workflowRun.html_url
+                if ($PSCmdlet.ShouldProcess(('Issue [{0}] with URL [{1}] as its lastest run in the main branch was successful' -f $issueToClose.title, $issueToClose.html_url), 'Close')) {
+                    gh issue close $issueToClose.html_url --comment $comment --repo "$RepositoryOwner/$RepositoryName"
                 }
                 $issuesClosed++
             }
