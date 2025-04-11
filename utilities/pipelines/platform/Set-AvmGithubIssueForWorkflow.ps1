@@ -94,23 +94,22 @@ function Set-AvmGitHubIssueForWorkflow {
     ############################################
     #   Fetching latest run of each workflow   #
     ############################################
-    # $workflowRunsToProcess = [System.Collections.ArrayList]@()
-    # $totalCount = $workflows.Count
-    # $currentCount = 1
-    # foreach ($workflow in $workflows) {
+    $workflowRunsToProcess = [System.Collections.ArrayList]@()
+    $totalCount = $workflows.Count
+    $currentCount = 1
+    foreach ($workflow in $workflows) {
 
-    #     $percentageComplete = [math]::Round(($currentCount / $totalCount) * 100)
-    #     Write-Progress -Activity ('Fetching workflow [{0}]' -f $workflow.name) -Status "$percentageComplete% complete" -PercentComplete $percentageComplete
-    #     # Get relevant run
-    #     $latestWorkflowRun = Get-GitHubModuleWorkflowLatestRun @baseInputObject -WorkflowId $workflow.id
+        $percentageComplete = [math]::Round(($currentCount / $totalCount) * 100)
+        Write-Progress -Activity ('Fetching workflow [{0}]' -f $workflow.name) -Status "$percentageComplete% complete" -PercentComplete $percentageComplete
+        # Get relevant run
+        $latestWorkflowRun = Get-GitHubModuleWorkflowLatestRun @baseInputObject -WorkflowId $workflow.id
 
-    #     if ($latestWorkflowRun.status -eq 'completed') {
-    #         $workflowRunsToProcess += $latestWorkflowRun
-    #     }
+        if ($latestWorkflowRun.status -eq 'completed') {
+            $workflowRunsToProcess += $latestWorkflowRun
+        }
 
-    #     $currentCount++
-    # }
-    $workflowRunsToProcess = Get-Content 'C:\Users\alsehr\OneDrive - Microsoft\Docs\Code\temp\workflowsDump.json' | ConvertFrom-Json -AsHashtable
+        $currentCount++
+    }
 
     ############################
     #   Processing workflows   #
@@ -122,7 +121,7 @@ function Set-AvmGitHubIssueForWorkflow {
         $issueName = '[Failed pipeline] {0}' -f $workflowRun.name
 
         if ($workflowRun.conclusion -eq 'failure') {
-            $failedRunText = 'Failed run: {0}' -f $workflowRun.html_url
+            $failedRunText = 'Failed run: {0}' -f $workflowRun.html_url -replace 'api\.github.com\/repos', 'github.com'
             $moduleName = $workflowRun.name.Replace('.', '/')
 
             if ($issues.title -notcontains $issueName) {
