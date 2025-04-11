@@ -121,7 +121,7 @@ function Set-AvmGitHubIssueForWorkflow {
         $issueName = '[Failed pipeline] {0}' -f $workflowRun.name
 
         if ($workflowRun.conclusion -eq 'failure') {
-            $failedRunText = 'Failed run: {0}' -f $workflowRun.html_url -replace 'api\.github.com\/repos', 'github.com'
+            $failedRunText = 'Failed run: {0}' -f $workflowRun.url -replace 'api\.github.com\/repos', 'github.com'
             $moduleName = $workflowRun.name.Replace('.', '/')
 
             if ($issues.title -notcontains $issueName) {
@@ -129,6 +129,7 @@ function Set-AvmGitHubIssueForWorkflow {
                 if ($PSCmdlet.ShouldProcess("Issue [$issueName]", 'Create')) {
                     $issueUrl = gh issue create --title $issueName --body $failedRunText --label 'Type: AVM :a: :v: :m:,Type: Bug :bug:' --repo "$RepositoryOwner/$RepositoryName"
                 }
+                Write-Warning ('⚠️   Created issue {0} ({1}) as the module''s latest run in the main branch failed.' -f $issueUrl, $issueName)s
 
                 $ProjectNumber = 538 # AVM - Issue Triage
                 $comment = @"
@@ -162,9 +163,12 @@ function Set-AvmGitHubIssueForWorkflow {
 > [!WARNING]
 > This issue couldn't be assigend due to an internal error. @$($module.PrimaryModuleOwnerGHHandle), please make sure this issue is assigned to you and please provide an initial response as soon as possible, in accordance with the [AVM Support statement](https://aka.ms/AVM/Support).
 "@
-                            if ($PSCmdlet.ShouldProcess("Missing user comment to issue [$($issueName)]", 'Add')) {
-                                gh issue comment $issueUrl --body $comment --repo "$RepositoryOwner/$RepositoryName"
+                            if ($PSCmdlet.ShouldProcess("Missing user comment to issue [$issueName]", 'Add')) {
+                                $userCommentUrl = gh issue comment $issueUrl --body $comment --repo "$RepositoryOwner/$RepositoryName"
                             }
+                            Write-Verbose ('💬 Commented issue {0} ({1}) as the automation was unable to auto-assign the module owner. ({2})' -f $issueUrl, $issueName, $userCommentUrl) -Verbose
+                        } else {
+                            Write-Verbose ('👋 Assigned owner [@{0}] to issue {1} ({2})' -f $module.PrimaryModuleOwnerGHHandle, $issueUrl, $issueName) -Verbose
                         }
                     }
                 }
@@ -174,8 +178,9 @@ function Set-AvmGitHubIssueForWorkflow {
                 }
 
                 if ($PSCmdlet.ShouldProcess("Comment to issue [$issueName]", 'Add')) {
-                    gh issue comment $issueUrl --body $comment --repo "$RepositoryOwner/$RepositoryName"
+                    $commentUrl = gh issue comment $issueUrl --body $comment --repo "$RepositoryOwner/$RepositoryName"
                 }
+                Write-Verbose ('💬 Commented issue {0} ({1}) as its module''s latest run in the main branch failed. ({2})' -f $issueUrl, $issueName, $commentUrl) -Verbose
 
                 $issuesCreated++
             } else {
@@ -194,14 +199,16 @@ function Set-AvmGitHubIssueForWorkflow {
                     $issuesToClose = $sortedIssues[1..$sortedIssues.Count]
                     foreach ($issueToClose in $issuesToClose) {
                         if ($PSCmdlet.ShouldProcess(('Issue [{0}] with URL [{1}] created [{2}], as it is a duplicate issue and older than the latest issue [{3}] from [{4}].' -f $issueToClose.title, $issueToClose.html_url, $issueToClose.created_at, $issueToComment.html_url, $issueToComment.created_at), 'Close')) {
-                            gh issue close $issueToClose.html_url --comment ('This issue is succeeded by the newer issue [{0}].' -f $issueToComment.html_url) --repo "$RepositoryOwner/$RepositoryName"
+                            gh issue close $issueToClose.html_url --comment ('This issue is succeeded by the newer issue [{0}].' -f $issueToComment.html_url) --repo "$RepositoryOwner/$RepositoryName" 2>&1 # Suppressing output to show custom message
                         }
+                        Write-Verbose ('✅ Closed issue {0} ({1}) as it was redundant and a newer issue for the same worklow exists' -f $issueToClose.html_url, $issueToClose.title) -Verbose
                         $issuesClosed++
                     }
                 }
                 if ($PSCmdlet.ShouldProcess(('Comment to issue [{0}] with URL [{1}] as its lastest run in the main branch failed' -f $issueToComment.title, $issueToComment.html_url), 'Add')) {
-                    gh issue comment $issueToComment.html_url --body $failedRunText --repo "$RepositoryOwner/$RepositoryName"
+                    $commentUrl = gh issue comment $issueToComment.html_url --body $failedRunText --repo "$RepositoryOwner/$RepositoryName"
                 }
+                Write-Verbose ('💬 Commented issue {0} ({1}) as its lastest run in the main branch failed. ({2})' -f $issueToComment.html_url, $issueToComment.title, $commentUrl) -Verbose
                 $issuesCommented++
             }
         } else {
@@ -213,8 +220,9 @@ function Set-AvmGitHubIssueForWorkflow {
             foreach ($issueToClose in $issuesToClose) {
                 $comment = 'Successful run: {0}' -f $workflowRun.url -replace 'api\.github.com\/repos', 'github.com'
                 if ($PSCmdlet.ShouldProcess(('Issue [{0}] with URL [{1}] as its lastest run in the main branch was successful' -f $issueToClose.title, $issueToClose.html_url), 'Close')) {
-                    gh issue close $issueToClose.html_url --comment $comment --repo "$RepositoryOwner/$RepositoryName"
+                    gh issue close $issueToClose.html_url --comment $comment --repo "$RepositoryOwner/$RepositoryName" 2>&1 # Suppressing output to show custom message
                 }
+                Write-Verbose ('✅ Closed issue {0} ({1}) as it its latest run in the main branch was successful.' -f $issueToClose.html_url, $issueToClose.title) -Verbose
                 $issuesClosed++
             }
         }
