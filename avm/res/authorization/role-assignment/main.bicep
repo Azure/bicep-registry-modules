@@ -1,6 +1,9 @@
 metadata name = 'Role Assignments (All scopes)'
-metadata description = 'This module deploys a Role Assignment at a Management Group, Subscription or Resource Group scope.'
+metadata description = '''
+This module deploys a Role Assignment at a Management Group, Subscription or Resource Group scope.'
 
+> NOTE: This multi-scope module won't be published as is and only it's nested modules should be used.
+'''
 targetScope = 'managementGroup'
 
 @sys.description('Required. You can provide either the display name of the role definition (must be configured in the variable `builtInRoleNames`), or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
