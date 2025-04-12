@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "7948612223778940977"
+      "templateHash": "17211192640682924216"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs."
@@ -1374,7 +1374,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.34.44.8038",
-              "templateHash": "3348812414264539496"
+              "templateHash": "13803513476970049852"
             }
           },
           "definitions": {
@@ -1407,6 +1407,7 @@
                 },
                 "location": {
                   "type": "string",
+                  "nullable": true,
                   "metadata": {
                     "description": "Optional. The idle timeout in minutes."
                   }

@@ -119,7 +119,7 @@ type publicIPConfigurationType = {
   diagnosticSettings: diagnosticSettingFullType[]?
 
   @description('Optional. The idle timeout in minutes.')
-  location: string
+  location: string?
 
   @description('Optional. The lock settings of the public IP address.')
   lock: lockType?
