@@ -129,7 +129,7 @@ param zone int
 
 // External resources
 @description('Required. Configures NICs and PIPs.')
-param nicConfigurations array
+param nicConfigurations nicConfigurationType[]
 
 @description('Optional. Recovery service vault name to add VMs to backup.')
 param backupVaultName string = ''
@@ -497,7 +497,7 @@ module vm_nic 'modules/nic-configuration.bicep' = [
       enableIPForwarding: nicConfiguration.?enableIPForwarding ?? false
       enableAcceleratedNetworking: nicConfiguration.?enableAcceleratedNetworking ?? true
       dnsServers: contains(nicConfiguration, 'dnsServers')
-        ? (!empty(nicConfiguration.dnsServers) ? nicConfiguration.dnsServers : [])
+        ? (!empty(nicConfiguration.?dnsServers) ? nicConfiguration.?dnsServers : [])
         : []
       networkSecurityGroupResourceId: nicConfiguration.?networkSecurityGroupResourceId ?? ''
       ipConfigurations: nicConfiguration.ipConfigurations
@@ -1157,4 +1157,50 @@ type publicKeyType = {
 
   @description('Required. Specifies the full path on the created VM where ssh public key is stored. If the file already exists, the specified key is appended to the file.')
   path: string
+}
+
+import { ipConfigurationType } from 'modules/nic-configuration.bicep'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+
+@export()
+@description('The type for the NIC configuration.')
+type nicConfigurationType = {
+  @description('Optional. The name of the NIC configuration.')
+  name: string?
+
+  @description('Optional. The suffix to append to the NIC name.')
+  nicSuffix: string?
+
+  @description('Optional. Indicates whether IP forwarding is enabled on this network interface.')
+  enableIPForwarding: bool?
+
+  @description('Optional. If the network interface is accelerated networking enabled.')
+  enableAcceleratedNetworking: bool?
+
+  @description('Optional. Specify what happens to the network interface when the VM is deleted')
+  deleteOption: 'Delete' | 'Detach'?
+
+  @description('Optional. List of DNS servers IP addresses. Use \'AzureProvidedDNS\' to switch to azure provided DNS resolution. \'AzureProvidedDNS\' value cannot be combined with other IPs, it must be the only value in dnsServers collection.')
+  dnsServers: string[]?
+
+  @description('Optional. The network security group (NSG) to attach to the network interface.')
+  networkSecurityGroupResourceId: string?
+
+  @description('Required. The IP configurations of the network interface.')
+  ipConfigurations: ipConfigurationType[]
+
+  @description('Optional. The lock settings of the service.')
+  lock: lockType?
+
+  @description('Optional. The tags of the public IP address.')
+  tags: object?
+
+  @description('Optional. Enable/Disable usage telemetry for the module.')
+  enableTelemetry: bool?
+
+  @description('Optional. The diagnostic settings of the IP configuration.')
+  diagnosticSettings: diagnosticSettingFullType[]?
+
+  @description('Optional. Array of role assignments to create.')
+  roleAssignments: roleAssignmentType[]?
 }

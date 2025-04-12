@@ -93,7 +93,7 @@ module networkInterface 'br/public:avm/res/network/network-interface:0.5.0' = {
     enableIPForwarding: enableIPForwarding
     lock: lock
     networkSecurityGroupResourceId: !empty(networkSecurityGroupResourceId) ? networkSecurityGroupResourceId : ''
-    roleAssignments: !empty(roleAssignments) ? roleAssignments : []
+    roleAssignments: roleAssignments
   }
   dependsOn: [
     networkInterface_publicIPAddresses
