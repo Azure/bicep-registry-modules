@@ -53,26 +53,6 @@ param principalType string = ''
 @sys.description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-#disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
-  name: '46d3xbcp.ptn.authorization-roleassignment.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
-      outputs: {
-        telemetry: {
-          type: 'String'
-          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-        }
-      }
-    }
-  }
-  location: location
-}
-
 module roleAssignment_mg 'scope-mg/main.bicep' = if (empty(subscriptionId) && empty(resourceGroupName)) {
   name: '${uniqueString(deployment().name, location)}-RoleAssignment-MG-Module'
   scope: managementGroup(managementGroupId)
@@ -80,13 +60,12 @@ module roleAssignment_mg 'scope-mg/main.bicep' = if (empty(subscriptionId) && em
     roleDefinitionIdOrName: roleDefinitionIdOrName
     principalId: principalId
     managementGroupId: managementGroupId
-    description: !empty(description) ? description : ''
-    principalType: !empty(principalType) ? principalType : ''
-    delegatedManagedIdentityResourceId: !empty(delegatedManagedIdentityResourceId)
-      ? delegatedManagedIdentityResourceId
-      : ''
+    description: description
+    principalType: principalType
+    delegatedManagedIdentityResourceId: delegatedManagedIdentityResourceId
     conditionVersion: conditionVersion
-    condition: !empty(condition) ? condition : ''
+    condition: condition
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -96,14 +75,12 @@ module roleAssignment_sub 'scope-sub/main.bicep' = if (!empty(subscriptionId) &&
   params: {
     roleDefinitionIdOrName: roleDefinitionIdOrName
     principalId: principalId
-    subscriptionId: subscriptionId
-    description: !empty(description) ? description : ''
-    principalType: !empty(principalType) ? principalType : ''
-    delegatedManagedIdentityResourceId: !empty(delegatedManagedIdentityResourceId)
-      ? delegatedManagedIdentityResourceId
-      : ''
+    description: description
+    principalType: principalType
+    delegatedManagedIdentityResourceId: delegatedManagedIdentityResourceId
     conditionVersion: conditionVersion
-    condition: !empty(condition) ? condition : ''
+    condition: condition
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -113,15 +90,12 @@ module roleAssignment_rg 'scope-rg/main.bicep' = if (!empty(resourceGroupName) &
   params: {
     roleDefinitionIdOrName: roleDefinitionIdOrName
     principalId: principalId
-    subscriptionId: subscriptionId
-    resourceGroupName: resourceGroupName
-    description: !empty(description) ? description : ''
-    principalType: !empty(principalType) ? principalType : ''
-    delegatedManagedIdentityResourceId: !empty(delegatedManagedIdentityResourceId)
-      ? delegatedManagedIdentityResourceId
-      : ''
+    description: description
+    principalType: principalType
+    delegatedManagedIdentityResourceId: delegatedManagedIdentityResourceId
     conditionVersion: conditionVersion
-    condition: !empty(condition) ? condition : ''
+    condition: condition
+    enableTelemetry: enableTelemetry
   }
 }
 

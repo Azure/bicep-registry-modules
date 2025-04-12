@@ -5,10 +5,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "2148669458366983972"
+      "templateHash": "4263448336031041463"
     },
     "name": "Role Assignments (All scopes)",
-    "description": "This module deploys a Role Assignment at a Management Group, Subscription or Resource Group scope."
+    "description": "This module deploys a Role Assignment at a Management Group, Subscription or Resource Group scope.'\n\n> NOTE: This multi-scope module won't be published as is and only its nested modules should be used.\n"
   },
   "parameters": {
     "roleDefinitionIdOrName": {
@@ -107,27 +107,6 @@
   },
   "resources": [
     {
-      "condition": "[parameters('enableTelemetry')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
-      "name": "[format('46d3xbcp.ptn.authorization-roleassignment.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
-      "properties": {
-        "mode": "Incremental",
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "resources": [],
-          "outputs": {
-            "telemetry": {
-              "type": "String",
-              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
-            }
-          }
-        }
-      },
-      "location": "[parameters('location')]"
-    },
-    {
       "condition": "[and(empty(parameters('subscriptionId')), empty(parameters('resourceGroupName')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -149,27 +128,46 @@
           "managementGroupId": {
             "value": "[parameters('managementGroupId')]"
           },
-          "description": "[if(not(empty(parameters('description'))), createObject('value', parameters('description')), createObject('value', ''))]",
-          "principalType": "[if(not(empty(parameters('principalType'))), createObject('value', parameters('principalType')), createObject('value', ''))]",
-          "delegatedManagedIdentityResourceId": "[if(not(empty(parameters('delegatedManagedIdentityResourceId'))), createObject('value', parameters('delegatedManagedIdentityResourceId')), createObject('value', ''))]",
+          "description": {
+            "value": "[parameters('description')]"
+          },
+          "principalType": {
+            "value": "[parameters('principalType')]"
+          },
+          "delegatedManagedIdentityResourceId": {
+            "value": "[parameters('delegatedManagedIdentityResourceId')]"
+          },
           "conditionVersion": {
             "value": "[parameters('conditionVersion')]"
           },
-          "condition": "[if(not(empty(parameters('condition'))), createObject('value', parameters('condition')), createObject('value', ''))]"
+          "condition": {
+            "value": "[parameters('condition')]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-08-01/managementGroupDeploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.34.44.8038",
-              "templateHash": "17724260264605997010"
+              "templateHash": "14777115981132967454"
             },
             "name": "Role Assignments (Management Group scope)",
-            "description": "This module deploys a Role Assignment at a Management Group scope."
+            "description": "This module deploys a Role Assignment to a Management Group scope."
           },
           "parameters": {
+            "name": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+              }
+            },
             "roleDefinitionIdOrName": {
               "type": "string",
               "metadata": {
@@ -191,21 +189,21 @@
             },
             "description": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The description of the role assignment."
               }
             },
             "delegatedManagedIdentityResourceId": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. ID of the delegated managed identity resource."
               }
             },
             "condition": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to."
               }
@@ -217,22 +215,28 @@
                 "2.0"
               ],
               "metadata": {
-                "description": "Optional. Version of the condition. Currently accepted value is \"2.0\"."
+                "description": "Optional. The version of the condition."
               }
             },
             "principalType": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "allowedValues": [
                 "ServicePrincipal",
                 "Group",
                 "User",
                 "ForeignGroup",
-                "Device",
-                ""
+                "Device"
               ],
               "metadata": {
                 "description": "Optional. The principal type of the assigned principal ID."
+              }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
               }
             }
           },
@@ -246,38 +250,58 @@
               "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]",
               "Management Group Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ac63b705-f282-497d-ac71-919bf39d939d')]"
             },
-            "roleDefinitionIdVar": "[coalesce(tryGet(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), parameters('roleDefinitionIdOrName'))]"
+            "roleDefinitionIdVar": "[coalesce(tryGet(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), if(contains(parameters('roleDefinitionIdOrName'), '/providers/Microsoft.Authorization/roleDefinitions/'), parameters('roleDefinitionIdOrName'), subscriptionResourceId('Microsoft.Authorization/roleDefinitions', parameters('roleDefinitionIdOrName'))))]"
           },
-          "resources": [
-            {
+          "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.authorization-roleassignment.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
+            "roleAssignment": {
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
-              "name": "[guid(parameters('managementGroupId'), variables('roleDefinitionIdVar'), parameters('principalId'))]",
+              "name": "[coalesce(parameters('name'), guid(parameters('managementGroupId'), variables('roleDefinitionIdVar'), parameters('principalId')))]",
               "properties": {
                 "roleDefinitionId": "[variables('roleDefinitionIdVar')]",
                 "principalId": "[parameters('principalId')]",
-                "description": "[if(not(empty(parameters('description'))), parameters('description'), null())]",
-                "principalType": "[if(not(empty(parameters('principalType'))), parameters('principalType'), null())]",
-                "delegatedManagedIdentityResourceId": "[if(not(empty(parameters('delegatedManagedIdentityResourceId'))), parameters('delegatedManagedIdentityResourceId'), null())]",
+                "description": "[parameters('description')]",
+                "principalType": "[parameters('principalType')]",
+                "delegatedManagedIdentityResourceId": "[parameters('delegatedManagedIdentityResourceId')]",
                 "conditionVersion": "[if(and(not(empty(parameters('conditionVersion'))), not(empty(parameters('condition')))), parameters('conditionVersion'), null())]",
-                "condition": "[if(not(empty(parameters('condition'))), parameters('condition'), null())]"
+                "condition": "[parameters('condition')]"
               }
             }
-          ],
+          },
           "outputs": {
             "name": {
               "type": "string",
               "metadata": {
                 "description": "The GUID of the Role Assignment."
               },
-              "value": "[guid(parameters('managementGroupId'), variables('roleDefinitionIdVar'), parameters('principalId'))]"
+              "value": "[coalesce(parameters('name'), guid(parameters('managementGroupId'), variables('roleDefinitionIdVar'), parameters('principalId')))]"
             },
             "resourceId": {
               "type": "string",
               "metadata": {
                 "description": "The resource ID of the Role Assignment."
               },
-              "value": "[extensionResourceId(managementGroup().id, 'Microsoft.Authorization/roleAssignments', guid(parameters('managementGroupId'), variables('roleDefinitionIdVar'), parameters('principalId')))]"
+              "value": "[extensionResourceId(managementGroup().id, 'Microsoft.Authorization/roleAssignments', coalesce(parameters('name'), guid(parameters('managementGroupId'), variables('roleDefinitionIdVar'), parameters('principalId'))))]"
             },
             "scope": {
               "type": "string",
@@ -309,30 +333,46 @@
           "principalId": {
             "value": "[parameters('principalId')]"
           },
-          "subscriptionId": {
-            "value": "[parameters('subscriptionId')]"
+          "description": {
+            "value": "[parameters('description')]"
           },
-          "description": "[if(not(empty(parameters('description'))), createObject('value', parameters('description')), createObject('value', ''))]",
-          "principalType": "[if(not(empty(parameters('principalType'))), createObject('value', parameters('principalType')), createObject('value', ''))]",
-          "delegatedManagedIdentityResourceId": "[if(not(empty(parameters('delegatedManagedIdentityResourceId'))), createObject('value', parameters('delegatedManagedIdentityResourceId')), createObject('value', ''))]",
+          "principalType": {
+            "value": "[parameters('principalType')]"
+          },
+          "delegatedManagedIdentityResourceId": {
+            "value": "[parameters('delegatedManagedIdentityResourceId')]"
+          },
           "conditionVersion": {
             "value": "[parameters('conditionVersion')]"
           },
-          "condition": "[if(not(empty(parameters('condition'))), createObject('value', parameters('condition')), createObject('value', ''))]"
+          "condition": {
+            "value": "[parameters('condition')]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.34.44.8038",
-              "templateHash": "16584899153503047271"
+              "templateHash": "14135172009757478189"
             },
             "name": "Role Assignments (Subscription scope)",
-            "description": "This module deploys a Role Assignment at a Subscription scope."
+            "description": "This module deploys a Role Assignment to a Subscription scope."
           },
           "parameters": {
+            "name": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+              }
+            },
             "roleDefinitionIdOrName": {
               "type": "string",
               "metadata": {
@@ -345,30 +385,23 @@
                 "description": "Required. The Principal or Object ID of the Security Principal (User, Group, Service Principal, Managed Identity)."
               }
             },
-            "subscriptionId": {
-              "type": "string",
-              "defaultValue": "[subscription().subscriptionId]",
-              "metadata": {
-                "description": "Optional. Subscription ID of the subscription to assign the RBAC role to. If not provided, will use the current scope for deployment."
-              }
-            },
             "description": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The description of the role assignment."
               }
             },
             "delegatedManagedIdentityResourceId": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. ID of the delegated managed identity resource."
               }
             },
             "condition": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to."
               }
@@ -380,22 +413,28 @@
                 "2.0"
               ],
               "metadata": {
-                "description": "Optional. Version of the condition. Currently accepted value is \"2.0\"."
+                "description": "Optional. The version of the condition."
               }
             },
             "principalType": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "allowedValues": [
                 "ServicePrincipal",
                 "Group",
                 "User",
                 "ForeignGroup",
-                "Device",
-                ""
+                "Device"
               ],
               "metadata": {
                 "description": "Optional. The principal type of the assigned principal ID."
+              }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
               }
             }
           },
@@ -407,38 +446,58 @@
               "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
               "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
             },
-            "roleDefinitionIdVar": "[coalesce(tryGet(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), parameters('roleDefinitionIdOrName'))]"
+            "roleDefinitionIdVar": "[coalesce(tryGet(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), if(contains(parameters('roleDefinitionIdOrName'), '/providers/Microsoft.Authorization/roleDefinitions/'), parameters('roleDefinitionIdOrName'), subscriptionResourceId('Microsoft.Authorization/roleDefinitions', parameters('roleDefinitionIdOrName'))))]"
           },
-          "resources": [
-            {
+          "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.authorization-roleassignment.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
+            "roleAssignment": {
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
-              "name": "[guid(parameters('subscriptionId'), variables('roleDefinitionIdVar'), parameters('principalId'))]",
+              "name": "[coalesce(parameters('name'), guid(subscription().subscriptionId, variables('roleDefinitionIdVar'), parameters('principalId')))]",
               "properties": {
                 "roleDefinitionId": "[variables('roleDefinitionIdVar')]",
                 "principalId": "[parameters('principalId')]",
-                "description": "[if(not(empty(parameters('description'))), parameters('description'), null())]",
-                "principalType": "[if(not(empty(parameters('principalType'))), parameters('principalType'), null())]",
-                "delegatedManagedIdentityResourceId": "[if(not(empty(parameters('delegatedManagedIdentityResourceId'))), parameters('delegatedManagedIdentityResourceId'), null())]",
+                "description": "[parameters('description')]",
+                "principalType": "[parameters('principalType')]",
+                "delegatedManagedIdentityResourceId": "[parameters('delegatedManagedIdentityResourceId')]",
                 "conditionVersion": "[if(and(not(empty(parameters('conditionVersion'))), not(empty(parameters('condition')))), parameters('conditionVersion'), null())]",
-                "condition": "[if(not(empty(parameters('condition'))), parameters('condition'), null())]"
+                "condition": "[parameters('condition')]"
               }
             }
-          ],
+          },
           "outputs": {
             "name": {
               "type": "string",
               "metadata": {
                 "description": "The GUID of the Role Assignment."
               },
-              "value": "[guid(parameters('subscriptionId'), variables('roleDefinitionIdVar'), parameters('principalId'))]"
+              "value": "[coalesce(parameters('name'), guid(subscription().subscriptionId, variables('roleDefinitionIdVar'), parameters('principalId')))]"
             },
             "resourceId": {
               "type": "string",
               "metadata": {
                 "description": "The resource ID of the Role Assignment."
               },
-              "value": "[subscriptionResourceId('Microsoft.Authorization/roleAssignments', guid(parameters('subscriptionId'), variables('roleDefinitionIdVar'), parameters('principalId')))]"
+              "value": "[subscriptionResourceId('Microsoft.Authorization/roleAssignments', coalesce(parameters('name'), guid(subscription().subscriptionId, variables('roleDefinitionIdVar'), parameters('principalId'))))]"
             },
             "subscriptionName": {
               "type": "string",
@@ -477,33 +536,46 @@
           "principalId": {
             "value": "[parameters('principalId')]"
           },
-          "subscriptionId": {
-            "value": "[parameters('subscriptionId')]"
+          "description": {
+            "value": "[parameters('description')]"
           },
-          "resourceGroupName": {
-            "value": "[parameters('resourceGroupName')]"
+          "principalType": {
+            "value": "[parameters('principalType')]"
           },
-          "description": "[if(not(empty(parameters('description'))), createObject('value', parameters('description')), createObject('value', ''))]",
-          "principalType": "[if(not(empty(parameters('principalType'))), createObject('value', parameters('principalType')), createObject('value', ''))]",
-          "delegatedManagedIdentityResourceId": "[if(not(empty(parameters('delegatedManagedIdentityResourceId'))), createObject('value', parameters('delegatedManagedIdentityResourceId')), createObject('value', ''))]",
+          "delegatedManagedIdentityResourceId": {
+            "value": "[parameters('delegatedManagedIdentityResourceId')]"
+          },
           "conditionVersion": {
             "value": "[parameters('conditionVersion')]"
           },
-          "condition": "[if(not(empty(parameters('condition'))), createObject('value', parameters('condition')), createObject('value', ''))]"
+          "condition": {
+            "value": "[parameters('condition')]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.34.44.8038",
-              "templateHash": "12870015687080907707"
+              "templateHash": "414008861517296171"
             },
             "name": "Role Assignments (Resource Group scope)",
-            "description": "This module deploys a Role Assignment at a Resource Group scope."
+            "description": "This module deploys a Role Assignment to a Resource Group scope."
           },
           "parameters": {
+            "name": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+              }
+            },
             "roleDefinitionIdOrName": {
               "type": "string",
               "metadata": {
@@ -516,37 +588,23 @@
                 "description": "Required. The Principal or Object ID of the Security Principal (User, Group, Service Principal, Managed Identity)."
               }
             },
-            "resourceGroupName": {
-              "type": "string",
-              "defaultValue": "[resourceGroup().name]",
-              "metadata": {
-                "description": "Optional. Name of the Resource Group to assign the RBAC role to. If not provided, will use the current scope for deployment."
-              }
-            },
-            "subscriptionId": {
-              "type": "string",
-              "defaultValue": "[subscription().subscriptionId]",
-              "metadata": {
-                "description": "Optional. Subscription ID of the subscription to assign the RBAC role to. If not provided, will use the current scope for deployment."
-              }
-            },
             "description": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The description of the role assignment."
               }
             },
             "delegatedManagedIdentityResourceId": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. ID of the delegated managed identity resource."
               }
             },
             "condition": {
               "type": "string",
-              "defaultValue": "",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to."
               }
@@ -558,21 +616,28 @@
                 "2.0"
               ],
               "metadata": {
-                "description": "Optional. Version of the condition. Currently accepted value is \"2.0\"."
+                "description": "Optional. The version of the condition."
               }
             },
             "principalType": {
               "type": "string",
+              "nullable": true,
               "allowedValues": [
                 "ServicePrincipal",
                 "Group",
                 "User",
                 "ForeignGroup",
-                "Device",
-                ""
+                "Device"
               ],
               "metadata": {
                 "description": "Optional. The principal type of the assigned principal ID."
+              }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
               }
             }
           },
@@ -584,38 +649,58 @@
               "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
               "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
             },
-            "roleDefinitionIdVar": "[coalesce(tryGet(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), parameters('roleDefinitionIdOrName'))]"
+            "roleDefinitionIdVar": "[coalesce(tryGet(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), if(contains(parameters('roleDefinitionIdOrName'), '/providers/Microsoft.Authorization/roleDefinitions/'), parameters('roleDefinitionIdOrName'), subscriptionResourceId('Microsoft.Authorization/roleDefinitions', parameters('roleDefinitionIdOrName'))))]"
           },
-          "resources": [
-            {
+          "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.authorization-roleassignment.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
+            "roleAssignment": {
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
-              "name": "[guid(parameters('subscriptionId'), parameters('resourceGroupName'), variables('roleDefinitionIdVar'), parameters('principalId'))]",
+              "name": "[coalesce(parameters('name'), guid(subscription().id, resourceGroup().name, variables('roleDefinitionIdVar'), parameters('principalId')))]",
               "properties": {
                 "roleDefinitionId": "[variables('roleDefinitionIdVar')]",
                 "principalId": "[parameters('principalId')]",
-                "description": "[if(not(empty(parameters('description'))), parameters('description'), null())]",
-                "principalType": "[if(not(empty(parameters('principalType'))), parameters('principalType'), null())]",
-                "delegatedManagedIdentityResourceId": "[if(not(empty(parameters('delegatedManagedIdentityResourceId'))), parameters('delegatedManagedIdentityResourceId'), null())]",
+                "description": "[parameters('description')]",
+                "principalType": "[parameters('principalType')]",
+                "delegatedManagedIdentityResourceId": "[parameters('delegatedManagedIdentityResourceId')]",
                 "conditionVersion": "[if(and(not(empty(parameters('conditionVersion'))), not(empty(parameters('condition')))), parameters('conditionVersion'), null())]",
-                "condition": "[if(not(empty(parameters('condition'))), parameters('condition'), null())]"
+                "condition": "[parameters('condition')]"
               }
             }
-          ],
+          },
           "outputs": {
             "name": {
               "type": "string",
               "metadata": {
                 "description": "The GUID of the Role Assignment."
               },
-              "value": "[guid(parameters('subscriptionId'), parameters('resourceGroupName'), variables('roleDefinitionIdVar'), parameters('principalId'))]"
+              "value": "[coalesce(parameters('name'), guid(subscription().id, resourceGroup().name, variables('roleDefinitionIdVar'), parameters('principalId')))]"
             },
             "resourceId": {
               "type": "string",
               "metadata": {
                 "description": "The resource ID of the Role Assignment."
               },
-              "value": "[resourceId('Microsoft.Authorization/roleAssignments', guid(parameters('subscriptionId'), parameters('resourceGroupName'), variables('roleDefinitionIdVar'), parameters('principalId')))]"
+              "value": "[resourceId('Microsoft.Authorization/roleAssignments', coalesce(parameters('name'), guid(subscription().id, resourceGroup().name, variables('roleDefinitionIdVar'), parameters('principalId'))))]"
             },
             "resourceGroupName": {
               "type": "string",

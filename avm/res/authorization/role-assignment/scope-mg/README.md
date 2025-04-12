@@ -1,12 +1,13 @@
 # Role Assignments (Management Group scope) `[Microsoft.Authorization/roleAssignments]`
 
-This module deploys a Role Assignment at a Management Group scope.
+This module deploys a Role Assignment to a Management Group scope.
 
 ## Navigation
 
 - [Resource Types](#Resource-Types)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Data Collection](#Data-Collection)
 
 ## Resource Types
 
@@ -28,10 +29,12 @@ This module deploys a Role Assignment at a Management Group scope.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`condition`](#parameter-condition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. |
-| [`conditionVersion`](#parameter-conditionversion) | string | Version of the condition. Currently accepted value is "2.0". |
+| [`conditionVersion`](#parameter-conditionversion) | string | The version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-delegatedmanagedidentityresourceid) | string | ID of the delegated managed identity resource. |
 | [`description`](#parameter-description) | string | The description of the role assignment. |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`managementGroupId`](#parameter-managementgroupid) | string | Group ID of the Management Group to assign the RBAC role to. If not provided, will use the current scope for deployment. |
+| [`name`](#parameter-name) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-principaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `principalId`
@@ -54,11 +57,10 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `conditionVersion`
 
-Version of the condition. Currently accepted value is "2.0".
+The version of the condition.
 
 - Required: No
 - Type: string
@@ -76,7 +78,6 @@ ID of the delegated managed identity resource.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `description`
 
@@ -84,7 +85,14 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
-- Default: `''`
+
+### Parameter: `enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
+- Default: `True`
 
 ### Parameter: `managementGroupId`
 
@@ -94,17 +102,22 @@ Group ID of the Management Group to assign the RBAC role to. If not provided, wi
 - Type: string
 - Default: `[managementGroup().name]`
 
+### Parameter: `name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `principalType`
 
 The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
-- Default: `''`
 - Allowed:
   ```Bicep
   [
-    ''
     'Device'
     'ForeignGroup'
     'Group'
@@ -120,3 +133,7 @@ The principal type of the assigned principal ID.
 | `name` | string | The GUID of the Role Assignment. |
 | `resourceId` | string | The resource ID of the Role Assignment. |
 | `scope` | string | The scope this Role Assignment applies to. |
+
+## Data Collection
+
+The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
