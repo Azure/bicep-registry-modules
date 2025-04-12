@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'With an administrator'
-metadata description = 'This instance deploys the module with a Microsoft Entra ID identity as SQL administrator.'
+metadata name = 'With database level managed identity'
+metadata description = 'This instance deploys the module with managed identity at the datase level.'
 
 // ========== //
 // Parameters //

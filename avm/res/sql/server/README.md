@@ -47,7 +47,7 @@ The following section provides usage examples for the module, which were used to
 - [With an administrator](#example-1-with-an-administrator)
 - [With audit settings](#example-2-with-audit-settings)
 - [Using Customer-Managed-Keys with User-Assigned identity](#example-3-using-customer-managed-keys-with-user-assigned-identity)
-- [With an administrator](#example-4-with-an-administrator)
+- [With database level managed identity](#example-4-with-database-level-managed-identity)
 - [Using only defaults](#example-5-using-only-defaults)
 - [Using elastic pool](#example-6-using-elastic-pool)
 - [Using failover groups](#example-7-using-failover-groups)
@@ -370,9 +370,9 @@ param primaryUserAssignedIdentityId = '<primaryUserAssignedIdentityId>'
 </details>
 <p>
 
-### Example 4: _With an administrator_
+### Example 4: _With database level managed identity_
 
-This instance deploys the module with a Microsoft Entra ID identity as SQL administrator.
+This instance deploys the module with managed identity at the datase level.
 
 
 <details>
