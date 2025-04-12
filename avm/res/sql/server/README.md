@@ -47,15 +47,14 @@ The following section provides usage examples for the module, which were used to
 - [With an administrator](#example-1-with-an-administrator)
 - [With audit settings](#example-2-with-audit-settings)
 - [Using Customer-Managed-Keys with User-Assigned identity](#example-3-using-customer-managed-keys-with-user-assigned-identity)
-- [With database level managed identity](#example-4-with-database-level-managed-identity)
-- [Using only defaults](#example-5-using-only-defaults)
-- [Using elastic pool](#example-6-using-elastic-pool)
-- [Using failover groups](#example-7-using-failover-groups)
-- [Deploying with a key vault reference to save secrets](#example-8-deploying-with-a-key-vault-reference-to-save-secrets)
-- [Using large parameter set](#example-9-using-large-parameter-set)
-- [With a secondary database](#example-10-with-a-secondary-database)
-- [With vulnerability assessment](#example-11-with-vulnerability-assessment)
-- [WAF-aligned](#example-12-waf-aligned)
+- [Using only defaults](#example-4-using-only-defaults)
+- [Using elastic pool](#example-5-using-elastic-pool)
+- [Using failover groups](#example-6-using-failover-groups)
+- [Deploying with a key vault reference to save secrets](#example-7-deploying-with-a-key-vault-reference-to-save-secrets)
+- [Using large parameter set](#example-8-using-large-parameter-set)
+- [With a secondary database](#example-9-with-a-secondary-database)
+- [With vulnerability assessment](#example-10-with-vulnerability-assessment)
+- [WAF-aligned](#example-11-waf-aligned)
 
 ### Example 1: _With an administrator_
 
@@ -370,141 +369,7 @@ param primaryUserAssignedIdentityId = '<primaryUserAssignedIdentityId>'
 </details>
 <p>
 
-### Example 4: _With database level managed identity_
-
-This instance deploys the module with managed identity at the datase level.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module server 'br/public:avm/res/sql/server:<version>' = {
-  name: 'serverDeployment'
-  params: {
-    // Required parameters
-    name: 'sqlsdbi'
-    // Non-required parameters
-    administrators: {
-      azureADOnlyAuthentication: true
-      login: 'myspn'
-      principalType: 'Application'
-      sid: '<sid>'
-    }
-    databases: [
-      {
-        managedIdentities: {
-          userAssignedResourceIds: [
-            '<databaseIdentityResourceId>'
-          ]
-        }
-        maxSizeBytes: 2147483648
-        name: 'sqlsdbi-db1'
-        sku: {
-          name: 'S1'
-          tier: 'Standard'
-        }
-        zoneRedundant: false
-      }
-    ]
-    location: '<location>'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "sqlsdbi"
-    },
-    // Non-required parameters
-    "administrators": {
-      "value": {
-        "azureADOnlyAuthentication": true,
-        "login": "myspn",
-        "principalType": "Application",
-        "sid": "<sid>"
-      }
-    },
-    "databases": {
-      "value": [
-        {
-          "managedIdentities": {
-            "userAssignedResourceIds": [
-              "<databaseIdentityResourceId>"
-            ]
-          },
-          "maxSizeBytes": 2147483648,
-          "name": "sqlsdbi-db1",
-          "sku": {
-            "name": "S1",
-            "tier": "Standard"
-          },
-          "zoneRedundant": false
-        }
-      ]
-    },
-    "location": {
-      "value": "<location>"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/sql/server:<version>'
-
-// Required parameters
-param name = 'sqlsdbi'
-// Non-required parameters
-param administrators = {
-  azureADOnlyAuthentication: true
-  login: 'myspn'
-  principalType: 'Application'
-  sid: '<sid>'
-}
-param databases = [
-  {
-    managedIdentities: {
-      userAssignedResourceIds: [
-        '<databaseIdentityResourceId>'
-      ]
-    }
-    maxSizeBytes: 2147483648
-    name: 'sqlsdbi-db1'
-    sku: {
-      name: 'S1'
-      tier: 'Standard'
-    }
-    zoneRedundant: false
-  }
-]
-param location = '<location>'
-```
-
-</details>
-<p>
-
-### Example 5: _Using only defaults_
+### Example 4: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -578,7 +443,7 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 6: _Using elastic pool_
+### Example 5: _Using elastic pool_
 
 This instance deploys the module with an elastic pool.
 
@@ -711,7 +576,7 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 7: _Using failover groups_
+### Example 6: _Using failover groups_
 
 This instance deploys the module with failover groups.
 
@@ -1017,7 +882,7 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 8: _Deploying with a key vault reference to save secrets_
+### Example 7: _Deploying with a key vault reference to save secrets_
 
 This instance deploys the module saving all its secrets in a key vault.
 
@@ -1128,7 +993,7 @@ param secretsExportConfiguration = {
 </details>
 <p>
 
-### Example 9: _Using large parameter set_
+### Example 8: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -1172,6 +1037,11 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         ]
         elasticPoolResourceId: '<elasticPoolResourceId>'
         licenseType: 'LicenseIncluded'
+        managedIdentities: {
+          userAssignedResourceIds: [
+            '<databaseIdentityResourceId>'
+          ]
+        }
         maxSizeBytes: 34359738368
         name: 'sqlsmaxdb-001'
         sku: {
@@ -1206,7 +1076,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
+        '<serverIdentityPrincipalId>'
       ]
     }
     primaryUserAssignedIdentityId: '<primaryUserAssignedIdentityId>'
@@ -1344,6 +1214,11 @@ module server 'br/public:avm/res/sql/server:<version>' = {
           ],
           "elasticPoolResourceId": "<elasticPoolResourceId>",
           "licenseType": "LicenseIncluded",
+          "managedIdentities": {
+            "userAssignedResourceIds": [
+              "<databaseIdentityResourceId>"
+            ]
+          },
           "maxSizeBytes": 34359738368,
           "name": "sqlsmaxdb-001",
           "sku": {
@@ -1388,7 +1263,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
       "value": {
         "systemAssigned": true,
         "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
+          "<serverIdentityPrincipalId>"
         ]
       }
     },
@@ -1532,6 +1407,11 @@ param databases = [
     ]
     elasticPoolResourceId: '<elasticPoolResourceId>'
     licenseType: 'LicenseIncluded'
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<databaseIdentityResourceId>'
+      ]
+    }
     maxSizeBytes: 34359738368
     name: 'sqlsmaxdb-001'
     sku: {
@@ -1566,7 +1446,7 @@ param lock = {
 param managedIdentities = {
   systemAssigned: true
   userAssignedResourceIds: [
-    '<managedIdentityResourceId>'
+    '<serverIdentityPrincipalId>'
   ]
 }
 param primaryUserAssignedIdentityId = '<primaryUserAssignedIdentityId>'
@@ -1653,7 +1533,7 @@ param vulnerabilityAssessmentsObj = {
 </details>
 <p>
 
-### Example 10: _With a secondary database_
+### Example 9: _With a secondary database_
 
 This instance deploys the module with a secondary database.
 
@@ -1785,7 +1665,7 @@ param tags = {
 </details>
 <p>
 
-### Example 11: _With vulnerability assessment_
+### Example 10: _With vulnerability assessment_
 
 This instance deploys the module with a vulnerability assessment.
 
@@ -1968,7 +1848,7 @@ param vulnerabilityAssessmentsObj = {
 </details>
 <p>
 
-### Example 12: _WAF-aligned_
+### Example 11: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
