@@ -614,7 +614,6 @@ type secretType = {
 
 @export()
 @description('The type for the container app\'s authentication configuration.')
-@description('The type for the container app\'s authentication configuration.')
 type authConfigType = {
   @description('Optional. The configuration settings of the secrets references of encryption key and signing key for ContainerApp Service Authentication/Authorization.')
   encryptionSettings: resourceInput<'Microsoft.App/containerApps/authConfigs@2024-10-02-preview'>.properties.encryptionSettings?
