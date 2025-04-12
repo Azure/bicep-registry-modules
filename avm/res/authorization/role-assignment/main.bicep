@@ -65,12 +65,13 @@ module roleAssignment_mg 'scope-mg/main.bicep' = if (empty(subscriptionId) && em
     conditionVersion: conditionVersion
     condition: condition
     enableTelemetry: enableTelemetry
+    location: location
   }
 }
 
 module roleAssignment_sub 'scope-sub/main.bicep' = if (!empty(subscriptionId) && empty(resourceGroupName)) {
   name: '${uniqueString(deployment().name, location)}-RoleAssignment-Sub-Module'
-  scope: subscription(subscriptionId)
+  scope: subscription(subscriptionId!)
   params: {
     roleDefinitionIdOrName: roleDefinitionIdOrName
     principalId: principalId
@@ -80,12 +81,13 @@ module roleAssignment_sub 'scope-sub/main.bicep' = if (!empty(subscriptionId) &&
     conditionVersion: conditionVersion
     condition: condition
     enableTelemetry: enableTelemetry
+    location: location
   }
 }
 
 module roleAssignment_rg 'scope-rg/main.bicep' = if (!empty(resourceGroupName) && !empty(subscriptionId)) {
   name: '${uniqueString(deployment().name, location)}-RoleAssignment-RG-Module'
-  scope: resourceGroup(subscriptionId, resourceGroupName)
+  scope: resourceGroup(subscriptionId!, resourceGroupName!)
   params: {
     roleDefinitionIdOrName: roleDefinitionIdOrName
     principalId: principalId
