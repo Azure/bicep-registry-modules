@@ -147,7 +147,7 @@ param volumes array = []
 param workloadProfileName string = ''
 
 @description('Optional. The name of the Container App Auth configs.')
-param authConfigs authConfigType?
+param authConfig authConfigType?
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -325,12 +325,12 @@ module containerAppAuthConfigs './auth-config/main.bicep' = if (!empty(authConfi
   name: '${uniqueString(deployment().name, location)}-auth-config'
   params: {
     containerAppName: containerApp.name
-    encryptionSettings: authConfigs.?encryptionSettings
-    globalValidation: authConfigs.?globalValidation
-    httpSettings: authConfigs.?httpSettings
-    identityProviders: authConfigs.?identityProviders
-    login: authConfigs.?login
-    platform: authConfigs.?platform
+    encryptionSettings: authConfig.?encryptionSettings
+    globalValidation: authConfig.?globalValidation
+    httpSettings: authConfig.?httpSettings
+    identityProviders: authConfig.?identityProviders
+    login: authConfig.?login
+    platform: authConfig.?platform
   }
 }
 

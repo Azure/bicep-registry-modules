@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "2275163394807213039"
+      "templateHash": "7838799775971203202"
     },
     "name": "Container Apps",
     "description": "This module deploys a Container App."
@@ -699,7 +699,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for the container app's authentication configuration."
       }
     },
     "lockType": {
@@ -1154,7 +1155,7 @@
         "description": "Optional. Workload profile name to pin for container app execution."
       }
     },
-    "authConfigs": {
+    "authConfig": {
       "$ref": "#/definitions/authConfigType",
       "nullable": true,
       "metadata": {
@@ -1273,10 +1274,10 @@
       ]
     },
     "containerAppAuthConfigs": {
-      "condition": "[not(empty(parameters('authConfigs')))]",
+      "condition": "[not(empty(parameters('authConfig')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-auth-configs', uniqueString(deployment().name, parameters('location')))]",
+      "name": "[format('{0}-auth-config', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -1287,22 +1288,22 @@
             "value": "[parameters('name')]"
           },
           "encryptionSettings": {
-            "value": "[tryGet(parameters('authConfigs'), 'encryptionSettings')]"
+            "value": "[tryGet(parameters('authConfig'), 'encryptionSettings')]"
           },
           "globalValidation": {
-            "value": "[tryGet(parameters('authConfigs'), 'globalValidation')]"
+            "value": "[tryGet(parameters('authConfig'), 'globalValidation')]"
           },
           "httpSettings": {
-            "value": "[tryGet(parameters('authConfigs'), 'httpSettings')]"
+            "value": "[tryGet(parameters('authConfig'), 'httpSettings')]"
           },
           "identityProviders": {
-            "value": "[tryGet(parameters('authConfigs'), 'identityProviders')]"
+            "value": "[tryGet(parameters('authConfig'), 'identityProviders')]"
           },
           "login": {
-            "value": "[tryGet(parameters('authConfigs'), 'login')]"
+            "value": "[tryGet(parameters('authConfig'), 'login')]"
           },
           "platform": {
-            "value": "[tryGet(parameters('authConfigs'), 'platform')]"
+            "value": "[tryGet(parameters('authConfig'), 'platform')]"
           }
         },
         "template": {

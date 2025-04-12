@@ -168,7 +168,7 @@ module testDeployment '../../../main.bicep' = [
         cooldownPeriod: 500
         pollingInterval: 45
       }
-      authConfigs: {
+      authConfig: {
         httpSettings: {
           requireHttps: true
         }
