@@ -86,7 +86,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
                     childModuleAllowedList             = $childModuleAllowedList
                     childModuleAllowedListRelativePath = $childModuleAllowedListRelativePath
                     isMultiScopeModule                 = (Split-Path $moduleFolderPath -Leaf) -in @('scope-mg', 'scope-sub', 'scope-rg')
-                    hasMultiScopeChildModules          = (Get-ChildItem -Directory -Path $moduleFolderPath) | Where-Object { $_.Name -in @('scope-mg', 'scope-sub', 'scope-rg') }
+                    hasMultiScopeChildModules          = ((Get-ChildItem -Directory -Path $moduleFolderPath) | Where-Object { $_.Name -in @('scope-mg', 'scope-sub', 'scope-rg') }).Count -gt 0
                 }
             }
         }
@@ -153,7 +153,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
         }
 
         # If the child modules version has been increased, parent main modules version should be increased as well
-        It '[<moduleFolderName>] parent module version should be increased if the child version number has been increased.' -TestCases ($moduleFolderTestCases | Where-Object { -not $_.isTopLevelModule -and -not $isMultiScopeModule }) {
+        It '[<moduleFolderName>] parent module version should be increased if the child version number has been increased.' -TestCases ($moduleFolderTestCases | Where-Object { -not $_.isTopLevelModule -and -not $_.isMultiScopeModule }) {
 
             param (
                 [string] $moduleFolderPath
@@ -230,15 +230,16 @@ Describe 'File/folder tests' -Tag 'Modules' {
                 $resourceTypeIdentifier = $resourceTypeIdentifier -replace '\\', '/'
                 if (($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2) {
                     $topLevelModuleTestCases += @{
-                        moduleFolderName = $moduleFolderPath.Replace('\', '/').Split('/avm/')[1]
-                        moduleFolderPath = $moduleFolderPath
-                        moduleType       = $moduleType
+                        moduleFolderName          = $moduleFolderPath.Replace('\', '/').Split('/avm/')[1]
+                        moduleFolderPath          = $moduleFolderPath
+                        moduleType                = $moduleType
+                        hasMultiScopeChildModules = ((Get-ChildItem -Directory -Path $moduleFolderPath) | Where-Object { $_.Name -in @('scope-mg', 'scope-sub', 'scope-rg') }).Count -gt 0
                     }
                 }
             }
         }
 
-        It '[<moduleFolderName>] Module should contain a [` version.json `] file, unless it is a multi-scoped module.' -TestCases $topLevelModuleTestCases | Where-Object { -not $_.hasMultiScopeChildModules } {
+        It '[<moduleFolderName>] Module should contain a [` version.json `] file, unless it is a multi-scoped module.' -TestCases ($topLevelModuleTestCases | Where-Object { -not $_.hasMultiScopeChildModules }) {
 
             param (
                 [string] $moduleFolderPath
@@ -1439,7 +1440,7 @@ Describe 'Governance tests' {
         $expectedEntry = '/{0}/ @Azure/{1}-module-owners-bicep @Azure/avm-module-reviewers-bicep' -f ($relativeModulePath -replace '\\', '/'), ($relativeModulePath -replace '-' -replace '[\\|\/]', '-')
 
         # Line should exist
-        $moduleLine | Should -Not -BeNullOrEmpty -Because "the module should be listed in the [CODEOWNERS](https://azure.github.io/Azure-Verified-Modules/spec/snfr20/#codeowners-file) file as [/$expectedEntry]. Please ensure there is a forward slash (/) at the beginning and end of the module path at the start of the line."
+        $moduleLine | Should -Not -BeNullOrEmpty -Because "the module should be listed in the [CODEOWNERS](https://azure.github.io/Azure-Verified-Modules/spec/snfr20/#codeowners-file) file as [$expectedEntry]. Please ensure there is a forward slash (/) at the beginning and end of the module path at the start of the line."
 
         # Line should be correct
         $moduleLine | Should -Be $expectedEntry -Because 'the module should match the expected format as documented [here](https://azure.github.io/Azure-Verified-Modules/spec/snfr20/#codeowners-file).'
