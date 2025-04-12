@@ -6,14 +6,14 @@ param managementGroupId string
 param subscriptionIds string[]
 
 resource customSubscriptionPlacement 'Microsoft.Management/managementGroups/subscriptions@2023-04-01' = [
-  for (subscription, i) in subscriptionIds: {
+  for (subscription, i) in subscriptionIds: if (!empty(subscription)) {
     name: '${managementGroupId}/${subscription}'
   }
 ]
 
 @description('Output of the Management Group and Subscription Resource ID placements.')
 output subscriptionPlacements array = [
-  for (subscription, i) in subscriptionIds: {
+  for (subscription, i) in subscriptionIds: (!empty(subscription)) ? {
     name: '${managementGroupId}/${subscription}'
-  }
+  } : null
 ]

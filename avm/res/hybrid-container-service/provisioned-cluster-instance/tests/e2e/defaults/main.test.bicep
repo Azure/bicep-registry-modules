@@ -8,7 +8,7 @@ metadata description = 'This instance deploys the module with the minimum set of
 param resourceGroupName string = 'dep-${namePrefix}-hybridcontainerservice.provisionedclusterinstances-${serviceShort}-rg'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'hcspcimin'
+param serviceShort string = 'hcpcimin'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
@@ -210,10 +210,10 @@ module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:0.1.0' 
 
 module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-aks-${serviceShort}'
   params: {
     name: '${namePrefix}${serviceShort}001'
-    customLocationResourecId: customLocation.id
+    customLocationResourceId: customLocation.id
     keyVaultName: nestedDependencies.outputs.keyVaultName
     cloudProviderProfile: {
       infraNetworkProfile: {

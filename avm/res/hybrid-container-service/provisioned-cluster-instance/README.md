@@ -8,7 +8,6 @@ Deploy a provisioned cluster instance.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -55,8 +54,8 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
         ]
       }
     }
-    customLocationResourecId: '<customLocationResourecId>'
-    name: 'hcspcimin001'
+    customLocationResourceId: '<customLocationResourceId>'
+    name: 'hcpcimin001'
     // Non-required parameters
     keyVaultName: '<keyVaultName>'
   }
@@ -85,11 +84,11 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
         }
       }
     },
-    "customLocationResourecId": {
-      "value": "<customLocationResourecId>"
+    "customLocationResourceId": {
+      "value": "<customLocationResourceId>"
     },
     "name": {
-      "value": "hcspcimin001"
+      "value": "hcpcimin001"
     },
     // Non-required parameters
     "keyVaultName": {
@@ -117,8 +116,8 @@ param cloudProviderProfile = {
     ]
   }
 }
-param customLocationResourecId = '<customLocationResourecId>'
-param name = 'hcspcimin001'
+param customLocationResourceId = '<customLocationResourceId>'
+param name = 'hcpcimin001'
 // Non-required parameters
 param keyVaultName = '<keyVaultName>'
 ```
@@ -147,8 +146,8 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
         ]
       }
     }
-    customLocationResourecId: '<customLocationResourecId>'
-    name: 'hcspcimax001'
+    customLocationResourceId: '<customLocationResourceId>'
+    name: 'hcpcimax001'
     // Non-required parameters
     agentPoolProfiles: [
       {
@@ -235,11 +234,11 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
         }
       }
     },
-    "customLocationResourecId": {
-      "value": "<customLocationResourecId>"
+    "customLocationResourceId": {
+      "value": "<customLocationResourceId>"
     },
     "name": {
-      "value": "hcspcimax001"
+      "value": "hcpcimax001"
     },
     // Non-required parameters
     "agentPoolProfiles": {
@@ -351,8 +350,8 @@ param cloudProviderProfile = {
     ]
   }
 }
-param customLocationResourecId = '<customLocationResourecId>'
-param name = 'hcspcimax001'
+param customLocationResourceId = '<customLocationResourceId>'
+param name = 'hcpcimax001'
 // Non-required parameters
 param agentPoolProfiles = [
   {
@@ -439,8 +438,8 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
         ]
       }
     }
-    customLocationResourecId: '<customLocationResourecId>'
-    name: 'hcspciwaf001'
+    customLocationResourceId: '<customLocationResourceId>'
+    name: 'hcpciwaf001'
     // Non-required parameters
     agentPoolProfiles: [
       {
@@ -501,11 +500,11 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
         }
       }
     },
-    "customLocationResourecId": {
-      "value": "<customLocationResourecId>"
+    "customLocationResourceId": {
+      "value": "<customLocationResourceId>"
     },
     "name": {
-      "value": "hcspciwaf001"
+      "value": "hcpciwaf001"
     },
     // Non-required parameters
     "agentPoolProfiles": {
@@ -573,8 +572,8 @@ param cloudProviderProfile = {
     ]
   }
 }
-param customLocationResourecId = '<customLocationResourecId>'
-param name = 'hcspciwaf001'
+param customLocationResourceId = '<customLocationResourceId>'
+param name = 'hcpciwaf001'
 // Non-required parameters
 param agentPoolProfiles = [
   {
@@ -621,7 +620,7 @@ param tags = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`cloudProviderProfile`](#parameter-cloudproviderprofile) | object | The profile for the underlying cloud infrastructure provider for the provisioned cluster. |
-| [`customLocationResourecId`](#parameter-customlocationresourecid) | string | The id of the Custom location that used to create hybrid aks. |
+| [`customLocationResourceId`](#parameter-customlocationresourceid) | string | The id of the Custom location that used to create hybrid aks. |
 | [`name`](#parameter-name) | string | The name of the provisioned cluster instance. |
 
 **Conditional parameters**
@@ -629,6 +628,8 @@ param tags = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`keyVaultName`](#parameter-keyvaultname) | string | The name of the key vault. The key vault name. Required if no existing SSH keys. |
+| [`keyvaultResourceGroup`](#parameter-keyvaultresourcegroup) | string | Key vault resource group, which is used for for storing secrets for the HCI cluster. Required if no existing SSH keys and key vault is in different resource group. |
+| [`keyvaultSubscriptionId`](#parameter-keyvaultsubscriptionid) | string | Key vault subscription ID, which is used for for storing secrets for the HCI cluster. Required if no existing SSH keys and key vault is in different subscription. |
 
 **Optional parameters**
 
@@ -685,7 +686,7 @@ The list of virtual network subnet IDs.
 - Required: Yes
 - Type: array
 
-### Parameter: `customLocationResourecId`
+### Parameter: `customLocationResourceId`
 
 The id of the Custom location that used to create hybrid aks.
 
@@ -702,6 +703,20 @@ The name of the provisioned cluster instance.
 ### Parameter: `keyVaultName`
 
 The name of the key vault. The key vault name. Required if no existing SSH keys.
+
+- Required: No
+- Type: string
+
+### Parameter: `keyvaultResourceGroup`
+
+Key vault resource group, which is used for for storing secrets for the HCI cluster. Required if no existing SSH keys and key vault is in different resource group.
+
+- Required: No
+- Type: string
+
+### Parameter: `keyvaultSubscriptionId`
+
+Key vault subscription ID, which is used for for storing secrets for the HCI cluster. Required if no existing SSH keys and key vault is in different subscription.
 
 - Required: No
 - Type: string
@@ -1346,14 +1361,6 @@ Tags of the resource.
 | `name` | string | The name of the Aks Arc. |
 | `resourceGroupName` | string | The resource group of the Aks Arc. |
 | `resourceId` | string | The ID of the Aks Arc. |
-
-## Cross-referenced modules
-
-This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
-
-| Reference | Type |
-| :-- | :-- |
-| `br/public:avm/res/kubernetes/connected-cluster:0.1.1` | Remote reference |
 
 ## Data Collection
 

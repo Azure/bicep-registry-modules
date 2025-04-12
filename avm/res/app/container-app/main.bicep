@@ -119,6 +119,9 @@ param trafficWeight int = 100
 @description('Optional. Dapr configuration for the Container App.')
 param dapr object = {}
 
+@description('Optional. Settings for Managed Identities that are assigned to the Container App. If a Managed Identity is not specified here, default settings will be used.')
+param identitySettings resourceInput<'Microsoft.App/containerApps@2024-10-02-preview'>.properties.configuration.identitySettings?
+
 @description('Optional. Max inactive revisions a Container App can have.')
 param maxInactiveRevisions int = 0
 
@@ -142,6 +145,9 @@ param volumes array = []
 
 @description('Optional. Workload profile name to pin for container app execution.')
 param workloadProfileName string = ''
+
+@description('Optional. The name of the Container App Auth configs.')
+param authConfig authConfigType?
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -216,6 +222,7 @@ resource containerApp 'Microsoft.App/containerApps@2024-10-02-preview' = {
     configuration: {
       activeRevisionsMode: activeRevisionsMode
       dapr: !empty(dapr) ? dapr : null
+      identitySettings: !empty(identitySettings) ? identitySettings : null
       ingress: disableIngress
         ? null
         : {
@@ -313,6 +320,19 @@ resource containerApp_roleAssignments 'Microsoft.Authorization/roleAssignments@2
     scope: containerApp
   }
 ]
+
+module containerAppAuthConfigs './auth-config/main.bicep' = if (!empty(authConfig)) {
+  name: '${uniqueString(deployment().name, location)}-auth-config'
+  params: {
+    containerAppName: containerApp.name
+    encryptionSettings: authConfig.?encryptionSettings
+    globalValidation: authConfig.?globalValidation
+    httpSettings: authConfig.?httpSettings
+    identityProviders: authConfig.?identityProviders
+    login: authConfig.?login
+    platform: authConfig.?platform
+  }
+}
 
 @description('The resource ID of the Container App.')
 output resourceId string = containerApp.id
@@ -581,13 +601,36 @@ type secretType = {
   @description('Optional. Resource ID of a managed identity to authenticate with Azure Key Vault, or System to use a system-assigned identity.')
   identity: string?
 
-  @description('Conditional. Azure Key Vault URL pointing to the secret referenced by the Container App Job. Required if `value` is null.')
+  @description('Conditional. The URL of the Azure Key Vault secret referenced by the Container App. Required if `value` is null.')
   keyVaultUrl: string?
 
-  @description('Optional. The name of the secret.')
+  @description('Optional. The name of the container app secret.')
   name: string?
 
-  @description('Conditional. The secret value, if not fetched from Key Vault. Required if `keyVaultUrl` is not null.')
+  @description('Conditional. The container app secret value, if not fetched from the Key Vault. Required if `keyVaultUrl` is not null.')
   @secure()
   value: string?
 }
+
+@export()
+@description('The type for the container app\'s authentication configuration.')
+type authConfigType = {
+  @description('Optional. The configuration settings of the secrets references of encryption key and signing key for ContainerApp Service Authentication/Authorization.')
+  encryptionSettings: resourceInput<'Microsoft.App/containerApps/authConfigs@2024-10-02-preview'>.properties.encryptionSettings?
+
+  @description('Optional. The configuration settings that determines the validation flow of users using Service Authentication and/or Authorization.')
+  globalValidation: resourceInput<'Microsoft.App/containerApps/authConfigs@2024-10-02-preview'>.properties.globalValidation?
+
+  @description('Optional. The configuration settings of the HTTP requests for authentication and authorization requests made against ContainerApp Service Authentication/Authorization.')
+  httpSettings: resourceInput<'Microsoft.App/containerApps/authConfigs@2024-10-02-preview'>.properties.httpSettings?
+
+  @description('Optional. The configuration settings of each of the identity providers used to configure ContainerApp Service Authentication/Authorization.')
+  identityProviders: resourceInput<'Microsoft.App/containerApps/authConfigs@2024-10-02-preview'>.properties.identityProviders?
+
+  @description('Optional. The configuration settings of the login flow of users using ContainerApp Service Authentication/Authorization.')
+  login: resourceInput<'Microsoft.App/containerApps/authConfigs@2024-10-02-preview'>.properties.login?
+
+  @description('Optional. The configuration settings of the platform of ContainerApp Service Authentication/Authorization.')
+  platform: resourceInput<'Microsoft.App/containerApps/authConfigs@2024-10-02-preview'>.properties.platform?
+}
+

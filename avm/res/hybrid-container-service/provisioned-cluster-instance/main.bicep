@@ -19,11 +19,17 @@ param sshPrivateKeyPemSecretName string = 'AksArcAgentSshPrivateKeyPem'
 @description('Optional. The name of the secret in the key vault that contains the SSH public key.')
 param sshPublicKeySecretName string = 'AksArcAgentSshPublicKey'
 
+@description('Conditional. Key vault subscription ID, which is used for for storing secrets for the HCI cluster. Required if no existing SSH keys and key vault is in different subscription.')
+param keyvaultSubscriptionId string?
+
+@description('Conditional. Key vault resource group, which is used for for storing secrets for the HCI cluster. Required if no existing SSH keys and key vault is in different resource group.')
+param keyvaultResourceGroup string?
+
 @description('Conditional. The name of the key vault. The key vault name. Required if no existing SSH keys.')
 param keyVaultName string?
 
 @description('Required. The id of the Custom location that used to create hybrid aks.')
-param customLocationResourecId string
+param customLocationResourceId string
 
 @description('Optional. The Kubernetes version for the cluster.')
 param kubernetesVersion string?
@@ -125,47 +131,19 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource kv 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (empty(linuxProfile) && !empty(keyVaultName)) {
-  name: keyVaultName!
-}
-
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
-  name: 'temp-${name}'
-  location: location
-  tags: tags
-}
-
-resource generateSSHKey 'Microsoft.Resources/deploymentScripts@2020-10-01' = if (empty(linuxProfile)) {
-  name: 'generateSSHKey-${name}'
-  location: location
-  tags: tags
-  kind: 'AzurePowerShell'
-  identity: {
-    type: 'UserAssigned'
-    userAssignedIdentities: {
-      '${managedIdentity.id}': {}
-    }
-  }
-  properties: {
-    azPowerShellVersion: '8.0'
-    retentionInterval: 'P1D'
-    scriptContent: loadTextContent('./scripts/generateSshKey.ps1')
-  }
-}
-
-resource sshPublicKeyPem 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = if (empty(linuxProfile)) {
-  parent: kv
-  name: sshPublicKeySecretName
-  properties: {
-    value: generateSSHKey.properties.outputs.publicKey
-  }
-}
-
-resource sshPrivateKeyPem 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = if (empty(linuxProfile)) {
-  parent: kv
-  name: sshPrivateKeyPemSecretName
-  properties: {
-    value: generateSSHKey.properties.outputs.privateKey
+module secrets './secrets.bicep' = if (empty(linuxProfile) && !empty(keyVaultName)) {
+  name: '${uniqueString(deployment().name, location)}-secrets'
+  scope: resourceGroup(
+    keyvaultSubscriptionId ?? subscription().subscriptionId,
+    keyvaultResourceGroup ?? resourceGroup().name
+  )
+  params: {
+    keyVaultName: keyVaultName!
+    name: name
+    location: location
+    sshPrivateKeyPemSecretName: sshPrivateKeyPemSecretName
+    sshPublicKeySecretName: sshPublicKeySecretName
+    tags: tags
   }
 }
 
@@ -194,10 +172,9 @@ resource provisionedCluster 'Microsoft.HybridContainerService/provisionedCluster
   name: 'default'
   dependsOn: [
     connectedCluster
-    sshPublicKeyPem
   ]
   extendedLocation: {
-    name: customLocationResourecId
+    name: customLocationResourceId
     type: 'CustomLocation'
   }
   properties: {
@@ -211,7 +188,7 @@ resource provisionedCluster 'Microsoft.HybridContainerService/provisionedCluster
       ssh: {
         publicKeys: [
           {
-            keyData: generateSSHKey.properties.outputs.publicKey
+            keyData: secrets.outputs.sshPublicKeyPemValue
           }
         ]
       }
