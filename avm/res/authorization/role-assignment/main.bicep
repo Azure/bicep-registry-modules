@@ -13,10 +13,10 @@ param roleDefinitionIdOrName string
 param principalId string
 
 @sys.description('Optional. Name of the Resource Group to assign the RBAC role to. If Resource Group name is provided, and Subscription ID is provided, the module deploys at resource group level, therefore assigns the provided RBAC role to the resource group.')
-param resourceGroupName string = ''
+param resourceGroupName string?
 
 @sys.description('Optional. Subscription ID of the subscription to assign the RBAC role to. If no Resource Group name is provided, the module deploys at subscription level, therefore assigns the provided RBAC role to the subscription.')
-param subscriptionId string = ''
+param subscriptionId string?
 
 @sys.description('Optional. Group ID of the Management Group to assign the RBAC role to. If not provided, will use the current scope for deployment.')
 param managementGroupId string = managementGroup().name
@@ -25,13 +25,13 @@ param managementGroupId string = managementGroup().name
 param location string = deployment().location
 
 @sys.description('Optional. The description of the role assignment.')
-param description string = ''
+param description string?
 
 @sys.description('Optional. ID of the delegated managed identity resource.')
-param delegatedManagedIdentityResourceId string = ''
+param delegatedManagedIdentityResourceId string?
 
 @sys.description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to.')
-param condition string = ''
+param condition string?
 
 @sys.description('Optional. Version of the condition. Currently accepted value is "2.0".')
 @allowed([
@@ -46,9 +46,8 @@ param conditionVersion string = '2.0'
   'User'
   'ForeignGroup'
   'Device'
-  ''
 ])
-param principalType string = ''
+param principalType string?
 
 @sys.description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
