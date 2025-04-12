@@ -5063,7 +5063,7 @@ Configures NICs and PIPs.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`deleteOption`](#parameter-nicconfigurationsdeleteoption) | string | Specify what happens to the network interface when the VM is deleted |
+| [`deleteOption`](#parameter-nicconfigurationsdeleteoption) | string | Specify what happens to the network interface when the VM is deleted. |
 | [`diagnosticSettings`](#parameter-nicconfigurationsdiagnosticsettings) | array | The diagnostic settings of the IP configuration. |
 | [`dnsServers`](#parameter-nicconfigurationsdnsservers) | array | List of DNS servers IP addresses. Use 'AzureProvidedDNS' to switch to azure provided DNS resolution. 'AzureProvidedDNS' value cannot be combined with other IPs, it must be the only value in dnsServers collection. |
 | [`enableAcceleratedNetworking`](#parameter-nicconfigurationsenableacceleratednetworking) | bool | If the network interface is accelerated networking enabled. |
@@ -5589,7 +5589,7 @@ The reference to the transport protocol used by the load balancing rule.
 
 The name of the IP configuration.
 
-- Required: Yes
+- Required: No
 - Type: string
 
 ### Parameter: `nicConfigurations.ipConfigurations.pipConfiguration`
@@ -6226,7 +6226,7 @@ Tags of the virtual network tap.
 
 ### Parameter: `nicConfigurations.deleteOption`
 
-Specify what happens to the network interface when the VM is deleted
+Specify what happens to the network interface when the VM is deleted.
 
 - Required: No
 - Type: string

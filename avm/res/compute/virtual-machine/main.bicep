@@ -1177,7 +1177,7 @@ type nicConfigurationType = {
   @description('Optional. If the network interface is accelerated networking enabled.')
   enableAcceleratedNetworking: bool?
 
-  @description('Optional. Specify what happens to the network interface when the VM is deleted')
+  @description('Optional. Specify what happens to the network interface when the VM is deleted.')
   deleteOption: 'Delete' | 'Detach'?
 
   @description('Optional. List of DNS servers IP addresses. Use \'AzureProvidedDNS\' to switch to azure provided DNS resolution. \'AzureProvidedDNS\' value cannot be combined with other IPs, it must be the only value in dnsServers collection.')

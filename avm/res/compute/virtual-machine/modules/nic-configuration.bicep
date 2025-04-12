@@ -177,7 +177,7 @@ import {
 @description('The type for the IP configuration.')
 type ipConfigurationType = {
   @description('Optional. The name of the IP configuration.')
-  name: string
+  name: string?
 
   @description('Optional. The private IP address allocation method.')
   privateIPAllocationMethod: ('Static' | 'Dynamic')?

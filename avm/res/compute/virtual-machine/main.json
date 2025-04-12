@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "16359980230166570313"
+      "templateHash": "16869973444983572505"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs."
@@ -292,7 +292,7 @@
           ],
           "nullable": true,
           "metadata": {
-            "description": "Optional. Specify what happens to the network interface when the VM is deleted"
+            "description": "Optional. Specify what happens to the network interface when the VM is deleted."
           }
         },
         "dnsServers": {
@@ -1026,6 +1026,7 @@
       "properties": {
         "name": {
           "type": "string",
+          "nullable": true,
           "metadata": {
             "description": "Optional. The name of the IP configuration."
           }
@@ -2285,7 +2286,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.34.44.8038",
-              "templateHash": "16236628966618988764"
+              "templateHash": "4174925893451899108"
             }
           },
           "definitions": {
@@ -2456,6 +2457,7 @@
               "properties": {
                 "name": {
                   "type": "string",
+                  "nullable": true,
                   "metadata": {
                     "description": "Optional. The name of the IP configuration."
                   }
