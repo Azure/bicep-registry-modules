@@ -1,6 +1,7 @@
 targetScope = 'managementGroup'
-metadata name = 'Role Assignments (Subscription scope)'
-metadata description = 'This module deploys a Role Assignment at a Subscription scope using common parameters.'
+
+metadata name = 'Using large parameter set (Subscription scope)'
+metadata description = 'This instance deploys the module with most of its features enabled.'
 
 // ========== //
 // Parameters //

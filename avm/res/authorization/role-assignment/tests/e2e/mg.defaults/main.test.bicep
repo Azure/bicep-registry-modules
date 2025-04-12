@@ -1,6 +1,7 @@
 targetScope = 'managementGroup'
-metadata name = 'Role Assignments (Management Group scope)'
-metadata description = 'This module deploys a Role Assignment at a Management Group scope using minimal parameters.'
+
+metadata name = 'Using only defaults (Management Group scope)'
+metadata description = 'This instance deploys the module with the minimum set of required parameters.'
 
 // ========== //
 // Parameters //

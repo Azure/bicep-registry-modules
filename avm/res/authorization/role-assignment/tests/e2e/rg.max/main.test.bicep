@@ -1,6 +1,7 @@
 targetScope = 'managementGroup'
-metadata name = 'Role Assignments (Resource Group)'
-metadata description = 'This module deploys a Role Assignment at a Resource Group scope using common parameters.'
+
+metadata name = 'Using large parameter set (Resource Group scope)'
+metadata description = 'This instance deploys the module with most of its features enabled.'
 
 // ========== //
 // Parameters //

@@ -85,6 +85,8 @@ Describe 'File/folder tests' -Tag 'Modules' {
                     isTopLevelModule                   = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
                     childModuleAllowedList             = $childModuleAllowedList
                     childModuleAllowedListRelativePath = $childModuleAllowedListRelativePath
+                    isMultiScopeModule                 = (Split-Path $moduleFolderPath -Leaf) -in @('scope-mg', 'scope-sub', 'scope-rg')
+                    hasMultiScopeChildModules          = (Get-ChildItem -Directory -Path $moduleFolderPath) | Where-Object { $_.Name -in @('scope-mg', 'scope-sub', 'scope-rg') }
                 }
             }
         }
@@ -150,8 +152,8 @@ Describe 'File/folder tests' -Tag 'Modules' {
             }
         }
 
-        # If the child modules version has been increased, the main modules version should be increased as well
-        It '[<moduleFolderName>] main module version should be increased if the child version number has been increased.' -TestCases ($moduleFolderTestCases | Where-Object { -Not $_.isTopLevelModule }) {
+        # If the child modules version has been increased, parent main modules version should be increased as well
+        It '[<moduleFolderName>] parent module version should be increased if the child version number has been increased.' -TestCases ($moduleFolderTestCases | Where-Object { -not $_.isTopLevelModule -and -not $isMultiScopeModule }) {
 
             param (
                 [string] $moduleFolderPath
@@ -236,20 +238,14 @@ Describe 'File/folder tests' -Tag 'Modules' {
             }
         }
 
-        It '[<moduleFolderName>] Module should contain a [` version.json `] file, unless it is a multi-scoped module.' -TestCases $topLevelModuleTestCases {
+        It '[<moduleFolderName>] Module should contain a [` version.json `] file, unless it is a multi-scoped module.' -TestCases $topLevelModuleTestCases | Where-Object { -not $_.hasMultiScopeChildModules } {
 
             param (
                 [string] $moduleFolderPath
             )
 
             $pathExisting = Test-Path (Join-Path -Path $moduleFolderPath 'version.json')
-            $childModuleFolders = (Get-ChildItem -Directory -Path $moduleFolderPath) | ForEach-Object { Split-Path -Path $_.FullName -Leaf }
-
-            if (-not $pathExisting -and $childModuleFolders -contains @('scope-mg', 'scope-sub', 'scope-rg')) {
-                $pathExisting | Should -Be $false -Because 'The module is a multi-scoped module and must not have a version.json file.'
-            } else {
-                $pathExisting | Should -Be $true -Because 'The module should have a version.json file.'
-            }
+            $pathExisting | Should -Be $true -Because 'The module should have a version.json file.'
         }
 
         It '[<moduleFolderName>] Module should contain a [` tests `] folder.' -TestCases $topLevelModuleTestCases {

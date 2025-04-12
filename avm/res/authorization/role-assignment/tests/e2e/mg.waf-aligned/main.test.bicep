@@ -1,7 +1,7 @@
 targetScope = 'managementGroup'
 
-metadata name = 'Using large parameter set (Management Group scope)'
-metadata description = 'This instance deploys the module with most of its features enabled.'
+metadata name = 'WAF-aligned (Management Group scope)'
+metadata description = 'This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.'
 
 // ========== //
 // Parameters //
@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-authorization.roleassignment
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'aramgmax'
+param serviceShort string = 'aramgwaf'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -58,9 +58,7 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name)}-test-${serviceShort}'
   params: {
     principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-    roleDefinitionIdOrName: 'Management Group Reader'
-    description: 'Role Assignment (management group scope)'
-    managementGroupId: last(split(managementGroup().id, '/'))
+    roleDefinitionIdOrName: 'Resource Policy Contributor'
     principalType: 'ServicePrincipal'
     location: resourceLocation
   }
