@@ -33,6 +33,18 @@ module backupInstance_dataSourceResource_rbac 'modules/nested_dataSourceResource
   }
 }
 
+resource backupInstance_snapshotRG_rbac 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (dataSourceInfo.resourceType == 'Microsoft.Compute/disks') {
+  name: guid('${resourceGroup().id}-${backupVault.id}-Disk-Snapshot-Contributor')
+  properties: {
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      '7efff54f-a5b4-42b5-a1c5-5411624893ce' // Disk Snapshot Contributor
+    )
+    principalId: backupVault.identity.principalId
+    principalType: 'ServicePrincipal'
+  }
+}
+
 resource backupInstance 'Microsoft.DataProtection/backupVaults/backupInstances@2024-04-01' = {
   name: name
   parent: backupVault
@@ -47,6 +59,7 @@ resource backupInstance 'Microsoft.DataProtection/backupVaults/backupInstances@2
   }
   dependsOn: [
     backupInstance_dataSourceResource_rbac
+    backupInstance_snapshotRG_rbac
   ]
 }
 
