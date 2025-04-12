@@ -1,4 +1,4 @@
-@description('Required. The name of the admin managed identity to create for the server.')
+@description('Required. The name of the managed identity to create for the server.')
 param serverIdentityName string
 
 @description('Required. The name of the managed identity to create for the database.')
@@ -97,10 +97,10 @@ resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   }
 }
 
-@description('The principal ID of the created server admin managed identity.')
+@description('The principal ID of the created server managed identity.')
 output serverIdentityPrincipalId string = serverIdentity.properties.principalId
 
-@description('The resource ID of the created server admin managed identity.')
+@description('The resource ID of the created server managed identity.')
 output serverIdentityResourceId string = serverIdentity.id
 
 @description('The resource ID of the created database managed identity.')

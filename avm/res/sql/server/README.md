@@ -1076,7 +1076,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [
-        '<serverIdentityPrincipalId>'
+        '<serverIdentityResourceId>'
       ]
     }
     primaryUserAssignedIdentityId: '<primaryUserAssignedIdentityId>'
@@ -1263,7 +1263,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
       "value": {
         "systemAssigned": true,
         "userAssignedResourceIds": [
-          "<serverIdentityPrincipalId>"
+          "<serverIdentityResourceId>"
         ]
       }
     },
@@ -1446,7 +1446,7 @@ param lock = {
 param managedIdentities = {
   systemAssigned: true
   userAssignedResourceIds: [
-    '<serverIdentityPrincipalId>'
+    '<serverIdentityResourceId>'
   ]
 }
 param primaryUserAssignedIdentityId = '<primaryUserAssignedIdentityId>'
