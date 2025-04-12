@@ -1,4 +1,4 @@
-# Role Assignments (All scopes) `[Authorization/RoleAssignment]`
+# Role Assignments (All scopes) `[Microsoft.Authorization/roleAssignments]`
 
 This module deploys a Role Assignment at a Management Group, Subscription or Resource Group scope.
 
@@ -22,7 +22,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: Each example lists all the required parameters first, followed by the rest - each in alphabetical order.
 
->**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/authorization/role-assignment:<version>`.
+>**Note**: To reference the module, please use the following syntax `br/public:avm/res/authorization/role-assignment:<version>`.
 
 - [Role Assignments (Management Group scope)](#example-1-role-assignments-management-group-scope)
 - [Role Assignments (Management Group scope)](#example-2-role-assignments-management-group-scope)
@@ -41,7 +41,7 @@ This module deploys a Role Assignment at a Management Group scope using minimal 
 <summary>via Bicep module</summary>
 
 ```bicep
-module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>' = {
+module roleAssignment 'br/public:avm/res/authorization/role-assignment:<version>' = {
   name: 'roleAssignmentDeployment'
   params: {
     // Required parameters
@@ -92,7 +92,7 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
 <summary>via Bicep parameters file</summary>
 
 ```bicep-params
-using 'br/public:avm/ptn/authorization/role-assignment:<version>'
+using 'br/public:avm/res/authorization/role-assignment:<version>'
 
 // Required parameters
 param principalId = '<principalId>'
@@ -115,7 +115,7 @@ This module deploys a Role Assignment at a Management Group scope using common p
 <summary>via Bicep module</summary>
 
 ```bicep
-module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>' = {
+module roleAssignment 'br/public:avm/res/authorization/role-assignment:<version>' = {
   name: 'roleAssignmentDeployment'
   params: {
     // Required parameters
@@ -174,7 +174,7 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
 <summary>via Bicep parameters file</summary>
 
 ```bicep-params
-using 'br/public:avm/ptn/authorization/role-assignment:<version>'
+using 'br/public:avm/res/authorization/role-assignment:<version>'
 
 // Required parameters
 param principalId = '<principalId>'
@@ -199,7 +199,7 @@ This module deploys a Role Assignment at a Resource Group scope using minimal pa
 <summary>via Bicep module</summary>
 
 ```bicep
-module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>' = {
+module roleAssignment 'br/public:avm/res/authorization/role-assignment:<version>' = {
   name: 'roleAssignmentDeployment'
   params: {
     // Required parameters
@@ -258,7 +258,7 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
 <summary>via Bicep parameters file</summary>
 
 ```bicep-params
-using 'br/public:avm/ptn/authorization/role-assignment:<version>'
+using 'br/public:avm/res/authorization/role-assignment:<version>'
 
 // Required parameters
 param principalId = '<principalId>'
@@ -283,7 +283,7 @@ This module deploys a Role Assignment at a Resource Group scope using common par
 <summary>via Bicep module</summary>
 
 ```bicep
-module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>' = {
+module roleAssignment 'br/public:avm/res/authorization/role-assignment:<version>' = {
   name: 'roleAssignmentDeployment'
   params: {
     // Required parameters
@@ -346,7 +346,7 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
 <summary>via Bicep parameters file</summary>
 
 ```bicep-params
-using 'br/public:avm/ptn/authorization/role-assignment:<version>'
+using 'br/public:avm/res/authorization/role-assignment:<version>'
 
 // Required parameters
 param principalId = '<principalId>'
@@ -372,7 +372,7 @@ This module deploys a Role Assignment at a Subscription scope using minimal para
 <summary>via Bicep module</summary>
 
 ```bicep
-module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>' = {
+module roleAssignment 'br/public:avm/res/authorization/role-assignment:<version>' = {
   name: 'roleAssignmentDeployment'
   params: {
     // Required parameters
@@ -427,7 +427,7 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
 <summary>via Bicep parameters file</summary>
 
 ```bicep-params
-using 'br/public:avm/ptn/authorization/role-assignment:<version>'
+using 'br/public:avm/res/authorization/role-assignment:<version>'
 
 // Required parameters
 param principalId = '<principalId>'
@@ -451,7 +451,7 @@ This module deploys a Role Assignment at a Subscription scope using common param
 <summary>via Bicep module</summary>
 
 ```bicep
-module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>' = {
+module roleAssignment 'br/public:avm/res/authorization/role-assignment:<version>' = {
   name: 'roleAssignmentDeployment'
   params: {
     // Required parameters
@@ -510,7 +510,7 @@ module roleAssignment 'br/public:avm/ptn/authorization/role-assignment:<version>
 <summary>via Bicep parameters file</summary>
 
 ```bicep-params
-using 'br/public:avm/ptn/authorization/role-assignment:<version>'
+using 'br/public:avm/res/authorization/role-assignment:<version>'
 
 // Required parameters
 param principalId = '<principalId>'

@@ -70,7 +70,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   location: location
 }
 
-module roleAssignment_mg 'modules/management-group.bicep' = if (empty(subscriptionId) && empty(resourceGroupName)) {
+module roleAssignment_mg 'scope-mg/main.bicep' = if (empty(subscriptionId) && empty(resourceGroupName)) {
   name: '${uniqueString(deployment().name, location)}-RoleAssignment-MG-Module'
   scope: managementGroup(managementGroupId)
   params: {
@@ -87,7 +87,7 @@ module roleAssignment_mg 'modules/management-group.bicep' = if (empty(subscripti
   }
 }
 
-module roleAssignment_sub 'modules/subscription.bicep' = if (!empty(subscriptionId) && empty(resourceGroupName)) {
+module roleAssignment_sub 'scope-sub/main.bicep' = if (!empty(subscriptionId) && empty(resourceGroupName)) {
   name: '${uniqueString(deployment().name, location)}-RoleAssignment-Sub-Module'
   scope: subscription(subscriptionId)
   params: {
@@ -104,7 +104,7 @@ module roleAssignment_sub 'modules/subscription.bicep' = if (!empty(subscription
   }
 }
 
-module roleAssignment_rg 'modules/resource-group.bicep' = if (!empty(resourceGroupName) && !empty(subscriptionId)) {
+module roleAssignment_rg 'scope-rg/main.bicep' = if (!empty(resourceGroupName) && !empty(subscriptionId)) {
   name: '${uniqueString(deployment().name, location)}-RoleAssignment-RG-Module'
   scope: resourceGroup(subscriptionId, resourceGroupName)
   params: {

@@ -17,10 +17,10 @@ Get modified files between previous and current commit depending on if you are r
 #>
 function Get-ModifiedFileList {
 
-    if ((Get-GitBranchName) -eq 'main') {
-        Write-Verbose 'Gathering modified files from the previous head' -Verbose
-        $Diff = git diff --name-only --diff-filter=AM HEAD^ HEAD
-    }
+    # if ((Get-GitBranchName) -eq 'main') {
+    Write-Verbose 'Gathering modified files from the previous head' -Verbose
+    $Diff = git diff --name-only --diff-filter=AM HEAD^ HEAD
+    # }
     $ModifiedFiles = $Diff ? ($Diff | Get-Item -Force) : @()
 
     return $ModifiedFiles

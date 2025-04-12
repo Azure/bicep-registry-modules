@@ -1,4 +1,4 @@
-name: "avm.ptn.authorization.role-assignment"
+name: "avm.res.authorization.role-assignment"
 
 on:
   workflow_dispatch:
@@ -28,15 +28,15 @@ on:
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
-      - ".github/workflows/avm.ptn.authorization.role-assignment.yml"
-      - "avm/ptn/authorization/role-assignment/**"
+      - ".github/workflows/avm.res.authorization.role-assignment.yml"
+      - "avm/res/authorization/role-assignment/**"
       - "utilities/pipelines/**"
       - "!utilities/pipelines/platform/**"
       - "!*/**/README.md"
 
 env:
-  modulePath: "avm/ptn/authorization/role-assignment"
-  workflowPath: ".github/workflows/avm.ptn.authorization.role-assignment.yml"
+  modulePath: "avm/res/authorization/role-assignment"
+  workflowPath: ".github/workflows/avm.res.authorization.role-assignment.yml"
 
 concurrency:
   group: ${{ github.workflow }}
