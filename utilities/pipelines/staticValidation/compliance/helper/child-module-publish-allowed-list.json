@@ -1,5 +1,8 @@
 {
   "allowed-child-modules": [
-    "avm/res/network/virtual-network/subnet"
+    "avm/res/network/virtual-network/subnet",
+    "avm/res/authorization/role-assignment/scope-mg",
+    "avm/res/authorization/role-assignment/scope-sub",
+    "avm/res/authorization/role-assignment/scope-rg"
   ]
 }

@@ -57,7 +57,6 @@ BeforeDiscovery {
     }
 
     # Getting the list of child modules allowed for publishing
-    $childModuleAllowedList = @()
     $childModuleAllowedListRelativePath = Join-Path 'utilities' 'pipelines' 'staticValidation' 'compliance' 'helper' 'child-module-publish-allowed-list.json'
     $childModuleAllowedListPath = Join-Path $repoRootPath $childModuleAllowedListRelativePath
     if (Test-Path $childModuleAllowedListPath) {
@@ -126,7 +125,12 @@ Describe 'File/folder tests' -Tag 'Modules' {
                 [string] $moduleFolderPath
             )
 
-            $versionFileContent = Get-Content (Join-Path -Path $moduleFolderPath 'version.json') | ConvertFrom-Json -AsHashtable
+            $versionFilePath = Join-Path -Path $moduleFolderPath 'version.json'
+            if (-not (Test-Path $versionFilePath)) {
+                Set-ItResult -Skipped -Because "Version.json file in path [$versionFilePath] does not exist."
+                return
+            }
+            $versionFileContent = Get-Content $versionFilePath | ConvertFrom-Json -AsHashtable
             $versionFileContent.version | Should -Match '^[0-9]+\.[0-9]+$' -Because 'only the major.minor version may be specified in the version.json file.'
         }
 
@@ -232,14 +236,20 @@ Describe 'File/folder tests' -Tag 'Modules' {
             }
         }
 
-        It '[<moduleFolderName>] Module should contain a [` version.json `] file.' -TestCases $topLevelModuleTestCases {
+        It '[<moduleFolderName>] Module should contain a [` version.json `] file, unless it is a multi-scoped module.' -TestCases $topLevelModuleTestCases {
 
             param (
                 [string] $moduleFolderPath
             )
 
             $pathExisting = Test-Path (Join-Path -Path $moduleFolderPath 'version.json')
-            $pathExisting | Should -Be $true
+            $childModuleFolders = (Get-ChildItem -Directory -Path $moduleFolderPath) | ForEach-Object { Split-Path -Path $_.FullName -Leaf }
+
+            if (-not $pathExisting -and $childModuleFolders -contains @('scope-mg', 'scope-sub', 'scope-rg')) {
+                $pathExisting | Should -Be $false -Because 'The module is a multi-scoped module and must not have a version.json file.'
+            } else {
+                $pathExisting | Should -Be $true -Because 'The module should have a version.json file.'
+            }
         }
 
         It '[<moduleFolderName>] Module should contain a [` tests `] folder.' -TestCases $topLevelModuleTestCases {

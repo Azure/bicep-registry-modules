@@ -23,16 +23,17 @@ on:
         description: "Default location overwrite (e.g., eastus)"
         required: false
   push:
-    branches:
-      - main
+    # branches:
+    #   - main
     paths:
-      - ".github/actions/templates/avm-**"
-      - ".github/workflows/avm.template.module.yml"
-      - ".github/workflows/avm.res.authorization.role-assignment.yml"
-      - "avm/res/authorization/role-assignment/**"
-      - "utilities/pipelines/**"
-      - "!utilities/pipelines/platform/**"
-      - "!*/**/README.md"
+      # - ".github/actions/templates/avm-**"
+      # - ".github/workflows/avm.template.module.yml"
+      # - ".github/workflows/avm.res.authorization.role-assignment.yml"
+      # - "avm/res/authorization/role-assignment/**"
+      # - "utilities/pipelines/**"
+      # - "!utilities/pipelines/platform/**"
+      # - "!*/**/README.md"
+      - "avm/res/authorization/role-assignment/scope-mg/version.json"
 
 env:
   modulePath: "avm/res/authorization/role-assignment"
