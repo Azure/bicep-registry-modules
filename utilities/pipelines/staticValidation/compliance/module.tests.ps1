@@ -174,7 +174,8 @@ Describe 'File/folder tests' -Tag 'Modules' {
 
             param(
                 [string] $moduleFolderPath,
-                [string] $moduleType
+                [string] $moduleType,
+                [bool] $isMultiScopeModule
             )
 
             $templateFilePath = Join-Path -Path $moduleFolderPath 'main.bicep'
@@ -198,7 +199,10 @@ Describe 'File/folder tests' -Tag 'Modules' {
             }
             $csvData = $rawData.Content | ConvertFrom-Csv -Delimiter ','
 
-            $moduleName = Get-BRMRepositoryName -TemplateFilePath $templateFilePath
+            # Get correct row item & expected identifier
+            # ==========================================
+            # If it's a multi-scope module, we need to get the parent folder name as telemetry is collected under its name
+            $moduleName = Get-BRMRepositoryName -TemplateFilePath ($isMultiScopeModule ? (Split-Path $TemplateFilePath -Parent) : $TemplateFilePath)
             $relevantCSVRow = $csvData | Where-Object {
                 $_.ModuleName -eq $moduleName
             }
@@ -210,6 +214,8 @@ Describe 'File/folder tests' -Tag 'Modules' {
             }
             $isOrphaned = [String]::IsNullOrEmpty($relevantCSVRow.PrimaryModuleOwnerGHHandle)
 
+            # Validate
+            # ========
             $orphanedFilePath = Join-Path -Path $moduleFolderPath 'ORPHANED.md'
             if ($isOrphaned) {
                 $pathExisting = Test-Path $orphanedFilePath
@@ -531,6 +537,7 @@ Describe 'Module tests' -Tag 'Module' {
                     isTopLevelModule       = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
                     moduleType             = $moduleType
                     versionFileExists      = Test-Path (Join-Path -Path $moduleFolderPath 'version.json')
+                    isMultiScopeModule     = (Split-Path $moduleFolderPath -Leaf) -in @('scope-mg', 'scope-sub', 'scope-rg')
                 }
             }
         }
@@ -1005,10 +1012,11 @@ Describe 'Module tests' -Tag 'Module' {
                 param(
                     [string] $templateFilePath,
                     [string] $moduleType,
-                    [hashtable] $templateFileContent
+                    [hashtable] $templateFileContent,
+                    [bool] $isMultiScopeModule
                 )
 
-                # With the introduction of user defined types, the way resources are configured in the schema slightly changed. We have to account for that.
+                # With the introduction of user-defined types, the way resources are configured in the schema slightly changed. We have to account for that.
                 if ($templateFileContent.resources.GetType().Name -eq 'Object[]') {
                     $templateResources = $templateFileContent.resources
                 } else {
@@ -1043,7 +1051,8 @@ Describe 'Module tests' -Tag 'Module' {
 
                 # Get correct row item & expected identifier
                 # ==========================================
-                $moduleName = Get-BRMRepositoryName -TemplateFilePath $TemplateFilePath
+                # If it's a multi-scope module, we need to get the parent folder name as telemetry is collected under its name
+                $moduleName = Get-BRMRepositoryName -TemplateFilePath ($isMultiScopeModule ? (Split-Path $TemplateFilePath -Parent) : $TemplateFilePath)
                 $relevantCSVRow = $csvData | Where-Object {
                     $_.ModuleName -eq $moduleName
                 }
