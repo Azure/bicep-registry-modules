@@ -268,9 +268,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
                 [string] $moduleFolderPath
             )
 
-            $wafAlignedFolder = Get-ChildItem -Directory (Join-Path -Path $moduleFolderPath 'tests' 'e2e') | Where-Object {
-                $_.Name -match '^.*waf-aligned$' # the spec BCPRMNFR1 states, that the folder names should start with defaults|waf-aligned. Since it is a should and not a must, need to check for both cases.
-            }
+            $wafAlignedFolder = Get-ChildItem -Directory (Join-Path -Path $moduleFolderPath 'tests' 'e2e') -Filter '*waf-aligned'
             $wafAlignedFolder | Should -Not -BeNullOrEmpty
         }
 
@@ -286,9 +284,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
                 return
             }
 
-            $defaultsFolder = Get-ChildItem -Directory (Join-Path -Path $moduleFolderPath 'tests' 'e2e') | Where-Object {
-                $_.Name -match '^.*defaults$' # the spec BCPRMNFR1 states, that the folder names should start with defaults|waf-aligned. Since it is a should and not a must, need to check for both cases.
-            }
+            $defaultsFolder = Get-ChildItem -Directory (Join-Path -Path $moduleFolderPath 'tests' 'e2e') -Filter '*defaults'
             $defaultsFolder | Should -Not -BeNullOrEmpty
         }
 
