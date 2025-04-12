@@ -47,14 +47,15 @@ The following section provides usage examples for the module, which were used to
 - [With an administrator](#example-1-with-an-administrator)
 - [With audit settings](#example-2-with-audit-settings)
 - [Using Customer-Managed-Keys with User-Assigned identity](#example-3-using-customer-managed-keys-with-user-assigned-identity)
-- [Using only defaults](#example-4-using-only-defaults)
-- [Using elastic pool](#example-5-using-elastic-pool)
-- [Using failover groups](#example-6-using-failover-groups)
-- [Deploying with a key vault reference to save secrets](#example-7-deploying-with-a-key-vault-reference-to-save-secrets)
-- [Using large parameter set](#example-8-using-large-parameter-set)
-- [With a secondary database](#example-9-with-a-secondary-database)
-- [With vulnerability assessment](#example-10-with-vulnerability-assessment)
-- [WAF-aligned](#example-11-waf-aligned)
+- [With an administrator](#example-4-with-an-administrator)
+- [Using only defaults](#example-5-using-only-defaults)
+- [Using elastic pool](#example-6-using-elastic-pool)
+- [Using failover groups](#example-7-using-failover-groups)
+- [Deploying with a key vault reference to save secrets](#example-8-deploying-with-a-key-vault-reference-to-save-secrets)
+- [Using large parameter set](#example-9-using-large-parameter-set)
+- [With a secondary database](#example-10-with-a-secondary-database)
+- [With vulnerability assessment](#example-11-with-vulnerability-assessment)
+- [WAF-aligned](#example-12-waf-aligned)
 
 ### Example 1: _With an administrator_
 
@@ -369,7 +370,141 @@ param primaryUserAssignedIdentityId = '<primaryUserAssignedIdentityId>'
 </details>
 <p>
 
-### Example 4: _Using only defaults_
+### Example 4: _With an administrator_
+
+This instance deploys the module with a Microsoft Entra ID identity as SQL administrator.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module server 'br/public:avm/res/sql/server:<version>' = {
+  name: 'serverDeployment'
+  params: {
+    // Required parameters
+    name: 'sqlsdbi'
+    // Non-required parameters
+    administrators: {
+      azureADOnlyAuthentication: true
+      login: 'myspn'
+      principalType: 'Application'
+      sid: '<sid>'
+    }
+    databases: [
+      {
+        managedIdentities: {
+          userAssignedResourceIds: [
+            '<databaseIdentityResourceId>'
+          ]
+        }
+        maxSizeBytes: 2147483648
+        name: 'sqlsdbi-db1'
+        sku: {
+          name: 'S1'
+          tier: 'Standard'
+        }
+        zoneRedundant: false
+      }
+    ]
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "sqlsdbi"
+    },
+    // Non-required parameters
+    "administrators": {
+      "value": {
+        "azureADOnlyAuthentication": true,
+        "login": "myspn",
+        "principalType": "Application",
+        "sid": "<sid>"
+      }
+    },
+    "databases": {
+      "value": [
+        {
+          "managedIdentities": {
+            "userAssignedResourceIds": [
+              "<databaseIdentityResourceId>"
+            ]
+          },
+          "maxSizeBytes": 2147483648,
+          "name": "sqlsdbi-db1",
+          "sku": {
+            "name": "S1",
+            "tier": "Standard"
+          },
+          "zoneRedundant": false
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/sql/server:<version>'
+
+// Required parameters
+param name = 'sqlsdbi'
+// Non-required parameters
+param administrators = {
+  azureADOnlyAuthentication: true
+  login: 'myspn'
+  principalType: 'Application'
+  sid: '<sid>'
+}
+param databases = [
+  {
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<databaseIdentityResourceId>'
+      ]
+    }
+    maxSizeBytes: 2147483648
+    name: 'sqlsdbi-db1'
+    sku: {
+      name: 'S1'
+      tier: 'Standard'
+    }
+    zoneRedundant: false
+  }
+]
+param location = '<location>'
+```
+
+</details>
+<p>
+
+### Example 5: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -443,7 +578,7 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 5: _Using elastic pool_
+### Example 6: _Using elastic pool_
 
 This instance deploys the module with an elastic pool.
 
@@ -576,7 +711,7 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 6: _Using failover groups_
+### Example 7: _Using failover groups_
 
 This instance deploys the module with failover groups.
 
@@ -882,7 +1017,7 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 7: _Deploying with a key vault reference to save secrets_
+### Example 8: _Deploying with a key vault reference to save secrets_
 
 This instance deploys the module saving all its secrets in a key vault.
 
@@ -993,7 +1128,7 @@ param secretsExportConfiguration = {
 </details>
 <p>
 
-### Example 8: _Using large parameter set_
+### Example 9: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -1518,7 +1653,7 @@ param vulnerabilityAssessmentsObj = {
 </details>
 <p>
 
-### Example 9: _With a secondary database_
+### Example 10: _With a secondary database_
 
 This instance deploys the module with a secondary database.
 
@@ -1650,7 +1785,7 @@ param tags = {
 </details>
 <p>
 
-### Example 10: _With vulnerability assessment_
+### Example 11: _With vulnerability assessment_
 
 This instance deploys the module with a vulnerability assessment.
 
@@ -1833,7 +1968,7 @@ param vulnerabilityAssessmentsObj = {
 </details>
 <p>
 
-### Example 11: _WAF-aligned_
+### Example 12: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -2604,6 +2739,7 @@ The databases to create in the server.
 | [`licenseType`](#parameter-databaseslicensetype) | string | The license type to apply for this database. |
 | [`longTermRetentionBackupResourceId`](#parameter-databaseslongtermretentionbackupresourceid) | string | The resource identifier of the long term retention backup associated with create operation of this database. |
 | [`maintenanceConfigurationId`](#parameter-databasesmaintenanceconfigurationid) | string | Maintenance configuration id assigned to the database. This configuration defines the period when the maintenance updates will occur. |
+| [`managedIdentities`](#parameter-databasesmanagedidentities) | object | The managed identities for the database. |
 | [`manualCutover`](#parameter-databasesmanualcutover) | bool | Whether or not customer controlled manual cutover needs to be done during Update Database operation to Hyperscale tier. |
 | [`maxSizeBytes`](#parameter-databasesmaxsizebytes) | int | The max size of the database expressed in bytes. |
 | [`minCapacity`](#parameter-databasesmincapacity) | string | Minimal capacity that database will always have allocated, if not paused. |
@@ -3015,6 +3151,26 @@ Maintenance configuration id assigned to the database. This configuration define
 
 - Required: No
 - Type: string
+
+### Parameter: `databases.managedIdentities`
+
+The managed identities for the database.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`userAssignedResourceIds`](#parameter-databasesmanagedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
+
+### Parameter: `databases.managedIdentities.userAssignedResourceIds`
+
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
+
+- Required: No
+- Type: array
 
 ### Parameter: `databases.manualCutover`
 
