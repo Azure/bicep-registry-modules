@@ -217,3 +217,7 @@ jobs:
           PUBLISH_CLIENT_ID: "${{ secrets.PUBLISH_CLIENT_ID }}"
           PUBLISH_TENANT_ID: "${{ secrets.PUBLISH_TENANT_ID }}"
           PUBLISH_SUBSCRIPTION_ID: "${{ secrets.PUBLISH_SUBSCRIPTION_ID }}"
+          VALIDATE_CLIENT_ID: ${{ secrets.VALIDATE_CLIENT_ID }}
+          VALIDATE_SUBSCRIPTION_ID: ${{ secrets.VALIDATE_SUBSCRIPTION_ID }}
+          VALIDATE_TENANT_ID: ${{ secrets.VALIDATE_TENANT_ID }}
+          AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
