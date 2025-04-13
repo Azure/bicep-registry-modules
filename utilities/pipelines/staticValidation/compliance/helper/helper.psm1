@@ -376,7 +376,7 @@ function Get-VersionedParentPathList {
     $Item = Get-Item -Path $Path
     if ($Item.FullName -ne $RootPath) {
 
-        Get-VersionedParentPathList -Path $Item.Parent.FullName -RootPath $RootPath
+        Get-VersionedParentPathList -Path $Item.Parent.FullName -RootPath $RootPath -Verbose
 
         if (Test-Path (Join-Path -Path $Item.FullName 'version.json')) {
             $versionedParentPathList += $Item.FullName

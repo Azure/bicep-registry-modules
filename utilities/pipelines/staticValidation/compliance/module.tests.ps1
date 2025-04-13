@@ -166,11 +166,12 @@ Describe 'File/folder tests' -Tag 'Modules' {
                     $rootPath = Join-Path $repoRootPath 'avm' $moduleType
 
                     # Get the list of all versioned parent folders
-                    $versionedParentFolderPaths = Get-VersionedParentPathList -Path $moduleFolderPath -RootPath $rootPath
+                    $versionedParentFolderPaths = Get-VersionedParentPathList -Path $moduleFolderPath -RootPath $rootPath -Verbose
                     $incorrectVersionedParents = @()
 
                     # Check if the parent module version(s) have been updated
                     foreach ($parentFolderPath in $versionedParentFolderPaths) {
+                        Write-Verbose ("Parent module version: $parentFolderPath") -Verbose
                         $moduleVersion = Get-ModuleTargetVersion -ModuleFolderPath $parentFolderPath
                         if (-not $moduleVersion.EndsWith('.0')) {
                             $incorrectVersionedParents += @() + $parentFolderPath
