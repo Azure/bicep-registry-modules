@@ -157,10 +157,16 @@ Describe 'File/folder tests' -Tag 'Modules' {
             $pathExisting = Test-Path (Join-Path -Path $moduleFolderPath 'version.json')
             if ($pathExisting) {
                 $childModuleVersion = Get-ModuleTargetVersion -ModuleFolderPath $moduleFolderPath
+
+                # If the child module version is not 0.1.0 and ends with .0 (i.e., if the child module version.json has been updated), check if the parent module version(s) have been updated
                 if ($childModuleVersion -ne '0.1.0' -and $childModuleVersion.EndsWith('.0')) {
                     $rootPath = Join-Path $repoRootPath 'avm' $moduleType
+
+                    # Get the list of all versioned parent folders
                     $versionedParentFolderPaths = Get-VersionedParentPathList -Path $moduleFolderPath -RootPath $rootPath
                     $incorrectVersionedParents = @()
+
+                    # Check if the parent module version(s) have been updated
                     foreach ($parentFolderPath in $versionedParentFolderPaths) {
                         $moduleVersion = Get-ModuleTargetVersion -ModuleFolderPath $parentFolderPath
                         if (-not $moduleVersion.EndsWith('.0')) {
@@ -169,47 +175,6 @@ Describe 'File/folder tests' -Tag 'Modules' {
                     }
                 }
                 $incorrectVersionedParents | Should -BeNullOrEmpty -Because ('The child module version [{0}] has been increased, but the parent module version(s) [{1}] have not been updated.' -f $childModuleVersion, ($incorrectVersionedParents -join ', '))
-
-                # $pathExisting = Test-Path (Join-Path -Path $moduleFolderPath 'version.json')
-                # if ($pathExisting) {
-                #     $childModuleVersion = Get-ModuleTargetVersion -ModuleFolderPath $moduleFolderPath
-                #     # TODO name something like $firstVersionedParentFolderPath
-                #     $parentFolderPath = Split-Path -Path $moduleFolderPath -Parent
-                #     $moduleVersion = Get-ModuleTargetVersion -ModuleFolderPath $parentFolderPath
-
-                #     # The first release of a child module does not require the parent module to be updated
-                #     ($childModuleVersion -ne '0.1.0' -and $childModuleVersion.EndsWith('.0') -and -not $moduleVersion.EndsWith('.0')) | Should -Be $false
-                # }
-
-                # TODO Ref below. Idea: collect all versioned parent modules and check if their version is being updated
-                # $incorrectParameters = @()
-                #     foreach ($parameter in ($templateFileParameters.PSBase.Keys | Sort-Object -Culture 'en-US')) {
-                #         # Parameters in the object are formatted like
-                #         # - tags
-                #         # - customerManagedKey.keyVaultResourceId
-                #         $paramName = ($parameter -split '\.')[-1]
-
-                #         # workaround for Azure Stack HCI cluster deployment settings resource, where property names have underscores - https://github.com/Azure/Azure-Verified-Modules/issues/1029
-                #         if ($moduleFolderPath -match 'azure-stack-hci[/\\]cluster[/\\]deployment-settings' -and $paramName -in ('bandwidthPercentage_SMB', 'priorityValue8021Action_Cluster', 'priorityValue8021Action_SMB')) {
-                #             Set-ItResult -Skipped -Because 'the module path matches "azure-stack-hci/cluster/deployment-settings" and the parameter name is in list [bandwidthPercentage_SMB, priorityValue8021Action_Cluster, priorityValue8021Action_SMB], which have underscores in the API spec.'
-                #             return
-                #         }
-
-                #         if ($paramName.substring(0, 1) -cnotmatch '[a-z]' -or $paramName -match '-' -or $paramName -match '_') {
-                #             $incorrectParameters += @() + $parameter
-                #         }
-                #     }
-                #     $incorrectParameters | Should -BeNullOrEmpty -Because ('parameters in the template file should be camel-cased. Found incorrect items: [{0}].' -f ($incorrectParameters -join ', '))
-
-                ### OR
-                # $incorrectParameters = @()
-                #     foreach ($parameter in ($templateFileParameters.PSBase.Keys | Sort-Object -Culture 'en-US')) {
-                #         $data = $templateFileParameters.$parameter.metadata.description
-                #         if ($data -notmatch '(?s)^[A-Z][a-zA-Z]+\. .+\.$') {
-                #             $incorrectParameters += $parameter
-                #         }
-                #     }
-                #     $incorrectParameters | Should -BeNullOrEmpty -Because ('each parameter in the template file should have a description starting with a "Category" prefix like "Required. " and ending with a dot. Found incorrect items: [{0}].' -f ($incorrectParameters -join ', '))
             }
         }
 
@@ -353,7 +318,6 @@ Describe 'File/folder tests' -Tag 'Modules' {
         }
     }
 }
-
 
 Describe 'Pipeline tests' -Tag 'Pipeline' {
 
