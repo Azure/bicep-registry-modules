@@ -18,7 +18,7 @@ Get modified files between previous and current commit depending on if you are r
 function Get-ModifiedFileList {
 
     $CurrentBranch = Get-GitBranchName
-    if (($CurrentBranch -eq 'main') -or ($CurrentBranch -eq 'main')) {
+    if ($CurrentBranch -eq 'main') {
         Write-Verbose 'Gathering modified files from the pull request' -Verbose
         $Diff = git diff --name-only --diff-filter=AM 'HEAD^' 'HEAD'
     } else {
