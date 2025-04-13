@@ -372,6 +372,7 @@ function Get-VersionedParentPathList {
 
     )
 
+    Write-Verbose ("Path: $Path") -Verbose
     $Item = Get-Item -Path $Path
     if ($Item.FullName -ne $RootPath) {
 
