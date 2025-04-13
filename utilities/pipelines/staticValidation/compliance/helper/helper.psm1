@@ -343,27 +343,33 @@ function Get-WorkflowEnvVariablesAsObject {
 }
 
 <#
-Get ...
+Get a list of all versioned parents of a module
 
 .DESCRIPTION
-Get ...
+Get a list of all versioned parents of a module. The function will recursively search the parent directories of the given path until it finds a directory containing a version.json file or reaches the root path.
+The function will return a list of all the parent directories that contain a version.json file.
+The function will return the list in the order from the root path to the given path.
 
 .PARAMETER Path
-Mandatory. The path ...
+Mandatory. The path of the module to search for versioned parents
 
-.PARAMETER RepoRootPath
-Optional. The path ...
+.PARAMETER RootPath
+Optional. The root path to stop the search at. The function will not search above this path.
 
 .EXAMPLE
-Get-ParentPath -Path '...'
+Get-VersionedParentPathList -Path 'C:/bicep-registry-modules/avm/res/storage/storage-account/blob-service/container' -RootPath 'C:/bicep-registry-modules/avm/res'
 
 ...
 #>
 function Get-VersionedParentPathList {
   param
   (
-    $Path,
-    $RootPath = $repoRootPath
+    [Parameter(Mandatory = $true)]
+    [string] $Path,
+
+    [Parameter(Mandatory = $false)]
+    [string] $RootPath = $repoRootPath
+
   )
 
   $Item = Get-Item -Path $Path
