@@ -152,22 +152,29 @@ Describe 'File/folder tests' -Tag 'Modules' {
             }
         }
 
-        # If the child modules version has been increased, parent main modules version should be increased as well
+        # If the child modules version has been increased, each parent's main modules version should be increased as well
         It '[<moduleFolderName>] parent module version should be increased if the child version number has been increased.' -TestCases ($moduleFolderTestCases | Where-Object { -not $_.isTopLevelModule -and -not $_.isMultiScopeModule }) {
 
             param (
                 [string] $moduleFolderPath
             )
 
-            $pathExisting = Test-Path (Join-Path -Path $moduleFolderPath 'version.json')
-            if ($pathExisting) {
-                $childModuleVersion = Get-ModuleTargetVersion -ModuleFolderPath $moduleFolderPath
-                $parentFolderPath = Split-Path -Path $moduleFolderPath -Parent
-                $moduleVersion = Get-ModuleTargetVersion -ModuleFolderPath $parentFolderPath
+            $parentFolderPaths = Get-ParentFoldersList -CurrentFolderPath $moduleFolderPath -Filter 'OnlyVersionedModules'
+            $childModuleVersion = Get-ModuleTargetVersion -ModuleFolderPath $moduleFolderPath
 
-                # The first release of a child module does not require the parent module to be updated
-                ($childModuleVersion -ne '0.1.0' -and $childModuleVersion.EndsWith('.0') -and -not $moduleVersion.EndsWith('.0')) | Should -Be $false
+            $incorrectParentModules = [System.Collections.ArrayList]@()
+            foreach ($parentFolderPath in $parentFolderPaths) {
+                if (Test-Path (Join-Path -Path $parentFolderPath 'version.json')) {
+                    $parentModuleVersion = Get-ModuleTargetVersion -ModuleFolderPath $parentFolderPath
+                    # The first release of a child module does not require the parent module to be updated
+                    if (($childModuleVersion -ne '0.1.0' -and $childModuleVersion.EndsWith('.0') -and -not $parentModuleVersion.EndsWith('.0'))) {
+
+                        $null, $null, $parentResourceTypeIdentifier = ($parentFolderPath -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]') # 'avm/res|ptn|utl/<provider>/<resourceType>' would return 'avm', 'res|ptn|utl', '<provider>/<resourceType>'
+                        $incorrectParentModules += $parentResourceTypeIdentifier
+                    }
+                }
             }
+            $incorrectParentModules | Should -BeNullOrEmpty -Because 'every parent module''s version should be increased if a child module''s version has been increased.'
         }
 
         It '[<moduleFolderName>] Module should contain a [` ORPHANED.md `] file only if orphaned.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule }) {

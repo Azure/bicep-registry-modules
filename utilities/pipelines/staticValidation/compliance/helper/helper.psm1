@@ -36,21 +36,21 @@ Get the index of the '# Parameters' header in the given markdown array @('# Para
 #>
 function Get-MarkdownSectionStartIndex {
 
-    [CmdletBinding()]
-    param (
-        [Parameter(Mandatory = $true)]
-        [array] $ReadMeContent,
+  [CmdletBinding()]
+  param (
+    [Parameter(Mandatory = $true)]
+    [array] $ReadMeContent,
 
-        [Parameter(Mandatory = $true)]
-        [string] $MarkdownSectionIdentifier
-    )
+    [Parameter(Mandatory = $true)]
+    [string] $MarkdownSectionIdentifier
+  )
 
-    $sectionStartIndex = 0
-    while ($ReadMeContent[$sectionStartIndex] -notlike $MarkdownSectionIdentifier -and -not ($sectionStartIndex -ge $ReadMeContent.count)) {
-        $sectionStartIndex++
-    }
+  $sectionStartIndex = 0
+  while ($ReadMeContent[$sectionStartIndex] -notlike $MarkdownSectionIdentifier -and -not ($sectionStartIndex -ge $ReadMeContent.count)) {
+    $sectionStartIndex++
+  }
 
-    return $sectionStartIndex
+  return $sectionStartIndex
 }
 
 <#
@@ -73,21 +73,21 @@ Search for the end index of the section starting in index 2 in array @('somrthin
 #>
 function Get-MarkdownSectionEndIndex {
 
-    [CmdletBinding()]
-    param (
-        [Parameter(Mandatory = $true)]
-        [array] $ReadMeContent,
+  [CmdletBinding()]
+  param (
+    [Parameter(Mandatory = $true)]
+    [array] $ReadMeContent,
 
-        [Parameter(Mandatory = $true)]
-        [int] $SectionStartIndex
-    )
+    [Parameter(Mandatory = $true)]
+    [int] $SectionStartIndex
+  )
 
-    $sectionEndIndex = $sectionStartIndex + 1
-    while ($readMeContent[$sectionEndIndex] -notlike '*# *' -and -not ($sectionEndIndex -ge $ReadMeContent.count)) {
-        $sectionEndIndex++
-    }
+  $sectionEndIndex = $sectionStartIndex + 1
+  while ($readMeContent[$sectionEndIndex] -notlike '*# *' -and -not ($sectionEndIndex -ge $ReadMeContent.count)) {
+    $sectionEndIndex++
+  }
 
-    return $sectionEndIndex
+  return $sectionEndIndex
 }
 
 <#
@@ -110,28 +110,28 @@ Get the start & end index of the table in section '# Parameters' in the given Re
 #>
 function Get-TableStartAndEndIndex {
 
-    [CmdletBinding()]
-    param (
-        [Parameter(Mandatory = $true)]
-        [array] $ReadMeContent,
+  [CmdletBinding()]
+  param (
+    [Parameter(Mandatory = $true)]
+    [array] $ReadMeContent,
 
-        [Parameter(Mandatory = $true)]
-        [string] $MarkdownSectionIdentifier
-    )
+    [Parameter(Mandatory = $true)]
+    [string] $MarkdownSectionIdentifier
+  )
 
-    $sectionStartIndex = Get-MarkdownSectionStartIndex -ReadMeContent $ReadMeContent -MarkdownSectionIdentifier $MarkdownSectionIdentifier
+  $sectionStartIndex = Get-MarkdownSectionStartIndex -ReadMeContent $ReadMeContent -MarkdownSectionIdentifier $MarkdownSectionIdentifier
 
-    $tableStartIndex = $sectionStartIndex + 1
-    while ($readMeContent[$tableStartIndex] -notlike '*|*' -and -not ($tableStartIndex -ge $readMeContent.count)) {
-        $tableStartIndex++
-    }
+  $tableStartIndex = $sectionStartIndex + 1
+  while ($readMeContent[$tableStartIndex] -notlike '*|*' -and -not ($tableStartIndex -ge $readMeContent.count)) {
+    $tableStartIndex++
+  }
 
-    $tableEndIndex = $tableStartIndex + 2
-    while ($readMeContent[$tableEndIndex] -like '|*' -and -not ($tableEndIndex -ge $readMeContent.count)) {
-        $tableEndIndex++
-    }
+  $tableEndIndex = $tableStartIndex + 2
+  while ($readMeContent[$tableEndIndex] -like '|*' -and -not ($tableEndIndex -ge $readMeContent.count)) {
+    $tableEndIndex++
+  }
 
-    return $tableStartIndex, $tableEndIndex
+  return $tableStartIndex, $tableEndIndex
 }
 
 <#
@@ -151,32 +151,32 @@ Returns @{ b = 'b' }
 #>
 function Remove-JSONMetadata {
 
-    [CmdletBinding()]
-    param (
-        [Parameter(Mandatory = $true)]
-        [hashtable] $TemplateObject
-    )
-    $TemplateObject.Remove('metadata')
+  [CmdletBinding()]
+  param (
+    [Parameter(Mandatory = $true)]
+    [hashtable] $TemplateObject
+  )
+  $TemplateObject.Remove('metadata')
 
-    # Differantiate case: With user defined types (resources property is hashtable) vs without user defined types (resources property is array)
-    if ($TemplateObject.resources.GetType().BaseType.Name -eq 'Hashtable') {
-        # Case: Hashtable
-        $resourceIdentifiers = $TemplateObject.resources.Keys
-        for ($index = 0; $index -lt $resourceIdentifiers.Count; $index++) {
-            if ($TemplateObject.resources[$resourceIdentifiers[$index]].type -eq 'Microsoft.Resources/deployments' -and $TemplateObject.resources[$resourceIdentifiers[$index]].properties.template.GetType().BaseType.Name -eq 'Hashtable') {
-                $TemplateObject.resources[$resourceIdentifiers[$index]] = Remove-JSONMetadata -TemplateObject $TemplateObject.resources[$resourceIdentifiers[$index]].properties.template
-            }
-        }
-    } else {
-        # Case: Array
-        for ($index = 0; $index -lt $TemplateObject.resources.Count; $index++) {
-            if ($TemplateObject.resources[$index].type -eq 'Microsoft.Resources/deployments' -and $TemplateObject.resources[$index].properties.template.GetType().BaseType.Name -eq 'Hashtable') {
-                $TemplateObject.resources[$index] = Remove-JSONMetadata -TemplateObject $TemplateObject.resources[$index].properties.template
-            }
-        }
+  # Differantiate case: With user defined types (resources property is hashtable) vs without user defined types (resources property is array)
+  if ($TemplateObject.resources.GetType().BaseType.Name -eq 'Hashtable') {
+    # Case: Hashtable
+    $resourceIdentifiers = $TemplateObject.resources.Keys
+    for ($index = 0; $index -lt $resourceIdentifiers.Count; $index++) {
+      if ($TemplateObject.resources[$resourceIdentifiers[$index]].type -eq 'Microsoft.Resources/deployments' -and $TemplateObject.resources[$resourceIdentifiers[$index]].properties.template.GetType().BaseType.Name -eq 'Hashtable') {
+        $TemplateObject.resources[$resourceIdentifiers[$index]] = Remove-JSONMetadata -TemplateObject $TemplateObject.resources[$resourceIdentifiers[$index]].properties.template
+      }
     }
+  } else {
+    # Case: Array
+    for ($index = 0; $index -lt $TemplateObject.resources.Count; $index++) {
+      if ($TemplateObject.resources[$index].type -eq 'Microsoft.Resources/deployments' -and $TemplateObject.resources[$index].properties.template.GetType().BaseType.Name -eq 'Hashtable') {
+        $TemplateObject.resources[$index] = Remove-JSONMetadata -TemplateObject $TemplateObject.resources[$index].properties.template
+      }
+    }
+  }
 
-    return $TemplateObject
+  return $TemplateObject
 }
 
 <#
@@ -209,90 +209,90 @@ Child-level invocation during recursion.
 The function is recursive and will also output grand, great grand children, ... .
 #>
 function Resolve-ReadMeParameterList {
-    param (
-        [Parameter(Mandatory = $true)]
-        [hashtable] $TemplateFileContent,
+  param (
+    [Parameter(Mandatory = $true)]
+    [hashtable] $TemplateFileContent,
 
-        [Parameter(Mandatory = $false)]
-        [hashtable] $Properties,
+    [Parameter(Mandatory = $false)]
+    [hashtable] $Properties,
 
-        [Parameter(Mandatory = $false)]
-        [string] $ParentName
-    )
+    [Parameter(Mandatory = $false)]
+    [string] $ParentName
+  )
 
-    $parameterSet = @{}
+  $parameterSet = @{}
 
-    if (-not $Properties -and -not $TemplateFileContent.parameters) {
-        # no Parameters / properties on this level or in the template
-        return $parameterSet
-    } elseif (-not $Properties) {
-        # Top-level invocation
-        # Add name as property for later reference
-        $TemplateFileContent.parameters.Keys | ForEach-Object { $TemplateFileContent.parameters[$_]['name'] = $_ }
-        [array] $parameters = $TemplateFileContent.parameters.Values | Sort-Object -Property 'Name' -Culture 'en-US'
-    } else {
-        # Add name as property for later reference
-        $Properties.Keys | ForEach-Object { $Properties[$_]['name'] = $_ }
-        $parameters = $Properties.Values | Sort-Object -Property 'Name' -Culture 'en-US'
-    }
-
-    foreach ($parameter in $parameters) {
-
-        ######################
-        #   Gather details   #
-        ######################
-
-        $paramIdentifier = (-not [String]::IsNullOrEmpty($ParentName)) ? '{0}.{1}' -f $ParentName, $parameter.name : $parameter.name
-
-        # definition type (if any)
-        if ($parameter.Keys -contains '$ref') {
-            $identifier = Split-Path $parameter.'$ref' -Leaf
-            $definition = $TemplateFileContent.definitions[$identifier]
-            # $type = $definition['type']
-        } elseif ($parameter.Keys -contains 'items' -and $parameter.items.type -in @('object', 'array') -or $parameter.type -eq 'object') {
-            # Array has nested non-primitive type (array/object) - and if array, the the UDT itself is declared as the array
-            $definition = $parameter
-        } elseif ($parameter.Keys -contains 'items' -and $parameter.items.keys -contains '$ref') {
-            # Array has nested non-primitive type (array) - and the parameter is defined as an array of the UDT
-            $identifier = Split-Path $parameter.items.'$ref' -Leaf
-            $definition = $TemplateFileContent.definitions[$identifier]
-        } else {
-            $definition = $null
-        }
-
-        $parameterSet[$paramIdentifier] = $parameter
-
-        #recursive call for children
-        if ($definition -and $definition.keys -notcontains 'discriminator') {
-            if ($definition.ContainsKey('items') -and $definition['items'].ContainsKey('properties')) {
-                $childProperties = $definition['items']['properties']
-            } elseif ($definition.type -in @('object', 'secureObject') -and $definition['properties']) {
-                $childProperties = $definition['properties']
-            } else {
-                $childProperties = $null
-            }
-
-            if ($childProperties) {
-                $parameterSet += Resolve-ReadMeParameterList -TemplateFileContent $TemplateFileContent -Properties $childProperties -ParentName $paramIdentifier
-            }
-        } elseif ($definition -and $definition.keys -contains 'discriminator') {
-
-            $variants = $definition.discriminator.mapping.values.'$ref' | ForEach-Object {
-                $variantName = Split-Path $_ -Leaf
-                @{
-                    name       = $variantName
-                    properties = $TemplateFileContent.definitions[$variantName].properties
-                }
-            }
-
-            foreach ($variant in $variants) {
-                $paramIdentifier = (-not [String]::IsNullOrEmpty($ParentName)) ? '{0}.{1}.{2}' -f $ParentName, $parameter.name, $variant.name : '{0}.{1}' -f $parameter.name, $variant.name
-                $parameterSet += Resolve-ReadMeParameterList -TemplateFileContent $TemplateFileContent -Properties $variant.properties -ParentName $paramIdentifier
-            }
-        }
-    }
-
+  if (-not $Properties -and -not $TemplateFileContent.parameters) {
+    # no Parameters / properties on this level or in the template
     return $parameterSet
+  } elseif (-not $Properties) {
+    # Top-level invocation
+    # Add name as property for later reference
+    $TemplateFileContent.parameters.Keys | ForEach-Object { $TemplateFileContent.parameters[$_]['name'] = $_ }
+    [array] $parameters = $TemplateFileContent.parameters.Values | Sort-Object -Property 'Name' -Culture 'en-US'
+  } else {
+    # Add name as property for later reference
+    $Properties.Keys | ForEach-Object { $Properties[$_]['name'] = $_ }
+    $parameters = $Properties.Values | Sort-Object -Property 'Name' -Culture 'en-US'
+  }
+
+  foreach ($parameter in $parameters) {
+
+    ######################
+    #   Gather details   #
+    ######################
+
+    $paramIdentifier = (-not [String]::IsNullOrEmpty($ParentName)) ? '{0}.{1}' -f $ParentName, $parameter.name : $parameter.name
+
+    # definition type (if any)
+    if ($parameter.Keys -contains '$ref') {
+      $identifier = Split-Path $parameter.'$ref' -Leaf
+      $definition = $TemplateFileContent.definitions[$identifier]
+      # $type = $definition['type']
+    } elseif ($parameter.Keys -contains 'items' -and $parameter.items.type -in @('object', 'array') -or $parameter.type -eq 'object') {
+      # Array has nested non-primitive type (array/object) - and if array, the the UDT itself is declared as the array
+      $definition = $parameter
+    } elseif ($parameter.Keys -contains 'items' -and $parameter.items.keys -contains '$ref') {
+      # Array has nested non-primitive type (array) - and the parameter is defined as an array of the UDT
+      $identifier = Split-Path $parameter.items.'$ref' -Leaf
+      $definition = $TemplateFileContent.definitions[$identifier]
+    } else {
+      $definition = $null
+    }
+
+    $parameterSet[$paramIdentifier] = $parameter
+
+    #recursive call for children
+    if ($definition -and $definition.keys -notcontains 'discriminator') {
+      if ($definition.ContainsKey('items') -and $definition['items'].ContainsKey('properties')) {
+        $childProperties = $definition['items']['properties']
+      } elseif ($definition.type -in @('object', 'secureObject') -and $definition['properties']) {
+        $childProperties = $definition['properties']
+      } else {
+        $childProperties = $null
+      }
+
+      if ($childProperties) {
+        $parameterSet += Resolve-ReadMeParameterList -TemplateFileContent $TemplateFileContent -Properties $childProperties -ParentName $paramIdentifier
+      }
+    } elseif ($definition -and $definition.keys -contains 'discriminator') {
+
+      $variants = $definition.discriminator.mapping.values.'$ref' | ForEach-Object {
+        $variantName = Split-Path $_ -Leaf
+        @{
+          name       = $variantName
+          properties = $TemplateFileContent.definitions[$variantName].properties
+        }
+      }
+
+      foreach ($variant in $variants) {
+        $paramIdentifier = (-not [String]::IsNullOrEmpty($ParentName)) ? '{0}.{1}.{2}' -f $ParentName, $parameter.name, $variant.name : '{0}.{1}' -f $parameter.name, $variant.name
+        $parameterSet += Resolve-ReadMeParameterList -TemplateFileContent $TemplateFileContent -Properties $variant.properties -ParentName $paramIdentifier
+      }
+    }
+  }
+
+  return $parameterSet
 }
 
 <#
@@ -311,33 +311,97 @@ Get the environment variables from the given workflow
 #>
 function Get-WorkflowEnvVariablesAsObject {
 
-    [CmdletBinding()]
-    param (
-        [Parameter(Mandatory)]
-        [string] $WorkflowPath
-    )
+  [CmdletBinding()]
+  param (
+    [Parameter(Mandatory)]
+    [string] $WorkflowPath
+  )
 
-    $contentFileContent = Get-Content -Path $workflowPath
+  $contentFileContent = Get-Content -Path $workflowPath
 
-    $envStartIndex = $contentFileContent.IndexOf('env:')
+  $envStartIndex = $contentFileContent.IndexOf('env:')
 
-    if (-not $envStartIndex) {
-        # No env variables defined in the given workflow
-        return @{}
+  if (-not $envStartIndex) {
+    # No env variables defined in the given workflow
+    return @{}
+  }
+
+  $searchIndex = $envStartIndex + 1
+  $envVars = @{}
+
+  while ($searchIndex -lt $contentFileContent.Count) {
+    $line = $contentFileContent[$searchIndex]
+    if ($line -match "^\s+(\w+): (?:`"|')*([^`"'\s]+)(?:`"|')*$") {
+      $envVars[($Matches[1])] = $Matches[2]
+    } else {
+      break
     }
+    $searchIndex++
+  }
 
-    $searchIndex = $envStartIndex + 1
-    $envVars = @{}
+  return $envVars
+}
 
-    while ($searchIndex -lt $contentFileContent.Count) {
-        $line = $contentFileContent[$searchIndex]
-        if ($line -match "^\s+(\w+): (?:`"|')*([^`"'\s]+)(?:`"|')*$") {
-            $envVars[($Matches[1])] = $Matches[2]
-        } else {
-            break
-        }
-        $searchIndex++
+<#
+.SYNOPSIS
+Return a list of all parent folder paths up to 'res', 'ptn' or 'utl'
+
+.DESCRIPTION
+Return a list of all parent folder paths up to 'res', 'ptn' or 'utl'
+
+.PARAMETER CurrentFolderPath
+Mandatory. The path of the folder to get the parent folder paths from
+
+.PARAMETER Filter
+Optional. Only include module folders in the list (i.e., modules with a `main.json` file), or versioned modules folders (i.e., modules with both `main.json` and `version.json` files). The default is to include all folders)
+
+.EXAMPLE
+Get-ParentFoldersList -CurrentFolderPath '.\avm\res\storage\storage-account\blob-service\container\immutability-policy'
+
+Get all parent folders of the 'immutability-policy' folder up to 'res'. Returns
+- <repoPath>\avm\res\storage\storage-account\blob-service\container
+- <repoPath>\fork-AlexanderSehr\avm\res\storage\storage-account\blob-service
+- <repoPath>\fork-AlexanderSehr\avm\res\storage\storage-account
+- <repoPath>\fork-AlexanderSehr\avm\res\storage
+
+.EXAMPLE
+Get-ParentFoldersList -CurrentFolderPath '.\avm\res\storage\storage-account\blob-service\container\immutability-policy' -Filter 'OnlyModules'
+
+Get all parent module folders of the 'immutability-policy' folder up to 'res'. Returns
+- <repoPath>\avm\res\storage\storage-account\blob-service\container
+- <repoPath>\fork-AlexanderSehr\avm\res\storage\storage-account\blob-service
+- <repoPath>\fork-AlexanderSehr\avm\res\storage\storage-account
+#>
+function Get-ParentFoldersList {
+  param (
+    [Parameter(Mandatory = $true)]
+    [string] $CurrentFolderPath,
+
+    [Parameter(Mandatory = $false)]
+    [ValidateSet('OnlyModules', 'OnlyVersionedModules')]
+    [string] $Filter
+  )
+
+  $parentFolderPathsList = [System.Collections.ArrayList]@()
+  $currentPath = Split-Path -Path $CurrentFolderPath -Parent
+
+  # Collect
+  while ((Split-Path $currentPath -Leaf) -notIn @('res', 'ptn', 'utl')) {
+    $parentFolderPathsList += $currentPath
+    $currentPath = Split-Path -Path $currentPath -Parent
+  }
+
+  # Filter
+  if ($Filter) {
+    $parentFolderPathsList = $parentFolderPathsList | Where-Object {
+      $filesInFolder = (Get-ChildItem -Path $_ -File).Name
+      if ($Filter -eq 'OnlyModules') {
+        $filesInFolder -contains 'main.json'
+      } elseif ($Filter -eq 'OnlyVersionedModules') {
+        $filesInFolder -contains 'main.json' -and
+        $filesInFolder -contains 'version.json'
+      }
     }
-
-    return $envVars
+  }
+  return $parentFolderPathsList
 }
