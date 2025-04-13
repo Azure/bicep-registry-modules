@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "14135172009757478189"
+      "templateHash": "6194612880634659414"
     },
     "name": "Role Assignments (Subscription scope)",
     "description": "This module deploys a Role Assignment to a Subscription scope."
@@ -82,6 +82,13 @@
       "metadata": {
         "description": "Optional. Enable/Disable usage telemetry for module."
       }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[deployment().location]",
+      "metadata": {
+        "description": "Optional. Location deployment metadata."
+      }
     }
   },
   "variables": {
@@ -99,7 +106,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[format('46d3xbcp.res.authorization-roleassignment.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+      "name": "[format('46d3xbcp.ptn.authorization-roleassignment.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -113,7 +120,8 @@
             }
           }
         }
-      }
+      },
+      "location": "[parameters('location')]"
     },
     "roleAssignment": {
       "type": "Microsoft.Authorization/roleAssignments",

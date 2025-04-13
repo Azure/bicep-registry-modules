@@ -1,10 +1,5 @@
 # Role Assignments (All scopes) `[Microsoft.Authorization/roleAssignments]`
 
-> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
-> 
-> - Only security and bug fixes are being handled by the AVM core team at present.
-> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
-
 This module deploys a Role Assignment at a Management Group, Subscription or Resource Group scope.'
 
 > NOTE: This multi-scope module won't be published as is and only its nested modules should be used.
@@ -817,7 +812,6 @@ The conditions on the role assignment. This limits the resources it can be assig
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `conditionVersion`
 
@@ -839,7 +833,6 @@ ID of the delegated managed identity resource.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `description`
 
@@ -847,7 +840,6 @@ The description of the role assignment.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `enableTelemetry`
 
@@ -879,11 +871,9 @@ The principal type of the assigned principal ID.
 
 - Required: No
 - Type: string
-- Default: `''`
 - Allowed:
   ```Bicep
   [
-    ''
     'Device'
     'ForeignGroup'
     'Group'
@@ -898,7 +888,6 @@ Name of the Resource Group to assign the RBAC role to. If Resource Group name is
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `subscriptionId`
 
@@ -906,7 +895,6 @@ Subscription ID of the subscription to assign the RBAC role to. If no Resource G
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ## Outputs
 

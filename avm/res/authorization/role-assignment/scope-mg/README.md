@@ -33,6 +33,7 @@ This module deploys a Role Assignment to a Management Group scope.
 | [`delegatedManagedIdentityResourceId`](#parameter-delegatedmanagedidentityresourceid) | string | ID of the delegated managed identity resource. |
 | [`description`](#parameter-description) | string | The description of the role assignment. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`location`](#parameter-location) | string | Location deployment metadata. |
 | [`managementGroupId`](#parameter-managementgroupid) | string | Group ID of the Management Group to assign the RBAC role to. If not provided, will use the current scope for deployment. |
 | [`name`](#parameter-name) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-principaltype) | string | The principal type of the assigned principal ID. |
@@ -93,6 +94,14 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `location`
+
+Location deployment metadata.
+
+- Required: No
+- Type: string
+- Default: `[deployment().location]`
 
 ### Parameter: `managementGroupId`
 
