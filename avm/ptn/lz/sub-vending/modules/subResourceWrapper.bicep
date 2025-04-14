@@ -246,6 +246,10 @@ var deploymentNames = {
     'lz-vend-bastion-nsg-create-${uniqueString(subscriptionId, virtualNetworkResourceGroupName, virtualNetworkLocation, virtualNetworkName, deployment().name)}',
     64
   )
+  createBastionHost: take(
+    'lz-vend-bastion-create-${uniqueString(subscriptionId, virtualNetworkResourceGroupName, virtualNetworkLocation, virtualNetworkName, deployment().name)}',
+    64
+  )
   createLzRoleAssignmentsSub: take('lz-vend-rbac-sub-create-${uniqueString(subscriptionId, deployment().name)}', 64)
   createLzRoleAssignmentsRsgsSelf: take(
     'lz-vend-rbac-rsg-self-create-${uniqueString(subscriptionId, deployment().name)}',
@@ -1249,7 +1253,7 @@ module createNatGateway 'br/public:avm/res/network/nat-gateway:1.2.1' = if (virt
 }
 
 module createBastionHost 'br/public:avm/res/network/bastion-host:0.5.0' = if (virtualNetworkDeployBastion && (virtualNetworkEnabled && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName))) {
-  name: 'bastion-${virtualNetworkName}'
+  name: deploymentNames.createBastionHost
   scope: resourceGroup(subscriptionId, virtualNetworkResourceGroupName)
   dependsOn: [
     createResourceGroupForLzNetworking
@@ -1536,6 +1540,9 @@ type pimRoleAssignmentTypeType = {
   @description('Required. The type of the role assignment.')
   roleAssignmentType: 'Active' | 'Eligible'
 
+  @description('Optional. The type of the PIM request.')
+  requestType: requestTypeType?
+
   @description('Required. The schedule information for the role assignment.')
   scheduleInfo: roleAssignmentScheduleType
 
@@ -1553,6 +1560,9 @@ type pimRoleAssignmentTypeType = {
 
   @description('Optional. The justification for the role assignment.')
   justification: string?
+
+  @description('Optional. The condition for the role assignment.')
+  roleAssignmentCondition: roleAssignmentConditionType?
 }
 
 @discriminator('durationType')
