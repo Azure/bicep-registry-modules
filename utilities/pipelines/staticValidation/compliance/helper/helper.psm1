@@ -409,9 +409,6 @@ function Get-ParentFolderPathList {
             'All' {
                 $Item.FullName
             }
-            default {
-                Write-Error -Message "Invalid filter value: $Filter. Valid values are 'OnlyModules', 'OnlyVersionedModules', or 'All'."
-            }
         }
     }
 }
