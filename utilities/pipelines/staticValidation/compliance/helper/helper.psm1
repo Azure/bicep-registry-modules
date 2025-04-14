@@ -347,7 +347,7 @@ Get a list of all versioned parents of a module
 
 .DESCRIPTION
 Get a list of all versioned parents of a module. The function will recursively search the parent directories of the given path until it finds a directory containing a version.json file or reaches the root path.
-The function will return a list of all the parent directories that contain a version.json file.
+The function will return a list of all the directories in the parent hierarchy that contain a version.json file, including the given path.
 The function will return the list in the order from the root path to the given path.
 
 .PARAMETER Path
