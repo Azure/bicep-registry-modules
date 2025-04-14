@@ -351,34 +351,73 @@ The function will return a list of all the directories in the parent hierarchy t
 The function will return the list in the order from the root path to the given path.
 
 .PARAMETER Path
-Mandatory. The path of the module to search for versioned parents
+Mandatory. The path of the module to search for versioned parents.
 
 .PARAMETER RootPath
 Optional. The root path to stop the search at. The function will not search above this path.
+
+.PARAMETER Filter
+Optional. Only include module folders in the list (i.e., modules with a `main.json` file), or versioned modules folders (i.e., modules with `version.json` files). The default is to include all folders).
+
+.EXAMPLE
+Get-ParentFolderPathList -Path 'C:/bicep-registry-modules/avm/res/storage/storage-account/blob-service/container/immutability-policy'
+
+Get all parent folders of the 'immutability-policy' folder up to 'res'. Returns
+
+- <repoPath>\avm\res\storage
+- <repoPath>\avm\res\storage\storage-account
+- <repoPath>\avm\res\storage\storage-account\blob-service
+- <repoPath>\avm\res\storage\storage-account\blob-service\container
+
+.EXAMPLE
+Get-ParentFolderPathList -Path '.\avm\res\storage\storage-account\blob-service\container\immutability-policy' -RootPath 'C:/bicep-registry-modules/avm/res' -Filter 'OnlyVersionedModules'
+
+Get all versioned parent module folders of the 'immutability-policy' folder up to 'res'. Returns, e.g.,
+- <repoPath>\avm\res\storage\storage-account
+#>
 
 .EXAMPLE
 Get-VersionedParentPathList -Path 'C:/bicep-registry-modules/avm/res/storage/storage-account/blob-service/container' -RootPath 'C:/bicep-registry-modules/avm/res'
 
 ...
 #>
-function Get-VersionedParentPathList {
+function Get-ParentFolderPathList {
     param
     (
         [Parameter(Mandatory = $true)]
         [string] $Path,
 
         [Parameter(Mandatory = $false)]
-        [string] $RootPath = $repoRootPath
+        [string] $RootPath = $repoRootPath,
+
+        [Parameter(Mandatory = $false)]
+        [ValidateSet('OnlyModules', 'OnlyVersionedModules', 'All')]
+        [string] $Filter = 'All'
 
     )
 
     $Item = Get-Item -Path $Path
 
     if ($Item.FullName -ne $RootPath) {
-        Get-VersionedParentPathList -Path $Item.Parent.FullName -RootPath $RootPath -Verbose
+        Get-ParentFolderPathList -Path $Item.Parent.FullName -RootPath $RootPath -Filter $Filter -Verbose
 
-        if (Test-Path (Join-Path -Path $Item.FullName 'version.json')) {
-            $Item.FullName
+        switch ($Filter) {
+            'OnlyModules' {
+                if (Test-Path (Join-Path -Path $Item.FullName 'main.json')) {
+                    $Item.FullName
+                }
+            }
+            'OnlyVersionedModules' {
+                if (Test-Path (Join-Path -Path $Item.FullName 'version.json')) {
+                    $Item.FullName
+                }
+            }
+            'All' {
+                $Item.FullName
+            }
+            default {
+                Write-Error -Message "Invalid filter value: $Filter. Valid values are 'OnlyModules', 'OnlyVersionedModules', or 'All'."
+            }
         }
     }
 }
