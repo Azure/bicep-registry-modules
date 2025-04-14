@@ -372,18 +372,13 @@ function Get-VersionedParentPathList {
 
     )
 
-    Write-Verbose ("Path: $Path") -Verbose
     $Item = Get-Item -Path $Path
-    if ($Item.FullName -ne $RootPath) {
 
+    if ($Item.FullName -ne $RootPath) {
         Get-VersionedParentPathList -Path $Item.Parent.FullName -RootPath $RootPath -Verbose
 
         if (Test-Path (Join-Path -Path $Item.FullName 'version.json')) {
-            # Write-Verbose ("Found version.json in: $($Item.FullName)") -Verbose
             $Item.FullName
-
         }
     }
-
-    # return $versionedParentPathList
 }
