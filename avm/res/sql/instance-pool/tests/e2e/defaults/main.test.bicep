@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
 metadata name = 'Using only defaults'
-metadata description = 'This instance deploys the module with the minimum set of required parameters.'
+metadata description = 'Purpouse. This instance deploys the module with the minimum set of required parameters.'
 
 // ========== //
 // Parameters //
@@ -16,6 +16,9 @@ param serviceShort string = 'sip'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = 'bep'
+
+@description('Telemetry. Enable telemetry for this module.')
+param enableTelemetry bool = true
 
 // Note, we set the location of the NetworkWatcherRG to avoid conflicts with the already existing NetworkWatcherRG
 #disable-next-line no-hardcoded-location
@@ -57,5 +60,6 @@ module testDeployment '../../../main.bicep' = {
     name: nestedDependencies.outputs.sqlInstancePoolName
     location: enforcedLocation
     subnetResourceId: nestedDependencies.outputs.subnetId
+    enableTelemetry: enableTelemetry
   }
 }

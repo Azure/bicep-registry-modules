@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
 metadata name = 'WAF-aligned'
-metadata description = 'This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.'
+metadata description = 'Purpouse. This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.'
 
 // ========== //
 // Parameters //
@@ -16,6 +16,9 @@ param serviceShort string = 'sipwaf'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = 'bep'
+
+@description('Telemetry. Enable telemetry for this module.')
+param enableTelemetry bool = true
 
 // Note, we set the location of the NetworkWatcherRG to avoid conflicts with the already existing NetworkWatcherRG
 #disable-next-line no-hardcoded-location
@@ -58,5 +61,6 @@ module testDeployment '../../../main.bicep' = {
     location: enforcedLocation
     skuName: 'GP_Gen8IM'
     subnetResourceId: nestedDependencies.outputs.subnetId
+    enableTelemetry: enableTelemetry
   }
 }
