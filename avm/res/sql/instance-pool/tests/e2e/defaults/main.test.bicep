@@ -7,15 +7,15 @@ metadata description = 'Purpouse. This instance deploys the module with the mini
 // Parameters //
 // ========== //
 
-@description('Optional. The name of the resource group to deploy for testing purposes.')
+@description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints. It must end with min')
+param serviceShort string = 'sipmin'
+
+@description('Required. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
+param namePrefix string = '#_bep_#'
+
+@description('Required. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-sql.instancepool-${serviceShort}-rg'
-
-@description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'sip'
-
-@description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
-param namePrefix string = 'bep'
 
 @description('Required. Enable telemetry for this module.')
 param enableTelemetry bool = true
