@@ -6,10 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "12985611047239358231"
+      "templateHash": "6804460497848344499"
     },
     "name": "SQL Server Instance Pool",
-    "description": "This module deploys an Azure SQL Server Instance Pool."
+    "description": "Purpose. This module deploys an Azure SQL Server Instance Pool."
   },
   "parameters": {
     "name": {
@@ -99,7 +99,7 @@
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Enable/Disable usage telemetry for module."
+        "description": "Optional. Enable Disable usage telemetry for module."
       }
     },
     "capacity": {

@@ -1,6 +1,6 @@
 # SQL Server Instance Pool `[Microsoft.Sql/instancePools]`
 
-This module deploys an Azure SQL Server Instance Pool.
+Purpose. This module deploys an Azure SQL Server Instance Pool.
 
 ## Navigation
 
@@ -29,7 +29,7 @@ The following section provides usage examples for the module, which were used to
 
 ### Example 1: _Using only defaults_
 
-This instance deploys the module with the minimum set of required parameters.
+Purpouse. This instance deploys the module with the minimum set of required parameters.
 
 
 <details>
@@ -44,6 +44,7 @@ module instancePool 'br/public:avm/res/sql/instance-pool:<version>' = {
     name: '<name>'
     subnetResourceId: '<subnetResourceId>'
     // Non-required parameters
+    enableTelemetry: '<enableTelemetry>'
     location: '<location>'
   }
 }
@@ -69,6 +70,9 @@ module instancePool 'br/public:avm/res/sql/instance-pool:<version>' = {
       "value": "<subnetResourceId>"
     },
     // Non-required parameters
+    "enableTelemetry": {
+      "value": "<enableTelemetry>"
+    },
     "location": {
       "value": "<location>"
     }
@@ -90,6 +94,7 @@ using 'br/public:avm/res/sql/instance-pool:<version>'
 param name = '<name>'
 param subnetResourceId = '<subnetResourceId>'
 // Non-required parameters
+param enableTelemetry = '<enableTelemetry>'
 param location = '<location>'
 ```
 
@@ -98,7 +103,7 @@ param location = '<location>'
 
 ### Example 2: _WAF-aligned_
 
-This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
+Purpouse. This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
 
 
 <details>
@@ -113,6 +118,7 @@ module instancePool 'br/public:avm/res/sql/instance-pool:<version>' = {
     name: '<name>'
     subnetResourceId: '<subnetResourceId>'
     // Non-required parameters
+    enableTelemetry: '<enableTelemetry>'
     location: '<location>'
     skuName: 'GP_Gen8IM'
   }
@@ -139,6 +145,9 @@ module instancePool 'br/public:avm/res/sql/instance-pool:<version>' = {
       "value": "<subnetResourceId>"
     },
     // Non-required parameters
+    "enableTelemetry": {
+      "value": "<enableTelemetry>"
+    },
     "location": {
       "value": "<location>"
     },
@@ -163,6 +172,7 @@ using 'br/public:avm/res/sql/instance-pool:<version>'
 param name = '<name>'
 param subnetResourceId = '<subnetResourceId>'
 // Non-required parameters
+param enableTelemetry = '<enableTelemetry>'
 param location = '<location>'
 param skuName = 'GP_Gen8IM'
 ```
@@ -184,7 +194,7 @@ param skuName = 'GP_Gen8IM'
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`capacity`](#parameter-capacity) | int | Capacity of the particular SKU. |
-| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable Disable usage telemetry for module. |
 | [`licenseType`](#parameter-licensetype) | string | The license type to apply for this database. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`size`](#parameter-size) | string | Size of the particular SKU |
@@ -218,7 +228,7 @@ Capacity of the particular SKU.
 
 ### Parameter: `enableTelemetry`
 
-Enable/Disable usage telemetry for module.
+Enable Disable usage telemetry for module.
 
 - Required: No
 - Type: bool

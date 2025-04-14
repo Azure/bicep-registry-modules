@@ -96,14 +96,14 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-@description('Output. The ID of the SQL instance pool.')
+@description('The ID of the SQL instance pool.')
 output resourceId string = instancePool.id
 
-@description('Output. The name of the SQL instance pool.')
+@description('The name of the SQL instance pool.')
 output name string = instancePool.name
 
-@description('Output. The location of the SQL instance pool.')
+@description('The location of the SQL instance pool.')
 output instancePoolLocation string = instancePool.location
 
-@description('Output. The resource group name of the SQL instance pool.')
+@description('The resource group name of the SQL instance pool.')
 output resourceGroupName string = resourceGroup().name

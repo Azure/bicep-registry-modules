@@ -17,7 +17,7 @@ param serviceShort string = 'sip'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = 'bep'
 
-@description('Telemetry. Enable telemetry for this module.')
+@description('Required. Enable telemetry for this module.')
 param enableTelemetry bool = true
 
 // Note, we set the location of the NetworkWatcherRG to avoid conflicts with the already existing NetworkWatcherRG
