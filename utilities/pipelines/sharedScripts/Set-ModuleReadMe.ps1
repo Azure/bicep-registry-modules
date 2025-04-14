@@ -2120,9 +2120,8 @@ function Set-ModuleReadMe {
 
     # Multi-scope modules are modules having the same resource type but can be deployed to multiple scopes
     # E.g., authorization/role-assignment/scope-rg vs authorization/role-assignment/scope-sub
-    $scopedModuleSeparator = '/scope-'
-    if ($fullModuleIdentifier.Contains($scopedModuleSeparator)) {
-        $fullModuleIdentifier = $fullModuleIdentifier.split($scopedModuleSeparator)[0]
+    if ($fullModuleIdentifier -match '\/scope-(rg|sub|mg)') {
+        $fullModuleIdentifier = ($fullModuleIdentifier -split $scopedModuleSeparator)[0]
     }
 
     # ===================== #

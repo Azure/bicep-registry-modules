@@ -85,13 +85,14 @@ Describe 'File/folder tests' -Tag 'Modules' {
                     isTopLevelModule                   = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
                     childModuleAllowedList             = $childModuleAllowedList
                     childModuleAllowedListRelativePath = $childModuleAllowedListRelativePath
+                    versionFileExists                  = Test-Path (Join-Path $moduleFolderPath 'version.json')
                     isMultiScopeModule                 = (Split-Path $moduleFolderPath -Leaf) -in @('scope-mg', 'scope-sub', 'scope-rg')
                     hasMultiScopeChildModules          = ((Get-ChildItem -Directory -Path $moduleFolderPath) | Where-Object { $_.Name -in @('scope-mg', 'scope-sub', 'scope-rg') }).Count -gt 0
                 }
             }
         }
 
-        It '[<moduleFolderName>] Module should contain a [` main.bicep `] file.' -TestCases $moduleFolderTestCases {
+        It '[<moduleFolderName>] Module must contain a [` main.bicep `] file.' -TestCases $moduleFolderTestCases {
 
             param( [string] $moduleFolderPath )
 
@@ -99,7 +100,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
             $hasBicep | Should -Be $true
         }
 
-        It '[<moduleFolderName>] Module should contain a [` main.json `] file.' -TestCases $moduleFolderTestCases {
+        It '[<moduleFolderName>] Module must contain a [` main.json `] file.' -TestCases $moduleFolderTestCases {
 
             param( [string] $moduleFolderPath )
 
@@ -107,7 +108,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
             $hasARM | Should -Be $true
         }
 
-        It '[<moduleFolderName>] Module should contain a [` README.md `] file.' -TestCases $moduleFolderTestCases {
+        It '[<moduleFolderName>] Module must contain a [` README.md `] file.' -TestCases $moduleFolderTestCases {
 
             param(
                 [string] $moduleFolderPath
@@ -121,17 +122,33 @@ Describe 'File/folder tests' -Tag 'Modules' {
             $file.Name | Should -BeExactly 'README.md'
         }
 
-        It '[<moduleFolderName>] A [` version.json `] file must only have a major & minor version.' -TestCases ($moduleFolderTestCases | Where-Object { Test-Path (Join-Path $_.moduleFolderPath 'version.json') }) {
+        It '[<moduleFolderName>] Top-Level module must contain a [` version.json `] file, unless multi-scope.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule -and -not $_.hasMultiScopeChildModules }) {
 
             param (
                 [string] $moduleFolderPath
             )
 
             $versionFilePath = Join-Path -Path $moduleFolderPath 'version.json'
-            if (-not (Test-Path $versionFilePath)) {
-                Set-ItResult -Skipped -Because "Version.json file in path [$versionFilePath] does not exist."
-                return
-            }
+            (Test-Path $versionFilePath) | Should -Be $true -Because 'every top-level module should have a version.json file, unless it''s a multi-scope module.'
+        }
+
+        It '[<moduleFolderName>] Mutli-scope top-level module must not contain a [` version.json `] file.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule -and $_.hasMultiScopeChildModules }) {
+
+            param (
+                [string] $moduleFolderPath
+            )
+
+            $versionFilePath = Join-Path -Path $moduleFolderPath 'version.json'
+            (Test-Path $versionFilePath) | Should -Be $false -Because 'multi-scope top-level modules must not contain a version.json file.'
+        }
+
+        It '[<moduleFolderName>] A [` version.json `] file must only have a major & minor version.' -TestCases ($moduleFolderTestCases | Where-Object { $_.versionFileExists }) {
+
+            param (
+                [string] $moduleFolderPath
+            )
+
+            $versionFilePath = Join-Path -Path $moduleFolderPath 'version.json'
             $versionFileContent = Get-Content $versionFilePath | ConvertFrom-Json -AsHashtable
             $versionFileContent.version | Should -Match '^[0-9]+\.[0-9]+$' -Because 'only the major.minor version may be specified in the version.json file.'
         }
@@ -536,15 +553,17 @@ Describe 'Module tests' -Tag 'Module' {
 
                 # Test file setup
                 $moduleFolderTestCases += @{
-                    moduleFolderName       = $resourceTypeIdentifier
-                    templateFileContent    = $templateFileContent
-                    templateFilePath       = $templateFilePath
-                    templateFileParameters = Resolve-ReadMeParameterList -TemplateFileContent $templateFileContent
-                    readMeFilePath         = Join-Path (Split-Path $templateFilePath) 'README.md'
-                    isTopLevelModule       = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
-                    moduleType             = $moduleType
-                    versionFileExists      = Test-Path (Join-Path -Path $moduleFolderPath 'version.json')
-                    isMultiScopeModule     = (Split-Path $moduleFolderPath -Leaf) -in @('scope-mg', 'scope-sub', 'scope-rg')
+                    moduleFolderName          = $resourceTypeIdentifier
+                    templateFileContent       = $templateFileContent
+                    templateFilePath          = $templateFilePath
+                    templateFileParameters    = Resolve-ReadMeParameterList -TemplateFileContent $templateFileContent
+                    readMeFilePath            = Join-Path (Split-Path $templateFilePath) 'README.md'
+                    isTopLevelModule          = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
+                    moduleType                = $moduleType
+                    versionFileExists         = Test-Path (Join-Path -Path $moduleFolderPath 'version.json')
+                    isMultiScopeModule        = (Split-Path $moduleFolderPath -Leaf) -in @('scope-mg', 'scope-sub', 'scope-rg')
+                    hasMultiScopeChildModules = ((Get-ChildItem -Directory -Path $moduleFolderPath) | Where-Object { $_.Name -in @('scope-mg', 'scope-sub', 'scope-rg') }).Count -gt 0
+
                 }
             }
         }
@@ -926,7 +945,7 @@ Describe 'Module tests' -Tag 'Module' {
                 $incorrectVariables | Should -BeNullOrEmpty
             }
 
-            It '[<moduleFolderName>] Variable "enableReferencedModulesTelemetry" should exist and set to "false" if module references other modules with dedicated telemetry.' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleType -eq 'res' }) {
+            It '[<moduleFolderName>] Variable "enableReferencedModulesTelemetry" should exist and set to "false" if module references other modules with dedicated telemetry (unless multi-scoped).' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleType -eq 'res' -and -not $_.hasMultiScopeChildModules }) {
 
                 param(
                     [hashtable] $templateFileContent
@@ -1078,7 +1097,7 @@ Describe 'Module tests' -Tag 'Module' {
                 $telemetryDeploymentName | Should -Match "$expectedTelemetryIdentifier"
             }
 
-            It '[<moduleFolderName>] For resource modules, telemetry should be disabled for referenced modules with dedicated telemetry.' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleType -eq 'res' }) {
+            It '[<moduleFolderName>] For resource modules, telemetry should be disabled for referenced modules with dedicated telemetry (unless multi-scoped).' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleType -eq 'res' -and -not $_.hasMultiScopeChildModules }) {
 
                 param(
                     [hashtable] $templateFileContent,
@@ -1109,7 +1128,7 @@ Describe 'Module tests' -Tag 'Module' {
                 $incorrectCrossReferences | Should -BeNullOrEmpty -Because ('cross reference modules must be referenced with the enableTelemetry parameter set to the "enableReferencedModulesTelemetry" variable. Found incorrect items: [{0}].' -f ($incorrectCrossReferences -join ', '))
             }
 
-            It '[<moduleFolderName>] For non-resource modules, telemetry configuration should be passed to referenced modules with dedicated telemetry.' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleType -ne 'res' }) {
+            It '[<moduleFolderName>] For non-resource, or multi-scope modules, telemetry configuration should be passed to referenced modules with dedicated telemetry.' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleType -ne 'res' -or $_.hasMultiScopeChildModules }) {
 
                 param(
                     [hashtable] $templateFileContent,
