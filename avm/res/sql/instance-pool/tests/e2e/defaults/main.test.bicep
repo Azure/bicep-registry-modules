@@ -1,13 +1,13 @@
 targetScope = 'subscription'
 
 metadata name = 'Using only defaults'
-metadata description = 'Purpouse. This instance deploys the module with the minimum set of required parameters.'
+metadata description = 'Required. This instance deploys the module with the minimum set of required parameters.'
 
 // ========== //
 // Parameters //
 // ========== //
 
-@description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints. It must end with min')
+@description('Conditional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints. It must end with min')
 param serviceShort string = 'sipmin'
 
 @description('Required. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
@@ -17,7 +17,7 @@ param namePrefix string = '#_namePrefix_#'
 @maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-sql.instancepool-${serviceShort}-rg'
 
-@description('Optional. Enable/Disable usage telemetry for module.')
+@description('Conditional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 // Note, we set the location of the NetworkWatcherRG to avoid conflicts with the already existing NetworkWatcherRG
