@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "16153057753927113353"
+      "templateHash": "2715646121176899410"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -142,7 +142,7 @@
             "description": "Required. Name of the RBAC condition template."
           }
         },
-        "ExludededRoles": {
+        "ExcludedRoles": {
           "type": "array",
           "metadata": {
             "description": "Required. The list of roles that are not allowed to be assigned by the delegate."
@@ -1499,7 +1499,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.34.44.8038",
-              "templateHash": "16969123252740625755"
+              "templateHash": "18382732073254731113"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -1741,7 +1741,7 @@
                     "description": "Required. Name of the RBAC condition template."
                   }
                 },
-                "ExludededRoles": {
+                "ExcludedRoles": {
                   "type": "array",
                   "metadata": {
                     "description": "Required. The list of roles that are not allowed to be assigned by the delegate."
@@ -2273,7 +2273,7 @@
                   ],
                   "output": {
                     "type": "string",
-                    "value": "[format('((!(ActionMatches{{''Microsoft.Authorization/roleAssignments/write''}}) OR ( @Request[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAllValues:GuidNotEquals {{{0}}})) AND ((!(ActionMatches{{''Microsoft.Authorization/roleAssignments/delete''}}) OR (@Request[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAllValues:GuidNotEquals {{{1}}}))))', __bicep.joinArray(parameters('excludeRoles').ExludededRoles), __bicep.joinArray(parameters('excludeRoles').ExludededRoles))]"
+                    "value": "[format('((!(ActionMatches{{''Microsoft.Authorization/roleAssignments/write''}}) OR ( @Request[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAllValues:GuidNotEquals {{{0}}})) AND ((!(ActionMatches{{''Microsoft.Authorization/roleAssignments/delete''}}) OR (@Request[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAllValues:GuidNotEquals {{{1}}}))))', __bicep.joinArray(parameters('excludeRoles').ExcludedRoles), __bicep.joinArray(parameters('excludeRoles').ExcludedRoles))]"
                   },
                   "metadata": {
                     "description": "Generates the code for the \"Exclude Roles\" condition template.",
