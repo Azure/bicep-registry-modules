@@ -61,7 +61,7 @@ var roleDefinitionIdVar = builtInRoleNames[?roleDefinitionIdOrName] ?? (contains
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
-  name: '46d3xbcp.ptn.authorization-roleassignment-scope-rg.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
+  name: '46d3xbcp.ptn.authorization-roleassignment.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
