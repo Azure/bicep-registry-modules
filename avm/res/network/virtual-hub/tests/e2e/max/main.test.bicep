@@ -69,7 +69,8 @@ module testDeployment '../../../main.bicep' = [
               destinations: [
                 '10.150.0.0/24'
               ]
-              nextHop: nestedDependencies.outputs.virtualNetworkResourceId
+              //nextHop: '${resourceGroup.id}/providers/Microsoft.Network/virtualHubs/${namePrefix}-${serviceShort}/hubRouteTables/routeTable1'
+              nextHop: '${resourceGroup.id}/providers/Microsoft.Network/virtualHubs/${namePrefix}-${serviceShort}/connections/connection1'
               nextHopType: 'ResourceId'
             }
           ]
