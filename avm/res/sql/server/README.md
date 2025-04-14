@@ -1037,6 +1037,11 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         ]
         elasticPoolResourceId: '<elasticPoolResourceId>'
         licenseType: 'LicenseIncluded'
+        managedIdentities: {
+          userAssignedResourceIds: [
+            '<databaseIdentityResourceId>'
+          ]
+        }
         maxSizeBytes: 34359738368
         name: 'sqlsmaxdb-001'
         sku: {
@@ -1071,7 +1076,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
+        '<serverIdentityResourceId>'
       ]
     }
     primaryUserAssignedIdentityId: '<primaryUserAssignedIdentityId>'
@@ -1209,6 +1214,11 @@ module server 'br/public:avm/res/sql/server:<version>' = {
           ],
           "elasticPoolResourceId": "<elasticPoolResourceId>",
           "licenseType": "LicenseIncluded",
+          "managedIdentities": {
+            "userAssignedResourceIds": [
+              "<databaseIdentityResourceId>"
+            ]
+          },
           "maxSizeBytes": 34359738368,
           "name": "sqlsmaxdb-001",
           "sku": {
@@ -1253,7 +1263,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
       "value": {
         "systemAssigned": true,
         "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
+          "<serverIdentityResourceId>"
         ]
       }
     },
@@ -1397,6 +1407,11 @@ param databases = [
     ]
     elasticPoolResourceId: '<elasticPoolResourceId>'
     licenseType: 'LicenseIncluded'
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<databaseIdentityResourceId>'
+      ]
+    }
     maxSizeBytes: 34359738368
     name: 'sqlsmaxdb-001'
     sku: {
@@ -1431,7 +1446,7 @@ param lock = {
 param managedIdentities = {
   systemAssigned: true
   userAssignedResourceIds: [
-    '<managedIdentityResourceId>'
+    '<serverIdentityResourceId>'
   ]
 }
 param primaryUserAssignedIdentityId = '<primaryUserAssignedIdentityId>'
@@ -2604,6 +2619,7 @@ The databases to create in the server.
 | [`licenseType`](#parameter-databaseslicensetype) | string | The license type to apply for this database. |
 | [`longTermRetentionBackupResourceId`](#parameter-databaseslongtermretentionbackupresourceid) | string | The resource identifier of the long term retention backup associated with create operation of this database. |
 | [`maintenanceConfigurationId`](#parameter-databasesmaintenanceconfigurationid) | string | Maintenance configuration id assigned to the database. This configuration defines the period when the maintenance updates will occur. |
+| [`managedIdentities`](#parameter-databasesmanagedidentities) | object | The managed identities for the database. |
 | [`manualCutover`](#parameter-databasesmanualcutover) | bool | Whether or not customer controlled manual cutover needs to be done during Update Database operation to Hyperscale tier. |
 | [`maxSizeBytes`](#parameter-databasesmaxsizebytes) | int | The max size of the database expressed in bytes. |
 | [`minCapacity`](#parameter-databasesmincapacity) | string | Minimal capacity that database will always have allocated, if not paused. |
@@ -3015,6 +3031,26 @@ Maintenance configuration id assigned to the database. This configuration define
 
 - Required: No
 - Type: string
+
+### Parameter: `databases.managedIdentities`
+
+The managed identities for the database.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`userAssignedResourceIds`](#parameter-databasesmanagedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
+
+### Parameter: `databases.managedIdentities.userAssignedResourceIds`
+
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
+
+- Required: No
+- Type: array
 
 ### Parameter: `databases.manualCutover`
 
