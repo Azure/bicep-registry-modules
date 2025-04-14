@@ -11,7 +11,7 @@ metadata description = 'Purpouse. This instance deploys the module with the mini
 param serviceShort string = 'sipmin'
 
 @description('Required. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
-param namePrefix string = '#_bep_#'
+param namePrefix string = '#_namePrefix_#'
 
 @description('Required. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)

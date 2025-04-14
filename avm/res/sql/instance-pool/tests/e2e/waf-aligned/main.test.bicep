@@ -11,7 +11,7 @@ metadata description = 'Purpouse. This instance deploys the module in alignment 
 param serviceShort string = 'sipwaf'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
-param namePrefix string = '#_bep_#'
+param namePrefix string = '#_namePrefix_#'
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
