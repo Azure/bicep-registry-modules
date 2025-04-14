@@ -50,7 +50,7 @@ param tier string = 'GeneralPurpose'
 @description('Optional. The SKU name for the instance pool.')
 param skuName string = 'GP_Gen5'
 
-@description('Optional. Enable/Disable usage telemetry for module.')
+@description('Optional. Enable Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 @description('Optional. Capacity of the particular SKU.')
@@ -96,14 +96,14 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-@description('The ID of the SQL instance pool.')
+@description('Output. The ID of the SQL instance pool.')
 output resourceId string = instancePool.id
 
-@description('The name of the SQL instance pool.')
+@description('Output. The name of the SQL instance pool.')
 output name string = instancePool.name
 
-@description('The location of the SQL instance pool.')
+@description('Output. The location of the SQL instance pool.')
 output instancePoolLocation string = instancePool.location
 
-@description('The resource group name of the SQL instance pool.')
+@description('Output. The resource group name of the SQL instance pool.')
 output resourceGroupName string = resourceGroup().name
