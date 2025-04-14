@@ -370,16 +370,10 @@ Get all parent folders of the 'immutability-policy' folder up to 'res'. Returns
 - <repoPath>\avm\res\storage\storage-account\blob-service\container
 
 .EXAMPLE
-Get-ParentFolderPathList -Path '.\avm\res\storage\storage-account\blob-service\container\immutability-policy' -RootPath 'C:/bicep-registry-modules/avm/res' -Filter 'OnlyVersionedModules'
+Get-ParentFolderPathList -Path 'C:/bicep-registry-modules/avm/res/storage/storage-account/blob-service/container/immutability-policy' -RootPath 'C:/bicep-registry-modules/avm/res' -Filter 'OnlyVersionedModules'
 
 Get all versioned parent module folders of the 'immutability-policy' folder up to 'res'. Returns, e.g.,
 - <repoPath>\avm\res\storage\storage-account
-#>
-
-.EXAMPLE
-Get-VersionedParentPathList -Path 'C:/bicep-registry-modules/avm/res/storage/storage-account/blob-service/container' -RootPath 'C:/bicep-registry-modules/avm/res'
-
-...
 #>
 function Get-ParentFolderPathList {
     param
