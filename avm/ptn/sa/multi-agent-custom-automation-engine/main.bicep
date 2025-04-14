@@ -57,7 +57,7 @@ module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0
 }
 
 // ========== Application Insights ========== //
-module avmInsightsComponent 'br/public:avm/res/insights/component:0.6.0' = {
+module applicationInsights 'br/public:avm/res/insights/component:0.6.0' = {
   name: 'avm.ptn.sa.macae.insights-component'
   params: {
     name: '${solutionPrefix}appi'
@@ -73,144 +73,7 @@ module avmInsightsComponent 'br/public:avm/res/insights/component:0.6.0' = {
   }
 }
 
-// ==========Backend Container App Service ========== //
-module containerApp 'br/public:avm/res/app/container-app:0.15.0' = {
-  name: 'avm.ptn.sa.macae.container-app'
-  params: {
-    tags: tags
-    // Required parameters
-    containers: [
-      {
-        //TODO: Make image parameterized for the registry name and the appversion
-        image: 'biabcontainerreg.azurecr.io/macaebackend:latest'
-        name: 'backend'
-        //TODO: Figure out if rules are needed
-        // rules: [
-        //   {
-        //     name: 'http-scaler'
-        //     http: {
-        //       concurrentRequests: '100'
-        //     }
-        //   }
-        // ]
-        resources: {
-          //TODO: Make cpu and memory parameterized
-          cpu: '2.0'
-          memory: '4.0Gi'
-        }
-        env: [
-          {
-            name: 'COSMOSDB_ENDPOINT'
-            value: avmCosmosDB.outputs.endpoint
-          }
-          {
-            name: 'COSMOSDB_DATABASE'
-            value: 'cosmos::autogenDb.name'
-          }
-          {
-            name: 'COSMOSDB_CONTAINER'
-            value: 'cosmos::autogenDb::memoryContainer.name'
-          }
-          {
-            name: 'AZURE_OPENAI_ENDPOINT'
-            value: avmCognitiveServicesAccounts.outputs.endpoint
-          }
-          {
-            name: 'AZURE_OPENAI_DEPLOYMENT_NAME'
-            value: avmCognitiveServicesAccounts.outputs.name
-          }
-          {
-            name: 'AZURE_OPENAI_API_VERSION'
-            value: '2024-08-06'
-          }
-          {
-            name: 'FRONTEND_SITE_NAME'
-            //TODO: Add frontend site name
-            value: 'TODO: ADD NAME'
-          }
-          {
-            name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
-            value: avmInsightsComponent.outputs.connectionString
-          }
-        ]
-      }
-    ]
-    ingressTargetPort: 8000
-    ingressExternal: true
-    activeRevisionsMode: 'Single'
-    corsPolicy: {
-      allowedOrigins: [
-        //TODO: ADD FRONTEND URL http and https 'https://${format(uniqueNameFormat, 'frontend')}.azurewebsites.net'
-        'https://frontend.azurewebsites.net'
-        'http://frontend.azurewebsites.net'
-      ]
-    }
-    environmentResourceId: '<environmentResourceId>'
-    name: 'acamin001'
-    scaleSettings: {
-      //TODO: Make maxReplicas and minReplicas parameterized
-      maxReplicas: 1
-      minReplicas: 1
-    }
-  }
-}
-
-// ========== Frontend server farm ========== //
-module serverfarm 'br/public:avm/res/web/serverfarm:0.4.1' = {
-  name: 'avm.ptn.sa.macae.frontend-server-farm'
-  params: {
-    tags: tags
-    location: solutionLocation
-    name: 'wsfmin001'
-    skuName: 'P1v2'
-    skuCapacity: 1
-    reserved: true
-    kind: 'linux'
-  }
-}
-
-// ==========Frontend Container App Service ========== //
-module frontendAppService 'br/public:avm/res/web/site:0.15.1' = {
-  name: 'avm.ptn.sa.macae.frontend-web-app'
-  params: {
-    tags: tags
-    // Required parameters
-    kind: 'app,linux,container'
-    name: 'frontend'
-    //TODO: Add server farm resource id
-    serverFarmResourceId: '<serverFarmResourceId>'
-    siteConfig: {
-      reserved: true
-      lunixFxVersion: 'DOCKER|biabcontainerreg.azurecr.io/macaefrontend:latest'
-      appSettings: [
-        {
-          name: 'DOCKER_REGISTRY_SERVER_URL'
-          //TODO: Add docker registry url
-          value: 'dockerRegistryUrl'
-        }
-        {
-          name: 'WEBSITES_PORT'
-          value: '3000'
-        }
-        {
-          name: 'WEBSITES_CONTAINER_START_TIME_LIMIT' // Add startup time limit
-          value: '1800' // 30 minutes, adjust as needed
-        }
-        {
-          name: 'BACKEND_API_URL'
-          value: 'https://${containerApp.outputs.fqdn}'
-        }
-      ]
-    }
-    managedIdentities: {
-      userAssignedResourceIds: [
-        userAssignedIdentity.outputs.resourceId
-      ]
-    }
-  }
-}
 // ========== User assigned identity ========== //
-
 module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.1' = {
   name: 'avm.ptn.sa.macae.managed-identity-assigned-identity'
   params: {
@@ -223,7 +86,9 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
 
 // AI Foundry: AI Services
 // NOTE: Required version 'Microsoft.CognitiveServices/accounts@2024-04-01-preview' not available in AVM
-module avmCognitiveServicesAccounts 'br/public:avm/res/cognitive-services/account:0.10.2' = {
+var aiServicesDeploymentGptName = 'gpt-4o'
+var aiServicesDeploymentGptVersion = '2024-08-06'
+module aiServices 'br/public:avm/res/cognitive-services/account:0.10.2' = {
   name: 'avm.ptn.sa.macae.cognitive-services-account'
   params: {
     name: '${solutionPrefix}aisv'
@@ -232,7 +97,7 @@ module avmCognitiveServicesAccounts 'br/public:avm/res/cognitive-services/accoun
     enableTelemetry: enableTelemetry
     diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
     sku: 'S0'
-    kind: 'AIServices'
+    kind: 'OpenAI'
     disableLocalAuth: true
     customSubDomainName: '${solutionPrefix}aisv'
     apiProperties: {
@@ -248,11 +113,11 @@ module avmCognitiveServicesAccounts 'br/public:avm/res/cognitive-services/accoun
     ]
     deployments: [
       {
-        name: 'gpt-4o'
+        name: aiServicesDeploymentGptName
         model: {
           format: 'OpenAI'
-          name: 'gpt-4o'
-          version: '2024-08-06'
+          name: aiServicesDeploymentGptName
+          version: aiServicesDeploymentGptVersion
         }
         sku: {
           name: 'GlobalStandard'
@@ -263,14 +128,38 @@ module avmCognitiveServicesAccounts 'br/public:avm/res/cognitive-services/accoun
   }
 }
 
+var cosmosDbDatabaseName = 'autogen'
+var cosmosDbDatabaseMemoryContainerName = 'autogen'
 // ========== Cosmos DB ========== //
-module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.12.0' = {
+module cosmosDb 'br/public:avm/res/document-db/database-account:0.12.0' = {
   name: 'avm.ptn.sa.macae.cosmos-db'
   params: {
     // Required parameters
-    name: 'analytical'
+    name: '${solutionPrefix}csdb'
+    tags: tags
+    location: solutionLocation
+    enableTelemetry: enableTelemetry
+    diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
     databaseAccountOfferType: 'Standard'
     enableFreeTier: false
+    networkRestrictions: {
+      publicNetworkAccess: 'Enabled'
+    }
+    sqlDatabases: [
+      {
+        name: cosmosDbDatabaseName
+        containers: [
+          {
+            name: cosmosDbDatabaseMemoryContainerName
+            paths: [
+              '/session_id'
+            ]
+            kind: 'Hash'
+            version: 2
+          }
+        ]
+      }
+    ]
     locations: [
       {
         locationName: solutionLocation
@@ -280,9 +169,156 @@ module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.12.0' = {
     capabilitiesToAdd: [
       'EnableServerless'
     ]
-    lock: {
-      //TODO: Unsure is this is the same as the "kind" property in the original template
-      name: 'GlobalDocumentDB'
+    roleAssignments: [
+      {
+        principalId: userAssignedIdentity.outputs.principalId
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Contributor'
+      }
+    ]
+  }
+}
+
+// ==========Backend Container App Environment ========== //
+module containerAppEnvironment 'br/public:avm/res/app/managed-environment:0.10.2' = {
+  name: 'avm.ptn.sa.macae.container-app-environment'
+  params: {
+    name: '${solutionPrefix}cenv'
+    tags: tags
+    location: solutionLocation
+    enableTelemetry: enableTelemetry
+    logAnalyticsWorkspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
+    appInsightsConnectionString: applicationInsights.outputs.connectionString
+    publicNetworkAccess: 'Enabled' //TODO: block and connect to vnet
+    zoneRedundant: false //TODO: make it zone redundant for waf aligned
+  }
+}
+resource aspireDashboard 'Microsoft.App/managedEnvironments/dotNetComponents@2024-10-02-preview' = {
+  name: '${solutionPrefix}cenv/aspire-dashboard'
+  properties: {
+    componentType: 'AspireDashboard'
+  }
+  dependsOn: [containerAppEnvironment]
+}
+
+// ==========Backend Container App Service ========== //
+module containerApp 'br/public:avm/res/app/container-app:0.14.2' = {
+  name: 'avm.ptn.sa.macae.container-app'
+  params: {
+    name: '${solutionPrefix}capp'
+    tags: tags
+    location: solutionLocation
+    enableTelemetry: enableTelemetry
+    environmentResourceId: containerAppEnvironment.outputs.resourceId
+    managedIdentities: { userAssignedResourceIds: [userAssignedIdentity.outputs.resourceId] }
+    ingressTargetPort: 8000
+    ingressExternal: true
+    activeRevisionsMode: 'Single'
+    corsPolicy: {
+      allowedOrigins: [
+        'https://${webSiteName}.azurewebsites.net'
+        'http://${webSiteName}.azurewebsites.net'
+      ]
+    }
+    scaleSettings: {
+      //TODO: Make maxReplicas and minReplicas parameterized
+      maxReplicas: 1
+      minReplicas: 1
+      rules: [
+        {
+          name: 'http-scaler'
+          http: {
+            metadata: {
+              concurrentRequests: '100'
+            }
+          }
+        }
+      ]
+    }
+    containers: [
+      {
+        name: 'backend'
+        //TODO: Make image parameterized for the registry name and the appversion
+        image: 'biabcontainerreg.azurecr.io/macaebackend:latest'
+        resources: {
+          //TODO: Make cpu and memory parameterized
+          cpu: '2.0'
+          memory: '4.0Gi'
+        }
+        env: [
+          {
+            name: 'COSMOSDB_ENDPOINT'
+            value: cosmosDb.outputs.endpoint
+          }
+          {
+            name: 'COSMOSDB_DATABASE'
+            value: cosmosDbDatabaseName
+          }
+          {
+            name: 'COSMOSDB_CONTAINER'
+            value: cosmosDbDatabaseMemoryContainerName
+          }
+          {
+            name: 'AZURE_OPENAI_ENDPOINT'
+            value: aiServices.outputs.endpoint
+          }
+          {
+            name: 'AZURE_OPENAI_DEPLOYMENT_NAME'
+            value: aiServicesDeploymentGptName
+          }
+          {
+            name: 'AZURE_OPENAI_API_VERSION'
+            value: aiServicesDeploymentGptVersion
+          }
+          {
+            name: 'FRONTEND_SITE_NAME'
+            value: 'https://${webSiteName}.azurewebsites.net'
+          }
+          {
+            name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
+            value: applicationInsights.outputs.connectionString
+          }
+        ]
+      }
+    ]
+  }
+}
+
+// ========== Frontend server farm ========== //
+module webServerfarm 'br/public:avm/res/web/serverfarm:0.4.1' = {
+  name: 'avm.ptn.sa.macae.web-server-farm'
+  params: {
+    tags: tags
+    location: solutionLocation
+    name: '${solutionPrefix}sfrm'
+    skuName: 'P1v2'
+    skuCapacity: 1
+    reserved: true
+    kind: 'linux'
+    zoneRedundant: false //TODO: make it zone redundant for waf aligned
+  }
+}
+// ========== Frontend web site ========== //
+var webSiteName = '${solutionPrefix}wapp'
+module webSite 'br/public:avm/res/web/site:0.15.1' = {
+  name: 'avm.ptn.sa.macae.web-site'
+  params: {
+    tags: tags
+    kind: 'app,linux,container'
+    name: webSiteName
+    location: solutionLocation
+    serverFarmResourceId: webServerfarm.outputs.resourceId
+    managedIdentities: { userAssignedResourceIds: [userAssignedIdentity.outputs.resourceId] }
+    appInsightResourceId: applicationInsights.outputs.resourceId
+    siteConfig: {
+      linuxFxVersion: 'DOCKER|biabcontainerreg.azurecr.io/macaefrontend:latest'
+    }
+    appSettingsKeyValuePairs: {
+      SCM_DO_BUILD_DURING_DEPLOYMENT: 'true'
+      DOCKER_REGISTRY_SERVER_URL: 'https://biabcontainerreg.azurecr.io'
+      WEBSITES_PORT: '3000'
+      WEBSITES_CONTAINER_START_TIME_LIMIT: '1800' // 30 minutes, adjust as needed
+      BACKEND_API_URL: 'https://${containerApp.outputs.fqdn}'
     }
   }
 }
