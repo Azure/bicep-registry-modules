@@ -156,7 +156,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
 
             $pathExisting = Test-Path (Join-Path -Path $moduleFolderPath 'version.json')
             if ($pathExisting) {
-                $childModuleVersion = Get-ModuleTargetVersion -ModuleFolderPath $moduleFolderPath -Verbose $false
+                $childModuleVersion = Get-ModuleTargetVersion -ModuleFolderPath $moduleFolderPath
 
                 # If the child module version is not 0.1.0 and ends with .0 (i.e., if the child module version.json has been updated), check if the parent module version(s) have been updated
                 # Note: The first release of a child module does not require the parent module to be updated
@@ -171,7 +171,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
 
                     # Check if the parent module version(s) have been updated
                     foreach ($parentFolderPath in $versionedParentFolderPaths) {
-                        $moduleVersion = Get-ModuleTargetVersion -ModuleFolderPath $parentFolderPath -Verbose $false
+                        $moduleVersion = Get-ModuleTargetVersion -ModuleFolderPath $parentFolderPath
                         if (-not $moduleVersion.EndsWith('.0')) {
                             $incorrectVersionedParents += @() + $parentFolderPath
                         }
