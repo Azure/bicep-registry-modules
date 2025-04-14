@@ -398,16 +398,16 @@ function Get-ParentFolderPathList {
         switch ($Filter) {
             'OnlyModules' {
                 if (Test-Path (Join-Path -Path $Item.FullName 'main.json')) {
-                    $Item.FullName
+                    return $Item.FullName
                 }
             }
             'OnlyVersionedModules' {
                 if ((Test-Path (Join-Path -Path $Item.FullName 'version.json')) -and (Test-Path (Join-Path -Path $Item.FullName 'main.json'))) {
-                    $Item.FullName
+                    return $Item.FullName
                 }
             }
             'All' {
-                $Item.FullName
+                return $Item.FullName
             }
         }
     }

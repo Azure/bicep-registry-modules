@@ -1403,8 +1403,6 @@ Describe 'Module tests' -Tag 'Module' {
                 [string] $moduleType
             )
 
-            # $pathExisting = Test-Path (Join-Path -Path $moduleFolderPath 'version.json')
-            # if ($pathExisting) {
             $childModuleVersion = Get-ModuleTargetVersion -ModuleFolderPath $moduleFolderPath
 
             # If the child module version is not 0.1.0 and ends with .0 (i.e., if the child module version.json has been updated), check if the parent module version(s) have been updated
@@ -1424,12 +1422,10 @@ Describe 'Module tests' -Tag 'Module' {
                     if (-not $moduleVersion.EndsWith('.0')) {
                         $null, $null, $parentResourceTypeIdentifier = ($parentFolderPath -split "[\/|\\]avm[\/|\\]($moduleType)[\/|\\]") # 'avm/res|ptn|utl/<provider>/<resourceType>' would return 'avm', 'res|ptn|utl', '<provider>/<resourceType>'
                         $incorrectVersionedParents += $parentResourceTypeIdentifier
-                        # $incorrectVersionedParents += @() + $parentFolderPath
                     }
                 }
             }
             $incorrectVersionedParents | Should -BeNullOrEmpty -Because ('The child module version [{0}] has been increased, but the parent module version(s) [{1}] have not been updated.' -f $childModuleVersion, ($incorrectVersionedParents -join ', '))
-            # }
         }
     }
 }
