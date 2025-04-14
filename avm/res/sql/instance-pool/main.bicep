@@ -50,7 +50,7 @@ param tier string = 'GeneralPurpose'
 @description('Optional. The SKU name for the instance pool.')
 param skuName string = 'GP_Gen5'
 
-@description('Optional. Enable Disable usage telemetry for module.')
+@description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 @description('Optional. Capacity of the particular SKU.')

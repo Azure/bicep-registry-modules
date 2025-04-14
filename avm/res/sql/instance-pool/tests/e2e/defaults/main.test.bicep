@@ -17,7 +17,7 @@ param namePrefix string = '#_bep_#'
 @maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-sql.instancepool-${serviceShort}-rg'
 
-@description('Required. Enable telemetry for this module.')
+@description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 // Note, we set the location of the NetworkWatcherRG to avoid conflicts with the already existing NetworkWatcherRG

@@ -103,7 +103,7 @@ param location = '<location>'
 
 ### Example 2: _WAF-aligned_
 
-Purpouse. This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
+Purpouse. This instance deploys the module in alignment with the best-practices of the Well-Architected Framework. It must end with waf.
 
 
 <details>
@@ -194,7 +194,7 @@ param skuName = 'GP_Gen8IM'
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`capacity`](#parameter-capacity) | int | Capacity of the particular SKU. |
-| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable Disable usage telemetry for module. |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`licenseType`](#parameter-licensetype) | string | The license type to apply for this database. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`size`](#parameter-size) | string | Size of the particular SKU |
@@ -228,7 +228,7 @@ Capacity of the particular SKU.
 
 ### Parameter: `enableTelemetry`
 
-Enable Disable usage telemetry for module.
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
