@@ -168,6 +168,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
                     # Get the list of all versioned parent folders
                     $versionedParentFolderPaths = @()
                     $versionedParentFolderPaths = Get-VersionedParentPathList -Path (Split-Path $moduleFolderPath -Parent) -RootPath $rootPath -Verbose
+                    # $versionedParentFolderPaths = Get-VersionedParentPathList -Path $moduleFolderPath -RootPath $rootPath -Verbose
                     $incorrectVersionedParents = @()
 
                     # Check if the parent module version(s) have been updated
