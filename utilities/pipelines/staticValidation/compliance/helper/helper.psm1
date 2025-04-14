@@ -353,7 +353,7 @@ The function will return the list in the order from the root path to the given p
 .PARAMETER Path
 Mandatory. The path of the module to search for versioned parents.
 
-.PARAMETER RootPath
+.PARAMETER UpperBoundPath
 Optional. The root path to stop the search at. The function will not search above this path.
 
 .PARAMETER Filter
@@ -376,24 +376,24 @@ Get all versioned parent module folders of the 'immutability-policy' folder up t
 - <repoPath>\avm\res\storage\storage-account
 #>
 function Get-ParentFolderPathList {
+
     param
     (
         [Parameter(Mandatory = $true)]
         [string] $Path,
 
         [Parameter(Mandatory = $false)]
-        [string] $RootPath = $repoRootPath,
+        [string] $UpperBoundPath = $repoRootPath,
 
         [Parameter(Mandatory = $false)]
         [ValidateSet('OnlyModules', 'OnlyVersionedModules', 'All')]
         [string] $Filter = 'All'
-
     )
 
     $Item = Get-Item -Path $Path
 
-    if ($Item.FullName -ne $RootPath) {
-        Get-ParentFolderPathList -Path $Item.Parent.FullName -RootPath $RootPath -Filter $Filter -Verbose
+    if ($Item.FullName -ne $UpperBoundPath) {
+        Get-ParentFolderPathList -Path $Item.Parent.FullName -RootPath $UpperBoundPath -Filter $Filter -Verbose
 
         switch ($Filter) {
             'OnlyModules' {
@@ -402,7 +402,7 @@ function Get-ParentFolderPathList {
                 }
             }
             'OnlyVersionedModules' {
-                if (Test-Path (Join-Path -Path $Item.FullName 'version.json')) {
+                if (Test-Path (Join-Path -Path $Item.FullName 'version.json') -and Test-Path (Join-Path -Path $Item.FullName 'main.json')) {
                     $Item.FullName
                 }
             }

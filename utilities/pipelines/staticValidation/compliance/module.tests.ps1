@@ -1410,19 +1410,21 @@ Describe 'Module tests' -Tag 'Module' {
                 # If the child module version is not 0.1.0 and ends with .0 (i.e., if the child module version.json has been updated), check if the parent module version(s) have been updated
                 # Note: The first release of a child module does not require the parent module to be updated
                 if ($childModuleVersion -ne '0.1.0' -and $childModuleVersion.EndsWith('.0')) {
-                    $rootPath = Join-Path $repoRootPath 'avm' $moduleType
+                    $upperBoundPath = Join-Path $repoRootPath 'avm' $moduleType
                     $moduleDirectParentPath = Split-Path $moduleFolderPath -Parent
 
                     # Get the list of all versioned parent folders
                     $versionedParentFolderPaths = @()
-                    $versionedParentFolderPaths = Get-ParentFolderPathList -Path $moduleDirectParentPath -RootPath $rootPath -Filter 'OnlyVersionedModules' -Verbose
+                    $versionedParentFolderPaths = Get-ParentFolderPathList -Path $moduleDirectParentPath -UpperBoundPath $upperBoundPath -Filter 'OnlyVersionedModules' -Verbose
                     $incorrectVersionedParents = @()
 
                     # Check if the parent module version(s) have been updated
                     foreach ($parentFolderPath in $versionedParentFolderPaths) {
                         $moduleVersion = Get-ModuleTargetVersion -ModuleFolderPath $parentFolderPath
                         if (-not $moduleVersion.EndsWith('.0')) {
-                            $incorrectVersionedParents += @() + $parentFolderPath
+                            $null, $null, $parentResourceTypeIdentifier = ($parentFolderPath -split "[\/|\\]avm[\/|\\]($moduleType)[\/|\\]") # 'avm/res|ptn|utl/<provider>/<resourceType>' would return 'avm', 'res|ptn|utl', '<provider>/<resourceType>'
+                            $incorrectVersionedParents += $parentResourceTypeIdentifier
+                            # $incorrectVersionedParents += @() + $parentFolderPath
                         }
                     }
                 }
