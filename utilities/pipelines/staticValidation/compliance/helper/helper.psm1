@@ -402,7 +402,7 @@ function Get-ParentFolderPathList {
                 }
             }
             'OnlyVersionedModules' {
-                if (Test-Path (Join-Path -Path $Item.FullName 'version.json') -and Test-Path (Join-Path -Path $Item.FullName 'main.json')) {
+                if ((Test-Path (Join-Path -Path $Item.FullName 'version.json')) -and (Test-Path (Join-Path -Path $Item.FullName 'main.json'))) {
                     $Item.FullName
                 }
             }
