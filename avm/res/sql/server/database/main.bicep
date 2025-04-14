@@ -144,9 +144,26 @@ param backupShortTermRetentionPolicy shortTermBackupRetentionPolicyType?
 @description('Optional. The long term backup retention policy to create for the database.')
 param backupLongTermRetentionPolicy longTermBackupRetentionPolicyType?
 
+import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+@description('Optional. The managed identity definition for this resource.')
+param managedIdentities managedIdentityOnlyUserAssignedType?
+
 resource server 'Microsoft.Sql/servers@2023-08-01-preview' existing = {
   name: serverName
 }
+
+var formattedUserAssignedIdentities = reduce(
+  map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
+  {},
+  (cur, next) => union(cur, next)
+) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
+
+var identity = !empty(managedIdentities)
+  ? {
+      type: (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : null)
+      userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
+    }
+  : null
 
 resource database 'Microsoft.Sql/servers/databases@2023-08-01-preview' = {
   name: name
@@ -154,6 +171,7 @@ resource database 'Microsoft.Sql/servers/databases@2023-08-01-preview' = {
   location: location
   tags: tags
   sku: sku
+  identity: identity
   properties: {
     autoPauseDelay: autoPauseDelay
     availabilityZone: availabilityZone

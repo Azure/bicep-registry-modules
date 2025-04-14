@@ -14,7 +14,7 @@ param location string = resourceGroup().location
 @description('Required. The name of the server.')
 param name string
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { managedIdentityAllType, managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
@@ -285,6 +285,7 @@ module server_databases 'database/main.bicep' = [
 
       // properties from the databse object. If not provided, defaults specified in the child resource will be used
       name: database.name
+      managedIdentities: database.?managedIdentities
       sku: database.?sku
       autoPauseDelay: database.?autoPauseDelay
       availabilityZone: database.?availabilityZone
@@ -714,6 +715,9 @@ type databasePropertyType = {
 
   @description('Optional. Tags of the resource.')
   tags: object?
+
+  @description('Optional. The managed identities for the database.')
+  managedIdentities: managedIdentityOnlyUserAssignedType?
 
   @description('Optional. The database SKU.')
   sku: databaseSkuType?

@@ -1794,6 +1794,7 @@ Tags of the witness storage key.
 | `resourceGroupName` | string | The resource group of the cluster. |
 | `resourceId` | string | The ID of the cluster. |
 | `systemAssignedMIPrincipalId` | string | The managed identity of the cluster. |
+| `vSwitchName` | string | The name of the vSwitch. |
 
 ## Data Collection
 
