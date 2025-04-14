@@ -18,9 +18,9 @@ This module deploys a Network Application Gateway.
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Network/applicationGateways` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/applicationGateways) |
-| `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
+| `Microsoft.Network/applicationGateways` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/applicationGateways) |
+| `Microsoft.Network/privateEndpoints` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints) |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups) |
 
 ## Usage examples
 
@@ -48,6 +48,7 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
   name: 'applicationGatewayDeployment'
   params: {
     // Required parameters
+    firewallPolicyResourceId: '<firewallPolicyResourceId>'
     name: '<name>'
     // Non-required parameters
     backendAddressPools: [
@@ -144,6 +145,9 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "firewallPolicyResourceId": {
+      "value": "<firewallPolicyResourceId>"
+    },
     "name": {
       "value": "<name>"
     },
@@ -256,6 +260,7 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
 using 'br/public:avm/res/network/application-gateway:<version>'
 
 // Required parameters
+param firewallPolicyResourceId = '<firewallPolicyResourceId>'
 param name = '<name>'
 // Non-required parameters
 param backendAddressPools = [
@@ -354,6 +359,7 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
   name: 'applicationGatewayDeployment'
   params: {
     // Required parameters
+    firewallPolicyResourceId: '<firewallPolicyResourceId>'
     name: '<name>'
     // Non-required parameters
     backendAddressPools: [
@@ -769,33 +775,6 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    webApplicationFirewallConfiguration: {
-      disabledRuleGroups: [
-        {
-          ruleGroupName: 'Known-CVEs'
-        }
-        {
-          ruleGroupName: 'REQUEST-943-APPLICATION-ATTACK-SESSION-FIXATION'
-        }
-        {
-          ruleGroupName: 'REQUEST-941-APPLICATION-ATTACK-XSS'
-        }
-      ]
-      enabled: true
-      exclusions: [
-        {
-          matchVariable: 'RequestHeaderNames'
-          selector: 'hola'
-          selectorMatchOperator: 'StartsWith'
-        }
-      ]
-      fileUploadLimitInMb: 100
-      firewallMode: 'Detection'
-      maxRequestBodySizeInKb: 128
-      requestBodyCheck: true
-      ruleSetType: 'OWASP'
-      ruleSetVersion: '3.0'
-    }
     zones: [
       '1'
       '2'
@@ -818,6 +797,9 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "firewallPolicyResourceId": {
+      "value": "<firewallPolicyResourceId>"
+    },
     "name": {
       "value": "<name>"
     },
@@ -1279,35 +1261,6 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
         "Role": "DeploymentValidation"
       }
     },
-    "webApplicationFirewallConfiguration": {
-      "value": {
-        "disabledRuleGroups": [
-          {
-            "ruleGroupName": "Known-CVEs"
-          },
-          {
-            "ruleGroupName": "REQUEST-943-APPLICATION-ATTACK-SESSION-FIXATION"
-          },
-          {
-            "ruleGroupName": "REQUEST-941-APPLICATION-ATTACK-XSS"
-          }
-        ],
-        "enabled": true,
-        "exclusions": [
-          {
-            "matchVariable": "RequestHeaderNames",
-            "selector": "hola",
-            "selectorMatchOperator": "StartsWith"
-          }
-        ],
-        "fileUploadLimitInMb": 100,
-        "firewallMode": "Detection",
-        "maxRequestBodySizeInKb": 128,
-        "requestBodyCheck": true,
-        "ruleSetType": "OWASP",
-        "ruleSetVersion": "3.0"
-      }
-    },
     "zones": {
       "value": [
         "1",
@@ -1330,6 +1283,7 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
 using 'br/public:avm/res/network/application-gateway:<version>'
 
 // Required parameters
+param firewallPolicyResourceId = '<firewallPolicyResourceId>'
 param name = '<name>'
 // Non-required parameters
 param backendAddressPools = [
@@ -1745,33 +1699,6 @@ param tags = {
   'hidden-title': 'This is visible in the resource name'
   Role: 'DeploymentValidation'
 }
-param webApplicationFirewallConfiguration = {
-  disabledRuleGroups: [
-    {
-      ruleGroupName: 'Known-CVEs'
-    }
-    {
-      ruleGroupName: 'REQUEST-943-APPLICATION-ATTACK-SESSION-FIXATION'
-    }
-    {
-      ruleGroupName: 'REQUEST-941-APPLICATION-ATTACK-XSS'
-    }
-  ]
-  enabled: true
-  exclusions: [
-    {
-      matchVariable: 'RequestHeaderNames'
-      selector: 'hola'
-      selectorMatchOperator: 'StartsWith'
-    }
-  ]
-  fileUploadLimitInMb: 100
-  firewallMode: 'Detection'
-  maxRequestBodySizeInKb: 128
-  requestBodyCheck: true
-  ruleSetType: 'OWASP'
-  ruleSetVersion: '3.0'
-}
 param zones = [
   '1'
   '2'
@@ -1796,6 +1723,7 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
   name: 'applicationGatewayDeployment'
   params: {
     // Required parameters
+    firewallPolicyResourceId: '<firewallPolicyResourceId>'
     name: '<name>'
     // Non-required parameters
     backendAddressPools: [
@@ -1861,7 +1789,6 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
     ]
     enableHttp2: true
     enableTelemetry: '<enableTelemetry>'
-    firewallPolicyResourceId: '<firewallPolicyResourceId>'
     frontendIPConfigurations: [
       {
         name: 'private'
@@ -2210,6 +2137,9 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "firewallPolicyResourceId": {
+      "value": "<firewallPolicyResourceId>"
+    },
     "name": {
       "value": "<name>"
     },
@@ -2286,9 +2216,6 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
     },
     "enableTelemetry": {
       "value": "<enableTelemetry>"
-    },
-    "firewallPolicyResourceId": {
-      "value": "<firewallPolicyResourceId>"
     },
     "frontendIPConfigurations": {
       "value": [
@@ -2668,6 +2595,7 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
 using 'br/public:avm/res/network/application-gateway:<version>'
 
 // Required parameters
+param firewallPolicyResourceId = '<firewallPolicyResourceId>'
 param name = '<name>'
 // Non-required parameters
 param backendAddressPools = [
@@ -2733,7 +2661,6 @@ param diagnosticSettings = [
 ]
 enableHttp2: true
 param enableTelemetry = '<enableTelemetry>'
-param firewallPolicyResourceId = '<firewallPolicyResourceId>'
 param frontendIPConfigurations = [
   {
     name: 'private'
@@ -3076,6 +3003,7 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`firewallPolicyResourceId`](#parameter-firewallpolicyresourceid) | string | The resource ID of an associated firewall policy. Should be configured for security reasons. |
 | [`name`](#parameter-name) | string | Name of the Application Gateway. |
 
 **Optional parameters**
@@ -3096,7 +3024,6 @@ param tags = {
 | [`enableRequestBuffering`](#parameter-enablerequestbuffering) | bool | Enable request buffering. |
 | [`enableResponseBuffering`](#parameter-enableresponsebuffering) | bool | Enable response buffering. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`firewallPolicyResourceId`](#parameter-firewallpolicyresourceid) | string | The resource ID of an associated firewall policy. Should be configured for security reasons. |
 | [`frontendIPConfigurations`](#parameter-frontendipconfigurations) | array | Frontend IP addresses of the application gateway resource. |
 | [`frontendPorts`](#parameter-frontendports) | array | Frontend ports of the application gateway resource. |
 | [`gatewayIPConfigurations`](#parameter-gatewayipconfigurations) | array | Subnets of the application gateway resource. |
@@ -3125,8 +3052,14 @@ param tags = {
 | [`trustedClientCertificates`](#parameter-trustedclientcertificates) | array | Trusted client certificates of the application gateway resource. |
 | [`trustedRootCertificates`](#parameter-trustedrootcertificates) | array | Trusted Root certificates of the application gateway resource. |
 | [`urlPathMaps`](#parameter-urlpathmaps) | array | URL path map of the application gateway resource. |
-| [`webApplicationFirewallConfiguration`](#parameter-webapplicationfirewallconfiguration) | object | Application gateway web application firewall configuration. Should be configured for security reasons. |
 | [`zones`](#parameter-zones) | array | A list of availability zones denoting where the resource needs to come from. |
+
+### Parameter: `firewallPolicyResourceId`
+
+The resource ID of an associated firewall policy. Should be configured for security reasons.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `name`
 
@@ -3386,14 +3319,6 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
-
-### Parameter: `firewallPolicyResourceId`
-
-The resource ID of an associated firewall policy. Should be configured for security reasons.
-
-- Required: No
-- Type: string
-- Default: `''`
 
 ### Parameter: `frontendIPConfigurations`
 
@@ -4245,19 +4170,6 @@ URL path map of the application gateway resource.
 - Type: array
 - Default: `[]`
 
-### Parameter: `webApplicationFirewallConfiguration`
-
-Application gateway web application firewall configuration. Should be configured for security reasons.
-
-- Required: No
-- Type: object
-- Default:
-  ```Bicep
-  {
-      enabled: true
-  }
-  ```
-
 ### Parameter: `zones`
 
 A list of availability zones denoting where the resource needs to come from.
@@ -4289,7 +4201,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.10.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.11.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection

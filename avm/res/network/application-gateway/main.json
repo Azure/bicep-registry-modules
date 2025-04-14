@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "15052431933701183554"
+      "templateHash": "12078581133430745125"
     },
     "name": "Network Application Gateways",
     "description": "This module deploys a Network Application Gateway."
@@ -655,9 +655,8 @@
     },
     "firewallPolicyResourceId": {
       "type": "string",
-      "defaultValue": "",
       "metadata": {
-        "description": "Optional. The resource ID of an associated firewall policy. Should be configured for security reasons."
+        "description": "Required. The resource ID of an associated firewall policy. Should be configured for security reasons."
       }
     },
     "frontendIPConfigurations": {
@@ -901,15 +900,6 @@
         "description": "Optional. URL path map of the application gateway resource."
       }
     },
-    "webApplicationFirewallConfiguration": {
-      "type": "object",
-      "defaultValue": {
-        "enabled": true
-      },
-      "metadata": {
-        "description": "Optional. Application gateway web application firewall configuration. Should be configured for security reasons."
-      }
-    },
     "zones": {
       "type": "array",
       "defaultValue": [
@@ -1026,12 +1016,12 @@
     },
     "applicationGateway": {
       "type": "Microsoft.Network/applicationGateways",
-      "apiVersion": "2023-04-01",
+      "apiVersion": "2024-05-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "identity": "[variables('identity')]",
-      "properties": "[union(createObject('authenticationCertificates', parameters('authenticationCertificates'), 'autoscaleConfiguration', if(and(greater(parameters('autoscaleMaxCapacity'), 0), greaterOrEquals(parameters('autoscaleMinCapacity'), 0)), createObject('maxCapacity', parameters('autoscaleMaxCapacity'), 'minCapacity', parameters('autoscaleMinCapacity')), null()), 'backendAddressPools', parameters('backendAddressPools'), 'backendHttpSettingsCollection', parameters('backendHttpSettingsCollection'), 'backendSettingsCollection', parameters('backendSettingsCollection'), 'customErrorConfigurations', parameters('customErrorConfigurations'), 'enableHttp2', parameters('enableHttp2'), 'firewallPolicy', if(not(empty(parameters('firewallPolicyResourceId'))), createObject('id', parameters('firewallPolicyResourceId')), null()), 'forceFirewallPolicyAssociation', not(empty(parameters('firewallPolicyResourceId'))), 'frontendIPConfigurations', parameters('frontendIPConfigurations'), 'frontendPorts', parameters('frontendPorts'), 'gatewayIPConfigurations', parameters('gatewayIPConfigurations'), 'globalConfiguration', if(endsWith(parameters('sku'), 'v2'), createObject('enableRequestBuffering', parameters('enableRequestBuffering'), 'enableResponseBuffering', parameters('enableResponseBuffering')), null()), 'httpListeners', parameters('httpListeners'), 'loadDistributionPolicies', parameters('loadDistributionPolicies'), 'listeners', parameters('listeners'), 'privateLinkConfigurations', parameters('privateLinkConfigurations'), 'probes', parameters('probes'), 'redirectConfigurations', parameters('redirectConfigurations'), 'requestRoutingRules', parameters('requestRoutingRules'), 'routingRules', parameters('routingRules'), 'rewriteRuleSets', parameters('rewriteRuleSets'), 'sku', createObject('name', parameters('sku'), 'tier', if(endsWith(parameters('sku'), 'v2'), parameters('sku'), substring(parameters('sku'), 0, indexOf(parameters('sku'), '_'))), 'capacity', if(and(greater(parameters('autoscaleMaxCapacity'), 0), greaterOrEquals(parameters('autoscaleMinCapacity'), 0)), null(), parameters('capacity'))), 'sslCertificates', parameters('sslCertificates'), 'sslPolicy', if(not(equals(parameters('sslPolicyType'), 'Predefined')), createObject('cipherSuites', parameters('sslPolicyCipherSuites'), 'minProtocolVersion', parameters('sslPolicyMinProtocolVersion'), 'policyName', if(empty(parameters('sslPolicyName')), null(), parameters('sslPolicyName')), 'policyType', parameters('sslPolicyType')), createObject('policyName', if(empty(parameters('sslPolicyName')), null(), parameters('sslPolicyName')), 'policyType', parameters('sslPolicyType'))), 'sslProfiles', parameters('sslProfiles'), 'trustedClientCertificates', parameters('trustedClientCertificates'), 'trustedRootCertificates', parameters('trustedRootCertificates'), 'urlPathMaps', parameters('urlPathMaps')), if(parameters('enableFips'), createObject('enableFips', parameters('enableFips')), createObject()), if(not(empty(parameters('webApplicationFirewallConfiguration'))), createObject('webApplicationFirewallConfiguration', parameters('webApplicationFirewallConfiguration')), createObject()))]",
+      "properties": "[union(createObject('authenticationCertificates', parameters('authenticationCertificates'), 'autoscaleConfiguration', if(and(greater(parameters('autoscaleMaxCapacity'), 0), greaterOrEquals(parameters('autoscaleMinCapacity'), 0)), createObject('maxCapacity', parameters('autoscaleMaxCapacity'), 'minCapacity', parameters('autoscaleMinCapacity')), null()), 'backendAddressPools', parameters('backendAddressPools'), 'backendHttpSettingsCollection', parameters('backendHttpSettingsCollection'), 'backendSettingsCollection', parameters('backendSettingsCollection'), 'customErrorConfigurations', parameters('customErrorConfigurations'), 'enableHttp2', parameters('enableHttp2'), 'firewallPolicy', createObject('id', parameters('firewallPolicyResourceId')), 'forceFirewallPolicyAssociation', not(empty(parameters('firewallPolicyResourceId'))), 'frontendIPConfigurations', parameters('frontendIPConfigurations'), 'frontendPorts', parameters('frontendPorts'), 'gatewayIPConfigurations', parameters('gatewayIPConfigurations'), 'globalConfiguration', if(endsWith(parameters('sku'), 'v2'), createObject('enableRequestBuffering', parameters('enableRequestBuffering'), 'enableResponseBuffering', parameters('enableResponseBuffering')), null()), 'httpListeners', parameters('httpListeners'), 'loadDistributionPolicies', parameters('loadDistributionPolicies'), 'listeners', parameters('listeners'), 'privateLinkConfigurations', parameters('privateLinkConfigurations'), 'probes', parameters('probes'), 'redirectConfigurations', parameters('redirectConfigurations'), 'requestRoutingRules', parameters('requestRoutingRules'), 'routingRules', parameters('routingRules'), 'rewriteRuleSets', parameters('rewriteRuleSets'), 'sku', createObject('name', parameters('sku'), 'tier', if(endsWith(parameters('sku'), 'v2'), parameters('sku'), substring(parameters('sku'), 0, indexOf(parameters('sku'), '_'))), 'capacity', if(and(greater(parameters('autoscaleMaxCapacity'), 0), greaterOrEquals(parameters('autoscaleMinCapacity'), 0)), null(), parameters('capacity'))), 'sslCertificates', parameters('sslCertificates'), 'sslPolicy', if(not(equals(parameters('sslPolicyType'), 'Predefined')), createObject('cipherSuites', parameters('sslPolicyCipherSuites'), 'minProtocolVersion', parameters('sslPolicyMinProtocolVersion'), 'policyName', if(empty(parameters('sslPolicyName')), null(), parameters('sslPolicyName')), 'policyType', parameters('sslPolicyType')), createObject('policyName', if(empty(parameters('sslPolicyName')), null(), parameters('sslPolicyName')), 'policyType', parameters('sslPolicyType'))), 'sslProfiles', parameters('sslProfiles'), 'trustedClientCertificates', parameters('trustedClientCertificates'), 'trustedRootCertificates', parameters('trustedRootCertificates'), 'urlPathMaps', parameters('urlPathMaps')), if(parameters('enableFips'), createObject('enableFips', parameters('enableFips')), createObject()))]",
       "zones": "[parameters('zones')]"
     },
     "applicationGateway_lock": {
@@ -1173,8 +1163,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "15954548978129725136"
+              "version": "0.34.44.8038",
+              "templateHash": "12389807800450456797"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint."
@@ -1583,7 +1573,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.10.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.11.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -1601,7 +1591,7 @@
             },
             "privateEndpoint": {
               "type": "Microsoft.Network/privateEndpoints",
-              "apiVersion": "2023-11-01",
+              "apiVersion": "2024-05-01",
               "name": "[parameters('name')]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -1689,8 +1679,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "5440815542537978381"
+                      "version": "0.34.44.8038",
+                      "templateHash": "13997305779829540948"
                     },
                     "name": "Private Endpoint Private DNS Zone Groups",
                     "description": "This module deploys a Private Endpoint Private DNS Zone Group."
@@ -1762,12 +1752,12 @@
                     "privateEndpoint": {
                       "existing": true,
                       "type": "Microsoft.Network/privateEndpoints",
-                      "apiVersion": "2023-11-01",
+                      "apiVersion": "2024-05-01",
                       "name": "[parameters('privateEndpointName')]"
                     },
                     "privateDnsZoneGroup": {
                       "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
-                      "apiVersion": "2023-11-01",
+                      "apiVersion": "2024-05-01",
                       "name": "[format('{0}/{1}', parameters('privateEndpointName'), parameters('name'))]",
                       "properties": {
                         "privateDnsZoneConfigs": "[variables('privateDnsZoneConfigsVar')]"
@@ -1831,7 +1821,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('privateEndpoint', '2023-11-01', 'full').location]"
+              "value": "[reference('privateEndpoint', '2024-05-01', 'full').location]"
             },
             "customDnsConfigs": {
               "type": "array",
@@ -1896,7 +1886,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('applicationGateway', '2023-04-01', 'full').location]"
+      "value": "[reference('applicationGateway', '2024-05-01', 'full').location]"
     },
     "privateEndpoints": {
       "type": "array",
