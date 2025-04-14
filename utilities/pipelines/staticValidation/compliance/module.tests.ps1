@@ -162,11 +162,11 @@ Describe 'File/folder tests' -Tag 'Modules' {
                 # Note: The first release of a child module does not require the parent module to be updated
                 if ($childModuleVersion -ne '0.1.0' -and $childModuleVersion.EndsWith('.0')) {
                     $rootPath = Join-Path $repoRootPath 'avm' $moduleType
+                    $moduleDirectParentPath = Split-Path $moduleFolderPath -Parent
 
                     # Get the list of all versioned parent folders
                     $versionedParentFolderPaths = @()
-                    $versionedParentFolderPaths = Get-VersionedParentPathList -Path (Split-Path $moduleFolderPath -Parent) -RootPath $rootPath -Verbose
-                    # $versionedParentFolderPaths = Get-VersionedParentPathList -Path $moduleFolderPath -RootPath $rootPath -Verbose
+                    $versionedParentFolderPaths = Get-VersionedParentPathList -Path $moduleDirectParentPath -RootPath $rootPath -Verbose
                     $incorrectVersionedParents = @()
 
                     # Check if the parent module version(s) have been updated
