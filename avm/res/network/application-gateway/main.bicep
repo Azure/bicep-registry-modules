@@ -36,8 +36,8 @@ param enableFips bool = false
 @description('Optional. Whether HTTP2 is enabled on the application gateway resource.')
 param enableHttp2 bool = false
 
-@description('Optional. The resource ID of an associated firewall policy. Should be configured for security reasons.')
-param firewallPolicyResourceId string = ''
+@description('Required. The resource ID of an associated firewall policy. Should be configured for security reasons.')
+param firewallPolicyResourceId string
 
 @description('Optional. Frontend IP addresses of the application gateway resource.')
 param frontendIPConfigurations array = []
@@ -182,11 +182,6 @@ param trustedRootCertificates array = []
 @description('Optional. URL path map of the application gateway resource.')
 param urlPathMaps array = []
 
-@description('Optional. Application gateway web application firewall configuration. Should be configured for security reasons.')
-param webApplicationFirewallConfiguration object = {
-  enabled: true
-}
-
 @description('Optional. A list of availability zones denoting where the resource needs to come from.')
 param zones array = [
   1
@@ -280,7 +275,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource applicationGateway 'Microsoft.Network/applicationGateways@2023-04-01' = {
+resource applicationGateway 'Microsoft.Network/applicationGateways@2024-05-01' = {
   name: name
   location: location
   tags: tags
@@ -299,11 +294,9 @@ resource applicationGateway 'Microsoft.Network/applicationGateways@2023-04-01' =
       backendSettingsCollection: backendSettingsCollection
       customErrorConfigurations: customErrorConfigurations
       enableHttp2: enableHttp2
-      firewallPolicy: !empty(firewallPolicyResourceId)
-        ? {
-            id: firewallPolicyResourceId
-          }
-        : null
+      firewallPolicy: {
+        id: firewallPolicyResourceId
+      }
       forceFirewallPolicyAssociation: !empty(firewallPolicyResourceId)
       frontendIPConfigurations: frontendIPConfigurations
       frontendPorts: frontendPorts
@@ -349,9 +342,6 @@ resource applicationGateway 'Microsoft.Network/applicationGateways@2023-04-01' =
       ? {
           enableFips: enableFips
         }
-      : {}),
-    (!empty(webApplicationFirewallConfiguration)
-      ? { webApplicationFirewallConfiguration: webApplicationFirewallConfiguration }
       : {})
   )
   zones: zones
@@ -397,7 +387,7 @@ resource applicationGateway_diagnosticSettings 'Microsoft.Insights/diagnosticSet
   }
 ]
 
-module applicationGateway_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
+module applicationGateway_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-applicationGateway-PrEndpoint-${index}'
     scope: resourceGroup(
