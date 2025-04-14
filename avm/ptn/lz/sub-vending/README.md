@@ -2052,10 +2052,10 @@ To use this variant, set the property `templateName` to `excludeRoles`.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`ExcludedRoles`](#parameter-pimroleassignmentsroleassignmentconditionroleconditiontypetemplatename-excluderolesexcludedroles) | array | The list of roles that are not allowed to be assigned by the delegate. |
+| [`excludedRoles`](#parameter-pimroleassignmentsroleassignmentconditionroleconditiontypetemplatename-excluderolesexcludedroles) | array | The list of roles that are not allowed to be assigned by the delegate. |
 | [`templateName`](#parameter-pimroleassignmentsroleassignmentconditionroleconditiontypetemplatename-excluderolestemplatename) | string | Name of the RBAC condition template. |
 
-### Parameter: `pimRoleAssignments.roleAssignmentCondition.roleConditionType.templateName-excludeRoles.ExcludedRoles`
+### Parameter: `pimRoleAssignments.roleAssignmentCondition.roleConditionType.templateName-excludeRoles.excludedRoles`
 
 The list of roles that are not allowed to be assigned by the delegate.
 
@@ -2444,10 +2444,10 @@ To use this variant, set the property `templateName` to `excludeRoles`.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`ExcludedRoles`](#parameter-roleassignmentsroleassignmentconditionroleconditiontypetemplatename-excluderolesexcludedroles) | array | The list of roles that are not allowed to be assigned by the delegate. |
+| [`excludedRoles`](#parameter-roleassignmentsroleassignmentconditionroleconditiontypetemplatename-excluderolesexcludedroles) | array | The list of roles that are not allowed to be assigned by the delegate. |
 | [`templateName`](#parameter-roleassignmentsroleassignmentconditionroleconditiontypetemplatename-excluderolestemplatename) | string | Name of the RBAC condition template. |
 
-### Parameter: `roleAssignments.roleAssignmentCondition.roleConditionType.templateName-excludeRoles.ExcludedRoles`
+### Parameter: `roleAssignments.roleAssignmentCondition.roleConditionType.templateName-excludeRoles.excludedRoles`
 
 The list of roles that are not allowed to be assigned by the delegate.
 
