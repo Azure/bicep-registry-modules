@@ -142,7 +142,7 @@
             "description": "Required. Name of the RBAC condition template."
           }
         },
-        "ExcludedRoles": {
+        "excludedRoles": {
           "type": "array",
           "metadata": {
             "description": "Required. The list of roles that are not allowed to be assigned by the delegate."
@@ -1741,7 +1741,7 @@
                     "description": "Required. Name of the RBAC condition template."
                   }
                 },
-                "ExcludedRoles": {
+                "excludedRoles": {
                   "type": "array",
                   "metadata": {
                     "description": "Required. The list of roles that are not allowed to be assigned by the delegate."
@@ -2273,7 +2273,7 @@
                   ],
                   "output": {
                     "type": "string",
-                    "value": "[format('((!(ActionMatches{{''Microsoft.Authorization/roleAssignments/write''}}) OR ( @Request[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAllValues:GuidNotEquals {{{0}}})) AND ((!(ActionMatches{{''Microsoft.Authorization/roleAssignments/delete''}}) OR (@Request[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAllValues:GuidNotEquals {{{1}}}))))', __bicep.joinArray(parameters('excludeRoles').ExcludedRoles), __bicep.joinArray(parameters('excludeRoles').ExcludedRoles))]"
+                    "value": "[format('((!(ActionMatches{{''Microsoft.Authorization/roleAssignments/write''}}) OR ( @Request[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAllValues:GuidNotEquals {{{0}}})) AND ((!(ActionMatches{{''Microsoft.Authorization/roleAssignments/delete''}}) OR (@Request[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAllValues:GuidNotEquals {{{1}}}))))', __bicep.joinArray(parameters('excludeRoles').excludedRoles), __bicep.joinArray(parameters('excludeRoles').excludedRoles))]"
                   },
                   "metadata": {
                     "description": "Generates the code for the \"Exclude Roles\" condition template.",

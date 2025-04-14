@@ -1382,7 +1382,7 @@ type excludeRolesType = {
   templateName: 'excludeRoles'
 
   @description('Required. The list of roles that are not allowed to be assigned by the delegate.')
-  ExcludedRoles: array
+  excludedRoles: array
 }
 
 // Discriminator for the constrainedDelegationTemplatesType
@@ -1427,7 +1427,7 @@ func generateCodeRolesAndPrincipals(constrainRolesAndPrincipals constrainRolesAn
 @description('Generates the code for the "Exclude Roles" condition template.')
 @export()
 func generateCodeExcludeRoles(excludeRoles excludeRolesType) string =>
-  '((!(ActionMatches{\'Microsoft.Authorization/roleAssignments/write\'}) OR ( @Request[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAllValues:GuidNotEquals {${joinArray(excludeRoles.ExcludedRoles)}})) AND ((!(ActionMatches{\'Microsoft.Authorization/roleAssignments/delete\'}) OR (@Request[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAllValues:GuidNotEquals {${joinArray(excludeRoles.ExcludedRoles)}}))))'
+  '((!(ActionMatches{\'Microsoft.Authorization/roleAssignments/write\'}) OR ( @Request[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAllValues:GuidNotEquals {${joinArray(excludeRoles.excludedRoles)}})) AND ((!(ActionMatches{\'Microsoft.Authorization/roleAssignments/delete\'}) OR (@Request[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAllValues:GuidNotEquals {${joinArray(excludeRoles.excludedRoles)}}))))'
 
 // Helper functions
 @export()
