@@ -36,8 +36,8 @@ param enableFips bool = false
 @description('Optional. Whether HTTP2 is enabled on the application gateway resource.')
 param enableHttp2 bool = false
 
-@description('Required. The resource ID of an associated firewall policy. Should be configured for security reasons.')
-param firewallPolicyResourceId string
+@description('Conditional. The resource ID of an associated firewall policy. Required if the SKU is \'WAF_v2\'.')
+param firewallPolicyResourceId string?
 
 @description('Optional. Frontend IP addresses of the application gateway resource.')
 param frontendIPConfigurations array = []
@@ -294,9 +294,11 @@ resource applicationGateway 'Microsoft.Network/applicationGateways@2024-05-01' =
       backendSettingsCollection: backendSettingsCollection
       customErrorConfigurations: customErrorConfigurations
       enableHttp2: enableHttp2
-      firewallPolicy: {
-        id: firewallPolicyResourceId
-      }
+      firewallPolicy: !empty(firewallPolicyResourceId)
+        ? {
+            id: firewallPolicyResourceId
+          }
+        : null
       forceFirewallPolicyAssociation: !empty(firewallPolicyResourceId)
       frontendIPConfigurations: frontendIPConfigurations
       frontendPorts: frontendPorts
