@@ -61,6 +61,10 @@ param witnessStorageAccountSubscriptionId string
 @description('Optional. Storage account resource group, which is used as the witness for the HCI Windows Failover Cluster..')
 param witnessStorageAccountResourceGroup string
 
+@description('Required. The service principal object ID of the Azure Stack HCI Resource Provider in this tenant. Can be fetched via `Get-AzADServicePrincipal -ApplicationId 1412d89f-b8a8-4111-b4fd-e82905cbd85d` after the \'Microsoft.AzureStackHCI\' provider was registered in the subscription.')
+@secure()
+param hciResourceProviderObjectId string
+
 resource witnessStorageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' existing = {
   name: storageAccountName
   scope: resourceGroup(witnessStorageAccountSubscriptionId, witnessStorageAccountResourceGroup)
@@ -68,6 +72,22 @@ resource witnessStorageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' ex
 
 resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
   name: keyVaultName
+}
+
+var keyVaultSecretUserRoleID = subscriptionResourceId(
+  'Microsoft.Authorization/roleDefinitions',
+  '4633458b-17de-408a-b874-0445c86b69e6'
+)
+
+resource KeyVaultSecretsUserPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(subscription().subscriptionId, hciResourceProviderObjectId, 'keyVaultSecretUser', resourceGroup().id)
+  scope: keyVault
+  properties: {
+    roleDefinitionId: keyVaultSecretUserRoleID
+    principalId: hciResourceProviderObjectId
+    principalType: 'ServicePrincipal'
+    description: 'Created by Azure Stack HCI deployment template'
+  }
 }
 
 resource azureStackLCMUserCredential 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {

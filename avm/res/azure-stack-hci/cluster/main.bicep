@@ -93,6 +93,10 @@ param witnessStorageAccountSubscriptionId string?
 @description('Optional. Storage account resource group, which is used as the witness for the HCI Windows Failover Cluster.')
 param witnessStorageAccountResourceGroup string?
 
+@description('Required. The service principal object ID of the Azure Stack HCI Resource Provider in this tenant. Can be fetched via `Get-AzADServicePrincipal -ApplicationId 1412d89f-b8a8-4111-b4fd-e82905cbd85d` after the \'Microsoft.AzureStackHCI\' provider was registered in the subscription.')
+@secure()
+param hciResourceProviderObjectId string
+
 // ============= //
 //   Variables   //
 // ============= //
@@ -133,6 +137,75 @@ var formattedRoleAssignments = [
 
 // if deployment operations requested, validation must be performed first so we reverse sort the array
 var sortedDeploymentOperations = (!empty(deploymentOperations)) ? sort(deploymentOperations, (a, b) => a > b) : []
+
+var azureConnectedMachineResourceManagerRoleID = subscriptionResourceId(
+  'Microsoft.Authorization/roleDefinitions',
+  'f5819b54-e033-4d82-ac66-4fec3cbf3f4c'
+)
+var readerRoleID = subscriptionResourceId(
+  'Microsoft.Authorization/roleDefinitions',
+  'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+)
+var azureStackHCIDeviceManagementRole = subscriptionResourceId(
+  'Microsoft.Authorization/roleDefinitions',
+  '865ae368-6a45-4bd1-8fbf-0d5151f56fc1'
+)
+
+resource SPConnectedMachineResourceManagerRolePermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(
+    subscription().subscriptionId,
+    hciResourceProviderObjectId,
+    'ConnectedMachineResourceManagerRolePermissions',
+    resourceGroup().id
+  )
+  scope: resourceGroup()
+  properties: {
+    roleDefinitionId: azureConnectedMachineResourceManagerRoleID
+    principalId: hciResourceProviderObjectId
+    principalType: 'ServicePrincipal'
+    description: 'Created by Azure Stack HCI deployment template'
+  }
+}
+
+resource AzureConnectedMachineResourceManagerRolePermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(
+    subscription().subscriptionId,
+    hciResourceProviderObjectId,
+    'azureConnectedMachineResourceManager',
+    resourceGroup().id
+  )
+  properties: {
+    roleDefinitionId: azureConnectedMachineResourceManagerRoleID
+    principalId: hciResourceProviderObjectId
+    principalType: 'ServicePrincipal'
+    description: 'Created by Azure Stack HCI deployment template'
+  }
+}
+
+resource AzureStackHCIDeviceManagementRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(
+    subscription().subscriptionId,
+    hciResourceProviderObjectId,
+    'azureStackHCIDeviceManagementRole',
+    resourceGroup().id
+  )
+  properties: {
+    roleDefinitionId: azureStackHCIDeviceManagementRole
+    principalId: hciResourceProviderObjectId
+    principalType: 'ServicePrincipal'
+    description: 'Created by Azure Stack HCI deployment template'
+  }
+}
+
+resource ReaderRoleIDPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(subscription().subscriptionId, hciResourceProviderObjectId, 'reader', resourceGroup().id)
+  properties: {
+    roleDefinitionId: readerRoleID
+    principalId: hciResourceProviderObjectId
+    principalType: 'ServicePrincipal'
+    description: 'Created by Azure Stack HCI deployment template'
+  }
+}
 
 // ============= //
 //   Resources   //
@@ -197,6 +270,7 @@ module secrets './secrets.bicep' = if (useSharedKeyVault) {
     defaultARBApplicationTags: defaultARBApplicationTags
     witnessStorageAccountResourceGroup: witnessStorageAccountResourceGroup ?? resourceGroup().name
     witnessStorageAccountSubscriptionId: witnessStorageAccountSubscriptionId ?? subscription().subscriptionId
+    hciResourceProviderObjectId: hciResourceProviderObjectId
   }
 }
 
