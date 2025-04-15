@@ -43,14 +43,7 @@ param firewallPolicyResourceId string?
 param frontendIPConfigurations array = []
 
 @description('Optional. Frontend ports of the application gateway resource.')
-param frontendPorts array = [
-  {
-    name: 'https'
-    properties: {
-      port: 443
-    }
-  }
-]
+param frontendPorts array = []
 
 @description('Optional. Subnets of the application gateway resource.')
 param gatewayIPConfigurations array = []
