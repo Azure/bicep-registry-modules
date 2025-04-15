@@ -29,7 +29,7 @@ The following section provides usage examples for the module, which were used to
 
 ### Example 1: _Using only defaults_
 
-Required. This instance deploys the module with the minimum set of required parameters.
+This instance deploys the module with the minimum set of required parameters.
 
 
 <details>
@@ -44,7 +44,6 @@ module instancePool 'br/public:avm/res/sql/instance-pool:<version>' = {
     name: '<name>'
     subnetResourceId: '<subnetResourceId>'
     // Non-required parameters
-    enableTelemetry: '<enableTelemetry>'
     location: '<location>'
   }
 }
@@ -70,9 +69,6 @@ module instancePool 'br/public:avm/res/sql/instance-pool:<version>' = {
       "value": "<subnetResourceId>"
     },
     // Non-required parameters
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
-    },
     "location": {
       "value": "<location>"
     }
@@ -94,7 +90,6 @@ using 'br/public:avm/res/sql/instance-pool:<version>'
 param name = '<name>'
 param subnetResourceId = '<subnetResourceId>'
 // Non-required parameters
-param enableTelemetry = '<enableTelemetry>'
 param location = '<location>'
 ```
 
@@ -103,7 +98,7 @@ param location = '<location>'
 
 ### Example 2: _WAF-aligned_
 
-Required. This instance deploys the module in alignment with the best-practices of the Well-Architected Framework. It must end with waf.
+This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
 
 
 <details>
@@ -120,7 +115,7 @@ module instancePool 'br/public:avm/res/sql/instance-pool:<version>' = {
     // Non-required parameters
     enableTelemetry: '<enableTelemetry>'
     location: '<location>'
-    skuName: 'GP_Gen8IM'
+    skuName: '<skuName>'
   }
 }
 ```
@@ -152,7 +147,7 @@ module instancePool 'br/public:avm/res/sql/instance-pool:<version>' = {
       "value": "<location>"
     },
     "skuName": {
-      "value": "GP_Gen8IM"
+      "value": "<skuName>"
     }
   }
 }
@@ -174,7 +169,7 @@ param subnetResourceId = '<subnetResourceId>'
 // Non-required parameters
 param enableTelemetry = '<enableTelemetry>'
 param location = '<location>'
-param skuName = 'GP_Gen8IM'
+param skuName = '<skuName>'
 ```
 
 </details>
