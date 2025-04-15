@@ -15,18 +15,11 @@ param virtualNetworkResourceId string
 @minLength(1)
 param virtualNetworkSubnetResourceId string
 
-@minLength(1)
-param managedIdentityResourceId string
-
-@minLength(1)
 param adminUsername string
 
 @minLength(1)
 @secure()
 param adminPassword string
-
-@minLength(1)
-param keyVaultUri string
 
 module privateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.0' = {
   name: 'sqlServerPrivateDnsZoneDeployment'
@@ -50,12 +43,8 @@ module sqlserver 'br/public:avm/res/sql/server:0.12.3' = {
     databases: databases
     location: location
     managedIdentities: {
-      systemAssigned: false
-      userAssignedResourceIds: [
-        managedIdentityResourceId
-      ]
+      systemAssigned: true
     }
-    primaryUserAssignedIdentityId: managedIdentityResourceId
     privateEndpoints: [
       {
         privateDnsZoneGroup: {
@@ -74,4 +63,8 @@ module sqlserver 'br/public:avm/res/sql/server:0.12.3' = {
   }
 }
 
-import { databasePropertyType } from 'custom_types.bicep'
+import { databasePropertyType } from 'customTypes.bicep'
+
+output name string = sqlserver.outputs.name
+output resourceId string = sqlserver.outputs.resourceId
+output fullyQualifiedDomainName string = sqlserver.outputs.fullyQualifiedDomainName

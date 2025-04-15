@@ -49,6 +49,7 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.11.0' = {
     disableLocalAuth: true
     location: location
     minimumTlsVersion: 'Tls12'
+    defaultConsistencyLevel: 'Session'
     networkRestrictions: {
       networkAclBypass: 'None'
       publicNetworkAccess: 'Disabled'
@@ -71,4 +72,9 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.11.0' = {
   }
 }
 
-import { sqlDatabaseType } from 'custom_types.bicep'
+import { sqlDatabaseType } from 'customTypes.bicep'
+
+output name string = cosmosDb.outputs.name
+output resourceId string = cosmosDb.outputs.resourceId
+output endpoint string = cosmosDb.outputs.endpoint
+
