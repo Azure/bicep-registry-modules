@@ -36,7 +36,7 @@ param enableFips bool = false
 @description('Optional. Whether HTTP2 is enabled on the application gateway resource.')
 param enableHttp2 bool = false
 
-@description('Conditional. The resource ID of an associated firewall policy. Required if the SKU is \'WAF_v2\'.')
+@description('Conditional. The resource ID of an associated firewall policy. Required if the SKU is \'WAF_v2\' and ignored if the SKU is \'Standard_v2\' or \'Basic\'.')
 param firewallPolicyResourceId string?
 
 @description('Optional. Frontend IP addresses of the application gateway resource.')
@@ -81,11 +81,7 @@ param rewriteRuleSets array = []
 
 @description('Optional. The name of the SKU for the Application Gateway.')
 @allowed([
-  'Standard_Small'
-  'Standard_Medium'
-  'Standard_Large'
-  'WAF_Medium'
-  'WAF_Large'
+  'Basic'
   'Standard_v2'
   'WAF_v2'
 ])
@@ -287,12 +283,12 @@ resource applicationGateway 'Microsoft.Network/applicationGateways@2024-05-01' =
       backendSettingsCollection: backendSettingsCollection
       customErrorConfigurations: customErrorConfigurations
       enableHttp2: enableHttp2
-      firewallPolicy: !empty(firewallPolicyResourceId)
+      firewallPolicy: sku == 'WAF_v2' && !empty(firewallPolicyResourceId)
         ? {
             id: firewallPolicyResourceId
           }
         : null
-      forceFirewallPolicyAssociation: !empty(firewallPolicyResourceId)
+      forceFirewallPolicyAssociation: sku == 'WAF_v2' && !empty(firewallPolicyResourceId)
       frontendIPConfigurations: frontendIPConfigurations
       frontendPorts: frontendPorts
       gatewayIPConfigurations: gatewayIPConfigurations
@@ -313,7 +309,7 @@ resource applicationGateway 'Microsoft.Network/applicationGateways@2024-05-01' =
       rewriteRuleSets: rewriteRuleSets
       sku: {
         name: sku
-        tier: endsWith(sku, 'v2') ? sku : substring(sku, 0, indexOf(sku, '_'))
+        tier: sku
         capacity: autoscaleMaxCapacity > 0 && autoscaleMinCapacity >= 0 ? null : capacity
       }
       sslCertificates: sslCertificates
