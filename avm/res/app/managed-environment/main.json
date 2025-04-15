@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "15810384327679164260"
+      "templateHash": "18342086610939241088"
     },
     "name": "App ManagedEnvironments",
     "description": "This module deploys an App Managed Environment (also known as a Container App Environment)."
@@ -105,15 +105,30 @@
       "properties": {
         "destination": {
           "type": "string",
-          "metadata": {
-            "description": "Required. The destination of the logs."
-          }
-        },
-        "logAnalyticsWorkspaceResourceId": {
-          "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Existing Log Analytics Workspace resource ID."
+            "description": "Optional. The destination of the logs."
+          }
+        },
+        "logAnalyticsConfiguration": {
+          "type": "object",
+          "properties": {
+            "customerId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The customer ID of the Log Analytics workspace."
+              }
+            },
+            "sharedKey": {
+              "type": "securestring",
+              "metadata": {
+                "description": "Required. The shared key of the Log Analytics workspace."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The configuration for Log Analytics."
           }
         }
       },
@@ -535,15 +550,6 @@
         }
       }
     },
-    "logAnalyticsWorkspace": {
-      "condition": "[not(empty(tryGet(parameters('appLogsConfiguration'), 'logAnalyticsWorkspaceResourceId')))]",
-      "existing": true,
-      "type": "Microsoft.OperationalInsights/workspaces",
-      "apiVersion": "2023-09-01",
-      "subscriptionId": "[split(coalesce(tryGet(parameters('appLogsConfiguration'), 'logAnalyticsWorkspaceResourceId'), ''), '/')[2]]",
-      "resourceGroup": "[split(coalesce(tryGet(parameters('appLogsConfiguration'), 'logAnalyticsWorkspaceResourceId'), ''), '/')[4]]",
-      "name": "[last(split(coalesce(tryGet(parameters('appLogsConfiguration'), 'logAnalyticsWorkspaceResourceId'), ''), '/'))]"
-    },
     "managedEnvironment": {
       "type": "Microsoft.App/managedEnvironments",
       "apiVersion": "2024-10-02-preview",
@@ -555,7 +561,7 @@
         "appInsightsConfiguration": {
           "connectionString": "[parameters('appInsightsConnectionString')]"
         },
-        "appLogsConfiguration": "[if(not(empty(parameters('appLogsConfiguration'))), createObject('destination', tryGet(parameters('appLogsConfiguration'), 'destination'), 'logAnalyticsConfiguration', if(not(empty(tryGet(parameters('appLogsConfiguration'), 'logAnalyticsWorkspaceResourceId'))), createObject('customerId', reference('logAnalyticsWorkspace').customerId, 'sharedKey', listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(tryGet(parameters('appLogsConfiguration'), 'logAnalyticsWorkspaceResourceId'), ''), '/')[2], split(coalesce(tryGet(parameters('appLogsConfiguration'), 'logAnalyticsWorkspaceResourceId'), ''), '/')[4]), 'Microsoft.OperationalInsights/workspaces', last(split(coalesce(tryGet(parameters('appLogsConfiguration'), 'logAnalyticsWorkspaceResourceId'), ''), '/'))), '2023-09-01').primarySharedKey), null())), null())]",
+        "appLogsConfiguration": "[parameters('appLogsConfiguration')]",
         "daprAIConnectionString": "[parameters('daprAIConnectionString')]",
         "daprAIInstrumentationKey": "[parameters('daprAIInstrumentationKey')]",
         "customDomainConfiguration": {
@@ -581,10 +587,7 @@
         "workloadProfiles": "[if(not(empty(parameters('workloadProfiles'))), parameters('workloadProfiles'), null())]",
         "zoneRedundant": "[parameters('zoneRedundant')]",
         "infrastructureResourceGroup": "[parameters('infrastructureResourceGroupName')]"
-      },
-      "dependsOn": [
-        "logAnalyticsWorkspace"
-      ]
+      }
     },
     "managedEnvironment_roleAssignments": {
       "copy": {

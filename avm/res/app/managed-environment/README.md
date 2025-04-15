@@ -295,7 +295,10 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     appInsightsConnectionString: '<appInsightsConnectionString>'
     appLogsConfiguration: {
       destination: 'log-analytics'
-      logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
+      logAnalyticsConfiguration: {
+        customerId: '<customerId>'
+        sharedKey: '<sharedKey>'
+      }
     }
     certificate: {
       certificateKeyVaultProperties: {
@@ -406,7 +409,10 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     "appLogsConfiguration": {
       "value": {
         "destination": "log-analytics",
-        "logAnalyticsWorkspaceResourceId": "<logAnalyticsWorkspaceResourceId>"
+        "logAnalyticsConfiguration": {
+          "customerId": "<customerId>",
+          "sharedKey": "<sharedKey>"
+        }
       }
     },
     "certificate": {
@@ -545,7 +551,10 @@ param name = 'amemax001'
 param appInsightsConnectionString = '<appInsightsConnectionString>'
 param appLogsConfiguration = {
   destination: 'log-analytics'
-  logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
+  logAnalyticsConfiguration: {
+    customerId: '<customerId>'
+    sharedKey: '<sharedKey>'
+  }
 }
 param certificate = {
   certificateKeyVaultProperties: {
@@ -652,7 +661,10 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     // Non-required parameters
     appLogsConfiguration: {
       destination: 'log-analytics'
-      logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
+      logAnalyticsConfiguration: {
+        customerId: '<customerId>'
+        sharedKey: '<sharedKey>'
+      }
     }
     dockerBridgeCidr: '172.16.0.1/28'
     infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
@@ -693,7 +705,10 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     "appLogsConfiguration": {
       "value": {
         "destination": "log-analytics",
-        "logAnalyticsWorkspaceResourceId": "<logAnalyticsWorkspaceResourceId>"
+        "logAnalyticsConfiguration": {
+          "customerId": "<customerId>",
+          "sharedKey": "<sharedKey>"
+        }
       }
     },
     "dockerBridgeCidr": {
@@ -746,7 +761,10 @@ param name = 'amepa001'
 // Non-required parameters
 param appLogsConfiguration = {
   destination: 'log-analytics'
-  logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
+  logAnalyticsConfiguration: {
+    customerId: '<customerId>'
+    sharedKey: '<sharedKey>'
+  }
 }
 param dockerBridgeCidr = '172.16.0.1/28'
 param infrastructureResourceGroupName = '<infrastructureResourceGroupName>'
@@ -786,7 +804,10 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     // Non-required parameters
     appLogsConfiguration: {
       destination: 'log-analytics'
-      logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
+      logAnalyticsConfiguration: {
+        customerId: '<customerId>'
+        sharedKey: '<sharedKey>'
+      }
     }
     dockerBridgeCidr: '172.16.0.1/28'
     infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
@@ -830,7 +851,10 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     "appLogsConfiguration": {
       "value": {
         "destination": "log-analytics",
-        "logAnalyticsWorkspaceResourceId": "<logAnalyticsWorkspaceResourceId>"
+        "logAnalyticsConfiguration": {
+          "customerId": "<customerId>",
+          "sharedKey": "<sharedKey>"
+        }
       }
     },
     "dockerBridgeCidr": {
@@ -886,7 +910,10 @@ param name = 'amewaf001'
 // Non-required parameters
 param appLogsConfiguration = {
   destination: 'log-analytics'
-  logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
+  logAnalyticsConfiguration: {
+    customerId: '<customerId>'
+    sharedKey: '<sharedKey>'
+  }
 }
 param dockerBridgeCidr = '172.16.0.1/28'
 param infrastructureResourceGroupName = '<infrastructureResourceGroupName>'
@@ -1033,31 +1060,47 @@ The AppLogsConfiguration for the Managed Environment.
 - Required: No
 - Type: object
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`destination`](#parameter-applogsconfigurationdestination) | string | The destination of the logs. |
-
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`logAnalyticsWorkspaceResourceId`](#parameter-applogsconfigurationloganalyticsworkspaceresourceid) | string | Existing Log Analytics Workspace resource ID. |
+| [`destination`](#parameter-applogsconfigurationdestination) | string | The destination of the logs. |
+| [`logAnalyticsConfiguration`](#parameter-applogsconfigurationloganalyticsconfiguration) | object | The configuration for Log Analytics. |
 
 ### Parameter: `appLogsConfiguration.destination`
 
 The destination of the logs.
 
+- Required: No
+- Type: string
+
+### Parameter: `appLogsConfiguration.logAnalyticsConfiguration`
+
+The configuration for Log Analytics.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`customerId`](#parameter-applogsconfigurationloganalyticsconfigurationcustomerid) | string | The customer ID of the Log Analytics workspace. |
+| [`sharedKey`](#parameter-applogsconfigurationloganalyticsconfigurationsharedkey) | securestring | The shared key of the Log Analytics workspace. |
+
+### Parameter: `appLogsConfiguration.logAnalyticsConfiguration.customerId`
+
+The customer ID of the Log Analytics workspace.
+
 - Required: Yes
 - Type: string
 
-### Parameter: `appLogsConfiguration.logAnalyticsWorkspaceResourceId`
+### Parameter: `appLogsConfiguration.logAnalyticsConfiguration.sharedKey`
 
-Existing Log Analytics Workspace resource ID.
+The shared key of the Log Analytics workspace.
 
-- Required: No
-- Type: string
+- Required: Yes
+- Type: securestring
 
 ### Parameter: `certificate`
 
