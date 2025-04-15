@@ -1,24 +1,21 @@
 targetScope = 'subscription'
 
 metadata name = 'Using only defaults'
-metadata description = 'Required. This instance deploys the module with the minimum set of required parameters.'
+metadata description = 'This instance deploys the module with the minimum set of required parameters.'
 
 // ========== //
 // Parameters //
 // ========== //
 
-@description('Conditional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints. It must end with min')
-param serviceShort string = 'sipmin'
-
-@description('Required. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
-param namePrefix string = '#_namePrefix_#'
-
-@description('Required. The name of the resource group to deploy for testing purposes.')
+@description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-sql.instancepool-${serviceShort}-rg'
 
-@description('Conditional. Enable/Disable usage telemetry for module.')
-param enableTelemetry bool = true
+@description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
+param serviceShort string = 'sipmin'
+
+@description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
+param namePrefix string = '#_namePrefix_#'
 
 // Note, we set the location of the NetworkWatcherRG to avoid conflicts with the already existing NetworkWatcherRG
 #disable-next-line no-hardcoded-location
@@ -60,6 +57,5 @@ module testDeployment '../../../main.bicep' = {
     name: nestedDependencies.outputs.sqlInstancePoolName
     location: enforcedLocation
     subnetResourceId: nestedDependencies.outputs.subnetId
-    enableTelemetry: enableTelemetry
   }
 }
