@@ -1375,7 +1375,7 @@ Describe 'Module tests' -Tag 'Module' {
         }
     }
 
-    Context 'Version test' -Tag 'Versioning' {
+    Context 'Version tests' -Tag 'Versioning' {
 
         BeforeDiscovery {
             $moduleFolderTestCases = [System.Collections.ArrayList] @()
