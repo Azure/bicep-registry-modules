@@ -1,29 +1,29 @@
 metadata name = 'SQL Server Instance Pool'
-metadata description = 'Purpouse. This module deploys an Azure SQL Server Instance Pool.'
+metadata description = 'This module deploys an Azure SQL Server Instance Pool.'
 
 @description('Required. The name of the instance pool.')
 param name string
 
-@description('Required. Location for all resources.')
+@description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-@description('Conditional. Tags of the resource.')
+@description('Optional. Tags of the resource.')
 param tags object?
 
 @description('Required. The subnet resource ID for the instance pool.')
 param subnetResourceId string
 
-@description('Required. The license type to apply for this database.')
+@description('Optional. The license type to apply for this database.')
 @allowed([
   'BasePrice'
   'LicenseIncluded'
 ])
 param licenseType string = 'BasePrice'
 
-@description('Conditional. If the service has different generations of hardware, for the same SKU, then that can be captured here.')
+@description('Optional. If the service has different generations of hardware, for the same SKU, then that can be captured here.')
 param skuFamily string = 'Gen5'
 
-@description('Required. The number of vCores for the instance pool.')
+@description('Optional. The number of vCores for the instance pool.')
 @allowed([
   8
   16
@@ -41,22 +41,22 @@ param skuFamily string = 'Gen5'
 ])
 param vCores int = 8
 
-@description('Conditional. The vCore service tier for the instance pool.')
+@description('Optional. The vCore service tier for the instance pool.')
 @allowed([
   'GeneralPurpose'
 ])
 param tier string = 'GeneralPurpose'
 
-@description('Required. The SKU name for the instance pool.')
+@description('Optional. The SKU name for the instance pool.')
 param skuName string = 'GP_Gen5'
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-@description('Conditional. Capacity of the particular SKU.')
+@description('Optional. Capacity of the particular SKU.')
 param capacity int?
 
-@description('Conditional. Size of the particular SKU')
+@description('Optional. Size of the particular SKU.')
 param size string?
 
 resource instancePool 'Microsoft.Sql/instancePools@2024-05-01-preview' = {

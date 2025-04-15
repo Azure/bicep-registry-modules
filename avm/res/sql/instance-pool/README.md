@@ -1,6 +1,6 @@
 # SQL Server Instance Pool `[Microsoft.Sql/instancePools]`
 
-Required. This module deploys an Azure SQL Server Instance Pool.
+This module deploys an Azure SQL Server Instance Pool.
 
 ## Navigation
 
@@ -186,31 +186,23 @@ param skuName = 'GP_Gen8IM'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`location`](#parameter-location) | string | Location for all resources. |
 | [`name`](#parameter-name) | string | The name of the instance pool. |
 | [`subnetResourceId`](#parameter-subnetresourceid) | string | The subnet resource ID for the instance pool. |
 
-**Conditional parameters**
+**Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`capacity`](#parameter-capacity) | int | Capacity of the particular SKU. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`licenseType`](#parameter-licensetype) | string | The license type to apply for this database. |
-| [`size`](#parameter-size) | string | Size of the particular SKU |
+| [`location`](#parameter-location) | string | Location for all resources. |
+| [`size`](#parameter-size) | string | Size of the particular SKU. |
 | [`skuFamily`](#parameter-skufamily) | string | If the service has different generations of hardware, for the same SKU, then that can be captured here. |
 | [`skuName`](#parameter-skuname) | string | The SKU name for the instance pool. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`tier`](#parameter-tier) | string | The vCore service tier for the instance pool. |
 | [`vCores`](#parameter-vcores) | int | The number of vCores for the instance pool. |
-
-### Parameter: `location`
-
-Location for all resources.
-
-- Required: No
-- Type: string
-- Default: `[resourceGroup().location]`
 
 ### Parameter: `name`
 
@@ -232,7 +224,6 @@ Capacity of the particular SKU.
 
 - Required: No
 - Type: int
-- Default: `8`
 
 ### Parameter: `enableTelemetry`
 
@@ -257,13 +248,20 @@ The license type to apply for this database.
   ]
   ```
 
-### Parameter: `size`
+### Parameter: `location`
 
-Size of the particular SKU
+Location for all resources.
 
 - Required: No
 - Type: string
-- Default: `'8'`
+- Default: `[resourceGroup().location]`
+
+### Parameter: `size`
+
+Size of the particular SKU.
+
+- Required: No
+- Type: string
 
 ### Parameter: `skuFamily`
 
