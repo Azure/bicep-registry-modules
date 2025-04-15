@@ -1,6 +1,6 @@
 # SQL Server Instance Pool `[Microsoft.Sql/instancePools]`
 
-Purpose. This module deploys an Azure SQL Server Instance Pool.
+Required. This module deploys an Azure SQL Server Instance Pool.
 
 ## Navigation
 
@@ -29,7 +29,7 @@ The following section provides usage examples for the module, which were used to
 
 ### Example 1: _Using only defaults_
 
-Purpouse. This instance deploys the module with the minimum set of required parameters.
+Required. This instance deploys the module with the minimum set of required parameters.
 
 
 <details>
@@ -103,7 +103,7 @@ param location = '<location>'
 
 ### Example 2: _WAF-aligned_
 
-Purpouse. This instance deploys the module in alignment with the best-practices of the Well-Architected Framework. It must end with waf.
+Required. This instance deploys the module in alignment with the best-practices of the Well-Architected Framework. It must end with waf.
 
 
 <details>
@@ -186,23 +186,31 @@ param skuName = 'GP_Gen8IM'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`location`](#parameter-location) | string | Location for all resources. |
 | [`name`](#parameter-name) | string | The name of the instance pool. |
 | [`subnetResourceId`](#parameter-subnetresourceid) | string | The subnet resource ID for the instance pool. |
 
-**Optional parameters**
+**Conditional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`capacity`](#parameter-capacity) | int | Capacity of the particular SKU. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`licenseType`](#parameter-licensetype) | string | The license type to apply for this database. |
-| [`location`](#parameter-location) | string | Location for all resources. |
 | [`size`](#parameter-size) | string | Size of the particular SKU |
 | [`skuFamily`](#parameter-skufamily) | string | If the service has different generations of hardware, for the same SKU, then that can be captured here. |
 | [`skuName`](#parameter-skuname) | string | The SKU name for the instance pool. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`tier`](#parameter-tier) | string | The vCore service tier for the instance pool. |
 | [`vCores`](#parameter-vcores) | int | The number of vCores for the instance pool. |
+
+### Parameter: `location`
+
+Location for all resources.
+
+- Required: No
+- Type: string
+- Default: `[resourceGroup().location]`
 
 ### Parameter: `name`
 
@@ -248,14 +256,6 @@ The license type to apply for this database.
     'LicenseIncluded'
   ]
   ```
-
-### Parameter: `location`
-
-Location for all resources.
-
-- Required: No
-- Type: string
-- Default: `[resourceGroup().location]`
 
 ### Parameter: `size`
 

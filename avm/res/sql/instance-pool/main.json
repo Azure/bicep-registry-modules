@@ -6,10 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "6875207262385309327"
+      "templateHash": "7390626731035908769"
     },
     "name": "SQL Server Instance Pool",
-    "description": "Purpose. This module deploys an Azure SQL Server Instance Pool."
+    "description": "Required. This module deploys an Azure SQL Server Instance Pool."
   },
   "parameters": {
     "name": {
@@ -22,14 +22,14 @@
       "type": "string",
       "defaultValue": "[resourceGroup().location]",
       "metadata": {
-        "description": "Optional. Location for all resources."
+        "description": "Required. Location for all resources."
       }
     },
     "tags": {
       "type": "object",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Tags of the resource."
+        "description": "Conditional. Tags of the resource."
       }
     },
     "subnetResourceId": {
@@ -46,14 +46,14 @@
         "LicenseIncluded"
       ],
       "metadata": {
-        "description": "Optional. The license type to apply for this database."
+        "description": "Conditional. The license type to apply for this database."
       }
     },
     "skuFamily": {
       "type": "string",
       "defaultValue": "Gen5",
       "metadata": {
-        "description": "Optional. If the service has different generations of hardware, for the same SKU, then that can be captured here."
+        "description": "Conditional. If the service has different generations of hardware, for the same SKU, then that can be captured here."
       }
     },
     "vCores": {
@@ -75,7 +75,7 @@
         256
       ],
       "metadata": {
-        "description": "Optional. The number of vCores for the instance pool."
+        "description": "Conditional. The number of vCores for the instance pool."
       }
     },
     "tier": {
@@ -85,35 +85,35 @@
         "GeneralPurpose"
       ],
       "metadata": {
-        "description": "Optional. The vCore service tier for the instance pool."
+        "description": "Conditional. The vCore service tier for the instance pool."
       }
     },
     "skuName": {
       "type": "string",
       "defaultValue": "GP_Gen5",
       "metadata": {
-        "description": "Optional. The SKU name for the instance pool."
+        "description": "Conditional. The SKU name for the instance pool."
       }
     },
     "enableTelemetry": {
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Enable/Disable usage telemetry for module."
+        "description": "Conditional. Enable/Disable usage telemetry for module."
       }
     },
     "capacity": {
       "type": "int",
       "defaultValue": 8,
       "metadata": {
-        "description": "Optional. Capacity of the particular SKU."
+        "description": "Conditional. Capacity of the particular SKU."
       }
     },
     "size": {
       "type": "string",
       "defaultValue": "8",
       "metadata": {
-        "description": "Optional. Size of the particular SKU"
+        "description": "Conditional. Size of the particular SKU"
       }
     }
   },
