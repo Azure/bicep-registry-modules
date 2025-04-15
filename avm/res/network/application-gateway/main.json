@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "8060557364150318560"
+      "templateHash": "458512009828846782"
     },
     "name": "Network Application Gateways",
     "description": "This module deploys a Network Application Gateway."
@@ -657,7 +657,7 @@
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Conditional. The resource ID of an associated firewall policy. Required if the SKU is 'WAF_v2'."
+        "description": "Conditional. The resource ID of an associated firewall policy. Required if the SKU is 'WAF_v2' and ignored if the SKU is 'Standard_v2' or 'Basic'."
       }
     },
     "frontendIPConfigurations": {
@@ -758,11 +758,7 @@
       "type": "string",
       "defaultValue": "WAF_v2",
       "allowedValues": [
-        "Standard_Small",
-        "Standard_Medium",
-        "Standard_Large",
-        "WAF_Medium",
-        "WAF_Large",
+        "Basic",
         "Standard_v2",
         "WAF_v2"
       ],
@@ -1015,7 +1011,7 @@
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "identity": "[variables('identity')]",
-      "properties": "[union(createObject('authenticationCertificates', parameters('authenticationCertificates'), 'autoscaleConfiguration', if(and(greater(parameters('autoscaleMaxCapacity'), 0), greaterOrEquals(parameters('autoscaleMinCapacity'), 0)), createObject('maxCapacity', parameters('autoscaleMaxCapacity'), 'minCapacity', parameters('autoscaleMinCapacity')), null()), 'backendAddressPools', parameters('backendAddressPools'), 'backendHttpSettingsCollection', parameters('backendHttpSettingsCollection'), 'backendSettingsCollection', parameters('backendSettingsCollection'), 'customErrorConfigurations', parameters('customErrorConfigurations'), 'enableHttp2', parameters('enableHttp2'), 'firewallPolicy', if(not(empty(parameters('firewallPolicyResourceId'))), createObject('id', parameters('firewallPolicyResourceId')), null()), 'forceFirewallPolicyAssociation', not(empty(parameters('firewallPolicyResourceId'))), 'frontendIPConfigurations', parameters('frontendIPConfigurations'), 'frontendPorts', parameters('frontendPorts'), 'gatewayIPConfigurations', parameters('gatewayIPConfigurations'), 'globalConfiguration', if(endsWith(parameters('sku'), 'v2'), createObject('enableRequestBuffering', parameters('enableRequestBuffering'), 'enableResponseBuffering', parameters('enableResponseBuffering')), null()), 'httpListeners', parameters('httpListeners'), 'loadDistributionPolicies', parameters('loadDistributionPolicies'), 'listeners', parameters('listeners'), 'privateLinkConfigurations', parameters('privateLinkConfigurations'), 'probes', parameters('probes'), 'redirectConfigurations', parameters('redirectConfigurations'), 'requestRoutingRules', parameters('requestRoutingRules'), 'routingRules', parameters('routingRules'), 'rewriteRuleSets', parameters('rewriteRuleSets'), 'sku', createObject('name', parameters('sku'), 'tier', if(endsWith(parameters('sku'), 'v2'), parameters('sku'), substring(parameters('sku'), 0, indexOf(parameters('sku'), '_'))), 'capacity', if(and(greater(parameters('autoscaleMaxCapacity'), 0), greaterOrEquals(parameters('autoscaleMinCapacity'), 0)), null(), parameters('capacity'))), 'sslCertificates', parameters('sslCertificates'), 'sslPolicy', if(not(equals(parameters('sslPolicyType'), 'Predefined')), createObject('cipherSuites', parameters('sslPolicyCipherSuites'), 'minProtocolVersion', parameters('sslPolicyMinProtocolVersion'), 'policyName', if(empty(parameters('sslPolicyName')), null(), parameters('sslPolicyName')), 'policyType', parameters('sslPolicyType')), createObject('policyName', if(empty(parameters('sslPolicyName')), null(), parameters('sslPolicyName')), 'policyType', parameters('sslPolicyType'))), 'sslProfiles', parameters('sslProfiles'), 'trustedClientCertificates', parameters('trustedClientCertificates'), 'trustedRootCertificates', parameters('trustedRootCertificates'), 'urlPathMaps', parameters('urlPathMaps')), if(parameters('enableFips'), createObject('enableFips', parameters('enableFips')), createObject()))]",
+      "properties": "[union(createObject('authenticationCertificates', parameters('authenticationCertificates'), 'autoscaleConfiguration', if(and(greater(parameters('autoscaleMaxCapacity'), 0), greaterOrEquals(parameters('autoscaleMinCapacity'), 0)), createObject('maxCapacity', parameters('autoscaleMaxCapacity'), 'minCapacity', parameters('autoscaleMinCapacity')), null()), 'backendAddressPools', parameters('backendAddressPools'), 'backendHttpSettingsCollection', parameters('backendHttpSettingsCollection'), 'backendSettingsCollection', parameters('backendSettingsCollection'), 'customErrorConfigurations', parameters('customErrorConfigurations'), 'enableHttp2', parameters('enableHttp2'), 'firewallPolicy', if(and(equals(parameters('sku'), 'WAF_v2'), not(empty(parameters('firewallPolicyResourceId')))), createObject('id', parameters('firewallPolicyResourceId')), null()), 'forceFirewallPolicyAssociation', and(equals(parameters('sku'), 'WAF_v2'), not(empty(parameters('firewallPolicyResourceId')))), 'frontendIPConfigurations', parameters('frontendIPConfigurations'), 'frontendPorts', parameters('frontendPorts'), 'gatewayIPConfigurations', parameters('gatewayIPConfigurations'), 'globalConfiguration', if(endsWith(parameters('sku'), 'v2'), createObject('enableRequestBuffering', parameters('enableRequestBuffering'), 'enableResponseBuffering', parameters('enableResponseBuffering')), null()), 'httpListeners', parameters('httpListeners'), 'loadDistributionPolicies', parameters('loadDistributionPolicies'), 'listeners', parameters('listeners'), 'privateLinkConfigurations', parameters('privateLinkConfigurations'), 'probes', parameters('probes'), 'redirectConfigurations', parameters('redirectConfigurations'), 'requestRoutingRules', parameters('requestRoutingRules'), 'routingRules', parameters('routingRules'), 'rewriteRuleSets', parameters('rewriteRuleSets'), 'sku', createObject('name', parameters('sku'), 'tier', parameters('sku'), 'capacity', if(and(greater(parameters('autoscaleMaxCapacity'), 0), greaterOrEquals(parameters('autoscaleMinCapacity'), 0)), null(), parameters('capacity'))), 'sslCertificates', parameters('sslCertificates'), 'sslPolicy', if(not(equals(parameters('sslPolicyType'), 'Predefined')), createObject('cipherSuites', parameters('sslPolicyCipherSuites'), 'minProtocolVersion', parameters('sslPolicyMinProtocolVersion'), 'policyName', if(empty(parameters('sslPolicyName')), null(), parameters('sslPolicyName')), 'policyType', parameters('sslPolicyType')), createObject('policyName', if(empty(parameters('sslPolicyName')), null(), parameters('sslPolicyName')), 'policyType', parameters('sslPolicyType'))), 'sslProfiles', parameters('sslProfiles'), 'trustedClientCertificates', parameters('trustedClientCertificates'), 'trustedRootCertificates', parameters('trustedRootCertificates'), 'urlPathMaps', parameters('urlPathMaps')), if(parameters('enableFips'), createObject('enableFips', parameters('enableFips')), createObject()))]",
       "zones": "[parameters('zones')]"
     },
     "applicationGateway_lock": {

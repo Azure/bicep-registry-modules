@@ -31,11 +31,323 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/application-gateway:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [Standard](#example-3-standard)
-- [WAF-aligned](#example-4-waf-aligned)
+- [Using only defaults](#example-2-using-only-defaults)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [Standard](#example-4-standard)
+- [WAF-aligned](#example-5-waf-aligned)
 
 ### Example 1: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module applicationGateway 'br/public:avm/res/network/application-gateway:<version>' = {
+  name: 'applicationGatewayDeployment'
+  params: {
+    // Required parameters
+    name: '<name>'
+    // Non-required parameters
+    backendAddressPools: [
+      {
+        name: 'backendAddressPool1'
+      }
+    ]
+    backendHttpSettingsCollection: [
+      {
+        name: 'backendHttpSettings1'
+        properties: {
+          cookieBasedAffinity: 'Disabled'
+          port: 80
+          protocol: 'Http'
+        }
+      }
+    ]
+    frontendIPConfigurations: [
+      {
+        name: 'frontendIPConfig1'
+        properties: {
+          publicIPAddress: {
+            id: '<id>'
+          }
+        }
+      }
+    ]
+    frontendPorts: [
+      {
+        name: 'frontendPort1'
+        properties: {
+          port: 80
+        }
+      }
+    ]
+    gatewayIPConfigurations: [
+      {
+        name: 'publicIPConfig1'
+        properties: {
+          subnet: {
+            id: '<id>'
+          }
+        }
+      }
+    ]
+    httpListeners: [
+      {
+        name: 'httpListener1'
+        properties: {
+          frontendIPConfiguration: {
+            id: '<id>'
+          }
+          frontendPort: {
+            id: '<id>'
+          }
+          hostName: 'www.contoso.com'
+          protocol: 'Http'
+        }
+      }
+    ]
+    location: '<location>'
+    requestRoutingRules: [
+      {
+        name: 'requestRoutingRule1'
+        properties: {
+          backendAddressPool: {
+            id: '<id>'
+          }
+          backendHttpSettings: {
+            id: '<id>'
+          }
+          httpListener: {
+            id: '<id>'
+          }
+          priority: 100
+          ruleType: 'Basic'
+        }
+      }
+    ]
+    sku: 'Basic'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "<name>"
+    },
+    // Non-required parameters
+    "backendAddressPools": {
+      "value": [
+        {
+          "name": "backendAddressPool1"
+        }
+      ]
+    },
+    "backendHttpSettingsCollection": {
+      "value": [
+        {
+          "name": "backendHttpSettings1",
+          "properties": {
+            "cookieBasedAffinity": "Disabled",
+            "port": 80,
+            "protocol": "Http"
+          }
+        }
+      ]
+    },
+    "frontendIPConfigurations": {
+      "value": [
+        {
+          "name": "frontendIPConfig1",
+          "properties": {
+            "publicIPAddress": {
+              "id": "<id>"
+            }
+          }
+        }
+      ]
+    },
+    "frontendPorts": {
+      "value": [
+        {
+          "name": "frontendPort1",
+          "properties": {
+            "port": 80
+          }
+        }
+      ]
+    },
+    "gatewayIPConfigurations": {
+      "value": [
+        {
+          "name": "publicIPConfig1",
+          "properties": {
+            "subnet": {
+              "id": "<id>"
+            }
+          }
+        }
+      ]
+    },
+    "httpListeners": {
+      "value": [
+        {
+          "name": "httpListener1",
+          "properties": {
+            "frontendIPConfiguration": {
+              "id": "<id>"
+            },
+            "frontendPort": {
+              "id": "<id>"
+            },
+            "hostName": "www.contoso.com",
+            "protocol": "Http"
+          }
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "requestRoutingRules": {
+      "value": [
+        {
+          "name": "requestRoutingRule1",
+          "properties": {
+            "backendAddressPool": {
+              "id": "<id>"
+            },
+            "backendHttpSettings": {
+              "id": "<id>"
+            },
+            "httpListener": {
+              "id": "<id>"
+            },
+            "priority": 100,
+            "ruleType": "Basic"
+          }
+        }
+      ]
+    },
+    "sku": {
+      "value": "Basic"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/application-gateway:<version>'
+
+// Required parameters
+param name = '<name>'
+// Non-required parameters
+param backendAddressPools = [
+  {
+    name: 'backendAddressPool1'
+  }
+]
+param backendHttpSettingsCollection = [
+  {
+    name: 'backendHttpSettings1'
+    properties: {
+      cookieBasedAffinity: 'Disabled'
+      port: 80
+      protocol: 'Http'
+    }
+  }
+]
+param frontendIPConfigurations = [
+  {
+    name: 'frontendIPConfig1'
+    properties: {
+      publicIPAddress: {
+        id: '<id>'
+      }
+    }
+  }
+]
+param frontendPorts = [
+  {
+    name: 'frontendPort1'
+    properties: {
+      port: 80
+    }
+  }
+]
+param gatewayIPConfigurations = [
+  {
+    name: 'publicIPConfig1'
+    properties: {
+      subnet: {
+        id: '<id>'
+      }
+    }
+  }
+]
+param httpListeners = [
+  {
+    name: 'httpListener1'
+    properties: {
+      frontendIPConfiguration: {
+        id: '<id>'
+      }
+      frontendPort: {
+        id: '<id>'
+      }
+      hostName: 'www.contoso.com'
+      protocol: 'Http'
+    }
+  }
+]
+param location = '<location>'
+param requestRoutingRules = [
+  {
+    name: 'requestRoutingRule1'
+    properties: {
+      backendAddressPool: {
+        id: '<id>'
+      }
+      backendHttpSettings: {
+        id: '<id>'
+      }
+      httpListener: {
+        id: '<id>'
+      }
+      priority: 100
+      ruleType: 'Basic'
+    }
+  }
+]
+param sku = 'Basic'
+```
+
+</details>
+<p>
+
+### Example 2: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -346,7 +658,7 @@ param requestRoutingRules = [
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
+### Example 3: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -1710,7 +2022,7 @@ param zones = [
 </details>
 <p>
 
-### Example 3: _Standard_
+### Example 4: _Standard_
 
 This instance deploys the module using the Standard_v2 sku.
 
@@ -2371,7 +2683,7 @@ param tags = {
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
+### Example 5: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -3657,7 +3969,7 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`firewallPolicyResourceId`](#parameter-firewallpolicyresourceid) | string | The resource ID of an associated firewall policy. Required if the SKU is 'WAF_v2'. |
+| [`firewallPolicyResourceId`](#parameter-firewallpolicyresourceid) | string | The resource ID of an associated firewall policy. Required if the SKU is 'WAF_v2' and ignored if the SKU is 'Standard_v2' or 'Basic'. |
 
 **Optional parameters**
 
@@ -3716,7 +4028,7 @@ Name of the Application Gateway.
 
 ### Parameter: `firewallPolicyResourceId`
 
-The resource ID of an associated firewall policy. Required if the SKU is 'WAF_v2'.
+The resource ID of an associated firewall policy. Required if the SKU is 'WAF_v2' and ignored if the SKU is 'Standard_v2' or 'Basic'.
 
 - Required: No
 - Type: string
@@ -4657,12 +4969,8 @@ The name of the SKU for the Application Gateway.
 - Allowed:
   ```Bicep
   [
-    'Standard_Large'
-    'Standard_Medium'
-    'Standard_Small'
+    'Basic'
     'Standard_v2'
-    'WAF_Large'
-    'WAF_Medium'
     'WAF_v2'
   ]
   ```
