@@ -393,7 +393,7 @@ function Get-ParentFolderPathList {
     $Item = Get-Item -Path $Path
 
     if ($Item.FullName -ne $UpperBoundPath) {
-        return Get-ParentFolderPathList -Path $Item.Parent.FullName -UpperBoundPath $UpperBoundPath -Filter $Filter
+        Get-ParentFolderPathList -Path $Item.Parent.FullName -UpperBoundPath $UpperBoundPath -Filter $Filter
 
         switch ($Filter) {
             'OnlyModules' {
