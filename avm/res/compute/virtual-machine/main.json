@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "16869973444983572505"
+      "templateHash": "8630540528716561176"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs."
@@ -2286,7 +2286,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.34.44.8038",
-              "templateHash": "4174925893451899108"
+              "templateHash": "5750436779496507035"
             }
           },
           "definitions": {
@@ -3296,7 +3296,7 @@
                 "name": "networkInterface_publicIPAddresses",
                 "count": "[length(parameters('ipConfigurations'))]"
               },
-              "condition": "[and(contains(parameters('ipConfigurations')[copyIndex()], 'pipConfiguration'), not(contains(coalesce(tryGet(parameters('ipConfigurations')[copyIndex()], 'pipConfiguration'), createObject()), 'publicIPAddressResourceId')))]",
+              "condition": "[and(not(empty(tryGet(parameters('ipConfigurations')[copyIndex()], 'pipConfiguration'))), empty(tryGet(tryGet(parameters('ipConfigurations')[copyIndex()], 'pipConfiguration'), 'publicIPAddressResourceId')))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('{0}-publicIP-{1}', deployment().name, copyIndex())]",
@@ -4046,7 +4046,7 @@
                       {
                         "name": "value",
                         "count": "[length(parameters('ipConfigurations'))]",
-                        "input": "[createObject('name', if(not(empty(parameters('ipConfigurations')[copyIndex('value')].name)), parameters('ipConfigurations')[copyIndex('value')].name, null()), 'privateIPAllocationMethod', tryGet(parameters('ipConfigurations')[copyIndex('value')], 'privateIPAllocationMethod'), 'privateIPAddress', tryGet(parameters('ipConfigurations')[copyIndex('value')], 'privateIPAddress'), 'publicIPAddressResourceId', if(not(empty(tryGet(parameters('ipConfigurations')[copyIndex('value')], 'pipConfiguration'))), if(not(contains(coalesce(tryGet(parameters('ipConfigurations')[copyIndex('value')], 'pipConfiguration'), createObject()), 'publicIPAddressResourceId')), resourceId('Microsoft.Network/publicIPAddresses', coalesce(tryGet(tryGet(parameters('ipConfigurations')[copyIndex('value')], 'pipConfiguration'), 'name'), format('{0}{1}', parameters('virtualMachineName'), tryGet(tryGet(parameters('ipConfigurations')[copyIndex('value')], 'pipConfiguration'), 'publicIpNameSuffix')))), tryGet(parameters('ipConfigurations')[copyIndex('value')], 'pipConfiguration', 'publicIPAddressResourceId')), null()), 'subnetResourceId', parameters('ipConfigurations')[copyIndex('value')].subnetResourceId, 'loadBalancerBackendAddressPools', tryGet(parameters('ipConfigurations')[copyIndex('value')], 'loadBalancerBackendAddressPools'), 'applicationSecurityGroups', tryGet(parameters('ipConfigurations')[copyIndex('value')], 'applicationSecurityGroups'), 'applicationGatewayBackendAddressPools', tryGet(parameters('ipConfigurations')[copyIndex('value')], 'applicationGatewayBackendAddressPools'), 'gatewayLoadBalancer', tryGet(parameters('ipConfigurations')[copyIndex('value')], 'gatewayLoadBalancer'), 'loadBalancerInboundNatRules', tryGet(parameters('ipConfigurations')[copyIndex('value')], 'loadBalancerInboundNatRules'), 'privateIPAddressVersion', tryGet(parameters('ipConfigurations')[copyIndex('value')], 'privateIPAddressVersion'), 'virtualNetworkTaps', tryGet(parameters('ipConfigurations')[copyIndex('value')], 'virtualNetworkTaps'))]"
+                        "input": "[createObject('name', tryGet(parameters('ipConfigurations')[copyIndex('value')], 'name'), 'privateIPAllocationMethod', tryGet(parameters('ipConfigurations')[copyIndex('value')], 'privateIPAllocationMethod'), 'privateIPAddress', tryGet(parameters('ipConfigurations')[copyIndex('value')], 'privateIPAddress'), 'publicIPAddressResourceId', if(not(empty(tryGet(parameters('ipConfigurations')[copyIndex('value')], 'pipConfiguration'))), if(not(contains(coalesce(tryGet(parameters('ipConfigurations')[copyIndex('value')], 'pipConfiguration'), createObject()), 'publicIPAddressResourceId')), resourceId('Microsoft.Network/publicIPAddresses', coalesce(tryGet(tryGet(parameters('ipConfigurations')[copyIndex('value')], 'pipConfiguration'), 'name'), format('{0}{1}', parameters('virtualMachineName'), tryGet(tryGet(parameters('ipConfigurations')[copyIndex('value')], 'pipConfiguration'), 'publicIpNameSuffix')))), tryGet(parameters('ipConfigurations')[copyIndex('value')], 'pipConfiguration', 'publicIPAddressResourceId')), null()), 'subnetResourceId', parameters('ipConfigurations')[copyIndex('value')].subnetResourceId, 'loadBalancerBackendAddressPools', tryGet(parameters('ipConfigurations')[copyIndex('value')], 'loadBalancerBackendAddressPools'), 'applicationSecurityGroups', tryGet(parameters('ipConfigurations')[copyIndex('value')], 'applicationSecurityGroups'), 'applicationGatewayBackendAddressPools', tryGet(parameters('ipConfigurations')[copyIndex('value')], 'applicationGatewayBackendAddressPools'), 'gatewayLoadBalancer', tryGet(parameters('ipConfigurations')[copyIndex('value')], 'gatewayLoadBalancer'), 'loadBalancerInboundNatRules', tryGet(parameters('ipConfigurations')[copyIndex('value')], 'loadBalancerInboundNatRules'), 'privateIPAddressVersion', tryGet(parameters('ipConfigurations')[copyIndex('value')], 'privateIPAddressVersion'), 'virtualNetworkTaps', tryGet(parameters('ipConfigurations')[copyIndex('value')], 'virtualNetworkTaps'))]"
                       }
                     ]
                   },

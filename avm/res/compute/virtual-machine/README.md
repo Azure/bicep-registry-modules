@@ -7984,7 +7984,8 @@ dataDisks: [
 
 Comments:
 - The field `nicSuffix` and `subnetResourceId` are mandatory.
-- If `enablePublicIP` is set to true, then `publicIpNameSuffix` is also mandatory.
+- Skipping the `pipConfiguration` or setting it to `null` or `{}` will prevent the creation of a public IP address.
+- If `pipConfiguration` is provided and is not null or empty object, then `publicIpNameSuffix` is also mandatory.
 - Each IP config needs to have the mandatory field `name`.
 - If not disabled, `enableAcceleratedNetworking` is considered `true` by default and requires the VM to be deployed with a supported OS and VM size.
 
