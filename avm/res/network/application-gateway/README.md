@@ -393,7 +393,7 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
       {
         name: 'frontendPort1'
         properties: {
-          port: 443
+          port: 80
         }
       }
     ]
@@ -501,7 +501,7 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:<versio
         {
           "name": "frontendPort1",
           "properties": {
-            "port": 443
+            "port": 80
           }
         }
       ]
@@ -605,7 +605,7 @@ param frontendPorts = [
   {
     name: 'frontendPort1'
     properties: {
-      port: 443
+      port: 80
     }
   }
 ]
