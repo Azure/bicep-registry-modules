@@ -94,6 +94,20 @@ module testDeployment '../../../main.bicep' = [
                 'none'
               ]
             }
+            vnetRoutes: {
+              staticRoutes: [
+                {
+                  name: 'route1'
+                  addressPrefixes: [
+                    '10.150.0.0/24'
+                  ]
+                  nextHopIpAddress: '10.150.0.5'
+                }
+              ]
+              staticRoutesConfig: {
+                vnetLocalRouteOverrideCriteria: 'Contains'
+              }
+            }
           }
         }
       ]
