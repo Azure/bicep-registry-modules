@@ -1,5 +1,5 @@
 metadata name = 'SQL Server Instance Pool'
-metadata description = 'Required. This module deploys an Azure SQL Server Instance Pool.'
+metadata description = 'Purpouse. This module deploys an Azure SQL Server Instance Pool.'
 
 @description('Required. The name of the instance pool.')
 param name string
@@ -47,17 +47,17 @@ param vCores int = 8
 ])
 param tier string = 'GeneralPurpose'
 
-@description('Conditional. The SKU name for the instance pool.')
+@description('Required. The SKU name for the instance pool.')
 param skuName string = 'GP_Gen5'
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 @description('Conditional. Capacity of the particular SKU.')
-param capacity int = 8
+param capacity int?
 
 @description('Conditional. Size of the particular SKU')
-param size string = '8'
+param size string?
 
 resource instancePool 'Microsoft.Sql/instancePools@2024-05-01-preview' = {
   name: name
