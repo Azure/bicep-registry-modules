@@ -13,7 +13,7 @@ param tags object?
 @description('Required. The subnet resource ID for the instance pool.')
 param subnetResourceId string
 
-@description('Conditional. The license type to apply for this database.')
+@description('Required. The license type to apply for this database.')
 @allowed([
   'BasePrice'
   'LicenseIncluded'
@@ -23,7 +23,7 @@ param licenseType string = 'BasePrice'
 @description('Conditional. If the service has different generations of hardware, for the same SKU, then that can be captured here.')
 param skuFamily string = 'Gen5'
 
-@description('Conditional. The number of vCores for the instance pool.')
+@description('Required. The number of vCores for the instance pool.')
 @allowed([
   8
   16
@@ -50,7 +50,7 @@ param tier string = 'GeneralPurpose'
 @description('Conditional. The SKU name for the instance pool.')
 param skuName string = 'GP_Gen5'
 
-@description('Conditional. Enable/Disable usage telemetry for module.')
+@description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 @description('Conditional. Capacity of the particular SKU.')
