@@ -213,9 +213,9 @@ module virtualHub_hubVirtualNetworkConnections 'hubVirtualNetworkConnection/main
       remoteVirtualNetworkResourceId: virtualNetworkConnection.remoteVirtualNetworkResourceId
       routingConfiguration: virtualNetworkConnection.?routingConfiguration
     }
-    dependsOn: [
+    /*dependsOn: [
       virtualHub_routeTables
-    ]
+    ]*/
   }
 ]
 
