@@ -153,6 +153,20 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
               'none'
             ]
           }
+          vnetRoutes: {
+            staticRoutes: [
+              {
+                addressPrefixes: [
+                  '10.150.0.0/24'
+                ]
+                name: 'route1'
+                nextHopIpAddress: '10.150.0.5'
+              }
+            ]
+            staticRoutesConfig: {
+              vnetLocalRouteOverrideCriteria: 'Contains'
+            }
+          }
         }
       }
     ]
@@ -233,6 +247,20 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
               "labels": [
                 "none"
               ]
+            },
+            "vnetRoutes": {
+              "staticRoutes": [
+                {
+                  "addressPrefixes": [
+                    "10.150.0.0/24"
+                  ],
+                  "name": "route1",
+                  "nextHopIpAddress": "10.150.0.5"
+                }
+              ],
+              "staticRoutesConfig": {
+                "vnetLocalRouteOverrideCriteria": "Contains"
+              }
             }
           }
         }
@@ -314,6 +342,20 @@ param hubVirtualNetworkConnections = [
         labels: [
           'none'
         ]
+      }
+      vnetRoutes: {
+        staticRoutes: [
+          {
+            addressPrefixes: [
+              '10.150.0.0/24'
+            ]
+            name: 'route1'
+            nextHopIpAddress: '10.150.0.5'
+          }
+        ]
+        staticRoutesConfig: {
+          vnetLocalRouteOverrideCriteria: 'Contains'
+        }
       }
     }
   }
