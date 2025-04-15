@@ -807,7 +807,7 @@ module createLzPimActiveRoleAssignmentsSub 'br/public:avm/ptn/authorization/pim-
         scheduleInfo: assignment.scheduleInfo
       }
       principalId: assignment.principalId
-      requestType: assignment.?requestType ?? 'AdminAssign'
+      requestType: assignment.?requestType ?? 'AdminUpdate'
       roleDefinitionIdOrName: assignment.definition
       justification: assignment.?justification ?? null
       enableTelemetry: enableTelemetry
@@ -846,7 +846,7 @@ module createLzPimEligibleRoleAssignmentsSub 'br/public:avm/ptn/authorization/pi
       }
       subscriptionId: subscriptionId
       principalId: assignment.principalId
-      requestType: assignment.?requestType ?? 'AdminAssign'
+      requestType: assignment.?requestType ?? 'AdminUpdate'
       roleDefinitionIdOrName: assignment.definition
       justification: assignment.?justification ?? null
       enableTelemetry: enableTelemetry
@@ -886,7 +886,7 @@ module createLzPimEligibleRoleAssignmentsRsgsSelf 'br/public:avm/ptn/authorizati
         scheduleInfo: assignment.scheduleInfo
       }
       subscriptionId: subscriptionId
-      requestType: assignment.?requestType ?? 'AdminAssign'
+      requestType: assignment.?requestType ?? 'AdminUpdate'
       resourceGroupName: split(assignment.relativeScope, '/')[2]
       principalId: assignment.principalId
       roleDefinitionIdOrName: assignment.definition
@@ -928,7 +928,7 @@ module createLzPimActiveRoleAssignmentsRsgsSelf 'br/public:avm/ptn/authorization
         scheduleInfo: assignment.scheduleInfo
       }
       subscriptionId: subscriptionId
-      requestType: assignment.?requestType ?? 'AdminAssign'
+      requestType: assignment.?requestType ?? 'AdminUpdate'
       resourceGroupName: split(assignment.relativeScope, '/')[2]
       principalId: assignment.principalId
       roleDefinitionIdOrName: assignment.definition
@@ -968,7 +968,7 @@ module createLzEliglblePimRoleAssignmentsRsgsNotSelf 'br/public:avm/ptn/authoriz
       }
       subscriptionId: subscriptionId
       principalId: assignment.principalId
-      requestType: assignment.?requestType ?? 'AdminAssign'
+      requestType: assignment.?requestType ?? 'AdminUpdate'
       roleDefinitionIdOrName: assignment.definition
       justification: assignment.?justification ?? null
       enableTelemetry: enableTelemetry
@@ -1006,7 +1006,7 @@ module createLzActivePimRoleAssignmentsRsgsNotSelf 'br/public:avm/ptn/authorizat
       }
       subscriptionId: subscriptionId
       principalId: assignment.principalId
-      requestType: assignment.?requestType ?? 'AdminAssign'
+      requestType: assignment.?requestType ?? 'AdminUpdate'
       roleDefinitionIdOrName: assignment.definition
       justification: assignment.?justification ?? null
       enableTelemetry: enableTelemetry

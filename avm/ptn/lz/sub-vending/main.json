@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "2715646121176899410"
+      "templateHash": "10318004586526838056"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -1499,7 +1499,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.34.44.8038",
-              "templateHash": "18382732073254731113"
+              "templateHash": "874881940488545006"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -9273,7 +9273,7 @@
                     "value": "[variables('pimRoleAssignmentsSubscription')[copyIndex()].principalId]"
                   },
                   "requestType": {
-                    "value": "[coalesce(tryGet(variables('pimRoleAssignmentsSubscription')[copyIndex()], 'requestType'), 'AdminAssign')]"
+                    "value": "[coalesce(tryGet(variables('pimRoleAssignmentsSubscription')[copyIndex()], 'requestType'), 'AdminUpdate')]"
                   },
                   "roleDefinitionIdOrName": {
                     "value": "[variables('pimRoleAssignmentsSubscription')[copyIndex()].definition]"
@@ -11096,7 +11096,7 @@
                     "value": "[variables('pimRoleAssignmentsSubscription')[copyIndex()].principalId]"
                   },
                   "requestType": {
-                    "value": "[coalesce(tryGet(variables('pimRoleAssignmentsSubscription')[copyIndex()], 'requestType'), 'AdminAssign')]"
+                    "value": "[coalesce(tryGet(variables('pimRoleAssignmentsSubscription')[copyIndex()], 'requestType'), 'AdminUpdate')]"
                   },
                   "roleDefinitionIdOrName": {
                     "value": "[variables('pimRoleAssignmentsSubscription')[copyIndex()].definition]"
@@ -12913,7 +12913,7 @@
                     "value": "[parameters('subscriptionId')]"
                   },
                   "requestType": {
-                    "value": "[coalesce(tryGet(variables('pimRoleAssignmentsResourceGroupSelf')[copyIndex()], 'requestType'), 'AdminAssign')]"
+                    "value": "[coalesce(tryGet(variables('pimRoleAssignmentsResourceGroupSelf')[copyIndex()], 'requestType'), 'AdminUpdate')]"
                   },
                   "resourceGroupName": {
                     "value": "[split(variables('pimRoleAssignmentsResourceGroupSelf')[copyIndex()].relativeScope, '/')[2]]"
@@ -14739,7 +14739,7 @@
                     "value": "[parameters('subscriptionId')]"
                   },
                   "requestType": {
-                    "value": "[coalesce(tryGet(variables('pimRoleAssignmentsResourceGroupSelf')[copyIndex()], 'requestType'), 'AdminAssign')]"
+                    "value": "[coalesce(tryGet(variables('pimRoleAssignmentsResourceGroupSelf')[copyIndex()], 'requestType'), 'AdminUpdate')]"
                   },
                   "resourceGroupName": {
                     "value": "[split(variables('pimRoleAssignmentsResourceGroupSelf')[copyIndex()].relativeScope, '/')[2]]"
@@ -16568,7 +16568,7 @@
                     "value": "[variables('pimRoleAssignmentsResourceGroupNotSelf')[copyIndex()].principalId]"
                   },
                   "requestType": {
-                    "value": "[coalesce(tryGet(variables('pimRoleAssignmentsResourceGroupNotSelf')[copyIndex()], 'requestType'), 'AdminAssign')]"
+                    "value": "[coalesce(tryGet(variables('pimRoleAssignmentsResourceGroupNotSelf')[copyIndex()], 'requestType'), 'AdminUpdate')]"
                   },
                   "roleDefinitionIdOrName": {
                     "value": "[variables('pimRoleAssignmentsResourceGroupNotSelf')[copyIndex()].definition]"
@@ -18388,7 +18388,7 @@
                     "value": "[variables('pimRoleAssignmentsResourceGroupNotSelf')[copyIndex()].principalId]"
                   },
                   "requestType": {
-                    "value": "[coalesce(tryGet(variables('pimRoleAssignmentsResourceGroupNotSelf')[copyIndex()], 'requestType'), 'AdminAssign')]"
+                    "value": "[coalesce(tryGet(variables('pimRoleAssignmentsResourceGroupNotSelf')[copyIndex()], 'requestType'), 'AdminUpdate')]"
                   },
                   "roleDefinitionIdOrName": {
                     "value": "[variables('pimRoleAssignmentsResourceGroupNotSelf')[copyIndex()].definition]"
