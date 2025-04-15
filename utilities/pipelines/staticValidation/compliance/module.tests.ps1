@@ -195,7 +195,6 @@ Describe 'File/folder tests' -Tag 'Modules' {
                 $errorMessage = "Failed to download telemetry CSV file from [$telemetryCsvLink] due to [{0}]." -f $_.Exception.Message
                 Write-Error $errorMessage
                 throw $errorMessage
-                # Set-ItResult -Skipped -Because $errorMessage
             }
             $csvData = $rawData.Content | ConvertFrom-Csv -Delimiter ','
 
@@ -210,7 +209,6 @@ Describe 'File/folder tests' -Tag 'Modules' {
             if (-not $relevantCSVRow) {
                 $errorMessage = "Failed to identify module [$moduleName] in AVM CSV."
                 throw $errorMessage
-                # Set-ItResult -Skipped -Because $errorMessage
             }
             $isOrphaned = [String]::IsNullOrEmpty($relevantCSVRow.PrimaryModuleOwnerGHHandle)
 
@@ -1048,7 +1046,6 @@ Describe 'Module tests' -Tag 'Module' {
                     $errorMessage = "Failed to download telemetry CSV file from [$telemetryCsvLink] due to [{0}]." -f $_.Exception.Message
                     Write-Error $errorMessage
                     throw $errorMessage
-                    # Set-ItResult -Skipped -Because $errorMessage
                 }
                 $csvData = $rawData.Content | ConvertFrom-Csv -Delimiter ','
 
@@ -1064,7 +1061,6 @@ Describe 'Module tests' -Tag 'Module' {
                     $errorMessage = "Failed to identify module [$moduleName] in AVM CSV."
                     Write-Error $errorMessage
                     throw $errorMessage
-                    # Set-ItResult -Skipped -Because $errorMessage
                 }
                 $expectedTelemetryIdentifier = $relevantCSVRow.TelemetryIdPrefix
 
