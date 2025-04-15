@@ -391,24 +391,31 @@ function Get-ParentFolderPathList {
     )
 
     $Item = Get-Item -Path $Path
+    $result = @()
 
     if ($Item.FullName -ne $UpperBoundPath) {
-        Get-ParentFolderPathList -Path $Item.Parent.FullName -UpperBoundPath $UpperBoundPath -Filter $Filter
+
+        $result += Get-ParentFolderPathList -Path $Item.Parent.FullName -UpperBoundPath $UpperBoundPath -Filter $Filter
 
         switch ($Filter) {
             'OnlyModules' {
                 if (Test-Path (Join-Path -Path $Item.FullName 'main.json')) {
-                    return $Item.FullName
+                    $result += $Item.FullName
                 }
+                break
             }
             'OnlyVersionedModules' {
                 if ((Test-Path (Join-Path -Path $Item.FullName 'version.json')) -and (Test-Path (Join-Path -Path $Item.FullName 'main.json'))) {
-                    return $Item.FullName
+                    $result += $Item.FullName
                 }
+                break
             }
             'All' {
-                return $Item.FullName
+                $result += $Item.FullName
+                break
             }
         }
     }
+
+    return $result
 }
