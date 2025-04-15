@@ -343,65 +343,72 @@ function Get-WorkflowEnvVariablesAsObject {
 }
 
 <#
-.SYNOPSIS
-Return a list of all parent folder paths up to 'res', 'ptn' or 'utl'
+Get a list of all versioned parents of a module
 
 .DESCRIPTION
-Return a list of all parent folder paths up to 'res', 'ptn' or 'utl'
+Get a list of all versioned parents of a module. The function will recursively search the parent directories of the given path until it finds a directory containing a version.json file or reaches the root path.
+The function will return a list of all the directories in the parent hierarchy that contain a version.json file, including the given path.
+The function will return the list in the order from the root path to the given path.
 
-.PARAMETER CurrentFolderPath
-Mandatory. The path of the folder to get the parent folder paths from
+.PARAMETER Path
+Mandatory. The path of the module to search for versioned parents.
+
+.PARAMETER UpperBoundPath
+Optional. The root path to stop the search at. The function will not search above this path.
 
 .PARAMETER Filter
-Optional. Only include module folders in the list (i.e., modules with a `main.json` file), or versioned modules folders (i.e., modules with both `main.json` and `version.json` files). The default is to include all folders)
+Optional. Only include module folders in the list (i.e., modules with a `main.json` file), or versioned modules folders (i.e., modules with `version.json` files). The default is to include all folders).
 
 .EXAMPLE
-Get-ParentFoldersList -CurrentFolderPath '.\avm\res\storage\storage-account\blob-service\container\immutability-policy'
+Get-ParentFolderPathList -Path 'C:/bicep-registry-modules/avm/res/storage/storage-account/blob-service/container/immutability-policy'
 
 Get all parent folders of the 'immutability-policy' folder up to 'res'. Returns
+
+- <repoPath>\avm\res\storage
+- <repoPath>\avm\res\storage\storage-account
+- <repoPath>\avm\res\storage\storage-account\blob-service
 - <repoPath>\avm\res\storage\storage-account\blob-service\container
-- <repoPath>\fork-AlexanderSehr\avm\res\storage\storage-account\blob-service
-- <repoPath>\fork-AlexanderSehr\avm\res\storage\storage-account
-- <repoPath>\fork-AlexanderSehr\avm\res\storage
 
 .EXAMPLE
-Get-ParentFoldersList -CurrentFolderPath '.\avm\res\storage\storage-account\blob-service\container\immutability-policy' -Filter 'OnlyModules'
+Get-ParentFolderPathList -Path 'C:/bicep-registry-modules/avm/res/storage/storage-account/blob-service/container/immutability-policy' -RootPath 'C:/bicep-registry-modules/avm/res' -Filter 'OnlyVersionedModules'
 
-Get all parent module folders of the 'immutability-policy' folder up to 'res'. Returns
-- <repoPath>\avm\res\storage\storage-account\blob-service\container
-- <repoPath>\fork-AlexanderSehr\avm\res\storage\storage-account\blob-service
-- <repoPath>\fork-AlexanderSehr\avm\res\storage\storage-account
+Get all versioned parent module folders of the 'immutability-policy' folder up to 'res'. Returns, e.g.,
+- <repoPath>\avm\res\storage\storage-account
 #>
-function Get-ParentFoldersList {
-  param (
-    [Parameter(Mandatory = $true)]
-    [string] $CurrentFolderPath,
+function Get-ParentFolderPathList {
 
-    [Parameter(Mandatory = $false)]
-    [ValidateSet('OnlyModules', 'OnlyVersionedModules')]
-    [string] $Filter
-  )
+    param
+    (
+        [Parameter(Mandatory = $true)]
+        [string] $Path,
 
-  $parentFolderPathsList = [System.Collections.ArrayList]@()
-  $currentPath = Split-Path -Path $CurrentFolderPath -Parent
+        [Parameter(Mandatory = $false)]
+        [string] $UpperBoundPath = $repoRootPath,
 
-  # Collect
-  while ((Split-Path $currentPath -Leaf) -notIn @('res', 'ptn', 'utl')) {
-    $parentFolderPathsList += $currentPath
-    $currentPath = Split-Path -Path $currentPath -Parent
-  }
+        [Parameter(Mandatory = $false)]
+        [ValidateSet('OnlyModules', 'OnlyVersionedModules', 'All')]
+        [string] $Filter = 'All'
+    )
 
-  # Filter
-  if ($Filter) {
-    $parentFolderPathsList = $parentFolderPathsList | Where-Object {
-      $filesInFolder = (Get-ChildItem -Path $_ -File).Name
-      if ($Filter -eq 'OnlyModules') {
-        $filesInFolder -contains 'main.json'
-      } elseif ($Filter -eq 'OnlyVersionedModules') {
-        $filesInFolder -contains 'main.json' -and
-        $filesInFolder -contains 'version.json'
-      }
+    $Item = Get-Item -Path $Path
+
+    if ($Item.FullName -ne $UpperBoundPath) {
+        Get-ParentFolderPathList -Path $Item.Parent.FullName -UpperBoundPath $UpperBoundPath -Filter $Filter
+
+        switch ($Filter) {
+            'OnlyModules' {
+                if (Test-Path (Join-Path -Path $Item.FullName 'main.json')) {
+                    return $Item.FullName
+                }
+            }
+            'OnlyVersionedModules' {
+                if ((Test-Path (Join-Path -Path $Item.FullName 'version.json')) -and (Test-Path (Join-Path -Path $Item.FullName 'main.json'))) {
+                    return $Item.FullName
+                }
+            }
+            'All' {
+                return $Item.FullName
+            }
+        }
     }
-  }
-  return $parentFolderPathsList
 }
