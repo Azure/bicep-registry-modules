@@ -90,12 +90,13 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
 // ========== Network Security Groups ========== //
 
 module networkSecurityGroupDefault 'br/public:avm/res/network/network-security-group:0.5.1' = {
-  name: 'avm.ptn.sa.macae.network-network-security-group'
+  name: 'avm.ptn.sa.macae.network-network-security-group-default'
   params: {
-    name: '${solutionPrefix}nsgr'
+    name: '${solutionPrefix}nsgrdflt'
     location: solutionLocation
     tags: tags
     enableTelemetry: enableTelemetry
+    diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
     securityRules: [
       // {
       //   name: 'DenySshRdpOutbound'
@@ -124,6 +125,7 @@ module networkSecurityGroupContainers 'br/public:avm/res/network/network-securit
     location: solutionLocation
     tags: tags
     enableTelemetry: enableTelemetry
+    diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
     securityRules: [
       //CONFIGURE
     ]
@@ -257,7 +259,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.13.0' = {
     }
     //patchMode: virtualMachineConfiguration.?patchMode
     osType: 'Windows'
-    //encryptionAtHost: true //The property 'securityProfile.encryptionAtHost' is not valid because the 'Microsoft.Compute/EncryptionAtHost' feature is not enabled for this subscription.
+    encryptionAtHost: false //The property 'securityProfile.encryptionAtHost' is not valid because the 'Microsoft.Compute/EncryptionAtHost' feature is not enabled for this subscription.
     vmSize: 'Standard_D2s_v3'
     zone: 0
     extensionAadJoinConfig: {
