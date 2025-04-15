@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-sql.instancepool-${serviceSh
 param serviceShort string = 'sipmin'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
-param namePrefix string = '#_namePrefix_#'
+param namePrefix string = 'bep'
 
 // Note, we set the location of the NetworkWatcherRG to avoid conflicts with the already existing NetworkWatcherRG
 #disable-next-line no-hardcoded-location
