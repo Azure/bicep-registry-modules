@@ -206,7 +206,7 @@ param deploymentScriptManagedIdentityName string
 param deploymentScriptStorageAccountName string
 
 @sys.description('Optional. The number of blank ARM deployments to create sequentially to introduce a delay to the Subscription being moved to the target Management Group being, if set, to allow for background platform RBAC inheritance to occur.')
-param managementGroupAssociationDelayCount int = 15
+param managementGroupAssociationDelayCount int = 30
 
 // VARIABLES
 
