@@ -182,7 +182,7 @@ import { aadProfileType } from 'br/public:avm/res/container-service/managed-clus
 param aadProfile aadProfileType?
 
 var systemPoolsConfig = !empty(systemPoolConfig)
-  ? systemPoolConfig
+  ? systemPoolConfig!
   : [union({ name: 'npsystem', mode: 'System' }, nodePoolBase, nodePoolPresets[systemPoolSize])]
 
 var agentPoolsConfig = !empty(agentPoolConfig)
