@@ -681,7 +681,7 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:0.5.1' 
     ]
     backendHttpSettingsCollection: [
       {
-        name: 'appServiceBackendHttpSettings'
+        name: 'appServiceBackendHttpsSettings'
         properties: {
           cookieBasedAffinity: 'Disabled'
           pickHostNameFromBackendAddress: true
@@ -750,13 +750,13 @@ module applicationGateway 'br/public:avm/res/network/application-gateway:0.5.1' 
     ]
     requestRoutingRules: [
       {
-        name: 'public443-appServiceBackendAddressPool-appServiceBackendHttpSettings'
+        name: 'public443-appServiceBackendAddressPool-appServiceBackendHttpsSettings'
         properties: {
           backendAddressPool: {
             id: '${applicationGatewayExpectedResourceId}/backendAddressPools/appServiceBackendAddressPool'
           }
           backendHttpSettings: {
-            id: '${applicationGatewayExpectedResourceId}/backendHttpSettingsCollection/appServiceBackendHttpSettings'
+            id: '${applicationGatewayExpectedResourceId}/backendHttpSettingsCollection/appServiceBackendHttpsSettings'
           }
           httpListener: {
             id: '${applicationGatewayExpectedResourceId}/httpListeners/public443'

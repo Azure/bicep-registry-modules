@@ -1,7 +1,7 @@
 module testDeployment '../../main.waf-aligned.bicep' = {
   name: 'test-macae-waf-aligned'
   params: {
-    solutionPrefix: 'macaewaf006'
+    solutionPrefix: 'macaewaf007'
     solutionLocation: 'australiaeast'
     virtualMachineConfiguration: {
       adminUsername: 'adminuser'
