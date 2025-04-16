@@ -1,11 +1,16 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.1-experimental",
   "contentVersion": "1.0.0.0",
   "metadata": {
+    "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
+    "_EXPERIMENTAL_FEATURES_ENABLED": [
+      "Extensibility"
+    ],
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "13496627960628082971"
+      "version": "0.33.93.31351",
+      "templateHash": "3247926101132633902"
     },
     "name": "DBforMySQL Flexible Server Databases",
     "description": "This module deploys a DBforMySQL Flexible Server Database."
@@ -38,17 +43,23 @@
       }
     }
   },
-  "resources": [
-    {
+  "resources": {
+    "flexibleServer": {
+      "existing": true,
+      "type": "Microsoft.DBforMySQL/flexibleServers",
+      "apiVersion": "2023-12-30",
+      "name": "[parameters('flexibleServerName')]"
+    },
+    "database": {
       "type": "Microsoft.DBforMySQL/flexibleServers/databases",
-      "apiVersion": "2023-06-30",
+      "apiVersion": "2023-12-30",
       "name": "[format('{0}/{1}', parameters('flexibleServerName'), parameters('name'))]",
       "properties": {
         "collation": "[if(not(empty(parameters('collation'))), parameters('collation'), null())]",
         "charset": "[if(not(empty(parameters('charset'))), parameters('charset'), null())]"
       }
     }
-  ],
+  },
   "outputs": {
     "name": {
       "type": "string",

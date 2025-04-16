@@ -17,7 +17,7 @@ resource flexibleServer 'Microsoft.DBforMySQL/flexibleServers@2023-12-30' existi
   name: flexibleServerName
 }
 
-resource database 'Microsoft.DBforMySQL/flexibleServers/databases@2023-06-30' = {
+resource database 'Microsoft.DBforMySQL/flexibleServers/databases@2023-12-30' = {
   name: name
   parent: flexibleServer
   properties: {

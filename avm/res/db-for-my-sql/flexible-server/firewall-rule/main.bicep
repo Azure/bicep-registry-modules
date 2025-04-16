@@ -17,7 +17,7 @@ resource flexibleServer 'Microsoft.DBforMySQL/flexibleServers@2023-12-30' existi
   name: flexibleServerName
 }
 
-resource firewallRule 'Microsoft.DBforMySQL/flexibleServers/firewallRules@2023-06-30' = {
+resource firewallRule 'Microsoft.DBforMySQL/flexibleServers/firewallRules@2023-12-30' = {
   name: name
   parent: flexibleServer
   properties: {
