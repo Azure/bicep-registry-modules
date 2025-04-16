@@ -209,12 +209,15 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:0.6.1' = {
 module bastionHost 'br/public:avm/res/network/bastion-host:0.6.1' = {
   name: 'avm.ptn.sa.macae.private-dns-zone-bastion-host'
   params: {
-    name: '${solutionPrefix}aisv'
+    name: '${solutionPrefix}bstn'
     location: solutionLocation
     skuName: 'Standard'
     enableTelemetry: enableTelemetry
     tags: tags
     virtualNetworkResourceId: virtualNetwork.outputs.resourceId
+    publicIPAddressObject: {
+      name: '${solutionPrefix}pbipbstn'
+    }
     disableCopyPaste: false
     enableFileCopy: false
     enableIpConnect: true
@@ -644,7 +647,7 @@ module certificateDeploymentScript 'br/public:avm/res/resources/deployment-scrip
 module publicIp 'br/public:avm/res/network/public-ip-address:0.5.1' = {
   name: 'avm.ptn.sa.macae.network-public-ip-address'
   params: {
-    name: '${solutionPrefix}pbip'
+    name: '${solutionPrefix}pbipapgw'
     diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
     location: solutionLocation
     tags: tags
